@@ -11,11 +11,15 @@
           "Keyword": {
             "Cleave": {
               "cost": "{1}{B}{B}{G}",
-              "effects": [
-                { "Search": { "filter": [], "as": "card" } },
-                { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
-                { "Shuffle": {} }
-              ]
+              "spell": {
+                "Spell": {
+                  "effects": [
+                    { "Search": { "filter": [], "as": "card" } },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
             }
           }
         },

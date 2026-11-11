@@ -5,8 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::ability::Ability;
 use crate::companion::DeckCondition;
 use crate::cost::Cost;
-use crate::effect::Effect;
-use crate::refs::{Selector, TargetSpec};
+use crate::refs::Selector;
 
 /// A keyword ability with its parameters (CR 702).
 ///
@@ -321,16 +320,6 @@ pub enum Keyword {
         /// The alternative cost.
         cost: Cost,
     },
-    /// Cleave with its cost (CR 702.148): the spell may be cast from a hand for the cost, and then it is `targets` and `effects`, its text without the words in square brackets.
-    Cleave {
-        /// The alternative cost.
-        cost: Cost,
-        /// The targets of the cleaved spell.
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        targets: Vec<TargetSpec>,
-        /// What the cleaved spell does.
-        effects: Vec<Effect>,
-    },
     /// Craft with its cost (CR 702.167): at sorcery speed, for the cost, which exiles this permanent and the materials, return this card from exile transformed.
     Craft(Cost),
     /// Assist (CR 702.132): as the spell is cast its caster may choose another player, who may pay any amount of the generic mana of its total cost.
@@ -399,6 +388,14 @@ pub enum Keyword {
     Ripple(u32),
     /// Epic (CR 702.50): no more spells for the game; the spell is copied each upkeep.
     Epic,
+    /// Cleave (CR 702.148): the spell may be cast for `cost` rather than its mana cost, and then its text reads without the
+    /// words in square brackets: `spell` is the `Spell` ability as it reads then.
+    Cleave {
+        /// The cleave cost.
+        cost: Cost,
+        /// The spell ability without the bracketed words.
+        spell: Box<Ability>,
+    },
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -563,7 +560,6 @@ impl Keyword {
         "Scavenge",
         "Transmute",
         "Awaken",
-        "Cleave",
         "Prototype",
         "Assist",
         "Craft",
@@ -591,6 +587,7 @@ impl Keyword {
         "Recover",
         "Ripple",
         "Epic",
+        "Cleave",
         "Macro",
     ];
 
@@ -752,7 +749,6 @@ impl Keyword {
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
             Keyword::Awaken { .. } => "Awaken",
-            Keyword::Cleave { .. } => "Cleave",
             Keyword::Prototype { .. } => "Prototype",
             Keyword::Assist => "Assist",
             Keyword::Craft(_) => "Craft",
@@ -785,6 +781,7 @@ impl Keyword {
             Keyword::Recover(_) => "Recover",
             Keyword::Ripple(_) => "Ripple",
             Keyword::Epic => "Epic",
+            Keyword::Cleave { .. } => "Cleave",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -1004,11 +1001,6 @@ mod tests {
                 count: 3,
                 cost: Cost::default(),
             },
-            Keyword::Cleave {
-                cost: Cost::default(),
-                targets: Vec::new(),
-                effects: Vec::new(),
-            },
             Keyword::Prototype {
                 cost: Cost::default(),
                 power: 2,
@@ -1042,6 +1034,13 @@ mod tests {
             Keyword::Recover(Cost::default()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Cleave {
+                cost: Cost::default(),
+                spell: Box::new(Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,

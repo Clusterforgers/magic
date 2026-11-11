@@ -82,6 +82,8 @@ pub enum CastWay {
     Evoke,
     /// Overload (CR 702.96): every "target" reads "each".
     Overload,
+    /// Cleave (CR 702.148): the spell reads without the words in square brackets.
+    Cleave,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
     /// Miracle (CR 702.94): from a hand for its miracle cost when it is the first card its owner drew this turn.
@@ -112,8 +114,6 @@ pub enum CastWay {
     Disturb,
     /// Awaken (CR 702.113): a spell cast from a hand for its awaken cost, which also puts counters on a land and animates it.
     Awaken,
-    /// Cleave (CR 702.148): a spell cast from a hand for its cleave cost, which is its text without the words in square brackets.
-    Cleave,
     /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
     JumpStart,
     /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.

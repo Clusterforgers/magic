@@ -88,6 +88,8 @@ export interface BannerInput {
   step: Step
   /** The turn goes on without its active player, who has left the game. */
   left?: boolean
+  /** The player who controls the active player this turn (CR 722); absent while the active player controls themselves. */
+  controlledBy?: PlayerId
 }
 
 /** "Alice left": the words for the seat a turn belongs to after it left the game. */
@@ -118,7 +120,15 @@ export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Nam
   if (input.left === true)
     return `${leftWords(input.active, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
   const who = input.active === viewer ? 'Your turn' : `${name(input.active)}'s turn`
-  return `${who} · ${input.turn} · ${STEP_LABEL[input.step]}`
+  return `${who}${controlWords(input, viewer, name)} · ${input.turn} · ${STEP_LABEL[input.step]}`
+}
+
+/** " · you control them", " · Bo controls you", " · Bo controls them": who controls the active player (CR 722). */
+function controlWords(input: BannerInput, viewer: PlayerId | null, name: Names): string {
+  const by = input.controlledBy
+  if (by === undefined) return ''
+  if (by === viewer) return ' · you control them'
+  return ` · ${name(by)} controls ${input.active === viewer ? 'you' : 'them'}`
 }
 
 /** Who has priority and how many have passed it on. */

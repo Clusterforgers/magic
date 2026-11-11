@@ -1,0 +1,168 @@
+{
+  "object": "card",
+  "id": "ea660d42-a441-48d8-98c1-00933cde94a4",
+  "oracle_id": "495ebe60-f0e5-4f0f-9d99-b2c64c95dbf4",
+  "multiverse_ids": [
+    503639
+  ],
+  "mtgo_id": 87389,
+  "arena_id": 75070,
+  "tcgplayer_id": 230412,
+  "cardmarket_id": 530817,
+  "name": "Starnheim Unleashed",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/ea660d42-a441-48d8-98c1-00933cde94a4",
+  "scryfall_uri": "https://scryfall.com/card/khm/33/starnheim-unleashed?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275",
+    "normal": "https://cards.scryfall.io/normal/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275",
+    "large": "https://cards.scryfall.io/large/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275",
+    "png": "https://cards.scryfall.io/png/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.png?1783928275",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.webp?1783928275",
+    "grid": "https://cards.scryfall.io/grid/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.webp?1783928275",
+    "display": "https://cards.scryfall.io/display/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.webp?1783928275",
+    "art": "https://cards.scryfall.io/art/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.webp?1783928275",
+    "crop": "https://cards.scryfall.io/crop/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.webp?1783928275",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/a/ea660d42-a441-48d8-98c1-00933cde94a4.jpg?1783928275"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create a 4/4 white Angel Warrior creature token with flying and vigilance. If this spell was foretold, create X of those tokens instead.\nForetell {X}{X}{W} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Foretell"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "86999e06-62a3-4878-8db0-dc36b52d9794",
+      "component": "combo_piece",
+      "name": "Starnheim Unleashed",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/86999e06-62a3-4878-8db0-dc36b52d9794"
+    },
+    {
+      "object": "related_card",
+      "id": "3bd871a3-3802-4bdc-8033-3ecfd01c0449",
+      "component": "token",
+      "name": "Angel Warrior",
+      "type_line": "Token Creature — Angel Warrior",
+      "uri": "https://api.scryfall.com/cards/3bd871a3-3802-4bdc-8033-3ecfd01c0449"
+    },
+    {
+      "object": "related_card",
+      "id": "fb02637f-1385-4d3d-8dc0-de513db7633a",
+      "component": "combo_piece",
+      "name": "Foretell",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/fb02637f-1385-4d3d-8dc0-de513db7633a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ea660d42-a441-48d8-98c1-00933cde94a4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A495ebe60-f0e5-4f0f-9d99-b2c64c95dbf4&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "foretell",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johannes Voss",
+  "artist_ids": [
+    "3593dd7e-c547-4a32-81cd-7da725f60118"
+  ],
+  "illustration_id": "67331f9a-fd56-478c-93b3-f879b777ada0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 9151,
+  "penny_rank": 6776,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/starnheim-unleashed-2021-01-12",
+    "previewed_at": "2021-01-12"
+  },
+  "prices": {
+    "usd": "1.65",
+    "usd_foil": "1.36",
+    "usd_etched": null,
+    "eur": "2.01",
+    "eur_foil": "2.06",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503639&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStarnheim%2BUnleashed",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStarnheim%2BUnleashed",
+    "edhrec": "https://edhrec.com/route/?cc=Starnheim+Unleashed"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230412%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=530817&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87389?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

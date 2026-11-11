@@ -31,6 +31,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
+Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
@@ -38,6 +39,7 @@ All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
+Alter Reality
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -396,6 +398,7 @@ Desperate Ravings
 Determined Iteration
 Devastation Tide
 Devoted Druid
+Dig Up
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
@@ -428,6 +431,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dread Fugue
 Dreadship Reef
 Dream's Grip
 Dreamtail Heron
@@ -548,6 +552,7 @@ Fertile Ground
 Fetid Heath
 Field Trip
 Fierce Guardianship
+Fierce Retribution
 Fiery Confluence
 Fiery Fall
 Fiery Temper
@@ -632,6 +637,7 @@ Gilt-Leaf Palace
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Glamerdye
 Glassworks // Shattered Yard
 Glimpse of Freedom
 Glint-Sleeve Artisan
@@ -862,6 +868,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Lantern Flare
 Lash Out
 Lat-Nam Adept
 Latchkey Faerie
@@ -911,6 +918,7 @@ Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
+Lunar Rejection
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
@@ -1098,9 +1106,11 @@ Panther Habit
 Panther Robot
 Paradise Druid
 Paradise Plume
+Parasitic Grasp
 Parhelion Patrol
 Pariah
 Patagia Viper
+Path of Peril
 Path of the Animist
 Path of the Enigma
 Path of the Ghosthunter
@@ -1419,6 +1429,7 @@ Space Marine Devastator
 Spawn of Mayhem
 Species Specialist
 Spectral Rider
+Spectral Shift
 Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
@@ -1615,6 +1626,7 @@ Towering Titan
 Toxic Deluge
 Trace of Abundance
 Trailtracker Scout
+Trait Doctoring
 Trash for Treasure
 Traumatic Visions
 Traveler's Cloak
@@ -1723,6 +1735,7 @@ Warchief Giant
 Wargate
 Warmonger Hellkite
 Warrior's Sword
+Wash Away
 Wasteland Raider
 Wastescape Battlemage
 Weaponcraft Enthusiast
@@ -1732,6 +1745,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Whim of Volrath
 Whiptongue Hydra
 Whir of Invention
 Whirlpool Whelm
@@ -1751,6 +1765,7 @@ Windbrisk Heights
 Windfall
 Winds of Rath
 Winged Boots
+Winged Portent
 Winged Words
 Wings of the Guard
 Wipe Away

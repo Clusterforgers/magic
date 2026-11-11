@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d135c457-9be5-4a6e-a6fb-5b35cfb70cb0",
+  "name": "Master of Cruelties",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Master of Cruelties",
+      "oracle_fingerprint": "0a24c1d7c5cd85e1c90c675e1b89b2ed",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 25, "end": 61 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 62, "end": 208 }
+          }
+        }
+      ]
+    }
+  ]
+}

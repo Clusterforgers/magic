@@ -162,6 +162,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
+  PlayerControlGained: [
+    { PlayerControlGained: { player: 1, by: 0, extra_turn: true } },
+    'Ana will control Bo during their next turn, then takes an extra turn',
+  ],
+  SpellControlGained: [{ SpellControlGained: { object: 3, player: 1 } }, 'Bo gains control of Forest'],
   PhasesAdded: [
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
     '2 additional phase(s) follow this phase',

@@ -378,7 +378,6 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     discarded_was::add(ability, texts);
     life_over_starting::add(ability, texts);
     no_max_hand::add(ability, texts);
-    rmt0_hand_size::add(ability, texts);
     paid_return::add(ability, texts);
     per_spell_cast::add(ability, texts);
     pump_and_unblockable::add(ability, texts);
@@ -821,6 +820,7 @@ fn c4_writers(ability: &Ability, texts: &mut Vec<String>) {
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.
 fn add_more(ability: &Ability, texts: &mut Vec<String>) {
+    rmt0_hand_size::add(ability, texts);
     discard_play::add(ability, texts);
     double_counters::add(ability, texts);
     each_of::add(ability, texts);

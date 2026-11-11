@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f995e0cc-b2bd-41c3-8c08-c8873312cebe",
+  "name": "Takeno, Samurai General",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Takeno, Samurai General",
+      "oracle_fingerprint": "4583a21755c83258288d29aaba73f1c9",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 95, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}

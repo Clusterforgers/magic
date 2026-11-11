@@ -456,6 +456,10 @@ fn counted_wordings(json: &Value) -> Vec<String> {
         for text in &texts {
             found.extend(insert(text, &tail));
             found.extend(equal_to_forms(text, said));
+            // X named in a sentence of its own after the last one (`rmt0_x_is`).
+            if text.ends_with('.') && x_count(text) > 0 {
+                found.push(format!("{text} X is {said}."));
+            }
         }
     }
     found

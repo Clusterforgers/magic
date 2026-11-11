@@ -8,7 +8,12 @@
       "oracle_fingerprint": "e82a0f72245fc4d656ae03dc7780a9dd",
       "abilities": [
         {
-          "Keyword": { "Cleave": { "cost": "{3}{U}{U}", "effects": [{ "Draw": { "count": 3 } }] } }
+          "Keyword": {
+            "Cleave": {
+              "cost": "{3}{U}{U}",
+              "spell": { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+            }
+          }
         },
         {
           "Spell": {

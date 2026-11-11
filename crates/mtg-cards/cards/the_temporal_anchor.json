@@ -1,0 +1,31 @@
+{
+  "oracle_id": "168f2fbb-8cf7-43e0-8bb6-5e4cc3c1e363",
+  "name": "The Temporal Anchor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Temporal Anchor",
+      "oracle_fingerprint": "6a5014c38599f1162ac958cf0b9ddd7a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 41, "end": 185 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 186, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

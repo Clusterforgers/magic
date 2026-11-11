@@ -353,6 +353,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
                 phrase::selectors(ctx, &permission.what)
             )
         }
+        GameRule::ControlSearches(who) => format!(
+            "you control {} while they search their libraries",
+            phrase::who(ctx, who)
+        ),
         GameRule::AttackLimit(most) => {
             format!("no more than {most} creatures can attack each combat")
         }
@@ -441,6 +445,11 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
         Modification::CantBlock => "can't block".to_owned(),
         Modification::CantBeBlocked => "can't be blocked".to_owned(),
         Modification::DoesntUntap => "doesn't untap during its controller's untap step".to_owned(),
+        Modification::ChangeTextChosen { from, to } => {
+            format!(
+                "has every instance of the word chosen as {from} replaced by the word chosen as {to}"
+            )
+        }
         Modification::SetController(player) => {
             format!("is controlled by {}", phrase::who(ctx, player))
         }

@@ -81,6 +81,38 @@ impl Normalized {
 ///
 /// An unclosed parenthesis and a stray closing one stay text, as `has_rules_text` counts them.
 pub fn normalize(oracle_text: &str, names: &[String]) -> Normalized {
+    normalize_with(oracle_text, names, false)
+}
+
+/// [`normalize`] of a cleave card (CR 702.148): the square brackets go and the words inside them stay, as the spell reads
+/// when it is cast for its mana cost.
+pub fn normalize_cleave(oracle_text: &str, names: &[String]) -> Normalized {
+    normalize_with(oracle_text, names, true)
+}
+
+/// The text without the words in square brackets, the brackets and the space before them: the spell as it reads when it
+/// is cast for its cleave cost (CR 702.148).
+pub fn without_bracketed(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut depth = 0usize;
+    for ch in text.chars() {
+        match ch {
+            '[' => {
+                depth += 1;
+                while out.ends_with(' ') {
+                    out.pop();
+                }
+            }
+            ']' if depth > 0 => depth -= 1,
+            _ if depth > 0 => {}
+            ' ' if out.is_empty() || out.ends_with(' ') || out.ends_with('\n') => {}
+            _ => out.push(ch),
+        }
+    }
+    out
+}
+
+fn normalize_with(oracle_text: &str, names: &[String], brackets: bool) -> Normalized {
     let original: Vec<char> = oracle_text.chars().collect();
     let removed = reminder_ranges(&original);
     let mut removed = removed.iter().peekable();
@@ -95,6 +127,8 @@ pub fn normalize(oracle_text: &str, names: &[String]) -> Normalized {
                 pieces.pop();
             }
             at = range.end;
+        } else if brackets && matches!(ch, '[' | ']') {
+            at += 1;
         } else {
             pieces.push(Piece {
                 ch,

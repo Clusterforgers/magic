@@ -614,6 +614,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
     }
+    if r.words("you control your opponents while they're searching their libraries") {
+        return Some(GameRule::ControlSearches(Ref::Opponents));
+    }
     if r.words("you gain life rather than lose life from radiation") {
         return Some(GameRule::RadiationGainsLife(Ref::You));
     }
@@ -1680,6 +1683,9 @@ fn ep27_rule_texts(
     from: ZoneKind,
 ) -> Option<Vec<String>> {
     match (rule, from) {
+        (GameRule::ControlSearches(Ref::Opponents), ZoneKind::Battlefield) => Some(vec![
+            "You control your opponents while they're searching their libraries".to_owned(),
+        ]),
         (_, ZoneKind::Hand) => {
             let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
             texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));

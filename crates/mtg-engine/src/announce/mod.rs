@@ -652,13 +652,12 @@ fn source_of(what: &What) -> ObjectId {
 }
 
 /// The rules of the spell or ability being announced.
-/// A spell cast for its cleave cost is the cleaved spell its keyword carries (CR 702.148).
 fn rules_of(state: &GameState, what: &What, way: Option<CastWay>) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
-        What::Spell(spell) => object.and_then(|card| {
-            spell_ability(state, *spell)
-                .map(|(_, rules)| crate::keywords::rmt0_cleave::cleaved(card, way, rules))
+        What::Spell(spell) => object.and_then(|_| {
+            crate::keywords::cleave::cleaved(state, *spell, way)
+                .or_else(|| spell_ability(state, *spell).map(|(_, rules)| rules))
         }),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),

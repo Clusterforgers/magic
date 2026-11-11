@@ -77,9 +77,11 @@ pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
 }
 
 /// Whether `viewer` may see which cards are in `zone` of the game `state`: [`zone_is_visible`], and every hand when the
-/// table has open hands.
+/// table has open hands, and the hand of a player the viewer controls (CR 722.3).
 pub fn zone_is_visible_in(state: &GameState, zone: Zone, viewer: PlayerId) -> bool {
-    zone_is_visible(zone, viewer) || (matches!(zone, Zone::Hand(_)) && state.ruleset().open_hands())
+    zone_is_visible(zone, viewer)
+        || (matches!(zone, Zone::Hand(_)) && state.ruleset().open_hands())
+        || matches!(zone, Zone::Hand(owner) if state.sees_for(viewer, owner))
 }
 
 /// What `viewer` may identify in a state: the cards of the zones they see into, the cards the resolution in progress
@@ -103,7 +105,8 @@ impl<'a> Sight<'a> {
     /// Whether the viewer reads the rules of the object: not those of a card in another seat's hand or library, even one
     /// a reveal showed them.
     pub(crate) fn reads_rules_of(&self, object: &GameObject) -> bool {
-        !matches!(object.zone(), Zone::Hand(_) | Zone::Library(_)) || object.owner() == self.viewer
+        !matches!(object.zone(), Zone::Hand(_) | Zone::Library(_))
+            || self.state.sees_for(self.viewer, object.owner())
     }
 
     /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
@@ -652,6 +655,10 @@ impl TableView {
                 day_night: state.day_night(),
                 monarch: state.monarch(),
                 initiative: state.w15a_initiative(),
+                controlled_by: state
+                    .active_player()
+                    .map(|active| state.player_controller(active))
+                    .filter(|by| Some(*by) != state.active_player()),
             },
             priority: state.priority().map(|p| PriorityView {
                 holder: p.holder(),

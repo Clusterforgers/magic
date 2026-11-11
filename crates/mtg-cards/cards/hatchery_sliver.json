@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6227fb65-d7ef-4bc6-a076-9aa10941632c",
+  "name": "Hatchery Sliver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hatchery Sliver",
+      "oracle_fingerprint": "c22b02fca631eb75d8e81c930843516b",
+      "abilities": [
+        { "Keyword": { "Replicate": "{1}{G}" } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 96, "end": 230 }
+          }
+        }
+      ]
+    }
+  ]
+}

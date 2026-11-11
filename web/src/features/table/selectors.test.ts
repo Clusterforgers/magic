@@ -18,6 +18,7 @@ import {
   isYourTurn,
   NO_IDS,
   playerOf,
+  handSeat,
   seatCountOf,
   splitBattlefield,
   stackTopFirst,
@@ -183,6 +184,17 @@ describe('zones', () => {
   it('finds a player by seat', () => {
     expect(playerOf(state, 2)?.seat).toBe(2)
     expect(playerOf(state, 9)).toBeUndefined()
+  })
+
+  it.each<[number | undefined, number, number]>([
+    [undefined, 0, 0],
+    [0, 0, 1],
+    [0, 2, 2],
+    [2, 0, 0],
+  ])('plays from the hand of the active seat 1 only while the viewer controls it: by %s, viewer %i', (by, viewer, seat) => {
+    const view = clone(must(state.view))
+    view.turn = { ...view.turn, active: 1, controlled_by: by }
+    expect(handSeat({ ...state, view }, viewer)).toBe(seat)
   })
 })
 

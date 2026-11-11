@@ -11,8 +11,12 @@
           "Keyword": {
             "Cleave": {
               "cost": "{1}{U}",
-              "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
-              "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
             }
           }
         },

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "495ebe60-f0e5-4f0f-9d99-b2c64c95dbf4",
+  "name": "Starnheim Unleashed",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Starnheim Unleashed",
+      "oracle_fingerprint": "84ca08b11219b034ca46245c43616220",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 0, "end": 136 }
+          }
+        },
+        { "Keyword": { "Foretell": "{X}{X}{W}" } }
+      ]
+    }
+  ]
+}

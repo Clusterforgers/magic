@@ -14,48 +14,90 @@ use mtg_cards::support::Caps;
 const CARDS: &[&str] = &[
     "Alchemist's Retrieval",
     "Angel of Destiny",
+    "Arcee, Sharpshooter // Arcee, Acrobatic Coupe",
+    "Avacyn's Judgment",
+    "Battlefield Thaumaturge",
     "Benevolent River Spirit",
     "Blood Feud",
     "Bramble Elemental",
     "Breena, the Demagogue",
+    "Case of the Burning Masks",
+    "Cemetery Prowler",
+    "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
+    "Chaos Lord",
     "Charismatic Conqueror",
     "Creeping Bloodsucker",
     "Damocles Base, Sword of Kang",
+    "Deepway Navigator",
     "Dig Up",
     "Dissension in the Ranks",
     "Draco",
+    "Dread Fugue",
     "Dragon Grip",
+    "Entropic Battlecruiser",
     "Essence Bottle",
     "Feast on the Fallen",
     "Fierce Retribution",
     "Fiery Bombardment",
     "First Response",
+    "From Under the Floorboards",
+    "Garland, Royal Kidnapper",
     "Gonti's Machinations",
+    "Hatchery Sliver",
+    "Heliod, the Radiant Dawn // Heliod, the Warped Eclipse",
+    "Herald of Leshrac",
+    "Herigast, Erupting Nullkite",
     "Heroes in a Half Shell",
+    "Illuminate",
     "Imminent Doom",
     "Infinite Authority",
     "Inspired Idea",
+    "Invasion of Fiora // Marchesa, Resolute Monarch",
+    "Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+    "Kaervek's Spite",
     "Katara, Seeking Revenge",
     "King Solomon's Frogs",
+    "Korvold, Gleeful Glutton",
     "Krenko's Buzzcrusher",
+    "Lantern Flare",
     "Light from Within",
+    "Lumbering Megasloth",
+    "Lunar Rejection",
+    "Master of Cruelties",
+    "Monastery Raid",
     "Multani, Maro-Sorcerer",
     "Naya Soulbeast",
+    "Nicol Bolas, Dragon-God",
+    "Ojer Axonil, Deepest Might // Temple of Power",
+    "Paleontologist's Pick-Axe // Dinosaur Headdress",
     "Parasitic Grasp",
     "Path of Peril",
     "Pendant of Prosperity",
     "Planetarium of Wan Shi Tong",
+    "Polukranos, Unchained",
+    "Rampant Frogantua",
     "Reset",
     "Sokenzan Renegade",
     "Spiteful Visions",
+    "Starnheim Unleashed",
+    "Sutured Ghoul",
     "Syrix, Carrier of the Flame",
     "Tainted Specter",
+    "Takeno, Samurai General",
     "The Legend of Yangchen // Avatar Yangchen",
+    "The Temporal Anchor",
+    "Thunderous Velocipede",
     "Umbra Stalker",
     "Vexing Puzzlebox",
+    "Volo, Itinerant Scholar",
     "Voodoo Doll",
+    "Vorinclex // The Grand Evolution",
+    "Wash Away",
     "Water Whip",
+    "Wayta, Trainer Prodigy",
     "Winged Portent",
+    "Wolverine, Best There Is",
+    "Xantcha, Sleeper Agent",
     "Yotia Declares War",
 ];
 
@@ -88,45 +130,4 @@ fn every_rmt0_card_reads_back_as_its_text() {
         }
     }
     assert!(failed.is_empty(), "{}", failed.join("\n\n"));
-}
-
-/// Writes the compiler's reading of each named card that has no rules file yet (`RMT0_DRAFT=<dir>`), as a start.
-#[test]
-fn drafts_of_missing_rmt0_cards() {
-    let Ok(dir) = std::env::var("RMT0_DRAFT") else {
-        return;
-    };
-    let wanted = std::env::var("RMT0_ONLY").unwrap_or_default();
-    for card in common::printed() {
-        let file = format!("{}.json", slug(&card.name));
-        if common::cards_dir().join(&file).exists() || !wanted.split('|').any(|w| w == card.name) {
-            continue;
-        }
-        if let Some(rules) = mtg_cards::compile::compile(&card).card {
-            let out = std::path::Path::new(&dir).join(&file);
-            std::fs::write(out, mtg_cards::load::canonical(&rules)).unwrap();
-        }
-        // A cleave card: its text with the brackets dropped, and without the words in them.
-        let text = card.faces[0].oracle_text.clone();
-        if text.contains('[') {
-            for (tag, cut) in [("full", false), ("short", true)] {
-                let mut kept = String::new();
-                let mut inside = false;
-                for c in text.chars() {
-                    match c {
-                        '[' => inside = true,
-                        ']' => inside = false,
-                        c if !(inside && cut) => kept.push(c),
-                        _ => {}
-                    }
-                }
-                let mut changed = card.clone();
-                changed.faces[0].oracle_text = kept.replace("  ", " ").replace(" .", ".");
-                if let Some(rules) = mtg_cards::compile::compile(&changed).card {
-                    let out = std::path::Path::new(&dir).join(format!("{tag}_{file}"));
-                    std::fs::write(out, mtg_cards::load::canonical(&rules)).unwrap();
-                }
-            }
-        }
-    }
 }

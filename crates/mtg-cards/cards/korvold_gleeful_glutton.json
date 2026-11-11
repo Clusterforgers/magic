@@ -1,0 +1,28 @@
+{
+  "oracle_id": "99e89098-bc55-4297-9407-ab9256b609da",
+  "name": "Korvold, Gleeful Glutton",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Korvold, Gleeful Glutton",
+      "oracle_fingerprint": "c6fc0cdbb33159ada13a6df45d3e914b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 98 }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 122, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

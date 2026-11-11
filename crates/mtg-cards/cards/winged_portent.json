@@ -11,13 +11,17 @@
           "Keyword": {
             "Cleave": {
               "cost": "{4}{U}{G}",
-              "effects": [
-                {
-                  "Draw": {
-                    "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
-                  }
+              "spell": {
+                "Spell": {
+                  "effects": [
+                    {
+                      "Draw": {
+                        "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
                 }
-              ]
+              }
             }
           }
         },

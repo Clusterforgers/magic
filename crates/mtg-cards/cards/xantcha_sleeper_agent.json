@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0f0f3712-8d13-41a5-b332-2ab34e48d79d",
+  "name": "Xantcha, Sleeper Agent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Xantcha, Sleeper Agent",
+      "oracle_fingerprint": "108dc52aecd034f3be3b7de275d4c48f",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 64, "end": 163 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 164, "end": 261 }
+          }
+        }
+      ]
+    }
+  ]
+}

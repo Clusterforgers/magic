@@ -564,6 +564,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
     if let Some(found) = super::effects_digital::effects(ctx, p, api) {
         return found;
     }
+    if let Some(found) = super::tc34_control::effects(ctx, p, api) {
+        return found;
+    }
     if let Some(found) = super::effects_verbs::effects(ctx, p, api) {
         return found;
     }

@@ -11,7 +11,11 @@
           "Keyword": {
             "Cleave": {
               "cost": "{4}{W}{B}",
-              "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+              "spell": {
+                "Spell": {
+                  "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+                }
+              }
             }
           }
         },

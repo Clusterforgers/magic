@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6f6b8e14-c247-4dfd-8b39-38c7a5f2f354",
+  "name": "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chandra, Fire of Kaladesh",
+      "oracle_fingerprint": "024f1659e2c8f79bb2b65ca100e5733b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Red" }], "by": "You" } },
+            "effects": [{ "Untap": { "what": "This" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 46, "end": 241 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chandra, Roaring Flame",
+      "oracle_fingerprint": "8f2740c0d5a075496b2826cb7c61334b",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 108, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

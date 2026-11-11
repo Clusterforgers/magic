@@ -218,7 +218,7 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Keyword macros | `mtg_cards::macros` holds two tables of JSON templates with `$N` (the number) and `$ON` (the object): `KEYWORDS` expand into abilities and `ACTIONS` into effects. `Keyword::Macro { name, amount }` adds the abilities of its entry through the one engine file `keywords/macro_keyword.rs`, and the validator walks the expansion, so a card is as supported as the nodes the entry uses. A new keyword or action that is a template of existing nodes is one `Entry`, not an engine file; the renderer writes an action back by matching its effects to the entry. |
 | Dungeons | A dungeon is a file under `crates/mtg-cards/dungeons/`; the check refuses a dungeon with no room, a doubled name, an arrow up or to no room, an unreached room or a last room with an arrow, and validates each room ability. |
 | Siege | A Battle with the subtype Siege has two rules by that subtype (`assemble::siege_rules`, CR 310.11), which no rules file repeats. |
-| Cleave | The keyword carries the cleaved spell (`targets`, `effects`): a spell cast for the cleave cost announces and resolves as it (CR 702.148). The compiler reads the bracketed spell line twice, and the read back writes the spell with the words the cleaved spell lacks in square brackets. |
+| Cleave | `Cleave { cost, spell }`: the keyword carries the `Spell` ability as it reads without the words in square brackets, which a spell cast for the cleave cost announces and resolves (CR 702.148); an `{X}` of the cleave cost is announced for that cast only. The compiler reads the spell with the brackets dropped and the keyword's spell without the bracketed words; the read back checks each against that text. |
 
 ## Validation
 

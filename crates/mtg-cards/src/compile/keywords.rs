@@ -397,6 +397,17 @@ fn hexproof_quality(word: &str) -> Option<Selector> {
 }
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
+/// Cleave with its cost; the compiler fills the spell it reads as without the words in square brackets.
+fn cleave(cost: Cost) -> Keyword {
+    Keyword::Cleave {
+        cost,
+        spell: Box::new(crate::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
+    }
+}
+
 /// item to the table.
 pub fn read(item: &str) -> Option<Keyword> {
     let found = find(item)?;
@@ -422,12 +433,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
-        // The cleaved spell comes from the spell line (`rmt0_cleave::give_cleave`).
-        "cleave" => cost(rest).map(|cost| Keyword::Cleave {
-            cost,
-            targets: Vec::new(),
-            effects: Vec::new(),
-        }),
+        "cleave" => spell_cost(rest).map(cleave),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -1998,9 +2004,9 @@ mod tests {
             "Recover {1}",
             "Ripple 4",
             "Epic",
+            "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
-            "Cleave {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

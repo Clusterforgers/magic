@@ -264,12 +264,14 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
     let (address, rules) = abilities_of(state, id)
         .into_iter()
         .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))?;
+    // A spell cast for its cleave cost reads without the bracketed words (CR 702.148).
+    let rules = state
+        .object(id)
+        .and_then(|object| crate::keywords::cleave::cleaved(state, id, object.choices().way))
+        .unwrap_or(rules);
     // Awaken adds a target and effects to the spell ability of its card.
     let rules = match state.object(id) {
-        Some(card) => awaken::awakened(
-            card,
-            crate::keywords::rmt0_cleave::cleaved(card, card.cast_way(), rules),
-        ),
+        Some(card) => awaken::awakened(card, rules),
         None => rules,
     };
     Some((address, rules))

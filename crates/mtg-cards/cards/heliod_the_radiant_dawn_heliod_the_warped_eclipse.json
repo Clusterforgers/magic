@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c27c6ba9-8d72-4101-b3a5-1e8d81755568",
+  "name": "Heliod, the Radiant Dawn // Heliod, the Warped Eclipse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heliod, the Radiant Dawn",
+      "oracle_fingerprint": "d8239f26cc0252974566f123d8693ef5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Not": { "Subtype": "God" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Heliod, the Warped Eclipse",
+      "oracle_fingerprint": "526836004180498b6064f5f98982fb38",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 45 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 46, "end": 134 }
+          }
+        }
+      ]
+    }
+  ]
+}

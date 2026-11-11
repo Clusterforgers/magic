@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ab914053-4384-415f-b1e8-09fecb5a30b8",
+  "name": "Garland, Royal Kidnapper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Garland, Royal Kidnapper",
+      "oracle_fingerprint": "2558c2b05a68c0e079acc1cb93d18088",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "BecomeMonarch": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 58, "end": 188 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 189, "end": 259 }
+          }
+        }
+      ]
+    }
+  ]
+}

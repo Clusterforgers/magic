@@ -954,7 +954,6 @@ impl<'a> Walker<'a> {
             }
             Amount::Count(selector) => self.selector(selector),
             Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
-            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
@@ -1057,6 +1056,7 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
+            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1145,7 +1145,6 @@ impl<'a> Walker<'a> {
             | Amount::EvenShare(_)
             | Amount::TargetCount(_)
             | Amount::Devotion(_)
-            | Amount::ManaSymbols { .. }
             | Amount::Greatest { .. }
             | Amount::Total { .. }
             | Amount::Distinct { .. }
@@ -1873,6 +1872,31 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The keywords `keyword` leaves out.
+    fn later_keyword(&mut self, keyword: &Keyword) {
+        if let Keyword::Cleave { cost, spell } = keyword {
+            self.cleave(cost, spell);
+        }
+    }
+
+    /// Only mana is paid for a cleave cost; the cleaved spell is walked as the spell it is when cast that way.
+    fn cleave(&mut self, cost: &Cost, spell: &Ability) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+        match spell {
+            Ability::Spell { targets, effects } => {
+                // A cleave cost with {X} gives the cleaved spell its X.
+                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
+                let free = self.x_free;
+                self.x_free |= cost.has_x();
+                self.at("spell", |w| w.body(targets, effects, false));
+                self.x_now = saved;
+                self.x_free = free;
+            }
+            _ => self.problem("the cleaved spell is a Spell ability"),
+        }
+    }
+
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1943,17 +1967,6 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
-            Keyword::Cleave {
-                cost,
-                targets,
-                effects,
-            } => {
-                self.at("cost", |w| w.cost(cost));
-                self.parts_that_need_an_announcement("Keyword", "Cost", cost);
-                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
-                self.body(targets, effects, false);
-                self.x_now = saved;
-            }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
@@ -1991,7 +2004,7 @@ impl<'a> Walker<'a> {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
             }
-            _ => {}
+            _ => self.later_keyword(keyword),
         }
     }
 
@@ -2056,6 +2069,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -3477,6 +3491,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
+            | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
@@ -4203,6 +4218,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::ChangeTextChosen { .. }
             )
         }) {
             self.at("mods", |w| {
@@ -4610,6 +4626,7 @@ impl Walker<'_> {
                 w.cant_action(action);
             }),
             GameRule::TriggerAgain { .. }
+            | GameRule::ControlSearches(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
@@ -4641,7 +4658,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRule(who) | GameRule::ControlSearches(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }

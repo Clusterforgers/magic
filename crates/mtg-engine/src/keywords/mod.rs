@@ -26,6 +26,7 @@ mod casualty;
 mod changeling;
 mod choose_a_background;
 pub(crate) mod cipher;
+pub(crate) mod cleave;
 mod companion;
 mod conspire;
 mod convoke;
@@ -126,7 +127,6 @@ mod replicate;
 mod retrace;
 mod riot;
 mod ripple;
-pub(crate) mod rmt0_cleave;
 mod saddle;
 mod scavenge;
 mod shadow;
@@ -541,7 +541,6 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Scavenge(_) => &scavenge::Scavenge,
         Keyword::Transmute(_) => &transmute::Transmute,
         Keyword::Awaken { .. } => &awaken::Awaken,
-        Keyword::Cleave { .. } => &rmt0_cleave::Cleave,
         Keyword::Gravestorm => &gravestorm::Gravestorm,
         Keyword::Sunburst => &sunburst::Sunburst,
         Keyword::Afterlife(_) => &afterlife::Afterlife,
@@ -573,6 +572,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Recover(_) => &recover::Recover,
         Keyword::Ripple(_) => &ripple::Ripple,
         Keyword::Epic => &epic::Epic,
+        Keyword::Cleave { .. } => &cleave::Cleave,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -953,11 +953,6 @@ mod tests {
                 count: 3,
                 cost: cost(),
             },
-            Keyword::Cleave {
-                cost: cost(),
-                targets: Vec::new(),
-                effects: Vec::new(),
-            },
             Keyword::Prototype {
                 cost: cost(),
                 power: 2,
@@ -991,6 +986,13 @@ mod tests {
             Keyword::Recover(cost()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Cleave {
+                cost: cost(),
+                spell: Box::new(mtg_cards::ability::Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,

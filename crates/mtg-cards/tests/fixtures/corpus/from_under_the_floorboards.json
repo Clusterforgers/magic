@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "cf31fec2-40d6-4810-8575-c7814bb4b6b4",
+  "oracle_id": "a1fc4269-f3e4-4a59-849d-aa1727eef23a",
+  "multiverse_ids": [
+    470659
+  ],
+  "mtgo_id": 77340,
+  "tcgplayer_id": 196750,
+  "cardmarket_id": 393172,
+  "name": "From Under the Floorboards",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/cf31fec2-40d6-4810-8575-c7814bb4b6b4",
+  "scryfall_uri": "https://scryfall.com/card/c19/113/from-under-the-floorboards?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:52:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769",
+    "normal": "https://cards.scryfall.io/normal/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769",
+    "large": "https://cards.scryfall.io/large/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769",
+    "png": "https://cards.scryfall.io/png/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.png?1783932769",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.webp?1783932769",
+    "grid": "https://cards.scryfall.io/grid/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.webp?1783932769",
+    "display": "https://cards.scryfall.io/display/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.webp?1783932769",
+    "art": "https://cards.scryfall.io/art/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.webp?1783932769",
+    "crop": "https://cards.scryfall.io/crop/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.webp?1783932769",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/f/cf31fec2-40d6-4810-8575-c7814bb4b6b4.jpg?1783932769"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Madness {X}{B}{B} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)\nCreate three tapped 2/2 black Zombie creature tokens and you gain 3 life. If this spell's madness cost was paid, instead create X of those tokens and you gain X life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Madness"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cf31fec2-40d6-4810-8575-c7814bb4b6b4",
+      "component": "combo_piece",
+      "name": "From Under the Floorboards",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/cf31fec2-40d6-4810-8575-c7814bb4b6b4"
+    },
+    {
+      "object": "related_card",
+      "id": "3d13fb9e-6906-47d3-b22d-c8817b2403b3",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/3d13fb9e-6906-47d3-b22d-c8817b2403b3"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cf31fec2-40d6-4810-8575-c7814bb4b6b4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa1fc4269-f3e4-4a59-849d-aa1727eef23a&unique=prints",
+  "collector_number": "113",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "49acd5db-65a5-44ca-8255-cdf44f3c75b8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9598,
+  "penny_rank": 5286,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470659&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFrom%2BUnder%2Bthe%2BFloorboards",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFrom%2BUnder%2Bthe%2BFloorboards",
+    "edhrec": "https://edhrec.com/route/?cc=From+Under+the+Floorboards"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196750%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=393172&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77340?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

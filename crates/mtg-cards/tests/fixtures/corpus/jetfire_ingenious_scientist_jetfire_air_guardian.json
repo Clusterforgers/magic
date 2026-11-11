@@ -1,0 +1,195 @@
+{
+  "object": "card",
+  "id": "6bf61883-2343-4a9f-9a34-99326a8827ad",
+  "oracle_id": "38de7183-81ef-4a79-b231-7195ba89a281",
+  "multiverse_ids": [
+    587878,
+    587879
+  ],
+  "mtgo_id": 105558,
+  "tcgplayer_id": 448831,
+  "cardmarket_id": 678545,
+  "name": "Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/6bf61883-2343-4a9f-9a34-99326a8827ad",
+  "scryfall_uri": "https://scryfall.com/card/bot/3/jetfire-ingenious-scientist-jetfire-air-guardian?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:18:30Z",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact Creature — Robot // Legendary Artifact — Vehicle",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Adapt",
+    "Living metal",
+    "Convert",
+    "More Than Meets the Eye"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Jetfire, Ingenious Scientist",
+      "mana_cost": "{4}{U}",
+      "type_line": "Legendary Artifact Creature — Robot",
+      "oracle_text": "More Than Meets the Eye {3}{U} (You may cast this card converted for {3}{U}.)\nFlying\nRemove one or more +1/+1 counters from among artifacts you control: Target player adds that much {C}. This mana can't be spent to cast nonartifact spells. Convert Jetfire.",
+      "colors": [
+        "U"
+      ],
+      "power": "3",
+      "toughness": "4",
+      "artist": "Volta Creation",
+      "artist_id": "284782c4-ada1-466c-8115-fe00421975eb",
+      "illustration_id": "47713926-6d32-4111-978e-f100fef4f823",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "normal": "https://cards.scryfall.io/normal/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "large": "https://cards.scryfall.io/large/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "png": "https://cards.scryfall.io/png/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.png?1783919910",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "thumb": "https://cards.scryfall.io/thumb/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "grid": "https://cards.scryfall.io/grid/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "display": "https://cards.scryfall.io/display/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "art": "https://cards.scryfall.io/art/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "crop": "https://cards.scryfall.io/crop/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "jpeg": "https://cards.scryfall.io/normal/front/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Jetfire, Air Guardian",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact — Vehicle",
+      "oracle_text": "Living metal (During your turn, this Vehicle is also a creature.)\nFlying\n{U}{U}{U}: Convert Jetfire, then adapt 3. (If it has no +1/+1 counters on it, put three +1/+1 counters on it.)",
+      "colors": [
+        "U"
+      ],
+      "color_indicator": [
+        "U"
+      ],
+      "power": "3",
+      "toughness": "4",
+      "artist": "Volta Creation",
+      "artist_id": "284782c4-ada1-466c-8115-fe00421975eb",
+      "illustration_id": "83bc3920-611c-4e3c-b1e2-af73180c7029",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "normal": "https://cards.scryfall.io/normal/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "large": "https://cards.scryfall.io/large/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "png": "https://cards.scryfall.io/png/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.png?1783919910",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910",
+        "thumb": "https://cards.scryfall.io/thumb/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "grid": "https://cards.scryfall.io/grid/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "display": "https://cards.scryfall.io/display/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "art": "https://cards.scryfall.io/art/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "crop": "https://cards.scryfall.io/crop/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.webp?1783919910",
+        "jpeg": "https://cards.scryfall.io/normal/back/6/b/6bf61883-2343-4a9f-9a34-99326a8827ad.jpg?1783919910"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59ed954b-74c0-4db3-8a2b-1d395e33288e",
+  "set": "bot",
+  "set_name": "Transformers",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/59ed954b-74c0-4db3-8a2b-1d395e33288e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abot&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bot?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6bf61883-2343-4a9f-9a34-99326a8827ad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A38de7183-81ef-4a79-b231-7195ba89a281&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Volta Creation",
+  "artist_ids": [
+    "284782c4-ada1-466c-8115-fe00421975eb"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "convertdfc",
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11822,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-10-01"
+  },
+  "prices": {
+    "usd": "1.09",
+    "usd_foil": "1.51",
+    "usd_etched": null,
+    "eur": "0.56",
+    "eur_foil": "0.65",
+    "tix": "1.57"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=587878&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJetfire%252C%2BIngenious%2BScientist%2B%252F%252F%2BJetfire%252C%2BAir%2BGuardian",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJetfire%252C%2BIngenious%2BScientist%2B%252F%252F%2BJetfire%252C%2BAir%2BGuardian",
+    "edhrec": "https://edhrec.com/route/?cc=Jetfire%2C+Ingenious+Scientist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F448831%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=678545&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105558?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

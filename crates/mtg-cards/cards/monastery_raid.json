@@ -1,0 +1,20 @@
+{
+  "oracle_id": "62f4a2db-6d7c-487b-be37-22f06c1e779e",
+  "name": "Monastery Raid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Monastery Raid",
+      "oracle_fingerprint": "ef8c3ad072193a014008453154e3c342",
+      "abilities": [
+        { "Keyword": { "Freerunning": "{X}{R}" } },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 150, "end": 343 }
+          }
+        }
+      ]
+    }
+  ]
+}

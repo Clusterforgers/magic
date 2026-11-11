@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9b61f5b1-7688-4336-8fe9-66da37a34df9",
+  "name": "Volo, Itinerant Scholar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Volo, Itinerant Scholar",
+      "oracle_fingerprint": "76bbf950d2f46e134092f352f848e6a6",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 212 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 213, "end": 318 }
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}
