@@ -422,13 +422,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
-        "cleave" => spell_cost(rest).map(|cost| Keyword::Cleave {
-            cost,
-            spell: Box::new(crate::ability::Ability::Spell {
-                targets: Vec::new(),
-                effects: Vec::new(),
-            }),
-        }),
+        "cleave" => spell_cost(rest).map(cleave),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -796,6 +790,17 @@ fn plain(name: &str) -> Option<Keyword> {
 /// The quality a protection names, when it is one colour, colourless, multicolored, one kind of permanent, a mana value
 /// bound or everything: "from red", "from creatures", "from mana value 3 or less", "from everything". The empty selector
 /// matches every source.
+/// Cleave at `cost`, its spell filled in by the compiler from the text without the bracketed words.
+fn cleave(cost: crate::cost::Cost) -> Keyword {
+    Keyword::Cleave {
+        cost,
+        spell: Box::new(crate::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
+    }
+}
+
 fn protection(rest: &str) -> Option<Selector> {
     let printed = rest.strip_prefix("from ")?.trim_end_matches('.');
     let word = printed.to_ascii_lowercase();

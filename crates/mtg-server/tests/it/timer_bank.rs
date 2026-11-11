@@ -25,7 +25,7 @@ fn pace() -> Pace {
         auto_pass: false,
         response: Some(Duration::from_millis(RESPONSE)),
         blocks: Some(Duration::from_secs(45)),
-        think: Some(Duration::from_secs(60)),
+        think: Some(Duration::from_mins(1)),
         active: None,
         extension: Some(Duration::from_millis(EXTENSION)),
         grace: Duration::ZERO,

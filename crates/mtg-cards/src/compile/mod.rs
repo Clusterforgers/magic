@@ -251,12 +251,13 @@ fn fill_cleave(pending: &mut [Pending], shown: &PrintedFace, x_free: bool, own: 
     let read = (!lines.is_empty())
         .then(|| read::clause_with(&lines.join("\n"), ClauseKind::Spell, x_free, own))
         .flatten();
-    match (read, &mut clause.ability) {
-        (Some(read), Some(Ability::Keyword(Keyword::Cleave { spell, .. }))) => **spell = read,
-        _ => {
-            clause.ability = None;
-            clause.read = false;
-        }
+    if let (Some(read), Some(Ability::Keyword(Keyword::Cleave { spell, .. }))) =
+        (read, &mut clause.ability)
+    {
+        **spell = read;
+    } else {
+        clause.ability = None;
+        clause.read = false;
     }
 }
 

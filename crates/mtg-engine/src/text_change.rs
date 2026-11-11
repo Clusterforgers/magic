@@ -57,15 +57,20 @@ fn rewrite(value: &mut Value, from: &Value, to: &Value) -> bool {
             *value = to.clone();
             true
         }
-        Value::Array(items) => items
-            .iter_mut()
-            .fold(false, |changed, item| rewrite(item, from, to) || changed),
+        Value::Array(items) => {
+            // Every item is rewritten, so the changes are gathered before they are asked about.
+            let changed: Vec<bool> = items
+                .iter_mut()
+                .map(|item| rewrite(item, from, to))
+                .collect();
+            changed.contains(&true)
+        }
         Value::Object(entries) => entries
             .iter_mut()
             .filter(|(key, _)| !is_no_word(key))
-            .fold(false, |changed, (_, item)| {
-                rewrite(item, from, to) || changed
-            }),
+            .map(|(_, item)| rewrite(item, from, to))
+            .collect::<Vec<bool>>()
+            .contains(&true),
         _ => false,
     }
 }

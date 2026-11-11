@@ -7,7 +7,6 @@ use std::sync::Arc;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::object::{GameObject, ObjectKind};
 use crate::player::MulliganStatus;
@@ -26,11 +25,7 @@ pub(crate) struct Restart {
 
 /// Folds `GameRestarted`. The spell or ability that restarted the game stays on the stack until its resolution ends;
 /// every other object that is no card ceases to exist (CR 727.2).
-pub(crate) fn fold(
-    state: &mut GameState,
-    by: PlayerId,
-    kept: &[ObjectId],
-) -> Result<(), EngineError> {
+pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     let resolving = state.resolving.as_ref().map(|resolving| resolving.object);
     let mut zones = Zones::new(state.players.len());
     let mut objects = BTreeMap::new();
@@ -127,7 +122,12 @@ pub(crate) fn fold(
         by,
         kept: kept.to_vec(),
     });
-    Ok(())
+}
+
+/// Folds `MulliganPhaseEnded`: the turns begin and a restart under way is over.
+pub(crate) fn opening_ended(state: &mut GameState) {
+    state.stage = Stage::Turns;
+    state.restart = None;
 }
 
 /// The starting player of a restarted game: the player who restarted it (CR 727.3); `None` for a game that was not.

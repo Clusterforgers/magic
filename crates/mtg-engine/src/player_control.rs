@@ -71,10 +71,10 @@ pub fn answerer(state: &GameState, decision: &Decision) -> PlayerId {
     if player != decision.player {
         return player;
     }
-    if searching_own_library(state, decision) {
-        if let Some(by) = state.search_controller(decision.player) {
-            return by;
-        }
+    if searching_own_library(state, decision)
+        && let Some(by) = state.search_controller(decision.player)
+    {
+        return by;
     }
     player
 }

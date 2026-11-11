@@ -128,10 +128,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             player_mut(state, *player)?.mulligan = MulliganStatus::Kept;
         }
-        Event::MulliganPhaseEnded => {
-            state.stage = Stage::Turns;
-            state.restart = None;
-        }
+        Event::MulliganPhaseEnded => crate::restart::opening_ended(state),
         other => return Err(invalid(format!("not an opening event: {other:?}"))),
     }
     Ok(())

@@ -240,9 +240,9 @@ async fn started_games_stay_while_somebody_is_connected_and_go_a_day_after_every
     // Once it leaves, the clock starts at the next sweep that notices.
     drop(inbox);
     let t1 = t0 + 3 * day;
-    assert_eq!(registry.sweep(t1 + Duration::from_secs(60)).await, 0);
+    assert_eq!(registry.sweep(t1 + Duration::from_mins(1)).await, 0);
     assert_eq!(registry.sweep(t1 + almost_a_day).await, 0);
-    assert_eq!(registry.sweep(t1 + day + Duration::from_secs(120)).await, 1);
+    assert_eq!(registry.sweep(t1 + day + Duration::from_mins(2)).await, 1);
     assert!(registry.is_empty());
 }
 

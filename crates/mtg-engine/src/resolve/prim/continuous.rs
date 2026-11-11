@@ -259,6 +259,34 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
 /// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
 /// both run the same modification.
+/// The land or creature type a permanent becomes, as chosen under the name `wanted` gives.
+fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
+    match wanted {
+        Wanted::SetLandTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::LandType(land)) => Ok(Modification::SetLandTypes(vec![land.clone()])),
+            _ => Err(ResolveError::Invalid("no land type was chosen".into())),
+        },
+        Wanted::SetCreatureTypesChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::CreatureType(kind)) => {
+                Ok(Modification::SetCreatureTypes(vec![kind.clone()]))
+            }
+            _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
+        },
+        _ => Err(ResolveError::Invalid("no chosen type".into())),
+    }
+}
+
+/// The word of a text change chosen under `name`: a color, a basic land type or a creature type.
+fn chosen_word(scope: &Scope<'_>, name: &str) -> Result<TextWord, ResolveError> {
+    match scope.chosen_value(name) {
+        Some(Chosen::Color(color)) => Ok(TextWord::Color(*color)),
+        Some(Chosen::LandType(kind) | Chosen::CreatureType(kind)) => {
+            Ok(TextWord::Subtype(kind.clone()))
+        }
+        _ => Err(ResolveError::Invalid("no word was chosen".into())),
+    }
+}
+
 pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     let amount = |amount: &Amount| -> Result<i32, ResolveError> {
         i32::try_from(scope.amount(amount)?).map_err(|_| {
@@ -299,26 +327,12 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             }
             _ => return Err(ResolveError::Invalid("no color was chosen".into())),
         },
-        Wanted::SetLandTypesChosen(name) => match scope.chosen_value(name) {
-            Some(Chosen::LandType(land)) => Modification::SetLandTypes(vec![land.clone()]),
-            _ => return Err(ResolveError::Invalid("no land type was chosen".into())),
-        },
-        Wanted::ChangeTextChosen { from, to } => {
-            let word = |name: &str| match scope.chosen_value(name) {
-                Some(Chosen::Color(color)) => Ok(TextWord::Color(*color)),
-                Some(Chosen::LandType(kind) | Chosen::CreatureType(kind)) => {
-                    Ok(TextWord::Subtype(kind.clone()))
-                }
-                _ => Err(ResolveError::Invalid("no word was chosen".into())),
-            };
-            Modification::ChangeText {
-                from: word(from)?,
-                to: word(to)?,
-            }
+        Wanted::SetLandTypesChosen(_) | Wanted::SetCreatureTypesChosen(_) => {
+            chosen_types(scope, wanted)?
         }
-        Wanted::SetCreatureTypesChosen(name) => match scope.chosen_value(name) {
-            Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
-            _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),
+        Wanted::ChangeTextChosen { from, to } => Modification::ChangeText {
+            from: chosen_word(scope, from)?,
+            to: chosen_word(scope, to)?,
         },
         Wanted::AddChosenSubtype | Wanted::SetChosenColor => entered(scope, wanted)?,
         Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),

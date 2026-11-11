@@ -220,7 +220,7 @@ impl Default for SocketLimits {
         SocketLimits {
             join_timeout: Duration::from_secs(10),
             ping_every: Duration::from_secs(20),
-            idle_timeout: Duration::from_secs(60),
+            idle_timeout: Duration::from_mins(1),
             send_timeout: Duration::from_secs(10),
             max_frame: 64 * 1024,
             burst: 40,
@@ -470,7 +470,7 @@ mod tests {
         assert_eq!(config.fixed_seed, None);
         assert_eq!(config.socket.join_timeout, Duration::from_secs(10));
         assert_eq!(config.socket.ping_every, Duration::from_secs(20));
-        assert_eq!(config.socket.idle_timeout, Duration::from_secs(60));
+        assert_eq!(config.socket.idle_timeout, Duration::from_mins(1));
         assert_eq!(config.socket.max_frame, 64 * 1024);
     }
 
@@ -760,7 +760,7 @@ mod tests {
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
-        assert_eq!(pace.think, Some(Duration::from_secs(60)));
+        assert_eq!(pace.think, Some(Duration::from_mins(1)));
         assert_eq!(pace.dwell, Dwell::DEFAULT);
     }
 
@@ -846,7 +846,7 @@ mod tests {
     fn active_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
         let pace = load(&[("MTG_ACTIVE_SECS", text)]).unwrap().game.pace;
         assert_eq!(pace.active, seconds.map(Duration::from_secs));
-        assert_eq!(pace.think, Some(Duration::from_secs(60)));
+        assert_eq!(pace.think, Some(Duration::from_mins(1)));
     }
 
     #[rstest]

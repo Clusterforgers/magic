@@ -974,7 +974,7 @@ async fn players_who_only_pass_play_turns_of_a_precon_with_manual_cards_without_
             .iter()
             .cloned()
             .map(|token| pass_until(server.addr, game.clone(), token, turn, Arc::clone(&seen)));
-        tokio::time::timeout(Duration::from_secs(120), join_all(players))
+        tokio::time::timeout(Duration::from_mins(2), join_all(players))
             .await
             .unwrap_or_else(|_| {
                 panic!(

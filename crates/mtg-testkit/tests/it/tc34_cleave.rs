@@ -94,7 +94,10 @@ fn cleave_removes_the_bracketed_words(
         .iter()
         .filter(|id| {
             driver.state().object(**id).is_some_and(|object| {
-                object.owner() == pid(0) && object.permanent().is_some_and(|p| p.tapped())
+                object.owner() == pid(0)
+                    && object
+                        .permanent()
+                        .is_some_and(mtg_engine::object::PermanentState::tapped)
             })
         })
         .count();

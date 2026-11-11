@@ -24,7 +24,7 @@ pub const MIN_GAP: Duration = Duration::from_millis(100);
 const ACCEPT_VALUE: &str = "application/json;q=0.9,*/*;q=0.8";
 
 /// The longest wait a server's `Retry-After` can impose on us.
-const MAX_RETRY_WAIT: Duration = Duration::from_secs(60);
+const MAX_RETRY_WAIT: Duration = Duration::from_mins(1);
 
 /// How the client behaves; the defaults suit the real sources, tests tune them.
 #[derive(Debug, Clone)]
@@ -49,7 +49,7 @@ impl Default for HttpConfig {
             user_agent: format!("mtg-cli/{}", env!("CARGO_PKG_VERSION")),
             min_gap: MIN_GAP,
             connect_timeout: Some(Duration::from_secs(15)),
-            read_timeout: Some(Duration::from_secs(60)),
+            read_timeout: Some(Duration::from_mins(1)),
             attempts: 3,
             backoff: Duration::from_secs(2),
         }

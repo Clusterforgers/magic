@@ -122,7 +122,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
-        Event::GameRestarted { by, kept } => crate::restart::fold(state, *by, kept),
+        Event::GameRestarted { by, kept } => {
+            crate::restart::fold(state, *by, kept);
+            Ok(())
+        }
         Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
             crate::companions::fold(state, event)
         }

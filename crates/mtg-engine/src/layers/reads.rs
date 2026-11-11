@@ -53,8 +53,11 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
-        // The land loses its abilities with its land types.
-        Modification::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
+        // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
+        // subtypes.
+        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
@@ -62,8 +65,6 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::LoseAbilities | Modification::LoseAbility(_) => {
             Traits::KEYWORDS.or(Traits::RULES)
         }
-        // A text change rewrites the rules, the keywords and the subtypes.
-        Modification::ChangeText { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)

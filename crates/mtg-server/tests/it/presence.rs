@@ -169,7 +169,7 @@ async fn a_batch_after_a_drop_carries_the_flag(#[values(2, 3)] players: usize) {
     assert!(tables.iter().all(|flags| *flags == expected), "{tables:?}");
 }
 
-const THINK: std::time::Duration = std::time::Duration::from_secs(60);
+const THINK: std::time::Duration = std::time::Duration::from_mins(1);
 
 /// The opening decisions run on a one-minute think clock.
 fn think_clock() -> mtg_server::GameConfig {

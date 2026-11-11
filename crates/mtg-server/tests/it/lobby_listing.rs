@@ -113,7 +113,7 @@ async fn a_listed_game_says_who_hosts_it_which_format_how_full_it_is_and_how_old
     assert_eq!(one.host, "Ann");
     assert_eq!(one.format, FormatKind::Normal);
     assert_eq!((one.filled, one.total), (1, 4));
-    assert!(one.age < Duration::from_secs(60), "{:?}", one.age);
+    assert!(one.age < Duration::from_mins(1), "{:?}", one.age);
 
     // The stamp reads YYYY-MM-DDTHH:MM:SSZ.
     let shape: Vec<char> = one
@@ -297,7 +297,7 @@ async fn an_address_may_ask_for_the_list_thirty_times_a_minute() {
         Ok(())
     );
     assert_eq!(
-        registry.admit_listing(me, t0 + Duration::from_secs(60)),
+        registry.admit_listing(me, t0 + Duration::from_mins(1)),
         Ok(())
     );
 }

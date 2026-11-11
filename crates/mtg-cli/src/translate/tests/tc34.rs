@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use super::{abilities, gaps, normal};
 
-fn change(target: Value, from: &str, to: Value, duration: &str) -> Value {
+fn change(target: &Value, from: &str, to: &Value, duration: &str) -> Value {
     json!({"Spell": {"targets": [{"what": target}], "effects": [
         {"ChooseValue": {"kind": from, "as": "from"}},
         {"ChooseValue": {"kind": to, "as": "to"}},
@@ -35,19 +35,19 @@ fn spell_or_permanent() -> Value {
 )]
 #[case::sleight_of_mind(
     "Name:T\nTypes:Instant\nA:SP$ ChangeText | ValidTgts$ Card | TgtZone$ Stack,Battlefield | TgtPrompt$ Choose target spell or permanent | Duration$ Permanent | ChangeColorWord$ Choose Choose\n",
-    change(spell_or_permanent(), "Color", json!({"LikeChosen": "from"}), "Forever")
+    change(&spell_or_permanent(), "Color", &json!({"LikeChosen": "from"}), "Forever")
 )]
 #[case::magical_hack(
     "Name:T\nTypes:Instant\nA:SP$ ChangeText | ValidTgts$ Card | TgtZone$ Stack,Battlefield | ChangeTypeWord$ ChooseBasicLandType ChooseBasicLandType | Duration$ Permanent\n",
-    change(spell_or_permanent(), "BasicLandType", json!({"LikeChosen": "from"}), "Forever")
+    change(&spell_or_permanent(), "BasicLandType", &json!({"LikeChosen": "from"}), "Forever")
 )]
 #[case::artificial_evolution(
     "Name:T\nTypes:Instant\nA:SP$ ChangeText | ValidTgts$ Card | TgtZone$ Stack,Battlefield | ChangeTypeWord$ ChooseCreatureType ChooseCreatureType | ForbiddenNewTypes$ Wall | Duration$ Permanent\n",
-    change(spell_or_permanent(), "CreatureType", json!({"CreatureTypeExcept": ["Wall"]}), "Forever")
+    change(&spell_or_permanent(), "CreatureType", &json!({"CreatureTypeExcept": ["Wall"]}), "Forever")
 )]
 #[case::mind_bend(
     "Name:T\nTypes:Instant\nA:SP$ GenericChoice | ValidTgts$ Permanent | Choices$ ChangeColor,ChangeType | Defined$ You\nSVar:ChangeColor:DB$ ChangeText | Defined$ ParentTarget | ChangeColorWord$ Choose Choose | Duration$ Permanent\nSVar:ChangeType:DB$ ChangeText | Defined$ ParentTarget | ChangeTypeWord$ ChooseBasicLandType ChooseBasicLandType | Duration$ Permanent\n",
-    change(json!({"Object": []}), "ColorOrBasicLandType", json!({"LikeChosen": "from"}), "Forever")
+    change(&json!({"Object": []}), "ColorOrBasicLandType", &json!({"LikeChosen": "from"}), "Forever")
 )]
 fn a_line_maps_to_its_nodes(#[case] script: &str, #[case] want: Value) {
     let found = abilities(script);
