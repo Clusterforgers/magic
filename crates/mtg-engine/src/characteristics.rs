@@ -49,6 +49,11 @@ pub struct Characteristics {
     pub toughness: Option<i32>,
     /// Abilities.
     pub abilities: Vec<AbilityDef>,
+    /// The words name stickers added to its name, in the order they were put on (layer 3); the name is these words
+    /// and the printed name after them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<String>>", optional))]
+    pub name_words: Vec<String>,
 }
 
 impl Characteristics {
@@ -83,6 +88,7 @@ impl Characteristics {
             power: None,
             toughness: None,
             abilities: Vec::new(),
+            name_words: Vec::new(),
         }
     }
 }
@@ -367,6 +373,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         power: prototype.map_or(card.power, |(_, power, _)| Some(power)),
         toughness: prototype.map_or(card.toughness, |(_, _, toughness)| Some(toughness)),
         abilities: card.abilities.clone(),
+        name_words: Vec::new(),
     }
 }
 

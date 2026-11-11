@@ -215,6 +215,7 @@ mod transform;
 mod triggers;
 mod turns;
 mod un33_attractions;
+mod un34_stickers;
 mod untap_rules;
 mod vote;
 mod vp20_atoms;

@@ -985,3 +985,63 @@ fn the_same_deck_gives_the_same_report_from_any_order_of_input() {
     lines.reverse();
     assert_eq!(report("commander", &lines), a);
 }
+
+/// An Attraction deck of one copy of each of the first `distinct` names, plus `extra` more of the first.
+fn attractions(distinct: usize, extra: u32) -> Vec<DeckLine> {
+    const NAMES: [&str; 11] = [
+        "Forest",
+        "Island",
+        "Lightning Bolt",
+        "Sol Ring",
+        "Relentless Rats",
+        "Llanowar Elves",
+        "Tolarian Academy",
+        "Un-Card",
+        "Ancestral Recall",
+        "Friend One",
+        "Friend Two",
+    ];
+    NAMES
+        .iter()
+        .take(distinct)
+        .enumerate()
+        .map(|(at, name)| {
+            let count = if at == 0 { 1 + extra } else { 1 };
+            line(DeckZone::Attractions, name, count)
+        })
+        .collect()
+}
+
+#[rstest]
+#[case::no_attraction_deck(0, 0, 0)]
+#[case::ten_names(10, 0, 0)]
+#[case::eleven_names(11, 0, 0)]
+#[case::nine_names(9, 0, 1)]
+#[case::three_names(3, 0, 1)]
+#[case::ten_cards_a_name_twice(9, 1, 1)]
+#[case::short_and_a_name_twice(3, 1, 2)]
+fn an_attraction_deck_under_ten_cards_or_with_a_name_twice_is_a_warning(
+    #[case] distinct: usize,
+    #[case] extra: u32,
+    #[case] warnings: usize,
+    #[values("freeform", "commander", "modern")] format: &str,
+) {
+    let mut lines = match format {
+        "commander" => atraxa(50, 49, &[]),
+        "modern" => sixty(&[]),
+        _ => vec![line(Main, "Forest", 1)],
+    };
+    lines.extend(attractions(distinct, extra));
+    let found = report(format, &lines);
+    let attraction: Vec<_> = found
+        .legality
+        .iter()
+        .filter(|issue| issue.code == IssueCode::AttractionDeck)
+        .collect();
+    assert_eq!(attraction.len(), warnings, "{:#?}", found.legality);
+    assert!(
+        attraction
+            .iter()
+            .all(|issue| issue.zone == Some(DeckZone::Attractions))
+    );
+}

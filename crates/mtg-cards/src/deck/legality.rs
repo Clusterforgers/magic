@@ -111,6 +111,8 @@ pub enum IssueCode {
     Banned,
     /// A card that is not in the format's card pool.
     NotLegal,
+    /// An Attraction deck of fewer than ten cards, or with a name twice (CR 717.2a).
+    AttractionDeck,
 }
 
 impl IssueCode {
@@ -594,5 +596,39 @@ pub(super) fn check(format: &str, deck: &Deck, cards: &Cards) -> Vec<Issue> {
         Some(Rules::Commander) => commander(deck, cards, &mut issues),
         Some(Rules::Constructed) => constructed(deck, cards, format, &mut issues),
     }
+    attraction_deck(deck, cards, &mut issues);
     issues
+}
+
+/// The fewest cards of an Attraction deck (CR 717.2a).
+const ATTRACTION_DECK_MINIMUM: u32 = 10;
+
+/// An Attraction deck holds ten cards or more with different names (CR 717.2a), in every format; a deck without one
+/// has nothing to check.
+fn attraction_deck(deck: &Deck, cards: &Cards, issues: &mut Vec<Issue>) {
+    let size = copies_in(deck, DeckZone::Attractions);
+    if size == 0 {
+        return;
+    }
+    if size < ATTRACTION_DECK_MINIMUM {
+        issues.push(Issue::zone(
+            IssueCode::AttractionDeck,
+            DeckZone::Attractions,
+            format!("an Attraction deck has at least {ATTRACTION_DECK_MINIMUM} cards, this one {size}"),
+        ));
+    }
+    for (zone, id, count, facts) in cards_in(deck, cards, &[DeckZone::Attractions]) {
+        if count > 1 {
+            issues.push(Issue::card(
+                IssueCode::AttractionDeck,
+                zone,
+                id,
+                facts,
+                format!(
+                    "an Attraction deck has one card of each name, this one {count} of {}",
+                    name_of(facts, id)
+                ),
+            ));
+        }
+    }
 }

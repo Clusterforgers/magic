@@ -34,6 +34,9 @@ pub(super) fn move_object(
     log_death(state, id, to);
     if let Some(from) = state.object(id).map(GameObject::zone) {
         crate::un33_attractions::fold_left(state, id, from);
+        if from == Zone::Battlefield {
+            crate::un34_stickers::fold_left(state, id);
+        }
     }
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;

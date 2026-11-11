@@ -489,9 +489,22 @@ const YOU_DID: [(TurnTally, &str, &str); 3] = [
     ),
 ];
 
+/// The words after the Attractions of "the number of Attractions you've visited this turn" (CR 701.52a).
+const VISITED: &str = "you've visited this turn";
+
 /// "cards you've drawn this turn", "cards you've discarded this turn", "instant and sorcery spells you've cast this
 /// turn" (the singular after "for each"): the count the game kept for the player.
 fn you_did(r: &mut Reader<'_>, each: bool) -> Option<Amount> {
+    // "Attraction" is a capitalised name in the tokens, not a word.
+    if let Some(visited) = r.attempt(|r| {
+        (r.name() == Some(if each { "Attraction" } else { "Attractions" }) && r.words(VISITED))
+            .then_some(Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::AttractionsVisited,
+            })
+    }) {
+        return Some(visited);
+    }
     YOU_DID
         .iter()
         .find(|(_, noun, tail)| r.words(&format!("{noun}{} {tail}", if each { "" } else { "s" })))
@@ -503,6 +516,12 @@ fn you_did(r: &mut Reader<'_>, each: bool) -> Option<Amount> {
 
 /// What `you_did` read, written back.
 fn you_did_text(what: TurnTally, each: bool) -> Option<String> {
+    if what == TurnTally::AttractionsVisited {
+        return Some(format!(
+            "Attraction{} {VISITED}",
+            if each { "" } else { "s" }
+        ));
+    }
     let (_, noun, tail) = YOU_DID.iter().find(|(found, ..)| *found == what)?;
     Some(format!("{noun}{} {tail}", if each { "" } else { "s" }))
 }

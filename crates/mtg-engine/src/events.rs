@@ -827,6 +827,33 @@ pub enum Event {
         /// The Attractions visited.
         visited: Vec<ObjectId>,
     },
+    /// A player claimed the prize of an Attraction: its prize abilities trigger.
+    PrizeClaimed {
+        /// Who claimed it.
+        player: PlayerId,
+        /// The Attraction.
+        attraction: ObjectId,
+    },
+    /// The sticker sheets a seat plays with were chosen at random from the ones it brought (CR 103.2d), which moved
+    /// the game's random stream on by one.
+    StickerSheetsChosen {
+        /// Whose sheets.
+        player: PlayerId,
+        /// The sheets, as indexes into the ones the seat brought, in that order.
+        sheets: Vec<usize>,
+    },
+    /// A player put a sticker of one of their sheets on a permanent they own (CR 123); the tickets paid are the
+    /// `CountersChanged` before it and its change the `EffectCreated` after it.
+    StickerPut {
+        /// Whose sticker.
+        player: PlayerId,
+        /// The permanent.
+        object: ObjectId,
+        /// The sheet, as an index into the sheets the player brought.
+        sheet: usize,
+        /// The sticker, as an index among the stickers of the sheet.
+        sticker: usize,
+    },
     /// A player flipped a coin (CR 705): the flip came from the game's random stream, which it moved on by one.
     CoinFlipped {
         /// Who flipped.
@@ -1179,6 +1206,8 @@ impl Event {
             Event::LibraryShuffled { .. }
             | Event::AttractionDeckShuffled { .. }
             | Event::RolledToVisit { .. }
+            | Event::PrizeClaimed { .. }
+            | Event::StickerSheetsChosen { .. }
             | Event::MulliganTaken { .. }
             | Event::DamageCleared
             | Event::EffectCreated { .. }
@@ -1307,6 +1336,7 @@ impl Event {
             | Event::Exerted { object, .. }
             | Event::ExertEnded { object, .. }
             | Event::Amassed { object, .. }
+            | Event::StickerPut { object, .. }
             | Event::Monstrous { object, .. }
             | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }

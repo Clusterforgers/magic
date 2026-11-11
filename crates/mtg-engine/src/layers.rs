@@ -45,9 +45,11 @@ use reads::{
     Traits, reads_of_condition, reads_of_modification, reads_of_ref, writes, writes_of_wanted,
 };
 
-/// The layers the pass walks, in the order of CR 613.1 (copy and text-changing effects are not in the engine).
-const LAYERS: [Layer; 8] = [
+/// The layers the pass walks, in the order of CR 613.1 (copy effects are worked out with the copiable values,
+/// `copies.rs`; the one text change is the name a name sticker gives).
+const LAYERS: [Layer; 9] = [
     Layer::Control,
+    Layer::Text,
     Layer::Type,
     Layer::Color,
     Layer::Ability,
@@ -368,6 +370,7 @@ impl Held {
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::GrantText(_)
+            | Modification::AddNameWords(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddColors(_)

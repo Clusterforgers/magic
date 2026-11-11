@@ -542,6 +542,18 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} open{s} an Attraction"), false)
         }
+        TriggerPattern::VisitedAttraction { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} visit{s} an Attraction"), false)
+        }
+        TriggerPattern::Prize {} => (
+            "you claim the prize of this Attraction".to_owned(),
+            true,
+        ),
+        TriggerPattern::ClaimedPrize { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} claim{s} the prize of an Attraction"), false)
+        }
         TriggerPattern::DoorUnlocked {
             door: Some(_),
             fully: false,

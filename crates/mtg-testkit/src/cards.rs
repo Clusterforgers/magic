@@ -547,6 +547,92 @@ pub fn un33_opener(name: &str, count: Option<i32>) -> Arc<CardDefinition> {
     )
 }
 
+/// A sticker sheet (CR 123) with these stickers, in order.
+pub fn un34_sheet(name: &str, stickers: Vec<mtg_cards::ability::Sticker>) -> Arc<CardDefinition> {
+    let mut sheet = CardDefinition::new(name);
+    for sticker in stickers {
+        sheet = sheet.with_rules(Ability::Sticker(sticker));
+    }
+    Arc::new(sheet)
+}
+
+/// An instant for {0} with "Put a sticker on a nonland permanent you own."
+pub fn un34_stickerer(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::PutSticker {
+                    who: Ref::You,
+                    on: Selector(vec![
+                        Pred::Not(Box::new(Pred::Type(CardType::Land))),
+                        Pred::OwnedBy(Ref::You),
+                    ]),
+                }],
+            }),
+    )
+}
+
+/// An Attraction with "Visit — Claim the prize." and "Prize — Draw a card."
+pub fn un34_prize_attraction(name: &str) -> Arc<CardDefinition> {
+    let triggered = |when, effect| Ability::Triggered {
+        when,
+        intervening_if: None,
+        limit: None,
+        from: mtg_cards::refs::ZoneKind::Battlefield,
+        targets: Vec::new(),
+        effects: vec![effect],
+    };
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype("Attraction")
+            .with_rules(triggered(
+                mtg_cards::trigger::TriggerPattern::Visit {},
+                Effect::ClaimPrize { who: Ref::You },
+            ))
+            .with_rules(triggered(
+                mtg_cards::trigger::TriggerPattern::Prize {},
+                Effect::Draw {
+                    who: Ref::You,
+                    count: Amount::one(),
+                    bind: None,
+                },
+            )),
+    )
+}
+
+/// A 1/1 creature with "Whenever you visit an Attraction, you gain 1 life." and "Whenever you claim the prize of an
+/// Attraction, you gain 2 life."
+pub fn un34_fan(name: &str) -> Arc<CardDefinition> {
+    let gain = |when, amount| Ability::Triggered {
+        when,
+        intervening_if: None,
+        limit: None,
+        from: mtg_cards::refs::ZoneKind::Battlefield,
+        targets: Vec::new(),
+        effects: vec![Effect::GainLife {
+            who: Ref::You,
+            amount: Amount::Fixed(amount),
+        }],
+    };
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(gain(
+                mtg_cards::trigger::TriggerPattern::VisitedAttraction { who: Ref::You },
+                1,
+            ))
+            .with_rules(gain(
+                mtg_cards::trigger::TriggerPattern::ClaimedPrize { who: Ref::You },
+                2,
+            )),
+    )
+}
+
 /// A sorcery for `{generic}{U}` with "Surveil `count`."
 pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     Arc::new(

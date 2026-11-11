@@ -774,6 +774,25 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::un33_attractions::fold_rolled(state, *player, visited);
             Ok(())
         }
+        Event::PrizeClaimed { .. } => Ok(()),
+        Event::StickerSheetsChosen { player, sheets } => {
+            state.rng_index += 1;
+            crate::un34_stickers::fold_chosen(state, *player, sheets)
+        }
+        Event::StickerPut {
+            player,
+            object,
+            sheet,
+            sticker,
+        } => crate::un34_stickers::fold_put(
+            state,
+            crate::un34_stickers::StickerAt {
+                player: *player,
+                sheet: *sheet,
+                sticker: *sticker,
+            },
+            *object,
+        ),
         Event::InitiativeTaken { player, object } => {
             crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
         }

@@ -2236,7 +2236,8 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::DayNightChanges { .. }
             | TriggerPattern::DoorUnlocked { .. }
-            | TriggerPattern::Visit {} => {}
+            | TriggerPattern::Visit {}
+            | TriggerPattern::Prize {} => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -2249,6 +2250,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
             | TriggerPattern::RolledToVisit { who }
+            | TriggerPattern::VisitedAttraction { who }
+            | TriggerPattern::ClaimedPrize { who }
             | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
@@ -2391,6 +2394,9 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Ventured { .. }
                 | TriggerPattern::Visit {}
                 | TriggerPattern::RolledToVisit { .. }
+                | TriggerPattern::VisitedAttraction { .. }
+                | TriggerPattern::Prize {}
+                | TriggerPattern::ClaimedPrize { .. }
                 | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DoorUnlocked { .. }
@@ -3309,6 +3315,10 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::PutSticker { who, on } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("on", |w| w.selector(on));
+            }
             Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -3484,6 +3494,7 @@ impl Walker<'_> {
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
             | Effect::RollToVisit { who }
+            | Effect::ClaimPrize { who }
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
@@ -4342,6 +4353,24 @@ impl Walker<'_> {
 
     // One arm for each kind of ability.
     #[allow(clippy::too_many_lines)]
+    /// A sticker of a sheet: a name sticker has words, and an ability sticker an ability that is checked as any other.
+    fn sticker(&mut self, sticker: &crate::ability::Sticker) {
+        match sticker {
+            crate::ability::Sticker::Name { words, .. } => {
+                if words.trim().is_empty() {
+                    self.problem("a name sticker needs words");
+                }
+            }
+            crate::ability::Sticker::Ability { ability, .. } => {
+                if matches!(**ability, Ability::Sticker(_) | Ability::Manual { .. }) {
+                    self.problem("an ability sticker carries an ability the engine runs");
+                }
+                self.at("ability", |w| w.ability(ability));
+            }
+            crate::ability::Sticker::PowerToughness { .. } | crate::ability::Sticker::Art {} => {}
+        }
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -4437,6 +4466,7 @@ impl Walker<'_> {
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
             Ability::OpeningHand => {}
+            Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {

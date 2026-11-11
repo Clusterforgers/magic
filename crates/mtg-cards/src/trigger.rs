@@ -424,6 +424,29 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player visits an Attraction ("whenever you visit an Attraction"): once for each Attraction a roll to visit
+    /// visits; `Triggering` is that player.
+    VisitedAttraction {
+        /// Who visits it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// The prize ability of an Attraction ("Prize — "): its controller claims the prize of the source; `Triggering` is
+    /// that player.
+    Prize {},
+    /// A player claims the prize of an Attraction ("whenever you claim the prize of an Attraction"); `Triggering` is
+    /// that player.
+    ClaimedPrize {
+        /// Who claims it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player opens an Attraction ("whenever you open an Attraction", CR 701.51c); `Triggering` is that player.
     OpenedAttraction {
         /// Who opens it.

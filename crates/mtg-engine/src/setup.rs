@@ -95,6 +95,9 @@ pub struct PlayerSetup {
     /// The seat's Attraction deck (CR 717.2), top card first: cards outside its deck that begin the game face down in
     /// its command zone.
     pub attractions: Vec<crate::un33_attractions::AttractionCard>,
+    /// The seat's sticker sheets (CR 123): outside the game; it plays with three of them, chosen at random as the game
+    /// begins.
+    pub stickers: Vec<Arc<CardDefinition>>,
 }
 
 /// Where the game starts.
@@ -183,6 +186,15 @@ impl GameSetup {
     ) -> Self {
         for (player, deck) in self.players.iter_mut().zip(decks) {
             player.attractions = deck;
+        }
+        self
+    }
+
+    /// The setup with these sticker sheets, one entry for each seat in table order.
+    #[must_use]
+    pub fn with_stickers(mut self, sheets: Vec<Vec<Arc<CardDefinition>>>) -> Self {
+        for (player, sheets) in self.players.iter_mut().zip(sheets) {
+            player.stickers = sheets;
         }
         self
     }
@@ -402,6 +414,7 @@ impl GameState {
         let mut presets = Vec::new();
         let mut commander_ids = Vec::new();
         let mut un33 = crate::un33_attractions::Attractions::default();
+        let mut un34 = crate::un34_stickers::Stickers::default();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
@@ -427,6 +440,7 @@ impl GameState {
                 let id = create(owner, &attraction.card, Zone::Command(owner));
                 un33.add(owner, id, attraction.lights);
             }
+            un34.bring(owner, setup_player.stickers.clone());
             let status = match setup.start {
                 Start::Mulligan => MulliganStatus::NeedsHand,
                 Start::At { .. } => MulliganStatus::Kept,
@@ -546,6 +560,7 @@ impl GameState {
             ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
             un33,
+            un34,
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
             companions,

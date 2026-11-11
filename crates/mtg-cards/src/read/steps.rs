@@ -26,6 +26,7 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::InstantActivation { .. } => "activation timing".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
         Ability::OpeningHand | Ability::OpeningReveal { .. } => "opening-hand ability".to_owned(),
+        Ability::Sticker(_) => "sticker".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
     }
@@ -287,6 +288,26 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             depth,
             "may begin the game on the battlefield if in the opening hand".to_owned(),
         )),
+        Ability::Sticker(sticker) => {
+            let tickets = match sticker.tickets() {
+                0 => String::new(),
+                count => format!(" for {count} tickets"),
+            };
+            let what = match sticker {
+                crate::ability::Sticker::Name { words, .. } => {
+                    format!("the name gains \"{words}\"")
+                }
+                crate::ability::Sticker::Ability { .. } => "the permanent has this ability".to_owned(),
+                crate::ability::Sticker::PowerToughness {
+                    power, toughness, ..
+                } => format!("the power and toughness become {power}/{toughness}"),
+                crate::ability::Sticker::Art {} => "an art sticker".to_owned(),
+            };
+            out.push(Step::new(depth, format!("sticker{tickets}: {what}")));
+            if let crate::ability::Sticker::Ability { ability, .. } = sticker {
+                ability_into(ability, depth.saturating_add(1), out);
+            }
+        }
         Ability::OpeningReveal {
             when,
             effects: list,

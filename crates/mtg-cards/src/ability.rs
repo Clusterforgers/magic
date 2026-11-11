@@ -143,6 +143,52 @@ const fn is_false(flag: &bool) -> bool {
     !*flag
 }
 
+/// A sticker of a sticker sheet (CR 123) and the tickets it costs to put on a permanent.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum Sticker {
+    /// A name sticker: the permanent's name gains these words (a text change of its name, layer 3).
+    Name {
+        /// The words on the sticker.
+        words: String,
+        /// The ticket cost.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        tickets: u32,
+    },
+    /// An ability sticker: the permanent has the ability (layer 6).
+    Ability {
+        /// The ability.
+        ability: Box<Ability>,
+        /// The ticket cost.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        tickets: u32,
+    },
+    /// A power/toughness sticker: the permanent's power and toughness become these (layer 7b).
+    PowerToughness {
+        /// The power.
+        power: i32,
+        /// The toughness.
+        toughness: i32,
+        /// The ticket cost.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        tickets: u32,
+    },
+    /// An art sticker: it changes no characteristic.
+    Art {},
+}
+
+impl Sticker {
+    /// The tickets it costs to put on a permanent.
+    pub const fn tickets(&self) -> u32 {
+        match self {
+            Sticker::Name { tickets, .. }
+            | Sticker::Ability { tickets, .. }
+            | Sticker::PowerToughness { tickets, .. } => *tickets,
+            Sticker::Art {} => 0,
+        }
+    }
+}
+
 /// One ability of a card face.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -358,6 +404,9 @@ pub enum Ability {
         /// What it does.
         effects: Vec<Effect>,
     },
+    /// One sticker of a sticker sheet (CR 123): a sheet's rules list its stickers, which do nothing until a player puts
+    /// one on a permanent (`Effect::PutSticker`).
+    Sticker(Sticker),
     /// A keyword ability; the engine knows what it does.
     Keyword(Keyword),
     /// A clause of the oracle text the data does not model; the table resolves it by hand.

@@ -158,6 +158,7 @@ mod turn_log;
 mod turn_log_tests;
 mod turn_summary;
 pub mod un33_attractions;
+pub mod un34_stickers;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
 pub mod w17b_statics;

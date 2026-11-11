@@ -985,13 +985,18 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             effects,
         } => chapter_texts(*number, targets, effects),
         Ability::Triggered {
-            when: TriggerPattern::Visit {},
+            when: when @ (TriggerPattern::Visit {} | TriggerPattern::Prize {}),
             intervening_if: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets,
             effects,
         } => super::un33_attractions::un33_visit_texts(
+            if matches!(when, TriggerPattern::Visit {}) {
+                super::un33_attractions::VISIT
+            } else {
+                super::un33_attractions::PRIZE
+            },
             &alternatives(targets, effects)
                 .iter()
                 .map(|sentences| spell(sentences))
@@ -3165,9 +3170,10 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
-            Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
-                super::un33_attractions::un33_effect_text(effect)?
-            }
+            Effect::OpenAttraction { .. }
+            | Effect::RollToVisit { .. }
+            | Effect::ClaimPrize { .. } => super::un33_attractions::un33_effect_text(effect)?,
+            Effect::PutSticker { who, on } => super::un34_stickers::un34_put_text(who, on)?,
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

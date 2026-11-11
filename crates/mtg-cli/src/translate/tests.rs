@@ -726,6 +726,7 @@ mod r2c;
 mod r3c;
 mod r4f;
 mod un33_attractions;
+mod un34_stickers;
 #[rstest]
 #[case::if_tapped_on_activation(
     "Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 0 | IsPresent$ Card.Self+tapped\n",

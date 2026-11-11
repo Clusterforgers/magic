@@ -617,6 +617,7 @@ mod typecycling;
 mod umbra_armor;
 mod umbra_fuzz;
 mod un33_attractions;
+mod un34_stickers;
 mod undaunted;
 mod unearth;
 mod unplayable;
