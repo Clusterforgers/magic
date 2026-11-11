@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8b4715b0-63d9-4ff8-a667-21a762518687",
+  "name": "Sutured Ghoul",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sutured Ghoul",
+      "oracle_fingerprint": "7854bf66b5c47bb847cb5e9d86885475",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 8, "end": 88 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 89, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

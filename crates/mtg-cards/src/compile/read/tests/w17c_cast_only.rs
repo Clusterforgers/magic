@@ -10,6 +10,10 @@ use super::*;
     "Cast this spell only during combat on an opponent's turn.",
     r#"{"CastOnly":{"condition":{"All":["InCombat",{"Not":"YourTurn"}]}}}"#
 )]
+#[case::after_an_opponents_upkeep(
+    "Cast this spell only during an opponent's turn after their upkeep step.",
+    r#"{"CastOnly":{"condition":{"All":[{"Not":"YourTurn"},{"Not":{"Step":"Untap"}},{"Not":{"Step":"Upkeep"}}]}}}"#
+)]
 fn w17c_a_casting_restriction_reads_and_is_written_back(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Static, false, json);
 }
@@ -17,6 +21,9 @@ fn w17c_a_casting_restriction_reads_and_is_written_back(#[case] text: &str, #[ca
 #[rstest]
 #[case::another_moment("Cast this spell only during an opponent's end step.")]
 #[case::another_verb("Activate this spell only during combat.")]
+#[case::before_their_upkeep(
+    "Cast this spell only during an opponent's turn before their upkeep step."
+)]
 #[case::no_moment("Cast this spell only.")]
 fn w17c_near_misses_stay_with_the_table(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");

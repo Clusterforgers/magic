@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "ceef2761-7301-42de-8f54-49b8cd1e457b",
+  "oracle_id": "f944c245-08ff-41a8-bdfc-7d21a6a63eae",
+  "multiverse_ids": [
+    26447
+  ],
+  "mtgo_id": 16082,
+  "mtgo_foil_id": 16083,
+  "tcgplayer_id": 7969,
+  "cardmarket_id": 3175,
+  "name": "Illuminate",
+  "lang": "en",
+  "released_at": "2001-06-04",
+  "uri": "https://api.scryfall.com/cards/ceef2761-7301-42de-8f54-49b8cd1e457b",
+  "scryfall_uri": "https://scryfall.com/card/apc/63/illuminate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:22:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343",
+    "large": "https://cards.scryfall.io/large/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343",
+    "png": "https://cards.scryfall.io/png/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.png?1783945343",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.webp?1783945343",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.webp?1783945343",
+    "display": "https://cards.scryfall.io/display/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.webp?1783945343",
+    "art": "https://cards.scryfall.io/art/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.webp?1783945343",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.webp?1783945343",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ceef2761-7301-42de-8f54-49b8cd1e457b.jpg?1783945343"
+  },
+  "mana_cost": "{X}{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Kicker {2}{R} and/or {3}{U} (You may pay an additional {2}{R} and/or {3}{U} as you cast this spell.)\nIlluminate deals X damage to target creature. If this spell was kicked with its {2}{R} kicker, it deals X damage to that creature's controller. If this spell was kicked with its {3}{U} kicker, you draw X cards.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Kicker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set": "apc",
+  "set_name": "Apocalypse",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aapc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/apc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ceef2761-7301-42de-8f54-49b8cd1e457b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af944c245-08ff-41a8-bdfc-7d21a6a63eae&unique=prints",
+  "collector_number": "63",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "93e5a43a-8790-4747-9616-8f209141489c",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28681,
+  "penny_rank": 15959,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.94",
+    "usd_etched": null,
+    "eur": "0.48",
+    "eur_foil": "1.14",
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=26447&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIlluminate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIlluminate",
+    "edhrec": "https://edhrec.com/route/?cc=Illuminate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7969%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3175&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16082?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

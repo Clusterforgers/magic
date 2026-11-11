@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fc638800-6aec-4a48-ad2c-c9a5ce93c236",
+  "name": "Tainted Specter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tainted Specter",
+      "oracle_fingerprint": "9644da18b65fb1974e988481092f1375",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 7, "end": 248 }
+          }
+        }
+      ]
+    }
+  ]
+}

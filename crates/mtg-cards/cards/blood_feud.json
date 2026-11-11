@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fc401d42-80fa-4a17-937a-c230e9317543",
+  "name": "Blood Feud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Feud",
+      "oracle_fingerprint": "313ce977fec7a4fdae355d50ee5c2d65",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

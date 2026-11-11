@@ -1086,6 +1086,7 @@ impl<'a> Walker<'a> {
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1906,6 +1907,31 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The keywords `keyword` leaves out.
+    fn later_keyword(&mut self, keyword: &Keyword) {
+        if let Keyword::Cleave { cost, spell } = keyword {
+            self.cleave(cost, spell);
+        }
+    }
+
+    /// Only mana is paid for a cleave cost; the cleaved spell is walked as the spell it is when cast that way.
+    fn cleave(&mut self, cost: &Cost, spell: &Ability) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+        match spell {
+            Ability::Spell { targets, effects } => {
+                // A cleave cost with {X} gives the cleaved spell its X.
+                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
+                let free = self.x_free;
+                self.x_free |= cost.has_x();
+                self.at("spell", |w| w.body(targets, effects, false));
+                self.x_now = saved;
+                self.x_free = free;
+            }
+            _ => self.problem("the cleaved spell is a Spell ability"),
+        }
+    }
+
     #[allow(clippy::too_many_lines)]
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
@@ -1977,6 +2003,7 @@ impl<'a> Walker<'a> {
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
+            // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
@@ -2015,7 +2042,7 @@ impl<'a> Walker<'a> {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
             }
-            _ => {}
+            _ => self.later_keyword(keyword),
         }
     }
 

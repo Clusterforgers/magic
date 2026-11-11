@@ -1,0 +1,61 @@
+{
+  "oracle_id": "06a1c404-d76f-4206-8740-7ad7488fac33",
+  "name": "Lantern Flare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lantern Flare",
+      "oracle_fingerprint": "314c61290e4cfcc0865cf59ead9c91b9",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{X}{W}{R}",
+              "spell": {
+                "Spell": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+                    { "GainLife": { "amount": "X" } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

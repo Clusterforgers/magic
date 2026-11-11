@@ -53,7 +53,8 @@ impl XCost {
                 if card.x_in_cost == 0 && required::counts_x(card) {
                     return Some(XCost::Parts);
                 }
-                u32::from(card.x_in_cost)
+                // A cleave cost may hold an `{X}` the mana cost lacks.
+                u32::from(card.x_in_cost).max(ways::alternative_x(state, *spell, CastWay::Cleave))
             }
             What::Ability(ability) => match rules? {
                 activated @ Ability::Activated { cost, .. } => {
@@ -99,6 +100,20 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if work.choices.way.is_some_and(CastWay::replaces_cost)
         && ctx.needs.x != Some(XCost::Parts)
         && alternative_symbols(ctx, work.choices.way) == Some(0)
+    {
+        work.choices.x = Some(0);
+        work.done.x = true;
+        return None;
+    }
+    // The mana cost of a spell whose X only its cleave cost holds has none (CR 107.3b).
+    if !work.choices.way.is_some_and(CastWay::replaces_cost)
+        && let What::Spell(spell) = ctx.what
+        && ctx
+            .state
+            .object(*spell)
+            .is_some_and(|card| card.card().x_in_cost == 0)
+        && ways::alternative_x(ctx.state, *spell, CastWay::Cleave) > 0
+        && ctx.needs.x != Some(XCost::Parts)
     {
         work.choices.x = Some(0);
         work.done.x = true;

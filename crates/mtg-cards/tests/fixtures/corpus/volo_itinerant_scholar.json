@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "862b6d5e-548f-4765-9d39-08d6115b4012",
+  "oracle_id": "9b61f5b1-7688-4336-8fe9-66da37a34df9",
+  "multiverse_ids": [
+    562986
+  ],
+  "tcgplayer_id": 272537,
+  "cardmarket_id": 658465,
+  "name": "Volo, Itinerant Scholar",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/862b6d5e-548f-4765-9d39-08d6115b4012",
+  "scryfall_uri": "https://scryfall.com/card/clb/103/volo-itinerant-scholar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772",
+    "normal": "https://cards.scryfall.io/normal/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772",
+    "large": "https://cards.scryfall.io/large/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772",
+    "png": "https://cards.scryfall.io/png/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.png?1783922772",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.webp?1783922772",
+    "grid": "https://cards.scryfall.io/grid/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.webp?1783922772",
+    "display": "https://cards.scryfall.io/display/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.webp?1783922772",
+    "art": "https://cards.scryfall.io/art/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.webp?1783922772",
+    "crop": "https://cards.scryfall.io/crop/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.webp?1783922772",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/6/862b6d5e-548f-4765-9d39-08d6115b4012.jpg?1783922772"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "When Volo enters, create Volo's Journal, a legendary colorless Book artifact token with hexproof and \"Whenever you cast a creature spell, note one of its creature types that hasn't been noted for Volo's Journal.\"\n{2}, {T}: Draw a card for each creature type noted for target permanent you control named Volo's Journal.\nChoose a Background",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Choose a background"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "7f0fe7c9-b0ab-4d48-94d0-99e7bee0c0de",
+      "component": "token",
+      "name": "Volo's Journal",
+      "type_line": "Token Legendary Artifact",
+      "uri": "https://api.scryfall.com/cards/7f0fe7c9-b0ab-4d48-94d0-99e7bee0c0de"
+    },
+    {
+      "object": "related_card",
+      "id": "0f77bd3a-b9a5-4330-9397-3992a28d157e",
+      "component": "combo_piece",
+      "name": "Volo, Itinerant Scholar",
+      "type_line": "Legendary Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/0f77bd3a-b9a5-4330-9397-3992a28d157e"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/862b6d5e-548f-4765-9d39-08d6115b4012/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9b61f5b1-7688-4336-8fe9-66da37a34df9&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andreas Zafiratos",
+  "artist_ids": [
+    "e2f13a9a-57c5-40de-81d4-3b0723899cdf"
+  ],
+  "illustration_id": "79ce8975-a347-48ae-a3a1-f2565208575f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10352,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1486418408",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.41",
+    "usd_foil": "0.72",
+    "usd_etched": null,
+    "eur": "0.45",
+    "eur_foil": "0.87",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562986&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVolo%252C%2BItinerant%2BScholar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVolo%252C%2BItinerant%2BScholar",
+    "edhrec": "https://edhrec.com/route/?cc=Volo%2C+Itinerant+Scholar"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272537%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=658465&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Volo%2C+Itinerant+Scholar&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

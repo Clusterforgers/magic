@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f944c245-08ff-41a8-bdfc-7d21a6a63eae",
+  "name": "Illuminate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Illuminate",
+      "oracle_fingerprint": "287be652f382679dd578aa8d6c730eac",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{R}" } },
+        { "Keyword": { "Kicker": "{3}{U}" } },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 101, "end": 311 }
+          }
+        }
+      ]
+    }
+  ]
+}

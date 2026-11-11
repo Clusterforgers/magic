@@ -197,6 +197,7 @@ mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
 mod return_this_card;
+mod rmt0_hand_size;
 mod rmt1_wholes;
 mod rmt3_wordings;
 mod rmt6_writers;
@@ -830,6 +831,7 @@ fn c4_writers(ability: &Ability, texts: &mut Vec<String>) {
 
 /// The wordings of the modules after `counters_put`, in a function of their own to keep each under the line limit.
 fn add_more(ability: &Ability, texts: &mut Vec<String>) {
+    rmt0_hand_size::add(ability, texts);
     discard_play::add(ability, texts);
     double_counters::add(ability, texts);
     each_of::add(ability, texts);

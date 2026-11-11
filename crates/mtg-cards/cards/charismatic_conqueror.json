@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3dcc35f3-74dc-46a8-8aa9-3411189f0547",
+  "name": "Charismatic Conqueror",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Charismatic Conqueror",
+      "oracle_fingerprint": "dd9fdd7b21dbeefaaaa25a9163a8e6aa",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 10, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

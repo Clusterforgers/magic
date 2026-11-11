@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d2f693d9-f338-41d6-b7e2-ddaa5f4bcc3b",
+  "name": "Lunar Rejection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunar Rejection",
+      "oracle_fingerprint": "133b65682b203b5b6d082e4f1960ba10",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{3}{U}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

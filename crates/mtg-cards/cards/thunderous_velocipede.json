@@ -1,0 +1,21 @@
+{
+  "oracle_id": "899007b5-6a07-4491-9104-bb537106b07d",
+  "name": "Thunderous Velocipede",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thunderous Velocipede",
+      "oracle_fingerprint": "cec8b545ba94228af41273264dcf9e15",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 8, "end": 194 }
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

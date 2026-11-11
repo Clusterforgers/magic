@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5ea0c608-2c56-4889-a5d3-d435df515950",
+  "name": "Naya Soulbeast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Naya Soulbeast",
+      "oracle_fingerprint": "2aa187b366dcb59d4bfddaf534582a3d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 190 }
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

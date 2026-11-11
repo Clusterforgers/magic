@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fa53cc50-f06f-44b0-850f-cfa6e0caa4c5",
+  "name": "Cemetery Prowler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cemetery Prowler",
+      "oracle_fingerprint": "a543267ca4eef788c3aded2ec8119a2e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 10, "end": 82 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 83, "end": 188 }
+          }
+        }
+      ]
+    }
+  ]
+}

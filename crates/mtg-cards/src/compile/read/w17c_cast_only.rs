@@ -3,10 +3,11 @@
 
 use super::Reader;
 use crate::ability::Ability;
+use crate::trigger::Step;
 use crate::value::Condition;
 
 /// The moments a spell may be cast in, each with its wording after "only".
-fn w17c_moments() -> [(Condition, &'static str); 4] {
+fn w17c_moments() -> [(Condition, &'static str); 5] {
     [
         (
             Condition::AfterBlockers,
@@ -15,6 +16,14 @@ fn w17c_moments() -> [(Condition, &'static str); 4] {
         (
             Condition::Step(crate::trigger::Step::DeclareBlockers),
             "during the declare blockers step",
+        ),
+        (
+            Condition::All(vec![
+                Condition::Not(Box::new(Condition::YourTurn)),
+                Condition::Not(Box::new(Condition::Step(Step::Untap))),
+                Condition::Not(Box::new(Condition::Step(Step::Upkeep))),
+            ]),
+            "during an opponent's turn after their upkeep step",
         ),
         (
             Condition::All(vec![

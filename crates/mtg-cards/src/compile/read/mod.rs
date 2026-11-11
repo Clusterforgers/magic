@@ -192,6 +192,10 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+mod rmt0_chroma;
+mod rmt0_hand_pick;
+mod rmt0_kinds;
+mod rmt0_x_is;
 mod rmt4_untap_limit;
 mod rmt4_wordings;
 pub(crate) mod rmt7_atoms;
@@ -448,6 +452,15 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if kind == ClauseKind::Spell
+        && let Some(joined) = rmt0_x_is::rmt0_joined(text)
+    {
+        let ability = clause_with(&joined, kind, x_free, own)?;
+        return render::variants(&ability)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(ability);
+    }
     if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
         let inner = classify::classify(granted, false);
         if kind != ClauseKind::Static {

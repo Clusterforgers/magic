@@ -1,0 +1,30 @@
+{
+  "oracle_id": "717266b6-2bbc-4a04-8f30-e3eaf0283acd",
+  "name": "Dissension in the Ranks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dissension in the Ranks",
+      "oracle_fingerprint": "25ba0db350b1af2cfccd6b18ce6bc3e1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Blocking"] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Blocking",
+                    { "Not": { "Is": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

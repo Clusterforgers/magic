@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a08393b5-603b-41c4-aa03-2ae9c74884a7",
+  "name": "Rampant Frogantua",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rampant Frogantua",
+      "oracle_fingerprint": "916530462e749bbc26a0709cf86686a4",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 8, "end": 73 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 74, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -170,6 +170,7 @@ Blessed Breath
 Blight Mamba
 Blight Pile
 Blightwidow
+Blood Feud
 Blood Moon
 Blood Reckoning
 Blood Seeker
@@ -201,6 +202,7 @@ Bosh, Iron Golem
 Bounty of Skemfar
 Brain Freeze
 Brainstorm
+Bramble Elemental
 Branchblight Stalker
 Brave the Sands
 Breath of Life
@@ -340,6 +342,7 @@ Crack in Time
 Cram Session
 Crash
 Crawlspace
+Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
 Crocanura
@@ -379,6 +382,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Damocles Base, Sword of Kang
 Dampen Thought
 Damping Field
 Danny Pink
@@ -440,6 +444,7 @@ Disembowel
 Dismantling Blow
 Dismantling Wave
 Disrupt Decorum
+Dissension in the Ranks
 Distorting Wake
 Divine Visitation
 Diviner Spirit
@@ -457,11 +462,13 @@ Doublecast
 Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
+Dragon Grip
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dread Fugue
 Dreadship Reef
 Dream Chisel
 Dream Eater
@@ -540,6 +547,7 @@ Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Erhnam Djinn
 Eris, Roar of the Storm
+Essence Bottle
 Etched Oracle
 Eternal Dragon
 Eternal Witness
@@ -719,6 +727,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
@@ -946,6 +955,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Lantern Flare
 Lash Out
 Lat-Nam Adept
 Latchkey Faerie
@@ -1002,6 +1012,7 @@ Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
+Lunar Rejection
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
@@ -1110,6 +1121,7 @@ Mother of Runes
 Muddle the Mixture
 Mukotai Ambusher
 Mulldrifter
+Multani, Maro-Sorcerer
 Mungha Wurm
 Murderous Cut
 Murmuring Bosk
@@ -1351,6 +1363,7 @@ Renewed Faith
 Replication Technique
 Rescue Retriever
 Rescue Skiff
+Reset
 Reshape
 Resplendent Angel
 Restoration Seminar
@@ -1575,6 +1588,7 @@ Spire Winder
 Spirit Bonds
 Spirit of the Hearth
 Spiritual Visit
+Spiteful Visions
 Splicer's Skill
 Spoils of Adventure
 Spore Burst
@@ -1901,6 +1915,7 @@ Warchief Giant
 Wargate
 Warmonger Hellkite
 Warrior's Sword
+Wash Away
 Wasteland Raider
 Wastescape Battlemage
 Weaponcraft Enthusiast

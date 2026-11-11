@@ -1,0 +1,52 @@
+{
+  "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
+  "name": "The Legend of Yangchen // Avatar Yangchen",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Legend of Yangchen",
+      "oracle_fingerprint": "3ca1a0b09e610d466280046d8f2fd904",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 68, "end": 229 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 230, "end": 310 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Avatar Yangchen",
+      "oracle_fingerprint": "5c1ce56c0c321e76e74e7526c09418fd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 191 }
+          }
+        }
+      ]
+    }
+  ]
+}

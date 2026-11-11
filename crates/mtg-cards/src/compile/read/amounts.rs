@@ -326,6 +326,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         }
         Amount::PhasedOut(_) => super::w11b_phase::w11b_phased_each_text(counted)?,
         Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(counted, false)?,
+        Amount::ManaSymbols { .. } => super::rmt0_chroma::each_text(counted)?,
         _ => return None,
     })
 }

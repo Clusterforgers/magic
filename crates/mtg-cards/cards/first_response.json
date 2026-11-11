@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0fe66bc0-8eda-4625-a068-6a5de826466f",
+  "name": "First Response",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Response",
+      "oracle_fingerprint": "d9f4d516b4b4380b6a0c89ff85b124ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "TalliedLastTurn": { "who": "You", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

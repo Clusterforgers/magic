@@ -227,6 +227,23 @@ fn is_cleave(shown: &PrintedFace) -> bool {
         .any(|line| line.starts_with("Cleave "))
 }
 
+/// The spell lines of a cleave face as they read without the words in square brackets, its names as `~`; none for a face
+/// without cleave.
+pub(crate) fn cleaved_lines(shown: &PrintedFace) -> Vec<String> {
+    if !is_cleave(shown) {
+        return Vec::new();
+    }
+    let cleaved = normalize::normalize(
+        &normalize::without_bracketed(&shown.oracle_text),
+        &own_names(shown),
+    );
+    clauses::split(&cleaved)
+        .into_iter()
+        .map(|raw| cleaved.slice(raw.range))
+        .filter(|line| classify::classify(line, true) == ClauseKind::Spell)
+        .collect()
+}
+
 /// Gives the cleave keyword the spell ability as it reads without the words in square brackets; a card whose cleaved text
 /// does not read leaves the keyword to the table.
 fn fill_cleave(pending: &mut [Pending], shown: &PrintedFace, x_free: bool, own: &read::Own) {
@@ -238,15 +255,7 @@ fn fill_cleave(pending: &mut [Pending], shown: &PrintedFace, x_free: bool, own: 
     }) else {
         return;
     };
-    let cleaved = normalize::normalize(
-        &normalize::without_bracketed(&shown.oracle_text),
-        &own_names(shown),
-    );
-    let lines: Vec<String> = clauses::split(&cleaved)
-        .into_iter()
-        .map(|raw| cleaved.slice(raw.range))
-        .filter(|line| classify::classify(line, true) == ClauseKind::Spell)
-        .collect();
+    let lines = cleaved_lines(shown);
     let x_free = x_free || shown.oracle_text.contains("Cleave {X}");
     let read = (!lines.is_empty())
         .then(|| read::clause_with(&lines.join("\n"), ClauseKind::Spell, x_free, own))

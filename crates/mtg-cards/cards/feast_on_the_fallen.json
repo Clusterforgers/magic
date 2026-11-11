@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ce9afd9-0c96-42a2-a534-d92ae04f0151",
+  "name": "Feast on the Fallen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast on the Fallen",
+      "oracle_fingerprint": "fd29c39ca91775e416cbe35881b436b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "TalliedLastTurn": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

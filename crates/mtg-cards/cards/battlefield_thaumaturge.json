@@ -1,0 +1,33 @@
+{
+  "oracle_id": "70d2f5f7-f727-48e1-9532-8d365b1c1ae5",
+  "name": "Battlefield Thaumaturge",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Battlefield Thaumaturge",
+      "oracle_fingerprint": "6ecd06898a122486244f798560611803",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 92 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "812df594-75af-494f-be09-5f9633aca46a",
+  "name": "Deepway Navigator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deepway Navigator",
+      "oracle_fingerprint": "60f09817743222a79f448a18ea295a9a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 6, "end": 70 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 71, "end": 163 }
+          }
+        }
+      ]
+    }
+  ]
+}

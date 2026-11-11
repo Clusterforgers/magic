@@ -791,6 +791,8 @@ mod r4i_or_controller;
 mod r5e_done_once;
 mod ri23_asking_instead;
 mod ring;
+mod rmt0_chroma;
+mod rmt0_hand_pick;
 mod rmt3_enters;
 mod rmt3_skips;
 mod rmt4_each_opponent_tokens;

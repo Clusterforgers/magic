@@ -616,6 +616,20 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
+    // "enchantment card that isn't a God": a subtype it doesn't have.
+    if !form.plural()
+        && let Some(name) = r.attempt(|r| {
+            r.need("that isn't")?;
+            (r.word("a") || r.word("an")).then_some(())?;
+            group_name(r).filter(|name| r.is_subtype(name))
+        })
+    {
+        return Some(not(Pred::Subtype(Subtype(name))));
+    }
+    // A card in a hand is in its owner's hand, so the spell was not cast from a hand (CR 400.3).
+    if form == Form::Target && r.words("that wasn't cast from its owner's hand") {
+        return Some(not(Pred::CastFrom(ZoneKind::Hand)));
+    }
     if r.words("you don't control") {
         return Some(not(Pred::ControlledBy(Ref::You)));
     }
@@ -800,6 +814,9 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         Pred::HasAnyCounter => "with a counter on it".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
+            Pred::CastFrom(ZoneKind::Hand) if form == Form::Target => {
+                "that wasn't cast from its owner's hand".to_owned()
+            }
             Pred::CastFrom(ZoneKind::Hand) => "from anywhere other than your hand".to_owned(),
             Pred::EnteredThisTurn => "that didn't enter this turn".to_owned(),
             _ => {
@@ -1070,7 +1087,7 @@ const OTHER_GRAVEYARDS: [(&str, Option<Ref>); 4] = [
 ];
 
 /// The subtypes before "spell" in the singular: "Merfolk spell", "Vampire creature spell", "Faerie or Wizard permanent
-/// spell" (several are an `AnyOf`).
+/// spell" (several are an `AnyOf`); several also before one card type ("Wolf or Werewolf creature").
 fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
     r.attempt(|r| {
         let one = |r: &mut Reader<'_>| {
@@ -1083,15 +1100,19 @@ fn spell_subtypes(r: &mut Reader<'_>) -> Option<Pred> {
             r.word("or");
             found.push(one(r)?);
         }
+        let several = found.len() > 1;
         r.lookahead(|r| {
+            let mut typed = 0;
             while r.peek_word() == Some("permanent")
                 || r.peek_word()
                     .and_then(type_noun)
                     .is_some_and(|(_, plural)| !plural)
             {
+                typed += usize::from(r.peek_word() != Some("permanent"));
                 r.skip();
             }
-            (r.word("spell") || r.word("card")).then_some(())
+            // "Wolf or Werewolf creature": several subtypes before one card type.
+            (r.word("spell") || r.word("card") || (several && typed == 1)).then_some(())
         })?;
         Some(if found.len() == 1 {
             found.remove(0)
@@ -1513,9 +1534,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     // A subtype is the noun by itself, or qualifies a plural noun ("Sliver creatures"); a spell is not a card in a zone.
     let qualified = ((plural || spell) && !card && (spell || !types.is_empty() || token))
         || (!plural && !spell && !card && !token && !types.is_empty());
-    // Several subtypes are only for a spell ("Faerie or Wizard permanent spell").
+    // Several subtypes are only for a spell ("Faerie or Wizard permanent spell") or before one card type in the singular
+    // ("Wolf or Werewolf creature").
+    let one_type = !plural && !token && types.len() == 1 && kinds.is_empty();
     if (!subtypes.is_empty() && !types.is_empty() && !qualified && !card)
-        || (subtypes.len() > 1 && !spell && !card && (qualified || !types.is_empty()))
+        || (subtypes.len() > 1 && !spell && !card && !one_type && (qualified || !types.is_empty()))
         || (spell && card)
         || (token && (spell || card))
         || (commander && (spell || card || token || !subtypes.is_empty()))

@@ -462,6 +462,7 @@ const RUNS: &[&str] = &[
     "Mod.AddColors",
     "Mod.SetColorsChosen",
     "Mod.SetLandTypesChosen",
+    "Mod.ChangeTextChosen",
     "Mod.SetCreatureTypesChosen",
     "Mod.ChangeTextChosen",
     "Mod.AddChosenSubtype",

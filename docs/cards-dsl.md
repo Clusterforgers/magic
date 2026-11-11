@@ -222,6 +222,7 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Storied | `Keyword::Storied` gives its controller an enduring story, a designation kept for the rest of the game, once they control three or more artifacts, legendaries and/or Sagas, checked with the state-based actions as ascend gives the city's blessing (`rmt6_storied.rs`); `Condition::EnduringStory` reads it. |
 | Draft rules | `GameRule::Draft(DraftRule)` holds a rule that works only during a booster draft ("Draft ~ face up."); no game has a draft, so it changes nothing in a game and is written without `from`, as `AnyNumberInDeck` is. |
 | Siege | A Battle with the subtype Siege has two rules by that subtype (`assemble::siege_rules`, CR 310.11), which no rules file repeats. |
+| Cleave | `Cleave { cost, spell }`: the keyword carries the `Spell` ability as it reads without the words in square brackets, which a spell cast for the cleave cost announces and resolves (CR 702.148); an `{X}` of the cleave cost is announced for that cast only. The compiler reads the spell with the brackets dropped and the keyword's spell without the bracketed words; the read back checks each against that text. |
 
 ## Validation
 

@@ -358,14 +358,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
                 ResolveError::Invalid("a change of control names no player".into())
             })?)
         }
-        Wanted::AddProtectionFromChosenColor => {
+        Wanted::AddProtectionFromChosenColor | Wanted::AddProtectionFromChosenCardType => {
             return Err(ResolveError::Unsupported(
-                "Mod.AddProtectionFromChosenColor outside an effect",
-            ));
-        }
-        Wanted::AddProtectionFromChosenCardType => {
-            return Err(ResolveError::Unsupported(
-                "Mod.AddProtectionFromChosenCardType outside an effect",
+                "Mod.AddProtectionFromChosen outside an effect",
             ));
         }
         Wanted::CantAttack => Modification::CantAttack,

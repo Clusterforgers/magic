@@ -485,6 +485,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
+        CostItem::Waterbend(generic) => format!("Waterbend {{{generic}}}"),
         CostItem::ExileFromGraveyard {
             filter,
             count,
