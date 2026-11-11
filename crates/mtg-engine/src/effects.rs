@@ -122,6 +122,8 @@ pub enum Modification {
     AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// Adds words to the name, as a name sticker does (layer 3, a text change of the name).
+    AddNameWords(String),
     /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
     GrantText(String),
     /// Adds colours to the ones it has (layer 5).
@@ -241,7 +243,7 @@ impl Modification {
     pub const fn layer(&self) -> Option<Layer> {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
-            Modification::ChangeText { .. } => Layer::Text,
+            Modification::ChangeText { .. } | Modification::AddNameWords(_) => Layer::Text,
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -283,6 +285,7 @@ impl Modification {
 
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
         match self {
+            Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
             Modification::SetTypes(types) => {

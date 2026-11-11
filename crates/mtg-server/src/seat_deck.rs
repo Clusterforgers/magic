@@ -32,6 +32,7 @@ pub struct ChosenDeck {
     commanders: Arc<[Arc<CardDefinition>]>,
     companion: Option<Arc<CardDefinition>>,
     attractions: Arc<[AttractionCard]>,
+    stickers: Arc<[Arc<CardDefinition>]>,
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
@@ -50,6 +51,7 @@ impl ChosenDeck {
             commanders: Arc::from([]),
             companion: None,
             attractions: Arc::from([]),
+            stickers: Arc::from([]),
             deck: DeckRef::Demo {
                 id: deck.id.to_owned(),
             },
@@ -80,6 +82,7 @@ impl ChosenDeck {
             commanders: Arc::from([commander]),
             companion: None,
             attractions: Arc::from([]),
+            stickers: Arc::from([]),
             deck: DeckRef::Demo {
                 id: demo::commander_stand_in_id(size),
             },
@@ -121,6 +124,7 @@ impl ChosenDeck {
             commanders: commanders.into(),
             companion: None,
             attractions: Arc::from([]),
+            stickers: Arc::from([]),
             deck: DeckRef::Oracle {
                 cards: oracle_ids,
                 commanders: commander_ids,
@@ -128,6 +132,7 @@ impl ChosenDeck {
                 printings: Vec::new(),
                 by_hand: Vec::new(),
                 attractions: Vec::new(),
+                stickers: Vec::new(),
             },
             note,
             own_issues: Arc::from([]),
@@ -252,6 +257,38 @@ impl ChosenDeck {
                 &self.commanders,
                 self.companion.as_ref(),
                 &self.attractions,
+                &self.stickers,
+            )?;
+        }
+        Ok(self)
+    }
+
+    /// The seat's sticker sheets (CR 123); empty for a deck without any.
+    pub fn stickers(&self) -> &[Arc<CardDefinition>] {
+        &self.stickers
+    }
+
+    /// The deck with these sticker sheets: each sheet's oracle id and definition. They are part of the deck's
+    /// fingerprint and the recipe keeps them; a built-in deck has no oracle ids to name them by and stays as it is.
+    pub fn with_stickers(
+        mut self,
+        sheets: Vec<(String, Arc<CardDefinition>)>,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        if sheets.is_empty() {
+            return Ok(self);
+        }
+        if let DeckRef::Oracle { stickers, .. } = &mut self.deck {
+            *stickers = sheets
+                .iter()
+                .map(|(oracle_id, _)| oracle_id.clone())
+                .collect();
+            self.stickers = sheets.into_iter().map(|(_, sheet)| sheet).collect();
+            self.fingerprint = DeckFingerprint::of_seat_all(
+                &self.cards,
+                &self.commanders,
+                self.companion.as_ref(),
+                &self.attractions,
+                &self.stickers,
             )?;
         }
         Ok(self)

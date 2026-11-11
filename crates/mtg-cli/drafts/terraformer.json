@@ -11,7 +11,7 @@
           "Activated": {
             "cost": "{1}",
             "effects": [
-              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              { "ChooseValue": { "kind": "BasicLandType", "as": "chosen" } },
               {
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },

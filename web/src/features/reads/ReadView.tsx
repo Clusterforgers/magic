@@ -464,7 +464,7 @@ export function ReadView({
         </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
-          <div className="hidden gap-2 lg:sticky lg:top-4 lg:grid">
+          <div className="hidden min-w-0 grid-cols-1 gap-2 lg:sticky lg:top-4 lg:grid">
             <ReviewList
               items={items}
               done={done}

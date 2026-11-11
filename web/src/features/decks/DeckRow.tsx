@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
 import { memo } from 'react'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { timeSince } from '@/lib/timeSince'
 import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
@@ -60,13 +60,21 @@ export const DeckRow = memo(function DeckRow({ deck, api, now, onDelete }: DeckR
                 data-commander={card.oracle_id}
                 className="flex min-w-0 items-center gap-2"
               >
-                <CardPicture
+                <HoverPicture
+                  pin
                   oracleId={card.oracle_id}
                   name={card.name}
-                  size="small"
-                  alt=""
-                  className="w-10"
-                />
+                  info={{ typeLine: card.type_line }}
+                  className="shrink-0"
+                >
+                  <CardPicture
+                    oracleId={card.oracle_id}
+                    name={card.name}
+                    size="small"
+                    alt=""
+                    className="w-10"
+                  />
+                </HoverPicture>
                 <span data-slot="card-name" className="min-w-0 text-sm font-medium [overflow-wrap:anywhere]">
                   {card.name}
                 </span>

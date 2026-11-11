@@ -45,10 +45,16 @@ pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
         events.push(Event::LibraryShuffled { player, order });
     }
     // Each Attraction deck is shuffled before the game begins too (CR 103.3a).
-    events.extend(crate::un33_attractions::shuffles(
+    let shuffles = crate::un33_attractions::shuffles(
         state,
         u64::try_from(seats).unwrap_or(u64::MAX).saturating_add(1),
-    ));
+    );
+    // The sticker sheets are chosen with the substreams after them (CR 103.2d).
+    let after = u64::try_from(seats + shuffles.len())
+        .unwrap_or(u64::MAX)
+        .saturating_add(1);
+    events.extend(shuffles);
+    events.extend(crate::un34_stickers::choices(state, after));
     events.push(Event::MulliganPhaseBegan);
     events
 }

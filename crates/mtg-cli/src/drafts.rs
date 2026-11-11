@@ -287,6 +287,9 @@ pub struct DraftCounts {
     pub revived: usize,
     /// Drafts that were stored and current already.
     pub unchanged: usize,
+    /// Drafts stored and current with the same rules whose meta (source, match, `differs` mark, proof) changed, now
+    /// rewritten: the server reads the meta, so a mark added to a draft must reach the database.
+    pub updated: usize,
     /// Stored current drafts the build no longer holds, now retired.
     pub retired: usize,
     /// Drafts of a card that is not stored.
@@ -303,10 +306,11 @@ impl DraftCounts {
     /// The counts as text.
     pub fn render(&self) -> String {
         let mut text = format!(
-            "  drafts: {} in the build: {} new, {} revived, {} unchanged, {} retired\n  not stored: {} no stored card, {} written for another text, {} Verified without them, {} invalid",
+            "  drafts: {} in the build: {} new, {} revived, {} updated, {} unchanged, {} retired\n  not stored: {} no stored card, {} written for another text, {} Verified without them, {} invalid",
             self.embedded,
             self.new,
             self.revived,
+            self.updated,
             self.unchanged,
             self.retired,
             self.no_card,
@@ -416,11 +420,47 @@ pub struct DraftChange {
     pub retire: Vec<DraftKey>,
 }
 
+/// What a stored draft holds besides its key and rules: whether it is retired and its meta.
+#[derive(Debug, Clone, PartialEq, Default)]
+pub struct StoredMeta {
+    /// The draft is retired.
+    pub retired: bool,
+    /// Where the draft came from.
+    pub source: String,
+    /// Its source's Oracle text matched the card's.
+    pub oracle_matches: bool,
+    /// It is marked as reading back as other text.
+    pub differs: bool,
+    /// The proof of a partial draft.
+    pub proof: Option<serde_json::Value>,
+}
+
+impl StoredMeta {
+    /// The meta of a stored draft.
+    pub fn of(draft: &mtg_db::StoredDraft) -> Self {
+        Self {
+            retired: draft.retired,
+            source: draft.source.clone(),
+            oracle_matches: draft.oracle_matches,
+            differs: draft.differs,
+            proof: draft.proof.clone(),
+        }
+    }
+
+    /// Whether the build's draft of the same key carries this meta.
+    fn same_as(&self, draft: &NewDraft) -> bool {
+        self.source == draft.source
+            && self.oracle_matches == draft.oracle_matches
+            && self.differs == draft.differs
+            && self.proof == draft.proof
+    }
+}
+
 /// Sorts the drafts the build holds against the stored ones: `stored` maps each key already stored (retired or not) to
-/// whether it is retired, `current` lists the keys that are not retired. Fills the counts of the sorting.
+/// its meta, `current` lists the keys that are not retired. Fills the counts of the sorting.
 pub fn plan_changes(
     held: Vec<NewDraft>,
-    stored: &BTreeMap<DraftKey, bool>,
+    stored: &BTreeMap<DraftKey, StoredMeta>,
     current: &[DraftKey],
     counts: &mut DraftCounts,
 ) -> DraftChange {
@@ -432,9 +472,13 @@ pub fn plan_changes(
             read_hash: draft.read_hash.clone(),
         };
         match stored.get(&key) {
-            Some(false) => counts.unchanged += 1,
-            Some(true) => {
+            Some(meta) if meta.retired => {
                 counts.revived += 1;
+                change.put.push(draft);
+            }
+            Some(meta) if meta.same_as(&draft) => counts.unchanged += 1,
+            Some(_) => {
+                counts.updated += 1;
                 change.put.push(draft);
             }
             None => {
@@ -490,12 +534,12 @@ pub async fn store_files(
             read_hash: draft.read_hash.clone(),
         })
         .collect();
-    let stored: BTreeMap<DraftKey, bool> = repo
+    let stored: BTreeMap<DraftKey, StoredMeta> = repo
         .get(&keys)
         .await
         .map_err(missing)?
         .iter()
-        .map(|draft| (draft.key(), draft.retired))
+        .map(|draft| (draft.key(), StoredMeta::of(draft)))
         .collect();
     let current: Vec<DraftKey> = repo
         .current()
@@ -511,8 +555,8 @@ pub async fn store_files(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the build's drafts sort against the stored ones into new, revived and unchanged, a stored current draft
-    //! the build lacks is retired, and a card that appears in two ways keeps one draft.
+    //! Goal: the build's drafts sort against the stored ones into new, revived, updated (same rules, changed meta) and
+    //! unchanged, a stored current draft the build lacks is retired, and a card that appears in two ways keeps one draft.
     use rstest::rstest;
     use serde_json::json;
 
@@ -537,29 +581,36 @@ mod tests {
         }
     }
 
-    /// Counts as (new, revived, unchanged, retired) and the keys put and retired.
+    /// Counts as (new, revived, updated, unchanged, retired) and the keys put and retired.
     type Outcome = (
-        (usize, usize, usize, usize),
+        (usize, usize, usize, usize, usize),
         Vec<&'static str>,
         Vec<&'static str>,
     );
 
     #[rstest]
-    #[case::empty(&[], &[], ((0, 0, 0, 0), vec![], vec![]))]
-    #[case::new(&[("a", "h1")], &[], ((1, 0, 0, 0), vec!["h1"], vec![]))]
-    #[case::unchanged(&[("a", "h1")], &[("a", "h1", false)], ((0, 0, 1, 0), vec![], vec![]))]
-    #[case::revived(&[("a", "h1")], &[("a", "h1", true), ("a", "h2", false)], ((0, 1, 0, 1), vec!["h1"], vec!["h2"]))]
-    #[case::replaced(&[("a", "h2")], &[("a", "h1", false)], ((1, 0, 0, 1), vec!["h2"], vec!["h1"]))]
-    #[case::gone(&[], &[("a", "h1", false)], ((0, 0, 0, 1), vec![], vec!["h1"]))]
+    #[case::empty(&[], &[], ((0, 0, 0, 0, 0), vec![], vec![]))]
+    #[case::new(&[("a", "h1")], &[], ((1, 0, 0, 0, 0), vec!["h1"], vec![]))]
+    #[case::unchanged(&[("a", "h1")], &[("a", "h1", false)], ((0, 0, 0, 1, 0), vec![], vec![]))]
+    #[case::revived(&[("a", "h1")], &[("a", "h1", true), ("a", "h2", false)], ((0, 1, 0, 0, 1), vec!["h1"], vec!["h2"]))]
+    #[case::replaced(&[("a", "h2")], &[("a", "h1", false)], ((1, 0, 0, 0, 1), vec!["h2"], vec!["h1"]))]
+    #[case::gone(&[], &[("a", "h1", false)], ((0, 0, 0, 0, 1), vec![], vec!["h1"]))]
     fn the_build_is_sorted_against_the_stored_drafts(
         #[case] held: &[(&str, &str)],
         #[case] stored: &[(&str, &str, bool)],
         #[case] expected: Outcome,
     ) {
         let held: Vec<NewDraft> = held.iter().map(|(id, hash)| draft(id, hash)).collect();
-        let stored_map: BTreeMap<DraftKey, bool> = stored
+        let stored_map: BTreeMap<DraftKey, StoredMeta> = stored
             .iter()
-            .map(|(id, hash, retired)| (key(id, hash), *retired))
+            .map(|(id, hash, retired)| {
+                let meta = StoredMeta {
+                    retired: *retired,
+                    source: "sweep".into(),
+                    ..StoredMeta::default()
+                };
+                (key(id, hash), meta)
+            })
             .collect();
         let current: Vec<DraftKey> = stored
             .iter()
@@ -570,10 +621,47 @@ mod tests {
 
         let change = plan_changes(held, &stored_map, &current, &mut counts);
 
-        let counted = (counts.new, counts.revived, counts.unchanged, counts.retired);
+        let counted = (
+            counts.new,
+            counts.revived,
+            counts.updated,
+            counts.unchanged,
+            counts.retired,
+        );
         let put: Vec<&str> = change.put.iter().map(|d| d.read_hash.as_str()).collect();
         let retire: Vec<&str> = change.retire.iter().map(|k| k.read_hash.as_str()).collect();
         assert_eq!((counted, put, retire), (expected.0, expected.1, expected.2));
+    }
+
+    /// A stored current draft whose rules are the build's but whose meta is not is rewritten (End the Festivities was
+    /// marked `differs` after it was stored, and the server kept reading it unmarked).
+    #[rstest]
+    #[case::differs_mark(|meta: &mut StoredMeta| meta.differs = true)]
+    #[case::source(|meta: &mut StoredMeta| meta.source = "forge".into())]
+    #[case::oracle_match(|meta: &mut StoredMeta| meta.oracle_matches = true)]
+    #[case::proof(|meta: &mut StoredMeta| meta.proof = Some(json!({"rows": []})))]
+    fn a_changed_meta_rewrites_the_stored_draft(#[case] change_meta: fn(&mut StoredMeta)) {
+        let mut stored = StoredMeta {
+            source: "sweep".into(),
+            ..StoredMeta::default()
+        };
+        change_meta(&mut stored);
+        let stored_map = BTreeMap::from([(key("a", "h1"), stored)]);
+        let mut counts = DraftCounts::default();
+
+        let change = plan_changes(
+            vec![draft("a", "h1")],
+            &stored_map,
+            &[key("a", "h1")],
+            &mut counts,
+        );
+
+        assert_eq!(
+            (counts.updated, counts.unchanged, counts.retired),
+            (1, 0, 0)
+        );
+        assert_eq!(change.put, vec![draft("a", "h1")]);
+        assert_eq!(change.retire, Vec::<DraftKey>::new());
     }
 
     #[test]
@@ -582,6 +670,7 @@ mod tests {
             embedded: 9,
             new: 3,
             revived: 1,
+            updated: 8,
             unchanged: 2,
             retired: 4,
             no_card: 5,
@@ -597,6 +686,7 @@ mod tests {
             "9 in the build",
             "3 new",
             "1 revived",
+            "8 updated",
             "2 unchanged",
             "4 retired",
             "5 no stored card",

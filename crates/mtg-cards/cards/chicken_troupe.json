@@ -1,7 +1,7 @@
 {
   "oracle_id": "68982532-c0c8-477b-9dd4-180c6d22731e",
   "name": "Chicken Troupe",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chicken Troupe",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": { "Ward": "{2}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 137, "end": 237 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

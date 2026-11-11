@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
@@ -34,7 +34,15 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks, byH
       data-support={card.support}
       className={cn('surface flex gap-4 border-l-4 p-4', supportEdge(card.support))}
     >
-      <CardPicture oracleId={card.oracleId} name={card.name} size="small" alt="" className="w-16 sm:w-24" />
+      <HoverPicture
+        pin
+        oracleId={card.oracleId}
+        name={card.name}
+        info={{ support: card.support }}
+        className="shrink-0 self-start"
+      >
+        <CardPicture oracleId={card.oracleId} name={card.name} size="small" alt="" className="w-16 sm:w-24" />
+      </HoverPicture>
       <div className="grid min-w-0 flex-1 content-start gap-2">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <p className="min-w-0 text-base font-semibold break-words">{card.name}</p>

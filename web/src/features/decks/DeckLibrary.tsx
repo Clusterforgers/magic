@@ -94,13 +94,24 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   if (aged.decks !== decks) setAged({ decks, now: clock() })
   const now = aged.decks === decks ? aged.now : clock()
   const importAction = (
-    <Button type="button" aria-haspopup="dialog" onClick={() => open({ kind: 'import' })}>
+    <Button
+      type="button"
+      aria-haspopup="dialog"
+      data-tour="import-deck"
+      onClick={() => open({ kind: 'import' })}
+    >
       <UploadIcon aria-hidden="true" />
       Import deck
     </Button>
   )
   const newAction = (
-    <Button type="button" variant="outline" aria-haspopup="dialog" onClick={() => open({ kind: 'new' })}>
+    <Button
+      type="button"
+      variant="outline"
+      aria-haspopup="dialog"
+      data-tour="new-deck"
+      onClick={() => open({ kind: 'new' })}
+    >
       <PlusIcon aria-hidden="true" />
       New deck
     </Button>

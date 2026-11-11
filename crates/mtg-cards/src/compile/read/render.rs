@@ -546,6 +546,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     }
     let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
+    super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -654,7 +655,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    super::wf26_writers::wf25_wf26_wordings(ability, written_variants, &mut texts);
+    super::wf27_writers::wf25_to_wf27_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -995,13 +996,18 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             effects,
         } => chapter_texts(*number, targets, effects),
         Ability::Triggered {
-            when: TriggerPattern::Visit {},
+            when: when @ (TriggerPattern::Visit {} | TriggerPattern::Prize {}),
             intervening_if: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets,
             effects,
         } => super::un33_attractions::un33_visit_texts(
+            if matches!(when, TriggerPattern::Visit {}) {
+                super::un33_attractions::VISIT
+            } else {
+                super::un33_attractions::PRIZE
+            },
             &alternatives(targets, effects)
                 .iter()
                 .map(|sentences| spell(sentences))
@@ -3295,9 +3301,10 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
-            Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
-                super::un33_attractions::un33_effect_text(effect)?
-            }
+            Effect::OpenAttraction { .. }
+            | Effect::RollToVisit { .. }
+            | Effect::ClaimPrize { .. } => super::un33_attractions::un33_effect_text(effect)?,
+            Effect::PutSticker { who, on } => super::un34_stickers::un34_put_text(who, on)?,
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

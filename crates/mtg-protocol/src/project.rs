@@ -25,7 +25,8 @@ use crate::message::AutoYield;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
-    PriorityView, StateView, TableView, TokenOfferView, TurnView, ZoneView,
+    PriorityView, StateView, StickerSheetView, StickerView, TableView, TokenOfferView, TurnView,
+    ZoneView,
 };
 use crate::wording::activated_views;
 
@@ -149,6 +150,39 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
         count: count(ids.len()),
         cards: zone_is_visible_in(state, zone, viewer).then(|| ids.to_vec()),
     }
+}
+
+/// The stickers on the object, each in its words.
+fn sticker_texts(state: &GameState, id: ObjectId) -> Vec<String> {
+    state
+        .stickers_on(id)
+        .iter()
+        .filter_map(|at| state.sticker(*at))
+        .map(mtg_engine::un34_stickers::sticker_text)
+        .collect()
+}
+
+/// The sticker sheets `seat` plays with, each sticker with its words, cost and whether it is used.
+fn sticker_sheets(state: &GameState, seat: PlayerId) -> Vec<StickerSheetView> {
+    state
+        .sticker_sheets(seat)
+        .into_iter()
+        .map(|(sheet, card)| StickerSheetView {
+            name: card.name.clone(),
+            stickers: mtg_engine::un34_stickers::stickers_of(card)
+                .enumerate()
+                .map(|(sticker, found)| StickerView {
+                    text: mtg_engine::un34_stickers::sticker_text(found),
+                    tickets: found.tickets(),
+                    used: state.sticker_used(mtg_engine::un34_stickers::StickerAt {
+                        player: seat,
+                        sheet,
+                        sticker,
+                    }),
+                })
+                .collect(),
+        })
+        .collect()
 }
 
 /// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts.
@@ -395,6 +429,7 @@ impl ObjectView {
         })
     }
 
+    #[allow(clippy::too_many_lines)]
     fn with_attachments(
         state: &GameState,
         sight: &Sight<'_>,
@@ -423,7 +458,10 @@ impl ObjectView {
         // An ability on the stack is named after its source and has nothing else of the source's printed side.
         let printed = object.kind() != ObjectKind::Ability;
         let is_token = object.kind() == ObjectKind::Token && !behind;
-        let name = shown_name(state, sight.viewer, object, &card.name);
+        // A name sticker adds its words to the name the table reads (layer 3).
+        let words: &[String] = if behind { &[] } else { &chars.name_words };
+        let stickered = mtg_engine::un34_stickers::name_with(words, &card.name);
+        let name = shown_name(state, sight.viewer, object, &stickered);
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
         let rules_text = stack_text(object, &name);
@@ -456,6 +494,7 @@ impl ObjectView {
                 .lights(id)
                 .map(mtg_core::attraction::Lights::numbers)
                 .unwrap_or_default(),
+            stickers: sticker_texts(state, id),
             printed_power: card.power.filter(|_| is_token),
             printed_toughness: card.toughness.filter(|_| is_token),
             abilities: if behind {
@@ -528,6 +567,7 @@ impl ObjectView {
             power: None,
             toughness: None,
             lights: Vec::new(),
+            stickers: Vec::new(),
             printed_power: None,
             printed_toughness: None,
             abilities: Vec::new(),
@@ -602,6 +642,7 @@ impl PlayerView {
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: command_view(state, viewer, seat),
             attraction_deck: count(state.attraction_deck(seat).len()),
+            sticker_sheets: sticker_sheets(state, seat),
             commanders: state
                 .commanders()
                 .filter(|id| state.object(*id).is_some_and(|card| card.owner() == seat))

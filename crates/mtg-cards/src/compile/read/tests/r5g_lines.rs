@@ -71,12 +71,53 @@ fn a_reinforce_line_is_written_for_the_ability_it_means(
 }
 
 #[rstest]
-#[case::any_number("A deck can have any number of cards named ~.", true)]
-#[case::up_to_seven("A deck can have up to seven cards named ~.", false)]
-#[case::another_name("A deck can have any number of cards named Island.", false)]
-fn the_deck_rule_reads_and_writes_back(#[case] text: &str, #[case] reads: bool) {
+#[case::any_number(
+    "A deck can have any number of cards named ~.",
+    r#""AnyNumberInDeck""#,
+    true
+)]
+#[case::up_to_seven(
+    "A deck can have up to seven cards named ~.",
+    r#"{"UpToInDeck":7}"#,
+    true
+)]
+#[case::up_to_nine(
+    "A deck can have up to nine cards named ~.",
+    r#"{"UpToInDeck":9}"#,
+    true
+)]
+#[case::up_to_seven_is_not_nine(
+    "A deck can have up to seven cards named ~.",
+    r#"{"UpToInDeck":9}"#,
+    false
+)]
+#[case::up_to_seven_is_not_any(
+    "A deck can have up to seven cards named ~.",
+    r#""AnyNumberInDeck""#,
+    false
+)]
+#[case::up_to_one(
+    "A deck can have up to one card named ~.",
+    r#"{"UpToInDeck":1}"#,
+    false
+)]
+#[case::up_to_another_name(
+    "A deck can have up to seven cards named Island.",
+    r#"{"UpToInDeck":7}"#,
+    false
+)]
+#[case::another_name(
+    "A deck can have any number of cards named Island.",
+    r#""AnyNumberInDeck""#,
+    false
+)]
+fn the_deck_rule_reads_and_writes_back(
+    #[case] text: &str,
+    #[case] rule: &str,
+    #[case] reads: bool,
+) {
     let read = clause(text, ClauseKind::Static, false);
-    let rule = ability(r#"{"Rule":{"rule":"AnyNumberInDeck"}}"#);
+    let rule = ability(&format!(r#"{{"Rule":{{"rule":{rule}}}}}"#));
     assert_eq!(read.as_ref() == Some(&rule), reads, "{read:?}");
     if reads {
         assert!(

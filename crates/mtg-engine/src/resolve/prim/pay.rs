@@ -165,6 +165,10 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
                 CostItem::PayEnergy(amount) => vec![CostItem::PayEnergy(times_over(amount))],
                 // The library and the hand must hold the cards of every payment at once.
                 CostItem::Draw(amount) => vec![CostItem::Draw(times_over(amount))],
+                // Each payment takes the cards under the ones before it: one part of the cards of every payment, else
+                // each part would take the same top card (cumulative upkeep with two age counters).
+                CostItem::ExileTop(amount) => vec![CostItem::ExileTop(times_over(amount))],
+                CostItem::Mill(amount) => vec![CostItem::Mill(times_over(amount))],
                 CostItem::DiscardRandom(amount) => {
                     vec![CostItem::DiscardRandom(times_over(amount))]
                 }
@@ -1216,6 +1220,8 @@ mod tests {
     #[case::draw(r#"[{"Draw":1}]"#, r#"[{"Draw":3}]"#)]
     #[case::draw_two(r#"[{"Draw":2}]"#, r#"[{"Draw":6}]"#)]
     #[case::discard_at_random(r#"[{"DiscardRandom":1}]"#, r#"[{"DiscardRandom":3}]"#)]
+    #[case::fb27_exile_top(r#"[{"ExileTop":1}]"#, r#"[{"ExileTop":3}]"#)]
+    #[case::fb27_mill(r#"[{"Mill":1}]"#, r#"[{"Mill":3}]"#)]
     fn a_cost_paid_several_times_asks_for_all_the_cards_at_once(
         #[case] once: &str,
         #[case] thrice: &str,

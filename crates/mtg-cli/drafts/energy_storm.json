@@ -9,17 +9,17 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{1}" } },
         {
-          "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
-            "mods": ["DoesntUntap"]
-          }
-        },
-        {
           "Replacement": {
             "when": {
               "Damage": { "source": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
             },
             "by": "Prevent"
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": ["DoesntUntap"]
           }
         }
       ]

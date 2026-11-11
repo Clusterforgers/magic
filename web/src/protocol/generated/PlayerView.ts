@@ -9,6 +9,7 @@ import type { MulliganStatus } from "./MulliganStatus";
 import type { ObjectId } from "./ObjectId";
 import type { PlayerEffect } from "./PlayerEffect";
 import type { PlayerId } from "./PlayerId";
+import type { StickerSheetView } from "./StickerSheetView";
 import type { ZoneView } from "./ZoneView";
 
 /**
@@ -110,6 +111,10 @@ command: ZoneView,
  * none.
  */
 attraction_deck?: number, 
+/**
+ * The sticker sheets the seat plays with (CR 123), public; left out while it has none.
+ */
+sticker_sheets?: Array<StickerSheetView>, 
 /**
  * The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
  * it carries; public, and left out outside Commander.

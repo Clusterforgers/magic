@@ -230,6 +230,13 @@ enum Happened {
     RolledToVisit { player: PlayerId, result: u32 },
     /// A player opened an Attraction.
     OpenedAttraction { player: PlayerId },
+    /// A player visited an Attraction, once for each visited.
+    VisitedAttraction { player: PlayerId },
+    /// A player claimed the prize of an Attraction.
+    PrizeClaimed {
+        player: PlayerId,
+        attraction: ObjectId,
+    },
     /// A player proliferated.
     Proliferated { player: PlayerId },
     /// A player won a coin flip.
@@ -1197,9 +1204,24 @@ fn about_players_and_permanents(
             to: *to,
         }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
-        Event::RolledToVisit { player, result, .. } => found.push(Happened::RolledToVisit {
+        Event::RolledToVisit {
+            player,
+            result,
+            visited,
+        } => {
+            found.push(Happened::RolledToVisit {
+                player: *player,
+                result: *result,
+            });
+            found.extend(
+                visited
+                    .iter()
+                    .map(|_| Happened::VisitedAttraction { player: *player }),
+            );
+        }
+        Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
-            result: *result,
+            attraction: *attraction,
         }),
         // Opening an Attraction moves the top card of the deck onto the battlefield (CR 701.51c).
         Event::ZoneChanged {
@@ -1611,8 +1633,16 @@ fn matching_player_action(
                     .is_some_and(|lights| lights.lit(*result)))
             .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
+        // A prize ability triggers for the Attraction whose prize its controller claims.
+        (TriggerPattern::Prize {}, Happened::PrizeClaimed { player, attraction }) => {
+            (scope.source.id == *attraction
+                && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
+            .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, .. })
-        | (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player }) => {
+        | (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
+        | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
+        | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
         }
         (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {

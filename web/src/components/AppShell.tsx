@@ -10,6 +10,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AccountNav, AuthNotice } from '@/features/auth/AccountNav'
 import { useAuth } from '@/features/auth/context'
 import { useToReadCount } from '@/features/reads/useToReadCount'
+import { PageTourHost } from '@/features/learn/PageTourHost'
 import { TO_READ } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { usePrefsSync } from '@/play/usePrefsSync'
@@ -164,6 +165,7 @@ export function AppShell() {
         >
           <Outlet />
         </main>
+        <PageTourHost />
       </div>
     </TooltipProvider>
   )

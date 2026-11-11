@@ -2,7 +2,7 @@ import { LayersIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { knownStatus } from '@/features/cards/CardImage'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { createImageQueue } from '@/features/cards/imageQueue'
 import type { ImageQueue, Ticket } from '@/features/cards/imageQueue'
@@ -88,19 +88,22 @@ function LazyPicture({
       <span aria-hidden="true" data-slot="deck-picture-wait" className={cn(BOX, 'animate-pulse bg-muted')} />
     )
   }
+  // Hover only: the option around the picture takes the click to choose the deck.
   return (
-    <CardPicture
-      oracleId={card.oracleId}
-      name={card.name}
-      size="small"
-      alt=""
-      quiet
-      pulse
-      // A picture that scrolled out of view after its slot was given would never load lazily and would hold the slot.
-      eager
-      className="w-11 shadow-e1"
-      onSettle={() => ticket.current?.done()}
-    />
+    <HoverPicture oracleId={card.oracleId} name={card.name} className="shrink-0">
+      <CardPicture
+        oracleId={card.oracleId}
+        name={card.name}
+        size="small"
+        alt=""
+        quiet
+        pulse
+        // A picture that scrolled out of view after its slot was given would never load lazily and would hold the slot.
+        eager
+        className="w-11 shadow-e1"
+        onSettle={() => ticket.current?.done()}
+      />
+    </HoverPicture>
   )
 }
 

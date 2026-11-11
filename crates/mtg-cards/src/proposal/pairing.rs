@@ -115,6 +115,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::OpeningHand
         | Ability::OpeningHandWith { .. }
         | Ability::OpeningReveal { .. }
+        | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
@@ -138,7 +139,11 @@ fn stripped(text: &str) -> &str {
     if word == "Max speed" {
         return text;
     }
-    let ability_word = !word.contains(['~', ',', '.', ':', '\n']) && word.split(' ').count() <= 5;
+    // A longer name is flavor as the compiler takes it ("A Thousand Souls Die Every Day — ").
+    let ability_word = (!word.contains(['~', ',', '.', ':', '\n']) && word.split(' ').count() <= 5)
+        || (!word.contains('~')
+            && crate::compile::classify::ability_word_len(text)
+                == Some(word.len() + " \u{2014} ".len()));
     let numerals = word
         .chars()
         .all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' '));
@@ -1221,6 +1226,14 @@ mod c11g_stripped_tests {
         "Choose one —\n• Disarm — Destroy target artifact.\n• Detonate — Draw a card."
     )]
     #[case::self_named("~ — Draw a card.", "~ — Draw a card.")]
+    #[case::wf27_six_words(
+        "A Thousand Souls Die Every Day — {T}, Sacrifice a creature: Add three mana of any one color.",
+        "{T}, Sacrifice a creature: Add three mana of any one color."
+    )]
+    #[case::wf27_a_sentence(
+        "When this creature enters, return target card to its owner's hand — {T}: Draw a card.",
+        "When this creature enters, return target card to its owner's hand — {T}: Draw a card."
+    )]
     #[case::no_dash("Draw a card.", "Draw a card.")]
     fn c11g_only_a_leading_word_is_stripped(#[case] text: &str, #[case] kept: &str) {
         assert_eq!(stripped(text), kept);

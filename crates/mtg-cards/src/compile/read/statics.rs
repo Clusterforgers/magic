@@ -565,6 +565,15 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         .is_some()
     {
         GameRule::AnyNumberInDeck
+    } else if let Some(most) = r.attempt(|r| {
+        if !r.words("a deck can have up to") {
+            return None;
+        }
+        let most = number_word(r.peek_word()?).filter(|most| *most > 1)?;
+        r.skip();
+        (r.words("cards named") && r.source()).then_some(most)
+    }) {
+        GameRule::UpToInDeck(most)
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
@@ -1831,6 +1840,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::AnyNumberInDeck, ZoneKind::Battlefield) => {
             vec!["A deck can have any number of cards named ~".to_owned()]
         }
+        (GameRule::UpToInDeck(most), ZoneKind::Battlefield) => count_word(*most)
+            .map(|word| format!("A deck can have up to {word} cards named ~"))
+            .into_iter()
+            .collect(),
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
         (GameRule::DamageCantBePrevented { source, combat }, ZoneKind::Battlefield) => {

@@ -250,12 +250,18 @@ enum Part {
 
 /// A selector as a noun phrase: "tapped creature you control".
 pub(super) fn selector(ctx: &Ctx, objects: &Selector) -> String {
-    noun_phrase(ctx, objects, false)
+    noun_phrase(ctx, objects, false, default_noun(objects))
 }
 
 /// A selector as a plural noun phrase: "tapped creatures you control".
 pub(super) fn selectors(ctx: &Ctx, objects: &Selector) -> String {
-    noun_phrase(ctx, objects, true)
+    noun_phrase(ctx, objects, true, default_noun(objects))
+}
+
+/// A selector of the source of damage as a noun phrase: a selector that names no kind of object is any source, a spell
+/// as well as a permanent ("other source you control").
+pub(super) fn source(ctx: &Ctx, objects: &Selector) -> String {
+    noun_phrase(ctx, objects, false, "source")
 }
 
 /// The noun the objects of a selector are called when it names none: a card outside the battlefield, else a permanent.
@@ -268,7 +274,7 @@ fn default_noun(objects: &Selector) -> &'static str {
 }
 
 /// A selector as a noun phrase, in the singular or the plural.
-fn noun_phrase(ctx: &Ctx, selector: &Selector, plural: bool) -> String {
+fn noun_phrase(ctx: &Ctx, selector: &Selector, plural: bool, default: &str) -> String {
     let (mut before, mut subtypes, mut types, mut kinds, mut after) =
         (Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new());
     for pred in &selector.0 {
@@ -284,7 +290,7 @@ fn noun_phrase(ctx: &Ctx, selector: &Selector, plural: bool) -> String {
     nouns.extend(types);
     nouns.extend(kinds);
     let noun = if nouns.is_empty() {
-        default_noun(selector).to_owned()
+        default.to_owned()
     } else {
         nouns.join(" ")
     };
@@ -503,6 +509,15 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
             format!("the total {} of {}", stat_text(*stat), selectors(ctx, of))
         }
         Amount::Triggering => "the amount from the triggering event".to_owned(),
+        Amount::Distinct { of, stat } => format!(
+            "the number of different {} among {}",
+            match stat {
+                StatKind::BasicLandTypes => "basic land types".to_owned(),
+                StatKind::Colors => "colors".to_owned(),
+                other => format!("{}s", stat_text(*other)),
+            },
+            selectors(ctx, of)
+        ),
         Amount::Players(players) => format!("the number of players in {}", who(ctx, players)),
         other => generic::node(ctx, other),
     }
@@ -532,6 +547,11 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             .map(|part| condition(ctx, part))
             .collect::<Vec<_>>()
             .join(" or "),
+        Condition::Compare {
+            left: Amount::Count(objects),
+            op: Cmp::Eq,
+            right: Amount::Fixed(1),
+        } if objects.0 == [Pred::This] => "this permanent is on the battlefield".to_owned(),
         Condition::Compare { left, op, right } => {
             format!(
                 "{} {}",
@@ -550,6 +570,9 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::EnteredAs(word) => format!("{word} was chosen as it entered"),
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
+        Condition::AtTrigger(inner) => {
+            format!("{} (checked as it triggers only)", condition(ctx, inner))
+        }
         Condition::YourTurn => "it is your turn".to_owned(),
         Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),

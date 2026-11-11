@@ -241,6 +241,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CreatureType => values::creature_types(),
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
+        ValueKind::BasicLandType => values::basic_land_types(),
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
         ValueKind::CardTypeOf(kinds) => values::CARD_TYPES
             .iter()
@@ -253,7 +254,6 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
                 |option| !matches!(option, ChoiceOption::Label(name) if left_out.contains(name)),
             )
             .collect(),
-        ValueKind::BasicLandType => basic_land_types(),
         ValueKind::ColorOrBasicLandType => Color::ALL
             .iter()
             .copied()
@@ -424,6 +424,7 @@ mod tests {
     #[case::colors(r#""Color""#, 5, "Choose a color.")]
     #[case::card_types(r#""CardType""#, 9, "Choose a card type.")]
     #[case::land_types(r#""LandType""#, 17, "Choose a land type.")]
+    #[case::basic_land_types(r#""BasicLandType""#, 5, "Choose a basic land type.")]
     #[case::words(r#"{"Options":["odd","even"]}"#, 2, "Choose odd or even.")]
     #[case::e14c_named_card_types(
         r#"{"CardTypeOf":["Creature","Land"]}"#,
@@ -456,6 +457,7 @@ mod tests {
     #[rstest]
     #[case::a_color(r#""Color""#, 1, Chosen::Color(Color::ALL[1]))]
     #[case::a_land_type(r#""LandType""#, 0, Chosen::LandType(Subtype(LAND_TYPES[0].to_owned())))]
+    #[case::a_basic_land_type(r#""BasicLandType""#, 0, Chosen::LandType(Subtype("Plains".to_owned())))]
     #[case::a_card_type(r#""CardType""#, 2, Chosen::CardType(CardType::Creature))]
     #[case::a_word(r#"{"Options":["odd","even"]}"#, 1, Chosen::Word("even".to_owned()))]
     #[case::e14c_a_named_card_type(

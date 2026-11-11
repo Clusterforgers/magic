@@ -9,9 +9,10 @@ export const DEV_READ_VIEWS = [
   'error',
   'stale',
   'dialog',
+  'long',
 ] as const
 
-/** One of the views: a deck to read, a precon, every card, the cards of the account's decks, nothing left, a wait, a failed list, a verdict that meets a changed draft, or the table's dialog. */
+/** One of the views: a deck to read, a precon, every card, the cards of the account's decks, nothing left, a wait, a failed list, a verdict that meets a changed draft, the table's dialog, or a long deck with a very long name. */
 export type DevReadView = (typeof DEV_READ_VIEWS)[number]
 
 /** The address parameters of `/dev/read`, read leniently: whatever makes no sense is ignored. */

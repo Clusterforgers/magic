@@ -37,6 +37,6 @@ describe('KeywordText', () => {
     render(<KeywordText text={text} />)
     await user.click(screen.getByRole('button', { name: word }))
     await user.click(await screen.findByRole('button', { name: 'More in the lexicon' }))
-    expect(lexiconStore.getState()).toEqual({ open: true, query: title, kind: 'all' })
+    expect(lexiconStore.getState()).toEqual({ open: true, query: title, kind: 'all', held: false })
   })
 })

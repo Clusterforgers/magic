@@ -15,6 +15,7 @@ mod d20b_translate;
 mod draft_store;
 mod drafts;
 mod drafts_smoke;
+mod fb27_reported;
 mod fetch_decks;
 mod fetch_printings;
 mod fetch_scryfall;

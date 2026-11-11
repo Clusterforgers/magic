@@ -212,7 +212,7 @@ pub fn commander_stand_in_of(size: usize) -> (Arc<CardDefinition>, Vec<Arc<CardD
 }
 
 /// The imported record as the strings assembly reads.
-fn printed_card(record: &CardRecord) -> PrintedCard {
+pub(crate) fn printed_card(record: &CardRecord) -> PrintedCard {
     PrintedCard {
         layout: record.layout.keyword().to_owned(),
         oracle_id: record.oracle_id.to_string(),

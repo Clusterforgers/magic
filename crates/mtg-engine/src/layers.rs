@@ -438,6 +438,7 @@ impl Held {
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::GrantText(_)
+            | Modification::AddNameWords(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddColors(_)

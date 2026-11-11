@@ -1,0 +1,55 @@
+{
+  "oracle_id": "63a85361-56bc-4209-aea8-b49319bc7b92",
+  "name": "Final Flourish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final Flourish",
+      "oracle_fingerprint": "e2beb14aa514b84cc7a6bc799c626fe7",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

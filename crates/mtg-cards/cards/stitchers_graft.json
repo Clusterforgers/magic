@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2b73a5ec-c52e-4074-a7cb-78d6eb2adef0",
+  "name": "Stitcher's Graft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stitcher's Graft",
+      "oracle_fingerprint": "7744ccab3751fbdf3f301823fd62e111",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Unattached": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Is": "Triggering" }] } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

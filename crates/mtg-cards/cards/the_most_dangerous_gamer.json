@@ -1,7 +1,7 @@
 {
   "oracle_id": "dcb9337b-d5fd-4cd2-a41f-900d170a5ded",
   "name": "The Most Dangerous Gamer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Most Dangerous Gamer",
@@ -26,9 +26,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 166, "end": 238 }
+          "Triggered": {
+            "when": { "ClaimedPrize": { "who": "You" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

@@ -1,7 +1,7 @@
 import { Trash2Icon, UserRoundSearchIcon } from 'lucide-react'
 import { useId } from 'react'
 import { Button } from '@/components/ui/button'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
 import type { CardHit } from '@/protocol/generated'
@@ -55,7 +55,21 @@ function Tile({
         issue ? supportEdge(check.support) : 'border-l-border',
       )}
     >
-      <CardPicture oracleId={card.oracle_id} name={card.name} size="normal" alt="" className="w-20 sm:w-28" />
+      <HoverPicture
+        pin
+        oracleId={card.oracle_id}
+        name={card.name}
+        info={{ typeLine: card.type_line, count, support: check.support }}
+        className="shrink-0 self-start"
+      >
+        <CardPicture
+          oracleId={card.oracle_id}
+          name={card.name}
+          size="normal"
+          alt=""
+          className="w-20 sm:w-28"
+        />
+      </HoverPicture>
       <div className="grid min-w-0 flex-1 content-start gap-1">
         <button
           type="button"

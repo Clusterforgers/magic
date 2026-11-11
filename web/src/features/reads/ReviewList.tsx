@@ -2,6 +2,7 @@ import { BookOpenIcon, CheckIcon, HandIcon, TriangleAlertIcon, XIcon } from 'luc
 import type { LucideIcon } from 'lucide-react'
 import type { Ref } from 'react'
 import { Kbd } from '@/components/Kbd'
+import { HoverPicture } from '@/features/cards/CardPicture'
 import { cn } from '@/lib/utils'
 import type { ReadTarget } from '@/lib/toRead'
 import { allInDecks, rankText } from './model'
@@ -45,48 +46,53 @@ function Row({
   const differs = item.kind === 'read' ? item.card.differs : 0
   return (
     <li>
-      <button
-        type="button"
-        aria-current={current ? 'true' : undefined}
-        data-item={item.id}
-        data-tone={state.tone}
-        onClick={onPick}
-        className={cn(
-          'grid w-full gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
-          current ? 'bg-accent font-medium' : null,
-          outcome === undefined ? null : 'text-muted-foreground',
-        )}
-      >
-        <span className="flex items-center gap-1.5">
-          <Icon aria-hidden="true" className={cn('size-4 shrink-0', className)} />
-          <span className="min-w-0 flex-1 truncate text-foreground">{item.name}</span>
-          {rank === null ? null : (
-            <span
-              title="Popularity rank"
-              className="shrink-0 text-xs font-normal text-muted-foreground tabular-nums"
-            >
-              {rank}
-            </span>
+      <HoverPicture oracleId={item.id} name={item.name} className="w-full">
+        <button
+          type="button"
+          aria-current={current ? 'true' : undefined}
+          data-item={item.id}
+          data-tone={state.tone}
+          onClick={onPick}
+          className={cn(
+            'grid w-full grid-cols-1 gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
+            current ? 'bg-accent font-medium' : null,
+            outcome === undefined ? null : 'text-muted-foreground',
           )}
-        </span>
-        <span className="flex flex-wrap items-center gap-x-1 pl-5.5 text-xs font-normal text-muted-foreground">
-          {state.words}
-          {item.kind === 'read' && item.card.in_decks && !allInDecks(target) ? (
-            <span>· in your decks</span>
-          ) : null}
-          {differs === 0 || outcome !== undefined ? null : (
-            <>
-              <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />
-              {differs === 1 ? '1 clause differs' : `${differs} clauses differ`}
-            </>
-          )}
-        </span>
-      </button>
+        >
+          <span className="flex items-center gap-1.5">
+            <Icon aria-hidden="true" className={cn('size-4 shrink-0', className)} />
+            <span className="min-w-0 flex-1 truncate text-foreground">{item.name}</span>
+            {rank === null ? null : (
+              <span
+                title="Popularity rank"
+                className="shrink-0 text-xs font-normal text-muted-foreground tabular-nums"
+              >
+                {rank}
+              </span>
+            )}
+          </span>
+          <span className="flex flex-wrap items-center gap-x-1 pl-5.5 text-xs font-normal text-muted-foreground">
+            {state.words}
+            {item.kind === 'read' && item.card.in_decks && !allInDecks(target) ? (
+              <span>· in your decks</span>
+            ) : null}
+            {differs === 0 || outcome !== undefined ? null : (
+              <>
+                <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />
+                {differs === 1 ? '1 clause differs' : `${differs} clauses differ`}
+              </>
+            )}
+          </span>
+        </button>
+      </HoverPicture>
     </li>
   )
 }
 
-/** The review's list (from `lg`): To read and To check, each headed with what is left of it, every row its state. */
+/**
+ * The review's list (from `lg`): To read and To check, each headed with what is left of it, every row its state. Every
+ * grid in it has one `minmax(0, 1fr)` column, so a long name is cut short instead of widening the list under the card.
+ */
 export function ReviewList({ items, done, shown, onPick, target, listRef }: ReviewListProps) {
   const parts = [
     { kind: 'read' as const, title: 'To read', items: items.filter((item) => item.kind === 'read') },
@@ -96,13 +102,18 @@ export function ReviewList({ items, done, shown, onPick, target, listRef }: Revi
     <nav aria-label="Cards to review" className="hidden lg:sticky lg:top-4 lg:block">
       <div
         ref={listRef}
-        className="surface grid max-h-[calc(100dvh-14rem)] gap-2 overflow-y-auto overscroll-contain p-1"
+        className="surface grid max-h-[calc(100dvh-14rem)] grid-cols-1 gap-2 overflow-y-auto overscroll-contain p-1"
       >
         {parts.map((part) => {
           const left = part.items.filter((item) => !done.has(item.id)).length
           const id = `review-part-${part.kind}`
           return (
-            <section key={part.kind} aria-labelledby={id} data-part={part.kind} className="grid gap-0.5">
+            <section
+              key={part.kind}
+              aria-labelledby={id}
+              data-part={part.kind}
+              className="grid grid-cols-1 gap-0.5"
+            >
               <h2
                 id={id}
                 className="sticky top-0 z-10 flex items-baseline justify-between rounded-md bg-surface px-2 pt-1.5 pb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
@@ -112,7 +123,7 @@ export function ReviewList({ items, done, shown, onPick, target, listRef }: Revi
                   {left === 0 ? 'done' : `${left} left`}
                 </span>
               </h2>
-              <ul className="grid gap-0.5">
+              <ul className="grid grid-cols-1 gap-0.5">
                 {part.items.map((item) => (
                   <Row
                     key={item.id}

@@ -242,6 +242,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<u8>>", optional)]
     pub lights: Vec<u8>,
+    /// The stickers on a permanent (CR 123), in the order they were put on, each in its words; left out while it has
+    /// none. The name already holds the words of its name stickers.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub stickers: Vec<String>,
     /// The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(as = "Option<i32>", optional)]
@@ -398,6 +403,26 @@ const fn is_zero_level(level: &u8) -> bool {
     *level == 0
 }
 
+/// A sticker sheet a seat plays with (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct StickerSheetView {
+    /// The sheet's name.
+    pub name: String,
+    /// Its stickers, in the order the sheet lists them.
+    pub stickers: Vec<StickerView>,
+}
+
+/// One sticker of a sheet (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct StickerView {
+    /// The sticker in words: the name words, the ability or the power and toughness.
+    pub text: String,
+    /// The tickets it costs to put on.
+    pub tickets: u32,
+    /// Whether it has been put on a permanent.
+    pub used: bool,
+}
+
 /// A commander a seat owns and what casting it from the command zone costs more now (public).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct CommanderView {
@@ -515,6 +540,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_no_card")]
     #[ts(as = "Option<u32>", optional)]
     pub attraction_deck: u32,
+    /// The sticker sheets the seat plays with (CR 123), public; left out while it has none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<StickerSheetView>>", optional)]
+    pub sticker_sheets: Vec<StickerSheetView>,
     /// The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
     /// it carries; public, and left out outside Commander.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

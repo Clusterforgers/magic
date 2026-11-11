@@ -17,6 +17,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "Shuffle" => return Some(shuffle(ctx, p)),
         "Venture" => venture(p),
         "OpenAttraction" => open_attraction(p),
+        "PutSticker" => put_sticker(ctx, p),
         "EndTurn" => end_turn(p),
         "Amass" => amass(ctx, p),
         "Play" => return Some(super::mayplay::play(ctx, p)),
@@ -102,6 +103,29 @@ fn venture(p: &Params) -> Tr<Value> {
     match p.get("Defined") {
         None | Some("You") => Ok(json!({"Venture": {}})),
         Some(_) => super::ctx::unmapped("key:Venture.Defined"),
+    }
+}
+
+/// `PutSticker` (CR 123): the player puts a sticker on a permanent of `ValidCard$` they own; `Optional$ True` is
+/// "you may".
+fn put_sticker(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    only(p, "PutSticker", &["Defined", "ValidCard", "Optional"])?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return super::ctx::unmapped("key:PutSticker.Defined");
+    }
+    let Some(valid) = p.get("ValidCard") else {
+        return super::ctx::unmapped("key:PutSticker.ValidCard");
+    };
+    let on = super::valid::selector(ctx, valid)?;
+    // A sticker goes only on a permanent its player owns.
+    if !on.contains(&json!({"OwnedBy": "You"})) {
+        return super::ctx::unmapped("key:PutSticker.ValidCard-owner");
+    }
+    let effect = json!({"PutSticker": {"on": on}});
+    match p.get("Optional") {
+        None | Some("False") => Ok(effect),
+        Some("True") => Ok(json!({"May": {"effects": [effect]}})),
+        Some(_) => super::ctx::unmapped("key:PutSticker.Optional"),
     }
 }
 

@@ -1,6 +1,7 @@
 //! The Attraction wordings (CR 717): "open an Attraction", "open two Attractions", "roll to visit your Attractions",
 //! "whenever you open an Attraction", "whenever you roll to visit your Attractions" and the visit ability
-//! "Visit — [effect]" (CR 702.159a).
+//! "Visit — [effect]" (CR 702.159a); the prize: "claim the prize", "Prize — [effect]", "whenever you claim the prize of
+//! an Attraction"; and "whenever you visit an Attraction".
 
 use super::amounts::{count_word, number_word};
 use super::tokens::Reader;
@@ -14,6 +15,9 @@ use crate::value::Amount;
 
 /// The head of a visit ability.
 pub(crate) const VISIT: &str = "Visit \u{2014} ";
+
+/// The head of a prize ability.
+pub(crate) const PRIZE: &str = "Prize \u{2014} ";
 
 /// "an Attraction" or "two Attractions" after "open": how many.
 fn attractions(r: &mut Reader<'_>) -> Option<u32> {
@@ -63,6 +67,7 @@ pub(super) fn un33_effect_text(effect: &Effect) -> Option<String> {
             count_word(u32::try_from(*count).ok()?)?
         )),
         Effect::RollToVisit { who: Ref::You } => Some("roll to visit your Attractions".to_owned()),
+        Effect::ClaimPrize { who: Ref::You } => Some("claim the prize".to_owned()),
         _ => None,
     }
 }
@@ -77,6 +82,13 @@ pub(super) fn un33_event(r: &mut Reader<'_>, verb: &str, by: Ref) -> Option<Trig
             visit_roll(r, &by)?;
             Some(TriggerPattern::RolledToVisit { who: by })
         }
+        "visit" | "visits" => {
+            (attractions(r)? == 1).then_some(TriggerPattern::VisitedAttraction { who: by })
+        }
+        "claim" | "claims" => {
+            r.need("the prize of")?;
+            (attractions(r)? == 1).then_some(TriggerPattern::ClaimedPrize { who: by })
+        }
         _ => None,
     }
 }
@@ -90,30 +102,41 @@ pub(super) fn un33_event_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::RolledToVisit { who: Ref::You } => {
             Some("Whenever you roll to visit your Attractions".to_owned())
         }
+        TriggerPattern::VisitedAttraction { who: Ref::You } => {
+            Some("Whenever you visit an Attraction".to_owned())
+        }
+        TriggerPattern::ClaimedPrize { who: Ref::You } => {
+            Some("Whenever you claim the prize of an Attraction".to_owned())
+        }
         _ => None,
     }
 }
 
-/// The lines of a visit ability whose effects are written as `bodies`: "Visit — " before each, and a choice of modes
-/// also as the Attractions print it, "Choose one." before the bullets in place of "Choose one —".
-pub(super) fn un33_visit_texts(bodies: &[String]) -> Vec<String> {
-    let mut texts: Vec<String> = bodies.iter().map(|body| format!("{VISIT}{body}")).collect();
+/// The lines of a visit ability (`head` is `VISIT`) or a prize ability (`PRIZE`) whose effects are written as
+/// `bodies`: the head before each, and a choice of modes also as the Attractions print it, "Choose one." before the
+/// bullets in place of "Choose one —".
+pub(super) fn un33_visit_texts(head: &str, bodies: &[String]) -> Vec<String> {
+    let mut texts: Vec<String> = bodies.iter().map(|body| format!("{head}{body}")).collect();
     texts.extend(bodies.iter().filter_map(|body| {
         let rest = body.strip_prefix("Choose one \u{2014}")?;
-        Some(format!("{VISIT}Choose one.{rest}"))
+        Some(format!("{head}Choose one.{rest}"))
     }));
     texts
 }
 
-/// Whether the clause is a visit ability.
+/// Whether the clause is a visit ability or a prize ability.
 pub fn is_visit_line(text: &str) -> bool {
-    text.starts_with(VISIT)
+    text.starts_with(VISIT) || text.starts_with(PRIZE)
 }
 
-/// The visit ability of a "Visit — [effect]" line (and the bullets under it): a triggered ability whose effects are
-/// the text after the dash read as a spell; `None` when the text is not read.
+/// The visit ability of a "Visit — [effect]" line (and the bullets under it), or the prize ability of a "Prize —
+/// [effect]" line: a triggered ability whose effects are the text after the dash read as a spell; `None` when the text
+/// is not read.
 pub fn un33_visit_block(text: &str, x_free: bool, own: &Own) -> Option<Ability> {
-    let body = text.strip_prefix(VISIT)?;
+    let (when, body) = match text.strip_prefix(VISIT) {
+        Some(body) => (TriggerPattern::Visit {}, body),
+        None => (TriggerPattern::Prize {}, text.strip_prefix(PRIZE)?),
+    };
     // An Attraction prints its modes after "Choose one." where other cards have "Choose one —".
     let body = match body.strip_prefix("Choose one.\n") {
         Some(modes) => format!("Choose one \u{2014}\n{modes}"),
@@ -129,7 +152,7 @@ pub fn un33_visit_block(text: &str, x_free: bool, own: &Own) -> Option<Ability> 
         return None;
     };
     Some(Ability::Triggered {
-        when: TriggerPattern::Visit {},
+        when,
         intervening_if: None,
         limit: None,
         from: ZoneKind::Battlefield,

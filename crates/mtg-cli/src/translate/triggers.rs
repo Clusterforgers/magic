@@ -490,7 +490,19 @@ pub(super) fn pattern(ctx: &Ctx, p: &Params) -> Tr<Value> {
         "Untaps" => what_trigger(ctx, p, "Untapped"),
         "Blocks" => blocks(ctx, p),
         "AttackerBlocked" => attacker_blocked(ctx, p),
+        "VisitAttraction" => visit_attraction(p),
         other => unmapped(format!("trigger:{other}")),
+    }
+}
+
+/// `VisitAttraction`: "whenever you visit an Attraction", once for each Attraction of yours a roll visits.
+fn visit_attraction(p: &Params) -> Tr<Value> {
+    keys(p, "VisitAttraction", &["ValidPlayer", "ValidCard"])?;
+    match (p.get("ValidPlayer"), p.get("ValidCard")) {
+        (Some("You"), None | Some("Attraction.YouCtrl")) | (None, Some("Attraction.YouCtrl")) => {
+            Ok(json!({"VisitedAttraction": {"who": "You"}}))
+        }
+        _ => unmapped("key:VisitAttraction.ValidPlayer"),
     }
 }
 

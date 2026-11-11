@@ -5,6 +5,7 @@ import { useFitWindow } from '@/components/appChrome'
 import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { LearnCard } from '@/features/learn/LearnCard'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
@@ -45,6 +46,7 @@ export function PlayPage({ api = sharedApi }: PlayPageProps) {
         </Link>
       </header>
       <ContinueGames />
+      <LearnCard />
       <ToReadNotice />
       <JoinWithCode
         inputRef={code}

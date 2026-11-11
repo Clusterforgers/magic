@@ -1,10 +1,11 @@
-//! The opening asks every seat at once: each seat's decision has its own id and clock, and the one whose clock runs out
-//! first is the one the table answers for.
+//! The opening asks every seat at once: each seat's decision has its own id and waits for that seat, with no clock
+//! ([`Pace::opening_clock`](crate::Pace::OPENING_CLOCK)).
 
 use mtg_protocol::DecisionId;
 use tokio::time::Instant;
 
 use super::{Issued, Pending, Running, millis};
+use crate::pace::Pace;
 
 impl Running {
     /// Every decision a seat may answer now: the engine's own, then the other seats' in the opening.
@@ -34,7 +35,7 @@ impl Running {
     }
 
     /// Aligns the opening's decisions with the engine's: a decision that is still asked keeps its id and clock, so an
-    /// answer of one seat never restarts or invalidates another's; every new one gets a fresh id and the opening clock,
+    /// answer of one seat never restarts or invalidates another's; every new one gets a fresh id and the opening clock (none),
     /// and is returned to be sent.
     pub(super) fn settle_opening(&mut self) -> Vec<Issued> {
         self.clock_kept = false;
@@ -52,7 +53,7 @@ impl Running {
             }
             self.last_id += 1;
             let id = DecisionId(self.last_id);
-            let clock = self.pace.opening_clock();
+            let clock = Pace::OPENING_CLOCK;
             let now = Instant::now();
             let delay = clock
                 .map(|span| self.pace.shown_after(span))

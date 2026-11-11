@@ -1,0 +1,55 @@
+{
+  "oracle_id": "93af8f9d-6877-4cb8-a744-c89186db22e1",
+  "name": "Vayne's Treachery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vayne's Treachery",
+      "oracle_fingerprint": "e2beb14aa514b84cc7a6bc799c626fe7",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "Kicked", "then": 6, "otherwise": 2 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

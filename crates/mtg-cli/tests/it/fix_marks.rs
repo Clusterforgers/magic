@@ -1,4 +1,4 @@
-//! Goal: `fix-marks` ranks the marked cards by the accounts that marked them, joins each card's support state of the rules in force (a card with a rules file is verified, one without is manual), shows the newest note, honours `--limit`, and says so when no card is marked.
+//! Goal: `fix-marks` ranks the marked cards by the accounts that marked them, joins each card's support state of the rules in force as the game reads them (a card with a rules file is verified, one without is manual, one on a stored draft has the draft's state), shows the newest note, honours `--limit`, and says so when no card is marked.
 
 #![allow(clippy::unwrap_used)]
 
@@ -87,6 +87,42 @@ async fn the_table_ranks_by_marks_and_shows_the_support_state_and_the_newest_not
             .iter()
             .any(|word| line.contains(&format!("  {word}")));
         assert!(word, "every row names a support state: {line}");
+    }
+}
+
+/// A marked card that plays on a stored draft shows the state the game gives it: a pending draft is `unverified`, a matched
+/// Forge draft `forge`, the same draft marked `differs` waits for a read again.
+#[sqlx::test]
+async fn a_card_on_a_draft_shows_the_state_the_game_gives_it(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let db = seeded(pool, dir.path()).await;
+    common::store_draft(&db, "Pyroblast").await;
+    mark(&db, "Pyroblast", 1, None).await;
+
+    for (source, matches, differs, word) in [
+        ("sweep", false, false, "unverified"),
+        ("forge", true, false, "forge"),
+        ("forge", true, true, "unverified"),
+        ("forge", false, false, "unverified"),
+    ] {
+        sqlx::query("UPDATE card_drafts SET source = $1, oracle_matches = $2, differs = $3")
+            .bind(source)
+            .bind(matches)
+            .bind(differs)
+            .execute(db.pool())
+            .await
+            .unwrap();
+
+        let text = fix_marks(&db, &args(50)).await.unwrap();
+
+        let row = text
+            .lines()
+            .find(|line| line.contains("Pyroblast"))
+            .unwrap();
+        assert!(
+            row.contains(&format!("  {word}  ")),
+            "{source} {matches} {differs}: {text}"
+        );
     }
 }
 

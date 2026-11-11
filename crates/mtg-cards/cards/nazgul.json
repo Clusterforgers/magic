@@ -1,7 +1,7 @@
 {
   "oracle_id": "48a62778-7c11-486f-a0e1-020c283a7ef9",
   "name": "Nazgûl",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nazgûl",
@@ -9,23 +9,25 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 11, "end": 58 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 59, "end": 136 }
+          "Triggered": {
+            "when": { "RingTempts": { "who": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Wraith" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 137, "end": 183 }
-          }
-        }
+        { "Rule": { "rule": { "UpToInDeck": 9 } } }
       ]
     }
   ]

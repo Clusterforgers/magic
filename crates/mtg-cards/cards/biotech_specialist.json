@@ -1,0 +1,26 @@
+{
+  "oracle_id": "78de77ef-c325-4342-869f-042921229577",
+  "name": "Biotech Specialist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biotech Specialist",
+      "oracle_fingerprint": "93fe4b29b13821efe505d19a28f2b800",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "lander" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

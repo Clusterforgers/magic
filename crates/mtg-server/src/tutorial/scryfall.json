@@ -1,0 +1,125 @@
+[
+  {
+    "id": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
+    "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+    "name": "Giant Growth",
+    "lang": "en",
+    "released_at": "2026-06-26",
+    "layout": "normal",
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Target creature gets +3/+3 until end of turn.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "set": "msh",
+    "collector_number": "167",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "083ec3e7-950c-4e9d-aba5-02ed13d723f0",
+    "oracle_id": "50608184-90d3-43d2-a221-deb186c78323",
+    "name": "Goblin Piker",
+    "lang": "en",
+    "released_at": "2011-07-15",
+    "layout": "normal",
+    "mana_cost": "{1}{R}",
+    "cmc": 2.0,
+    "type_line": "Creature — Goblin Warrior",
+    "oracle_text": "",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "set": "m12",
+    "collector_number": "141",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "409f9b88-f03e-40b6-9883-68c14c37c0de",
+    "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+    "name": "Grizzly Bears",
+    "lang": "en",
+    "released_at": "2007-07-13",
+    "layout": "normal",
+    "mana_cost": "{1}{G}",
+    "cmc": 2.0,
+    "type_line": "Creature — Bear",
+    "oracle_text": "",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "set": "10e",
+    "collector_number": "268",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "927cbdf6-987d-44c7-bafa-b2adee672ac2",
+    "oracle_id": "87f1a840-021c-4699-a2c4-f2926daf98eb",
+    "name": "Hero in Training",
+    "lang": "en",
+    "released_at": "2026-06-26",
+    "layout": "normal",
+    "mana_cost": "{2}{W}",
+    "cmc": 3.0,
+    "type_line": "Creature — Human Hero",
+    "oracle_text": "When this creature enters, draw a card. If you control another Hero, you gain 2 life.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [],
+    "set": "msc",
+    "collector_number": "840",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "6afead32-3542-44c4-82d6-b6a81beb9f90",
+    "oracle_id": "cfb756dd-6fe1-430a-8f04-8b10cac62a86",
+    "name": "Isamaru, Hound of Konda",
+    "lang": "en",
+    "released_at": "2020-07-17",
+    "layout": "normal",
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Legendary Creature — Dog",
+    "oracle_text": "",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [],
+    "set": "jmp",
+    "collector_number": "113",
+    "digital": false,
+    "rarity": "rare"
+  }
+]

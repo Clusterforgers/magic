@@ -270,6 +270,14 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
               <dd data-slot="preview-lights">{object.lights.join(', ')}</dd>
             </>
           )}
+          {object.stickers === undefined || object.stickers.length === 0 ? null : (
+            <>
+              <dt className="font-semibold">
+                Stickers<span className="sr-only">: </span>
+              </dt>
+              <dd data-slot="preview-stickers">{object.stickers.join('; ')}</dd>
+            </>
+          )}
         </dl>
         {object.abilities.length === 0 ? (
           activated.length === 0 && manual.length === 0 ? (
