@@ -77,6 +77,7 @@ fn each_position_of_the_library_and_the_companion_takes_the_printing_of_its_line
         printings: printings.clone(),
         by_hand: Vec::new(),
         attractions: Vec::new(),
+        stickers: Vec::new(),
     };
     let recipe = GameRecipe::normal(7, vec![deck; seats]);
     let setup = recipe.build_with(&catalog).unwrap();
@@ -103,6 +104,7 @@ fn printings_change_neither_the_fingerprints_nor_the_game(#[values(2, 3, 4)] sea
         printings,
         by_hand: Vec::new(),
         attractions: Vec::new(),
+        stickers: Vec::new(),
     };
     let plain = GameRecipe::normal(7, vec![deck(Vec::new()); seats])
         .with_fingerprints_from(&catalog)
@@ -143,6 +145,7 @@ fn a_commander_takes_the_printing_after_the_library(#[values(2, 3, 4)] seats: us
         printings,
         by_hand: Vec::new(),
         attractions: Vec::new(),
+        stickers: Vec::new(),
     };
     let setup = GameRecipe::commander(3, vec![deck; seats])
         .build_with(&catalog)
@@ -182,6 +185,7 @@ fn the_stored_form_names_printings_only_when_there_are_some(
         printings,
         by_hand: Vec::new(),
         attractions: Vec::new(),
+        stickers: Vec::new(),
     };
     assert_eq!(serde_json::to_value(&deck).unwrap(), stored);
     let back: DeckRef = serde_json::from_value(stored).unwrap();
