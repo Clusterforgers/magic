@@ -1,0 +1,38 @@
+{
+  "oracle_id": "eae87919-6322-4bd2-ae9c-b1ce25d686da",
+  "name": "Chains of Mephistopheles",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chains of Mephistopheles",
+      "oracle_fingerprint": "401c53dd9c5a70634fa913a620058b73",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": { "who": "EachPlayer", "except_draw_step": 1 } },
+            "by": {
+              "Instead": [
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Count": [{ "In": "Hand" }, { "ControlledBy": "Triggering" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      { "Discard": { "who": "Triggering" } },
+                      { "Draw": { "who": "Triggering" } }
+                    ],
+                    "otherwise": [{ "Mill": { "who": "Triggering" } }]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

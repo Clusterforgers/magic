@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2b749918-f425-4243-aabb-7350bb74403c",
+  "name": "Oath of Mages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Mages",
+      "oracle_fingerprint": "ebfa15c40f850a2cc599c972234290e9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "TriggeringPlayer",
+                    "what": {
+                      "PlayerAmong": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "All": [
+                              { "Not": { "Among": "TriggeringPlayer" } },
+                              {
+                                "Compare": {
+                                  "left": { "Life": "You" },
+                                  "op": "Gt",
+                                  "right": { "Life": "TriggeringPlayer" }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": "TriggeringPlayer",
+                  "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

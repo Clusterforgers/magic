@@ -1,0 +1,60 @@
+{
+  "oracle_id": "78e87805-19e3-415b-ad0b-3275183d7297",
+  "name": "Planeswalker's Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planeswalker's Mischief",
+      "oracle_fingerprint": "1eadec3eb6b25c1513ba3aeb0dc1067d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Is": { "Bound": "exiled" } }],
+                            "from": "Exile",
+                            "free": true
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

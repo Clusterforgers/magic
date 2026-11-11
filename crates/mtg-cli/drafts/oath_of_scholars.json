@@ -1,0 +1,59 @@
+{
+  "oracle_id": "da4a5129-b005-4fc6-b175-0416627881db",
+  "name": "Oath of Scholars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Scholars",
+      "oracle_fingerprint": "0829312aa6c94d63c932ba0953c6366e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "All": [
+                          { "Not": { "Among": "Triggering" } },
+                          {
+                            "Compare": {
+                              "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                              "op": "Gt",
+                              "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": "Triggering",
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                      }
+                    },
+                    { "Draw": { "who": "Triggering", "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

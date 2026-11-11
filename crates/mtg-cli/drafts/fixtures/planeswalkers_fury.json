@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f",
+  "oracle_id": "2e482522-2eef-4f6c-887a-fcc51be61dc2",
+  "multiverse_ids": [
+    25889
+  ],
+  "mtgo_id": 15209,
+  "mtgo_foil_id": 15210,
+  "tcgplayer_id": 7848,
+  "cardmarket_id": 3325,
+  "name": "Planeswalker's Fury",
+  "lang": "en",
+  "released_at": "2001-02-05",
+  "uri": "https://api.scryfall.com/cards/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f",
+  "scryfall_uri": "https://scryfall.com/card/pls/70/planeswalkers-fury?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:26:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615",
+    "normal": "https://cards.scryfall.io/normal/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615",
+    "large": "https://cards.scryfall.io/large/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615",
+    "png": "https://cards.scryfall.io/png/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.png?1783945615",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.webp?1783945615",
+    "grid": "https://cards.scryfall.io/grid/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.webp?1783945615",
+    "display": "https://cards.scryfall.io/display/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.webp?1783945615",
+    "art": "https://cards.scryfall.io/art/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.webp?1783945615",
+    "crop": "https://cards.scryfall.io/crop/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.webp?1783945615",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/f/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f.jpg?1783945615"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{3}{R}: Target opponent reveals a card at random from their hand. This enchantment deals damage equal to that card's mana value to that player. Activate only as a sorcery.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "82dc193b-bd5f-4883-a93f-a4155b467ee0",
+  "set": "pls",
+  "set_name": "Planeshift",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/82dc193b-bd5f-4883-a93f-a4155b467ee0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apls&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pls?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6fa09e3a-bc7e-4292-aa5d-ce97c1b1f79f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2e482522-2eef-4f6c-887a-fcc51be61dc2&unique=prints",
+  "collector_number": "70",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "794dd0ef-8ba6-4e1f-87a7-1b091222ca67",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27449,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "6.75",
+    "usd_etched": null,
+    "eur": "0.34",
+    "eur_foil": "7.38",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=25889&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPlaneswalker%2527s%2BFury",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPlaneswalker%2527s%2BFury",
+    "edhrec": "https://edhrec.com/route/?cc=Planeswalker%27s+Fury"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7848%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3325&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/15209?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

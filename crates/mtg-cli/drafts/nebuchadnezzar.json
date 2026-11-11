@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7c48448e-4e13-4cda-999e-e06ae0f7dcea",
+  "name": "Nebuchadnezzar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nebuchadnezzar",
+      "oracle_fingerprint": "47370d29a293d36f6437dc255f4dd23b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "count": "X",
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "CountOf": { "of": { "Bound": "revealed" }, "filter": [{ "ChosenAs": "name" }] }
+                  },
+                  "filter": [{ "Is": { "Bound": "revealed" } }, { "ChosenAs": "name" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

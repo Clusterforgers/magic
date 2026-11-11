@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ff9a5529-83bd-46a8-b20b-235a5fd26d93",
+  "name": "Divine Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Presence",
+      "oracle_fingerprint": "479d936faf56c2f0f3a1b850b055955e",
+      "abilities": [{ "Replacement": { "when": { "Damage": {} }, "by": { "Cap": 3 } } }]
+    }
+  ]
+}

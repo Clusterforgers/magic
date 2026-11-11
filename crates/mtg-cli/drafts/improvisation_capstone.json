@@ -1,0 +1,43 @@
+{
+  "oracle_id": "fd4f0315-567a-4cc5-bc7e-88a9d2cee910",
+  "name": "Improvisation Capstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Improvisation Capstone",
+      "oracle_fingerprint": "5ca5e13c91d0ffea997e4688b99ee9af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": {
+                          "of": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Lt",
+                      "right": 4
+                    }
+                  },
+                  "effects": [
+                    { "ExileTop": { "as": "card" } },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "exiled", "adds": true } }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "exiled" }, "free": true } }
+            ]
+          }
+        },
+        { "Keyword": "Paradigm" }
+      ]
+    }
+  ]
+}

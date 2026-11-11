@@ -1,0 +1,55 @@
+{
+  "oracle_id": "86dcdffd-c14f-4e06-a74f-d2c727f55b1c",
+  "name": "Keeper of the Beasts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Beasts",
+      "oracle_fingerprint": "2dd3ddf3cc721cf20b97f2100cfcf7a6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Gt",
+                          "right": {
+                            "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "opponent" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
