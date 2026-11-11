@@ -10,11 +10,12 @@ use mtg_cards::card::Card;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 use mtg_engine::characteristics;
+use mtg_engine::choose::{NumberChoice, Target, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_import::scryfall::cards;
-use mtg_testkit::cards::{burn, creature, free_creature, mountain, plains, swamp};
+use mtg_testkit::cards::{burn, creature, free_creature, island, mountain, plains, swamp};
 use mtg_testkit::corpus::{self, printed_card};
 use mtg_testkit::loyalty_cards::pyre_walker;
 use mtg_testkit::scenario::with_counters;
@@ -452,6 +453,90 @@ fn homing_sliver_gives_each_sliver_card_in_hand_slivercycling(
     )?;
     let offered = driver.offered_abilities("Toxin Sliver")?;
     assert_eq!(!offered.is_empty(), homing, "{offered:?}");
+    Ok(())
+}
+
+/// Seat 0 casts `name` announcing `x` and choosing `targets`, pays automatically and lets everything resolve.
+fn cast_with(
+    driver: &mut Driver,
+    name: &str,
+    x: u32,
+    targets: &[Target],
+) -> Result<(), ScriptError> {
+    driver.begin_cast(name)?;
+    for _ in 0..20 {
+        let decision = driver.decision()?.clone();
+        let answer = match decision.kind {
+            DecisionKind::ChooseNumber(_) => Answer::ChooseNumber(NumberChoice::Number(x)),
+            DecisionKind::ChooseTargets(_) => {
+                Answer::ChooseTargets(TargetChoice::Targets(targets.to_vec()))
+            }
+            DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
+            DecisionKind::Priority(_) => break,
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer)?;
+    }
+    settle(driver)
+}
+
+#[rstest]
+#[case::once(1, 3)]
+#[case::twice(2, 6)]
+fn torment_of_hailfire_takes_3_life_each_time_from_an_opponent_with_nothing_to_give(
+    #[values(2, 4)] seats: usize,
+    #[case] x: u32,
+    #[case] lost: i32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [draft("torment_of_hailfire")])
+            .battlefield(0, (0..4).map(|_| ready(swamp()))),
+    )?;
+    cast_with(&mut driver, "Torment of Hailfire", x, &[])?;
+    assert_eq!(life(&driver, 0), 20);
+    for seat in 1..seats {
+        assert_eq!(life(&driver, seat), 20 - lost);
+    }
+    Ok(())
+}
+
+#[rstest]
+fn crackle_with_power_deals_five_times_x_to_each_target(
+    #[values(2, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [draft("crackle_with_power")])
+            .battlefield(0, (0..5).map(|_| ready(mountain()))),
+    )?;
+    let target = driver.target_player(1);
+    cast_with(&mut driver, "Crackle with Power", 1, &[target])?;
+    assert_eq!(life(&driver, 1), 15);
+    Ok(())
+}
+
+#[rstest]
+fn memory_deluge_keeps_two_of_the_cards_its_mana_looks_at(
+    #[values(2, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [draft("memory_deluge")])
+            .battlefield(0, (0..4).map(|_| ready(island())))
+            .library(0, library(10, 1)),
+    )?;
+    let before = hand_size(&driver, 0);
+    cast_with(&mut driver, "Memory Deluge", 0, &[])?;
+    // The deluge left the hand and two cards came in; the library keeps its other cards.
+    assert_eq!(hand_size(&driver, 0), before + 1);
+    assert_eq!(
+        driver
+            .state()
+            .zone(Zone::Library(PlayerId::from_index(0)))
+            .len(),
+        8
+    );
     Ok(())
 }
 

@@ -2,7 +2,7 @@
 //! current draft with the read hash the library computes, a rerun changes nothing, an edited draft retires the old one
 //! (which stays stored), a retired draft of the same hash returns, a draft the build no longer holds is retired, and a
 //! draft for a card that is not stored, written for another text, outranked by a rules file or not a whole loadable draft is
-//! counted and never stored; the report says it all.
+//! counted and never stored; a draft whose meta changed while its rules stayed is rewritten; the report says it all.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -328,4 +328,43 @@ async fn the_metadata_of_a_draft_file_gives_the_source_and_the_oracle_match(pool
             .await
             .unwrap();
     }
+}
+
+/// A meta file that changes while the rules stay (a pack marks a stored Forge draft `differs`) rewrites the stored row, so
+/// the server reads the mark: before, the row kept its old meta and the card played by hand.
+#[sqlx::test]
+async fn a_changed_meta_reaches_the_stored_draft_of_the_same_rules(pool: PgPool) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, _, card) = loaded(pool, dir.path()).await;
+    let cards = stored_cards(&db).await.unwrap();
+    let caps: Caps = mtg_engine::caps();
+    let text = canonical(&card);
+    let mut runs = Vec::new();
+    let mut versions = Vec::new();
+    for meta in [
+        r#"{"source":"forge","oracle_matches":true}"#,
+        r#"{"source":"forge","oracle_matches":true,"differs":true}"#,
+        r#"{"source":"forge","oracle_matches":true,"differs":true}"#,
+    ] {
+        let counts = store_files(
+            &db,
+            &[("draft_0", text.as_str())],
+            &[("draft_0", meta)],
+            &Library::default(),
+            &caps,
+            &cards,
+        )
+        .await
+        .unwrap();
+        runs.push((counts.updated, counted(&counts)));
+        versions.push(db.drafts().version().await.unwrap());
+    }
+
+    assert_eq!(
+        runs,
+        [(0, (1, 0, 0, 0)), (1, (0, 0, 0, 0)), (0, (0, 0, 1, 0))]
+    );
+    assert!(db.drafts().current().await.unwrap()[0].differs);
+    assert_ne!(versions[0], versions[1]);
+    assert_eq!(versions[1], versions[2]);
 }
