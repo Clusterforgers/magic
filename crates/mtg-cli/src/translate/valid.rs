@@ -798,6 +798,15 @@ pub fn defined(ctx: &Ctx, word: &str) -> Tr<Value> {
     if let Some(spec) = word.trim().strip_prefix("Valid ") {
         return Ok(json!({"Each": selector_any(ctx, spec)?}));
     }
+    // "the exiled card": the cards this permanent's effects exiled (CR 607.2a), which the memory Forge keeps them in
+    // holds too. The memory is read only to know a line writes it; a memory written before the move holds the object the
+    // card was, not the one in exile (CR 400.7), so the engine's own link is what names them.
+    if let Some(memory @ ("Imprinted" | "Remembered")) =
+        word.trim().strip_suffix(".ExiledWithSource")
+    {
+        defined(ctx, memory)?;
+        return Ok(json!({"Each": [{"ExiledWith": "This"}, {"In": "Exile"}]}));
+    }
     // `ValidGraveyard Creature.YouOwn`: the objects of a zone list, read as `Count$Valid<zones>` reads them.
     if let Some(rest) = word.trim().strip_prefix("Valid")
         && let Some((zones, spec)) = rest.split_once(' ')

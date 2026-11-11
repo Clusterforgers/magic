@@ -129,6 +129,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::companions::fold(state, event)
         }
         Event::AttackersDeclared { .. }
+        | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
         | Event::DamageDealt { .. }
@@ -434,6 +435,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::Learned { .. }
+        | Event::EvidenceCollected { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }
@@ -767,6 +769,16 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
         Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::AttractionDeckShuffled { player, order } => {
+            state.rng_index += 1;
+            crate::un33_attractions::fold_shuffled(state, *player, order)
+        }
+        Event::RolledToVisit {
+            player, visited, ..
+        } => {
+            crate::un33_attractions::fold_rolled(state, *player, visited);
+            Ok(())
+        }
         Event::InitiativeTaken { player, object } => {
             crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
         }

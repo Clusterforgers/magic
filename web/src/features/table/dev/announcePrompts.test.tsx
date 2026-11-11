@@ -1,4 +1,4 @@
-/** Goal: `?prompt=divide|divide-three|costs|costs-gift|unknown-kind` hand the viewer, at every seat count, a decision the wire parser accepts whose source, targets and gift seats are on the table, and each can be drawn and answered on the dev table (the division and the costs with their own prompts, the unknown kind with the generic one), which clears the decision. */
+/** Goal: `?prompt=divide|divide-three|costs|costs-gift|costs-splice|unknown-kind` hand the viewer, at every seat count, a decision the wire parser accepts whose source, targets and gift seats are on the table, and each can be drawn and answered on the dev table (the division and the costs with their own prompts, the unknown kind with the generic one), which clears the decision. */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -10,7 +10,7 @@ import { must } from '@/test-utils/batches'
 import { SEAT_BASE } from '../prompt/costsText'
 import { fixtureGame } from './devGame'
 
-const KNOWN = ['divide', 'divide-three', 'costs', 'costs-gift'] as const
+const KNOWN = ['divide', 'divide-three', 'costs', 'costs-gift', 'costs-splice'] as const
 
 function table(seats: number, prompt: string) {
   const game = fixtureGame({ seats, prompt })

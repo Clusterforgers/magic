@@ -300,6 +300,8 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Ventured { .. }
+            | TriggerPattern::RolledToVisit { .. }
+            | TriggerPattern::OpenedAttraction { .. }
             | TriggerPattern::CompletedDungeon { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::CoinFlipWon { .. }

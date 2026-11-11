@@ -88,6 +88,12 @@ pub fn uses(ctx: &Ctx, restriction: &str) -> Tr<Vec<Value>> {
     match restriction {
         "Activated" => return Ok(vec![json!({"Ability": {}})]),
         "CostContainsX" => return Ok(vec![json!("CostWithX")]),
+        // "This mana can't be spent to cast spells": abilities and every other cost.
+        "nonSpell" => return Ok(vec![json!({"Ability": {}}), json!("OtherCosts")]),
+        // "Spend this mana only to cast your commander".
+        "Spell.IsCommander+YouOwn" => {
+            return Ok(vec![json!({"Spell": {"facts": ["YourCommander"]}})]);
+        }
         // "Can't be spent to cast nonartifact spells": anything else is allowed.
         "CantCastNonArtifactSpells" => {
             return Ok(vec![
@@ -107,6 +113,17 @@ pub fn uses(ctx: &Ctx, restriction: &str) -> Tr<Vec<Value>> {
     }
     let mut out = Vec::new();
     for alternative in restriction.split(',') {
+        // A special action names no kind: "to turn permanents face up", "unlock a door", "foretell a card".
+        let special = match alternative {
+            "Static.isTurnFaceUp" => Some("TurnFaceUp"),
+            "Static.Unlock" => Some("Unlock"),
+            "Static.Foretelling" => Some("Foretell"),
+            _ => None,
+        };
+        if let Some(action) = special {
+            out.push(json!({ "Special": action }));
+            continue;
+        }
         let (head, properties) = alternative.split_once('.').unwrap_or((alternative, ""));
         let ability = match head {
             "Spell" => false,

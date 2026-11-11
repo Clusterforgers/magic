@@ -130,6 +130,19 @@ describe.each(SCENARIOS)('$name', ({ seats, viewport, drawn }) => {
     }
   })
 
+  it("names the Attraction deck of the seat that brings one, and no other seat's", () => {
+    const { store } = table()
+    for (const [seat, kind] of drawn) {
+      const count = must(playerOf(store.getState(), seat)).attraction_deck ?? 0
+      const chip = within(rootOf(seat, kind)).queryByRole('img', {
+        name: zoneLabel('attractions', count),
+      })
+      // A tile cuts the chips that do not fit, the last first, so it is only asked not to name a deck that is not there.
+      if (count === 0) expect(chip, `${kind} ${seat}`).toBeNull()
+      else if (kind !== 'tile') expect(chip, `${kind} ${seat}`).toHaveTextContent(String(count))
+    }
+  })
+
   it('shows the name and life of every seat, life as the largest figure', () => {
     const { store } = table()
     for (const [seat, kind] of drawn) {

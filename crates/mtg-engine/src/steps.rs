@@ -69,10 +69,11 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             Progress::Events(events)
         }
         // The Sagas of the active player get a lore counter as the precombat main phase begins (CR 714.3b), and
-        // the rad counters of the active player mill (CR 725.2).
+        // the rad counters of the active player mill (CR 725.2), then they roll to visit their Attractions (CR 505.5).
         Step::Main1 => {
             let mut events = crate::saga::precombat_counters(state);
             events.extend(crate::w7b_rad::w7b_precombat_rad(state));
+            events.extend(crate::un33_attractions::precombat(state));
             events.push(grant(state));
             Progress::Events(events)
         }

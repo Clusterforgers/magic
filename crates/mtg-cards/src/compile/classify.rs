@@ -96,7 +96,10 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         return ClauseKind::Keyword;
     }
     // A Case's "To solve — <condition>" is a triggered ability at its controller's end step (CR 719.2).
-    if is_chapter(head) || head.starts_with("To solve \u{2014} ") {
+    if is_chapter(head)
+        || head.starts_with("To solve \u{2014} ")
+        || super::read::is_visit_line(head)
+    {
         return ClauseKind::Triggered;
     }
     let body = head

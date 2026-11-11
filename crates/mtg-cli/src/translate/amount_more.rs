@@ -242,6 +242,7 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
             Ok(json!({"TalliedLastTurn": {"who": who, "what": "LifeLost"}}))
         }
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
+        ("PlayerCountPropertyYou", "AttractionsVisitedThisTurn") => tallied("AttractionsVisited"),
         ("PlayerCountPropertyYou", "SacrificedThisTurn" | "SacrificedThisTurn Permanent") => {
             tallied("Sacrificed")
         }

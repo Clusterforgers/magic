@@ -155,8 +155,8 @@ pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};
 pub use recipe::{
-    CardArt, Catalog, DeckFingerprint, DeckRef, FINGERPRINT_VERSION, FingerprintError, FormatKind,
-    GameRecipe, RecipeError,
+    AttractionRef, CardArt, Catalog, DeckFingerprint, DeckRef, FINGERPRINT_VERSION,
+    FingerprintError, FormatKind, GameRecipe, RecipeError,
 };
 pub use records::{
     Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, SeatState, UserGame,

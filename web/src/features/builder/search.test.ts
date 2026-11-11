@@ -110,7 +110,15 @@ describe('zonesFor', () => {
     expect(zonesFor(format)).toEqual(zones)
   })
 
+  it.each([
+    ['Artifact — Attraction', ['commander', 'main', 'sideboard', 'companion', 'attractions']],
+    ['Stickers', ['commander', 'main', 'sideboard', 'companion', 'stickers']],
+    ['Legendary Creature — Elf', ['commander', 'main', 'sideboard', 'companion']],
+  ])('offers the Attraction deck and the sticker sheets only to their cards: %s', (typeLine, zones) => {
+    expect(zonesFor('commander', typeLine)).toEqual(zones)
+  })
+
   it('keeps the order of ZONES', () => {
-    expect(ZONES).toEqual(['commander', 'main', 'sideboard', 'companion'])
+    expect(ZONES).toEqual(['commander', 'main', 'sideboard', 'companion', 'attractions', 'stickers'])
   })
 })

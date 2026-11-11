@@ -1,16 +1,16 @@
 {
   "oracle_id": "0aafaef7-4827-4c80-87db-060f5be803f9",
   "name": "Discourtesy Clerk",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Discourtesy Clerk",
       "oracle_fingerprint": "eea2aaf17a2ba74af98799c5aad02275",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 111 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
           }
         },
         {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e65a8ab8-84a7-4fe2-b009-ceb87bec6b4e",
   "name": "Glacial Ray",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glacial Ray",
@@ -13,12 +13,7 @@
             "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 42, "end": 213 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{R}" } } }
       ]
     }
   ]

@@ -671,9 +671,24 @@ fn an_auras_attach_line_is_the_enchant_keyword_and_adds_no_gap() {
 #[case("Enchant:Creature", json!({"Enchant": [{"Type": "Creature"}]}))]
 #[case("Suspend:4:R", json!({"Suspend": {"time": 4, "cost": "{R}"}}))]
 #[case("Swampwalk", json!({"Landwalk": [{"Subtype": "Swamp"}]}))]
+#[case("Banding", json!("Banding"))]
+#[case("Bands with other:Creature.Legendary:legendary creatures", json!({"BandsWithOther": [{"Type": "Creature"}, {"Supertype": "Legendary"}]}))]
+#[case("Splice:Arcane:1 R", json!({"Splice": {"onto": "Arcane", "cost": "{1}{R}"}}))]
+#[case("Splice:Instant,Sorcery:2 U", json!({"Splice": {"onto": "InstantOrSorcery", "cost": "{2}{U}"}}))]
 fn keywords_map_to_the_keyword_set(#[case] line: &str, #[case] expected: Value) {
     let script = format!("Name:T\nTypes:Creature Elf\nK:{line}\n");
     assert_eq!(abilities(&script), vec![json!({ "Keyword": expected })]);
+}
+
+#[rstest]
+#[case::splice_by_sacrifice("Splice:Arcane:Sac<2/Mountain>")]
+#[case::splice_paying_life_to_an_opponent("Splice:Arcane:GainLife<5/Player.Opponent>")]
+#[case::splice_by_tapping("Splice:Arcane:tapXType<1/Creature.White/white creature>")]
+#[case::splice_onto_another_kind("Splice:Creature:1 G")]
+fn a_splice_the_engine_does_not_pay_stays_a_gap(#[case] line: &str) {
+    let card = translate(&format!("Name:T\nTypes:Instant Arcane\nK:{line}\n"));
+    assert_eq!(card.gaps().count(), 1);
+    assert_eq!(card.translated(), 0);
 }
 
 mod audit;
@@ -725,6 +740,7 @@ mod r1a;
 mod r2c;
 mod r3c;
 mod r4f;
+mod un33_attractions;
 #[rstest]
 #[case::if_tapped_on_activation(
     "Name:T\nTypes:Creature Elf\nA:AB$ Draw | Cost$ 0 | IsPresent$ Card.Self+tapped\n",
@@ -793,6 +809,7 @@ mod ep29;
 mod ep30;
 mod ep31;
 mod ep32;
+mod ep33;
 mod ev1;
 mod f1;
 mod f2;

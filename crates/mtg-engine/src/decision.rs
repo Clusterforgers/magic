@@ -368,6 +368,11 @@ pub struct AttackerOption {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub exert: bool,
+    /// It has banding or "bands with other" (CR 702.22c): the declaration may put it in a band with other attackers through
+    /// `Answer::DeclareExerting`. Left out while it has neither.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub banding: bool,
 }
 
 impl AttackerOption {
@@ -379,6 +384,7 @@ impl AttackerOption {
             tax: Vec::new(),
             life: Vec::new(),
             exert: false,
+            banding: false,
         }
     }
 
@@ -734,12 +740,20 @@ pub enum Answer {
     PayMana(PayChoice),
     /// Attackers and what each attacks; empty means no attack.
     DeclareAttackers(Vec<(ObjectId, AttackTarget)>),
-    /// Attackers and what each attacks, and the creatures among them exerted as they attack (CR 701.43).
+    /// Attackers and what each attacks, the creatures among them exerted as they attack (CR 701.43) and the bands they
+    /// form (CR 702.22c).
     DeclareExerting {
         /// Attackers and what each attacks.
         attackers: Vec<(ObjectId, AttackTarget)>,
         /// The attackers exerted, each offered with `AttackerOption::exert`.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
         exert: Vec<ObjectId>,
+        /// The bands, each of at least two attackers that attack the same player, planeswalker or battle; one with banding
+        /// or "bands with other" is offered with `AttackerOption::banding`.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<ObjectId>>>", optional))]
+        bands: Vec<Vec<ObjectId>>,
     },
     /// Pairs of (blocker, attacker blocked); empty means no blocks.
     DeclareBlockers(Vec<(ObjectId, ObjectId)>),

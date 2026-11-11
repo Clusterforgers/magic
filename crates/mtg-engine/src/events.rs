@@ -348,6 +348,13 @@ pub enum Event {
         /// Each attacker and its target.
         attackers: Vec<(ObjectId, AttackTarget)>,
     },
+    /// Attackers declared together form a band (CR 702.22c).
+    BandFormed {
+        /// The attacking player.
+        player: PlayerId,
+        /// The members of the band.
+        attackers: Vec<ObjectId>,
+    },
     /// A defending player declared blockers (possibly none).
     BlockersDeclared {
         /// The defending player.
@@ -355,7 +362,7 @@ pub enum Event {
         /// Pairs of (blocker, attacker blocked).
         blocks: Vec<(ObjectId, ObjectId)>,
     },
-    /// An attacker's damage was divided among its blockers.
+    /// An attacker's damage was divided among its blockers, or a blocker's among the attackers it blocks.
     DamageAssigned {
         /// The attacker.
         attacker: ObjectId,
@@ -801,6 +808,11 @@ pub enum Event {
         /// Who learned.
         player: PlayerId,
     },
+    /// A player collected evidence (CR 701.59): the cards it exiled are the moves that come before it.
+    EvidenceCollected {
+        /// Who collected it.
+        player: PlayerId,
+    },
     /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
     DieRolled {
         /// Who rolled.
@@ -809,6 +821,23 @@ pub enum Event {
         sides: u32,
         /// The number rolled, from 1 to `sides`.
         result: u32,
+    },
+    /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
+    AttractionDeckShuffled {
+        /// Whose deck.
+        player: PlayerId,
+        /// The cards, top card last.
+        order: Vec<ObjectId>,
+    },
+    /// A player rolled to visit their Attractions (CR 701.52a): the result of the `DieRolled` before it and the
+    /// Attractions with that number lit up, each visited.
+    RolledToVisit {
+        /// Who rolled.
+        player: PlayerId,
+        /// The number rolled.
+        result: u32,
+        /// The Attractions visited.
+        visited: Vec<ObjectId>,
     },
     /// A player flipped a coin (CR 705): the flip came from the game's random stream, which it moved on by one.
     CoinFlipped {
@@ -1074,6 +1103,12 @@ pub enum ZoneCause {
         /// The player who cloaked it and controls it.
         by: PlayerId,
     },
+    /// An effect put it onto the battlefield face down (CR 708.3) under the control of `by`, who alone may look at it: a
+    /// 2/2 creature turned face up only for its morph, megamorph or disguise cost.
+    PutFaceDown {
+        /// The player who controls it.
+        by: PlayerId,
+    },
     /// It was exiled face down by the permanent `by` with hideaway (CR 702.75a): it lies face down, and its owner and the
     /// controller of the permanent may look at it.
     Hideaway {
@@ -1140,15 +1175,18 @@ impl ZoneCause {
             ZoneCause::Sealed { by } => Some(FaceDown::Sealed { by }),
             ZoneCause::Manifested { .. } => Some(FaceDown::Manifest),
             ZoneCause::Cloaked { .. } => Some(FaceDown::Cloak),
+            ZoneCause::PutFaceDown { .. } => Some(FaceDown::Morph),
             _ => None,
         }
     }
 
-    /// The player a move for this cause puts the object under the control of, when the cause says so: whoever manifested
-    /// or cloaked it, who may differ from its owner.
+    /// The player a move for this cause puts the object under the control of, when the cause says so: whoever manifested,
+    /// cloaked or put it face down, who may differ from its owner.
     pub const fn enters_under(self) -> Option<PlayerId> {
         match self {
-            ZoneCause::Manifested { by } | ZoneCause::Cloaked { by } => Some(by),
+            ZoneCause::Manifested { by }
+            | ZoneCause::Cloaked { by }
+            | ZoneCause::PutFaceDown { by } => Some(by),
             _ => None,
         }
     }
@@ -1160,6 +1198,8 @@ impl Event {
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
+            | Event::AttractionDeckShuffled { .. }
+            | Event::RolledToVisit { .. }
             | Event::MulliganTaken { .. }
             | Event::DamageCleared
             | Event::EffectCreated { .. }
@@ -1187,6 +1227,7 @@ impl Event {
             | Event::RingBearerLost { .. }
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
+            | Event::EvidenceCollected { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
@@ -1309,6 +1350,7 @@ impl Event {
             | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::Paired { object, with } | Event::Unpaired { object, with } => vec![*object, *with],
+            Event::BandFormed { attackers, .. } => attackers.clone(),
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

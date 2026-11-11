@@ -420,6 +420,28 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// The visit ability of an Attraction (CR 702.159a, "Visit — "): its controller rolls to visit their Attractions and
+    /// the result is a number lit up on the source; `Triggering` is that player.
+    Visit {},
+    /// A player rolls to visit their Attractions ("whenever you roll to visit your Attractions", CR 701.52);
+    /// `Triggering` is that player.
+    RolledToVisit {
+        /// Who rolls.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player opens an Attraction ("whenever you open an Attraction", CR 701.51c); `Triggering` is that player.
+    OpenedAttraction {
+        /// Who opens it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player unlocks a door of a Room (CR 709.5): "when you unlock this door" (`door`, the face of the source, set as the
     /// card is compiled) or "whenever you fully unlock a Room" (`fully`, its last locked door); `Triggering` is that player.
     DoorUnlocked {

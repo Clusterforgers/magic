@@ -157,6 +157,7 @@ mod turn_log;
 #[cfg(test)]
 mod turn_log_tests;
 mod turn_summary;
+pub mod un33_attractions;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
 pub mod w17b_statics;

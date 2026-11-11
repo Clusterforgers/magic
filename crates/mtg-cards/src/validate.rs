@@ -1891,6 +1891,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1953,6 +1954,7 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
+            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
@@ -1967,6 +1969,7 @@ impl<'a> Walker<'a> {
             Keyword::Protection(quality)
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
+            | Keyword::BandsWithOther(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
@@ -2252,7 +2255,9 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
-            TriggerPattern::DayNightChanges { .. } | TriggerPattern::DoorUnlocked { .. } => {}
+            TriggerPattern::DayNightChanges { .. }
+            | TriggerPattern::DoorUnlocked { .. }
+            | TriggerPattern::Visit {} => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -2264,6 +2269,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::RolledToVisit { who }
+            | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
@@ -2404,6 +2411,9 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
+                | TriggerPattern::Visit {}
+                | TriggerPattern::RolledToVisit { .. }
+                | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
@@ -2588,7 +2598,10 @@ impl Walker<'_> {
         match to {
             Destination::Battlefield {
                 under: Some(who), ..
-            } => self.at("under", |w| w.reference(who, Kind::Player)),
+            }
+            | Destination::BattlefieldFaceDown { under: Some(who) } => {
+                self.at("under", |w| w.reference(who, Kind::Player));
+            }
             Destination::BattlefieldAttached { to } => {
                 self.at("to", |w| w.reference(to, Kind::Object));
             }
@@ -3119,6 +3132,13 @@ impl Walker<'_> {
                 self.uses("Effect", "Move.Attached");
             }
             Effect::Move {
+                to: Destination::BattlefieldFaceDown { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.FaceDown");
+            }
+            Effect::Move {
                 to:
                     Destination::Library {
                         place: Place::Top,
@@ -3323,7 +3343,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::Incubate { who, count } => {
+            Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
@@ -3497,6 +3517,7 @@ impl Walker<'_> {
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
+            | Effect::RollToVisit { who }
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
@@ -4594,6 +4615,7 @@ impl Walker<'_> {
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::VoteAgain(who)
+            | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
             | GameRule::ExtraDie(who)

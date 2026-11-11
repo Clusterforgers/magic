@@ -536,6 +536,14 @@ pub fn peek_and_reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `RollDice` of one die: the rows of `ResultSubAbilities` are the table of the roll.
 pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // "Roll to visit your Attractions" (CR 701.52): the roll of the game's own rules, not a table of the card.
+    if p.get("ToVisitYourAttractions") == Some("True") {
+        only(p, "RollDice", &["Sides", "ToVisitYourAttractions"])?;
+        if p.get("Sides").unwrap_or("6") != "6" {
+            return unmapped("key:RollDice.ToVisitYourAttractions-sides");
+        }
+        return Ok(vec![json!({"RollToVisit": {}})]);
+    }
     only(
         p,
         "RollDice",

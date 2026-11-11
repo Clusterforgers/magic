@@ -20,6 +20,10 @@ pub enum Section {
     Commander,
     /// Companion.
     Companion,
+    /// The Attraction deck.
+    Attractions,
+    /// The sticker sheets.
+    Stickers,
     /// Cards considered but not in the deck.
     Maybeboard,
 }

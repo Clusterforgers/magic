@@ -108,6 +108,7 @@ pub(crate) struct PrintingPayload {
     images: PrintingImages,
     flavor_name: Option<String>,
     printed_name: Option<String>,
+    attraction_lights: i16,
 }
 
 /// The printing-level row of a record: its ids, release date, art and other names.
@@ -132,6 +133,7 @@ pub(crate) fn split_printing(record: &CardRecord) -> Result<PrintingPayload, Rej
         },
         flavor_name: record.flavor_name.clone(),
         printed_name: record.printed_name.clone(),
+        attraction_lights: i16::from(record.attraction_lights.0),
     };
     reject_nul(&printing)?;
     Ok(printing)

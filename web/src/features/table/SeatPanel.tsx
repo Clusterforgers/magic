@@ -209,6 +209,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <SpeedChip owner={owner} player={player} density="line" />
             <PlayerCounterChips owner={owner} player={player} density="line" />
             <CompanionChip owner={owner} player={player} />
+            {counts.attractions > 0 ? (
+              <CountChip zone="attractions" count={counts.attractions} density="line" />
+            ) : null}
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
             {counts.command > 0 ? (
@@ -251,6 +254,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <SpeedChip owner={owner} player={player} density="line" />
       <PlayerCounterChips owner={owner} player={player} density="line" />
       <CompanionChip owner={owner} player={player} />
+      {counts.attractions > 0 ? (
+        <CountChip zone="attractions" count={counts.attractions} density="line" />
+      ) : null}
       {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
       <DamageChips
         chips={chips.damage}

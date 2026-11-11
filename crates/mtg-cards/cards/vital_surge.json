@@ -1,19 +1,14 @@
 {
   "oracle_id": "e19c0205-67e3-4e44-995b-751e18fdaafd",
   "name": "Vital Surge",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vital Surge",
       "oracle_fingerprint": "067fc6ad09dc37115f72b67401562b66",
       "abilities": [
         { "Spell": { "effects": [{ "GainLife": { "amount": 3 } }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 188 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{G}" } } }
       ]
     }
   ]

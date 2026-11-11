@@ -9,9 +9,9 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 73 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "OpenAttraction": {} }]
           }
         },
         {

@@ -88,6 +88,8 @@ pub enum Action {
     Learned,
     /// A player rolled a die.
     Rolled,
+    /// A player collected evidence (CR 701.59).
+    CollectedEvidence,
 }
 
 impl Action {
@@ -144,6 +146,7 @@ impl Action {
             Action::Mutated => ("mutate", "mutates"),
             Action::Learned => ("learn", "learns"),
             Action::Rolled => ("roll a die", "rolls a die"),
+            Action::CollectedEvidence => ("collect evidence", "collects evidence"),
         }
     }
 

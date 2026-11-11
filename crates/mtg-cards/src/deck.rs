@@ -36,15 +36,21 @@ pub enum DeckZone {
     Commander,
     /// The companion.
     Companion,
+    /// The Attraction deck (CR 717.2), a supplementary deck outside the main deck.
+    Attractions,
+    /// The sticker sheets (CR 123.2a), of which three are chosen at random as the game begins.
+    Stickers,
 }
 
 impl DeckZone {
     /// Every zone, in the order a report lists them.
-    pub const ALL: [DeckZone; 4] = [
+    pub const ALL: [DeckZone; 6] = [
         DeckZone::Main,
         DeckZone::Sideboard,
         DeckZone::Commander,
         DeckZone::Companion,
+        DeckZone::Attractions,
+        DeckZone::Stickers,
     ];
 
     /// The zone's name on the wire and in the hash.
@@ -54,6 +60,8 @@ impl DeckZone {
             DeckZone::Sideboard => "sideboard",
             DeckZone::Commander => "commander",
             DeckZone::Companion => "companion",
+            DeckZone::Attractions => "attractions",
+            DeckZone::Stickers => "stickers",
         }
     }
 }

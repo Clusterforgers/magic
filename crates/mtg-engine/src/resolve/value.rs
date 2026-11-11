@@ -78,6 +78,7 @@ static NO_CHOICES: Choices = Choices {
     targets: Vec::new(),
     division: Vec::new(),
     optional_costs: Vec::new(),
+
     way: None,
     face: None,
     spent: None,
@@ -480,6 +481,7 @@ impl<'a> Scope<'a> {
             TurnTally::LifeLostMost => Tally::Lost,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
             TurnTally::Scried => Tally::Scried,
+            TurnTally::AttractionsVisited => Tally::AttractionsVisited,
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,

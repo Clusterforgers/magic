@@ -343,7 +343,15 @@ player: PlayerId,
 /**
  * Each attacker and its target.
  */
-attackers: Array<[ObjectId, AttackTarget]>, } } | { "BlockersDeclared": { 
+attackers: Array<[ObjectId, AttackTarget]>, } } | { "BandFormed": { 
+/**
+ * The attacking player.
+ */
+player: PlayerId, 
+/**
+ * The members of the band.
+ */
+attackers: Array<ObjectId>, } } | { "BlockersDeclared": { 
 /**
  * The defending player.
  */
@@ -758,6 +766,10 @@ object: ObjectId, } } | { "Learned": {
 /**
  * Who learned.
  */
+player: PlayerId, } } | { "EvidenceCollected": { 
+/**
+ * Who collected it.
+ */
 player: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.
@@ -770,7 +782,27 @@ sides: number,
 /**
  * The number rolled, from 1 to `sides`.
  */
-result: number, } } | { "CoinFlipped": { 
+result: number, } } | { "AttractionDeckShuffled": { 
+/**
+ * Whose deck.
+ */
+player: PlayerId, 
+/**
+ * The cards, top card last.
+ */
+order: Array<ObjectId>, } } | { "RolledToVisit": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The number rolled.
+ */
+result: number, 
+/**
+ * The Attractions visited.
+ */
+visited: Array<ObjectId>, } } | { "CoinFlipped": { 
 /**
  * Who flipped.
  */

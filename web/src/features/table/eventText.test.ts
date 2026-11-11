@@ -32,6 +32,14 @@ type VariantName<E> = E extends string ? E : E extends object ? keyof E : never
 const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   FirstPlayerChosen: [{ FirstPlayerChosen: { player: 1 } }, 'Bo goes first'],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
+  AttractionDeckShuffled: [
+    { AttractionDeckShuffled: { player: 0, order: [3, 4] } },
+    'Ana shuffles their Attraction deck',
+  ],
+  RolledToVisit: [
+    { RolledToVisit: { player: 1, result: 6, visited: [5, 6] } },
+    'Bo rolls 6 to visit their Attractions: 2 are visited',
+  ],
   MulliganPhaseBegan: ['MulliganPhaseBegan', 'The mulligan phase begins'],
   HandDealt: [{ HandDealt: { player: 0, cards: [1, 2, 3, 4, 5, 6, 3] } }, 'Ana is dealt 7 cards'],
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
@@ -101,6 +109,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
+  EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -205,6 +214,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
       },
     },
     'Bo attacks Ana with Grizzly Bears and Hill Giant',
+  ],
+  BandFormed: [
+    { BandFormed: { player: 1, attackers: [1, 2] } },
+    'Bo bands Grizzly Bears and Hill Giant together',
   ],
   BlockersDeclared: [
     { BlockersDeclared: { player: 0, blocks: [[2, 1]] } },
@@ -407,6 +420,17 @@ const MORE: [Event, string][] = [
       ZoneChanged: {
         object: 3,
         from: { Graveyard: 0 },
+        to: 'Battlefield',
+        cause: { PutFaceDown: { by: 0 } },
+      },
+    },
+    'Forest is put onto the battlefield face down',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
         to: 'Exile',
         cause: { Haunting: { of: { id: 9, counter: 1 } } },
       },
@@ -505,6 +529,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
+  AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',

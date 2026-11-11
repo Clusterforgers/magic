@@ -138,6 +138,12 @@ const fn is_zero(value: &i32) -> bool {
     *value == 0
 }
 
+/// Whether a count of cards is 0, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_no_card(value: &u32) -> bool {
+    *value == 0
+}
+
 /// An activated ability of an object in the words of its card, for a menu to name what `PriorityOptions` offers.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct ActivatedView {
@@ -231,6 +237,10 @@ pub struct ObjectView {
     pub power: Option<i32>,
     /// Current toughness, if it has one.
     pub toughness: Option<i32>,
+    /// The numbers lit up on an Attraction card (CR 717.1), ascending; left out for any other object.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<u8>>", optional)]
+    pub lights: Vec<u8>,
     /// The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(as = "Option<i32>", optional)]
@@ -487,8 +497,14 @@ pub struct PlayerView {
     pub revealed_hand: Vec<ObjectId>,
     /// Graveyard (public).
     pub graveyard: ZoneView,
-    /// Command zone (public).
+    /// Command zone (public): the commanders, the junkyard (the Attractions put there, CR 717.6a) and the rest; the
+    /// face-down cards of the Attraction deck are not in it.
     pub command: ZoneView,
+    /// The cards left in the seat's Attraction deck (CR 717.2), face down in its command zone; left out while there are
+    /// none.
+    #[serde(default, skip_serializing_if = "is_no_card")]
+    #[ts(as = "Option<u32>", optional)]
+    pub attraction_deck: u32,
     /// The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
     /// it carries; public, and left out outside Commander.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

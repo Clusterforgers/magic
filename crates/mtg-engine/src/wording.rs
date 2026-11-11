@@ -534,6 +534,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (format!("{name} venture{s} into the dungeon"), false)
         }
         TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::Visit {} => ("you visit this Attraction".to_owned(), true),
+        TriggerPattern::RolledToVisit { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} roll{s} to visit Attractions"), false)
+        }
+        TriggerPattern::OpenedAttraction { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} open{s} an Attraction"), false)
+        }
         TriggerPattern::DoorUnlocked {
             door: Some(_),
             fully: false,

@@ -42,7 +42,7 @@ export function ResultRow({ card, draft, identity = null, onAdd, onPreview, fixM
   const describedBy = useId()
   const inDeck = copiesOf(draft, card.oracle_id)
   const full = !hasRoom(draft)
-  const others = zonesFor(draft.format).filter((zone) => zone !== 'main')
+  const others = zonesFor(draft.format, card.type_line).filter((zone) => zone !== 'main')
   const issue = card.support !== 'verified'
   return (
     <li data-card={card.oracle_id} className="flex items-center gap-1">

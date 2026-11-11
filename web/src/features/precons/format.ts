@@ -139,6 +139,8 @@ export const BOARD_LABEL: Readonly<Record<DeckZone, string>> = {
   main: 'Main deck',
   sideboard: 'Sideboard',
   companion: 'Companion',
+  attractions: 'Attraction deck',
+  stickers: 'Sticker sheets',
 }
 
 /** A line of a precon as an entry of the list of unvalidated cards; null for a Verified card. */

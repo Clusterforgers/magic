@@ -50,6 +50,14 @@ impl Writer<'_> {
     /// Manifest dread and the step on the creature it made, as one sentence, and the number of effects they cover.
     pub(super) fn r9w_dread(effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let (who, name) = dread(effects)?;
+        // "Manifest dread twice": the four steps again by the same player, neither creature named.
+        if name.is_none()
+            && *who == Ref::You
+            && let Some((again, None)) = effects.get(4..).and_then(dread)
+            && again == who
+        {
+            return Some((vec!["manifest dread twice".to_owned()], 8));
+        }
         let head = match who {
             Ref::You => "manifest dread",
             Ref::ControllerOf(of) if **of == Ref::Target(0) => "its controller manifests dread",

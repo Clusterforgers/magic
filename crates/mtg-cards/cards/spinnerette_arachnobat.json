@@ -1,7 +1,7 @@
 {
   "oracle_id": "9372f286-5ea6-4abb-b695-1ad5f46efe34",
   "name": "Spinnerette, Arachnobat",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spinnerette, Arachnobat",
@@ -9,7 +9,10 @@
       "abilities": [
         { "Keyword": "Reach" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 50 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
+          }
         },
         {
           "Static": {

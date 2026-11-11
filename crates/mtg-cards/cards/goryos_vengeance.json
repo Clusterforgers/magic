@@ -1,7 +1,7 @@
 {
   "oracle_id": "3ea3c681-f0ad-45a2-bc25-2813efd8d560",
   "name": "Goryo's Vengeance",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Goryo's Vengeance",
@@ -39,12 +39,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 324 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{2}{B}" } } }
       ]
     }
   ]

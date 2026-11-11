@@ -60,6 +60,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let printed = printed(ctx, choices)?;
     let mana = alternative::replace(ctx, choices, printed.mana);
     let mana = optional::add(ctx, choices, mana);
+    let mana = super::splice::add(ctx, choices, mana);
     let mana = price::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);

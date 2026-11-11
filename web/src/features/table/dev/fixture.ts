@@ -319,6 +319,8 @@ export function buildFixture(options: FixtureOptions): Fixture {
     ),
     commanders: mine.command.map((object, index) => ({ object, ...commanderCasts(seat, index) })),
     commander_lethal: 21,
+    // One opponent plays with an Attraction deck, so the table shows its chip.
+    ...(seat === 1 ? { attraction_deck: 9 } : {}),
     ...commanderDamage(seat, seats, cards, objects),
     bank: 0,
     connected: true,

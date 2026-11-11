@@ -23,7 +23,7 @@ pub(crate) enum Outcome {
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
     /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
-    BeginAttack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    BeginAttack(Vec<(ObjectId, AttackTarget)>, crate::combat::AttackExtras),
     /// This block is declared once its cost is paid (CR 509.1d): the payment is decided next.
     BeginBlock(Vec<(ObjectId, ObjectId)>),
     /// Start activating this ability; its announcement is decided next.
@@ -66,17 +66,27 @@ pub(crate) enum Outcome {
     DropTrigger,
 }
 
-/// A declaration of attackers checked against its options, with the creatures it exerts (CR 508.1, 701.43).
+/// A declaration of attackers checked against its options, with the creatures it exerts and the bands it forms (CR 508.1,
+/// 701.43, 702.22c).
 fn w11a_declare(
     state: &GameState,
     player: mtg_core::ids::PlayerId,
     options: &crate::decision::AttackOptions,
-    attackers: Vec<(ObjectId, AttackTarget)>,
-    exert: Vec<ObjectId>,
+    answer: Answer,
 ) -> Result<Outcome, EngineError> {
+    let (attackers, extras): (Vec<(ObjectId, AttackTarget)>, _) = match answer {
+        Answer::DeclareExerting {
+            attackers,
+            exert,
+            bands,
+        } => (attackers, crate::combat::AttackExtras { exert, bands }),
+        Answer::DeclareAttackers(attackers) => (attackers, crate::combat::AttackExtras::default()),
+        _ => return Err(IllegalAnswer::NotOffered("attack").into()),
+    };
     check_attackers(options, &attackers)?;
-    crate::w11a_exert::w11a_check_exert(options, &attackers, &exert)?;
-    attack_tax::declare(state, player, attackers, exert)
+    crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
+    crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
+    attack_tax::declare(state, player, attackers, extras)
 }
 
 /// Whether a yes-or-no question outside any resolution is one the game itself asks: about a commander or a mutating spell.
@@ -178,12 +188,10 @@ pub(crate) fn handle(
         (DecisionKind::PayMana(options), Answer::PayMana(choice)) => {
             cast::pay_answer(state, player, options, choice, pending)
         }
-        (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
-            w11a_declare(state, player, options, attackers, Vec::new())
-        }
-        (DecisionKind::DeclareAttackers(options), Answer::DeclareExerting { attackers, exert }) => {
-            w11a_declare(state, player, options, attackers, exert)
-        }
+        (
+            DecisionKind::DeclareAttackers(options),
+            answer @ (Answer::DeclareAttackers(_) | Answer::DeclareExerting { .. }),
+        ) => w11a_declare(state, player, options, answer),
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
             check_blockers(options, &blocks)?;
             crate::block_tax::declare(state, player, blocks)

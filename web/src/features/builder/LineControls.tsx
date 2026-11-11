@@ -112,7 +112,7 @@ export function MoveMenu({
 }) {
   const { zone, card, count } = line
   const id = card.oracle_id
-  const targets = zonesFor(format).filter((to) => to !== zone)
+  const targets = zonesFor(format, card.type_line).filter((to) => to !== zone)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger

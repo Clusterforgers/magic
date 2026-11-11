@@ -116,6 +116,13 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
     },
+    /// The battlefield face down (CR 708.3): a 2/2 creature with nothing else that its controller alone may look at,
+    /// turned face up only for its morph, megamorph or disguise cost.
+    BattlefieldFaceDown {
+        /// Enters under this player's control; its owner's when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -935,6 +942,23 @@ pub enum Effect {
         /// Whether it is "venture into Undercity".
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         undercity: bool,
+    },
+    /// "Open an Attraction" (CR 701.51): the player puts the top card of their Attraction deck onto the battlefield, once
+    /// for each of `count`; a player without an Attraction deck opens nothing.
+    OpenAttraction {
+        /// Who opens.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many Attractions.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// "Roll to visit your Attractions" (CR 701.52): the player rolls a six-sided die and each Attraction they control
+    /// with that number lit up is visited.
+    RollToVisit {
+        /// Who rolls.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
     },
     /// The player unlocks a locked door of a Room they control, which they choose (CR 709.5): "unlock a locked door of a
     /// Room you control".

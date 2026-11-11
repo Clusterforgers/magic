@@ -73,8 +73,8 @@ fn assigns_sections_in_plain_text(#[case] input: &str, #[case] expected: &[(u32,
 #[case::no_sideboard_partners("1 A\n1 A2\n\n1 B\n1 C", &[(1, "A", Main), (1, "A2", Main), (1, "B", Commander), (1, "C", Commander)])]
 #[case::no_blank_no_command_zone("1 A\n1 B", &[(1, "A", Main), (1, "B", Main)])]
 #[case::sb_prefix_lines_are_no_block("1 A\nSB: 1 B\n\n1 C", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
-#[case::stickers_then_commander("1 A\n\nSTICKERS:\n1 S\n\n1 C", &[(1, "A", Main), (1, "C", Commander)])]
-#[case::sideboard_stickers_then_commander("1 A\n\nSIDEBOARD:\n1 B\n\nSTICKERS:\n1 S\n2 T\n\n1 C\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander), (1, "D", Commander)])]
+#[case::stickers_then_commander("1 A\n\nSTICKERS:\n1 S\n\n1 C", &[(1, "A", Main), (1, "S", Section::Stickers), (1, "C", Commander)])]
+#[case::sideboard_stickers_then_commander("1 A\n\nSIDEBOARD:\n1 B\n\nSTICKERS:\n1 S\n2 T\n\n1 C\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "S", Section::Stickers), (2, "T", Section::Stickers), (1, "C", Commander), (1, "D", Commander)])]
 fn mtgo_text_lists_the_commander_after_the_sideboard(
     #[case] input: &str,
     #[case] expected: &[(u32, &str, Section)],
@@ -183,7 +183,7 @@ proptest! {
         prop_assert_eq!(deck.card_count(Main), count(main));
         prop_assert_eq!(deck.card_count(Sideboard), count(side));
         prop_assert_eq!(deck.card_count(Commander), count(commanders));
-        prop_assert_eq!(deck.ignored.iter().map(|s| s.count).sum::<u64>(), count(stickers));
+        prop_assert_eq!(deck.card_count(Section::Stickers), count(stickers));
     }
 
     #[test]

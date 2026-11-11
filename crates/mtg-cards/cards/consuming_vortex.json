@@ -1,7 +1,7 @@
 {
   "oracle_id": "863bb8d8-4571-4775-87e3-d6f3ec88c835",
   "name": "Consuming Vortex",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Consuming Vortex",
@@ -13,12 +13,7 @@
             "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 44, "end": 215 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{3}{U}" } } }
       ]
     }
   ]
