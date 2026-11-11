@@ -188,8 +188,8 @@ fn amount_replacements_read_as_the_change_they_print(
     "SVar:DrawTwo:DB$ Draw | Defined$ You | NumCards$ 2\n",
     "replacement:Draw-instead"
 )]
-#[case::counters_put_by_a_source(
-    "Event$ AddCounter | ActiveZones$ Battlefield | ValidSource$ You | ValidObject$ Permanent,Player | ReplaceWith$ Double",
+#[case::counters_put_by_any_player(
+    "Event$ AddCounter | ActiveZones$ Battlefield | ValidSource$ Player | ValidObject$ Permanent,Player | ReplaceWith$ Double",
     "SVar:Double:DB$ ReplaceCounter | Amount$ X\nSVar:X:ReplaceCount$CounterNum/Twice\n",
     "key:Replacement.AddCounter.ValidSource"
 )]
