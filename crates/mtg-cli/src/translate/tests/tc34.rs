@@ -1,4 +1,4 @@
-//! Goal: `ControlPlayer`, `ControlSpell`, `ChangeText` (one kind of word, or a `GenericChoice` between a color word and a basic land type) and the search-control static map to their engine nodes, and the forms they cannot say (an extra turn after the controlled one, a spell control that is not a gain, a restart of the game) stay named gaps.
+//! Goal: `ControlPlayer`, `ControlSpell`, `ChangeText` (one kind of word, or a `GenericChoice` between a color word and a basic land type) and the search-control static map to their engine nodes, and the forms they cannot say (more than one extra turn after the controlled one, a spell control that is not a gain, a restart of the game) stay named gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -21,6 +21,10 @@ fn spell_or_permanent() -> Value {
 #[case::worst_fears(
     "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Player\n",
     json!({"Spell": {"targets": [{"what": "Player"}], "effects": [{"ControlPlayer": {"who": {"Target": 0}}}]}})
+)]
+#[case::emrakul_the_promised_end(
+    "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | DelayedTriggerDefinedPlayer$ Targeted | RememberObjects$ Targeted | Phase$ Cleanup | Execute$ DBAddTurn | Static$ True\nSVar:DBAddTurn:DB$ AddTurn | Defined$ DelayTriggerRemembered | NumTurns$ 1\n",
+    json!({"Spell": {"targets": [{"what": "Opponent"}], "effects": [{"ControlPlayer": {"who": {"Target": 0}, "extra_turn": true}}]}})
 )]
 #[case::aethersnatch(
     "Name:T\nTypes:Instant\nA:SP$ ControlSpell | ValidTgts$ Card | TargetType$ Spell | Mode$ Gain | SubAbility$ DBChooseTargets\nSVar:DBChooseTargets:DB$ ChangeTargets | Defined$ Targeted | Optional$ True\n",
@@ -80,8 +84,12 @@ fn opposition_agent_controls_searching_opponents() {
 }
 
 #[rstest]
-#[case::an_extra_turn_after(
-    "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | Phase$ Cleanup | Execute$ DBAddTurn\nSVar:DBAddTurn:DB$ AddTurn | NumTurns$ 1\n",
+#[case::two_extra_turns_after(
+    "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | DelayedTriggerDefinedPlayer$ Targeted | RememberObjects$ Targeted | Phase$ Cleanup | Execute$ DBAddTurn | Static$ True\nSVar:DBAddTurn:DB$ AddTurn | Defined$ DelayTriggerRemembered | NumTurns$ 2\n",
+    "key:ControlPlayer.extra-turn"
+)]
+#[case::an_extra_turn_at_the_end_step(
+    "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | DelayedTriggerDefinedPlayer$ Targeted | RememberObjects$ Targeted | Phase$ End of Turn | Execute$ DBAddTurn | Static$ True\nSVar:DBAddTurn:DB$ AddTurn | Defined$ DelayTriggerRemembered | NumTurns$ 1\n",
     "key:ControlPlayer.extra-turn"
 )]
 #[case::a_spell_lost(

@@ -19,17 +19,54 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
     }
 }
 
-/// `ControlPlayer`: the controller controls the target player during that player's next turn. An extra turn set up by a
-/// delayed trigger after it (Emrakul, the Promised End) is a gap.
+/// `ControlPlayer`: the controller controls the target player during that player's next turn.
 fn control_player(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(p, "ControlPlayer", &["ValidTgts", "Defined"])?;
-    if let Some(next) = p.get("SubAbility").and_then(|name| ctx.svar(name))
-        && Params::parse(next).get("DB") == Some("DelayedTrigger")
-    {
-        return unmapped("key:ControlPlayer.extra-turn");
-    }
     let who = subject(ctx, p, "Opponent", None)?;
     Ok(json!({"ControlPlayer": {"who": who}}))
+}
+
+/// A `ControlPlayer` line whose sub-ability is a delayed trigger that gives the controlled player one extra turn after
+/// the controlled one (Emrakul, the Promised End): the line read without it, with `extra_turn`. Any other delayed
+/// trigger after a `ControlPlayer` is a gap; `None` for every other line.
+pub fn control_with_extra_turn(ctx: &mut Ctx, p: &Params, top: bool) -> Option<Tr<Vec<Value>>> {
+    if p.get("DB").or_else(|| p.get("SP")).or_else(|| p.get("AB")) != Some("ControlPlayer") {
+        return None;
+    }
+    let next = Params::parse(ctx.svar(p.get("SubAbility")?)?);
+    if next.get("DB") != Some("DelayedTrigger") {
+        return None;
+    }
+    if !extra_turn_after(ctx, &next) {
+        return Some(unmapped("key:ControlPlayer.extra-turn"));
+    }
+    Some(
+        super::effects::chain_at(ctx, &p.without(&["SubAbility"]), top).map(|mut effects| {
+            for effect in &mut effects {
+                if let Some(control) = effect.get_mut("ControlPlayer") {
+                    control["extra_turn"] = json!(true);
+                }
+            }
+            effects
+        }),
+    )
+}
+
+/// Whether a delayed trigger gives the controlled player one extra turn after the controlled one: at that turn's
+/// cleanup step, `AddTurn | NumTurns$ 1` for the player it remembers.
+fn extra_turn_after(ctx: &Ctx, delayed: &Params) -> bool {
+    let Some(add) = delayed.get("Execute").and_then(|name| ctx.svar(name)) else {
+        return false;
+    };
+    let add = Params::parse(add);
+    delayed.get("Mode") == Some("Phase")
+        && delayed.get("Phase") == Some("Cleanup")
+        && delayed.get("DelayedTriggerDefinedPlayer") == Some("Targeted")
+        && delayed.get("SubAbility").is_none()
+        && add.get("DB") == Some("AddTurn")
+        && add.get("NumTurns") == Some("1")
+        && add.get("Defined") == Some("DelayTriggerRemembered")
+        && add.get("SubAbility").is_none()
 }
 
 /// `ControlSpell | Mode$ Gain`: the controller gains control of the target spell for good.
