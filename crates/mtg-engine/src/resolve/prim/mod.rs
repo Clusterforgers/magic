@@ -33,6 +33,7 @@ mod join_attack;
 mod let_amount;
 mod retarget;
 mod ring_tempts;
+mod rmt2_shares;
 mod unattach;
 mod w2d_villainous;
 mod w6e_exchange;

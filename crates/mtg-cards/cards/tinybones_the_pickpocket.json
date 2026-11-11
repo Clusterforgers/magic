@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7bc4c7e2-6758-4a85-84e7-03ab93981106",
+  "name": "Tinybones, the Pickpocket",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tinybones, the Pickpocket",
+      "oracle_fingerprint": "934bc46198b57c64f1dac139b092a2f6",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 11, "end": 189 }
+          }
+        }
+      ]
+    }
+  ]
+}

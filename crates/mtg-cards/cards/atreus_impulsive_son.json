@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f6a4298c-3d9d-43e1-b32c-b168c02ad503",
+  "name": "Atreus, Impulsive Son",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atreus, Impulsive Son",
+      "oracle_fingerprint": "dd5208c1b8410f4e9f19d255aa99b219",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
+                }
+              },
+              { "Discard": {} },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Father & son" } }
+      ]
+    }
+  ]
+}

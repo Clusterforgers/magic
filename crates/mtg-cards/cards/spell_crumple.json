@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d4ab7848-5c37-4c6b-be29-0bb703333e5b",
+  "name": "Spell Crumple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Crumple",
+      "oracle_fingerprint": "1104a12d9b7ffd7d94f6e947e8a2e533",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "IntoLibrary": { "place": "Bottom" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

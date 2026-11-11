@@ -56,6 +56,9 @@ mod r9w_dread;
 mod r9w_manifest;
 mod r9w_shields;
 mod revealed;
+mod rmt2_countered;
+mod rmt2_divided_shield;
+mod rmt2_held_down;
 mod shuffled_in;
 mod stolen;
 mod switched;
@@ -733,6 +736,8 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     g8e_prevent::g8e_wordings(&mut texts);
     w22_shields::w22_wordings(&mut texts);
     w22_shields::w22_goad_wordings(&mut texts);
+    rmt2_held_down::rmt2_held_down_wordings(&mut texts);
+    rmt2_held_down::rmt2_protection_wordings(&mut texts);
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
     super::r7e_events::wf24_activated_wordings(&mut texts);
@@ -3263,6 +3268,7 @@ impl Writer<'_> {
             .or_else(|| self.c10_uc_held(effects))
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.r7d_countered_exiled(effects))
+            .or_else(|| self.rmt2_countered_into_library(effects))
             .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
@@ -3344,6 +3350,7 @@ impl Writer<'_> {
             .map(|(text, _)| text)
             .or_else(|| self.w22_source_shield(effect))
             .or_else(|| self.w22_next(effect))
+            .or_else(|| self.rmt2_divided_prevention(effect))
         {
             return Some(text);
         }
@@ -3706,6 +3713,9 @@ impl Writer<'_> {
                     self.name_target()?
                 };
                 (subject, !single, false)
+            }
+            Ref::Each(selector) if self.rmt2_target_players(selector) => {
+                return self.rmt2_held_down_of_target(selector);
             }
             Ref::Each(selector) => {
                 let phrase = phrase_text(selector, Form::All)?;

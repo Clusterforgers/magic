@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1b8870fd-2d8a-42af-8173-b747d8d4c04f",
+  "name": "They Came from the Pipes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "They Came from the Pipes",
+      "oracle_fingerprint": "891e2e9088bf361978d9d062052c4584",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 275 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4b96c22a-0d5b-44fd-b326-5f3ffcc3917b",
+  "name": "Deadpool, Trading Card",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deadpool, Trading Card",
+      "oracle_fingerprint": "d0b96efb55cdfab6d9ae29e8e00c1246",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 73 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "LoseLife": { "amount": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 124, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

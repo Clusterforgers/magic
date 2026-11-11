@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8e082c95-cdc4-4f29-9915-05f83298f14d",
+  "name": "Mana Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Vapors",
+      "oracle_fingerprint": "2a0865ac8f73d8705306299bac7cf31c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

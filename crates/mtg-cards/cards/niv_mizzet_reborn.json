@@ -1,0 +1,20 @@
+{
+  "oracle_id": "10764b35-5c6c-4161-8579-1124d5963a0e",
+  "name": "Niv-Mizzet Reborn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Niv-Mizzet Reborn",
+      "oracle_fingerprint": "515256532569b526f5adffbd4198db8f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

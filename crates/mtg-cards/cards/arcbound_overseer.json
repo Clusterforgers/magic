@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d57eb294-9707-4f93-82ad-b22d5f68c6c9",
+  "name": "Arcbound Overseer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arcbound Overseer",
+      "oracle_fingerprint": "00c79f0464f90352aebeb94877e2dbbc",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 95 }
+          }
+        },
+        { "Keyword": { "Macro": { "name": "modular", "amount": 6 } } }
+      ]
+    }
+  ]
+}

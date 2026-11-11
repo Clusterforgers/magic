@@ -4890,6 +4890,16 @@ impl Walker<'_> {
     fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         match by {
             ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                // A shield over damage to targets gives each target its share of a division (`rmt2_shares`).
+                if matches!(
+                    when,
+                    ReplaceWhen::Damage {
+                        to: Some(Ref::Target(_)),
+                        ..
+                    }
+                ) {
+                    self.amounting = Amounting::Shared;
+                }
                 self.at("PreventCounted", |w| w.amount(amount));
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
@@ -4951,10 +4961,14 @@ impl Walker<'_> {
                 }
             }
             ReplaceBy::IntoLibrary { place, .. }
-                if !matches!(when, ReplaceWhen::ZoneChange { .. })
-                    || matches!(place, crate::effect::Place::Below(_)) =>
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. }
+                ) || matches!(place, crate::effect::Place::Below(_)) =>
             {
-                self.problem("`IntoLibrary` replaces a `ZoneChange`, on top, bottom or shuffled");
+                self.problem(
+                    "`IntoLibrary` replaces a `ZoneChange` or a `Countered`, on top, bottom or shuffled",
+                );
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(
