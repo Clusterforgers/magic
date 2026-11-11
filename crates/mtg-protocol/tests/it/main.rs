@@ -113,3 +113,4 @@ mod transcript;
 mod transform_view;
 mod unverified_wire;
 mod vote_hidden;
+mod tc34_control_view;

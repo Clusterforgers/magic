@@ -135,7 +135,27 @@ skip_untap?: boolean, } } | { "ExtraTurnSkipped": {
 /**
  * Whose turn.
  */
-player: PlayerId, } } | { "PhasesAdded": { 
+player: PlayerId, } } | { "SpellControlGained": { 
+/**
+ * The spell or ability.
+ */
+object: ObjectId, 
+/**
+ * Its new controller.
+ */
+player: PlayerId, } } | { "PlayerControlGained": { 
+/**
+ * The player controlled.
+ */
+player: PlayerId, 
+/**
+ * The player who controls them.
+ */
+by: PlayerId, 
+/**
+ * Whether the controlled player takes an extra turn after that turn.
+ */
+extra_turn?: boolean, } } | { "PhasesAdded": { 
 /**
  * The first step of each added phase.
  */

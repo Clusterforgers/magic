@@ -30,6 +30,7 @@ export function TurnBadge() {
       active: state.view?.turn.active ?? 0,
       step: state.view?.turn.step ?? 'Untap',
       left: turnLeft(state),
+      controlledBy: state.view?.turn.controlled_by,
     })),
   )
   const seat = usePlay((state) => state.seat)
