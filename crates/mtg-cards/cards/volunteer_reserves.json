@@ -6,10 +6,7 @@
     {
       "name": "Volunteer Reserves",
       "oracle_fingerprint": "f458e71140f37f63a78e111e96384ae9",
-      "abilities": [
-        { "Keyword": "Banding" },
-        { "Keyword": { "CumulativeUpkeep": "{1}" } }
-      ]
+      "abilities": [{ "Keyword": "Banding" }, { "Keyword": { "CumulativeUpkeep": "{1}" } }]
     }
   ]
 }

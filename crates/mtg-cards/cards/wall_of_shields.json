@@ -6,10 +6,7 @@
     {
       "name": "Wall of Shields",
       "oracle_fingerprint": "8bfeeb81563fc8d05477d0be290f624d",
-      "abilities": [
-        { "Keyword": "Defender" },
-        { "Keyword": "Banding" }
-      ]
+      "abilities": [{ "Keyword": "Defender" }, { "Keyword": "Banding" }]
     }
   ]
 }
