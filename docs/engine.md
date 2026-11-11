@@ -273,7 +273,7 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `GameRule::RevealHand` shows every card of the named hands to every seat (`is_shown_to`, `sight::revealed_hand`), a card drawn later included.
 - `ReplaceWhen::LoseGame` sees each `PlayerLost` event (`Unit::Loss`); only `Instead` replaces it, and the state-based actions check the new state again.
 - `ReplaceBy::Subtract` and `Cap` lessen damage as a replacement, not a prevention (CR 614.1a), and `Half` halves it rounded down; damage brought to 0 is not dealt.
-- `GameRule::FlipTwoCoins` (Krark's Thumb, CR 705.3): the flipper calls once, each such rule doubles the coins of the flip, and when they differ the flipper keeps a won or a lost one (`ChooseOption`), and only the kept flip is logged as `CoinFlipped`.
+- `GameRule::FlipTwoCoins` (Krark's Thumb, CR 705.3): the flipper calls once, each such rule doubles the coins of the flip, and when they differ the flipper keeps a won or a lost one (`ChooseOption`), and one `CoinFlipped` logs the kept side with every coin (`coins`); only the kept coin wins or loses. The log names both answers ("calls tails", "keeps a won coin").
 - `GameRule::ExtraDie` (Wyll, Pixie Guide): each such rule adds one die to a roll and ignores the lowest; all dice come from one substream and only the kept dice are logged as `DieRolled`.
 - A cost that removes counters from its source records how many (`CostTaken::removed`); `Amount::RemovedThisWay` reads it ("for each charge counter removed this way"), and "Remove all" is a count of the counters on the source settled as the ability is announced.
 - A spell's own cost modifier reads the X it announces ("costs {1} less for each permanent sacrificed this way"); another object's modifier reads no X.

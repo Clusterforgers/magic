@@ -25,7 +25,7 @@ import type {
   ZoneCause,
 } from '@/protocol/generated'
 import { colorsInSet, costText, counterName, manaLetter } from './cardModel'
-import type { EventContext } from './eventContext'
+import type { CoinAnswer, EventContext } from './eventContext'
 import { distinctTargets } from './prompt/targetText'
 import { sameHost } from '@/play/hosts'
 import type { HostRef } from '@/play/hosts'
@@ -591,6 +591,17 @@ export function describeHiddenManual(player: PlayerId, to: ManualZone, n: EventN
   return `${n.seat(player)} moves a card${left} to ${MANUAL_ZONE[to]} (by hand)`
 }
 
+/** "two coins", "four coins": the coins one flip became. */
+function coinCount(count: number): string {
+  return ['two', 'three', 'four'][count - 2] ?? String(count)
+}
+
+/** What an answer to a question of a coin flip says, after the name: the call (heads first) or the coin kept (a won one first). */
+function coinChoiceWords(coin: CoinAnswer, option: number): string {
+  if (coin === 'call') return `calls ${option === 0 ? 'heads' : 'tails'}`
+  return option === 0 ? 'keeps a won coin' : 'keeps a lost coin'
+}
+
 /** What a player's answer to a question of a spell or ability says, after their name. */
 function describeChoice(choice: Choice, n: EventNames): string {
   if ('Number' in choice) return `chooses ${choice.Number}`
@@ -738,6 +749,9 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return quiet(`${stackName(n, event.ResolutionBegan.object, true)} begins to resolve`)
   if ('ChoiceMade' in event) {
     const { player, choice } = event.ChoiceMade
+    const coin = context?.coin
+    if (coin !== undefined && 'Option' in choice)
+      return quiet(`${n.seat(player)} ${coinChoiceWords(coin, choice.Option)}`)
     return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
   }
   if ('Remembered' in event)
@@ -963,8 +977,14 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     )
   }
   if ('CoinFlipped' in event) {
-    const { player, won, call, side } = event.CoinFlipped
+    const { player, won, call, side, coins } = event.CoinFlipped
     const who = n.seat(player)
+    if (coins !== undefined && coins.length > 1) {
+      const flipped = joinWords(coins.map((coin) => coin.toLowerCase()))
+      return line(
+        `${who} calls ${call.toLowerCase()} and flips ${coinCount(coins.length)} coins: ${flipped}; ${who} keeps ${side.toLowerCase()} and ${won ? 'wins' : 'loses'} the flip`,
+      )
+    }
     return line(
       `${who} calls ${call.toLowerCase()}, the coin comes up ${side.toLowerCase()}: ${who} ${won ? 'wins' : 'loses'} the flip`,
     )

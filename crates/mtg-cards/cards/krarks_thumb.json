@@ -1,0 +1,12 @@
+{
+  "oracle_id": "a97c8482-775c-4f11-9872-25b4f9bfcb1a",
+  "name": "Krark's Thumb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krark's Thumb",
+      "oracle_fingerprint": "0839400107a558fc2f4d620131cc7532",
+      "abilities": [{ "Rule": { "rule": { "FlipTwoCoins": "You" } } }]
+    }
+  ]
+}

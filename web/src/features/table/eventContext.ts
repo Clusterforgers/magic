@@ -7,7 +7,12 @@ export interface EventContext {
   resolving?: ObjectId
   /** For an activation: the targets of the ability that went on the stack from the same source right after it. */
   targets?: readonly Target[]
+  /** For an answer by option index: what it answered when a coin flip follows it (the call, then which coin to keep). */
+  coin?: CoinAnswer
 }
+
+/** The question of a flip an option answered: the call of the coin or which of two coins to keep (Krark's Thumb). */
+export type CoinAnswer = 'call' | 'keep'
 
 /** How far after an activation its ability goes on the stack (costs are paid in between). */
 const LOOKAHEAD = 24
@@ -36,6 +41,32 @@ function activatedTargets(
 }
 
 /**
+ * What the option answer at `index` answered, when the run of option answers it belongs to ends in a coin flip of the
+ * same player: the first of the run is the call, the next the coin kept. Any other answer is not a flip's.
+ */
+function coinAnswer(events: readonly EventView[], index: number, player: number): CoinAnswer | undefined {
+  const eventAt = (at: number): Event | null => {
+    const view = events[at]
+    return view === undefined ? null : publicEvent(view)
+  }
+  const isOption = (event: Event | null): boolean =>
+    event !== null &&
+    typeof event !== 'string' &&
+    'ChoiceMade' in event &&
+    event.ChoiceMade.player === player &&
+    'Option' in event.ChoiceMade.choice
+  let first = index
+  while (first > 0 && isOption(eventAt(first - 1))) first -= 1
+  let next = index + 1
+  while (next < events.length && isOption(eventAt(next))) next += 1
+  const after = eventAt(next)
+  if (after === null || typeof after === 'string' || !('CoinFlipped' in after)) return undefined
+  if (after.CoinFlipped.player !== player) return undefined
+  const at = index - first
+  return at === 0 ? 'call' : at === 1 ? 'keep' : undefined
+}
+
+/**
  * The context of every event of `events`, index for index. Pure: it reads only the events, so the same events give the
  * same lines whichever seat reads them.
  */
@@ -61,6 +92,10 @@ export function eventContexts(events: readonly EventView[]): (EventContext | und
       return targets === undefined || targets.length === 0 ? undefined : { targets }
     }
     const by = resolving.at(-1)
+    if ('ChoiceMade' in event && 'Option' in event.ChoiceMade.choice) {
+      const coin = coinAnswer(events, index, event.ChoiceMade.player)
+      if (coin !== undefined) return by === undefined ? { coin } : { resolving: by, coin }
+    }
     return by === undefined ? undefined : { resolving: by }
   })
 }

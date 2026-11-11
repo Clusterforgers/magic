@@ -1408,6 +1408,7 @@ mod tests {
                 won: true,
                 call: CoinSide::Tails,
                 side: CoinSide::Tails,
+                coins: Vec::new(),
             },
         ];
         for event in &events {
