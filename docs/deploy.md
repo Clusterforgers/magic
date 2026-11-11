@@ -6,7 +6,7 @@ How the game runs on the k3s cluster and how a release reaches it.
 
 - `deploy/server.Dockerfile` builds `mtg-server` and `mtg-cli` into one Debian slim image (user 10001); `deploy/web.Dockerfile` builds the client and serves it with nginx (`deploy/nginx.conf`: `/assets` cached for a year, every other path is the client). Both are `linux/amd64`.
 - The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile --all`, and a suspended CronJob `magic-ingest` for the card data. The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
-- The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION` and `server.admin` sets `MTG_ADMIN_USERNAME` (see Accounts); the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
+- The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION` and `server.admins` sets `MTG_ADMIN_USERNAMES` (see Accounts); the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
 - Games live in memory with their event log in Postgres; a restart resumes them. A release that changes a card's rules or the engine's reading of it fails the stored games that use it at the next boot, so releases go between games.
 
 ## Release
@@ -24,27 +24,27 @@ Without a tag it takes the next patch after the latest `vX.Y.Z`. `scripts/releas
 
 ## Accounts
 
-`MTG_ADMIN_USERNAME` names the one account that makes the others (`POST /api/admin/users`, the Accounts page of the client); with `MTG_REGISTRATION=closed` nobody else can register. The server marks the account when it starts and clears the flag of every other account, so changing or removing the variable moves or removes the admin at the next start. A name that belongs to no account promotes nobody and logs a warning at start (the setting does not create an account).
+`MTG_ADMIN_USERNAMES` (comma-separated; chart `server.admins`, a list) names the accounts that make the others (`POST /api/admin/users`, the Accounts page of the client); with `MTG_REGISTRATION=closed` nobody else can register. `MTG_ADMIN_USERNAME` (chart `server.admin`) still works and adds one name. The server marks every named account when it starts and clears the flag of every other account, so an account taken off the list loses admin at the next start. A name that belongs to no account promotes nobody and logs a warning at start (the setting does not create an account).
 
 A fresh install therefore goes in this order:
 
-1. Install with `registration: open` and no admin, and register the owner's account through the client.
-2. Set `server.admin` to that username and `server.registration` to `closed`, and roll the server out.
+1. Install with `registration: open` and no admins, and register the owner's account through the client.
+2. Set `server.admins` to that username and `server.registration` to `closed`, and roll the server out.
 3. Sign in as the owner: the account menu shows Accounts, where friends are added, given a new password when they forget theirs and removed; they change the password under Account settings.
 
-Until step 2 anyone who reaches the site can register, and could take the owner's name first, so step 1 follows the install at once.
+Until step 2 anyone who reaches the site can register, and could take the owner's name first, so step 1 follows the install at once. Another admin is an existing account added to `server.admins`, then a rollout.
 
-The admin account cannot be deleted, in Account settings or from the Accounts page, so the owner cannot lock the house by accident. The admin's own password changes under Account settings only; a forgotten admin password has no way back from the site.
+No admin account can be deleted, in Account settings or from the Accounts page, and no admin sets another admin's password, so the owners cannot lock the house by accident. An admin's own password changes under Account settings; for a forgotten one, take the name off `server.admins`, roll out, set a new password from another admin's Accounts page and add the name back.
 
 ### A lost or mistyped admin
 
-If `server.admin` names no account (a typo) or the owner needs a fresh account, nobody can make accounts. Recover with the same steps as an install:
+If `server.admins` names no account (a typo) or the owner needs a fresh account, nobody can make accounts. Recover with the same steps as an install:
 
-1. Set `server.registration` to `open` and `server.admin` to the name the new account will have, and roll the server out.
+1. Set `server.registration` to `open`, add the name the new account will have to `server.admins`, and roll the server out.
 2. Register that account through the client.
 3. Set `server.registration` back to `closed`, roll the server out, and sign in: the account menu shows Accounts.
 
-The server marks the account named by `server.admin` at each start, so the rollout in step 3 is what makes the new account the admin; the previous admin account is a plain account from the first rollout on and can be removed from the Accounts page. Accounts and decks of the friends stay as they are. While registration is open anyone who reaches the site could register first and take the name, so do the steps without a pause.
+The server marks the accounts named by `server.admins` at each start, so the rollout in step 3 is what makes the new account an admin; an account taken off the list is a plain account from the next rollout on and can be removed from the Accounts page. Accounts and decks of the friends stay as they are. While registration is open anyone who reaches the site could register first and take the name, so do the steps without a pause.
 
 ## Backups
 

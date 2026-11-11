@@ -64,7 +64,7 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
           <EmptyState
             as="h1"
             icon={LockKeyholeIcon}
-            title="New accounts are made by the admin"
+            title="New accounts are made by an admin"
             action={
               <Link
                 to="/login"

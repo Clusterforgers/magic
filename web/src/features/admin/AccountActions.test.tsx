@@ -31,7 +31,7 @@ const listings = (app: App) => sentTo(app, '/api/admin/users', 'GET').length
 
 async function open(accounts: AccountsScript = {}) {
   const app = await renderApp('/accounts', {
-    accounts: { users, admin: ADA.username, signedIn: ADA.username, ...accounts },
+    accounts: { users, admins: [ADA.username], signedIn: ADA.username, ...accounts },
   })
   await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
   await newPasswordButton()
@@ -354,7 +354,7 @@ describe('removing an account', () => {
     await app.user.click(await removeButton())
     await app.user.click(within(await dialog()).getByRole('button', { name: 'Remove account' }))
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Only the admin can make accounts.' }),
+      await screen.findByRole('heading', { level: 1, name: 'Only an admin can make accounts.' }),
     ).toBeInTheDocument()
   })
 })

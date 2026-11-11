@@ -1,4 +1,4 @@
-// Goal: the Accounts page is for the admin alone (everyone else is told so and nothing is asked of the server), makes an account with exactly the typed username and password once, fills a random 16-character password in plain text on request, shows the new credentials once (address, username and password) for copying without keeping them anywhere, scrolls them into view with the focus on Copy both, signs nobody in, puts every refusal in plain words on the right field, lists the accounts oldest first and is reachable from the keyboard.
+// Goal: the Accounts page is for every admin and nobody else (everyone else is told so and nothing is asked of the server), makes an account with exactly the typed username and password once, fills a random 16-character password in plain text on request, shows the new credentials once (address, username and password) for copying without keeping them anywhere, scrolls them into view with the focus on Copy both, signs nobody in, puts every refusal in plain words on the right field, lists the accounts oldest first and is reachable from the keyboard.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flashStore } from '@/lib/flash'
@@ -31,7 +31,7 @@ const sentTo = (app: App, path: string, method = 'POST') =>
 
 async function open(accounts: AccountsScript = {}, url = '/accounts') {
   const app = await renderApp(url, {
-    accounts: { users, admin: ADA.username, signedIn: ADA.username, ...accounts },
+    accounts: { users, admins: [ADA.username], signedIn: ADA.username, ...accounts },
   })
   await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
   return app
@@ -56,6 +56,23 @@ describe('the page for the admin', () => {
     expect(within(rows[0]!).getByText(/^Made /)).toHaveAttribute('datetime', '2026-10-10T09:30:00Z')
     expect(within(list).getByText('2 accounts, oldest first.')).toBeInTheDocument()
   })
+
+  it.each([ADA.username, 'Cy_3'])(
+    'is for every admin: %s signed in, both admin rows are badged and offer no actions',
+    async (signedIn) => {
+      await open({ admins: [ADA.username, 'cy_3'], signedIn })
+      expect(await screen.findByRole('heading', { level: 1, name: 'Accounts' })).toBeInTheDocument()
+      expect(form()).toBeInTheDocument()
+      const list = await screen.findByRole('region', { name: 'Accounts' })
+      const rows = await within(list).findAllByRole('listitem')
+      expect(rows).toHaveLength(2)
+      for (const row of rows) {
+        expect(within(row).getByText('Admin')).toBeInTheDocument()
+        expect(within(row).queryByRole('button', { name: /^New password for/ })).not.toBeInTheDocument()
+        expect(within(row).queryByRole('button', { name: /^Remove/ })).not.toBeInTheDocument()
+      }
+    },
+  )
 
   it('asks the server for the list once and for nothing else', async () => {
     const app = await open()
@@ -103,9 +120,9 @@ describe('the page for the admin', () => {
 
 describe('everyone else', () => {
   it('is told that only the admin can make accounts, and nothing is asked of the server', async () => {
-    const app = await open({ admin: 'someone_else' })
+    const app = await open({ admins: ['someone_else'] })
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Only the admin can make accounts.' }),
+      await screen.findByRole('heading', { level: 1, name: 'Only an admin can make accounts.' }),
     ).toBeInTheDocument()
     expect(screen.queryByRole('form')).not.toBeInTheDocument()
     expect(sentTo(app, '/api/admin/users', 'GET')).toHaveLength(0)
@@ -114,14 +131,14 @@ describe('everyone else', () => {
   })
 
   it('has no entry in the account menu', async () => {
-    const app = await open({ admin: 'someone_else' }, '/')
+    const app = await open({ admins: ['someone_else'] }, '/')
     await app.user.click(screen.getByRole('button', { name: /signed in as/i }))
     expect(await screen.findByRole('menuitem', { name: 'Account settings' })).toBeInTheDocument()
     expect(screen.queryByRole('menuitem', { name: 'Accounts' })).not.toBeInTheDocument()
   })
 
   it('sends a visitor without a session to sign in, and back here afterwards', async () => {
-    const app = await renderApp('/accounts', { accounts: { users, admin: ADA.username } })
+    const app = await renderApp('/accounts', { accounts: { users, admins: [ADA.username] } })
     await waitFor(() => expect(app.router.state.location.pathname).toBe('/login'))
     expect(app.router.state.location.search).toMatchObject({ next: '/accounts' })
     await app.user.type(screen.getByLabelText('Username'), ADA.username)
@@ -144,7 +161,7 @@ describe('everyone else', () => {
     await fill(app, BO.username, BO.password)
     await app.user.click(create())
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Only the admin can make accounts.' }),
+      await screen.findByRole('heading', { level: 1, name: 'Only an admin can make accounts.' }),
     ).toBeInTheDocument()
     expect(screen.queryByRole('form')).not.toBeInTheDocument()
   })

@@ -70,9 +70,9 @@ pub enum ConfigError {
     /// `MTG_REGISTRATION` is neither `open` nor `closed`.
     #[error("MTG_REGISTRATION must be open or closed, got {0:?}")]
     BadRegistration(String),
-    /// `MTG_ADMIN_USERNAME` is not a valid username.
-    #[error("MTG_ADMIN_USERNAME must be a username of 3 to 32 letters, digits, _ or -, got {0:?}")]
-    BadAdminUsername(String),
+    /// A name in `MTG_ADMIN_USERNAMES` or `MTG_ADMIN_USERNAME` (the variable, the name) is not a valid username.
+    #[error("{0} must list usernames of 3 to 32 letters, digits, _ or -, got {1:?}")]
+    BadAdminUsername(&'static str, String),
     /// `MTG_COOKIE_SECURE` is not `1`, `0`, `true` or `false`.
     #[error("MTG_COOKIE_SECURE must be 1 or 0, got {0:?}")]
     BadCookieSecure(String),
@@ -157,9 +157,10 @@ impl Default for AttemptLimits {
 pub struct AuthConfig {
     /// Whether new accounts may be made (`MTG_REGISTRATION=open|closed`).
     pub registration: Registration,
-    /// The one account that is the admin and makes the others (`MTG_ADMIN_USERNAME`, trimmed). The server
-    /// sets the flag of that account and clears every other at start; `None`: nobody is admin.
-    pub admin: Option<String>,
+    /// The accounts that are admins and make the others (`MTG_ADMIN_USERNAMES`, comma-separated, plus
+    /// `MTG_ADMIN_USERNAME`; trimmed, blanks skipped, one entry per name ignoring case). The server sets the
+    /// flag of these accounts and clears every other at start; empty: nobody is admin.
+    pub admins: Vec<String>,
     /// Whether the session cookie is marked `Secure` (`MTG_COOKIE_SECURE=1`); set it behind TLS.
     pub cookie_secure: bool,
     /// How long a session lasts after sign-in.
@@ -182,7 +183,7 @@ impl Default for AuthConfig {
     fn default() -> Self {
         AuthConfig {
             registration: Registration::Open,
-            admin: None,
+            admins: Vec::new(),
             cookie_secure: false,
             session_lifetime: Duration::from_hours(24 * 30),
             hash_cost: HashCost::default(),
@@ -372,12 +373,21 @@ impl ServerConfig {
                 _ => return Err(ConfigError::BadRegistration(text)),
             };
         }
-        if let Some(text) = get("MTG_ADMIN_USERNAME") {
-            let name = text.trim();
-            if Username::parse(name).is_err() {
-                return Err(ConfigError::BadAdminUsername(text));
+        for variable in ["MTG_ADMIN_USERNAMES", "MTG_ADMIN_USERNAME"] {
+            let Some(text) = get(variable) else { continue };
+            for name in text
+                .split(',')
+                .map(str::trim)
+                .filter(|name| !name.is_empty())
+            {
+                if Username::parse(name).is_err() {
+                    return Err(ConfigError::BadAdminUsername(variable, name.to_owned()));
+                }
+                let admins = &mut config.auth.admins;
+                if !admins.iter().any(|known| known.eq_ignore_ascii_case(name)) {
+                    admins.push(name.to_owned());
+                }
             }
-            config.auth.admin = Some(name.to_owned());
         }
         if let Some(text) = get("MTG_COOKIE_SECURE") {
             config.auth.cookie_secure = match text.trim().to_ascii_lowercase().as_str() {
@@ -616,46 +626,53 @@ mod tests {
     }
 
     #[rstest]
-    #[case("Chrisser", "Chrisser")]
-    #[case("  Chrisser\n", "Chrisser")]
-    #[case("abc", "abc")]
-    #[case("a_b-9", "a_b-9")]
-    #[case("0123456789012345678901234567890a", "0123456789012345678901234567890a")]
-    fn admin_usernames_are_trimmed_and_kept_as_written(#[case] text: &str, #[case] expected: &str) {
-        let config = load(&[("MTG_ADMIN_USERNAME", text)]).unwrap();
-        assert_eq!(config.auth.admin.as_deref(), Some(expected));
-    }
-
-    #[test]
-    fn nobody_is_admin_without_the_setting_or_with_a_blank_one() {
-        assert_eq!(load(&[]).unwrap().auth.admin, None);
-        for blank in ["", " ", "\t\n"] {
-            assert_eq!(
-                load(&[("MTG_ADMIN_USERNAME", blank)]).unwrap().auth.admin,
-                None
-            );
-        }
+    #[case::one(&[("MTG_ADMIN_USERNAME", "Chrisser")], &["Chrisser"])]
+    #[case::trimmed(&[("MTG_ADMIN_USERNAME", "  Chrisser\n")], &["Chrisser"])]
+    #[case::shortest(&[("MTG_ADMIN_USERNAME", "abc")], &["abc"])]
+    #[case::signs(&[("MTG_ADMIN_USERNAMES", "a_b-9")], &["a_b-9"])]
+    #[case::longest(&[("MTG_ADMIN_USERNAMES", "0123456789012345678901234567890a")], &["0123456789012345678901234567890a"])]
+    #[case::two(&[("MTG_ADMIN_USERNAMES", "Chrisser,Ebbe")], &["Chrisser", "Ebbe"])]
+    #[case::spaced(&[("MTG_ADMIN_USERNAMES", " Chrisser , Ebbe ,")], &["Chrisser", "Ebbe"])]
+    #[case::blank_entries(&[("MTG_ADMIN_USERNAMES", ",,Ebbe,, ,")], &["Ebbe"])]
+    #[case::same_name_twice(&[("MTG_ADMIN_USERNAMES", "Ebbe,EBBE,ebbe")], &["Ebbe"])]
+    #[case::both_variables(&[("MTG_ADMIN_USERNAMES", "Ebbe"), ("MTG_ADMIN_USERNAME", "Chrisser")], &["Ebbe", "Chrisser"])]
+    #[case::alias_repeats(&[("MTG_ADMIN_USERNAMES", "Chrisser,Ebbe"), ("MTG_ADMIN_USERNAME", "chrisser")], &["Chrisser", "Ebbe"])]
+    #[case::unset(&[], &[])]
+    #[case::blank(&[("MTG_ADMIN_USERNAME", " "), ("MTG_ADMIN_USERNAMES", "\t\n")], &[])]
+    #[case::only_commas(&[("MTG_ADMIN_USERNAMES", " , ,")], &[])]
+    fn admin_usernames_are_trimmed_split_and_kept_as_written(
+        #[case] pairs: &[(&str, &str)],
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(load(pairs).unwrap().auth.admins, expected);
     }
 
     #[rstest]
-    #[case::too_short("ab")]
-    #[case::too_long("0123456789012345678901234567890ab")]
-    #[case::inner_space("chris ser")]
-    #[case::at_sign("chris@home")]
-    #[case::dot("chris.ser")]
-    #[case::unicode("chrïsser")]
-    #[case::quoted("\"Chrisser\"")]
-    fn bad_admin_usernames(#[case] text: &str) {
+    #[case::too_short("MTG_ADMIN_USERNAME", "ab", "ab")]
+    #[case::too_long(
+        "MTG_ADMIN_USERNAME",
+        "0123456789012345678901234567890ab",
+        "0123456789012345678901234567890ab"
+    )]
+    #[case::inner_space("MTG_ADMIN_USERNAME", "chris ser", "chris ser")]
+    #[case::at_sign("MTG_ADMIN_USERNAME", "chris@home", "chris@home")]
+    #[case::dot("MTG_ADMIN_USERNAME", "chris.ser", "chris.ser")]
+    #[case::unicode("MTG_ADMIN_USERNAME", "chrïsser", "chrïsser")]
+    #[case::quoted("MTG_ADMIN_USERNAME", "\"Chrisser\"", "\"Chrisser\"")]
+    #[case::comma_in_the_alias("MTG_ADMIN_USERNAME", "Chrisser,ab", "ab")]
+    #[case::second_entry("MTG_ADMIN_USERNAMES", "Chrisser, chris ser", "chris ser")]
+    #[case::semicolons("MTG_ADMIN_USERNAMES", "Chrisser;Ebbe", "Chrisser;Ebbe")]
+    fn bad_admin_usernames(#[case] variable: &'static str, #[case] text: &str, #[case] bad: &str) {
         assert_eq!(
-            load(&[("MTG_ADMIN_USERNAME", text)]),
-            Err(ConfigError::BadAdminUsername(text.to_owned()))
+            load(&[(variable, text)]),
+            Err(ConfigError::BadAdminUsername(variable, bad.to_owned()))
         );
     }
 
     #[test]
     fn the_admin_error_names_the_variable_and_the_rule() {
-        let message = ConfigError::BadAdminUsername("x".into()).to_string();
-        assert!(message.contains("MTG_ADMIN_USERNAME"), "{message}");
+        let message = ConfigError::BadAdminUsername("MTG_ADMIN_USERNAMES", "x".into()).to_string();
+        assert!(message.contains("MTG_ADMIN_USERNAMES"), "{message}");
         assert!(message.contains("3 to 32"), "{message}");
     }
 
