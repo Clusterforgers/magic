@@ -110,6 +110,19 @@ fn ep27_self_flash_under_a_condition() {
     );
 }
 
+/// A condition the writer does not say as the description does stays a gap, so the rule never reads back as other text.
+#[test]
+fn ep27_self_flash_with_an_unwritten_condition_stays_a_gap() {
+    let script = spinners(
+        "ValidSA$ Spell | IsPresent$ Creature.YouCtrl | EffectZone$ All | Caster$ You | Description$ You may cast this spell as though it had flash if a creature is attacking and a creature is blocking.",
+    );
+    let found = gaps(&script);
+    assert!(
+        found.iter().any(|gap| gap.contains("condition-unwritten")),
+        "{found:?}"
+    );
+}
+
 #[rstest]
 #[case::x_checked("ValidSA$ Spell.XCostLE3 | EffectZone$ All | Caster$ You")]
 #[case::targets_checked(

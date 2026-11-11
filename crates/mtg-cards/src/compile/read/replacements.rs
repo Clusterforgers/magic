@@ -88,6 +88,9 @@ fn dealer(source: &Selector) -> Option<(String, bool)> {
             ("another source you control".to_owned(), true)
         }
         [Pred::Is(Ref::Attached)] => ("enchanted creature".to_owned(), false),
+        [Pred::AnyOf(kinds)] if *kinds == ep27_instant_or_sorcery() => {
+            ("an instant or sorcery source".to_owned(), true)
+        }
         _ => (subject_text(source)?, false),
     })
 }
@@ -99,6 +102,12 @@ const fn kind(combat: Option<bool>) -> &'static str {
         Some(false) => "noncombat damage",
         None => "damage",
     }
+}
+
+/// The kinds of "an instant or sorcery source".
+fn ep27_instant_or_sorcery() -> Vec<Pred> {
+    use mtg_core::card::CardType;
+    vec![Pred::Type(CardType::Instant), Pred::Type(CardType::Sorcery)]
 }
 
 /// The ways "that ..." names the recipient again: as `recipient` says, and "that creature" for creatures.

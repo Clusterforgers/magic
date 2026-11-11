@@ -48,6 +48,29 @@ pub fn cast_with_flash(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "MayCast": permission }))
 }
 
+/// Refuses the flash permission of the card itself when its condition is one the writer does not say as the line's
+/// description does ("if a creature is attacking and a creature is blocking"): such a rule would read back as other
+/// text. Any other ability passes.
+pub fn ep27_self_flash_written(ability: &Value, description: Option<&str>) -> Tr<()> {
+    let is_self_flash = ability.pointer("/Rule/from") == Some(&json!("Hand"))
+        && ability.pointer("/Rule/rule/MayCast/flash") == Some(&json!(true));
+    if !is_self_flash {
+        return Ok(());
+    }
+    let printed = description.unwrap_or_default().replace("CARDNAME", "~");
+    let written = serde_json::from_value::<mtg_cards::ability::Ability>(ability.clone())
+        .map(|rules| mtg_cards::compile::render_variants(&rules))
+        .unwrap_or_default();
+    if written
+        .iter()
+        .any(|text| mtg_cards::compile::same_text(text, &printed))
+    {
+        Ok(())
+    } else {
+        unmapped("static:CastWithFlash-the-card-itself-condition-unwritten")
+    }
+}
+
 /// `CastWithFlash` of the card itself from its owner's hand (`ValidCard$ Card.Self | EffectZone$ All | Caster$ You`):
 /// "You may cast this spell as though it had flash if ...", a `MayCast` rule that works from the hand; the caller adds the
 /// condition of the line. A cast of another kind (`ValidSA$ Spell.Teamwork`, a check of X or of the targets) is a gap.

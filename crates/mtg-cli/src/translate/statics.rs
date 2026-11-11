@@ -106,6 +106,7 @@ pub fn static_lines(ctx: &mut Ctx, body: &str) -> Tr<Value> {
             }
         }
     }
+    super::statics_cast::ep27_self_flash_written(&ability, all.get("Description"))?;
     Ok(ability)
 }
 

@@ -131,6 +131,19 @@ const MINE: &str = r#"{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]
     false
 )]
 #[case::presence(lessened("{}", r#"{"Cap":3}"#), PRESENCE, true)]
+#[case::amulet(
+    lessened(
+        r#"{"to":"You","source":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}"#,
+        r#"{"Cap":2}"#
+    ),
+    "If an instant or sorcery source would deal 3 or more damage to you, it deals 2 damage to you instead.",
+    true
+)]
+#[case::amulet_any_source(
+    lessened(r#"{"to":"You"}"#, r#"{"Cap":2}"#),
+    "If an instant or sorcery source would deal 3 or more damage to you, it deals 2 damage to you instead.",
+    false
+)]
 #[case::presence_cap_four(lessened("{}", r#"{"Cap":4}"#), PRESENCE, false)]
 #[case::presence_combat_only(lessened(r#"{"combat":true}"#, r#"{"Cap":3}"#), PRESENCE, false)]
 #[case::ghosts(lessened("{}", r#""Half""#), GHOSTS, true)]
