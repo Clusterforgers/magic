@@ -112,7 +112,7 @@ mod remove_from_combat;
 mod repeat_each;
 mod reveal;
 mod reveal_until;
-mod roll_dice;
+pub(crate) mod roll_dice;
 mod rule;
 mod sacrifice;
 mod scry;
@@ -128,6 +128,7 @@ mod tap;
 mod tap_bound_tests;
 mod time_travel;
 mod transform;
+mod un33_attractions;
 mod untap;
 #[cfg(test)]
 mod untap_stun_tests;
@@ -253,6 +254,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Conjure { .. } => conjure::run(cx, effect),
         Effect::Seek { .. } => seek::run(cx, effect),
         Effect::Venture { .. } => w11d_venture::run(cx, effect),
+        Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
+            un33_attractions::run(cx, effect)
+        }
         Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),

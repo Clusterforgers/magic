@@ -63,6 +63,7 @@ mod tests {
             colors: Vec::new(),
             power: Some(power),
             toughness: Some(power),
+            lights: Vec::new(),
             printed_power: None,
             printed_toughness: None,
             abilities: Vec::new(),

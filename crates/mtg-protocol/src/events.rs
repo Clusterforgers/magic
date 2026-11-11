@@ -45,6 +45,11 @@ pub enum HiddenEvent {
         /// Cards dealt.
         count: u32,
     },
+    /// An Attraction deck was shuffled; the new order is known to nobody.
+    AttractionDeckShuffled {
+        /// Owner of the deck.
+        player: PlayerId,
+    },
     /// A library was shuffled; the new order is known to nobody.
     LibraryShuffled {
         /// Owner of the library.
@@ -273,6 +278,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::LibraryShuffled { player, .. } => {
             Some(HiddenEvent::LibraryShuffled { player: *player })
         }
+        Event::AttractionDeckShuffled { player, .. } => {
+            Some(HiddenEvent::AttractionDeckShuffled { player: *player })
+        }
         Event::LibraryRefilled { player, order } => Some(HiddenEvent::LibraryRefilled {
             player: *player,
             count: count(order.len()),
@@ -430,6 +438,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::RingBearerLost { .. }
         | Event::Learned { .. }
         | Event::DieRolled { .. }
+        | Event::RolledToVisit { .. }
         | Event::CoinFlipped { .. }
         // A roll by hand is told to every seat, as a spell's roll is.
         | Event::ManualRolled { .. }

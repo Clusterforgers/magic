@@ -177,6 +177,8 @@ pub(crate) enum Tally {
     Cycled,
     /// A surveil (counted for the player).
     Surveilled,
+    /// An Attraction visited (counted for the player who rolled, CR 701.52a).
+    AttractionsVisited,
     /// A scry (counted for the player).
     Scried,
     /// A permanent sacrificed (counted for the player who controlled it).
@@ -320,6 +322,8 @@ pub struct GameState {
     pub(crate) ring: crate::ring::Rings,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
+    /// The Attraction decks and the lights of the Attraction cards (CR 717).
+    pub(crate) un33: crate::un33_attractions::Attractions,
     /// Who has the initiative (CR 725) and the object that stands for it.
     pub(crate) w15a_initiative: Option<crate::w15a_initiative::W15aHeld>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
@@ -937,6 +941,10 @@ impl Hash for GameState {
         // Likewise a game where nobody ventured.
         if !self.w11d.is_empty() {
             self.w11d.hash(state);
+        }
+        // Likewise a game without Attractions.
+        if !self.un33.is_empty() {
+            self.un33.hash(state);
         }
         // Likewise a game where nobody took the initiative.
         if let Some(held) = self.w15a_initiative {

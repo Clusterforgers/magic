@@ -125,6 +125,9 @@ pub enum FaceDown {
         /// The source of the effect.
         by: ObjectRef,
     },
+    /// A card of an Attraction deck (CR 717.2), face down in its owner's command zone: it keeps its own characteristics
+    /// and no player may look at it until it is opened.
+    Attraction,
 }
 
 impl FaceDown {
@@ -135,7 +138,7 @@ impl FaceDown {
         match self {
             FaceDown::Foretold { .. } | FaceDown::Hideaway { .. } => owner == viewer,
             FaceDown::Held { looker, .. } => looker == viewer,
-            FaceDown::Sealed { .. } => false,
+            FaceDown::Sealed { .. } | FaceDown::Attraction => false,
             FaceDown::Morph | FaceDown::Disguise | FaceDown::Manifest | FaceDown::Cloak => {
                 controller == viewer
             }
