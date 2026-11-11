@@ -49,7 +49,7 @@ pub(super) fn w14c_alt_cost_texts(ability: &Ability) -> Vec<String> {
             condition: Some(held),
             cost: None,
         } => {
-            return control_texts(held)
+            return super::wf27_writers::wf27_if_texts(held, control_texts(held))
                 .into_iter()
                 .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))
                 .collect();
@@ -71,9 +71,14 @@ pub(super) fn w14c_alt_cost_texts(ability: &Ability) -> Vec<String> {
     let sentence = format!("you may {body} rather than pay ~'s mana cost");
     match condition {
         None => vec![sentence],
-        Some(held) => control_texts(held)
+        Some(held) => super::wf27_writers::wf27_if_texts(held, control_texts(held))
             .into_iter()
-            .map(|held| format!("if {held}, {sentence}"))
+            .flat_map(|held| {
+                [
+                    format!("if {held}, {sentence}"),
+                    format!("{sentence} if {held}"),
+                ]
+            })
             .collect(),
     }
 }

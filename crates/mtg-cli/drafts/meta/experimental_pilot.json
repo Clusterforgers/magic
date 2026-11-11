@@ -1,6 +1,7 @@
 {
   "source": "forge",
   "oracle_matches": true,
+  "differs": true,
   "lines": [
     {
       "face": 0,

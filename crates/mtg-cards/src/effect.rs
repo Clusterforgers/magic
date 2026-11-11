@@ -318,6 +318,8 @@ pub enum ValueKind {
     CardType,
     /// A land type (CR 205.3i).
     LandType,
+    /// A basic land type: Plains, Island, Swamp, Mountain or Forest (CR 205.3i).
+    BasicLandType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.

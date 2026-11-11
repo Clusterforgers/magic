@@ -651,6 +651,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         }
     }
     super::wf26_writers::wf25_wf26_wordings(ability, written_variants, &mut texts);
+    super::wf27_writers::wf27_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
