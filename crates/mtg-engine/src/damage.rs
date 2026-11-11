@@ -11,7 +11,7 @@ use crate::combat::{AttackTarget, Attacker, DamageForm, DamageTarget};
 use crate::decision::DamageOptions;
 use crate::error::IllegalAnswer;
 use crate::events::Event;
-use crate::keywords::{self, DamageRules};
+use crate::keywords::{self, DamageRules, banding};
 use crate::object::GameObject;
 use crate::rules::{cant_gain_life, damage_causes_no_life_loss};
 use crate::snapshot::Snapshot;
@@ -196,7 +196,10 @@ pub(crate) fn division(
             .iter()
             .map(|blocker| lethal_damage(state, *blocker, rules.deathtouch))
             .collect(),
-        unblocked: unblocked && defender.is_some(),
+        // The defending player who divides the damage for a banding blocker (CR 702.22j) has no such choice to make.
+        unblocked: unblocked
+            && defender.is_some()
+            && crate::keywords::banding::divides_attacker(state, attacker).is_none(),
     };
     if has_choice(&options) {
         Division::Choose(options)
@@ -250,16 +253,59 @@ pub(crate) fn pending_assignment(
     state: &GameState,
     pass: DamagePass,
 ) -> Option<(PlayerId, DamageOptions)> {
-    state.combat().attackers().iter().find_map(|attacker| {
+    let attacker_division = state.combat().attackers().iter().find_map(|attacker| {
         let power = strike_power(state, attacker.object(), pass)?;
         let rules = keywords::damage_rules(state, attacker.object());
         match division(state, attacker, power, rules) {
             Division::Choose(options) => {
-                let controller = controller_of(state, attacker.object())?;
-                Some((controller, options))
+                // The defending player divides it for a banding blocker (CR 702.22j).
+                let divider = banding::divides_attacker(state, attacker)
+                    .or_else(|| controller_of(state, attacker.object()))?;
+                Some((divider, options))
             }
             Division::Fixed(_) => None,
         }
+    });
+    attacker_division.or_else(|| banded_blocker_division(state, pass))
+}
+
+/// The first blocker of several attackers whose damage the active player divides in `pass`, because one of the attackers
+/// bands (CR 702.22k), and the choice it gives: the attackers it blocks take the place of blockers.
+fn banded_blocker_division(
+    state: &GameState,
+    pass: DamagePass,
+) -> Option<(PlayerId, DamageOptions)> {
+    let mut blocked: Vec<(ObjectId, Vec<ObjectId>)> = Vec::new();
+    for attacker in state.combat().attackers() {
+        for blocker in attacker.blockers() {
+            match blocked.iter_mut().find(|(b, _)| b == blocker) {
+                Some((_, attackers)) => attackers.push(attacker.object()),
+                None => blocked.push((*blocker, vec![attacker.object()])),
+            }
+        }
+    }
+    blocked.into_iter().find_map(|(blocker, attackers)| {
+        if attackers.len() < 2 || state.combat().blocker_assignment(blocker).is_some() {
+            return None;
+        }
+        let divider = banding::divides_blocker(state, &attackers)?;
+        let power = strike_power(state, blocker, pass).filter(|power| *power > 0)?;
+        let deathtouch = keywords::damage_rules(state, blocker).deathtouch;
+        let lethal = attackers
+            .iter()
+            .map(|attacker| lethal_damage(state, *attacker, deathtouch))
+            .collect();
+        Some((
+            divider,
+            DamageOptions {
+                attacker: blocker,
+                power,
+                blockers: attackers,
+                excess: None,
+                lethal,
+                unblocked: false,
+            },
+        ))
     })
 }
 

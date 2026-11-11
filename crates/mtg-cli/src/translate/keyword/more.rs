@@ -26,6 +26,10 @@ pub fn special(ctx: &Ctx, text: &str) -> Option<Tr<Value>> {
         ["Devour", count] | ["Devour", count, _] => devour(count, fields.get(2).copied()),
         ["Awaken", count, price] => awaken(ctx, count, price),
         ["Craft", price] => craft(ctx, price),
+        ["Bands with other", valid] | ["Bands with other", valid, _] => {
+            selector_any(ctx, valid).map(|quality| json!({"BandsWithOther": quality}))
+        }
+        ["Splice", onto, price] => splice(ctx, onto, price),
         ["Equip", price, valid] | ["Equip", price, valid, _] if !valid.is_empty() => {
             equip_to(ctx, price, valid)
         }
@@ -119,6 +123,24 @@ fn awaken(ctx: &Ctx, count: &str, price: &str) -> Tr<Value> {
 }
 
 /// `Craft:2 B B XMin1 ExileCtrlOrGrave<X/Creature.Other>`: the mana, the fewest materials for an X, and the one pick of materials.
+/// `Splice:Arcane:1 R` and `Splice:Instant,Sorcery:2 U`: splice onto the kind with its cost. The engine pays a splice cost
+/// of mana only, so a cost with any other part stays a gap.
+fn splice(ctx: &Ctx, onto: &str, price: &str) -> Tr<Value> {
+    let onto = match onto {
+        "Arcane" => "Arcane",
+        "Instant,Sorcery" => "InstantOrSorcery",
+        _ => return unmapped("keyword:Splice-onto"),
+    };
+    let mana_only = price.split(' ').all(|symbol| {
+        !symbol.is_empty() && symbol.chars().all(|c| c.is_ascii_digit())
+            || matches!(symbol, "W" | "U" | "B" | "R" | "G" | "C")
+    });
+    if !mana_only {
+        return unmapped("keyword:Splice-cost");
+    }
+    Ok(json!({"Splice": {"onto": onto, "cost": cost(ctx, price)?}}))
+}
+
 fn craft(ctx: &Ctx, price: &str) -> Tr<Value> {
     let mut least = None;
     let mut words = Vec::new();

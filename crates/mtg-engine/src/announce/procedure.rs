@@ -102,6 +102,7 @@ fn needs(kicked: bool, x: u32) -> Needs {
         x: (x > 0).then_some(XCost::Mana { symbols: x }),
         price: None,
         modes: None,
+        splice: Vec::new(),
     }
 }
 
@@ -188,7 +189,7 @@ fn the_steps_are_listed_in_the_order_of_the_rules() {
     let rules: Vec<char> = Phase::ORDER.iter().map(|phase| phase.rule()).collect();
     assert_eq!(
         rules,
-        ['b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'f', 'g']
+        ['b', 'b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'f', 'g']
     );
     assert_eq!(Phase::ORDER[0], Phase::Modes);
     assert_eq!(Phase::ORDER[10], Phase::Payment);

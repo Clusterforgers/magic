@@ -348,6 +348,13 @@ pub enum Event {
         /// Each attacker and its target.
         attackers: Vec<(ObjectId, AttackTarget)>,
     },
+    /// Attackers declared together form a band (CR 702.22c).
+    BandFormed {
+        /// The attacking player.
+        player: PlayerId,
+        /// The members of the band.
+        attackers: Vec<ObjectId>,
+    },
     /// A defending player declared blockers (possibly none).
     BlockersDeclared {
         /// The defending player.
@@ -355,7 +362,7 @@ pub enum Event {
         /// Pairs of (blocker, attacker blocked).
         blocks: Vec<(ObjectId, ObjectId)>,
     },
-    /// An attacker's damage was divided among its blockers.
+    /// An attacker's damage was divided among its blockers, or a blocker's among the attackers it blocks.
     DamageAssigned {
         /// The attacker.
         attacker: ObjectId,
@@ -1309,6 +1316,7 @@ impl Event {
             | Event::InitiativeTaken { object, .. } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],
             Event::Paired { object, with } | Event::Unpaired { object, with } => vec![*object, *with],
+            Event::BandFormed { attackers, .. } => attackers.clone(),
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

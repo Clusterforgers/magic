@@ -45,6 +45,7 @@ fn begun() -> Engine {
         x: Some(XCost::Mana { symbols: 1 }),
         price: None,
         modes: None,
+        splice: Vec::new(),
     };
     engine
         .begin(Pending::needing(SEAT, What::Spell(card), needs))

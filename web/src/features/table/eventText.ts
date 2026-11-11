@@ -1089,6 +1089,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     if (attackers.length === 0) return quiet(`${n.seat(player)} declares no attackers`)
     return line(`${n.seat(player)} attacks ${attackClauses(attackers, n)}`)
   }
+  if ('BandFormed' in event) {
+    const { player, attackers } = event.BandFormed
+    return line(`${n.seat(player)} bands ${joinWords(attackers.map((id) => n.card(id)))} together`)
+  }
   if ('BlockersDeclared' in event) {
     const { player, blocks } = event.BlockersDeclared
     if (blocks.length === 0) return quiet(`${n.seat(player)} declares no blockers`)

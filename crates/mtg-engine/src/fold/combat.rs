@@ -285,10 +285,42 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             state.combat.blockers_declared.push(*player);
         }
+        Event::BandFormed { attackers, .. } => {
+            let attacking = |id: &mtg_core::ids::ObjectId| {
+                state.combat.attackers.iter().any(|a| a.object == *id)
+            };
+            if attackers.len() < 2 || !attackers.iter().all(attacking) {
+                return Err(invalid("a band of creatures that are not attacking"));
+            }
+            if attackers
+                .iter()
+                .any(|id| state.combat.band_of(*id).is_some())
+            {
+                return Err(invalid("a creature in two bands"));
+            }
+            state.combat.bands.push(attackers.clone());
+        }
         Event::DamageAssigned {
             attacker,
             assignment,
         } => {
+            // A blocker that blocks several attackers divides its damage among them (CR 510.1d, 702.22k).
+            let blocks = state
+                .combat
+                .attackers
+                .iter()
+                .any(|a| a.blockers.contains(attacker));
+            if blocks {
+                state
+                    .combat
+                    .blocker_assignments
+                    .retain(|(blocker, _)| blocker != attacker);
+                state
+                    .combat
+                    .blocker_assignments
+                    .push((*attacker, assignment.clone()));
+                return Ok(());
+            }
             let target = state
                 .combat
                 .attackers

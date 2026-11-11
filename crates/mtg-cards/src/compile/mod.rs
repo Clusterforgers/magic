@@ -761,7 +761,11 @@ mod tests {
         "Draw a card.\nWish for a card.",
         Some(ImplStatus::Manual)
     )]
-    #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Banding", Some(ImplStatus::Manual))]
+    #[case::unreadable_keyword_only(
+        "Creature \u{2014} Elf",
+        "Compleated",
+        Some(ImplStatus::Manual)
+    )]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]
@@ -915,7 +919,7 @@ mod tests {
     #[rstest]
     #[case::with_a_cost("Cleave {1}{B}")]
     #[case::with_a_number("Squad 2")]
-    #[case::with_a_word("Banding")]
+    #[case::with_a_word("Compleated")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
     #[case::alone("Surge")]
     fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {

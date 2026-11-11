@@ -457,8 +457,8 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Spell(spell)));
                 Ok(())
             }
-            Outcome::BeginAttack(attackers, exert) => {
-                self.pending = Some(Pending::new(player, What::Attack(attackers, exert)));
+            Outcome::BeginAttack(attackers, extras) => {
+                self.pending = Some(Pending::new(player, What::Attack(attackers, extras)));
                 Ok(())
             }
             Outcome::BeginBlock(blocks) => {

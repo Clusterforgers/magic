@@ -8,7 +8,7 @@ use mtg_core::color::Color;
 
 use crate::companion::DeckCondition;
 use crate::cost::{Cost, CostItem};
-use crate::keyword::{GiftKind, Keyword};
+use crate::keyword::{GiftKind, Keyword, SpliceOnto};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Selector};
 use crate::value::{Amount, Cmp, StatKind};
@@ -90,6 +90,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("shadow", Params::None),
     ("skulk", Params::None),
     ("banding", Params::None),
+    ("splice onto arcane", Params::Cost),
+    ("splice onto instant or sorcery", Params::Cost),
     ("infect", Params::None),
     ("wither", Params::None),
     ("persist", Params::None),
@@ -464,6 +466,15 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
+        "splice onto arcane" => spell_cost(rest).map(|cost| Keyword::Splice {
+            onto: SpliceOnto::Arcane,
+            cost,
+        }),
+        "splice onto instant or sorcery" => spell_cost(rest).map(|cost| Keyword::Splice {
+            onto: SpliceOnto::InstantOrSorcery,
+            cost,
+        }),
+        "bands with other" => super::read::affinity_filter(rest).map(Keyword::BandsWithOther),
         "backup" => positive(rest).map(backup),
         "crew" => positive(rest).map(Keyword::Crew),
         "saddle" => positive(rest).map(Keyword::Saddle),
@@ -729,6 +740,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "storm" => Keyword::Storm,
         "gravestorm" => Keyword::Gravestorm,
         "epic" => Keyword::Epic,
+        "banding" => Keyword::Banding,
         "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
@@ -1428,6 +1440,10 @@ mod tests {
     #[case::recover_generic("Recover {1}{B}", Keyword::Recover(mana("{1}{B}")))]
     #[case::ripple("Ripple 4", Keyword::Ripple(4))]
     #[case::epic("Epic", Keyword::Epic)]
+    #[case::banding("Banding", Keyword::Banding)]
+    #[case::bands_with_other_legendary("Bands with other legendary creatures", Keyword::BandsWithOther(Selector(vec![Pred::Supertype(Supertype::Legendary), Pred::Type(CardType::Creature)])))]
+    #[case::splice_onto_arcane("Splice onto Arcane {1}{R}", Keyword::Splice { onto: SpliceOnto::Arcane, cost: mana("{1}{R}") })]
+    #[case::splice_onto_instants("Splice onto instant or sorcery {2}{U}", Keyword::Splice { onto: SpliceOnto::InstantOrSorcery, cost: mana("{2}{U}") })]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::bargain("Bargain", Keyword::Bargain)]
     #[case::conspire("Conspire", Keyword::Conspire)]
@@ -1730,7 +1746,9 @@ mod tests {
         "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
     )]
     #[case::companion_without_a_condition("Companion")]
-    #[case::undeclared("Banding")]
+    #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]
+    #[case::splice_onto_a_made_up_kind("Splice onto Banana {1}")]
+    #[case::splice_without_a_cost("Splice onto Arcane")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]
@@ -1806,6 +1824,7 @@ mod tests {
             // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
             "Typecycling" => "Basic landcycling",
             "Equip to" => "Equip",
+            "Splice" => "Splice onto Arcane",
             other => other,
         }
     }
@@ -1992,6 +2011,9 @@ mod tests {
             "Recover {1}",
             "Ripple 4",
             "Epic",
+            "Banding",
+            "Bands with other Dinosaurs",
+            "Splice onto Arcane {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

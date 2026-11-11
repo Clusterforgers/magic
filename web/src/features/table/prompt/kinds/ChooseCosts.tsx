@@ -12,6 +12,7 @@ import {
   costsSentence,
   extraCost,
   extraCostWords,
+  isSplice,
   labelPieces,
   refusal,
 } from '../costsText'
@@ -87,7 +88,7 @@ export const ChooseCostsPrompt: PromptComponent<'ChooseCosts'> = ({ options }) =
     <PromptLayout
       text={
         <>
-          {costsSentence(askerWords(source?.name), chosen.length)}
+          {costsSentence(askerWords(source?.name), chosen.length, isSplice(optional))}
           <span className="sr-only"> {costKeysWords(optional.length)}</span>
         </>
       }

@@ -87,6 +87,17 @@ pub(crate) fn w14c_blocker_shares(
         let Some(mut left) = power(blocker) else {
             continue;
         };
+        // A division its controller's opponent chose for a banding attacker (CR 702.22k).
+        if let Some(recorded) = state.combat().blocker_assignment(blocker) {
+            for attacker in &attacked {
+                let share = recorded
+                    .iter()
+                    .filter(|(a, _)| a == attacker)
+                    .fold(0u32, |sum, (_, n)| sum.saturating_add(*n));
+                shares.insert((blocker, *attacker), share);
+            }
+            continue;
+        }
         let deathtouch = crate::keywords::damage_rules(state, blocker).deathtouch;
         for (at, attacker) in attacked.iter().enumerate() {
             let last = at + 1 == attacked.len();
