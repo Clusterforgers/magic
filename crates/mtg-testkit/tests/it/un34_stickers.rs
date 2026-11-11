@@ -9,12 +9,14 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::attraction::Lights;
 use mtg_core::ids::ObjectId;
-use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::choose::OptionChoice;
+use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
-use mtg_testkit::cards::{un33_opener, un34_fan, un34_prize_attraction, un34_sheet, un34_stickerer};
+use mtg_testkit::cards::{
+    un33_opener, un34_fan, un34_prize_attraction, un34_sheet, un34_stickerer,
+};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -117,7 +119,11 @@ fn a_sticker_changes_the_permanent_it_is_put_on(
         "Wicked" => assert_eq!(name, "Wicked Bear"),
         "Flying" => {
             assert_eq!(name, "Bear");
-            assert!(mtg_engine::keywords::has_keyword(state, bear, &Keyword::Flying));
+            assert!(mtg_engine::keywords::has_keyword(
+                state,
+                bear,
+                &Keyword::Flying
+            ));
         }
         _ => assert_eq!((chars.power, chars.toughness), (Some(5), Some(5))),
     }
@@ -160,7 +166,10 @@ fn only_the_stickers_the_seat_can_pay_for_are_offered(
 
 #[test]
 fn a_sticker_is_used_once_and_leaves_with_the_permanent() -> Result<(), ScriptError> {
-    let scenario = table(2, 3).hand(0, [un34_stickerer("Stickerer"), un34_stickerer("Stickerer")]);
+    let scenario = table(2, 3).hand(
+        0,
+        [un34_stickerer("Stickerer"), un34_stickerer("Stickerer")],
+    );
     let mut driver = Driver::from_scenario(scenario)?;
     let bear = bear_of(&driver, 0);
     put(&mut driver, "Wicked")?;
@@ -228,7 +237,10 @@ fn a_visit_that_claims_the_prize_triggers_the_prize_and_the_fans(
         .iter()
         .filter(|event| matches!(event, Event::PrizeClaimed { .. }))
         .count();
-    assert_eq!(claims, 2, "each Attraction lit up is visited and claims its prize");
+    assert_eq!(
+        claims, 2,
+        "each Attraction lit up is visited and claims its prize"
+    );
     assert_eq!(
         driver.state().zone(Zone::Hand(pid(0))).len(),
         hand + 2,

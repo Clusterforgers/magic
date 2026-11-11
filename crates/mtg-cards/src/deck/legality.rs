@@ -614,7 +614,9 @@ fn attraction_deck(deck: &Deck, cards: &Cards, issues: &mut Vec<Issue>) {
         issues.push(Issue::zone(
             IssueCode::AttractionDeck,
             DeckZone::Attractions,
-            format!("an Attraction deck has at least {ATTRACTION_DECK_MINIMUM} cards, this one {size}"),
+            format!(
+                "an Attraction deck has at least {ATTRACTION_DECK_MINIMUM} cards, this one {size}"
+            ),
         ));
     }
     for (zone, id, count, facts) in cards_in(deck, cards, &[DeckZone::Attractions]) {

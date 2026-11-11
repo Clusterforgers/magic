@@ -79,19 +79,13 @@ fn a_prize_line_is_a_prize_ability(#[case] text: &str, #[case] effects: &str) {
     "Put a sticker on a nonland permanent an opponent controls.",
     ClauseKind::Spell
 )]
-#[case::two_stickers(
-    "Put two stickers on a nonland permanent you own.",
-    ClauseKind::Spell
-)]
+#[case::two_stickers("Put two stickers on a nonland permanent you own.", ClauseKind::Spell)]
 #[case::no_object("Put a sticker.", ClauseKind::Spell)]
 #[case::visits_two(
     "Whenever you visit two Attractions, draw a card.",
     ClauseKind::Triggered
 )]
-#[case::prize_of_nothing(
-    "Whenever you claim the prize, draw a card.",
-    ClauseKind::Triggered
-)]
+#[case::prize_of_nothing("Whenever you claim the prize, draw a card.", ClauseKind::Triggered)]
 #[case::a_prize("Claim a prize.", ClauseKind::Spell)]
 fn a_near_miss_is_not_read(#[case] text: &str, #[case] kind: ClauseKind) {
     assert_eq!(clause(text, kind, false), None, "{text}");

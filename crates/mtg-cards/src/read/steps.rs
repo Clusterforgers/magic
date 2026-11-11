@@ -311,7 +311,6 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             "may begin the game on the battlefield if in the opening hand".to_owned(),
         )),
         Ability::Sticker(sticker) => sticker_steps(sticker, depth, out),
-        }
         Ability::OpeningReveal {
             when,
             effects: list,

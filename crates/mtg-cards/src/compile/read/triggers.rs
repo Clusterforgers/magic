@@ -1621,9 +1621,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::OpenedAttraction { .. }
         | TriggerPattern::RolledToVisit { .. }
         | TriggerPattern::VisitedAttraction { .. }
-        | TriggerPattern::ClaimedPrize { .. } => {
-            super::un33_attractions::un33_event_text(pattern)
-        }
+        | TriggerPattern::ClaimedPrize { .. } => super::un33_attractions::un33_event_text(pattern),
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
         TriggerPattern::ZoneChange {
             what,
