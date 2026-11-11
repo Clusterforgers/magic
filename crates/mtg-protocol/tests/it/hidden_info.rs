@@ -109,6 +109,8 @@ const SCALAR_KEYS: &[&str] = &[
     "color_indicator",
     "face",
     "who",
+    // A target slot of a rule (`ObjectRef::Target`), as a public token definition names it.
+    "Target",
 ];
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
@@ -130,13 +132,16 @@ pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectI
         .collect()
 }
 
-/// Objects hidden from `viewer` before a batch that are not visible to them afterwards.
+/// Objects hidden from `viewer` before a batch that are not visible to them afterwards; a card a question offers them
+/// before or after the batch (a scry of their library) is visible to them.
 pub(crate) fn hidden_across(
     before: &GameState,
     after: &GameState,
     viewer: PlayerId,
 ) -> BTreeMap<ObjectId, String> {
     let tops: Vec<ObjectId> = revealed_tops(after).into_values().collect();
+    let mut offered = mtg_engine::sight::offered_to(before, viewer);
+    offered.extend(mtg_engine::sight::offered_to(after, viewer));
     hidden_in(before, viewer)
         .into_iter()
         .filter(|(id, _)| {
@@ -144,6 +149,7 @@ pub(crate) fn hidden_across(
                 .object(*id)
                 .is_none_or(|o| is_hidden(o.zone(), viewer) && !tops.contains(id))
                 && !after.is_shown_to(viewer, *id)
+                && !offered.contains(id)
         })
         .collect()
 }
@@ -982,6 +988,19 @@ fn snapshots_show_exactly_what_the_viewer_may_know(#[case] players: usize, #[cas
             }
         }
     });
+}
+
+/// A target slot of a rule (`ObjectRef::Target`) is a slot number, never an object; an object id is still flagged.
+#[rstest]
+#[case(serde_json::json!({"affected": {"Target": 0}}), false)]
+#[case(serde_json::json!({"affected": {"Target": 1}}), false)]
+#[case(serde_json::json!({"object": 0}), true)]
+fn the_scan_reads_a_target_slot_as_no_object(#[case] value: Value, #[case] flagged: bool) {
+    let hidden = BTreeMap::from([
+        (ObjectId(0), "Secret".to_owned()),
+        (ObjectId(1), "Other".to_owned()),
+    ]);
+    assert_eq!(!leaks(&value, &hidden).is_empty(), flagged);
 }
 
 #[test]
@@ -2036,6 +2055,17 @@ fn the_seat_that_scries_lists_the_cards_while_it_decides_and_no_other_seat_does(
             listed(&driver, seat, &options.cards),
             vec![seat == 0; options.cards.len()],
             "seat {seat}: only the scrying seat is shown the cards"
+        );
+        let state = driver.state();
+        let hidden = hidden_across(state, state, PlayerId::from_index(seat));
+        assert_eq!(
+            options
+                .cards
+                .iter()
+                .map(|c| !hidden.contains_key(c))
+                .collect::<Vec<_>>(),
+            vec![seat == 0; options.cards.len()],
+            "seat {seat}: the helper counts the offered cards as seen by the scrying seat alone"
         );
     }
     let hidden = named_hidden(&driver, &options.cards);
