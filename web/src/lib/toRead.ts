@@ -57,10 +57,10 @@ export const DRAFT_NOTE: Readonly<Record<'pending' | 'wrong', string>> = {
 /** The cards to be read: a stored deck by id, a precon by code, or those of the account's own decks. */
 export type ReadTarget = { deck: string } | { precon: string } | { mine: true }
 
-/** The address of the review screen for `target`: `/read?deck=<id>`, `/read?precon=<code>` or `/read?mine=true`. */
+/** The address of the review screen for `target`: `/review?deck=<id>`, `/review?precon=<code>` or `/review?mine=true`. */
 export function readPath(target: ReadTarget): string {
-  if ('mine' in target) return '/read?mine=true'
+  if ('mine' in target) return '/review?mine=true'
   return 'deck' in target
-    ? `/read?deck=${encodeURIComponent(target.deck)}`
-    : `/read?precon=${encodeURIComponent(target.precon)}`
+    ? `/review?deck=${encodeURIComponent(target.deck)}`
+    : `/review?precon=${encodeURIComponent(target.precon)}`
 }

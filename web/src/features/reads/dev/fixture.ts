@@ -1,8 +1,43 @@
 /** Made-up cards to read and an in-memory read server for `/dev/read` and the tests of the review screen. */
 import { BY_HAND } from '@/lib/byHand'
 import { DeckError } from '@/net/decks'
+import type { BulkReadsApi } from '@/net/bulkReads'
 import type { ReadsApi } from '@/net/reads'
-import type { ReadCard, ReadQueue, ReadRow } from '@/protocol/generated'
+import type { BulkCard, ReadCard, ReadQueue, ReadRow } from '@/protocol/generated'
+
+/** The wording-only offer of the fixture: Tidecaller, whose one differing clause only adds "you". */
+export function fixtureReadBulkApi(): BulkReadsApi {
+  const tidecaller: ReadCard | undefined = READ_CARDS['f0000000-0000-4000-8000-000000000001']
+  let cards: BulkCard[] =
+    tidecaller === undefined
+      ? []
+      : [
+          {
+            oracle_id: tidecaller.oracle_id,
+            name: tidecaller.name,
+            read_hash: tidecaller.read_hash,
+            rule: 'implied_you',
+            clauses: [
+              {
+                printed: 'When this creature enters, draw a card, then discard a card.',
+                engine: 'When this creature enters, you draw a card, then you discard a card.',
+                rules: ['implied_you'],
+              },
+            ],
+          },
+        ]
+  return {
+    list: async () => ({
+      rules: [{ name: 'implied_you', title: 'Implied "you"', summary: 'An instruction names its doer.' }],
+      cards,
+    }),
+    approve: async ({ cards: picked }) => {
+      const ids = picked.map((c) => c.oracle_id)
+      cards = cards.filter((c) => !ids.includes(c.oracle_id))
+      return { approved: ids, stale: [] }
+    },
+  }
+}
 
 /** Text of the dev page that must never reach a production build. */
 export const READS_FIXTURE_MARKER = 'dev-read-fixture'

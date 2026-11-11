@@ -1,10 +1,9 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 import {
-  BookOpenIcon,
+  ListChecksIcon,
   CircleAlertIcon,
   LibraryIcon,
   PlusIcon,
-  ShieldHalfIcon,
   TriangleAlertIcon,
   UploadIcon,
 } from 'lucide-react'
@@ -120,13 +119,9 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
           </div>
           {state.status === 'unavailable' ? null : (
             <div className="flex flex-wrap items-center gap-2">
-              <Link to="/read" className={buttonVariants({ variant: 'ghost' })}>
-                <BookOpenIcon aria-hidden="true" />
-                Read cards
-              </Link>
-              <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'ghost' })}>
-                <ShieldHalfIcon aria-hidden="true" />
-                Cards to check
+              <Link to="/review" search={{ mine: true }} className={buttonVariants({ variant: 'ghost' })}>
+                <ListChecksIcon aria-hidden="true" />
+                Review cards
               </Link>
               {newAction}
               {importAction}

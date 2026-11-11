@@ -9,9 +9,14 @@ import { ToRead } from './ToRead'
 
 describe('ToRead', () => {
   it.each<[number, ReadTarget | null | undefined, string, string | null]>([
-    [1, { deck: 'deck-1' }, '1 card to read', '/read?deck=deck-1'],
-    [12, { precon: 'c18-adaptive-enchantment' }, '12 cards to read', '/read?precon=c18-adaptive-enchantment'],
-    [2, null, '2 cards to read', '/read'],
+    [1, { deck: 'deck-1' }, '1 card to read', '/review?deck=deck-1'],
+    [
+      12,
+      { precon: 'c18-adaptive-enchantment' },
+      '12 cards to read',
+      '/review?precon=c18-adaptive-enchantment',
+    ],
+    [2, null, '2 cards to read', '/review'],
     [3, undefined, '3 cards to read', null],
   ])('for %i cards says "%s" as a link to the review screen at %s', async (count, target, words, path) => {
     await renderInRouter(<ToRead count={count} target={target} />)

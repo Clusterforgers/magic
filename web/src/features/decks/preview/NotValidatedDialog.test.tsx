@@ -102,7 +102,7 @@ describe('the button of the not-validated cards', () => {
     expect(within(dialog).queryByText('Read')).toBeNull()
     expect(dialog.querySelector('[data-slot="to-read"]')).toHaveAttribute(
       'data-read-path',
-      '/read?precon=c18-x',
+      '/review?precon=c18-x',
     )
     expect(dialog.querySelector('[data-slot="deck-to-read"]')).toHaveTextContent('1 card to read')
   })

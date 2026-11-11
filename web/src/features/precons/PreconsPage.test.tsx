@@ -245,7 +245,7 @@ describe('the reads', () => {
     expect(within(waiting).getByText('3 cards played by hand')).toBeInTheDocument()
     expect(within(waiting).getByText('2 cards to read').closest('[data-slot="to-read"]')).toHaveAttribute(
       'data-read-path',
-      '/read?precon=r2',
+      '/review?precon=r2',
     )
     expect(within(rowOf('Plain')).queryByText(/to read/)).toBeNull()
   })

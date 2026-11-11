@@ -41,7 +41,7 @@ describe('a deck with drafts waiting for a read', () => {
     expect(toRead()).toHaveTextContent(/^1 card to read$/)
     expect(toRead()?.querySelector('[data-slot="to-read"]')).toHaveAttribute(
       'data-read-path',
-      '/read?deck=deck-1',
+      '/review?deck=deck-1',
     )
   })
 

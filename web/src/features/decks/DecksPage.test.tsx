@@ -69,7 +69,7 @@ describe('the page in the app', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Cards to check', 'Create'])
+    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Review cards', 'Create'])
     expect(within(nav).getByRole('link', { name: 'Decks' })).toHaveAttribute('aria-current', 'page')
     expect(within(nav).getByRole('link', { name: 'My games' })).not.toHaveAttribute('aria-current')
     expect(app.router.state.location.pathname).toBe('/decks')
@@ -237,7 +237,7 @@ describe('the check state of a deck', () => {
     await screen.findByRole('list', { name: 'Your decks' })
     expect(
       within(rowOf('Waiting')).getByText('3 cards to read').closest('[data-slot="to-read"]'),
-    ).toHaveAttribute('data-read-path', '/read?deck=w1')
+    ).toHaveAttribute('data-read-path', '/review?deck=w1')
     expect(rowOf('Plain').querySelector('[data-slot="to-read"]')).toBeNull()
   })
 

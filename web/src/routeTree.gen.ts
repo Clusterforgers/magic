@@ -18,6 +18,7 @@ import { Route as NewRouteImport } from './routes/new'
 import { Route as PreconsRouteImport } from './routes/precons'
 import { Route as ReadRouteImport } from './routes/read'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ReviewRouteImport } from './routes/review'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidated'
@@ -77,6 +78,11 @@ const ReadRoute = ReadRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/precons': typeof PreconsRoute
   '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
+  '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/precons': typeof PreconsRoute
   '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
+  '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/precons': typeof PreconsRoute
   '/read': typeof ReadRoute
   '/register': typeof RegisterRoute
+  '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/decks_/unvalidated': typeof DecksUnvalidatedRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/precons'
     | '/read'
     | '/register'
+    | '/review'
     | '/settings'
     | '/decks/$deckId'
     | '/decks/unvalidated'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/precons'
     | '/read'
     | '/register'
+    | '/review'
     | '/settings'
     | '/decks/$deckId'
     | '/decks/unvalidated'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/precons'
     | '/read'
     | '/register'
+    | '/review'
     | '/settings'
     | '/decks_/$deckId'
     | '/decks_/unvalidated'
@@ -325,6 +337,7 @@ export interface RootRouteChildren {
   PreconsRoute: typeof PreconsRoute
   ReadRoute: typeof ReadRoute
   RegisterRoute: typeof RegisterRoute
+  ReviewRoute: typeof ReviewRoute
   SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DecksUnvalidatedRoute: typeof DecksUnvalidatedRoute
@@ -405,6 +418,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -525,6 +545,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreconsRoute: PreconsRoute,
   ReadRoute: ReadRoute,
   RegisterRoute: RegisterRoute,
+  ReviewRoute: ReviewRoute,
   SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DecksUnvalidatedRoute: DecksUnvalidatedRoute,

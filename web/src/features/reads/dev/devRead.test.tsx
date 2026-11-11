@@ -49,10 +49,10 @@ describe('parseDevReadSearch', () => {
 
 describe('/dev/read', () => {
   it.each([
-    ['deck', 'Read the cards of Izzet Spellcraft'],
-    ['precon', 'Read the cards of Izzet Spellcraft'],
-    ['mine', 'Cards in your decks'],
-    ['done', 'No cards to read'],
+    ['deck', 'Review Izzet Spellcraft'],
+    ['precon', 'Review Izzet Spellcraft'],
+    ['mine', 'Review cards'],
+    ['done', 'Nothing to review'],
     ['error', 'The cards could not be loaded'],
     ['dialog', 'Read the rules of Tidecaller of the Long Shoal'],
   ])('draws the %s view', async (view, words) => {

@@ -116,20 +116,20 @@ export function queueWords(
 ): { heading: string; nothing: string; empty: string } {
   if (target === null)
     return {
-      heading: 'Read every card',
+      heading: 'Review every card',
       nothing: 'Nothing waits for a first read.',
       empty: 'Every draft has a read.',
     }
   if ('mine' in target)
     return {
-      heading: 'Cards in your decks',
-      nothing: 'Nothing in your decks waits for a first read.',
-      empty: 'Every draft in your decks has a read.',
+      heading: 'Review cards',
+      nothing: 'Nothing in your decks waits for a read or a check.',
+      empty: 'Every draft in your decks has a read, and the game runs every other card whole.',
     }
   return {
-    heading: `Read the cards of ${title}`,
-    nothing: 'Nothing waits for your read in this deck.',
-    empty: 'Every draft in this deck has your read, or the deck has none.',
+    heading: `Review ${title}`,
+    nothing: 'Nothing in this deck waits for your read or a check.',
+    empty: 'Every draft in this deck has your read, and the game runs every other card whole.',
   }
 }
 
