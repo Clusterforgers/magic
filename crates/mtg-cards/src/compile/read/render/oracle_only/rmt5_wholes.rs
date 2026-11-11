@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const RMT5_WHOLES: [(&str, &str); 103] = [
+const RMT5_WHOLES: [(&str, &str); 98] = [
     // artificers_hex
     (
         r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"HasAttached":[{"Is":"Attached"}]}]},"op":"Ge","right":1}},"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"HasAttached":[{"Is":"Attached"}]}]}}}]}}"#,
@@ -203,16 +203,6 @@ If you had a land enter the battlefield under your control this turn, ~ deals 3 
         r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"targets":[{"what":{"Object":[{"Subtype":"Vehicle"},{"ControlledBy":"You"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddType":"Artifact"},{"AddType":"Creature"},{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}}]}}"#,
         r"At the beginning of combat on your turn, choose up to one target Vehicle you control. Until end of turn, it becomes an artifact creature and gains haste.",
     ),
-    // crumbling_sanctuary
-    (
-        r#"{"Replacement":{"when":{"Damage":{"to":"EachPlayer"}},"by":{"Instead":[{"ExileTop":{"who":"Triggering","count":"Triggering","as":"exiled"}}]}}}"#,
-        r"If damage would be dealt to a player, that player exiles that many cards from the top of their library instead.",
-    ),
-    // gloom_surgeon
-    (
-        r#"{"Replacement":{"when":{"Damage":{"to":"This","combat":true}},"by":{"PreventAnd":[{"ExileTop":{"count":"Triggering","as":"exiled"}}]}}}"#,
-        r"If combat damage would be dealt to this creature, prevent that damage and exile that many cards from the top of your library.",
-    ),
     // jared_carthalion
     (
         r#"{"Loyalty":{"cost":{"Plus":1},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Kavu","colors":["White","Blue","Black","Red","Green"],"types":["Creature"],"subtypes":["Kavu"],"power":3,"toughness":3,"abilities":[{"Keyword":"Trample"}]}}}}]}}"#,
@@ -282,11 +272,6 @@ If you had a land enter the battlefield under your control this turn, ~ deals 3 
     (
         r#"{"Loyalty":{"cost":{"Minus":7},"effects":[{"CreateEmblem":{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Artifact"},{"ControlledBy":"You"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddType":"Creature"},{"SetPT":{"power":5,"toughness":5}}],"duration":"Forever"}}]}}]}}]}}"#,
         r#"−7: You get an emblem with "At the beginning of combat on your turn, target artifact you control becomes an artifact creature with base power and toughness 5/5.""#,
-    ),
-    // the_mindskinner
-    (
-        r#"{"Replacement":{"when":{"Damage":{"to":"Opponents","source":[{"ControlledBy":"You"}]}},"by":{"PreventAnd":[{"Mill":{"who":"Opponents","count":"Triggering"}}]}}}"#,
-        r"If a source you control would deal damage to an opponent, prevent that damage and each opponent mills that many cards.",
     ),
     // tor_wauki_the_younger
     (
@@ -439,11 +424,6 @@ Exile ~.",
         r#"{"Loyalty":{"cost":{"Minus":7},"targets":[{"what":"Player"}],"effects":[{"ExileTop":{"who":{"Target":0},"count":{"Total":{"of":[{"In":"Exile"},{"OwnedBy":"You"}],"stat":"ManaValue"}},"as":"exiled"}}]}}"#,
         r"−7: Target player exiles the top X cards of their library, where X is the total mana value of cards you own in exile.",
     ),
-    // evidence_examiner
-    (
-        r#"{"Triggered":{"when":{"StepBegins":{"step":"BeginCombat","whose":"You"}},"effects":[{"Pay":{"cost":[{"CollectEvidence":4}]}}]}}"#,
-        r"At the beginning of combat on your turn, you may collect evidence 4.",
-    ),
     // fear_of_sleep_paralysis
     (
         r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Type":"Enchantment"},"Other",{"ControlledBy":"You"}],"to":"Battlefield"}},{"DoorUnlocked":{"who":"You","fully":true}}]},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Tap":{"what":{"Target":0}}},{"PutCounters":{"on":{"Target":0},"counter":{"Other":"stun"}}}]}}"#,
@@ -497,16 +477,6 @@ Draw a card.",
         r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Hexproof"},{"AddKeyword":"Indestructible"}],"condition":{"Compare":{"left":{"Counters":{"on":{"Each":[{"Subtype":"Saga"},{"ControlledBy":"You"}]},"counter":{"Other":"lore"}}},"op":"Ge","right":4}}}}"#,
         r"As long as there are four or more lore counters among Sagas you control, ~ has hexproof and indestructible.",
     ),
-    // weeping_angel
-    (
-        r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"}],"by":"Opponents"}},"effects":[{"Continuous":{"affected":"This","mods":[{"RemoveType":"Creature"}],"duration":"UntilEndOfTurn"}}]}}"#,
-        r"Whenever an opponent casts a creature spell, this creature isn't a creature until end of turn.",
-    ),
-    // weeping_angel
-    (
-        r#"{"Replacement":{"when":{"Damage":{"to":{"Each":[{"Type":"Creature"}]},"source":["This"],"combat":true}},"by":{"PreventAnd":[{"Move":{"what":"Triggering","to":{"Library":{"place":"Shuffled"}}}}]}}}"#,
-        r"If this creature would deal combat damage to a creature, prevent that damage and that creature's owner shuffles it into their library.",
-    ),
     // wicked_akuba
     (
         r#"{"Activated":{"cost":"{B}","targets":[{"what":{"PlayerAmong":{"PlayersWhere":{"who":"EachPlayer","test":{"Matches":{"subject":"This","selector":[{"DidThisTurn":{"event":"Damaged","to":"You"}}]}}}}}}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":1}}]}}"#,
@@ -526,6 +496,11 @@ Draw a card.",
     (
         r#"{"Activated":{"cost":[{"Mana":"{5}"},"Tap","ExileSelf"],"effects":[{"Shield":{"when":{"Draw":{}},"by":{"InsteadNext":[{"Search":{"zone":"Outside","filter":[{"OwnedBy":"You"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]},"duration":"UntilEndOfTurn"}}]}}"#,
         r"{5}, {T}, Exile this artifact: The next time you would draw a card this turn, instead put a card you own from outside the game into your hand.",
+    ),
+    // weeping_angel
+    (
+        r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"}],"by":"Opponents"}},"effects":[{"Continuous":{"affected":"This","mods":[{"RemoveType":"Creature"}],"duration":"UntilEndOfTurn"}}]}}"#,
+        r"Whenever an opponent casts a creature spell, this creature isn't a creature until end of turn.",
     ),
 ];
 
