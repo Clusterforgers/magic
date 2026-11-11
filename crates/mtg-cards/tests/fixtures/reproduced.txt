@@ -16,6 +16,7 @@ Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
 Adventurous Eater // Have a Bite
+Aerialephant
 Aeromunculus
 Aether Gale
 Aether Hub
@@ -227,6 +228,7 @@ Capture of Jingzhou
 Caravan Escort
 Carmen, Cruel Skymarcher
 Carnage Tyrant
+Carnival Carnivore
 Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
@@ -253,6 +255,7 @@ Changing Loyalty
 Charmbreaker Devils
 Chartooth Cougar
 Chemister's Insight
+Chicken Troupe
 Chief Engineer
 Chimil, the Inner Sun
 Chittering Harvester
@@ -633,6 +636,7 @@ Glassworks // Shattered Yard
 Glimpse of Freedom
 Glint-Sleeve Artisan
 Glissa Sunslayer
+Glitterflitter
 Glorious Anthem
 Glorybringer
 Glowing One
@@ -978,6 +982,7 @@ Mind Flayer
 Mindless Conscription
 Mindlock Orb
 Ministrant of Obligation
+Minotaur de Force
 Mirari
 Mirari's Wake
 Mire's Malice
@@ -1453,6 +1458,7 @@ Steelburr Champion
 Steelclaw Lance
 Stensia Masquerade
 Sticky Fingers
+Stiltstrider
 Stinkdrinker Bandit
 Stitch in Time
 Stitched Drake
@@ -1558,6 +1564,7 @@ The Gaffer
 The Locust God
 The Modern Age // Vector Glider
 The Moment
+The Most Dangerous Gamer
 The Mycosynth Gardens
 The Scorpion God
 The Seriema

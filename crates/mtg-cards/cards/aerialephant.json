@@ -5,47 +5,19 @@
   "faces": [
     {
       "name": "Aerialephant",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "0cc999bc1ee74bf432897c75a40aa688",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              {
-                "PutCounters": {
-                  "on": "You",
-                  "counter": {
-                    "Other": "ticket"
-                  },
-                  "count": 1
-                }
-              },
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } },
               {
                 "May": {
                   "effects": [
                     {
-                      "PutSticker": {
-                        "on": [
-                          {
-                            "Not": {
-                              "Type": "Land"
-                            }
-                          },
-                          {
-                            "OwnedBy": "You"
-                          }
-                        ]
-                      }
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
                     }
                   ]
                 }
