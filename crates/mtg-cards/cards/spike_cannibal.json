@@ -22,7 +22,9 @@
                   "from": { "Each": [{ "Type": "Creature" }] },
                   "to": "This",
                   "counter": "+1/+1",
-                  "count": { "Counters": { "on": { "Each": [{ "Type": "Creature" }] }, "counter": "+1/+1" } }
+                  "count": {
+                    "Counters": { "on": { "Each": [{ "Type": "Creature" }] }, "counter": "+1/+1" }
+                  }
                 }
               }
             ]
