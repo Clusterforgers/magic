@@ -80,11 +80,12 @@ fn put(driver: &mut Driver, pick: &str) -> Result<(), ScriptError> {
     while !driver.state().stack().is_empty() {
         let decision = driver.decision()?.clone();
         if let DecisionKind::ChooseOption(options) = &decision.kind {
-            let at = options
-                .options
+            // The offered stickers follow the sheet: the name, the flying and the 5/5 sticker.
+            let wanted = ["Wicked", "Flying", "5/5"]
                 .iter()
-                .position(|option| format!("{option:?}").contains(pick))
-                .expect("the sticker is offered");
+                .position(|word| *word == pick)
+                .expect("a sticker of the sheet");
+            let at = options.options.len() - (3 - wanted);
             driver.answer(Answer::ChooseOption(OptionChoice(at)))?;
         } else {
             driver.answer_passively()?;
@@ -116,9 +117,9 @@ fn a_sticker_changes_the_permanent_it_is_put_on(
     let chars = mtg_engine::characteristics::characteristics(state, bear).unwrap();
     let name = state.name_of(bear).unwrap();
     match pick {
-        "Wicked" => assert_eq!(name, "Wicked Bear"),
+        "Wicked" => assert_eq!(name, "Wicked Grizzly Bears"),
         "Flying" => {
-            assert_eq!(name, "Bear");
+            assert_eq!(name, "Grizzly Bears");
             assert!(mtg_engine::keywords::has_keyword(
                 state,
                 bear,
@@ -130,7 +131,7 @@ fn a_sticker_changes_the_permanent_it_is_put_on(
     for seat in 1..seats {
         let other = bear_of(&driver, seat);
         assert!(driver.state().stickers_on(other).is_empty());
-        assert_eq!(driver.state().name_of(other).unwrap(), "Bear");
+        assert_eq!(driver.state().name_of(other).unwrap(), "Grizzly Bears");
     }
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
@@ -176,7 +177,7 @@ fn a_sticker_is_used_once_and_leaves_with_the_permanent() -> Result<(), ScriptEr
     put(&mut driver, "Flying")?;
     let state = driver.state();
     assert_eq!(state.stickers_on(bear).len(), 2);
-    assert_eq!(state.name_of(bear).unwrap(), "Wicked Bear");
+    assert_eq!(state.name_of(bear).unwrap(), "Wicked Grizzly Bears");
     // The name sticker is used: a third put offers only the 5/5, which the seat cannot pay for any more.
     let used: Vec<_> = state
         .sticker_sheets(pid(0))

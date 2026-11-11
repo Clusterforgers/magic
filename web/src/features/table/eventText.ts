@@ -169,6 +169,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   }
   if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
   if ('GrantText' in modification) return `${gains} “${modification.GrantText}”`
+  if ('AddNameWords' in modification) return `${group ? 'have' : 'has'} “${modification.AddNameWords}” added to the name`
   if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
   if ('SetPower' in modification) return `${becomes} ${modification.SetPower} power`
   if ('SetToughness' in modification) return `${becomes} ${modification.SetToughness} toughness`
@@ -975,6 +976,15 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Exerted' in event) return line(`${n.card(event.Exerted.object)} is exerted`)
   if ('ExertEnded' in event) return line(`${n.card(event.ExertEnded.object)} is no longer exerted`)
   if ('Amassed' in event) return line(`${n.seat(event.Amassed.player)} amasses`)
+  if ('PrizeClaimed' in event) {
+    const { player, attraction } = event.PrizeClaimed
+    return line(`${n.seat(player)} claims the prize of ${n.card(attraction)}`)
+  }
+  if ('StickerSheetsChosen' in event) {
+    const count = event.StickerSheetsChosen.sheets.length
+    return quiet(`${n.seat(event.StickerSheetsChosen.player)} plays with ${count} sticker ${count === 1 ? 'sheet' : 'sheets'}`)
+  }
+  if ('StickerPut' in event) return line(`${n.seat(event.StickerPut.player)} puts a sticker on ${n.card(event.StickerPut.object)}`)
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('Devoured' in event) return line(`${n.card(event.Devoured.object)} devours ${event.Devoured.count}`)
   if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)

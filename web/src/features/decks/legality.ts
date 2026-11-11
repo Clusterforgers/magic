@@ -34,6 +34,7 @@ const RULE: Record<IssueCode, string> = {
   color_identity: 'color identity',
   banned: 'banned cards',
   not_legal: 'cards not in the format',
+  attraction_deck: 'Attraction deck',
 }
 
 /** The issues grouped by kind in the order they first come: "2 banned cards, color identity, deck size". */
