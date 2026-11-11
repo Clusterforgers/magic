@@ -148,7 +148,7 @@ fn any_kind(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: moving counters takes up to the count of the kind off the first permanent and puts as many on the second in one step, never more than the first has and never of another kind; nothing moves when the first holds none, when either is missing (a card elsewhere, an object that changed zones since it was named, a player), or when both are one permanent; it binds nothing and goes on to the next effect; and it refuses another effect by name.
+    //! Goal: moving counters takes up to the count of the kind off the first permanent (off each of a kind of permanent) and puts as many on the second in one step, never more than the first has and never of another kind; nothing moves when the first holds none, when either is missing (a card elsewhere, an object that changed zones since it was named, a player), or when both are one permanent; it binds nothing and goes on to the next effect; and it refuses another effect by name.
     use mtg_cards::value::CounterKind;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
@@ -236,9 +236,9 @@ mod tests {
         r#"{"MoveCounters":{"from":{"Each":[{"Named":"Wolf"}]},"to":{"Each":[{"Type":"Creature"}]},"counter":"+1/+1"}}"#.to_owned(),
         vec![plus("Wolf", -1), plus("Source", 1)]
     )]
-    #[case::the_first_object_of_several_gives_them(
+    #[case::each_of_a_kind_gives_up_to_the_count(
         r#"{"MoveCounters":{"from":{"Each":[{"Type":"Creature"}]},"to":{"Each":[{"Named":"Bear"}]},"counter":"+1/+1"}}"#.to_owned(),
-        vec![]
+        vec![plus("Wolf", -1), plus("Bear", 1)]
     )]
     fn it_moves_counters_between_permanents(
         #[case] json: String,
