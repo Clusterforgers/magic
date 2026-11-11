@@ -36,7 +36,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         .enumerate()
         .filter(|(_, card)| {
             let mut trial = work.choices.clone();
-            trial.spliced.push(card.card);
+            trial.set_spliced(vec![card.card]);
             total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
         })
         .map(|(index, card)| OptionalCost {
@@ -66,7 +66,7 @@ pub(super) fn chosen(splice: &[Spliceable], picked: &[usize]) -> Vec<mtg_core::i
 /// `mana` with the splice costs of the cards `choices` splices added.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
     let paid: Vec<&ManaCost> = choices
-        .spliced
+        .spliced()
         .iter()
         .filter_map(|card| ctx.needs.splice.iter().find(|s| s.card == *card))
         .map(|card| &card.mana)

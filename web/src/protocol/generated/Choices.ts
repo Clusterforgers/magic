@@ -2,7 +2,6 @@
 import type { CastWay } from "./CastWay";
 import type { CostTaken } from "./CostTaken";
 import type { ManaType } from "./ManaType";
-import type { ObjectId } from "./ObjectId";
 import type { Target } from "./Target";
 
 /**
@@ -40,11 +39,6 @@ division?: Array<[Target, number]>,
  * The optional costs paid, as indices into the ability's optional costs.
  */
 optional_costs?: Array<number>, 
-/**
- * The cards of the caster's hand spliced onto the spell (CR 702.47), in the order chosen: the spell has their effects
- * after its own.
- */
-spliced?: Array<ObjectId>, 
 /**
  * The alternative cost the spell is cast for; none for its mana cost.
  */

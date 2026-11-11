@@ -468,7 +468,7 @@ impl Pending {
         } else {
             state
         };
-        let held = rules_of(state, &self.what, &self.choices.spliced);
+        let held = rules_of(state, &self.what, self.choices.spliced());
         let ctx = Ctx {
             state,
             player: self.player,
@@ -563,7 +563,8 @@ impl Pending {
                     .needs
                     .as_ref()
                     .map_or(&[][..], |needs| &needs.splice[..]);
-                self.choices.spliced = splice::chosen(offered, &picked);
+                let cards = splice::chosen(offered, &picked);
+                self.choices.set_spliced(cards);
                 self.done.splice = true;
             }
             Answered::Costs(costs) => {
@@ -742,7 +743,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         _ => state,
     };
-    let held = rules_of(state, what, &choices.spliced);
+    let held = rules_of(state, what, choices.spliced());
     let needs: &Needs = needs
         .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {

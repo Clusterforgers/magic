@@ -76,7 +76,7 @@ static NO_CHOICES: Choices = Choices {
     targets: Vec::new(),
     division: Vec::new(),
     optional_costs: Vec::new(),
-    spliced: Vec::new(),
+
     way: None,
     face: None,
     spent: None,

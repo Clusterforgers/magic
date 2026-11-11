@@ -269,7 +269,7 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
         Some(card) => crate::keywords::splice::with_spliced(
             state,
             awaken::awakened(card, rules),
-            &card.choices().spliced,
+            card.choices().spliced(),
         ),
         None => rules,
     };

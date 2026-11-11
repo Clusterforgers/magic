@@ -457,10 +457,10 @@ pub(crate) fn spell_cast(
 ) -> Vec<Event> {
     let mut events = Vec::with_capacity(3);
     // The cards spliced onto the spell are revealed and stay in the hand (CR 702.47a).
-    if !choices.spliced.is_empty() {
+    if !choices.spliced().is_empty() {
         events.push(Event::Revealed(crate::library::Revealed {
             player,
-            cards: choices.spliced.clone(),
+            cards: choices.spliced().to_vec(),
         }));
     }
     events.push(Event::SpellCast {
