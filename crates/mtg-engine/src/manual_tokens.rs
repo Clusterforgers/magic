@@ -7,8 +7,9 @@ use mtg_cards::card::TokenSpec;
 use mtg_cards::definition::CardDefinition;
 use mtg_core::ids::PlayerId;
 
-use crate::object::ObjectKind;
+use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// A token one of a seat's cards makes.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -47,11 +48,22 @@ fn made_by(def: &Arc<CardDefinition>) -> Arc<[TokenSpec]> {
     specs
 }
 
-/// The tokens the cards `player` owns make, in any zone, by card name and then in the order the card writes them.
+/// Whether `object` is a card `player` owns and sees face up: never one in a library or face down, so the list names
+/// nothing the seat may not identify.
+fn seen_card_of(state: &GameState, player: PlayerId, object: &GameObject) -> bool {
+    object.owner() == player
+        && object.kind() == ObjectKind::Card
+        && !matches!(object.zone(), Zone::Library(_))
+        && object.face_down().is_none()
+        && state.may_look_at(player, object.id())
+}
+
+/// The tokens the cards `player` owns and sees face up make (any zone but the library), by card name and then in the
+/// order the card writes them.
 pub fn card_tokens(state: &GameState, player: PlayerId) -> Vec<CardToken> {
     let mut cards: BTreeMap<&str, &Arc<CardDefinition>> = BTreeMap::new();
     for object in state.objects() {
-        if object.owner() == player && object.kind() == ObjectKind::Card {
+        if seen_card_of(state, player, object) {
             cards.entry(object.def.name.as_str()).or_insert(&object.def);
         }
     }
@@ -71,7 +83,7 @@ pub fn card_tokens(state: &GameState, player: PlayerId) -> Vec<CardToken> {
         .collect()
 }
 
-/// The token `index` of the card named `card` that `player` owns, if that card makes one there.
+/// The token `index` of the card named `card` that `player` owns and sees face up, if that card makes one there.
 pub(crate) fn card_token(
     state: &GameState,
     player: PlayerId,
@@ -80,9 +92,7 @@ pub(crate) fn card_token(
 ) -> Option<TokenSpec> {
     let def = state
         .objects()
-        .find(|object| {
-            object.owner() == player && object.kind() == ObjectKind::Card && object.def.name == card
-        })
+        .find(|object| seen_card_of(state, player, object) && object.def.name == card)
         .map(|object| &object.def)?;
     made_by(def).get(usize::try_from(index).ok()?).cloned()
 }
