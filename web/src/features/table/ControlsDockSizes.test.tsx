@@ -137,9 +137,7 @@ describe('the Stops button', () => {
     const names = (root: ParentNode): string[] =>
       [...root.querySelectorAll<HTMLElement>('button')]
         .filter((button) => button.closest('[data-slot="auto-skip"]') === null)
-        .map(
-        (button) => button.getAttribute('aria-label') ?? button.textContent ?? '',
-      )
+        .map((button) => button.getAttribute('aria-label') ?? button.textContent ?? '')
     const inRow = names(must(dock().querySelector('[data-slot="stops-bar"]')))
     unmount()
 

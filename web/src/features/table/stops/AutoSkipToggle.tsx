@@ -29,14 +29,21 @@ export function AutoSkipToggle() {
   const on = auto.skip_triggers === true
   const count = yields.length + skips.length
   return (
-    <div role="group" aria-label="Auto-skip triggers" data-slot="auto-skip" className="inline-flex items-center gap-1">
+    <div
+      role="group"
+      aria-label="Auto-skip triggers"
+      data-slot="auto-skip"
+      className="inline-flex items-center gap-1"
+    >
       <label className="flex h-8 items-center gap-1.5 px-1 text-xs font-medium">
         <Switch
           data-slot="auto-skip-switch"
           checked={on}
           disabled={!online}
           aria-label="Auto-skip triggers"
-          aria-description={paused ? `${AUTO_SKIP_DESCRIPTION} Off while Full Control is on.` : AUTO_SKIP_DESCRIPTION}
+          aria-description={
+            paused ? `${AUTO_SKIP_DESCRIPTION} Off while Full Control is on.` : AUTO_SKIP_DESCRIPTION
+          }
           onCheckedChange={(checked) => session.setAutoChoices({ ...auto, skip_triggers: checked })}
         />
         <span aria-hidden="true" className={paused ? 'opacity-60' : undefined}>
@@ -59,12 +66,14 @@ export function AutoSkipToggle() {
         <PopoverContent side="top" align="end" className="w-72 max-w-[calc(100vw-1rem)] gap-1 p-2 text-sm">
           <PopoverTitle className="text-sm font-semibold">
             Auto-skips
-            {paused ? <span className="font-normal text-muted-foreground"> (off in Full Control)</span> : null}
+            {paused ? (
+              <span className="font-normal text-muted-foreground"> (off in Full Control)</span>
+            ) : null}
           </PopoverTitle>
           {count === 0 ? (
             <p className="text-muted-foreground">
-              No per-card rules. Use "Auto-pass this trigger" on a trigger on the stack, or "Always" on a question of
-              your own trigger.
+              No per-card rules. Use "Auto-pass this trigger" on a trigger on the stack, or "Always" on a
+              question of your own trigger.
             </p>
           ) : (
             <ul data-slot="auto-skip-list" className="grid gap-1">

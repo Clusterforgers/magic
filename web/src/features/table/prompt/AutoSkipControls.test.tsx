@@ -2,7 +2,15 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
-import type { Answer, AutoChoices, AutoSkip, AutoYield, DecisionKind, ObjectView, TriggerEntry } from '@/protocol/generated'
+import type {
+  Answer,
+  AutoChoices,
+  AutoSkip,
+  AutoYield,
+  DecisionKind,
+  ObjectView,
+  TriggerEntry,
+} from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf } from '@/test-utils/combatTable'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -49,7 +57,10 @@ function mount(kind: DecisionKind, patch: (state: PlayState) => PlayState = (s) 
 
 describe('always answer', () => {
   it.each([true, false])('Always %s sends the rule for the ability, then the answer', async (yes) => {
-    const { user, answer, autoSkip } = mount({ YesNo: { source: mine, text: 'Gain 3 life?' } }, onTop(mine, 0))
+    const { user, answer, autoSkip } = mount(
+      { YesNo: { source: mine, text: 'Gain 3 life?' } },
+      onTop(mine, 0),
+    )
     const word = yes ? 'Yes' : 'No'
     await user.click(screen.getByRole('button', { name: `Always answer ${word} for ${nameOf(mine)}` }))
     expect(autoSkip).toHaveBeenCalledExactlyOnceWith({
@@ -119,14 +130,38 @@ describe('the rules', () => {
     [answerRule, { ...answerRule, yes: false }, true],
     [order, { kind: 'Order', triggers: [...(order.kind === 'Order' ? order.triggers : [])].reverse() }, true],
     [answerRule, { ...answerRule, ability: { name: 'Owl', text: '' } }, false],
-    [order, { kind: 'Order', triggers: [{ name: 'First', ability: 0 }, { name: 'Third', ability: 0 }] }, false],
+    [
+      order,
+      {
+        kind: 'Order',
+        triggers: [
+          { name: 'First', ability: 0 },
+          { name: 'Third', ability: 0 },
+        ],
+      },
+      false,
+    ],
   ] as [AutoSkip, AutoSkip, boolean][])('%o and %o share a key: %s', (a, b, same) => {
     expect(ruleKey(a) === ruleKey(b)).toBe(same)
   })
 
   it.each([
-    [[0, 1], ['A', 'B'], [{ name: 'A', ability: 0 }, { name: 'B', ability: 2 }]],
-    [[1, 0], ['A', 'B'], [{ name: 'B', ability: 2 }, { name: 'A', ability: 0 }]],
+    [
+      [0, 1],
+      ['A', 'B'],
+      [
+        { name: 'A', ability: 0 },
+        { name: 'B', ability: 2 },
+      ],
+    ],
+    [
+      [1, 0],
+      ['A', 'B'],
+      [
+        { name: 'B', ability: 2 },
+        { name: 'A', ability: 0 },
+      ],
+    ],
     [[0, 1], ['A', ''], null],
     [[0], ['A', 'B'], null],
   ] as const)('order %o of %o is keyed as %o', (picked, names, triggers) => {
@@ -139,7 +174,14 @@ describe('the rules', () => {
   })
 
   it('keys an answer only by an ability of the seat from the asking source', () => {
-    const ability = { id: 5, kind: 'Ability', name: 'Owl', controller: 0, source: 3, rules_text: WORDS } as ObjectView
+    const ability = {
+      id: 5,
+      kind: 'Ability',
+      name: 'Owl',
+      controller: 0,
+      source: 3,
+      rules_text: WORDS,
+    } as ObjectView
     expect(answerKeyOf(ability, 0, 3)).toEqual({ name: 'Owl', text: WORDS })
     expect(answerKeyOf(ability, 1, 3)).toBeNull()
     expect(answerKeyOf(ability, 0, 4)).toBeNull()
@@ -171,67 +213,85 @@ describe('the Auto-skip triggers switch', () => {
     [1600, true],
     [1280, false],
     [390, false],
-  ])('at %i px is in sight beside Full Control without opening anything (in its group: %s)', (width, inGroup) => {
-    renderTable({ options: { viewport: { width, height: 900 } } })
-    const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
-    expect(toggle.closest('[data-slot="full-control"]') !== null).toBe(inGroup)
-    expect(toggle.closest('[data-slot="auto-skip"]')).not.toBeNull()
-  })
+  ])(
+    'at %i px is in sight beside Full Control without opening anything (in its group: %s)',
+    (width, inGroup) => {
+      renderTable({ options: { viewport: { width, height: 900 } } })
+      const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+      expect(toggle.closest('[data-slot="full-control"]') !== null).toBe(inGroup)
+      expect(toggle.closest('[data-slot="auto-skip"]')).not.toBeNull()
+    },
+  )
 
-  it.each([false, true])('held %s: shows what the server holds and asks for the other, keeping the rest', async (on) => {
-    const setAutoChoices = vi.fn((_c: AutoChoices) => true)
-    const { user } = renderTable({
-      session: { setAutoChoices },
-      state: (state) => ({ ...state, autoChoices: { ...choices, skip_triggers: on } }),
-    })
-    const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
-    expect(toggle).toHaveAttribute('aria-checked', String(on))
-    await user.click(toggle)
-    expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith({ ...choices, skip_triggers: !on })
-  })
+  it.each([false, true])(
+    'held %s: shows what the server holds and asks for the other, keeping the rest',
+    async (on) => {
+      const setAutoChoices = vi.fn((_c: AutoChoices) => true)
+      const { user } = renderTable({
+        session: { setAutoChoices },
+        state: (state) => ({ ...state, autoChoices: { ...choices, skip_triggers: on } }),
+      })
+      const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+      expect(toggle).toHaveAttribute('aria-checked', String(on))
+      await user.click(toggle)
+      expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith({ ...choices, skip_triggers: !on })
+    },
+  )
 
-  it.each(['Off', 'Held'] as const)('in mode %s the list is one click away and a remove button takes a rule back', async (mode) => {
-    const cancelAutoSkip = vi.fn((_rule: AutoSkip) => true)
-    const clearAutoYield = vi.fn((_a: AutoYield) => true)
-    const warden: AutoYield = { name: 'Soul Warden', text: 'Whenever another creature enters, you gain 1 life.' }
-    const { user } = renderTable({
-      session: { cancelAutoSkip, clearAutoYield },
-      state: (state) => ({ ...state, autoYields: [warden], autoSkips: [answerRule, order], fullControl: mode }),
-    })
-    await user.click(screen.getByRole('button', { name: 'Auto-skip list, 3 rules' }))
-    const title = await screen.findByText('Auto-skips')
-    expect(title.textContent).toBe(mode === 'Off' ? 'Auto-skips' : 'Auto-skips (off in Full Control)')
-    const list = must(document.querySelector('[data-slot="auto-skip-list"]'))
-    expect([...list.querySelectorAll('li')].map((row) => row.textContent)).toEqual([
-      'Auto-pass Soul Warden',
-      ruleWords(answerRule).label,
-      ruleWords(order).label,
-    ])
-    await user.click(screen.getByRole('button', { name: 'Stop ordering First, then Second' }))
-    expect(cancelAutoSkip).toHaveBeenCalledExactlyOnceWith(order)
-    await user.click(screen.getByRole('button', { name: `Stop auto-passing Soul Warden: ${warden.text}` }))
-    expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith(warden)
-  })
+  it.each(['Off', 'Held'] as const)(
+    'in mode %s the list is one click away and a remove button takes a rule back',
+    async (mode) => {
+      const cancelAutoSkip = vi.fn((_rule: AutoSkip) => true)
+      const clearAutoYield = vi.fn((_a: AutoYield) => true)
+      const warden: AutoYield = {
+        name: 'Soul Warden',
+        text: 'Whenever another creature enters, you gain 1 life.',
+      }
+      const { user } = renderTable({
+        session: { cancelAutoSkip, clearAutoYield },
+        state: (state) => ({
+          ...state,
+          autoYields: [warden],
+          autoSkips: [answerRule, order],
+          fullControl: mode,
+        }),
+      })
+      await user.click(screen.getByRole('button', { name: 'Auto-skip list, 3 rules' }))
+      const title = await screen.findByText('Auto-skips')
+      expect(title.textContent).toBe(mode === 'Off' ? 'Auto-skips' : 'Auto-skips (off in Full Control)')
+      const list = must(document.querySelector('[data-slot="auto-skip-list"]'))
+      expect([...list.querySelectorAll('li')].map((row) => row.textContent)).toEqual([
+        'Auto-pass Soul Warden',
+        ruleWords(answerRule).label,
+        ruleWords(order).label,
+      ])
+      await user.click(screen.getByRole('button', { name: 'Stop ordering First, then Second' }))
+      expect(cancelAutoSkip).toHaveBeenCalledExactlyOnceWith(order)
+      await user.click(screen.getByRole('button', { name: `Stop auto-passing Soul Warden: ${warden.text}` }))
+      expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith(warden)
+    },
+  )
 })
 
 describe('auto-pass this trigger', () => {
-  it.each([
-    ['the top stack chip', '[data-slot="stack-chips"]'],
-  ])('on %s asks the server to auto-pass the ability, and pressed again to stop', async (_, within) => {
-    const autoYield = vi.fn((_id: number) => true)
-    const clearAutoYield = vi.fn((_a: AutoYield) => true)
-    const { user, update } = renderTable({ session: { autoYield, clearAutoYield }, state: onTop(mine, 1) })
-    const area = must(document.querySelector(within))
-    const button = must(area.querySelector<HTMLElement>('[data-slot="auto-pass"]'))
-    expect(button).toHaveAccessibleName(`Auto-pass this trigger: ${nameOf(mine)}`)
-    await user.click(button)
-    expect(autoYield).toHaveBeenCalledExactlyOnceWith(ABILITY)
-    update((state) => ({ ...state, autoYields: [{ name: nameOf(mine), text: WORDS }] }))
-    const held = screen.getByRole('button', { name: `Stop auto-passing ${nameOf(mine)}` })
-    expect(held).toHaveAttribute('aria-pressed', 'true')
-    await user.click(held)
-    expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith({ name: nameOf(mine), text: WORDS })
-  })
+  it.each([['the top stack chip', '[data-slot="stack-chips"]']])(
+    'on %s asks the server to auto-pass the ability, and pressed again to stop',
+    async (_, within) => {
+      const autoYield = vi.fn((_id: number) => true)
+      const clearAutoYield = vi.fn((_a: AutoYield) => true)
+      const { user, update } = renderTable({ session: { autoYield, clearAutoYield }, state: onTop(mine, 1) })
+      const area = must(document.querySelector(within))
+      const button = must(area.querySelector<HTMLElement>('[data-slot="auto-pass"]'))
+      expect(button).toHaveAccessibleName(`Auto-pass this trigger: ${nameOf(mine)}`)
+      await user.click(button)
+      expect(autoYield).toHaveBeenCalledExactlyOnceWith(ABILITY)
+      update((state) => ({ ...state, autoYields: [{ name: nameOf(mine), text: WORDS }] }))
+      const held = screen.getByRole('button', { name: `Stop auto-passing ${nameOf(mine)}` })
+      expect(held).toHaveAttribute('aria-pressed', 'true')
+      await user.click(held)
+      expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith({ name: nameOf(mine), text: WORDS })
+    },
+  )
 
   it.each([
     ['a spell on top', onTop(mine, 0, true), {}],

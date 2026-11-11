@@ -15,7 +15,9 @@ export function AutoPassButton({ object, compact = false }: { object: ObjectView
   const { session } = useGame()
   const key = yieldKeyOf(object)
   const held = usePlay((state) =>
-    key === null ? false : state.autoYields.some((other) => other.name === key.name && other.text === key.text),
+    key === null
+      ? false
+      : state.autoYields.some((other) => other.name === key.name && other.text === key.text),
   )
   const available = usePlay((state) => state.fullControl === 'Off' && state.status === 'open')
   if (key === null || !available) return null

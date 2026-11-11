@@ -54,7 +54,10 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
     ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
     : `${cardLabel(object, null)}, cast`
   return (
-    <li className={cn('flex max-w-full shrink-0 items-center gap-1', hidden && 'invisible')} aria-hidden={hidden || undefined}>
+    <li
+      className={cn('flex max-w-full shrink-0 items-center gap-1', hidden && 'invisible')}
+      aria-hidden={hidden || undefined}
+    >
       <button
         type="button"
         data-object-id={hidden ? undefined : id}

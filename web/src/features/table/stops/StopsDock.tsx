@@ -26,36 +26,36 @@ export function StopsDock({ row }: { row: boolean }) {
   if (row) return <StopsBar layout="row" />
   return (
     <>
-    <Popover>
-      <PopoverTrigger
-        render={
-          <Button
-            data-slot="stops-button"
-            variant="outline"
-            size="sm"
-            aria-label={stopsButtonName(count, mode)}
-          />
-        }
-      >
-        <span aria-hidden="true">Stops</span>
-        {count > 0 ? (
-          <span aria-hidden="true" className="rounded bg-foreground/15 px-1 text-xs leading-4">
-            {count}
-          </span>
-        ) : null}
-        {mode === 'Off' ? null : <Gamepad2 aria-hidden="true" />}
-      </PopoverTrigger>
-      <PopoverContent
-        keepMounted
-        side="top"
-        align="end"
-        className="w-auto max-w-[calc(100vw-1rem)] gap-0 p-2"
-      >
-        <PopoverTitle className="sr-only">Stops and Full Control</PopoverTitle>
-        <StopsBar layout="panel" />
-      </PopoverContent>
-    </Popover>
-    <AutoSkipToggle />
+      <Popover>
+        <PopoverTrigger
+          render={
+            <Button
+              data-slot="stops-button"
+              variant="outline"
+              size="sm"
+              aria-label={stopsButtonName(count, mode)}
+            />
+          }
+        >
+          <span aria-hidden="true">Stops</span>
+          {count > 0 ? (
+            <span aria-hidden="true" className="rounded bg-foreground/15 px-1 text-xs leading-4">
+              {count}
+            </span>
+          ) : null}
+          {mode === 'Off' ? null : <Gamepad2 aria-hidden="true" />}
+        </PopoverTrigger>
+        <PopoverContent
+          keepMounted
+          side="top"
+          align="end"
+          className="w-auto max-w-[calc(100vw-1rem)] gap-0 p-2"
+        >
+          <PopoverTitle className="sr-only">Stops and Full Control</PopoverTitle>
+          <StopsBar layout="panel" />
+        </PopoverContent>
+      </Popover>
+      <AutoSkipToggle />
     </>
   )
 }
