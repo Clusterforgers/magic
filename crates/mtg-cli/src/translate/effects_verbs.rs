@@ -188,38 +188,59 @@ fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
 }
 
 /// `MoveCounter` of one named kind, of a kind the controller picks (`CounterType$ Any`, one counter) or of every kind
-/// (`CounterType$ All | CounterNum$ All`) from the `Source$` onto the target or `Defined$`.
+/// (`CounterType$ All | CounterNum$ All`) from the `Source$` onto the target or `Defined$`; "any number of" counters
+/// (`CounterNum$ Any`) as a move the controller may stop, every counter of a kind (`CounterNum$ All`), and from each of
+/// a kind of permanent (`ValidSource$`).
 fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
-    read.extend(["Source", "CounterType", "CounterNum"]);
+    read.extend(["Source", "CounterType", "CounterNum", "ValidSource"]);
     only(p, "MoveCounter", &read)?;
-    // `None`: any kind; `all`: every counter there is.
-    let (kind, all) = match (p.get("CounterType"), p.get("CounterNum")) {
-        (Some("Any"), None | Some("1")) => (None, false),
-        (Some("All"), Some("All")) => (None, true),
+    // `None`: any kind; `all`: every counter there is; `up_to`: any number of them.
+    let (kind, all, up_to) = match (p.get("CounterType"), p.get("CounterNum")) {
+        (Some("Any"), None | Some("1")) => (None, false, false),
+        (Some("All"), Some("All")) => (None, true, false),
+        (Some("Any"), Some("Any")) => (None, true, true),
         (Some(word), number) => {
             let Some(kind) = counter_kind(word) else {
                 return unmapped("key:MoveCounter.Source-or-CounterType");
             };
-            if number.is_some_and(|n| n.trim().parse::<u32>().is_err()) {
-                return unmapped("key:MoveCounter.CounterNum");
+            match number {
+                Some("All") => (Some(kind), true, false),
+                Some("Any") => (Some(kind), true, true),
+                _ => (Some(kind), false, false),
             }
-            (Some(kind), false)
         }
         (None, _) => return unmapped("key:MoveCounter.Source-or-CounterType"),
     };
     let moved = |ctx: &mut Ctx, from: Value, to: Value| -> Tr<Value> {
-        let count = if all {
-            json!({ "AnyCounters": from.clone() })
-        } else {
-            amount(ctx, p.get("CounterNum").unwrap_or("1"))?
+        let count = match &kind {
+            Some(kind) if all => json!({"Counters": {"on": from.clone(), "counter": kind}}),
+            None if all => json!({ "AnyCounters": from.clone() }),
+            _ => amount(ctx, p.get("CounterNum").unwrap_or("1"))?,
         };
         let mut effect = json!({"from": from, "to": to, "count": count});
         if let Some(kind) = &kind {
             effect["counter"] = json!(kind);
         }
+        if up_to {
+            effect["up_to"] = json!(true);
+        }
         Ok(json!({ "MoveCounters": effect }))
     };
+    // "from other permanents you control", "from all creatures": each of a kind of permanent gives them up.
+    if let Some(valid) = p.get("ValidSource") {
+        if p.has("Source") || p.has("ValidTgts") {
+            return unmapped("key:MoveCounter.ValidSource");
+        }
+        let valid = valid
+            .split('+')
+            .filter(|part| !part.starts_with("counters_"))
+            .collect::<Vec<_>>()
+            .join("+");
+        let from = json!({"Each": super::valid::selector_any(ctx, &valid)?});
+        let to = defined(ctx, p.get("Defined").unwrap_or("Self"))?;
+        return moved(ctx, from, to);
+    }
     // "Move a counter from target creature onto a second target creature": two targets of the same kind.
     let two = p.get("TargetMin") == Some("2") && p.get("TargetMax") == Some("2");
     if two && p.has("ValidTgts") && !p.has("Source") && !p.has("Defined") {

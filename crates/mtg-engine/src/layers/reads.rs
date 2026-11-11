@@ -224,6 +224,9 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::OwnerOf(inner) => reads_of_ref(inner),
         Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
+        Ref::Union(parts) => parts
+            .iter()
+            .fold(Traits::NONE, |traits, part| traits.or(reads_of_ref(part))),
         Ref::PlayersWhere { who, test } => reads_of_ref(who).or(reads_of_condition(test)),
     }
 }
@@ -358,6 +361,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Divided
         | Amount::TargetCount(_)
         | Amount::Kicks
+        | Amount::AdditionalPaid
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured

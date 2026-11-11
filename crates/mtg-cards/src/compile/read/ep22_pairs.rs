@@ -14,6 +14,7 @@ pub(super) fn texts(first: &Ability, second: &Ability) -> Vec<String> {
         Ability::AdditionalCost {
             cost,
             required: true,
+            repeatable: false,
         },
         Ability::CostModifier {
             applies_to,

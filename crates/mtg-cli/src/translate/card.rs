@@ -146,10 +146,15 @@ pub fn translate_face(world: &World, face: &Face) -> FaceOut {
         }
         record(&mut out, "K", &[body], &before);
     }
+    ctx.ep30_paid = super::ep30_paid::ep30_scan(&ctx, &face.statics, &face.abilities);
     for body in &face.abilities {
         let before = Before::of(&out);
         ctx.printed = printed_text(body, "SpellDescription");
-        take(&mut out, audited_one(|| ability_line(&mut ctx, body)));
+        let line = match &ctx.ep30_paid {
+            Some(var) => super::ep30_paid::ep30_unannounced(body, var),
+            None => body.clone(),
+        };
+        take(&mut out, audited_one(|| ability_line(&mut ctx, &line)));
         record(&mut out, "A", &[body], &before);
     }
     if let Some(word) = ctx.modal_keyword.take() {

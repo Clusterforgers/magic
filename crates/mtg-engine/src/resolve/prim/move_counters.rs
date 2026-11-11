@@ -1,6 +1,7 @@
 //! `Effect::MoveCounters`: counters are moved from one permanent onto another (CR 122.5).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::Ref;
 use mtg_cards::value::CounterKind;
 
 use super::put_counters::{holders, whole};
@@ -13,29 +14,42 @@ use crate::resolve::{Cx, ResolveError, Run};
 /// The first permanent the effect names to give them up loses up to the count of the kind, no more than it has, and the
 /// first it names to take them gets that many, in one step. Nothing moves when either is missing (not on the battlefield,
 /// changed zones since it was named, not an object), when they are the same permanent, or when the first holds none.
+/// A `from` that names a kind of permanent has each of them give up to the count; with `up_to` the controller picks the
+/// counters one at a time and may stop.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::MoveCounters {
         from,
         to,
         counter,
         count,
+        up_to,
     } = effect
     else {
         return Err(wrong_effect("MoveCounters"));
     };
     let count = whole(cx.scope.amount(count)?);
-    let (Some(source), Some(target)) = (
-        holders(cx, from)?
-            .into_iter()
-            .find(|t| t.object().is_some()),
-        holders(cx, to)?.into_iter().find(|t| t.object().is_some()),
-    ) else {
+    let Some(target) = holders(cx, to)?.into_iter().find(|t| t.object().is_some()) else {
         return Ok(Run::events(Vec::new()));
     };
-    if source == target || count <= 0 {
+    let mut sources = holders(cx, from)?
+        .into_iter()
+        .filter(|t| t.object().is_some());
+    let sources: Vec<Target> = if matches!(from, Ref::Each(_)) {
+        sources.filter(|source| *source != target).collect()
+    } else {
+        sources.next().filter(|source| *source != target).into_iter().collect()
+    };
+    if sources.is_empty() || count <= 0 {
         return Ok(Run::events(Vec::new()));
     }
     let wanted = count.unsigned_abs();
+    if *up_to || sources.len() > 1 {
+        return several(cx, sources, counter.as_ref(), (wanted, *up_to), target);
+    }
+    let [source] = sources.as_slice() else {
+        return Ok(Run::events(Vec::new()));
+    };
+    let source = *source;
     let taken: Vec<(CounterKind, u32)> = match counter {
         Some(counter) => vec![(
             counter.clone(),
@@ -59,6 +73,38 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     delta,
                 }));
             }
+        }
+    }
+    Ok(Run::events(events))
+}
+
+/// The counters each of `sources` gives up, up to `wanted` of the kind (any kind when `None`): picked one at a time by
+/// the controller where there is a choice, or with `up_to` always, so they may stop; each counter taken goes onto `target`.
+fn several(
+    cx: &Cx<'_>,
+    sources: Vec<Target>,
+    counter: Option<&CounterKind>,
+    (wanted, up_to): (u32, bool),
+    target: Target,
+) -> Result<Run, ResolveError> {
+    let taken = match super::w2f_any_counters::w2f_pick(cx, sources, counter, wanted, up_to)? {
+        Run::Done { events, .. } => events,
+        asked => return Ok(asked),
+    };
+    let mut events = Vec::new();
+    for event in taken {
+        let Event::CountersChanged(changed) = event else {
+            continue;
+        };
+        let moved = changed.delta.saturating_neg();
+        if moved > 0 {
+            let onto = CountersChanged {
+                on: target,
+                counter: changed.counter.clone(),
+                delta: moved,
+            };
+            events.push(Event::CountersChanged(changed));
+            events.push(Event::CountersChanged(onto));
         }
     }
     Ok(Run::events(events))

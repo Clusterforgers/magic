@@ -159,6 +159,9 @@ pub enum Ref {
     Departed(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
+    /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
+    /// damage shield used up by what it covers shares what it has left among them.
+    Union(Vec<Ref>),
     /// The players `who` names for whom the condition holds, each taken as "you" ("each opponent who lost life this turn",
     /// "a player with seven or more cards in their graveyard"); nobody when it holds for none.
     PlayersWhere {

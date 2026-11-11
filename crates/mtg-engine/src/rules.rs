@@ -448,7 +448,7 @@ impl DamageShield {
         };
         self.from.as_ref().is_some_and(|from| from.iter().all(gone))
             || self.left == Some(0)
-            || self.to.as_ref().is_some_and(|to| {
+            || self.each.is_none() && self.to.as_ref().is_some_and(|to| {
                 !to.is_empty()
                     && to.iter().all(|target| match target {
                         Target::Player(_) => false,

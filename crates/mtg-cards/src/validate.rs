@@ -642,6 +642,15 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
                 self.selector(selector);
             }
+            // Only a damage recipient reads it: a player and objects together.
+            Ref::Union(parts) => {
+                if want != Kind::Either || parts.len() < 2 {
+                    self.problem("a union of references is read only as a damage recipient".to_owned());
+                }
+                for (i, part) in parts.iter().enumerate() {
+                    self.at(format!("[{i}]"), |w| w.reference(part, Kind::Either));
+                }
+            }
         }
     }
 
@@ -875,6 +884,11 @@ impl<'a> Walker<'a> {
             if !self.has_kicker {
                 self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
             }
+        } else if *amount == Amount::AdditionalPaid {
+            self.uses("Amount", "AdditionalPaid");
+            if !self.has_additional_cost {
+                self.problem("`AdditionalPaid` needs an additional cost the caster may pay");
+            }
         } else {
             self.uses("Amount", "Promised");
             if !self.has_additional_cost {
@@ -1028,7 +1042,9 @@ impl<'a> Walker<'a> {
             | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
-            Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::Kicks | Amount::Promised | Amount::Devoured | Amount::AdditionalPaid => {
+                self.paid_amount(amount);
+            }
             Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
@@ -1158,6 +1174,7 @@ impl<'a> Walker<'a> {
             | Amount::Exiled(_)
             | Amount::PhasedOut(_)
             | Amount::Kicks
+            | Amount::AdditionalPaid
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured
@@ -2758,7 +2775,11 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering | Ref::TriggeringFirst | Ref::Against | Ref::Remembered { .. } => {
+            Ref::Triggering
+            | Ref::TriggeringFirst
+            | Ref::Against
+            | Ref::Remembered { .. }
+            | Ref::Union(_) => {
                 Kind::Either
             }
         }
@@ -4407,7 +4428,16 @@ impl Walker<'_> {
                 }
             }
             modifier @ Ability::CostModifier { .. } => w.e14e_cost_modifier(modifier),
-            Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
+            Ability::AdditionalCost {
+                cost,
+                required,
+                repeatable,
+            } => {
+                if *repeatable && *required {
+                    w.problem("only a cost the caster may pay is paid any number of times".to_owned());
+                }
+                w.additional_cost(cost, *required);
+            }
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
@@ -5359,11 +5389,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         _ => false,
     });
     walker.counts_x = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if cost.has_x()),
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
     walker.pays_objects = card
         .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));
+        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)));
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }

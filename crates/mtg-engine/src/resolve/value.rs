@@ -1140,6 +1140,17 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Object)
                 .collect(),
+            Ref::Union(parts) => {
+                let mut named = Vec::new();
+                for part in parts {
+                    for found in self.refs(part)? {
+                        if !named.contains(&found) {
+                            named.push(found);
+                        }
+                    }
+                }
+                named
+            }
         })
     }
 
@@ -1985,6 +1996,8 @@ impl<'a> Scope<'a> {
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
+            Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))
+                .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,
