@@ -480,6 +480,8 @@ mod tests {
         "Effect.Conjure",
         "Effect.Seek",
         "Effect.Venture",
+        "Effect.OpenAttraction",
+        "Effect.RollToVisit",
         "Effect.TakeInitiative",
         "Effect.Monstrosity",
         "Effect.Renown",
