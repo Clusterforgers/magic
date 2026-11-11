@@ -188,6 +188,7 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+pub(crate) mod rmt7_atoms;
 mod selectors;
 mod shortened;
 mod soulbond;

@@ -94,6 +94,13 @@ function keywordWords(keyword: unknown): string {
   return tag.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
 }
 
+/** The words of a kind of keyword a change takes away, whatever its parameter. */
+const KEYWORD_KIND_WORDS = {
+  Landwalk: 'all landwalk abilities',
+  Protection: 'protection',
+  Ward: 'ward',
+} as const
+
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
 /** The card types in declaration order; the wire set holds bit n for the nth. */
 const CARD_TYPE_ORDER = [
@@ -163,6 +170,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
+  if ('RemoveKeywordKind' in modification) {
+    return `${loses} ${KEYWORD_KIND_WORDS[modification.RemoveKeywordKind]}`
+  }
   if ('LockKeyword' in modification) {
     const word = keywordWords(modification.LockKeyword)
     return `${loses} ${word} and can't have or gain it`

@@ -97,6 +97,8 @@ pub enum Modification {
     AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): "loses all landwalk abilities".
+    RemoveKeywordKind(crate::rmt7_kinds::KeywordKind),
     /// Removes a keyword ability and the object can't have or gain it afterwards, whichever effect is newer (layer 6):
     /// "lose flying and can't have or gain flying".
     LockKeyword(Keyword),
@@ -110,6 +112,9 @@ pub enum Modification {
     /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
     /// effect of an activated ability has it, never a static ability.
     LoseThisAbility,
+    /// The object loses the ability printed on its card that equals this one, as the effect begins (layer 6): "this
+    /// creature loses \"Prevent all damage that would be dealt to this creature.\"". Only an effect on its own source has it.
+    LosePrinted(Arc<Ability>),
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
@@ -138,6 +143,9 @@ pub enum Modification {
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
+    /// The object can block an additional creature each combat for each one the amount counts, worked out as the
+    /// layers are (a restriction, no layer): "for each Equipment attached to this creature".
+    BlocksAdditionalPer(Amount),
     /// The object is goaded by the controller of the effect or ability (CR 701.15; a restriction, no layer): it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded,
@@ -182,9 +190,11 @@ impl Modification {
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseThisAbility
+            | Modification::LosePrinted(_)
             | Modification::LoseAbilities => Some("6"),
             Modification::SetPT { .. }
             | Modification::SetPower(_)
@@ -202,6 +212,7 @@ impl Modification {
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
             | Modification::BlocksAdditional(_)
+            | Modification::BlocksAdditionalPer(_)
             | Modification::Goaded => None,
         }
     }

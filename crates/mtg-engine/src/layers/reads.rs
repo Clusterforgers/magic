@@ -58,6 +58,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
+        | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
         Modification::LoseAbilities | Modification::LoseAbility(_) => {
             Traits::KEYWORDS.or(Traits::RULES)
@@ -108,8 +109,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
+        Wanted::LoseAbilities | Wanted::LoseThisAbility | Wanted::LosePrinted(_) => {
+            Traits::KEYWORDS.or(Traits::RULES)
+        }
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -131,7 +135,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
-        | Wanted::BlocksAdditional(_) => Traits::NONE,
+        | Wanted::BlocksAdditional(_)
+        | Wanted::BlocksAdditionalPer(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
         Wanted::AddSupertype(_) => Traits::SUPERTYPES,
     }
@@ -143,7 +148,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::ModifyPT { power, toughness } | Wanted::SetPT { power, toughness } => {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
-        Wanted::SetPower(value) | Wanted::SetToughness(value) => reads_of_amount(value),
+        Wanted::SetPower(value)
+        | Wanted::SetToughness(value)
+        | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
@@ -171,8 +178,10 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_)
         | Wanted::LoseThisAbility
+        | Wanted::LosePrinted(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
@@ -470,7 +479,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)
-        | Condition::Performed => Traits::NONE,
+        | Condition::Performed
+        | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
         | Condition::CompletedDungeon(who)

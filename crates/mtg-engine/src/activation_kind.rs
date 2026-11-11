@@ -62,6 +62,9 @@ pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bo
     match wanted {
         ActivationKind::Every => true,
         ActivationKind::Any => own != Some(ActivationKind::Mana),
+        ActivationKind::AnyButLoyalty => {
+            own != Some(ActivationKind::Mana) && own != Some(ActivationKind::Loyalty)
+        }
         _ => Some(wanted) == own,
     }
 }

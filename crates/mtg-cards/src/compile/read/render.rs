@@ -1052,6 +1052,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             effects,
         } => loyalty::texts(*cost, targets, effects),
         Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
+        Ability::Activated {
+            by: Activators::Anyone,
+            ..
+        } => super::rmt7_atoms::rmt7_any_player_texts(ability, ability_texts),
         _ => statics::texts(ability),
     }
 }

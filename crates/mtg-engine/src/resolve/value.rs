@@ -2567,6 +2567,14 @@ impl<'a> Scope<'a> {
         matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
     }
 
+    /// Whether a fact of the turn holds: it is the controller's turn, or an extra turn.
+    fn turn_fact(&self, condition: &Condition) -> bool {
+        match condition {
+            Condition::ExtraTurn => self.state.turn().is_extra(),
+            _ => self.state.turn().active() == self.controller,
+        }
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -2632,7 +2640,7 @@ impl<'a> Scope<'a> {
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
-            Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::YourTurn | Condition::ExtraTurn => self.turn_fact(condition),
             Condition::Among(who) => self.among(who)?,
             Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {

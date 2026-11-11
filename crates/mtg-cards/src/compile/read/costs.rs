@@ -382,7 +382,7 @@ fn w9c_either_subtype(r: &mut Reader<'_>) -> Option<Selector> {
 
 /// Whether a predicate of a sacrificed permanent says what kind it is, or that it is another one.
 fn is_cost_filter(pred: &Pred) -> bool {
-    *pred == Pred::Other || describes_a_kind(pred)
+    *pred == Pred::Other || describes_a_kind(pred) || matches!(pred, Pred::Named(_))
 }
 
 /// Whether the cost takes objects out of their zones (a sacrifice, a discard, an exile), which the effects name as
@@ -582,7 +582,13 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
         return None;
     };
     if *number == 1 {
-        let text = phrase_text(filter, Form::Subject)?;
+        // A token the card names: "Sacrifice a token named Wood".
+        let named = filter
+            .0
+            .contains(&Pred::Token)
+            .then(|| super::rmt7_atoms::rmt7_named_phrase(filter, Form::Subject))
+            .flatten();
+        let text = named.or_else(|| phrase_text(filter, Form::Subject))?;
         return Some(if filter.0.contains(&Pred::Other) {
             format!("Sacrifice {text}")
         } else {

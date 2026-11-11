@@ -1276,6 +1276,8 @@ pub enum Condition {
     ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
+    /// The turn is an extra turn (CR 500.7): "~ can't attack during extra turns".
+    ExtraTurn,
     /// The player the reference names (all of them when it names several) took the first turn of the game.
     StartingPlayer(Ref),
     /// "You" are one of the players the reference names: inside a `PlayersWhere` test, the player tested ("each other

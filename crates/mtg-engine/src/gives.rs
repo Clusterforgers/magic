@@ -114,7 +114,9 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
-            Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
+            Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
+            | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
             | Modification::GrantText(_) => GivenRule::GainAbility,

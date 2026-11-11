@@ -1,7 +1,7 @@
 {
   "oracle_id": "338ad8c4-c89f-4e78-be28-7224fac0fd0f",
   "name": "Kemba's Legion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kemba's Legion",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 114 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "BlocksAdditionalPer": {
+                  "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }]
+                }
+              }
+            ]
           }
         }
       ]

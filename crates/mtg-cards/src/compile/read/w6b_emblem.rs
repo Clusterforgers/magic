@@ -37,7 +37,8 @@ fn w6b_ability(r: &mut Reader<'_>) -> Option<Ability> {
 pub(super) fn w6b_text(subject: &str, you: bool, abilities: &[Ability]) -> Option<String> {
     let quoted = abilities
         .iter()
-        .map(|ability| render::ability(ability).map(|text| format!("\"{text}\"")))
+        // A quotation inside the quotes takes single quotes: "Swamps you control have '{T}: Add {B}{B}{B}{B}.'".
+        .map(|ability| render::ability(ability).map(|text| format!("\"{}\"", inner_quotes(&text))))
         .collect::<Option<Vec<_>>>()?;
     (!quoted.is_empty()).then_some(())?;
     let verb = if you { "get" } else { "gets" };
@@ -45,4 +46,14 @@ pub(super) fn w6b_text(subject: &str, you: bool, abilities: &[Ability]) -> Optio
         "{subject} {verb} an emblem with {}",
         quoted.join(" and ")
     ))
+}
+
+/// An ability that quotes another inside the emblem's quotes: single quotes, and its period inside them ("have
+/// '{T}: Add {B}{B}{B}{B}.'"), not after.
+fn inner_quotes(text: &str) -> String {
+    let text = match text.strip_suffix("\".") {
+        Some(head) if head.ends_with('.') => format!("{head}\""),
+        _ => text.to_owned(),
+    };
+    text.replace('"', "'")
 }

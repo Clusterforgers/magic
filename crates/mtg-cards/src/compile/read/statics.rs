@@ -982,10 +982,13 @@ pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
         [Modification::GrantAbility(ability)]
             if matches!(
                 **ability,
-                Ability::Activated { .. } | Ability::Triggered { .. }
+                Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Loyalty { .. }
             ) =>
         {
-            Some(format!("\"{}\"", render::ability(ability)?))
+            Some(format!(
+                "\"{}\"",
+                super::rmt7_atoms::rmt7_bracketed_loyalty(ability, render::ability(ability)?)?
+            ))
         }
         [Modification::GrantAbility(_), ..] => super::e10c_granted::e10c_given_text(mods),
         [
@@ -1907,7 +1910,7 @@ fn static_texts(
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
     let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
-    let tails: Vec<String> = if condition.is_some() {
+    let mut tails: Vec<String> = if condition.is_some() {
         helds
             .iter()
             .map(|held| format!(" as long as {held}"))
@@ -1915,6 +1918,7 @@ fn static_texts(
     } else {
         vec![String::new()]
     };
+    tails.extend(condition.and_then(super::rmt7_atoms::rmt7_condition_tail));
     let mut subjects = subjects(affected, true);
     // "Creatures can't attack you." says no "All".
     if let [Modification::CantAttackYou(_)] = mods {
@@ -2193,6 +2197,9 @@ pub(super) fn predicate(
         }
         [more @ Modification::BlocksAdditional(_)] => {
             return super::w14c_block_capacity::w14c_blocks_additional_text(more);
+        }
+        [Modification::BlocksAdditionalPer(per)] => {
+            return super::rmt7_atoms::rmt7_blocks_per_text(per);
         }
         [Modification::MinBlockers(count @ 2..)] => {
             return Some(format!(

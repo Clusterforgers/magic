@@ -32,6 +32,7 @@ pub mod proposal;
 pub mod read;
 pub mod reference;
 pub mod refs;
+pub mod rmt7_kinds;
 pub mod spend;
 pub mod support;
 pub mod trigger;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "339f5334-b65a-445a-a016-20e997e0b4bb",
   "name": "Mistrise Village",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mistrise Village",
@@ -34,9 +34,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 81, "end": 144 }
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": "Uncounterable" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

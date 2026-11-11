@@ -1,7 +1,7 @@
 {
   "oracle_id": "5bc8e918-7824-4ad7-a5c0-05537ce81641",
   "name": "Jungle Patrol",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jungle Patrol",
@@ -30,9 +30,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 116 }
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": ["Token", { "Named": "Wood" }] } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
           }
         }
       ]

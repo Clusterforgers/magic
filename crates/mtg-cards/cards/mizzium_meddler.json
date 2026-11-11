@@ -1,7 +1,7 @@
 {
   "oracle_id": "48a909b6-e6ee-4148-8b50-b35f11bc065f",
   "name": "Mizzium Meddler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mizzium Meddler",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 68, "end": 163 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ChangeTargets": { "what": { "Target": 0 }, "to": "One", "onto": "This" } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
