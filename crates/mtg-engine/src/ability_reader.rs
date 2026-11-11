@@ -1103,7 +1103,7 @@ mod tests {
 
     /// The receivers of a `rules` field that is not a card's: a pending trigger, a delayed trigger and an ability on
     /// the stack each hold the one ability they are.
-    const OTHER_RULES: [&str; 3] = ["self", "waiting", "delayed"];
+    const OTHER_RULES: [&str; 4] = ["self", "waiting", "delayed", "sheet"];
 
     /// What a card is called where its `abilities` are read; `chars.abilities` and `options.abilities` are not a card's.
     const CARDS: [&str; 4] = ["card()", "card", "def", "definition"];
