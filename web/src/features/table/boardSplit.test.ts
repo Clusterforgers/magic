@@ -17,7 +17,7 @@ import {
 } from './boardSplit'
 import { POD_CRAMPED_PX } from './cornerFit'
 import { buildFixture } from './dev/fixture'
-import { laneHeight } from './laneFit'
+import { LANE_LIMITS, laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
 import { planTable, regionSizes, SHEET_KEEP_PX } from './layout'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
@@ -252,6 +252,54 @@ describe('the head of the opponents area', () => {
     [44, [Number.NaN, 120], 76],
   ])('of an area at %i px over zones at %o is %i px', (top, zones, head) => {
     expect(headOf(top, zones)).toBe(head)
+  })
+
+  it.each([
+    // Two rows of frames: the lower row's zone counts from its own frame, moved up to the first row.
+    [
+      44,
+      [
+        { top: 150, frame: 52 },
+        { top: 450, frame: 352 },
+      ],
+      106,
+    ],
+    [
+      44,
+      [
+        { top: 150, frame: 52 },
+        { top: 470, frame: 352 },
+      ],
+      126,
+    ],
+    [44, [{ top: 150, frame: Number.NaN }], 106],
+  ])('of an area at %i px over framed zones %o is %i px', (top, zones, head) => {
+    expect(headOf(top, zones)).toBe(head)
+  })
+})
+
+describe('the split of a grid of opponents', () => {
+  const base = { room: 900, ownChrome: 24, theirChrome: 80, ownWidth: 1400, theirWidth: 500 }
+  const theirs = [counts(6, 5, 3), counts(6, 5, 3), counts(6, 5, 3), counts(6, 5, 3)]
+  it.each([1, 2, 3])('gives %i rows of boards each their lanes and pod line', (rows) => {
+    const split = splitBoards({ ...base, own: counts(8, 6, 4), theirs, theirRows: rows, theirRowChrome: 80 })
+    const need = laneHeight(base.theirWidth, theirs[0] ?? NONE, split.theirCard)
+    expect(split.opponents).toBeGreaterThanOrEqual(rows * (need + base.theirChrome))
+  })
+  it('gives opponents that cannot fit at the floor what they need there before your row grows', () => {
+    const crowded = Array.from({ length: 6 }, () => counts(14, 12, 10))
+    const split = splitBoards({
+      ...base,
+      own: counts(4, 3, 2),
+      theirs: crowded,
+      theirRows: 2,
+      theirRowChrome: 80,
+    })
+    const ownFloor = laneHeight(base.ownWidth, counts(4, 3, 2), LANE_LIMITS.minWidth) + base.ownChrome
+    const ownLeast = Math.max(base.room * MIN_ROW_SHARE, ownFloor)
+    const theirFloor = 2 * laneHeight(base.theirWidth, crowded[0] ?? NONE, LANE_LIMITS.minWidth) + 2 * 80
+    expect(split.opponents).toBeCloseTo(Math.min(base.room - ownLeast, theirFloor))
+    expect(split.opponents).toBeGreaterThan(shareSplit(base.room).opponents)
   })
 })
 

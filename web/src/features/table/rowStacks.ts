@@ -9,7 +9,7 @@ import type { RowKind } from './cardModel'
 import type { FitBox } from './fit'
 import { GROUP_OTHERS_BELOW, groupPermanents } from './group'
 import type { Groupable, Stack } from './group'
-import { fitLanes } from './laneFit'
+import { LANE_LIMITS, fitLanes } from './laneFit'
 import type { LaneCounts, LaneFit } from './laneFit'
 import { splitBattlefield } from './selectors'
 import type { BattlefieldRows } from './selectors'
@@ -243,6 +243,8 @@ export interface SeatLayoutInput {
   marked: ReadonlySet<ObjectId>
   /** The ghosts in each lane (`useGhosts`); a lane left empty holds its place while they play. */
   held?: Held
+  /** The widest card the fit may take, in px (one size for a grid of boards); the ladder's top when left out. */
+  most?: number | null
 }
 
 /** The rows of a seat to draw and the fit of its zone. */
@@ -288,10 +290,14 @@ export function laneCounts(rows: Record<RowKind, readonly RowEntry[]>, held: Hel
  * `GROUP_OTHERS_BELOW` merges identical cards too and fits again. Every permanent takes one box, tapped or not, and
  * the boxes of the fit are exactly the ones the lanes draw.
  */
-export function layoutSeat({ box, stacks, facing, opened, marked, held }: SeatLayoutInput): SeatLayout {
+export function layoutSeat({ box, stacks, facing, opened, marked, held, most }: SeatLayoutInput): SeatLayout {
   const plain = entriesOfRows(stacks.plain, opened, marked)
   if (box === null) return { rows: plain, stacks: stacks.plain, merged: false, fit: null }
-  const plainFit = fitLanes(box, laneCounts(plain, held), facing)
+  const limits =
+    most == null || !Number.isFinite(most)
+      ? LANE_LIMITS
+      : { ...LANE_LIMITS, maxWidth: Math.max(LANE_LIMITS.minWidth, Math.min(LANE_LIMITS.maxWidth, most)) }
+  const plainFit = fitLanes(box, laneCounts(plain, held), facing, limits)
   if (plainFit.cardWidth >= GROUP_OTHERS_BELOW) {
     return { rows: plain, stacks: stacks.plain, merged: false, fit: plainFit }
   }
@@ -300,6 +306,6 @@ export function layoutSeat({ box, stacks, facing, opened, marked, held }: SeatLa
     rows: merged,
     stacks: stacks.merged,
     merged: true,
-    fit: fitLanes(box, laneCounts(merged, held), facing),
+    fit: fitLanes(box, laneCounts(merged, held), facing, limits),
   }
 }
