@@ -106,6 +106,18 @@ pub(super) fn discarded_filtered_text(
     };
     let kind = super::selectors::phrase_text(filter, super::selectors::Form::Count)?;
     let kind = kind.strip_suffix(" card").unwrap_or(&kind);
+    // A card in a hand is no permanent: "a nonland card", "a card with mana value 3 or greater".
+    if let Some(card) = wf26_in_hand(kind) {
+        return match count {
+            Amount::Fixed(1) => Some(format!("a {card}")),
+            Amount::Fixed(number) => Some(format!(
+                "{} {}",
+                count_word(u32::try_from(*number).ok()?)?,
+                card.replacen(" card", " cards", 1)
+            )),
+            _ => None,
+        };
+    }
     match count {
         Amount::Fixed(1) => Some(format!("a {kind} card")),
         Amount::Fixed(number) => Some(format!(
@@ -114,6 +126,19 @@ pub(super) fn discarded_filtered_text(
         )),
         _ => None,
     }
+}
+
+/// The words of a kind the selector writer says as a permanent ("nonland permanent", "permanent with mana value 3 or
+/// greater") said as a card.
+fn wf26_in_hand(kind: &str) -> Option<String> {
+    let (before, after) = if let Some(after) = kind.strip_prefix("permanent") {
+        ("", after)
+    } else {
+        let at = kind.find(" permanent")?;
+        (&kind[..at], &kind[at + " permanent".len()..])
+    };
+    let space = if before.is_empty() { "" } else { " " };
+    (after.is_empty() || after.starts_with(' ')).then(|| format!("{before}{space}card{after}"))
 }
 
 /// "an additional card", "three additional cards": the cards a draw step gives beyond the one it always draws.

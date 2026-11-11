@@ -1221,3 +1221,4 @@ mod w22_moves;
 mod w22_shields;
 mod wf24_writers;
 mod wf25_writers;
+mod wf26_writers;

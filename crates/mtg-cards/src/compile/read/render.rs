@@ -640,6 +640,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         }
     }
     super::wf25_writers::wf25_wordings(ability, written_variants, &mut texts);
+    super::wf26_writers::wf26_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1398,7 +1399,12 @@ fn written(
                 } = effect
                     && !regenerate
                 {
-                    let pronoun = if writer.single(what) { "it" } else { "they" };
+                    let pronoun =
+                        if writer.single(what) || matches!(what, Ref::This | Ref::Attached) {
+                            "it"
+                        } else {
+                            "they"
+                        };
                     sentences.push(format!("{pronoun} can't be regenerated"));
                 }
             }
@@ -2724,6 +2730,10 @@ impl Writer<'_> {
                 ..
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana { .. } => self.mana_added_by(effect)?,
+            // "look at target player's hand" (wf26).
+            Effect::LookAtHand { of: Ref::You } => "look at your hand".to_owned(),
+            Effect::LookAtHand { of } => format!("look at {}'s hand", self.player(of)?),
+            Effect::RingTempts { who: Ref::You } => "the Ring tempts you".to_owned(),
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
