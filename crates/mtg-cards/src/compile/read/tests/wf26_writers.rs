@@ -153,6 +153,7 @@ fn wf26_a_creature_dealt_damage_is_named_in_its_steps(
 #[case::the_card(r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"effects":[{"Destroy":{"what":"This","regenerate":false}}]}}"#, "When ~ is dealt damage, destroy it. It can't be regenerated.", true)]
 #[case::the_card_as_they(r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[],"to":"This"}}},"effects":[{"Destroy":{"what":"This","regenerate":false}}]}}"#, "When ~ is dealt damage, destroy it. They can't be regenerated.", false)]
 #[case::all_creatures(r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":false}}]}}"#, "Destroy all creatures. It can't be regenerated.", false)]
+#[case::the_creature(r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":{"Each":[{"Type":"Creature"}]},"combat":true}},"effects":[{"Destroy":{"what":"Triggering","regenerate":false}}]}}"#, "Whenever ~ deals combat damage to a creature, destroy that creature. The creature can't be regenerated.", true)]
 fn wf26_the_card_that_cant_be_regenerated_is_it(
     #[case] json: &str,
     #[case] clause: &str,

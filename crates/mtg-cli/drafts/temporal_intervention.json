@@ -9,9 +9,7 @@
       "abilities": [
         {
           "CostModifier": {
-            "applies_to": [
-              "This"
-            ],
+            "applies_to": ["This"],
             "change": "Reduce",
             "mana": "{2}",
             "condition": {
@@ -23,10 +21,7 @@
                         {
                           "Compare": {
                             "left": {
-                              "Tallied": {
-                                "who": "EachPlayer",
-                                "what": "NonlandPermanentsLeft"
-                              }
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
                             },
                             "op": "Ge",
                             "right": 1
@@ -34,12 +29,7 @@
                         },
                         {
                           "Compare": {
-                            "left": {
-                              "Tallied": {
-                                "who": "EachPlayer",
-                                "what": "SpellsWarped"
-                              }
-                            },
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
                             "op": "Ge",
                             "right": 1
                           }
@@ -58,40 +48,15 @@
         },
         {
           "Spell": {
-            "targets": [
-              {
-                "what": "Opponent"
-              }
-            ],
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               {
-                "Reveal": {
-                  "what": {
-                    "Each": [
-                      {
-                        "OwnedBy": {
-                          "Target": 0
-                        }
-                      },
-                      {
-                        "In": "Hand"
-                      }
-                    ]
-                  }
-                }
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
               },
               {
                 "Discard": {
-                  "who": {
-                    "Target": 0
-                  },
-                  "filter": [
-                    {
-                      "Not": {
-                        "Type": "Land"
-                      }
-                    }
-                  ],
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
                   "by": "You"
                 }
               }

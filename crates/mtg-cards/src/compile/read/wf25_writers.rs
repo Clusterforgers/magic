@@ -483,12 +483,10 @@ const REWRITES: [fn(&str) -> Option<String>; 8] = [
             .then(|| text.replace(". They can't be regenerated", ". It can't be regenerated"))
     },
     |text| {
-        text.contains(". They can't be regenerated").then(|| {
-            text.replace(
-                ". They can't be regenerated",
-                ". The creature can't be regenerated",
-            )
-        })
+        [". They can't be regenerated", ". It can't be regenerated"]
+            .iter()
+            .find(|said| text.contains(*said))
+            .map(|said| text.replace(said, ". The creature can't be regenerated"))
     },
     // "Whenever a permanent you control enters tapped": the state it enters in, said after the verb.
     |text| {

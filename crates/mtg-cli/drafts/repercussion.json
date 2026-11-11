@@ -9,27 +9,9 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [],
-                "to": {
-                  "Each": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            },
+            "when": { "DealsDamage": { "source": [], "to": { "Each": [{ "Type": "Creature" }] } } },
             "effects": [
-              {
-                "DealDamage": {
-                  "to": {
-                    "ControllerOf": "Triggering"
-                  },
-                  "amount": "Triggering"
-                }
-              }
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
             ]
           }
         }
