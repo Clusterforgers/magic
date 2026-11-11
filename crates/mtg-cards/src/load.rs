@@ -498,6 +498,22 @@ impl Library {
         )
     }
 
+    /// The clauses a card's draft marked as differing reads back as other text, from its read sheet; kept like every
+    /// decision, since building the sheet costs milliseconds and the deck list asks for every card of every deck.
+    pub fn read_differs(
+        &self,
+        printed: &PrintedCard,
+        caps: &Caps,
+    ) -> Vec<crate::deck::ReadDiffers> {
+        self.decisions.get(
+            printed,
+            caps,
+            |decided| decided.differs.clone(),
+            || crate::deck::differs_now(self, printed),
+            |decided, differs| decided.differs = Some(differs),
+        )
+    }
+
     /// What [`Library::draft_state`] answers, worked out again.
     fn draft_state_now(&self, printed: &PrintedCard, caps: &Caps) -> Option<ReadState> {
         let id = printed.oracle_id.as_str();

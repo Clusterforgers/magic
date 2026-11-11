@@ -1,4 +1,4 @@
-//! Goal: a draft marked as reading back as other text (`differs`) never runs on trust: never as `Forge`, `Unverified` until read, `Read` once approved, `Unverified` again after a change, listed to read in a deck with its differing clauses; an unmarked one never runs.
+//! Goal: a draft marked as reading back as other text (`differs`) never runs on trust: never as `Forge`, `Unverified` until read, `Read` once approved, `Unverified` again after a change, listed to read in a deck with its differing clauses, which a library keeps exactly as it would read them again; an unmarked one never runs.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 use crate::common::{Corpus, printed};
 
 use mtg_cards::card::Card;
-use mtg_cards::deck::{CardFacts, DeckLine, DeckZone, Legality, deck_report};
+use mtg_cards::deck::{CardFacts, DeckLine, DeckZone, Legality, deck_report, differs_of};
 use mtg_cards::load::Library;
 use mtg_cards::support::{Caps, PrintedCard, READBACK_DIFFERS, Support, read_hash};
 use mtg_cards::{DraftRules, ReadState};
@@ -200,4 +200,29 @@ fn a_draft_that_reads_back_has_no_differing_clauses_in_the_deck_report() {
 
     assert_eq!(report.summary.to_read, 1);
     assert_eq!(report.cards[0].differs, []);
+}
+
+#[rstest]
+#[case::a_differs_draft(2, true, 1)]
+#[case::a_draft_that_reads_back(3, true, 0)]
+#[case::an_unmarked_draft(2, false, 0)]
+fn the_differing_clauses_a_library_keeps_are_those_it_would_read_again(
+    #[case] amount: i64,
+    #[case] differs: bool,
+    #[case] clauses: usize,
+) {
+    let fresh = || library(amount, amount, ReadState::Pending, false, differs);
+    let (kept, shown) = fresh();
+    let caps = Caps::everything();
+    let first = differs_of(&kept, &shown, &caps);
+    assert_eq!(first.len(), clauses, "{first:?}");
+    assert_eq!(differs_of(&kept, &shown, &caps), first);
+    assert_eq!(differs_of(&fresh().0, &shown, &caps), first);
+    // Other printed text is read again, not taken from what was kept.
+    let mut reworded = shown.clone();
+    reworded.faces[0].oracle_text = "Lightning Bolt deals 2 damage to any target.".to_owned();
+    assert_eq!(
+        differs_of(&kept, &reworded, &caps),
+        differs_of(&fresh().0, &reworded, &caps)
+    );
 }
