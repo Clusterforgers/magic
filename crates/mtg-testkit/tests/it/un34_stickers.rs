@@ -130,7 +130,7 @@ fn a_sticker_changes_the_permanent_it_is_put_on(
     }
     for seat in 1..seats {
         let other = bear_of(&driver, seat);
-        assert!(driver.state().stickers_on(other).is_empty());
+        assert_eq!(driver.state().stickers_on(other), []);
         assert_eq!(driver.state().name_of(other).unwrap(), "Grizzly Bears");
     }
     let replayed = replay(&setup, driver.engine().events()).unwrap();
@@ -205,7 +205,7 @@ fn a_sticker_is_used_once_and_leaves_with_the_permanent() -> Result<(), ScriptEr
         },
     )
     .unwrap();
-    assert!(moved.stickers_on(bear).is_empty());
+    assert_eq!(moved.stickers_on(bear), []);
     Ok(())
 }
 

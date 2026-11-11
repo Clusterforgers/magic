@@ -359,9 +359,9 @@ mod tests {
     #[case::three(3, 3)]
     fn three_or_fewer_sheets_are_all_in_play(#[case] sheets: usize, #[case] playing: usize) {
         let game = game(sheets, 1);
-        assert!(choices(&game, 1).is_empty());
+        assert_eq!(choices(&game, 1), []);
         assert_eq!(game.sticker_sheets(PlayerId(0)).len(), playing);
-        assert!(game.sticker_sheets(PlayerId(1)).is_empty());
+        assert_eq!(game.sticker_sheets(PlayerId(1)), []);
     }
 
     #[rstest]
