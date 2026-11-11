@@ -7,7 +7,7 @@ use std::fmt::Write as _;
 use chrono::{DateTime, Duration, Utc};
 use mtg_cards::load::Library;
 use mtg_cards::{DraftRules, ReadState as CardsReadState, builtin};
-use mtg_db::{Database, DbError, DraftRead, ReadState, StoredRead, Verdict};
+use mtg_db::{Database, DbError, DraftRead, ReadState, SOURCE_FORGE, StoredRead, Verdict};
 use mtg_import::ids::OracleId;
 use sqlx::types::uuid::Uuid;
 
@@ -251,6 +251,17 @@ pub(crate) async fn draft_library(db: &Database) -> Result<(Library, usize), Cli
     let hand_written = builtin::library().map_err(|errors| {
         CliError::Config(format!("the embedded rules files do not load:\n{errors}"))
     })?;
+    drafts_onto(db, hand_written, false).await
+}
+
+/// `base` with the stored current drafts and the read state their verdicts come to, and the count of stored drafts it
+/// had to leave out. `as_served` reads them as the server does: a matched Forge draft not marked `differs` is trusted and
+/// a partial draft keeps its proof; otherwise every draft waits for a read and a partial one is left out.
+pub(crate) async fn drafts_onto(
+    db: &Database,
+    base: &Library,
+    as_served: bool,
+) -> Result<(Library, usize), CliError> {
     let schema = |error: DbError| {
         if missing_table(&error) {
             CliError::Config("the schema is not applied yet; `mtg-cli ingest` applies it".into())
@@ -275,9 +286,15 @@ pub(crate) async fn draft_library(db: &Database) -> Result<(Library, usize), Cli
                 .filter(|state| state.read_hash == draft.read_hash)
                 .map_or(CardsReadState::Pending, |state| cards_state(state.state));
             DraftRules {
-                forge: false,
+                forge: as_served
+                    && draft.source == SOURCE_FORGE
+                    && draft.oracle_matches
+                    && !draft.differs,
                 differs: draft.differs,
-                proof: None,
+                proof: draft
+                    .proof
+                    .filter(|_| as_served)
+                    .and_then(|proof| serde_json::from_value(proof).ok()),
                 oracle_id: draft.oracle_id.as_str().to_owned(),
                 read_hash: draft.read_hash,
                 rules: draft.rules,
@@ -285,7 +302,7 @@ pub(crate) async fn draft_library(db: &Database) -> Result<(Library, usize), Cli
             }
         })
         .collect();
-    let (library, left_out) = hand_written.with_drafts(&rows);
+    let (library, left_out) = base.with_drafts(&rows);
     let skipped = left_out
         .iter()
         .map(|error| error.file.as_str())

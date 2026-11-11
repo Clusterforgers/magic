@@ -1428,6 +1428,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
         // The deck check reads it from the card; nothing changes in a game.
         GameRule::AnyNumberInDeck => return Err(ResolveError::Unsupported("Rule.AnyNumberInDeck")),
+        GameRule::UpToInDeck(_) => return Err(ResolveError::Unsupported("Rule.UpToInDeck")),
         // A draft rule works only during a booster draft; nothing changes in a game.
         GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
         GameRule::GraveyardCardsUntargetable

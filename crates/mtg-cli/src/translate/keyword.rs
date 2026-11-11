@@ -326,6 +326,18 @@ const DECK_RULES: [&str; 2] = [
     "Your deck can't have basic land cards.",
 ];
 
+/// The copies a `DeckLimit:N:A deck can have up to <N in words> cards named CARDNAME.` line allows, when the number and its
+/// words agree and allow more than one; a ban or a tournament ruling (`DeckLimit:0`, `DeckLimit:1`) is none.
+fn deck_limit(body: &str) -> Option<u32> {
+    const WORDS: [&str; 9] = [
+        "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+    ];
+    let (most, text) = body.strip_prefix("DeckLimit:")?.split_once(':')?;
+    let most: u32 = most.parse().ok().filter(|most| *most > 1)?;
+    let word = WORDS.get(usize::try_from(most.checked_sub(2)?).ok()?)?;
+    (text == format!("A deck can have up to {word} cards named CARDNAME.")).then_some(most)
+}
+
 /// The abilities a `K:` line stands for: those of `keyword_ability`, or the chapters of a Saga.
 pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     // The costs of the modes are the modal spell's own: the spell line reads them.
@@ -341,6 +353,9 @@ pub fn keyword_abilities(ctx: &mut Ctx, body: &str) -> Vec<Tr<Value>> {
     }
     if body.trim() == "A deck can have any number of cards named CARDNAME." {
         return vec![Ok(json!({"Rule": {"rule": "AnyNumberInDeck"}}))];
+    }
+    if let Some(most) = deck_limit(body.trim()) {
+        return vec![Ok(json!({"Rule": {"rule": {"UpToInDeck": most}}}))];
     }
     if let Some(quirks) = combat_quirks(body.trim()) {
         return quirks.iter().map(|quirk| Ok(combat_rule(quirk))).collect();

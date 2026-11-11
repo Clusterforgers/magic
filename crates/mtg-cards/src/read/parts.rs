@@ -1,12 +1,16 @@
 //! The parts an ability is made of besides its effects: triggers, costs, mana, rules, modifications and replacements.
 
+use std::fmt::Write as _;
+
 use super::generic;
 use super::phrase::{self, Ctx};
 use super::{Step, effects, steps};
 use crate::cost::{Cost, CostItem};
 use crate::effect::Produce;
 use crate::keyword::Keyword;
-use crate::modify::{Blocking, CombatQuirk, GameRule, Modification, TapPowerAs};
+use crate::modify::{
+    Blocking, CastPermission, CombatQuirk, GameRule, Modification, SpendAs, TapPowerAs,
+};
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, Step as TurnStep, TriggerPattern};
 use crate::value::Amount;
@@ -122,6 +126,20 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
                 |objects| phrase::selector(ctx, objects)
             )
         ),
+        CostItem::RemoveCountersAmong {
+            counter,
+            count,
+            from,
+        } => format!(
+            "remove {} {}counter{} from among {} you control",
+            phrase::amount(ctx, count),
+            counter.as_ref().map_or_else(String::new, |kind| format!(
+                "{} ",
+                phrase::counter_text(kind)
+            )),
+            if *count == Amount::one() { "" } else { "s" },
+            phrase::selectors(ctx, from)
+        ),
         CostItem::OneOf(options) => options
             .iter()
             .map(|option| cost(ctx, option))
@@ -205,7 +223,7 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         }
         TriggerPattern::DealsDamage { source, to, combat } => format!(
             "{} deals {}damage{}",
-            phrase::selector(ctx, source),
+            phrase::source(ctx, source),
             match combat {
                 Some(true) => "combat ",
                 Some(false) => "noncombat ",
@@ -257,11 +275,26 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::Nth { event, nth } => {
             format!("{} for the {nth}th time each turn", trigger(ctx, event))
         }
-        TriggerPattern::Caused { inner, .. } => {
-            format!("{}, caused by a spell or ability", trigger(ctx, inner))
-        }
+        TriggerPattern::Caused { inner, by, source } => caused(ctx, inner, by.as_ref(), source),
         other => generic::node(ctx, other),
     }
+}
+
+/// An event someone caused: who caused it and with what source, when the pattern says.
+fn caused(ctx: &Ctx, inner: &TriggerPattern, by: Option<&Ref>, source: &Selector) -> String {
+    format!(
+        "{}, caused by {}{}",
+        trigger(ctx, inner),
+        by.map_or_else(
+            || "a spell or ability".to_owned(),
+            |who| phrase::who(ctx, who)
+        ),
+        if source.is_empty() {
+            String::new()
+        } else {
+            format!(" with {}", phrase::source(ctx, source))
+        }
+    )
 }
 
 /// An object changing zones, by where it came from and where it went.
@@ -352,10 +385,23 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
                 ""
             };
             format!(
-                "{} may {} {}{from}{free}",
+                "{}{} may {} {}{}{from}{free}{}",
+                if permission.once {
+                    "once during each of your turns, "
+                } else {
+                    ""
+                },
                 phrase::who(ctx, &permission.who),
                 if permission.play { "play" } else { "cast" },
-                phrase::selectors(ctx, &permission.what)
+                phrase::selectors(ctx, &permission.what),
+                permission
+                    .only
+                    .as_ref()
+                    .map_or_else(String::new, |only| format!(
+                        " (only {})",
+                        phrase::who(ctx, only)
+                    )),
+                permission_terms(ctx, permission)
             )
         }
         GameRule::ExileFound(who) => format!(
@@ -374,6 +420,33 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         other => generic::node(ctx, other),
     }
+}
+
+/// What a cast permission asks besides the cards it names: its costs, the mana it lets pay, flash and when it is open.
+fn permission_terms(ctx: &Ctx, permission: &CastPermission) -> String {
+    let mut terms = String::new();
+    if let Some(rather) = &permission.rather {
+        let _ = write!(terms, " (instead of its mana cost: {})", cost(ctx, rather));
+    }
+    if let Some(additional) = &permission.additional {
+        let _ = write!(
+            terms,
+            " (in addition to its other costs: {})",
+            cost(ctx, additional)
+        );
+    }
+    match permission.spend_as {
+        SpendAs::Normal => {}
+        SpendAs::AnyColor => terms += ", spending mana as though it were mana of any color",
+        SpendAs::AnyType => terms += ", spending mana as though it were mana of any type",
+    }
+    if permission.flash {
+        terms += " as though it had flash";
+    }
+    if let Some(when) = &permission.when {
+        let _ = write!(terms, " while {}", phrase::condition(ctx, when));
+    }
+    terms
 }
 
 /// A keyword with its parameter: "flying", "ward {2}", "protection from red".

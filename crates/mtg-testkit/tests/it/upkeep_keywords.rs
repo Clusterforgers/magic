@@ -1,4 +1,4 @@
-//! Goal: echo, cumulative upkeep, undying and persist play whole at tables of two, three and four seats as their rules say: echo asks its controller for the cost in the upkeep after the permanent came under their control (and again for whoever controls it after a change of control, never for a permanent held since the turn began), sacrifices it when the cost is declined or cannot be paid (asked the same way, with No the only answer) and asks once for each instance of the keyword; cumulative upkeep puts an age counter on the permanent each upkeep and asks for its cost once for each counter (mana, life, sacrificed creatures), counts the counters of other instances, and asks nothing of a permanent that left in response; undying and persist return the card that died with a counter of their kind unless it had one, both together return it once, whichever the controller orders first, and neither finds a card that left the graveyard in response or a token; and the log replays to the live state.
+//! Goal: echo, cumulative upkeep (an exile of the top card takes a card for each age counter), undying and persist play whole at tables of two, three and four seats as their rules say: echo asks its controller for the cost in the upkeep after the permanent came under their control (and again for whoever controls it after a change of control, never for a permanent held since the turn began), sacrifices it when the cost is declined or cannot be paid (asked the same way, with No the only answer) and asks once for each instance of the keyword; cumulative upkeep puts an age counter on the permanent each upkeep and asks for its cost once for each counter (mana, life, sacrificed creatures), counts the counters of other instances, and asks nothing of a permanent that left in response; undying and persist return the card that died with a counter of their kind unless it had one, both together return it once, whichever the controller orders first, and neither finds a card that left the graveyard in response or a token; and the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -382,6 +382,30 @@ fn cumulative_upkeep_asks_for_its_mana_once_for_each_age_counter(
     }
     assert!(!on_battlefield(&driver, "Ager"));
     assert!(in_graveyard(&driver, 0, "Ager"));
+    assert_replays(&driver, &setup)
+}
+
+/// "Exile the top card of your library" paid once for each age counter takes that many different cards: the payments
+/// once each took the same top card and the game stopped on the second move.
+#[rstest]
+fn cumulative_upkeep_exiling_the_top_card_takes_a_card_for_each_age_counter(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let cost: Cost = serde_json::from_str(r#"[{"ExileTop":1}]"#).unwrap();
+    let build = || age_table(seats, ager("Ager", cost.clone()), Vec::new());
+    let setup = build().setup()?;
+    let mut driver = Driver::from_scenario(build())?;
+    let round = u32::try_from(seats).unwrap();
+    let exiled = |driver: &Driver| driver.state().zone(Zone::Exile).len();
+    for count in 1..=3u32 {
+        driver.idle_until(1 + round * count, Step::Upkeep)?;
+        let before = exiled(&driver);
+        assert!(until_question(&mut driver)?);
+        pay(&mut driver, "")?;
+        settle(&mut driver)?;
+        assert_eq!(exiled(&driver) - before, usize::try_from(count).unwrap());
+        assert!(on_battlefield(&driver, "Ager"));
+    }
     assert_replays(&driver, &setup)
 }
 

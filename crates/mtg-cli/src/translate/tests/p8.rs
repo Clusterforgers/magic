@@ -209,6 +209,38 @@ fn a_deck_building_rule_adds_no_ability_and_no_gap(#[case] line: &str) {
     assert_eq!(gaps(&script), Vec::<String>::new());
 }
 
+/// "Up to N cards named" is a deck rule when the number and its words agree and allow more than one; a ban, a tournament
+/// ruling or a mismatch stays a gap.
+#[rstest::rstest]
+#[case::nine(
+    "DeckLimit:9:A deck can have up to nine cards named CARDNAME.",
+    Some(9)
+)]
+#[case::seven(
+    "DeckLimit:7:A deck can have up to seven cards named CARDNAME.",
+    Some(7)
+)]
+#[case::words_disagree("DeckLimit:9:A deck can have up to seven cards named CARDNAME.", None)]
+#[case::banned("DeckLimit:0:This card is banned.", None)]
+#[case::one_by_ruling(
+    "DeckLimit:1:DCI ruling — A deck can have only one card named Once More with Feeling.",
+    None
+)]
+#[case::another_name("DeckLimit:7:A deck can have up to seven cards named Island.", None)]
+fn up_to_n_cards_named_is_a_deck_rule(#[case] line: &str, #[case] most: Option<u32>) {
+    let script = creature(&format!("K:{line}"));
+    match most {
+        Some(most) => {
+            assert_eq!(
+                abilities(&script),
+                vec![serde_json::json!({"Rule": {"rule": {"UpToInDeck": most}}})]
+            );
+            assert_eq!(gaps(&script), Vec::<String>::new());
+        }
+        None => assert!(!gaps(&script).is_empty(), "{line}"),
+    }
+}
+
 #[test]
 fn any_number_of_cards_named_is_a_deck_rule_without_a_gap() {
     let script = creature("K:A deck can have any number of cards named CARDNAME.");

@@ -113,7 +113,12 @@ async fn library(db: &Database) -> Result<Library, CliError> {
             rules: row.rules,
         })
         .collect();
-    Ok(hand_written.with_generated(&rows).0)
+    // The drafts as the server reads them, so a card shows the state the game gives it.
+    Ok(
+        crate::reads::drafts_onto(db, &hand_written.with_generated(&rows).0, true)
+            .await?
+            .0,
+    )
 }
 
 /// The support state the game gives each marked card now, by oracle id.

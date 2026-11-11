@@ -416,6 +416,137 @@ mod tests {
         assert_eq!(shown(json), expected);
     }
 
+    /// A cast permission names every term it sets: a sheet that drops one reads as a card without it (Dawnhand Dissident).
+    #[rstest]
+    #[case::additional_counters(
+        r#"{"MayCast":{"what":[{"Type":"Creature"}],"from":"Exile","additional":[{"RemoveCountersAmong":{"count":3,"from":[{"Type":"Creature"}]}}]}}"#,
+        "(in addition to its other costs: remove 3 counters from among creatures you control)"
+    )]
+    #[case::additional_life(
+        r#"{"MayCast":{"what":[],"from":"Graveyard","additional":[{"PayLife":3}]}}"#,
+        "(in addition to its other costs: pay 3 life)"
+    )]
+    #[case::rather(
+        r#"{"MayCast":{"what":[],"rather":[{"PayLife":2}]}}"#,
+        "(instead of its mana cost: pay 2 life)"
+    )]
+    #[case::flash(r#"{"MayCast":{"what":[],"flash":true}}"#, "as though it had flash")]
+    #[case::once(
+        r#"{"MayCast":{"what":[],"once":true}}"#,
+        "once during each of your turns"
+    )]
+    #[case::any_color(
+        r#"{"MayCast":{"what":[],"spend_as":"AnyColor"}}"#,
+        "mana of any color"
+    )]
+    fn a_cast_permission_names_its_terms(#[case] rule: &str, #[case] words: &str) {
+        let steps = shown(&format!(r#"{{"Rule":{{"rule":{rule}}}}}"#));
+        assert!(steps[0].contains(words), "{steps:?}");
+    }
+
+    /// A trigger names every limit it sets: who caused the event, what the source may be and the condition checked as it
+    /// triggers (Obelisk Spider, Ghyrson Starn).
+    #[rstest]
+    #[case::caused_by_you(
+        r#"{"Caused":{"inner":{"CountersPut":{"what":[{"Type":"Creature"}],"counter":"-1/-1"}},"by":"You"}}"#,
+        &["caused by you"][..],
+        &["a spell or ability"][..]
+    )]
+    #[case::caused_by_anyone(
+        r#"{"Caused":{"inner":{"CountersPut":{"what":[{"Type":"Creature"}],"counter":"-1/-1"}}}}"#,
+        &["caused by a spell or ability"][..],
+        &[][..]
+    )]
+    #[case::any_source(
+        r#"{"DealsDamage":{"source":["Other",{"ControlledBy":"You"}],"to":"EachPlayer"}}"#,
+        &["other source you control deals damage"][..],
+        &["permanent"][..]
+    )]
+    #[case::creature_source(
+        r#"{"DealsDamage":{"source":[{"Type":"Creature"}]}}"#,
+        &["creature deals damage"][..],
+        &["source"][..]
+    )]
+    fn a_trigger_names_its_limits(
+        #[case] when: &str,
+        #[case] said: &[&str],
+        #[case] unsaid: &[&str],
+    ) {
+        let steps = shown(&format!(
+            r#"{{"Triggered":{{"when":{when},"effects":[{{"Draw":{{}}}}]}}}}"#
+        ));
+        for words in said {
+            assert!(steps[0].contains(words), "{steps:?}");
+        }
+        for words in unsaid {
+            assert!(!steps[0].contains(words), "{steps:?}");
+        }
+    }
+
+    /// What a reader must check is in words, never a node name: the abilities of a token (empower Jace), a repeat's count
+    /// (Torment of Hailfire) and a count of different names (Liliana's Contract).
+    #[rstest]
+    #[case::token_abilities(
+        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Jace","colors":["Blue"],"types":["Planeswalker"],"subtypes":["Jace"],"abilities":[{"Loyalty":{"cost":{"Minus":1},"effects":[{"Surveil":{}}]}},{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{}}]}}]}}}}]}}"#,
+        &["“loyalty: -1; surveil 1”", "“loyalty: -3; draw a card”"][..],
+        &["an ability ("][..]
+    )]
+    #[case::repeat_x_times(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":{"Compare":{"left":0,"op":"Eq","right":0}},"effects":[{"Draw":{}}],"most":1000,"times":"X"}}]}}"#,
+        &["repeat X times:"][..],
+        &["condition", "most", "while"][..]
+    )]
+    #[case::repeat_while(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}]}}"#,
+        &["repeat at most 3 times while it is your turn:"][..],
+        &[][..]
+    )]
+    #[case::different_names(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Distinct":{"of":[{"Subtype":"Demon"},{"ControlledBy":"You"}],"stat":"Name"}},"op":"Ge","right":4}},"then":[{"WinGame":{}}]}}]}}"#,
+        &["the number of different names among Demons you control"][..],
+        &["distinct ("][..]
+    )]
+    #[case::still_on_the_battlefield(
+        r#"{"Activated":{"cost":"{0}","effects":[{"If":{"condition":{"Compare":{"left":{"Count":["This"]},"op":"Eq","right":1}},"then":[{"Draw":{}}]}}]}}"#,
+        &["if this permanent is on the battlefield:"][..],
+        &["the number of"][..]
+    )]
+    fn a_sheet_words_what_a_reader_checks(
+        #[case] json: &str,
+        #[case] said: &[&str],
+        #[case] unsaid: &[&str],
+    ) {
+        let text = shown(json).join("\n");
+        for words in said {
+            assert!(text.contains(words), "{text}");
+        }
+        for words in unsaid {
+            assert!(!text.contains(words), "{text}");
+        }
+    }
+
+    #[test]
+    fn a_condition_checked_only_as_it_triggers_says_so() {
+        let steps = shown(
+            r#"{"Triggered":{"when":{"DealsDamage":{"source":[]}},"if":{"AtTrigger":{"Compare":{"left":"Triggering","op":"Eq","right":1}}},"effects":[{"Draw":{}}]}}"#,
+        );
+        assert!(
+            steps[1].contains("checked as it triggers only"),
+            "{steps:?}"
+        );
+        assert!(!steps[1].contains("at trigger ("), "{steps:?}");
+    }
+
+    #[test]
+    fn a_plain_cast_permission_adds_no_terms() {
+        let steps = shown(
+            r#"{"Rule":{"rule":{"MayCast":{"what":[{"Type":"Creature"}],"from":"Graveyard"}}}}"#,
+        );
+        for word in ["costs", "flash", "once", "spending", "while", "only"] {
+            assert!(!steps[0].contains(word), "{steps:?}");
+        }
+    }
+
     #[test]
     fn every_kind_of_ability_has_a_label_and_steps() {
         for json in [
