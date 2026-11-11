@@ -402,7 +402,7 @@ impl CardDefinition {
         self.types.contains(&ty)
     }
 
-    /// The names of the cards its abilities (and those of its faces) can conjure, each once.
+    /// The names of the cards its abilities (and those of its faces) can conjure or make a token copy of, each once.
     pub fn conjured_names(&self) -> BTreeSet<String> {
         fn walk(value: &serde_json::Value, names: &mut BTreeSet<String>) {
             match value {
@@ -410,6 +410,14 @@ impl CardDefinition {
                     if let Some(name) = map
                         .get("Conjure")
                         .and_then(|conjure| conjure.get("name"))
+                        .and_then(serde_json::Value::as_str)
+                    {
+                        names.insert(name.to_owned());
+                    }
+                    // A token that is a copy of a named card is made from the same cards ("Create a Tarmogoyf token").
+                    if let Some(name) = map
+                        .get("token")
+                        .and_then(|token| token.get("Card"))
                         .and_then(serde_json::Value::as_str)
                     {
                         names.insert(name.to_owned());

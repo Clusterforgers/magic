@@ -2591,6 +2591,13 @@ impl Walker<'_> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
+            // The named card's own rules come with it when the game loads it to conjure.
+            TokenRef::Card(name) => {
+                if name.trim().is_empty() {
+                    self.problem("a token copy of a card needs the card's name");
+                }
+                self.uses("Effect", "CreateToken.Card");
+            }
             TokenRef::Sized {
                 size,
                 toughness,

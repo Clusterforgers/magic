@@ -320,6 +320,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UnderChosenOpponent",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
+    "Effect.CreateToken.Card",
     "Effect.CopySpell",
     "Effect.CopyAbility",
     "Effect.ChangeTargets",

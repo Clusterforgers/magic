@@ -3231,6 +3231,26 @@ impl Writer<'_> {
         }
     }
 
+    /// "Each player shuffles their hand and graveyard into their library, then draws seven cards": a step of each player
+    /// shuffling cards away and their draw, one sentence with one subject.
+    fn ep31_each_shuffles_then_draws(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            first @ Effect::Move { .. },
+            Effect::Draw {
+                who: Ref::EachPlayer,
+                count,
+                ..
+            },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        let moved = self.effect(first)?;
+        (moved.starts_with("each player shuffles ") && !moved.contains(", then")).then_some(())?;
+        Some((format!("{moved}, then draws {}", cards_text(count)?), 2))
+    }
+
     /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
@@ -3246,6 +3266,7 @@ impl Writer<'_> {
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
+            .or_else(|| self.ep31_each_shuffles_then_draws(effects))
             .or_else(|| self.w2b_you_and_each(effects))
             .or_else(|| self.you_and_each_create(effects))
             .or_else(|| untapped::text(effects))
