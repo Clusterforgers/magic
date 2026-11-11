@@ -72,7 +72,7 @@ async fn start_with(pool: &PgPool, change: impl FnOnce(&mut ServerConfig)) -> Te
         deck(
             "Commander Pack",
             &[("Questing Beast", 1)],
-            &[("Forest", 98), ("Auspicious Starrix", 1)],
+            &[("Forest", 98), ("Capricopian", 1)],
         ),
     ];
     database
