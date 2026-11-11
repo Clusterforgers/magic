@@ -152,6 +152,17 @@ fn where_x_draws(texts: &[String]) -> Vec<String> {
         .collect()
 }
 
+/// "it can't be regenerated" for one object (one target, the card, what it is attached to), else "they can't be
+/// regenerated".
+fn wf26_unregenerated(single: bool, what: &Ref) -> String {
+    let pronoun = if single || matches!(what, Ref::This | Ref::Attached) {
+        "it"
+    } else {
+        "they"
+    };
+    format!("{pronoun} can't be regenerated")
+}
+
 /// "It can't be regenerated." after the destruction of one object is also "That creature can't be regenerated.".
 fn regeneration_wordings(texts: &[String]) -> Vec<String> {
     texts
@@ -639,8 +650,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    super::wf25_writers::wf25_wordings(ability, written_variants, &mut texts);
-    super::wf26_writers::wf26_wordings(ability, written_variants, &mut texts);
+    super::wf26_writers::wf25_wf26_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1399,13 +1409,7 @@ fn written(
                 } = effect
                     && !regenerate
                 {
-                    let pronoun =
-                        if writer.single(what) || matches!(what, Ref::This | Ref::Attached) {
-                            "it"
-                        } else {
-                            "they"
-                        };
-                    sentences.push(format!("{pronoun} can't be regenerated"));
+                    sentences.push(wf26_unregenerated(writer.single(what), what));
                 }
             }
             group => sentences.push(

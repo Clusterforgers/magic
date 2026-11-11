@@ -11,6 +11,19 @@ use crate::modify::Modification;
 use crate::refs::{Ref, Selector};
 use crate::value::Amount;
 
+/// The words of an object put on top of its owner's library.
+const ON_TOP: &str = " on top of its owner's library";
+
+/// Adds the wordings of the wf25 and wf26 twins.
+pub(super) fn wf25_wf26_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    super::wf25_writers::wf25_wordings(ability, written, texts);
+    wf26_wordings(ability, written, texts);
+}
+
 /// Adds the wordings of the wf26 twins: the revealed hand and its discard, kinship, a value of your choice, the top or
 /// bottom of a library.
 pub(super) fn wf26_wordings(
@@ -545,7 +558,6 @@ fn wf26_top_or_bottom_wordings(
     let Some(twin) = top_or_bottom_twin(ability) else {
         return;
     };
-    const ON_TOP: &str = " on top of its owner's library";
     let mut found = Vec::new();
     for text in written(&twin) {
         let Some(end) = text.find(ON_TOP) else {

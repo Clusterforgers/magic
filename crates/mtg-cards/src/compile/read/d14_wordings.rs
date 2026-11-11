@@ -22,12 +22,11 @@ fn this_turn(text: &str) -> Option<String> {
     const HEAD: &str = "Until end of turn, whenever ";
     // After the head of another ability ("When ~ enters, until end of turn, whenever ...") the words are in lower case.
     const INNER: &str = ", until end of turn, whenever ";
-    let (at, after, word) = match text.find(HEAD) {
-        Some(at) => (at, at + HEAD.len(), "Whenever"),
-        None => {
-            let at = text.find(INNER)? + 2;
-            (at, at + INNER.len() - 2, "whenever")
-        }
+    let (at, after, word) = if let Some(at) = text.find(HEAD) {
+        (at, at + HEAD.len(), "Whenever")
+    } else {
+        let at = text.find(INNER)? + 2;
+        (at, at + INNER.len() - 2, "whenever")
     };
     let comma = text[after..].find(", ")? + after;
     let event = &text[after..comma];
