@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "b71c63da-dfe3-475f-88d9-20008c01163a",
+  "oracle_id": "ee79b00d-9b2a-454d-a20c-edb073ef69cf",
+  "multiverse_ids": [
+    107264
+  ],
+  "mtgo_id": 24101,
+  "mtgo_foil_id": 24102,
+  "tcgplayer_id": 13865,
+  "cardmarket_id": 13001,
+  "name": "Flash Foliage",
+  "lang": "en",
+  "released_at": "2006-05-05",
+  "uri": "https://api.scryfall.com/cards/b71c63da-dfe3-475f-88d9-20008c01163a",
+  "scryfall_uri": "https://scryfall.com/card/dis/85/flash-foliage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:50:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412",
+    "normal": "https://cards.scryfall.io/normal/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412",
+    "large": "https://cards.scryfall.io/large/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412",
+    "png": "https://cards.scryfall.io/png/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.png?1783943412",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.webp?1783943412",
+    "grid": "https://cards.scryfall.io/grid/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.webp?1783943412",
+    "display": "https://cards.scryfall.io/display/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.webp?1783943412",
+    "art": "https://cards.scryfall.io/art/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.webp?1783943412",
+    "crop": "https://cards.scryfall.io/crop/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.webp?1783943412",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/7/b71c63da-dfe3-475f-88d9-20008c01163a.jpg?1783943412"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Cast this spell only during combat after blockers are declared.\nCreate a 1/1 green Saproling creature token that's blocking target creature attacking you.\nDraw a card.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "248ade83-ac57-42d6-985c-1e4cc3639f36",
+      "component": "token",
+      "name": "Saproling",
+      "type_line": "Token Creature — Saproling",
+      "uri": "https://api.scryfall.com/cards/248ade83-ac57-42d6-985c-1e4cc3639f36"
+    },
+    {
+      "object": "related_card",
+      "id": "b71c63da-dfe3-475f-88d9-20008c01163a",
+      "component": "combo_piece",
+      "name": "Flash Foliage",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/b71c63da-dfe3-475f-88d9-20008c01163a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fdebeda1-b95f-4343-8a94-d125821e6b5c",
+  "set": "dis",
+  "set_name": "Dissension",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fdebeda1-b95f-4343-8a94-d125821e6b5c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adis&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dis?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b71c63da-dfe3-475f-88d9-20008c01163a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aee79b00d-9b2a-454d-a20c-edb073ef69cf&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"This undemanding vegetation takes root in a mote of dust but grows incredibly quickly.\"\n—Simic research notes",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spears",
+  "artist_ids": [
+    "fce9030b-86bd-4439-b06a-920a1eeb184c"
+  ],
+  "illustration_id": "540a2ebe-ef66-4484-96b3-735709f93597",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19692,
+  "penny_rank": 17107,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.63",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.47",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=107264&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlash%2BFoliage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlash%2BFoliage",
+    "edhrec": "https://edhrec.com/route/?cc=Flash+Foliage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F13865%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=13001&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/24101?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "7bbebce1-88d1-4002-8c28-746b0976d662",
+  "oracle_id": "960cff3b-678c-404e-a643-ac5e91e6b50c",
+  "multiverse_ids": [
+    658339
+  ],
+  "mtgo_id": 125169,
+  "tcgplayer_id": 545393,
+  "cardmarket_id": 764509,
+  "name": "Charred Graverobber",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/7bbebce1-88d1-4002-8c28-746b0976d662",
+  "scryfall_uri": "https://scryfall.com/card/otc/19/charred-graverobber?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:06:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966",
+    "normal": "https://cards.scryfall.io/normal/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966",
+    "large": "https://cards.scryfall.io/large/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966",
+    "png": "https://cards.scryfall.io/png/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.png?1783911966",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.webp?1783911966",
+    "grid": "https://cards.scryfall.io/grid/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.webp?1783911966",
+    "display": "https://cards.scryfall.io/display/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.webp?1783911966",
+    "art": "https://cards.scryfall.io/art/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.webp?1783911966",
+    "crop": "https://cards.scryfall.io/crop/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.webp?1783911966",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/b/7bbebce1-88d1-4002-8c28-746b0976d662.jpg?1783911966"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Skeleton Mercenary",
+  "oracle_text": "When this creature enters, return target outlaw card from your graveyard to your hand.\nEscape—{3}{B}{B}, Exile four other cards from your graveyard. (You may cast this card from your graveyard for its escape cost.)\nThis creature escapes with a +1/+1 counter on it.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Escape"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7bbebce1-88d1-4002-8c28-746b0976d662/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A960cff3b-678c-404e-a643-ac5e91e6b50c&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Stewart",
+  "artist_ids": [
+    "20871267-2d8a-41d5-b03a-be3d557c5734"
+  ],
+  "illustration_id": "43dd1fdd-bcb8-479e-9d83-9e42ff0b4fd3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12663,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": "1.19"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658339&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCharred%2BGraverobber",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCharred%2BGraverobber",
+    "edhrec": "https://edhrec.com/route/?cc=Charred+Graverobber"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545393%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764509&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125169?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

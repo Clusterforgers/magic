@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "0b5717af-a1a3-45cb-8b05-7543eed5532a",
+  "oracle_id": "156b2228-f7b2-4816-b894-c4953a32c05f",
+  "multiverse_ids": [
+    2299
+  ],
+  "tcgplayer_id": 1886,
+  "cardmarket_id": 6069,
+  "name": "Power Surge",
+  "lang": "en",
+  "released_at": "1995-04-01",
+  "uri": "https://api.scryfall.com/cards/0b5717af-a1a3-45cb-8b05-7543eed5532a",
+  "scryfall_uri": "https://scryfall.com/card/4ed/216/power-surge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:03:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825",
+    "normal": "https://cards.scryfall.io/normal/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825",
+    "large": "https://cards.scryfall.io/large/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825",
+    "png": "https://cards.scryfall.io/png/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.png?1783947825",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.webp?1783947825",
+    "grid": "https://cards.scryfall.io/grid/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.webp?1783947825",
+    "display": "https://cards.scryfall.io/display/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.webp?1783947825",
+    "art": "https://cards.scryfall.io/art/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.webp?1783947825",
+    "crop": "https://cards.scryfall.io/crop/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.webp?1783947825",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/b/0b5717af-a1a3-45cb-8b05-7543eed5532a.jpg?1783947825"
+  },
+  "mana_cost": "{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of each player's upkeep, this enchantment deals X damage to that player, where X is the number of untapped lands they controlled at the beginning of this turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set": "4ed",
+  "set_name": "Fourth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/2dd259d4-dc13-4956-a2dc-3e1d70b4a743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A4ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/4ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0b5717af-a1a3-45cb-8b05-7543eed5532a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A156b2228-f7b2-4816-b894-c4953a32c05f&unique=prints",
+  "collector_number": "216",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douglas Shuler",
+  "artist_ids": [
+    "a9ddb513-51c7-455c-ab8f-5b90aae9f75b"
+  ],
+  "illustration_id": "7c4877a4-9ecd-4941-a903-bf85dbfd00c0",
+  "border_color": "white",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11688,
+  "prices": {
+    "usd": "1.09",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.00",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2299&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPower%2BSurge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPower%2BSurge",
+    "edhrec": "https://edhrec.com/route/?cc=Power+Surge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F1886%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6069&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Power+Surge&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

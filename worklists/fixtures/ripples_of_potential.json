@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "8e724c6d-3922-406f-b9e6-e478e1039416",
+  "oracle_id": "45bcebd0-5e93-4433-b92f-b4c161d04bd6",
+  "multiverse_ids": [],
+  "resource_id": "05D668E431093266226CE7CEDFC67D96042A7AF31092611ECF4C73A76C233CCF",
+  "mtgo_id": 142291,
+  "tcgplayer_id": 642806,
+  "cardmarket_id": 834257,
+  "name": "Ripples of Potential",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/8e724c6d-3922-406f-b9e6-e478e1039416",
+  "scryfall_uri": "https://scryfall.com/card/eoc/77/ripples-of-potential?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:27:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041",
+    "large": "https://cards.scryfall.io/large/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041",
+    "png": "https://cards.scryfall.io/png/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.png?1783906041",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.webp?1783906041",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.webp?1783906041",
+    "display": "https://cards.scryfall.io/display/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.webp?1783906041",
+    "art": "https://cards.scryfall.io/art/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.webp?1783906041",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.webp?1783906041",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8e724c6d-3922-406f-b9e6-e478e1039416.jpg?1783906041"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Proliferate, then choose any number of permanents you control that had a counter put on them this way. Those permanents phase out. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there. Treat phased-out permanents and anything attached to them as though they don't exist until their controller's next turn.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Proliferate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set": "eoc",
+  "set_name": "Edge of Eternities Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8e724c6d-3922-406f-b9e6-e478e1039416/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A45bcebd0-5e93-4433-b92f-b4c161d04bd6&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sam Hogg",
+  "artist_ids": [
+    "27efd587-7d77-42bf-b72d-9bd083655b49"
+  ],
+  "illustration_id": "8e1a40b5-9f8b-48f8-b5fb-16807a2aaeac",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 875,
+  "preview": {
+    "source": "EDHijinks",
+    "source_uri": "https://www.youtube.com/watch?v=Swjj0JGhFco",
+    "previewed_at": "2025-07-10"
+  },
+  "prices": {
+    "usd": "5.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.02",
+    "eur_foil": null,
+    "tix": "2.11"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRipples%2Bof%2BPotential",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRipples%2Bof%2BPotential",
+    "edhrec": "https://edhrec.com/route/?cc=Ripples+of+Potential"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F642806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=834257&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142291?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "4c30b821-09ec-4b66-9963-f97e3ef5005c",
+  "oracle_id": "05e0a10d-532a-451c-a54e-27e64969fe0e",
+  "multiverse_ids": [
+    446862
+  ],
+  "tcgplayer_id": 166860,
+  "cardmarket_id": 358777,
+  "name": "Volcanic Offering",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/4c30b821-09ec-4b66-9963-f97e3ef5005c",
+  "scryfall_uri": "https://scryfall.com/card/cm2/126/volcanic-offering?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:25:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733",
+    "normal": "https://cards.scryfall.io/normal/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733",
+    "large": "https://cards.scryfall.io/large/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733",
+    "png": "https://cards.scryfall.io/png/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.png?1783934733",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.webp?1783934733",
+    "grid": "https://cards.scryfall.io/grid/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.webp?1783934733",
+    "display": "https://cards.scryfall.io/display/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.webp?1783934733",
+    "art": "https://cards.scryfall.io/art/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.webp?1783934733",
+    "crop": "https://cards.scryfall.io/crop/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.webp?1783934733",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/c/4c30b821-09ec-4b66-9963-f97e3ef5005c.jpg?1783934733"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target nonbasic land you don't control and target nonbasic land of an opponent's choice you don't control.\nVolcanic Offering deals 7 damage to target creature you don't control and 7 damage to target creature of an opponent's choice you don't control.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set": "cm2",
+  "set_name": "Commander Anthology Volume II",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/2ba5b1a3-40ed-422e-981d-56753004dfc6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acm2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cm2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4c30b821-09ec-4b66-9963-f97e3ef5005c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A05e0a10d-532a-451c-a54e-27e64969fe0e&unique=prints",
+  "collector_number": "126",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Velhagen",
+  "artist_ids": [
+    "9f85c6c1-5cf4-4092-bb65-006eaca188d4"
+  ],
+  "illustration_id": "554c094d-ec97-4f61-b480-1c3b62cc6baf",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11102,
+  "prices": {
+    "usd": "2.70",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.10",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=446862&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVolcanic%2BOffering",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVolcanic%2BOffering",
+    "edhrec": "https://edhrec.com/route/?cc=Volcanic+Offering"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F166860%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358777&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Volcanic+Offering&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

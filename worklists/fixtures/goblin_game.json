@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "cbe6e7e5-ffea-4c6c-8a42-28e695029f24",
+  "oracle_id": "4a10c945-ad8b-47b6-8cbd-7b4e2612a9b0",
+  "multiverse_ids": [
+    8902
+  ],
+  "mtgo_id": 15137,
+  "mtgo_foil_id": 15138,
+  "tcgplayer_id": 7806,
+  "cardmarket_id": 3316,
+  "name": "Goblin Game",
+  "lang": "en",
+  "released_at": "2001-02-05",
+  "uri": "https://api.scryfall.com/cards/cbe6e7e5-ffea-4c6c-8a42-28e695029f24",
+  "scryfall_uri": "https://scryfall.com/card/pls/61/goblin-game?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:26:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.png?1783945618",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.webp?1783945618",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.webp?1783945618",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.webp?1783945618",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.webp?1783945618",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.webp?1783945618",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbe6e7e5-ffea-4c6c-8a42-28e695029f24.jpg?1783945618"
+  },
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player hides at least one item, then all players reveal them simultaneously. Each player loses life equal to the number of items they revealed. The player who revealed the fewest items then loses half their life, rounded up. If two or more players are tied for fewest, each loses half their life, rounded up.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "82dc193b-bd5f-4883-a93f-a4155b467ee0",
+  "set": "pls",
+  "set_name": "Planeshift",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/82dc193b-bd5f-4883-a93f-a4155b467ee0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apls&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pls?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbe6e7e5-ffea-4c6c-8a42-28e695029f24/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4a10c945-ad8b-47b6-8cbd-7b4e2612a9b0&unique=prints",
+  "collector_number": "61",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "DiTerlizzi",
+  "artist_ids": [
+    "ed44dce4-30cf-4c2c-b2e1-a19ba2295690"
+  ],
+  "illustration_id": "b0175ec0-dcba-48bc-9c8d-c19f7abf8f4f",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13266,
+  "prices": {
+    "usd": "1.84",
+    "usd_foil": "40.50",
+    "usd_etched": null,
+    "eur": "0.99",
+    "eur_foil": "15.71",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=8902&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoblin%2BGame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoblin%2BGame",
+    "edhrec": "https://edhrec.com/route/?cc=Goblin+Game"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3316&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/15137?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

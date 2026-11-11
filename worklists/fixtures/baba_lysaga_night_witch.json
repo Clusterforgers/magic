@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "2ef42c3f-f22e-4e99-adb0-9e8f8d442347",
+  "oracle_id": "d6cd4aa1-ff3a-4453-8735-e5ace5cbe386",
+  "multiverse_ids": [
+    563149
+  ],
+  "mtgo_id": 100570,
+  "tcgplayer_id": 272629,
+  "cardmarket_id": 658729,
+  "name": "Baba Lysaga, Night Witch",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/2ef42c3f-f22e-4e99-adb0-9e8f8d442347",
+  "scryfall_uri": "https://scryfall.com/card/clb/266/baba-lysaga-night-witch?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697",
+    "normal": "https://cards.scryfall.io/normal/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697",
+    "large": "https://cards.scryfall.io/large/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697",
+    "png": "https://cards.scryfall.io/png/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.png?1783922697",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.webp?1783922697",
+    "grid": "https://cards.scryfall.io/grid/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.webp?1783922697",
+    "display": "https://cards.scryfall.io/display/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.webp?1783922697",
+    "art": "https://cards.scryfall.io/art/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.webp?1783922697",
+    "crop": "https://cards.scryfall.io/crop/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.webp?1783922697",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/e/2ef42c3f-f22e-4e99-adb0-9e8f8d442347.jpg?1783922697"
+  },
+  "mana_cost": "{1}{B}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warlock",
+  "oracle_text": "{T}, Sacrifice up to three permanents: If there were three or more card types among the sacrificed permanents, each opponent loses 3 life, you gain 3 life, and you draw three cards.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2ef42c3f-f22e-4e99-adb0-9e8f8d442347/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad6cd4aa1-ff3a-4453-8735-e5ace5cbe386&unique=prints",
+  "collector_number": "266",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Better the cold night than her warm hospitality.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Slawomir Maniak",
+  "artist_ids": [
+    "d887bc66-2779-416c-a1ff-d8720242063e"
+  ],
+  "illustration_id": "8a370cbc-e355-4e77-ae83-330d49291fd1",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9550,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1486418408",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.33",
+    "tix": "3.38"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563149&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBaba%2BLysaga%252C%2BNight%2BWitch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBaba%2BLysaga%252C%2BNight%2BWitch",
+    "edhrec": "https://edhrec.com/route/?cc=Baba+Lysaga%2C+Night+Witch"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272629%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=658729&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100570?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

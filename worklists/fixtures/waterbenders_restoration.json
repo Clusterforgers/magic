@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "fe68e08e-8d84-4f87-b2e9-b552788d78e7",
+  "oracle_id": "285046f6-b3c4-4eb7-8712-9dffebabc762",
+  "multiverse_ids": [],
+  "resource_id": "09669194903F88BBC7E68F294A3B1E5F3B3042B8F7F9FC8D069C8F0A00FACB58",
+  "mtgo_id": 145596,
+  "arena_id": 98244,
+  "tcgplayer_id": 662453,
+  "cardmarket_id": 857915,
+  "name": "Waterbender's Restoration",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/fe68e08e-8d84-4f87-b2e9-b552788d78e7",
+  "scryfall_uri": "https://scryfall.com/card/tle/99/waterbenders-restoration?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827",
+    "normal": "https://cards.scryfall.io/normal/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827",
+    "large": "https://cards.scryfall.io/large/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827",
+    "png": "https://cards.scryfall.io/png/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.png?1783904827",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.webp?1783904827",
+    "grid": "https://cards.scryfall.io/grid/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.webp?1783904827",
+    "display": "https://cards.scryfall.io/display/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.webp?1783904827",
+    "art": "https://cards.scryfall.io/art/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.webp?1783904827",
+    "crop": "https://cards.scryfall.io/crop/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.webp?1783904827",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/e/fe68e08e-8d84-4f87-b2e9-b552788d78e7.jpg?1783904827"
+  },
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant — Lesson",
+  "oracle_text": "As an additional cost to cast this spell, waterbend {X}. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)\nExile X target creatures you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Waterbend"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fe68e08e-8d84-4f87-b2e9-b552788d78e7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A285046f6-b3c4-4eb7-8712-9dffebabc762&unique=prints",
+  "collector_number": "99",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "watertribe",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Phima",
+  "artist_ids": [
+    "6b40d3ec-57df-4444-931b-cf19bd049795"
+  ],
+  "illustration_id": "315e017e-4951-4e72-85a1-60a1b77075b4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6056,
+  "prices": {
+    "usd": "3.93",
+    "usd_foil": "4.04",
+    "usd_etched": null,
+    "eur": "5.05",
+    "eur_foil": "4.38",
+    "tix": "0.87"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWaterbender%2527s%2BRestoration",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWaterbender%2527s%2BRestoration",
+    "edhrec": "https://edhrec.com/route/?cc=Waterbender%27s+Restoration"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662453%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857915&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145596?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

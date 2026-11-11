@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "de89e9e1-485b-42e5-9728-5d6f948999e1",
+  "oracle_id": "413172aa-b508-4e67-b68e-6a749d2e8130",
+  "multiverse_ids": [
+    2726
+  ],
+  "tcgplayer_id": 4674,
+  "cardmarket_id": 6580,
+  "name": "Flooded Woodlands",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/de89e9e1-485b-42e5-9728-5d6f948999e1",
+  "scryfall_uri": "https://scryfall.com/card/ice/290/flooded-woodlands?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:57:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466",
+    "large": "https://cards.scryfall.io/large/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466",
+    "png": "https://cards.scryfall.io/png/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.png?1783947466",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.webp?1783947466",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.webp?1783947466",
+    "display": "https://cards.scryfall.io/display/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.webp?1783947466",
+    "art": "https://cards.scryfall.io/art/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.webp?1783947466",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.webp?1783947466",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/de89e9e1-485b-42e5-9728-5d6f948999e1.jpg?1783947466"
+  },
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Green creatures can't attack unless their controller sacrifices a land of their choice for each green creature they control that's attacking. (This cost is paid as attackers are declared.)",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/de89e9e1-485b-42e5-9728-5d6f948999e1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A413172aa-b508-4e67-b68e-6a749d2e8130&unique=prints",
+  "collector_number": "290",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Freyalise's tears bring life and renewal, though they also bring trouble.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kaja Foglio",
+  "artist_ids": [
+    "e8b85539-756a-4eac-ac66-a2258d7cf547"
+  ],
+  "illustration_id": "6535b1f6-0283-49f2-ad89-fbe4a6293030",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23930,
+  "prices": {
+    "usd": "0.82",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.82",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2726&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlooded%2BWoodlands",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlooded%2BWoodlands",
+    "edhrec": "https://edhrec.com/route/?cc=Flooded+Woodlands"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4674%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6580&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Flooded+Woodlands&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

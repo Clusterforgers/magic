@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "84352565-558b-4f9b-a411-532147806a78",
+  "oracle_id": "5fe29c25-a7ad-4c79-a5a5-da1bbc832141",
+  "multiverse_ids": [
+    669066
+  ],
+  "mtgo_id": 129549,
+  "arena_id": 91688,
+  "tcgplayer_id": 558392,
+  "cardmarket_id": 777611,
+  "name": "Season of the Bold",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/84352565-558b-4f9b-a411-532147806a78",
+  "scryfall_uri": "https://scryfall.com/card/blb/152/season-of-the-bold?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:46:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816",
+    "normal": "https://cards.scryfall.io/normal/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816",
+    "large": "https://cards.scryfall.io/large/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816",
+    "png": "https://cards.scryfall.io/png/front/8/4/84352565-558b-4f9b-a411-532147806a78.png?1783910816",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/4/84352565-558b-4f9b-a411-532147806a78.webp?1783910816",
+    "grid": "https://cards.scryfall.io/grid/front/8/4/84352565-558b-4f9b-a411-532147806a78.webp?1783910816",
+    "display": "https://cards.scryfall.io/display/front/8/4/84352565-558b-4f9b-a411-532147806a78.webp?1783910816",
+    "art": "https://cards.scryfall.io/art/front/8/4/84352565-558b-4f9b-a411-532147806a78.webp?1783910816",
+    "crop": "https://cards.scryfall.io/crop/front/8/4/84352565-558b-4f9b-a411-532147806a78.webp?1783910816",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/4/84352565-558b-4f9b-a411-532147806a78.jpg?1783910816"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose up to five {P} worth of modes. You may choose the same mode more than once.\n{P} — Create a tapped Treasure token.\n{P}{P} — Exile the top two cards of your library. Until the end of your next turn, you may play them.\n{P}{P}{P} — Until the end of your next turn, whenever you cast a spell, Season of the Bold deals 2 damage to up to one target creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ff0357fb-d90c-49c7-b16a-8b52ac686c3b",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/ff0357fb-d90c-49c7-b16a-8b52ac686c3b"
+    },
+    {
+      "object": "related_card",
+      "id": "e9d88763-35bd-472a-810e-02c795d0c873",
+      "component": "combo_piece",
+      "name": "Season of the Bold",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/e9d88763-35bd-472a-810e-02c795d0c873"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/84352565-558b-4f9b-a411-532147806a78/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5fe29c25-a7ad-4c79-a5a5-da1bbc832141&unique=prints",
+  "collector_number": "152",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eli Minaya",
+  "artist_ids": [
+    "fee369ac-08b5-4a69-8ef8-f2b42b81e807"
+  ],
+  "illustration_id": "5bf63955-a81e-4816-a45a-ea30d79dec57",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6061,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "2.30",
+    "usd_foil": "1.55",
+    "usd_etched": null,
+    "eur": "1.29",
+    "eur_foil": "1.41",
+    "tix": "0.21"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669066&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeason%2Bof%2Bthe%2BBold",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeason%2Bof%2Bthe%2BBold",
+    "edhrec": "https://edhrec.com/route/?cc=Season+of+the+Bold"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F558392%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=777611&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129549?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

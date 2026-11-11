@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "c5362ead-9162-4160-bfa9-432f7d0e222d",
+  "oracle_id": "8b391f24-992f-4cc0-ac4d-31456983fc03",
+  "multiverse_ids": [
+    19852
+  ],
+  "mtgo_id": 13391,
+  "mtgo_foil_id": 13392,
+  "tcgplayer_id": 6769,
+  "cardmarket_id": 11601,
+  "name": "Word of Blasting",
+  "lang": "en",
+  "released_at": "1999-10-04",
+  "uri": "https://api.scryfall.com/cards/c5362ead-9162-4160-bfa9-432f7d0e222d",
+  "scryfall_uri": "https://scryfall.com/card/mmq/228/word-of-blasting?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:32:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929",
+    "normal": "https://cards.scryfall.io/normal/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929",
+    "large": "https://cards.scryfall.io/large/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929",
+    "png": "https://cards.scryfall.io/png/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.png?1783945929",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.webp?1783945929",
+    "grid": "https://cards.scryfall.io/grid/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.webp?1783945929",
+    "display": "https://cards.scryfall.io/display/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.webp?1783945929",
+    "art": "https://cards.scryfall.io/art/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.webp?1783945929",
+    "crop": "https://cards.scryfall.io/crop/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.webp?1783945929",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/5/c5362ead-9162-4160-bfa9-432f7d0e222d.jpg?1783945929"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target Wall. It can't be regenerated. Word of Blasting deals damage equal to that Wall's mana value to the Wall's controller.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set": "mmq",
+  "set_name": "Mercadian Masques",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/385e11a4-492b-4d07-b4a6-a1409ef829b8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ammq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mmq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c5362ead-9162-4160-bfa9-432f7d0e222d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b391f24-992f-4cc0-ac4d-31456983fc03&unique=prints",
+  "collector_number": "228",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Peterson",
+  "artist_ids": [
+    "0fc26d3b-4c0e-41d1-8eb3-286ab55a2328"
+  ],
+  "illustration_id": "24764eda-77fa-4ab9-b4ff-5dfca0b26f9e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32029,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "8.49",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "1.87",
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=19852&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWord%2Bof%2BBlasting",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWord%2Bof%2BBlasting",
+    "edhrec": "https://edhrec.com/route/?cc=Word+of+Blasting"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F6769%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11601&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13391?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "43319645-53b0-41f6-be90-9690e86e12d3",
+  "oracle_id": "bc0daba2-c51c-44b0-a4a3-806f2acd9aa6",
+  "multiverse_ids": [
+    634795
+  ],
+  "tcgplayer_id": 520214,
+  "cardmarket_id": 738669,
+  "name": "Displaced Dinosaurs",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/43319645-53b0-41f6-be90-9690e86e12d3",
+  "scryfall_uri": "https://scryfall.com/card/who/100/displaced-dinosaurs?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644",
+    "normal": "https://cards.scryfall.io/normal/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644",
+    "large": "https://cards.scryfall.io/large/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644",
+    "png": "https://cards.scryfall.io/png/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.png?1783914644",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.webp?1783914644",
+    "grid": "https://cards.scryfall.io/grid/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.webp?1783914644",
+    "display": "https://cards.scryfall.io/display/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.webp?1783914644",
+    "art": "https://cards.scryfall.io/art/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.webp?1783914644",
+    "crop": "https://cards.scryfall.io/crop/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.webp?1783914644",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/3/43319645-53b0-41f6-be90-9690e86e12d3.jpg?1783914644"
+  },
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Dinosaur",
+  "oracle_text": "As a historic permanent you control enters, it becomes a 7/7 Dinosaur creature in addition to its other types. (Artifacts, legendaries, and Sagas are historic.)",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/43319645-53b0-41f6-be90-9690e86e12d3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abc0daba2-c51c-44b0-a4a3-806f2acd9aa6&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Good grief! It's a stegosaurus. What a splendid specimen.\"\n—The Third Doctor",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Simon Dominic",
+  "artist_ids": [
+    "b0e80135-db5a-4b88-a0bc-815a0e94faa1"
+  ],
+  "illustration_id": "4eaf0dd9-5f28-4f8d-8cb6-d490fb2f99f8",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4663,
+  "preview": {
+    "source": "Tolarian Community College",
+    "source_uri": "https://www.youtube.com/watch?v=_5gqXG_PPjk",
+    "previewed_at": "2023-10-06"
+  },
+  "prices": {
+    "usd": "13.91",
+    "usd_foil": "13.69",
+    "usd_etched": null,
+    "eur": "7.01",
+    "eur_foil": "6.70",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634795&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDisplaced%2BDinosaurs",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDisplaced%2BDinosaurs",
+    "edhrec": "https://edhrec.com/route/?cc=Displaced+Dinosaurs"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F520214%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738669&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Displaced+Dinosaurs&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

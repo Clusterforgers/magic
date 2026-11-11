@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "aaeba193-05d3-4c2d-a304-bbe7114c2eef",
+  "oracle_id": "98a13f7b-ebe7-4a90-a0b9-95dccfff7fa6",
+  "multiverse_ids": [
+    673480
+  ],
+  "mtgo_id": 130281,
+  "arena_id": 92145,
+  "tcgplayer_id": 577662,
+  "cardmarket_id": 788176,
+  "name": "The Tale of Tamiyo",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/aaeba193-05d3-4c2d-a304-bbe7114c2eef",
+  "scryfall_uri": "https://scryfall.com/card/dsk/75/the-tale-of-tamiyo?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:24:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489",
+    "large": "https://cards.scryfall.io/large/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489",
+    "png": "https://cards.scryfall.io/png/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.png?1783909489",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.webp?1783909489",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.webp?1783909489",
+    "display": "https://cards.scryfall.io/display/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.webp?1783909489",
+    "art": "https://cards.scryfall.io/art/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.webp?1783909489",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.webp?1783909489",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aaeba193-05d3-4c2d-a304-bbe7114c2eef.jpg?1783909489"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II, III — Mill two cards. If two cards that share a card type were milled this way, draw a card and repeat this process.\nIV — Exile any number of target instant, sorcery, and/or Tamiyo planeswalker cards from your graveyard. Copy them. You may cast any number of the copies.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set": "dsk",
+  "set_name": "Duskmourn: House of Horror",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aaeba193-05d3-4c2d-a304-bbe7114c2eef/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A98a13f7b-ebe7-4a90-a0b9-95dccfff7fa6&unique=prints",
+  "collector_number": "75",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Pavleeva",
+  "artist_ids": [
+    "32223955-c0eb-49b2-a323-4eec2e067acf"
+  ],
+  "illustration_id": "deec12d9-385a-4c1a-acec-9a0f9e21163d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12728,
+  "penny_rank": 8385,
+  "preview": {
+    "source": "Sean Plott (Day9TV)",
+    "source_uri": "https://x.com/day9tv/status/1832441193625743604",
+    "previewed_at": "2024-09-07"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.40",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=673480&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BTale%2Bof%2BTamiyo",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BTale%2Bof%2BTamiyo",
+    "edhrec": "https://edhrec.com/route/?cc=The+Tale+of+Tamiyo"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577662%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788176&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130281?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

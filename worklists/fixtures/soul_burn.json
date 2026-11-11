@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "70515cd2-97d5-4491-a758-bc7188fdc6dc",
+  "oracle_id": "063b0f5d-af27-4681-87b9-b553f6887061",
+  "multiverse_ids": [
+    23026
+  ],
+  "mtgo_id": 14405,
+  "mtgo_foil_id": 14406,
+  "tcgplayer_id": 7665,
+  "cardmarket_id": 3659,
+  "name": "Soul Burn",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/70515cd2-97d5-4491-a758-bc7188fdc6dc",
+  "scryfall_uri": "https://scryfall.com/card/inv/124/soul-burn?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691",
+    "normal": "https://cards.scryfall.io/normal/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691",
+    "large": "https://cards.scryfall.io/large/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691",
+    "png": "https://cards.scryfall.io/png/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.png?1783945691",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.webp?1783945691",
+    "grid": "https://cards.scryfall.io/grid/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.webp?1783945691",
+    "display": "https://cards.scryfall.io/display/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.webp?1783945691",
+    "art": "https://cards.scryfall.io/art/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.webp?1783945691",
+    "crop": "https://cards.scryfall.io/crop/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.webp?1783945691",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/0/70515cd2-97d5-4491-a758-bc7188fdc6dc.jpg?1783945691"
+  },
+  "mana_cost": "{X}{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Spend only black and/or red mana on X.\nSoul Burn deals X damage to any target. You gain life equal to the damage dealt, but not more than the amount of {B} spent on X, the player's life total before the damage was dealt, the planeswalker's loyalty before the damage was dealt, or the creature's toughness.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/70515cd2-97d5-4491-a758-bc7188fdc6dc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A063b0f5d-af27-4681-87b9-b553f6887061&unique=prints",
+  "collector_number": "124",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Andrew Goldhawk",
+  "artist_ids": [
+    "f4a65a04-9e2e-4541-8d0e-f34e9517f092"
+  ],
+  "illustration_id": "2a749eff-9e1d-429e-b9e4-cabb8e8dc172",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24977,
+  "penny_rank": 18003,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.88",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "1.22",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=23026&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoul%2BBurn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoul%2BBurn",
+    "edhrec": "https://edhrec.com/route/?cc=Soul+Burn"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7665%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3659&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14405?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

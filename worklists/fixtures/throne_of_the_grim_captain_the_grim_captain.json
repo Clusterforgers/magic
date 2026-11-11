@@ -1,0 +1,189 @@
+{
+  "object": "card",
+  "id": "c13e8e3d-2a6b-4782-a3c9-71af7336a881",
+  "oracle_id": "a7c96442-706b-4fd8-9b38-052872dafe58",
+  "multiverse_ids": [
+    636989,
+    636990
+  ],
+  "mtgo_id": 118376,
+  "arena_id": 87430,
+  "tcgplayer_id": 524288,
+  "cardmarket_id": 741009,
+  "name": "Throne of the Grim Captain // The Grim Captain",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/c13e8e3d-2a6b-4782-a3c9-71af7336a881",
+  "scryfall_uri": "https://scryfall.com/card/lci/266/throne-of-the-grim-captain-the-grim-captain?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:35:24Z",
+  "cmc": 2.0,
+  "type_line": "Legendary Artifact // Legendary Creature — Skeleton Spirit Pirate",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Craft",
+    "Transform",
+    "Hexproof",
+    "Trample",
+    "Menace",
+    "Mill"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Throne of the Grim Captain",
+      "mana_cost": "{2}",
+      "type_line": "Legendary Artifact",
+      "oracle_text": "{T}: Mill two cards.\nCraft with a Dinosaur, a Merfolk, a Pirate, and a Vampire {4} ({4}, Exile this artifact, Exile the four from among permanents you control and/or cards in your graveyard: Return this card transformed under its owner's control. Craft only as a sorcery.)",
+      "colors": [],
+      "artist": "Tiffany Turrill",
+      "artist_id": "0dce6651-c590-46aa-a28c-6bdeb2114f5d",
+      "illustration_id": "f679b4b3-3d12-4c1e-812d-2559cb53581f",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "normal": "https://cards.scryfall.io/normal/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "large": "https://cards.scryfall.io/large/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "png": "https://cards.scryfall.io/png/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.png?1783913724",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "thumb": "https://cards.scryfall.io/thumb/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "grid": "https://cards.scryfall.io/grid/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "display": "https://cards.scryfall.io/display/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "art": "https://cards.scryfall.io/art/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "crop": "https://cards.scryfall.io/crop/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "jpeg": "https://cards.scryfall.io/normal/front/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "The Grim Captain",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Skeleton Spirit Pirate",
+      "oracle_text": "Menace, trample, lifelink, hexproof\nWhenever The Grim Captain attacks, each opponent sacrifices a nonland permanent of their choice. Then you may put an exiled creature card used to craft The Grim Captain onto the battlefield under your control tapped and attacking.",
+      "colors": [
+        "B"
+      ],
+      "color_indicator": [
+        "B"
+      ],
+      "power": "7",
+      "toughness": "7",
+      "artist": "Tiffany Turrill",
+      "artist_id": "0dce6651-c590-46aa-a28c-6bdeb2114f5d",
+      "illustration_id": "1ee5242e-2e28-4087-801a-5ea1e543375b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "normal": "https://cards.scryfall.io/normal/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "large": "https://cards.scryfall.io/large/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "png": "https://cards.scryfall.io/png/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.png?1783913724",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724",
+        "thumb": "https://cards.scryfall.io/thumb/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "grid": "https://cards.scryfall.io/grid/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "display": "https://cards.scryfall.io/display/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "art": "https://cards.scryfall.io/art/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "crop": "https://cards.scryfall.io/crop/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.webp?1783913724",
+        "jpeg": "https://cards.scryfall.io/normal/back/c/1/c13e8e3d-2a6b-4782-a3c9-71af7336a881.jpg?1783913724"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c13e8e3d-2a6b-4782-a3c9-71af7336a881/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa7c96442-706b-4fd8-9b38-052872dafe58&unique=prints",
+  "collector_number": "266",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Tiffany Turrill",
+  "artist_ids": [
+    "0dce6651-c590-46aa-a28c-6bdeb2114f5d"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15442,
+  "penny_rank": 5525,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=Szm0yzSUUm0",
+    "previewed_at": "2023-10-24"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.13",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636989&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThrone%2Bof%2Bthe%2BGrim%2BCaptain%2B%252F%252F%2BThe%2BGrim%2BCaptain",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThrone%2Bof%2Bthe%2BGrim%2BCaptain%2B%252F%252F%2BThe%2BGrim%2BCaptain",
+    "edhrec": "https://edhrec.com/route/?cc=Throne+of+the+Grim+Captain"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524288%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=741009&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118376?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

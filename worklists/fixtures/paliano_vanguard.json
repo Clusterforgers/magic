@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "2b120f2d-2585-4827-a8c5-d6ecdc8108e5",
+  "oracle_id": "6dd3be81-b6dc-42ee-9e0a-2e39e3f4e793",
+  "multiverse_ids": [
+    416777
+  ],
+  "tcgplayer_id": 121433,
+  "cardmarket_id": 291743,
+  "name": "Paliano Vanguard",
+  "lang": "en",
+  "released_at": "2016-08-26",
+  "uri": "https://api.scryfall.com/cards/2b120f2d-2585-4827-a8c5-d6ecdc8108e5",
+  "scryfall_uri": "https://scryfall.com/card/cn2/20/paliano-vanguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:09:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364",
+    "normal": "https://cards.scryfall.io/normal/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364",
+    "large": "https://cards.scryfall.io/large/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364",
+    "png": "https://cards.scryfall.io/png/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.png?1783937364",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.webp?1783937364",
+    "grid": "https://cards.scryfall.io/grid/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.webp?1783937364",
+    "display": "https://cards.scryfall.io/display/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.webp?1783937364",
+    "art": "https://cards.scryfall.io/art/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.webp?1783937364",
+    "crop": "https://cards.scryfall.io/crop/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.webp?1783937364",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/b/2b120f2d-2585-4827-a8c5-d6ecdc8108e5.jpg?1783937364"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Soldier",
+  "oracle_text": "Draft this card face up.\nAs you draft a creature card, you may reveal it, note its creature types, then turn this card face down.\nOther creatures you control of a type you noted for cards named Paliano Vanguard get +1/+1.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set": "cn2",
+  "set_name": "Conspiracy: Take the Crown",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/ad1b8847-1905-4080-9e26-80691ea7c1ef",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acn2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cn2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2b120f2d-2585-4827-a8c5-d6ecdc8108e5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6dd3be81-b6dc-42ee-9e0a-2e39e3f4e793&unique=prints",
+  "collector_number": "20",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "conspiracy",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "7d39aaca-55ec-4c8b-8e6c-95ac080319b7",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "draft"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32254,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.53",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=416777&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPaliano%2BVanguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPaliano%2BVanguard",
+    "edhrec": "https://edhrec.com/route/?cc=Paliano+Vanguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F121433%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=291743&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Paliano+Vanguard&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

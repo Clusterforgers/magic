@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "034d4543-2c53-4cda-acfd-7f26b8dd17fb",
+  "oracle_id": "9bf498ce-6d6d-462f-9ec3-b36a2184aff7",
+  "multiverse_ids": [
+    652216
+  ],
+  "mtgo_id": 132507,
+  "tcgplayer_id": 541471,
+  "cardmarket_id": 758305,
+  "name": "C.A.M.P.",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/034d4543-2c53-4cda-acfd-7f26b8dd17fb",
+  "scryfall_uri": "https://scryfall.com/card/pip/129/camp?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380",
+    "large": "https://cards.scryfall.io/large/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380",
+    "png": "https://cards.scryfall.io/png/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.png?1783912380",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.webp?1783912380",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.webp?1783912380",
+    "display": "https://cards.scryfall.io/display/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.webp?1783912380",
+    "art": "https://cards.scryfall.io/art/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.webp?1783912380",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.webp?1783912380",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/034d4543-2c53-4cda-acfd-7f26b8dd17fb.jpg?1783912380"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Fortification",
+  "oracle_text": "Whenever fortified land is tapped for mana, put a +1/+1 counter on target creature you control. If that creature shares a color with the mana that land produced, create a Junk token. (It's an artifact with \"{T}, Sacrifice this token: Exile the top card of your library. You may play that card this turn. Activate only as a sorcery.\")\nFortify {3} ({3}: Attach to target land you control. Fortify only as a sorcery.)",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Fortify"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "62c4a6f6-6425-4c0c-b35a-880fcab42aad",
+      "component": "token",
+      "name": "Junk",
+      "type_line": "Token Artifact — Junk",
+      "uri": "https://api.scryfall.com/cards/62c4a6f6-6425-4c0c-b35a-880fcab42aad"
+    },
+    {
+      "object": "related_card",
+      "id": "7de6f12b-284d-4e81-8c8a-f481268422c2",
+      "component": "combo_piece",
+      "name": "C.A.M.P.",
+      "type_line": "Artifact — Fortification",
+      "uri": "https://api.scryfall.com/cards/7de6f12b-284d-4e81-8c8a-f481268422c2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/034d4543-2c53-4cda-acfd-7f26b8dd17fb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9bf498ce-6d6d-462f-9ec3-b36a2184aff7&unique=prints",
+  "collector_number": "129",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomas Duchek",
+  "artist_ids": [
+    "ceb3ce65-efa6-4bcc-b2a3-33e83a047528"
+  ],
+  "illustration_id": "ba2675b0-e251-4de0-a2cb-948f3036bc61",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14269,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.87",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.29",
+    "tix": "0.45"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652216&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DC.A.M.P.",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DC.A.M.P.",
+    "edhrec": "https://edhrec.com/route/?cc=C.A.M.P."
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F541471%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758305&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132507?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

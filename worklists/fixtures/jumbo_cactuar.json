@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "db01c222-8795-47e9-a789-e7f749a3ee7d",
+  "oracle_id": "e0bdfbb4-3060-4492-bd9b-0c47e719400a",
+  "multiverse_ids": [],
+  "resource_id": "88548203787F2983981454D7124F74A51485FFAB3E0CF92806B108524470A148",
+  "mtgo_id": 141323,
+  "arena_id": 96058,
+  "tcgplayer_id": 618858,
+  "cardmarket_id": 824115,
+  "name": "Jumbo Cactuar",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/db01c222-8795-47e9-a789-e7f749a3ee7d",
+  "scryfall_uri": "https://scryfall.com/card/fin/191/jumbo-cactuar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585",
+    "normal": "https://cards.scryfall.io/normal/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585",
+    "large": "https://cards.scryfall.io/large/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585",
+    "png": "https://cards.scryfall.io/png/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.png?1783906585",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.webp?1783906585",
+    "grid": "https://cards.scryfall.io/grid/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.webp?1783906585",
+    "display": "https://cards.scryfall.io/display/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.webp?1783906585",
+    "art": "https://cards.scryfall.io/art/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.webp?1783906585",
+    "crop": "https://cards.scryfall.io/crop/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.webp?1783906585",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/b/db01c222-8795-47e9-a789-e7f749a3ee7d.jpg?1783906585"
+  },
+  "mana_cost": "{5}{G}{G}",
+  "cmc": 7.0,
+  "type_line": "Creature — Plant",
+  "oracle_text": "10,000 Needles — Whenever this creature attacks, it gets +9999/+0 until end of turn.",
+  "power": "1",
+  "toughness": "7",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "10,000 Needles"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/db01c222-8795-47e9-a789-e7f749a3ee7d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae0bdfbb4-3060-4492-bd9b-0c47e719400a&unique=prints",
+  "collector_number": "191",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Some Cactuars live long lives and grow huge. This Jumbo Cactuar is one of them.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Kiantoro",
+  "artist_ids": [
+    "8ddebac0-5a4f-493c-acdd-edf7b234fa1e"
+  ],
+  "illustration_id": "d0a193e1-79de-4620-b848-5de24a03e98d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "ffviii"
+  ],
+  "edhrec_rank": 2909,
+  "penny_rank": 3264,
+  "prices": {
+    "usd": "3.43",
+    "usd_foil": "4.87",
+    "usd_etched": null,
+    "eur": "2.53",
+    "eur_foil": "3.71",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJumbo%2BCactuar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJumbo%2BCactuar",
+    "edhrec": "https://edhrec.com/route/?cc=Jumbo+Cactuar"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F618858%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824115&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141323?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

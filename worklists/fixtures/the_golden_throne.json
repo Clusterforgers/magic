@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "fa515b78-f54d-4c65-a197-c860eaf2c780",
+  "oracle_id": "a68f41a2-37ee-46e1-bf3c-164c78b003ca",
+  "multiverse_ids": [
+    580979
+  ],
+  "mtgo_id": 108786,
+  "tcgplayer_id": 286475,
+  "cardmarket_id": 675734,
+  "name": "The Golden Throne",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/fa515b78-f54d-4c65-a197-c860eaf2c780",
+  "scryfall_uri": "https://scryfall.com/card/40k/157/the-golden-throne?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:33:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.png?1783920820",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.webp?1783920820",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.webp?1783920820",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.webp?1783920820",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.webp?1783920820",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.webp?1783920820",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa515b78-f54d-4c65-a197-c860eaf2c780.jpg?1783920820"
+  },
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "Arcane Life-support — If you would lose the game, instead exile The Golden Throne and your life total becomes 1.\nA Thousand Souls Die Every Day — {T}, Sacrifice a creature: Add three mana in any combination of colors.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Arcane Life-support",
+    "A Thousand Souls Die Every Day"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa515b78-f54d-4c65-a197-c860eaf2c780/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa68f41a2-37ee-46e1-bf3c-164c78b003ca&unique=prints",
+  "collector_number": "157",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "f4cb96a7-9d23-4b4f-9f3c-e1c4202b73e7",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4486,
+  "preview": {
+    "source": "WesHammer",
+    "source_uri": "https://www.youtube.com/watch?v=_4VZipbTRj0",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "9.66",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "8.09",
+    "eur_foil": null,
+    "tix": "0.13"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580979&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BGolden%2BThrone",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BGolden%2BThrone",
+    "edhrec": "https://edhrec.com/route/?cc=The+Golden+Throne"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286475%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675734&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108786?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

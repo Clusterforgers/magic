@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "b6d56ce1-fb5d-47c6-961d-65b544a48b32",
+  "oracle_id": "b353f0ab-266c-4448-b93b-fafb68b03765",
+  "multiverse_ids": [
+    420692
+  ],
+  "tcgplayer_id": 124606,
+  "cardmarket_id": 293574,
+  "name": "Reverse the Sands",
+  "lang": "en",
+  "released_at": "2016-11-11",
+  "uri": "https://api.scryfall.com/cards/b6d56ce1-fb5d-47c6-961d-65b544a48b32",
+  "scryfall_uri": "https://scryfall.com/card/c16/75/reverse-the-sands?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:04:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075",
+    "normal": "https://cards.scryfall.io/normal/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075",
+    "large": "https://cards.scryfall.io/large/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075",
+    "png": "https://cards.scryfall.io/png/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.png?1783937075",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.webp?1783937075",
+    "grid": "https://cards.scryfall.io/grid/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.webp?1783937075",
+    "display": "https://cards.scryfall.io/display/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.webp?1783937075",
+    "art": "https://cards.scryfall.io/art/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.webp?1783937075",
+    "crop": "https://cards.scryfall.io/crop/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.webp?1783937075",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/6/b6d56ce1-fb5d-47c6-961d-65b544a48b32.jpg?1783937075"
+  },
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Redistribute any number of players' life totals. (Each of those players gets one life total back.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set": "c16",
+  "set_name": "Commander 2016",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac16&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c16?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b6d56ce1-fb5d-47c6-961d-65b544a48b32/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab353f0ab-266c-4448-b93b-fafb68b03765&unique=prints",
+  "collector_number": "75",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Worse than the years of aging was the burden of memory. The young monk lost his youth and gained a vicarious lifetime of hardship and woe.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeremy Jarvis",
+  "artist_ids": [
+    "b40ac320-89b4-4c51-a85f-4a4b63ae614e"
+  ],
+  "illustration_id": "62e6fd9a-dd8c-4ad8-bb6e-0072594ee799",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12316,
+  "prices": {
+    "usd": "1.06",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.45",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=420692&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReverse%2Bthe%2BSands",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReverse%2Bthe%2BSands",
+    "edhrec": "https://edhrec.com/route/?cc=Reverse+the+Sands"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F124606%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=293574&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Reverse+the+Sands&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

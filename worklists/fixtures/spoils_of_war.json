@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "b38af8bd-d927-46d0-a1b1-fb437ea9ea66",
+  "oracle_id": "f3240a86-28b6-4338-9a59-1fb6f795d713",
+  "multiverse_ids": [
+    2488
+  ],
+  "tcgplayer_id": 4896,
+  "cardmarket_id": 6264,
+  "name": "Spoils of War",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/b38af8bd-d927-46d0-a1b1-fb437ea9ea66",
+  "scryfall_uri": "https://scryfall.com/card/ice/164/spoils-of-war?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494",
+    "normal": "https://cards.scryfall.io/normal/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494",
+    "large": "https://cards.scryfall.io/large/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494",
+    "png": "https://cards.scryfall.io/png/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.png?1783947494",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.webp?1783947494",
+    "grid": "https://cards.scryfall.io/grid/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.webp?1783947494",
+    "display": "https://cards.scryfall.io/display/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.webp?1783947494",
+    "art": "https://cards.scryfall.io/art/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.webp?1783947494",
+    "crop": "https://cards.scryfall.io/crop/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.webp?1783947494",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/3/b38af8bd-d927-46d0-a1b1-fb437ea9ea66.jpg?1783947494"
+  },
+  "mana_cost": "{X}{B}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "X is the number of artifact and/or creature cards in an opponent's graveyard as you cast this spell.\nDistribute X +1/+1 counters among any number of target creatures.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b38af8bd-d927-46d0-a1b1-fb437ea9ea66/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af3240a86-28b6-4338-9a59-1fb6f795d713&unique=prints",
+  "collector_number": "164",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"This is the fun part!\"\n—Ib Halfheart, Goblin Tactician",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pete Venters",
+  "artist_ids": [
+    "d54c4a1a-c0c5-4834-84db-125d341f3ad8"
+  ],
+  "illustration_id": "9783e43c-ad19-48f6-9474-7f6de09cacaa",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28593,
+  "prices": {
+    "usd": "2.14",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.23",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2488&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpoils%2Bof%2BWar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpoils%2Bof%2BWar",
+    "edhrec": "https://edhrec.com/route/?cc=Spoils+of+War"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4896%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6264&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Spoils+of+War&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

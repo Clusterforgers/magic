@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "6314344b-6493-4142-9c76-da9b90b8d3e1",
+  "oracle_id": "6a461ca3-7923-4df4-9f15-4072545da117",
+  "multiverse_ids": [
+    2728
+  ],
+  "tcgplayer_id": 4700,
+  "cardmarket_id": 6582,
+  "name": "Ghostly Flame",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/6314344b-6493-4142-9c76-da9b90b8d3e1",
+  "scryfall_uri": "https://scryfall.com/card/ice/292/ghostly-flame?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:57:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466",
+    "large": "https://cards.scryfall.io/large/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466",
+    "png": "https://cards.scryfall.io/png/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.png?1783947466",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.webp?1783947466",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.webp?1783947466",
+    "display": "https://cards.scryfall.io/display/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.webp?1783947466",
+    "art": "https://cards.scryfall.io/art/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.webp?1783947466",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.webp?1783947466",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/6314344b-6493-4142-9c76-da9b90b8d3e1.jpg?1783947466"
+  },
+  "mana_cost": "{B}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Black and/or red permanents and spells are colorless sources of damage.",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6314344b-6493-4142-9c76-da9b90b8d3e1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6a461ca3-7923-4df4-9f15-4072545da117&unique=prints",
+  "collector_number": "292",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Walk slowly when in the nether world, and seek that which calls.\"\n—Lim-Dûl, the Necromancer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "3e31bb80-9958-4a1d-9253-14593ef5515d",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31591,
+  "prices": {
+    "usd": "0.62",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2728&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhostly%2BFlame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhostly%2BFlame",
+    "edhrec": "https://edhrec.com/route/?cc=Ghostly+Flame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4700%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6582&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Ghostly+Flame&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

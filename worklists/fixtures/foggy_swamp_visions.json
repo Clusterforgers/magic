@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "3a46deaa-88f7-4eec-aa99-b85073847918",
+  "oracle_id": "16af0a22-833e-47c6-ac27-002702194595",
+  "multiverse_ids": [],
+  "resource_id": "B91F176BA727E37269A204C4A4384CAEAAB4AF11B0947B2FDD8C61FD67C16038",
+  "mtgo_id": 144684,
+  "arena_id": 97377,
+  "tcgplayer_id": 660640,
+  "cardmarket_id": 856077,
+  "name": "Foggy Swamp Visions",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/3a46deaa-88f7-4eec-aa99-b85073847918",
+  "scryfall_uri": "https://scryfall.com/card/tla/102/foggy-swamp-visions?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969",
+    "normal": "https://cards.scryfall.io/normal/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969",
+    "large": "https://cards.scryfall.io/large/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969",
+    "png": "https://cards.scryfall.io/png/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.png?1783904969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.webp?1783904969",
+    "grid": "https://cards.scryfall.io/grid/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.webp?1783904969",
+    "display": "https://cards.scryfall.io/display/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.webp?1783904969",
+    "art": "https://cards.scryfall.io/art/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.webp?1783904969",
+    "crop": "https://cards.scryfall.io/crop/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.webp?1783904969",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/a/3a46deaa-88f7-4eec-aa99-b85073847918.jpg?1783904969"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "As an additional cost to cast this spell, waterbend {X}. (While paying a waterbend cost, you can tap your artifacts and creatures to help. Each one pays for {1}.)\nExile X target creature cards from graveyards. For each creature card exiled this way, create a token that's a copy of it. At the beginning of your next end step, sacrifice those tokens.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Waterbend"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f8f56648-85be-417a-814b-c356df390ba0",
+      "component": "combo_piece",
+      "name": "Foggy Swamp Visions",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/f8f56648-85be-417a-814b-c356df390ba0"
+    },
+    {
+      "object": "related_card",
+      "id": "6f361ecd-045d-43a3-bb1b-83c23f070ff8",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/6f361ecd-045d-43a3-bb1b-83c23f070ff8"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3a46deaa-88f7-4eec-aa99-b85073847918/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A16af0a22-833e-47c6-ac27-002702194595&unique=prints",
+  "collector_number": "102",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "watertribe",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Hori Airi",
+  "artist_ids": [
+    "59c71083-089a-479f-9b57-f062bb261ea8"
+  ],
+  "illustration_id": "e517ae67-c085-4fc6-8a10-0578a7fbbd6e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11277,
+  "penny_rank": 6669,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.44",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFoggy%2BSwamp%2BVisions",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFoggy%2BSwamp%2BVisions",
+    "edhrec": "https://edhrec.com/route/?cc=Foggy+Swamp+Visions"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660640%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=856077&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144684?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

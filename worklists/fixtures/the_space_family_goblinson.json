@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "26177224-3c0e-4081-8468-3cd9981ddb0a",
+  "oracle_id": "63132b61-a684-4900-baf2-818904805208",
+  "multiverse_ids": [
+    580709
+  ],
+  "tcgplayer_id": 257007,
+  "cardmarket_id": 586713,
+  "name": "The Space Family Goblinson",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/26177224-3c0e-4081-8468-3cd9981ddb0a",
+  "scryfall_uri": "https://scryfall.com/card/unf/179/the-space-family-goblinson?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:28:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537",
+    "normal": "https://cards.scryfall.io/normal/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537",
+    "large": "https://cards.scryfall.io/large/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537",
+    "png": "https://cards.scryfall.io/png/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.png?1783920537",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.webp?1783920537",
+    "grid": "https://cards.scryfall.io/grid/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.webp?1783920537",
+    "display": "https://cards.scryfall.io/display/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.webp?1783920537",
+    "art": "https://cards.scryfall.io/art/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.webp?1783920537",
+    "crop": "https://cards.scryfall.io/crop/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.webp?1783920537",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/6/26177224-3c0e-4081-8468-3cd9981ddb0a.jpg?1783920537"
+  },
+  "mana_cost": "{2}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Goblin Guest",
+  "oracle_text": "The Space Family Goblinson has trample as long as you've rolled three or more dice this turn.\nWhenever you roll a die, put a +1/+1 counter on The Space Family Goblinson.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/26177224-3c0e-4081-8468-3cd9981ddb0a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A63132b61-a684-4900-baf2-818904805208&unique=prints",
+  "collector_number": "179",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The goblin word for \"vacation\" translates roughly to \"a battered landscape of noise and violence.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Armand Baltazar",
+  "artist_ids": [
+    "757039f8-187f-4ace-bfd2-69167bdb6909"
+  ],
+  "illustration_id": "b7b56e63-9d8b-4b47-aa25-5df0eac19edc",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21539,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.18",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.18",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580709&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BSpace%2BFamily%2BGoblinson",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BSpace%2BFamily%2BGoblinson",
+    "edhrec": "https://edhrec.com/route/?cc=The+Space+Family+Goblinson"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F257007%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=586713&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Space+Family+Goblinson&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

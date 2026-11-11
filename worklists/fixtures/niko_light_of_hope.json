@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "91ad013f-de8d-4980-b4b6-c7f91ff495b1",
+  "oracle_id": "f153e369-1d5b-4d8b-a2f6-d93b849cabb5",
+  "multiverse_ids": [
+    673629
+  ],
+  "mtgo_id": 130579,
+  "arena_id": 92318,
+  "tcgplayer_id": 576509,
+  "cardmarket_id": 786607,
+  "name": "Niko, Light of Hope",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/91ad013f-de8d-4980-b4b6-c7f91ff495b1",
+  "scryfall_uri": "https://scryfall.com/card/dsk/224/niko-light-of-hope?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:24:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440",
+    "normal": "https://cards.scryfall.io/normal/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440",
+    "large": "https://cards.scryfall.io/large/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440",
+    "png": "https://cards.scryfall.io/png/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.png?1783909440",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.webp?1783909440",
+    "grid": "https://cards.scryfall.io/grid/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.webp?1783909440",
+    "display": "https://cards.scryfall.io/display/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.webp?1783909440",
+    "art": "https://cards.scryfall.io/art/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.webp?1783909440",
+    "crop": "https://cards.scryfall.io/crop/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.webp?1783909440",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/1/91ad013f-de8d-4980-b4b6-c7f91ff495b1.jpg?1783909440"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "When Niko enters, create two Shard tokens. (They're enchantments with \"{2}, Sacrifice this token: Scry 1, then draw a card.\")\n{2}, {T}: Exile target nonlegendary creature you control. Shards you control become copies of it until the next end step. Return it to the battlefield under its owner's control at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6a198942-049c-4537-b5b1-d35df32d45d5",
+      "component": "token",
+      "name": "Shard",
+      "type_line": "Token Enchantment — Shard",
+      "uri": "https://api.scryfall.com/cards/6a198942-049c-4537-b5b1-d35df32d45d5"
+    },
+    {
+      "object": "related_card",
+      "id": "a54c9d18-76d7-4c24-ab19-7ad57d9a33a4",
+      "component": "combo_piece",
+      "name": "Niko, Light of Hope",
+      "type_line": "Legendary Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/a54c9d18-76d7-4c24-ab19-7ad57d9a33a4"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set": "dsk",
+  "set_name": "Duskmourn: House of Horror",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/91ad013f-de8d-4980-b4b6-c7f91ff495b1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af153e369-1d5b-4d8b-a2f6-d93b849cabb5&unique=prints",
+  "collector_number": "224",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "desparked",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aurore Folny",
+  "artist_ids": [
+    "02f6cdda-7a80-4184-853d-20b28d580868"
+  ],
+  "illustration_id": "7ac58ee8-0a07-4454-8291-3d9f20894b7c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8895,
+  "penny_rank": 17595,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=8mYQLkstDs8",
+    "previewed_at": "2024-09-03"
+  },
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": "0.57",
+    "usd_etched": null,
+    "eur": "0.45",
+    "eur_foil": "0.84",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=673629&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNiko%252C%2BLight%2Bof%2BHope",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNiko%252C%2BLight%2Bof%2BHope",
+    "edhrec": "https://edhrec.com/route/?cc=Niko%2C+Light+of+Hope"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F576509%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=786607&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130579?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

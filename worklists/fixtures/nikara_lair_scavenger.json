@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "00b9ac91-51e4-4653-ac2a-da166a894f2a",
+  "oracle_id": "2a2376b8-6962-4f9e-ba36-fd7de87dc77d",
+  "multiverse_ids": [
+    484710
+  ],
+  "mtgo_id": 80729,
+  "tcgplayer_id": 212202,
+  "cardmarket_id": 452358,
+  "name": "Nikara, Lair Scavenger",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/00b9ac91-51e4-4653-ac2a-da166a894f2a",
+  "scryfall_uri": "https://scryfall.com/card/c20/3/nikara-lair-scavenger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:27:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234",
+    "large": "https://cards.scryfall.io/large/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234",
+    "png": "https://cards.scryfall.io/png/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.png?1783931234",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.webp?1783931234",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.webp?1783931234",
+    "display": "https://cards.scryfall.io/display/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.webp?1783931234",
+    "art": "https://cards.scryfall.io/art/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.webp?1783931234",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.webp?1783931234",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/00b9ac91-51e4-4653-ac2a-da166a894f2a.jpg?1783931234"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Partner with Yannik, Scavenging Sentinel (When this creature enters, target player may put Yannik into their hand from their library, then shuffle.)\nMenace\nWhenever another creature you control leaves the battlefield, if it had one or more counters on it, you draw a card and you lose 1 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner",
+    "Menace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "00b9ac91-51e4-4653-ac2a-da166a894f2a",
+      "component": "combo_piece",
+      "name": "Nikara, Lair Scavenger",
+      "type_line": "Legendary Creature — Human Cleric",
+      "uri": "https://api.scryfall.com/cards/00b9ac91-51e4-4653-ac2a-da166a894f2a"
+    },
+    {
+      "object": "related_card",
+      "id": "11c0e89b-ab29-4739-a88e-1e7966d87d25",
+      "component": "combo_piece",
+      "name": "Yannik, Scavenging Sentinel",
+      "type_line": "Legendary Creature — Hyena Beast",
+      "uri": "https://api.scryfall.com/cards/11c0e89b-ab29-4739-a88e-1e7966d87d25"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/00b9ac91-51e4-4653-ac2a-da166a894f2a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2a2376b8-6962-4f9e-ba36-fd7de87dc77d&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Grzegorz Rutkowski",
+  "artist_ids": [
+    "b5f49d0d-8056-48e3-b614-090e656b4f9c"
+  ],
+  "illustration_id": "224b31fb-21e9-4de8-a0c2-7cc60217e714",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13495,
+  "preview": {
+    "source": "Adam Styborski",
+    "source_uri": "https://twitter.com/the_stybs/status/1246852141186236416",
+    "previewed_at": "2020-04-05"
+  },
+  "prices": {
+    "usd": "0.94",
+    "usd_foil": "0.49",
+    "usd_etched": null,
+    "eur": "0.85",
+    "eur_foil": "0.51",
+    "tix": "2.16"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484710&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNikara%252C%2BLair%2BScavenger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNikara%252C%2BLair%2BScavenger",
+    "edhrec": "https://edhrec.com/route/?cc=Nikara%2C+Lair+Scavenger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212202%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452358&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80729?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

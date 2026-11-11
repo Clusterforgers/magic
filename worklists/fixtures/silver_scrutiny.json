@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "8b650ab6-9c22-424f-99e5-8ef5235a18a3",
+  "oracle_id": "2b0b4fc1-9ad6-4259-a0a2-9a14484c246e",
+  "multiverse_ids": [
+    574545
+  ],
+  "mtgo_id": 102606,
+  "arena_id": 82117,
+  "tcgplayer_id": 283328,
+  "cardmarket_id": 672102,
+  "name": "Silver Scrutiny",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/8b650ab6-9c22-424f-99e5-8ef5235a18a3",
+  "scryfall_uri": "https://scryfall.com/card/dmu/65/silver-scrutiny?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:42:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345",
+    "normal": "https://cards.scryfall.io/normal/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345",
+    "large": "https://cards.scryfall.io/large/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345",
+    "png": "https://cards.scryfall.io/png/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.png?1783921345",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.webp?1783921345",
+    "grid": "https://cards.scryfall.io/grid/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.webp?1783921345",
+    "display": "https://cards.scryfall.io/display/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.webp?1783921345",
+    "art": "https://cards.scryfall.io/art/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.webp?1783921345",
+    "crop": "https://cards.scryfall.io/crop/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.webp?1783921345",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/b/8b650ab6-9c22-424f-99e5-8ef5235a18a3.jpg?1783921345"
+  },
+  "mana_cost": "{X}{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "You may cast this spell as though it had flash if X is 3 or less.\nDraw X cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set": "dmu",
+  "set_name": "Dominaria United",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8b650ab6-9c22-424f-99e5-8ef5235a18a3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2b0b4fc1-9ad6-4259-a0a2-9a14484c246e&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Karn's creation allowed him to monitor events across Dominaria—and everything he saw worried him.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "2bcda945-c202-4e96-a666-b6f7ad70fa6c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 9567,
+  "penny_rank": 5443,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.instagram.com/p/ChnHz_0MN_W/",
+    "previewed_at": "2022-08-23"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.34",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574545&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSilver%2BScrutiny",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSilver%2BScrutiny",
+    "edhrec": "https://edhrec.com/route/?cc=Silver+Scrutiny"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283328%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=672102&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102606?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

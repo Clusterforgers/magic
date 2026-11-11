@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "fdf59a6e-7708-45a1-884d-d12e9f7b9ed9",
+  "oracle_id": "e4125377-34c0-4b54-bdf8-4e88f5d24565",
+  "multiverse_ids": [
+    426706
+  ],
+  "mtgo_id": 63610,
+  "mtgo_foil_id": 63611,
+  "tcgplayer_id": 129978,
+  "cardmarket_id": 296780,
+  "name": "Approach of the Second Sun",
+  "lang": "en",
+  "released_at": "2017-04-28",
+  "uri": "https://api.scryfall.com/cards/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9",
+  "scryfall_uri": "https://scryfall.com/card/akh/4/approach-of-the-second-sun?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:55:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543",
+    "normal": "https://cards.scryfall.io/normal/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543",
+    "large": "https://cards.scryfall.io/large/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543",
+    "png": "https://cards.scryfall.io/png/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.png?1783936543",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.webp?1783936543",
+    "grid": "https://cards.scryfall.io/grid/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.webp?1783936543",
+    "display": "https://cards.scryfall.io/display/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.webp?1783936543",
+    "art": "https://cards.scryfall.io/art/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.webp?1783936543",
+    "crop": "https://cards.scryfall.io/crop/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.webp?1783936543",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/d/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9.jpg?1783936543"
+  },
+  "mana_cost": "{6}{W}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set": "akh",
+  "set_name": "Amonkhet",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aakh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/akh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fdf59a6e-7708-45a1-884d-d12e9f7b9ed9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae4125377-34c0-4b54-bdf8-4e88f5d24565&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Noah Bradley",
+  "artist_ids": [
+    "81995d11-da98-4f8b-89bd-b88ca2ddb06b"
+  ],
+  "illustration_id": "8c5b5cd8-0dab-4bf6-b35e-506f37fcaf83",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 967,
+  "penny_rank": 1363,
+  "prices": {
+    "usd": "6.23",
+    "usd_foil": "8.18",
+    "usd_etched": null,
+    "eur": "3.71",
+    "eur_foil": "6.36",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=426706&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DApproach%2Bof%2Bthe%2BSecond%2BSun",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DApproach%2Bof%2Bthe%2BSecond%2BSun",
+    "edhrec": "https://edhrec.com/route/?cc=Approach+of+the+Second+Sun"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F129978%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=296780&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/63610?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

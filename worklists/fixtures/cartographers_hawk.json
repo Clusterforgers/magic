@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "12d0b07f-9823-45b7-89bb-0a2a71833d46",
+  "oracle_id": "ac8cf699-f67b-44da-bb79-eb95cfc0026d",
+  "multiverse_ids": [
+    622626
+  ],
+  "mtgo_id": 115135,
+  "tcgplayer_id": 503599,
+  "cardmarket_id": 721866,
+  "name": "Cartographer's Hawk",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/12d0b07f-9823-45b7-89bb-0a2a71833d46",
+  "scryfall_uri": "https://scryfall.com/card/cmm/18/cartographers-hawk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:08:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726",
+    "normal": "https://cards.scryfall.io/normal/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726",
+    "large": "https://cards.scryfall.io/large/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726",
+    "png": "https://cards.scryfall.io/png/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.png?1783915726",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.webp?1783915726",
+    "grid": "https://cards.scryfall.io/grid/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.webp?1783915726",
+    "display": "https://cards.scryfall.io/display/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.webp?1783915726",
+    "art": "https://cards.scryfall.io/art/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.webp?1783915726",
+    "crop": "https://cards.scryfall.io/crop/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.webp?1783915726",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/2/12d0b07f-9823-45b7-89bb-0a2a71833d46.jpg?1783915726"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "Flying\nWhen this creature deals combat damage to a player who controls more lands than you, return it to its owner's hand. If you do, you may search your library for a Plains card, put it onto the battlefield tapped, then shuffle.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/12d0b07f-9823-45b7-89bb-0a2a71833d46/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aac8cf699-f67b-44da-bb79-eb95cfc0026d&unique=prints",
+  "collector_number": "18",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "bcefcbf5-8fff-48dc-90a3-c0c1f50368c1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4732,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=3JghsHd5iMw",
+    "previewed_at": "2023-07-12"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.20",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=622626&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCartographer%2527s%2BHawk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCartographer%2527s%2BHawk",
+    "edhrec": "https://edhrec.com/route/?cc=Cartographer%27s+Hawk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F503599%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=721866&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/115135?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

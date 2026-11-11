@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "16c32c5a-e011-4729-a4a0-b2deac7d5056",
+  "oracle_id": "118da256-d1ea-44e8-9026-317e49694d29",
+  "multiverse_ids": [
+    658334
+  ],
+  "mtgo_id": 125159,
+  "tcgplayer_id": 545360,
+  "cardmarket_id": 764504,
+  "name": "Forger's Foundry",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/16c32c5a-e011-4729-a4a0-b2deac7d5056",
+  "scryfall_uri": "https://scryfall.com/card/otc/14/forgers-foundry?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:06:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969",
+    "large": "https://cards.scryfall.io/large/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969",
+    "png": "https://cards.scryfall.io/png/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.png?1783911969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.webp?1783911969",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.webp?1783911969",
+    "display": "https://cards.scryfall.io/display/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.webp?1783911969",
+    "art": "https://cards.scryfall.io/art/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.webp?1783911969",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.webp?1783911969",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/16c32c5a-e011-4729-a4a0-b2deac7d5056.jpg?1783911969"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {U}. When you spend this mana to cast an instant or sorcery spell with mana value 3 or less, you may exile that spell instead of putting it into its owner's graveyard as it resolves.\n{3}{U}{U}, {T}: You may cast any number of spells from among cards exiled with this artifact without paying their mana costs. Activate only as a sorcery.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/16c32c5a-e011-4729-a4a0-b2deac7d5056/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A118da256-d1ea-44e8-9026-317e49694d29&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Rockey Chen",
+  "artist_ids": [
+    "5f92512a-2da0-4d91-8aaf-ac8d2404d776"
+  ],
+  "illustration_id": "822e2127-b57d-49f4-ae15-01dffd73e26a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9706,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": "0.78"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658334&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DForger%2527s%2BFoundry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DForger%2527s%2BFoundry",
+    "edhrec": "https://edhrec.com/route/?cc=Forger%27s+Foundry"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545360%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764504&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125159?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

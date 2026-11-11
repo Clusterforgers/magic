@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "bbc536ff-3e12-4e1b-b96f-b0c32dcb6734",
+  "oracle_id": "eb44f5eb-1c6a-49f0-9751-23d167bf8288",
+  "multiverse_ids": [
+    25591
+  ],
+  "mtgo_id": 15806,
+  "mtgo_foil_id": 15807,
+  "tcgplayer_id": 3057,
+  "cardmarket_id": 3028,
+  "name": "Rowen",
+  "lang": "en",
+  "released_at": "2001-04-11",
+  "uri": "https://api.scryfall.com/cards/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734",
+  "scryfall_uri": "https://scryfall.com/card/7ed/266/rowen?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:23:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416",
+    "large": "https://cards.scryfall.io/large/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416",
+    "png": "https://cards.scryfall.io/png/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.png?1783945416",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.webp?1783945416",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.webp?1783945416",
+    "display": "https://cards.scryfall.io/display/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.webp?1783945416",
+    "art": "https://cards.scryfall.io/art/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.webp?1783945416",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.webp?1783945416",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734.jpg?1783945416"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Reveal the first card you draw each turn. Whenever you reveal a basic land card this way, draw a card.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set": "7ed",
+  "set_name": "Seventh Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/230f38aa-9511-4db8-a3aa-aeddbc3f7bb9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A7ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/7ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bbc536ff-3e12-4e1b-b96f-b0c32dcb6734/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeb44f5eb-1c6a-49f0-9751-23d167bf8288&unique=prints",
+  "collector_number": "266",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Those who understand the forest are free to harvest its bounty.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Franz Vohwinkel",
+  "artist_ids": [
+    "3a243c17-3baa-4b53-9599-645311cd7d3d"
+  ],
+  "illustration_id": "94c6aa3d-067f-42dc-8950-6516337f558d",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20910,
+  "penny_rank": 15261,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.66",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=25591&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRowen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRowen",
+    "edhrec": "https://edhrec.com/route/?cc=Rowen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3057%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3028&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/15806?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

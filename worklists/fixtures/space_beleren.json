@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5",
+  "oracle_id": "cfca44cb-8ca5-4ebb-bd5c-b621eca41944",
+  "multiverse_ids": [
+    580708
+  ],
+  "tcgplayer_id": 286817,
+  "cardmarket_id": 676033,
+  "name": "Space Beleren",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5",
+  "scryfall_uri": "https://scryfall.com/card/unf/178/space-beleren?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:28:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538",
+    "normal": "https://cards.scryfall.io/normal/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538",
+    "large": "https://cards.scryfall.io/large/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538",
+    "png": "https://cards.scryfall.io/png/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.png?1783920538",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.webp?1783920538",
+    "grid": "https://cards.scryfall.io/grid/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.webp?1783920538",
+    "display": "https://cards.scryfall.io/display/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.webp?1783920538",
+    "art": "https://cards.scryfall.io/art/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.webp?1783920538",
+    "crop": "https://cards.scryfall.io/crop/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.webp?1783920538",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/4/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5.jpg?1783920538"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Jace",
+  "oracle_text": "Space sculptor (Space Beleren divides the battlefield into alpha, beta, and gamma sectors. If a creature isn't assigned to a sector, its controller assigns it to one. Opponents assign first.)\n+1: Creatures in each sector can be blocked this turn only by creatures in the same sector.\n−1: Put a +1/+1 counter on each creature in the sector of your choice.\n−5: Destroy all creatures in the sector of your choice.",
+  "loyalty": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/14ddb2e7-6bc6-43ce-aeec-175a0ce17ed5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acfca44cb-8ca5-4ebb-bd5c-b621eca41944&unique=prints",
+  "collector_number": "178",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "illustration_id": "4fd09709-670b-4d0c-8112-5597672fbb68",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17727,
+  "prices": {
+    "usd": "0.57",
+    "usd_foil": "0.97",
+    "usd_etched": null,
+    "eur": "0.71",
+    "eur_foil": "1.04",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580708&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpace%2BBeleren",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpace%2BBeleren",
+    "edhrec": "https://edhrec.com/route/?cc=Space+Beleren"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286817%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676033&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Space+Beleren&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
