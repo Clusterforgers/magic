@@ -251,7 +251,7 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     let ctx = Ctx::none();
     match ability {
         Ability::CostModifier { .. } => cost_modifier(ability, depth, out),
-        Ability::AdditionalCost { cost, required } => {
+        Ability::AdditionalCost { cost, required, .. } => {
             let how = if *required { "must pay" } else { "may pay" };
             out.push(Step::new(
                 depth,

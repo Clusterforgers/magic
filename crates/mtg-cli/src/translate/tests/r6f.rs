@@ -56,12 +56,6 @@ fn the_next_damage_is_redirected_to_a_fixed_recipient(
 }
 
 #[rstest]
-#[case::a_divided_shield(
-    TARGET_MINE,
-    "ValidTarget$ Creature.EffectSource | DamageTarget$ Remembered",
-    "DamageTarget$ Remembered | VarName$ Three | DivideShield$ True",
-    "key:Replacement.DamageDone.ReplaceSplitDamage.DivideShield"
-)]
 #[case::an_imprinted_recipient(
     TARGET_MINE,
     "ValidTarget$ Creature.EffectSource | DamageTarget$ Imprinted",

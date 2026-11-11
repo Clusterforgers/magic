@@ -93,6 +93,41 @@ impl Writer<'_> {
                     2,
                 ))
             }
+            // "The next 2 damage that a source of your choice would deal to you and/or permanents you control this turn is
+            // dealt to any target instead."
+            [
+                Effect::Choose {
+                    who: Ref::You,
+                    from,
+                    count,
+                    bind,
+                    rest_as: None,
+                },
+                Effect::Shield {
+                    when:
+                        ReplaceWhen::Damage {
+                            to: Some(dealt),
+                            source,
+                            combat: None,
+                        },
+                    by: ReplaceBy::RedirectUpTo { most, to },
+                    duration: Duration::UntilEndOfTurn,
+                },
+                ..,
+            ] if count.is_one()
+                && *most > 0
+                && source.0 == [Pred::Is(Ref::Bound(bind.clone()))] =>
+            {
+                let chosen = chosen_source(from)?;
+                let dealt = self.r9w_one(dealt)?;
+                let to = self.r9w_one(to)?;
+                Some((
+                    vec![format!(
+                        "the next {most} damage that {chosen} would deal to {dealt} this turn is dealt to {to} instead"
+                    )],
+                    2,
+                ))
+            }
             [
                 Effect::Shield {
                     when:
@@ -125,6 +160,21 @@ impl Writer<'_> {
             Ref::This => Some("~".to_owned()),
             Ref::You => Some("you".to_owned()),
             Ref::Target(0) if self.single(what) => self.name_target(),
+            // "~ and/or you", "you and/or permanents you control": two recipients that share the shield.
+            Ref::Union(parts) => match parts.as_slice() {
+                [first, second] => {
+                    let mut named = Vec::new();
+                    for part in [first, second] {
+                        named.push(match part {
+                            Ref::Each(selector) => phrase_text(selector, Form::All)?,
+                            Ref::This | Ref::You => self.r9w_one(part)?,
+                            _ => return None,
+                        });
+                    }
+                    Some(named.join(" and/or "))
+                }
+                _ => None,
+            },
             _ => None,
         }
     }

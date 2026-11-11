@@ -86,7 +86,7 @@ test('the admin makes an account and the friend signs in with it', async ({ brow
 
   // At the address the friend is told that only the admin can.
   await friend.page.goto('/accounts')
-  await expect(friend.page.getByText('Only the admin can make accounts.')).toBeVisible()
+  await expect(friend.page.getByText('Only an admin can make accounts.')).toBeVisible()
 
   expect(admin.errors).toEqual([])
   expect(friend.errors).toEqual([])
@@ -103,7 +103,7 @@ test('a server with registration closed shows the closed sign-up page', async ({
     }),
   )
   await guest.page.goto('/register')
-  await expect(guest.page.getByRole('heading', { name: 'New accounts are made by the admin' })).toBeVisible()
+  await expect(guest.page.getByRole('heading', { name: 'New accounts are made by an admin' })).toBeVisible()
   await expect(guest.page.getByLabel('Username')).toHaveCount(0)
   await guest.page.getByRole('link', { name: 'Sign in' }).last().click()
   await expect(guest.page).toHaveURL(/\/login/)

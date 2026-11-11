@@ -136,6 +136,20 @@ fn damage_shield(
     let (to, each) = match to {
         None => (None, None),
         Some(Ref::Each(kind)) if judged_per_event(kind) => (None, Some(kind.clone())),
+        // "you and/or permanents you control": the fixed parts and at most one kind judged per event, either covered.
+        Some(Ref::Union(parts)) => {
+            let mut fixed = Vec::new();
+            let mut each = None;
+            for part in parts {
+                match part {
+                    Ref::Each(kind) if judged_per_event(kind) && each.is_none() => {
+                        each = Some(kind.clone());
+                    }
+                    named => fixed.extend(cx.scope.refs(named)?),
+                }
+            }
+            (Some(fixed), each)
+        }
         Some(named) => (Some(cx.scope.refs(named)?), None),
     };
     // The new recipient of redirected damage is fixed as the shield begins (CR 611.2c); naming none, it redirects nothing.

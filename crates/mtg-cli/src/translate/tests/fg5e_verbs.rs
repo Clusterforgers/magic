@@ -68,17 +68,9 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 )]
 #[case::phase_set("Phases | AllValid$ Creature", "key:Phases.AllValid")]
 #[case::manifest_named("Manifest | Defined$ Remembered", "key:Manifest.Defined")]
-#[case::move_any_number(
-    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ Any | CounterNum$ Any",
-    "key:MoveCounter.Source-or-CounterType"
-)]
 #[case::move_all_of_any_count(
     "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ All | CounterNum$ 2",
     "key:MoveCounter.Source-or-CounterType"
-)]
-#[case::move_all(
-    "MoveCounter | ValidTgts$ Creature | Source$ Self | CounterType$ P1P1 | CounterNum$ All",
-    "key:MoveCounter.CounterNum"
 )]
 #[case::exchange_pair(
     "ExchangeControl | ValidTgts$ Creature | TargetMin$ 2 | TargetMax$ 2",

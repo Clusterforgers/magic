@@ -120,6 +120,10 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({ "Bound": bound }));
     }
+    // The count of the spell's repeatable additional cost: the times the caster paid it.
+    if ctx.ep30_paid.as_deref() == Some(text) {
+        return Ok(json!("AdditionalPaid"));
+    }
     // A won flip's part runs once per win, so the wins it reads are one; a heads part reads the heads as an `X` the script
     // leaves undefined.
     if ctx.flip_win && (text == "Wins" || (text == "X" && ctx.svar(text).is_none())) {

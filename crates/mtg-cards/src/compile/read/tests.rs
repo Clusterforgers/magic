@@ -294,6 +294,7 @@ mod ep26_writers;
 mod ep27_writers;
 mod ep28_writers;
 mod ep29_writers;
+mod ep30_writers;
 mod ep31_writers;
 mod ep32_writers;
 mod evasion;

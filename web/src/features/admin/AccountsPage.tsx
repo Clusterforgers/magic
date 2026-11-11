@@ -14,7 +14,7 @@ import { AccountList } from './AccountList'
 import { NewAccountForm } from './NewAccountForm'
 
 /**
- * `/accounts`: the admin makes accounts for friends and sees who has one. Anyone else is told that only the admin
+ * `/accounts`: an admin makes accounts for friends and sees who has one. Anyone else is told that only an admin
  * can; that is a courtesy, since the server judges every request. Without a session it sends the visitor to sign in
  * and back here.
  */
@@ -71,14 +71,14 @@ export function AccountsPage() {
         <EmptyState
           as="h1"
           icon={ShieldAlertIcon}
-          title="Only the admin can make accounts."
+          title="Only an admin can make accounts."
           action={
             <Link to="/" className={cn(buttonVariants({ size: 'lg' }))}>
               Go home
             </Link>
           }
         >
-          Your account is not the admin. Ask the admin to add the friends you want to play with.
+          Your account is not an admin. Ask an admin to add the friends you want to play with.
         </EmptyState>
       </PageShell>
     )
@@ -89,7 +89,7 @@ export function AccountsPage() {
       <header className="grid gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Accounts</h1>
         <p className="text-base text-muted-foreground">
-          You are the admin: only you can make accounts, set a new password for a friend who forgot theirs,
+          You are an admin: only admins can make accounts, set a new password for a friend who forgot theirs,
           and remove an account. Friends cannot register themselves.
         </p>
       </header>

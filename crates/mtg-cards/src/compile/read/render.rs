@@ -1062,7 +1062,14 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
+        Ability::AdditionalCost {
+            cost,
+            required,
+            repeatable: false,
+        } => costs::additional_texts(cost, *required),
+        // "you may exile any number of ..." is written with the reduction it pays for (`ep30_paid`); mana alone stands by
+        // itself.
+        Ability::AdditionalCost { cost, .. } => super::ep30_paid::ep30_mana_texts(cost),
         _ => statics::texts(ability),
     }
 }
@@ -2377,9 +2384,19 @@ impl Writer<'_> {
                 to,
                 counter,
                 count,
+                up_to,
             } => {
-                let counters = counters::ep21_move_text(counter.as_ref(), count, from)?;
-                let from = self.counter_place(from, false)?;
+                let counters = if *up_to {
+                    counters::ep30_any_number_text(counter.as_ref(), count, from)?
+                } else {
+                    counters::ep21_move_text(counter.as_ref(), count, from)?
+                };
+                // Several objects give them up: "from other permanents you control", "from all creatures".
+                let from = match from {
+                    Ref::Each(selector) if *up_to => phrase_text(selector, Form::All)?,
+                    Ref::Each(selector) => format!("all {}", phrase_text(selector, Form::All)?),
+                    _ => self.counter_place(from, false)?,
+                };
                 format!(
                     "move {counters} from {from} onto {}",
                     self.counter_place(to, false)?

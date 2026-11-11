@@ -79,6 +79,11 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
+        Ref::Union(parts) => parts
+            .iter()
+            .map(|part| who(ctx, part))
+            .collect::<Vec<_>>()
+            .join(" and "),
     }
 }
 

@@ -101,13 +101,13 @@ describe('describeAccountError', () => {
 
   it('says a closed server leaves new accounts to the admin and to ask them', () => {
     expect(describeAccountError(error('registration_closed'), 'register').message).toBe(
-      'New accounts are made by the admin. Ask them to add you.',
+      'New accounts are made by an admin. Ask one to add you.',
     )
   })
 
   it('says only the admin makes accounts when a signed-in account is not the admin', () => {
     const shown = describeAccountError(error('forbidden', { status: 403 }), 'admin')
-    expect(shown).toEqual({ field: 'form', message: 'Only the admin can make accounts.' })
+    expect(shown).toEqual({ field: 'form', message: 'Only an admin can make accounts.' })
   })
 
   it('speaks to the admin, not to a visitor, on the form that makes accounts', () => {

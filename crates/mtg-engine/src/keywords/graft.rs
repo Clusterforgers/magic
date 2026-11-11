@@ -43,6 +43,7 @@ impl KeywordRules for Graft {
                     to: Ref::Triggering,
                     counter: Some(counter),
                     count: Amount::one(),
+                    up_to: false,
                 }],
             }],
         });

@@ -219,7 +219,6 @@ fn capitalize(text: &str) -> String {
 )]
 #[case::move_onto_itself("Move a +1/+1 counter from ~ onto ~.")]
 #[case::move_between_two_others("Move a +1/+1 counter from target creature onto target land.")]
-#[case::move_any_number("Move any number of counters from target creature onto ~.")]
 #[case::move_to_the_wrong_word("Move a +1/+1 counter from target creature to ~.")]
 #[case::move_from_nowhere("Move a +1/+1 counter onto ~.")]
 #[case::put_on_each_in_the_plural("Put a +1/+1 counter on each creatures you control.")]

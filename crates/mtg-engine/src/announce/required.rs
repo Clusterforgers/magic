@@ -50,6 +50,7 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
         let Ability::AdditionalCost {
             cost,
             required: true,
+            ..
         } = &**rule
         else {
             continue;
@@ -161,6 +162,7 @@ mod tests {
         Ability::AdditionalCost {
             cost: Cost(items),
             required: true,
+            repeatable: false,
         }
     }
 
@@ -205,7 +207,7 @@ mod tests {
     #[case::life(vec![required(vec![CostItem::PayLife(Amount::Fixed(3))])], vec![1])]
     #[case::mana(vec![required(vec![CostItem::Mana("{2}".parse().unwrap())])], vec![0])]
     #[case::an_optional_one_is_not_required(
-        vec![Ability::AdditionalCost { cost: Cost(vec![discard()]), required: false }],
+        vec![Ability::AdditionalCost { cost: Cost(vec![discard()]), required: false, repeatable: false }],
         vec![0]
     )]
     #[case::a_choice_of_two(
