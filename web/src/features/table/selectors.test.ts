@@ -191,11 +191,14 @@ describe('zones', () => {
     [0, 0, 1],
     [0, 2, 2],
     [2, 0, 0],
-  ])('plays from the hand of the active seat 1 only while the viewer controls it: by %s, viewer %i', (by, viewer, seat) => {
-    const view = clone(must(state.view))
-    view.turn = { ...view.turn, active: 1, controlled_by: by }
-    expect(handSeat({ ...state, view }, viewer)).toBe(seat)
-  })
+  ])(
+    'plays from the hand of the active seat 1 only while the viewer controls it: by %s, viewer %i',
+    (by, viewer, seat) => {
+      const view = clone(must(state.view))
+      view.turn = { ...view.turn, active: 1, controlled_by: by }
+      expect(handSeat({ ...state, view }, viewer)).toBe(seat)
+    },
+  )
 })
 
 describe('combatRoleIn', () => {
