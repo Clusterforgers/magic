@@ -1,7 +1,7 @@
 {
   "oracle_id": "4760bb87-56e9-47eb-b5ec-6fa4dd19156e",
   "name": "Goblin Test Pilot",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Goblin Test Pilot",
@@ -9,7 +9,11 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 72 } }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "AtRandom": "AnyTarget" } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "49471b65-be9d-4ded-b2e5-dfc81b306b54",
   "name": "Brimaz, King of Oreskos",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Brimaz, King of Oreskos",
@@ -32,9 +32,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 114, "end": 240 }
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "blocking": "Triggering"
+                }
+              }
+            ]
           }
         }
       ]

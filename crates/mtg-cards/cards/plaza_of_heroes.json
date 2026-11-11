@@ -1,7 +1,7 @@
 {
   "oracle_id": "9c58d241-4d9f-4b46-b8ee-f4587f9acfd6",
   "name": "Plaza of Heroes",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Plaza of Heroes",
@@ -27,9 +27,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 94, "end": 164 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColorAmong": [{ "Supertype": "Legendary" }, { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
           }
         },
         {
