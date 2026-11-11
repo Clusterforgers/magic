@@ -22,6 +22,7 @@ pub(super) fn wf26_wordings(
     wf26_chosen_wordings(ability, written, texts);
     wf26_top_or_bottom_wordings(ability, written, texts);
     wf26_boast_wordings(ability, written, texts);
+    wf26_paid_wordings(ability, written, texts);
     let those: Vec<String> = texts.iter().filter_map(|text| those_named(text)).collect();
     for text in those {
         if !texts.contains(&text) {
@@ -64,6 +65,84 @@ fn wf26_boast_wordings(
         }
     }
     texts.extend(found);
+}
+
+/// "Counter target spell unless its controller pays {2}. If they do, surveil 2.": the payment of another player and
+/// what you do when they pay, written from the twin without it and from the steps alone.
+fn wf26_paid_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return;
+    };
+    let Some(body) = value
+        .as_object_mut()
+        .and_then(|map| map.values_mut().next())
+    else {
+        return;
+    };
+    let Some(effects) = body.get_mut("effects").and_then(Value::as_array_mut) else {
+        return;
+    };
+    // The payment is the last step, of a player other than you, and both of its outcomes do something.
+    let Some(pay) = effects
+        .last_mut()
+        .and_then(|last| last.get_mut("Pay"))
+        .and_then(Value::as_object_mut)
+    else {
+        return;
+    };
+    if pay.get("who").is_none_or(|who| who == "You") || !pay.contains_key("unpaid") {
+        return;
+    }
+    let Some(paid) = pay.remove("paid") else {
+        return;
+    };
+    let named = paid.to_string();
+    if ["Target", "Bound", "Triggering", "ControllerOf"]
+        .iter()
+        .any(|word| named.contains(word))
+    {
+        return;
+    }
+    let (Ok(twin), Ok(steps)) = (
+        serde_json::from_value::<Ability>(value),
+        serde_json::from_value::<Ability>(serde_json::json!({ "Spell": { "effects": paid } })),
+    ) else {
+        return;
+    };
+    let after: Vec<String> = written(&steps)
+        .iter()
+        .filter(|text| !text.contains(". ") && text.ends_with('.'))
+        .map(|text| lower_first(text))
+        .collect();
+    let mut found = Vec::new();
+    for text in written(&twin) {
+        if !text.ends_with('.') || !text.contains(" unless ") {
+            continue;
+        }
+        for step in &after {
+            for wording in [
+                format!("{text} If they do, {step}"),
+                format!("{text} If they do, you {step}"),
+            ] {
+                if !texts.contains(&wording) && !found.contains(&wording) {
+                    found.push(wording);
+                }
+            }
+        }
+    }
+    texts.extend(found);
+}
+
+/// The text with its first letter in lower case.
+fn lower_first(text: &str) -> String {
+    let mut letters = text.chars();
+    letters.next().map_or_else(String::new, |first| {
+        first.to_lowercase().chain(letters).collect()
+    })
 }
 
 /// The plural nouns of objects "each of those ..." may name.

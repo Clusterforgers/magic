@@ -190,3 +190,17 @@ const RANDOM: &str = "{1}, Discard a card at random: ~ gets +2/+0 until end of t
 fn wf26_activation_costs(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }
+
+const SOUND: &str = r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":"{2}","paid":[{"Surveil":{"count":2}}],"unpaid":[{"Counter":{"what":{"Target":0}}}]}}]}}"#;
+const SURVEIL: &str = "Counter target spell unless its controller pays {2}. If they do, surveil 2.";
+
+#[rstest]
+#[case::paid(SOUND, SURVEIL, true)]
+#[case::paid_by_you(SOUND, &SURVEIL.replace("If they do, ", "If they do, you "), true)]
+#[case::paid_otherwise(&SOUND.replace(r#""count":2"#, r#""count":1"#), SURVEIL, false)]
+#[case::nothing_paid(&SOUND.replace(r#""paid":[{"Surveil":{"count":2}}],"#, ""), SURVEIL, false)]
+#[case::paid_for_nothing(&SOUND.replace(r#","unpaid":[{"Counter":{"what":{"Target":0}}}]"#, ""), SURVEIL, false)]
+#[case::paid_by_the_payer(&SOUND.replace(r#""paid":[{"Surveil":{"count":2}}]"#, r#""paid":[{"Surveil":{"who":{"ControllerOf":{"Target":0}},"count":2}}]"#), SURVEIL, false)]
+fn wf26_if_they_pay(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
