@@ -449,9 +449,9 @@ pub struct GameObject {
     /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
     /// (CR 610.3); a zone change clears it.
     pub(crate) exiled_until: Option<ObjectRef>,
-    /// The card waiting in exile came from a hand, so it returns to its owner's hand rather than the battlefield
+    /// The hand a card waiting in exile came from: it returns to its owner's hand rather than the battlefield
     /// (CR 610.3c); a zone change clears it.
-    pub(crate) exiled_from_hand: bool,
+    pub(crate) exiled_from_hand: Option<Zone>,
     /// The player whose opponents' becoming the monarch returns a card in exile (Palace Jailer), and whether one has since
     /// it was exiled; a zone change clears it.
     pub(crate) monarch_wait: Option<(PlayerId, bool)>,
@@ -528,7 +528,7 @@ impl GameObject {
             adventure: None,
             plotted: None,
             exiled_until: None,
-            exiled_from_hand: false,
+            exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
             monarch_wait: None,
@@ -570,7 +570,7 @@ impl GameObject {
             adventure: None,
             plotted: None,
             exiled_until: None,
-            exiled_from_hand: false,
+            exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
             monarch_wait: None,
@@ -985,8 +985,8 @@ impl Hash for GameObject {
             until.hash(state);
         }
         // Left out while it is off, so the hash of a game that exiles nothing from a hand stays what it was.
-        if self.exiled_from_hand {
-            true.hash(state);
+        if let Some(hand) = self.exiled_from_hand {
+            hand.hash(state);
         }
         if let Some(carrier) = self.encoded_on {
             carrier.hash(state);

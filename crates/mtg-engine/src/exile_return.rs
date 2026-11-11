@@ -39,7 +39,7 @@ pub(crate) fn returns(state: &GameState) -> Vec<Event> {
 fn back(state: &GameState, card: &GameObject) -> Vec<Event> {
     let id = card.id();
     // A card exiled from a hand goes back to its owner's hand (CR 610.3c).
-    if card.exiled_from_hand {
+    if card.exiled_from_hand.is_some() {
         return vec![Event::ZoneChanged {
             object: id,
             from: Zone::Exile,
@@ -163,7 +163,7 @@ mod tests {
             (Zone::Exile, true)
         };
         assert_eq!(card.zone(), zone, "{events:?}");
-        assert_eq!(card.exiled_from_hand, waits);
+        assert_eq!(card.exiled_from_hand.is_some(), waits);
     }
 
     #[test]

@@ -65,7 +65,7 @@ pub(super) fn move_object(
     }
     (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
-    object.exiled_from_hand = false;
+    object.exiled_from_hand = None;
     object.encoded_on = None;
     object.haunting = None;
     object.monarch_wait = None;
@@ -508,6 +508,15 @@ fn link_haunting(state: &mut GameState, card: ObjectId, cause: &ZoneCause) {
     }
 }
 
+/// A card exiled until `by` leaves waits for it, and remembers a hand it came from to go back there (CR 610.3c).
+fn exiled_until(state: &mut GameState, card: ObjectId, by: ObjectRef, from: Zone) {
+    state.possible.linked_exile = true;
+    if let Some(object) = state.objects.get_mut(&card) {
+        object.exiled_until = Some(by);
+        object.exiled_from_hand = Some(from).filter(|from| matches!(from, Zone::Hand(_)));
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -569,11 +578,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 object.face_down = Some(how);
             }
             if let ZoneCause::ExiledUntil { by } = cause {
-                state.possible.linked_exile = true;
-                if let Some(object) = state.objects.get_mut(object) {
-                    object.exiled_until = Some(*by);
-                    object.exiled_from_hand = matches!(from, Zone::Hand(_));
-                }
+                exiled_until(state, *object, *by, *from);
             }
             if let ZoneCause::Encoded { by } = cause
                 && let Some(object) = state.objects.get_mut(object)
