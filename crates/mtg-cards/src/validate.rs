@@ -1039,6 +1039,7 @@ impl<'a> Walker<'a> {
     }
 
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
+    #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Tally { who, filter, .. } => {
@@ -4980,6 +4981,7 @@ impl Walker<'_> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);

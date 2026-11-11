@@ -263,7 +263,7 @@ fn controlled_group(of: &Selector) -> Option<String> {
 /// A fact of the turn that ended last ("if you lost life last turn"): the words of the same fact of this turn, which end
 /// in "this turn", with "last turn" in their place.
 fn ep28_last_turn(this_turn: &Condition) -> Vec<String> {
-    texts(this_turn)
+    turn_texts(this_turn)
         .iter()
         .filter_map(|text| text.strip_suffix(" this turn"))
         .filter(|head| {
@@ -275,29 +275,37 @@ fn ep28_last_turn(this_turn: &Condition) -> Vec<String> {
 
 /// What `read` reads, written back after "if" or "as long as", one text for each wording.
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
-    let Condition::Compare { left, op, right } = condition else {
-        return Vec::new();
-    };
-    if let Amount::TalliedLastTurn { who, what } = left {
-        return ep28_last_turn(&Condition::Compare {
+    match condition {
+        Condition::Compare {
+            left: Amount::TalliedLastTurn { who, what },
+            op,
+            right,
+        } => ep28_last_turn(&Condition::Compare {
             left: Amount::Tallied {
                 who: who.clone(),
                 what: *what,
             },
             op: *op,
             right: right.clone(),
-        });
+        }),
+        _ => turn_texts(condition),
     }
+}
+
+/// `texts` of a condition that is no fact of last turn.
+fn turn_texts(condition: &Condition) -> Vec<String> {
+    let Condition::Compare { left, op, right } = condition else {
+        return Vec::new();
+    };
     let Amount::Fixed(number) = right else {
         return more_than_you(left, *op, right);
     };
     let Ok(number) = u32::try_from(*number) else {
         return Vec::new();
     };
-    if *left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1 {
-        return vec![C10_ANY_NONCREATURE_CAST.to_owned()];
-    }
-    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number)
+    if let Some(text) = (*left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1)
+        .then(|| C10_ANY_NONCREATURE_CAST.to_owned())
+        .or_else(|| super::w21a_atoms::w21a_condition_text(left, *op, number))
         .or_else(|| super::r9w_players::r9w_some_text(left, *op, right))
     {
         return vec![text];

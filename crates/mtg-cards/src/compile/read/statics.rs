@@ -1410,6 +1410,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
         .collect()
 }
 
+#[allow(clippy::too_many_lines)]
 fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> {
     match (by, condition) {
         (ReplaceBy::Tapped, None) => vec!["~ enters tapped".to_owned()],

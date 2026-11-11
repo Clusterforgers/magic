@@ -416,10 +416,11 @@ impl<'a> Scope<'a> {
     }
 
     /// The largest count of the turn among the players `who` names, or among the objects it names for the times counters
-    /// were put on them.
+    /// were put on them; with `last`, of the turn that ended last.
+    #[allow(clippy::too_many_lines)]
     fn tallied(&self, who: &Ref, what: TurnTally, last: bool) -> Result<i64, ResolveError> {
         // "Last turn" reads the counts kept as the turn before this one ended.
-        let count = |player, kind| {
+        let tally_of = |player, kind| {
             if last {
                 self.state.tallied_last_turn(player, kind)
             } else {
@@ -491,17 +492,17 @@ impl<'a> Scope<'a> {
                 let total: u32 = self
                     .players(who)?
                     .into_iter()
-                    .map(|player| count(player, kind))
+                    .map(|player| tally_of(player, kind))
                     .sum();
                 return Ok(i64::from(total));
             }
             TurnTally::LifeLost => {
-                let lost: u32 = self
+                let life_lost: u32 = self
                     .players(who)?
                     .into_iter()
-                    .map(|player| count(player, Tally::Lost))
+                    .map(|player| tally_of(player, Tally::Lost))
                     .sum();
-                return Ok(i64::from(lost));
+                return Ok(i64::from(life_lost));
             }
             TurnTally::DamageDealtTo => {
                 let named = self.refs(who)?;
@@ -520,7 +521,7 @@ impl<'a> Scope<'a> {
         Ok(self
             .players(who)?
             .into_iter()
-            .map(|player| i64::from(count(player, kind)))
+            .map(|player| i64::from(tally_of(player, kind)))
             .max()
             .unwrap_or(0))
     }

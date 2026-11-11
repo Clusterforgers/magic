@@ -2616,6 +2616,7 @@ impl Pass<'_> {
     }
 
     /// Changes how the card enters: tapped, with counters, with a choice made, or with life paid.
+    #[allow(clippy::too_many_lines)]
     fn enter(
         &mut self,
         at: usize,
@@ -2701,18 +2702,8 @@ impl Pass<'_> {
                 self.w2b_remember(at, object, controller, chosen);
             }
             ReplaceBy::UnderChosenOpponent => {
-                let chosen = match self.chooses(source, controller, EntersChoice::Opponent)? {
-                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
-                    Asked::Got(chosen) => chosen,
-                };
-                if let Some(Chosen::Player(opponent)) = chosen {
-                    let entered = self.entered_at(at, object, controller);
-                    if let Item::One(Event::Entered {
-                        controller: under, ..
-                    }) = &mut self.slots[entered].item
-                    {
-                        *under = opponent;
-                    }
+                if let Asked::Ask(decision) = self.ep28_under(at, source, object, controller)? {
+                    return Ok(Applied::Ask(decision));
                 }
             }
             ReplaceBy::AsCopy {
@@ -3381,6 +3372,7 @@ mod umbra;
 
 #[cfg(test)]
 mod ep21_plus;
+mod ep28_under;
 mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;

@@ -2680,6 +2680,7 @@ impl Writer<'_> {
     }
 
     /// An effect as a sentence without its first capital and its period.
+    #[allow(clippy::too_many_lines)]
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
