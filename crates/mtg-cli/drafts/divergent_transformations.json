@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f08e835a-7827-4fdc-8dcf-ae74507da052",
+  "name": "Divergent Transformations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divergent Transformations",
+      "oracle_fingerprint": "cffddd9276ec2366d643abea32951eb1",
+      "abilities": [
+        { "Keyword": "Undaunted" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "exiled",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "ControllerOf": { "Bound": "exiled" } },
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed" },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

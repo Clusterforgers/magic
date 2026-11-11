@@ -1,0 +1,36 @@
+{
+  "oracle_id": "546201d0-3fa5-44e4-a526-ab0945711e49",
+  "name": "Shanna, Sisay's Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shanna, Sisay's Legacy",
+      "oracle_fingerprint": "2738a50962934368872800aba3e8a6a2",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": { "BeTargeted": [{ "ControlledBy": "Opponents" }, { "Not": "Spell" }] }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

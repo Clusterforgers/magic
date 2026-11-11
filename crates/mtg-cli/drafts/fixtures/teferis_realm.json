@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "aba3e4ea-2241-4f1e-a46b-70f512fe729e",
+  "oracle_id": "9851d934-2e07-49c8-b08b-15f96d0f3f0c",
+  "multiverse_ids": [
+    3651
+  ],
+  "mtgo_id": 7753,
+  "mtgo_foil_id": 7754,
+  "tcgplayer_id": 5942,
+  "cardmarket_id": 8445,
+  "name": "Teferi's Realm",
+  "lang": "en",
+  "released_at": "1997-02-03",
+  "uri": "https://api.scryfall.com/cards/aba3e4ea-2241-4f1e-a46b-70f512fe729e",
+  "scryfall_uri": "https://scryfall.com/card/vis/44/teferis-realm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:49:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997",
+    "normal": "https://cards.scryfall.io/normal/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997",
+    "large": "https://cards.scryfall.io/large/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997",
+    "png": "https://cards.scryfall.io/png/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.png?1783946997",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.webp?1783946997",
+    "grid": "https://cards.scryfall.io/grid/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.webp?1783946997",
+    "display": "https://cards.scryfall.io/display/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.webp?1783946997",
+    "art": "https://cards.scryfall.io/art/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.webp?1783946997",
+    "crop": "https://cards.scryfall.io/crop/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.webp?1783946997",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/b/aba3e4ea-2241-4f1e-a46b-70f512fe729e.jpg?1783946997"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "World Enchantment",
+  "oracle_text": "At the beginning of each player's upkeep, that player chooses artifact, creature, land, or non-Aura enchantment. All nontoken permanents of that type phase out. (While they're phased out, they're treated as though they don't exist. Each one phases in before its controller untaps during their next untap step.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2c32f1a9-7921-4826-bea0-80bbac70532c",
+  "set": "vis",
+  "set_name": "Visions",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2c32f1a9-7921-4826-bea0-80bbac70532c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avis&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vis?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aba3e4ea-2241-4f1e-a46b-70f512fe729e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9851d934-2e07-49c8-b08b-15f96d0f3f0c&unique=prints",
+  "collector_number": "44",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Fire is dead. Water has killed him.\"\n—From *The Stories of Nature*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alan Rabinowitz",
+  "artist_ids": [
+    "8562e6e1-f7f3-499e-8309-cc5775b37847"
+  ],
+  "illustration_id": "eb58f83a-e9ba-42e6-a1f9-474c871ec248",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23377,
+  "prices": {
+    "usd": "2.44",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.09",
+    "eur_foil": null,
+    "tix": "2.15"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3651&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTeferi%2527s%2BRealm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTeferi%2527s%2BRealm",
+    "edhrec": "https://edhrec.com/route/?cc=Teferi%27s+Realm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5942%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8445&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/7753?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

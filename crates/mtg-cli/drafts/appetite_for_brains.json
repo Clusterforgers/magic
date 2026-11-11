@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4ffc16e0-1778-4aba-ade3-58146c800f5f",
+  "name": "Appetite for Brains",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Appetite for Brains",
+      "oracle_fingerprint": "10056553d1ed8ebdba0540c395863433",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

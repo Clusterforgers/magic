@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b39651ad-1c05-45f8-b036-536c4d7324c0",
+  "name": "Suppress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suppress",
+      "oracle_fingerprint": "f3e30e317b28ed50bc67e9d06036106c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "cards"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": { "Target": 0 } } },
+                  "effects": [{ "Move": { "what": { "Bound": "cards" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3a2bb47d-228d-499e-a34b-9e10d99e9b2c",
+  "name": "Fog Bank",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fog Bank",
+      "oracle_fingerprint": "4b97aff65bbc85469f7b5dc43b7851bb",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 122 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a96d24f1-7670-4cb2-9971-5dd1b4c67957",
+  "name": "Web of Inertia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Web of Inertia",
+      "oracle_fingerprint": "b3cb7b13d10a08029ab353a17769568c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "ExileFromGraveyard": { "filter": [] } }],
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                        },
+                        "mods": [{ "CantAttackYou": "Player" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

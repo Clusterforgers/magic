@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "c1fd8a97-1c97-45fe-8c06-013a1f528919",
+  "oracle_id": "4f5978a6-40c2-49df-8277-48a6d4f6f23e",
+  "multiverse_ids": [
+    426581
+  ],
+  "tcgplayer_id": 129502,
+  "cardmarket_id": 296230,
+  "name": "Sift Through Sands",
+  "lang": "en",
+  "released_at": "2017-03-31",
+  "uri": "https://api.scryfall.com/cards/c1fd8a97-1c97-45fe-8c06-013a1f528919",
+  "scryfall_uri": "https://scryfall.com/card/dds/9/sift-through-sands?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:56:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578",
+    "normal": "https://cards.scryfall.io/normal/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578",
+    "large": "https://cards.scryfall.io/large/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578",
+    "png": "https://cards.scryfall.io/png/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.png?1783936578",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.webp?1783936578",
+    "grid": "https://cards.scryfall.io/grid/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.webp?1783936578",
+    "display": "https://cards.scryfall.io/display/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.webp?1783936578",
+    "art": "https://cards.scryfall.io/art/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.webp?1783936578",
+    "crop": "https://cards.scryfall.io/crop/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.webp?1783936578",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/1/c1fd8a97-1c97-45fe-8c06-013a1f528919.jpg?1783936578"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "cmc": 3.0,
+  "type_line": "Instant — Arcane",
+  "oracle_text": "Draw two cards, then discard a card.\nIf you've cast a spell named Peer Through Depths and a spell named Reach Through Mists this turn, you may search your library for a card named The Unspeakable, put it onto the battlefield, then shuffle.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c1fd8a97-1c97-45fe-8c06-013a1f528919",
+      "component": "combo_piece",
+      "name": "Sift Through Sands",
+      "type_line": "Instant — Arcane",
+      "uri": "https://api.scryfall.com/cards/c1fd8a97-1c97-45fe-8c06-013a1f528919"
+    },
+    {
+      "object": "related_card",
+      "id": "e956c695-bf0a-430c-a14e-196ae6ab7c9f",
+      "component": "combo_piece",
+      "name": "The Unspeakable",
+      "type_line": "Legendary Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/e956c695-bf0a-430c-a14e-196ae6ab7c9f"
+    },
+    {
+      "object": "related_card",
+      "id": "df0994df-730c-4947-8248-0aaf97998fa1",
+      "component": "combo_piece",
+      "name": "Peer Through Depths",
+      "type_line": "Instant — Arcane",
+      "uri": "https://api.scryfall.com/cards/df0994df-730c-4947-8248-0aaf97998fa1"
+    },
+    {
+      "object": "related_card",
+      "id": "0b6d5d29-4f38-4229-ac50-c4fa97fcc536",
+      "component": "combo_piece",
+      "name": "Reach Through Mists",
+      "type_line": "Instant — Arcane",
+      "uri": "https://api.scryfall.com/cards/0b6d5d29-4f38-4229-ac50-c4fa97fcc536"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "758fe4d1-ce2b-4106-8cec-820841d730af",
+  "set": "dds",
+  "set_name": "Duel Decks: Mind vs. Might",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/758fe4d1-ce2b-4106-8cec-820841d730af",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adds&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dds?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c1fd8a97-1c97-45fe-8c06-013a1f528919/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4f5978a6-40c2-49df-8277-48a6d4f6f23e&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anthony S. Waters",
+  "artist_ids": [
+    "f009de11-3c8d-4663-b996-ca0c3e997fad"
+  ],
+  "illustration_id": "72d419c1-8b63-4423-a1fa-9b5eac7bc737",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 20271,
+  "penny_rank": 11965,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=426581&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSift%2BThrough%2BSands",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSift%2BThrough%2BSands",
+    "edhrec": "https://edhrec.com/route/?cc=Sift+Through+Sands"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F129502%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=296230&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Sift+Through+Sands&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

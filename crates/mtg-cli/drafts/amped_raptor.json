@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3ed14ea7-ee62-4604-af3b-deafb00108c3",
+  "name": "Amped Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amped Raptor",
+      "oracle_fingerprint": "f40d4e174ae94e0652b97ca52cdedb64",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "by": "You", "from": "Hand" } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "ExileUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "rather": [
+                          {
+                            "PayEnergy": {
+                              "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

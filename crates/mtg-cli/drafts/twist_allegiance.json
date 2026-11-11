@@ -1,0 +1,62 @@
+{
+  "oracle_id": "5b33f3f0-80d3-4ea2-b73b-74510c9f6071",
+  "name": "Twist Allegiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twist Allegiance",
+      "oracle_fingerprint": "fc314abf8cfd78c26a93b1d6fda43dc3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "mine"
+                }
+              },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "theirs"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "theirs" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "mine" },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Bound": "mine" } } },
+              { "Untap": { "what": { "Bound": "theirs" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "mine" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "theirs" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

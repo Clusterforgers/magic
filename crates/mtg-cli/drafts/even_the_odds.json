@@ -1,0 +1,60 @@
+{
+  "oracle_id": "6cd3605c-7885-4d32-8585-3b0b0f733702",
+  "name": "Even the Odds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Even the Odds",
+      "oracle_fingerprint": "0fc2babf564b3b80e46871514c3eea7f",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Le",
+                          "right": {
+                            "Count": [{ "Type": "Creature" }, { "ControlledBy": "Asker" }]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

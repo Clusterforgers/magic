@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b98177b5-599f-41b0-aa1e-4769d7005bbd",
+  "name": "Superior Numbers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Superior Numbers",
+      "oracle_fingerprint": "46e0a5b1eb2a8800d322041cd7460582",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Gt",
+                          "right": {
+                            "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                          }
+                        }
+                      },
+                      "then": {
+                        "Difference": [
+                          { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          { "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }] }
+                        ]
+                      },
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

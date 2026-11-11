@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3508fd7d-ca02-47f9-8b0a-525f7bde4f57",
+  "name": "Hulk, Gamma Goliath",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hulk, Gamma Goliath",
+      "oracle_fingerprint": "15ca6c1ce7a650ac6c7050f70a1e968f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 91 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{R}{G}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4cf3fb65-9107-428a-8853-029ec97112b5",
+  "name": "Spinal Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinal Embrace",
+      "oracle_fingerprint": "4b4682a5f52e2bd954997cbe55443f4b",
+      "abilities": [
+        { "CastOnly": { "condition": "InCombat" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Is": { "Target": 0 } }] } },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "GainLife": {
+                              "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

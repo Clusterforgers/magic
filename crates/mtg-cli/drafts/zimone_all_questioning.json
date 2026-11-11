@@ -1,0 +1,137 @@
+{
+  "oracle_id": "6c044dd1-8938-4d62-a7b2-e2298de08f70",
+  "name": "Zimone, All-Questioning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone, All-Questioning",
+      "oracle_fingerprint": "9c4bf1ed33338b860bda0e5739dcfad6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": { "event": "Entered", "who": "You", "filter": [{ "Type": "Land" }] }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Any": [
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 2
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 3
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 5
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 7
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 11
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 13
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 17
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 19
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 23
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 29
+                      }
+                    },
+                    {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Eq",
+                        "right": 31
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Primo, the Indivisible",
+                      "colors": ["Green", "Blue"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "primo"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "primo" },
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

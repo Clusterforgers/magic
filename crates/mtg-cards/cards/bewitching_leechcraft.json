@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a5d803bc-7fd4-4570-8cd6-cb138727a66e",
+  "name": "Bewitching Leechcraft",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bewitching Leechcraft",
+      "oracle_fingerprint": "a2861d3056ea9b39c6155be301faa61b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

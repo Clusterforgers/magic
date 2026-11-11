@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ffae3ff4-67f7-4e41-b166-c63f88c7aa08",
+  "name": "Farrel's Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farrel's Mantle",
+      "oracle_fingerprint": "cc01cdd411593dc3ffb828360c1e82b1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": "Triggering" } }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "Triggering",
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Sum": [{ "Stat": { "of": "Triggering", "stat": "Power" } }, 2]
+                        }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": { "who": "Triggering", "quirk": "AssignsNoCombatDamage" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

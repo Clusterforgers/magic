@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3cbed112-9f2b-46b4-a9c3-bfd8a6856f79",
+  "name": "Printlifter Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Printlifter Ooze",
+      "oracle_fingerprint": "5a665fd2eeabfe95a103f063bf0d4fd9",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "TurnedFaceUp": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ooze",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ooze"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Bound": "token" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Disguise": "{3}{G}" } }
+      ]
+    }
+  ]
+}

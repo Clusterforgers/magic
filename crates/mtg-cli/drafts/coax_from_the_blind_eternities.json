@@ -1,0 +1,51 @@
+{
+  "oracle_id": "63488c95-c249-40d8-a579-3ca311ed57ca",
+  "name": "Coax from the Blind Eternities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coax from the Blind Eternities",
+      "oracle_fingerprint": "dce6d5c869351944722351e0d5b2c3b9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Search": {
+                        "zone": "Outside",
+                        "filter": [{ "Subtype": "Eldrazi" }, { "OwnedBy": "You" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+                  ],
+                  "second": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Subtype": "Eldrazi" },
+                            { "OwnedBy": "You" },
+                            { "In": "Exile" },
+                            { "Not": "FaceDown" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

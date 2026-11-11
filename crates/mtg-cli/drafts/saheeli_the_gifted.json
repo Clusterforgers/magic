@@ -1,0 +1,85 @@
+{
+  "oracle_id": "0e084342-31ff-47a5-9fd8-5b385add7a1a",
+  "name": "Saheeli, the Gifted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saheeli, the Gifted",
+      "oracle_fingerprint": "d8a999fc69a2989ffe2b658c8310b981",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "benefit": { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "as": "artifact",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "artifact" } } },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "copy" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

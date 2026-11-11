@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ef220170-c01a-4ca5-b887-f248c50227ee",
+  "name": "Faceless One",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Faceless One",
+      "oracle_fingerprint": "13143a1b1ce8948ebef16aace6291563",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 107 }
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

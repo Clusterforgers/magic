@@ -1,0 +1,44 @@
+{
+  "oracle_id": "202b275e-e0c4-482d-abe9-c5e6360208f3",
+  "name": "Fight with Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fight with Fire",
+      "oracle_fingerprint": "a591a2fa78ffb562f8db496ad0128dd2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}{R}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
+                }
+              },
+              {
+                "what": "AnyTarget",
+                "bounds": {
+                  "min": 0,
+                  "max": { "When": { "condition": "Kicked", "then": 10, "otherwise": 0 } }
+                },
+                "divide": 10
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "DealDamage": { "to": { "Target": 1 }, "amount": "Divided" } }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

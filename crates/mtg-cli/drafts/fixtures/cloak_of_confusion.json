@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "f5fd387e-d77f-4502-8d2e-752a53f577fc",
+  "oracle_id": "5d258409-28d3-4eac-9f1a-3e494db818bf",
+  "multiverse_ids": [
+    184669
+  ],
+  "mtgo_id": 30400,
+  "mtgo_foil_id": 30401,
+  "name": "Cloak of Confusion",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/f5fd387e-d77f-4502-8d2e-752a53f577fc",
+  "scryfall_uri": "https://scryfall.com/card/me2/82/cloak-of-confusion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625",
+    "normal": "https://cards.scryfall.io/normal/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625",
+    "large": "https://cards.scryfall.io/large/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625",
+    "png": "https://cards.scryfall.io/png/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.png?1783942625",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.webp?1783942625",
+    "grid": "https://cards.scryfall.io/grid/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.webp?1783942625",
+    "display": "https://cards.scryfall.io/display/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.webp?1783942625",
+    "art": "https://cards.scryfall.io/art/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.webp?1783942625",
+    "crop": "https://cards.scryfall.io/crop/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.webp?1783942625",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/5/f5fd387e-d77f-4502-8d2e-752a53f577fc.jpg?1783942625"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature you control\nWhenever enchanted creature attacks and isn't blocked, you may have it assign no combat damage this turn. If you do, defending player discards a card at random.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f5fd387e-d77f-4502-8d2e-752a53f577fc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5d258409-28d3-4eac-9f1a-3e494db818bf&unique=prints",
+  "collector_number": "82",
+  "digital": true,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Margaret Organ-Kean",
+  "artist_ids": [
+    "95951caa-bec8-4720-b836-471f7e7740cb"
+  ],
+  "illustration_id": "d27125d0-00f1-4fda-a925-3909dce36fbb",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28148,
+  "penny_rank": 14107,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184669&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCloak%2Bof%2BConfusion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCloak%2Bof%2BConfusion",
+    "edhrec": "https://edhrec.com/route/?cc=Cloak+of+Confusion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DCloak%2Bof%2BConfusion%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Cloak+of+Confusion&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30400?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

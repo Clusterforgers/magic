@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3f8e7a45-4c6e-4ee6-93d0-b7de9715ec97",
+  "name": "Lim-Dûl's Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lim-Dûl's Vault",
+      "oracle_fingerprint": "5dad0e76a0a2f890739d5afab386cf32",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Shuffle": {} },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "a4e86622-6f30-41b2-87d0-d345110e2387",
+  "oracle_id": "01bc8bfa-2e46-4324-a848-cc68bc9330d0",
+  "multiverse_ids": [
+    634762
+  ],
+  "tcgplayer_id": 519484,
+  "cardmarket_id": 738603,
+  "name": "Doomsday Confluence",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/a4e86622-6f30-41b2-87d0-d345110e2387",
+  "scryfall_uri": "https://scryfall.com/card/who/67/doomsday-confluence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657",
+    "normal": "https://cards.scryfall.io/normal/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657",
+    "large": "https://cards.scryfall.io/large/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657",
+    "png": "https://cards.scryfall.io/png/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.png?1783914657",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.webp?1783914657",
+    "grid": "https://cards.scryfall.io/grid/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.webp?1783914657",
+    "display": "https://cards.scryfall.io/display/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.webp?1783914657",
+    "art": "https://cards.scryfall.io/art/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.webp?1783914657",
+    "crop": "https://cards.scryfall.io/crop/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.webp?1783914657",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/4/a4e86622-6f30-41b2-87d0-d345110e2387.jpg?1783914657"
+  },
+  "mana_cost": "{X}{X}{B}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose X. You may choose the same mode more than once.\n• Each player sacrifices a nonartifact creature of their choice.\n• Create a 3/3 black Dalek artifact creature token with menace.\n• Each opponent discards a card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "70606b58-b72e-46b4-931e-5e2490a83b29",
+      "component": "combo_piece",
+      "name": "Doomsday Confluence",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/70606b58-b72e-46b4-931e-5e2490a83b29"
+    },
+    {
+      "object": "related_card",
+      "id": "8fde90b3-cd39-4ac5-b326-9ecc3d7d0d04",
+      "component": "token",
+      "name": "Dalek",
+      "type_line": "Token Artifact Creature — Dalek",
+      "uri": "https://api.scryfall.com/cards/8fde90b3-cd39-4ac5-b326-9ecc3d7d0d04"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a4e86622-6f30-41b2-87d0-d345110e2387/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A01bc8bfa-2e46-4324-a848-cc68bc9330d0&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dominik Mayer",
+  "artist_ids": [
+    "c3439c4a-1fee-4e33-9b89-18dac27ac927"
+  ],
+  "illustration_id": "7829649e-dc70-4acc-98a6-33d61a5e01d2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9088,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://infinite.tcgplayer.com/article/TCGplayer-s-Exclusive-Universes-Beyond-Doctor-Who-Preview-Cards/4ccda5b9-31d2-443b-b991-efae8723f58e/",
+    "previewed_at": "2023-10-05"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.98",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "0.55",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634762&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDoomsday%2BConfluence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDoomsday%2BConfluence",
+    "edhrec": "https://edhrec.com/route/?cc=Doomsday+Confluence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519484%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738603&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Doomsday+Confluence&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

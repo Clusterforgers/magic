@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c47050c2-9b46-427e-85d6-058fd6a61e67",
+  "name": "Windshaper Planetar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Windshaper Planetar",
+      "oracle_fingerprint": "0aa99b73928fab8d49d18df85f68f851",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

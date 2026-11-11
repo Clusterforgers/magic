@@ -1,0 +1,173 @@
+{
+  "object": "card",
+  "id": "58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c",
+  "oracle_id": "e77e97d7-58ff-4454-ba49-66182e550f12",
+  "multiverse_ids": [
+    616916
+  ],
+  "mtgo_id": 112082,
+  "arena_id": 84778,
+  "tcgplayer_id": 499458,
+  "cardmarket_id": 716940,
+  "name": "Gorbag of Minas Morgul",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c",
+  "scryfall_uri": "https://scryfall.com/card/ltr/86/gorbag-of-minas-morgul?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:18:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304",
+    "normal": "https://cards.scryfall.io/normal/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304",
+    "large": "https://cards.scryfall.io/large/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304",
+    "png": "https://cards.scryfall.io/png/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.png?1783916304",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.webp?1783916304",
+    "grid": "https://cards.scryfall.io/grid/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.webp?1783916304",
+    "display": "https://cards.scryfall.io/display/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.webp?1783916304",
+    "art": "https://cards.scryfall.io/art/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.webp?1783916304",
+    "crop": "https://cards.scryfall.io/crop/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.webp?1783916304",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/8/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c.jpg?1783916304"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Orc Soldier",
+  "oracle_text": "Whenever a Goblin or Orc you control deals combat damage to a player, you may sacrifice it. When you do, choose one —\n• Draw a card.\n• Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b29d7556-9051-4451-812e-91513ef10e62",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/b29d7556-9051-4451-812e-91513ef10e62"
+    },
+    {
+      "object": "related_card",
+      "id": "11af26b2-a317-48f5-b6c8-226b5c8e2368",
+      "component": "combo_piece",
+      "name": "Gorbag of Minas Morgul",
+      "type_line": "Legendary Creature — Orc Soldier",
+      "uri": "https://api.scryfall.com/cards/11af26b2-a317-48f5-b6c8-226b5c8e2368"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/58aafdb6-1c8c-4fc4-a52e-3e601be7fb0c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae77e97d7-58ff-4454-ba49-66182e550f12&unique=prints",
+  "collector_number": "86",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Brock",
+  "artist_ids": [
+    "ce381d25-868c-4f13-b1e9-e7cd2f67e994"
+  ],
+  "illustration_id": "d1d020ce-239e-46fa-a6b9-7147b0d5d395",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9003,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=-hmaJkWtKzE",
+    "previewed_at": "2023-06-07"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.15",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616916&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGorbag%2Bof%2BMinas%2BMorgul",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGorbag%2Bof%2BMinas%2BMorgul",
+    "edhrec": "https://edhrec.com/route/?cc=Gorbag+of+Minas+Morgul"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499458%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716940&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112082?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

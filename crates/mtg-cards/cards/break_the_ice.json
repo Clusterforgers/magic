@@ -1,0 +1,17 @@
+{
+  "oracle_id": "22ec98d2-0ac5-48a2-b48b-c6a98f35ecf0",
+  "name": "Break the Ice",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Break the Ice",
+      "oracle_fingerprint": "353a05f60bed55ecc55731d833d4be83",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 54 } }
+        },
+        { "Keyword": { "Overload": "{4}{B}{B}" } }
+      ]
+    }
+  ]
+}

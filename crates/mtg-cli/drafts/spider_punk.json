@@ -1,0 +1,32 @@
+{
+  "oracle_id": "03bf7a90-78c1-4e83-8553-e22d85e49876",
+  "name": "Spider-Punk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Punk",
+      "oracle_fingerprint": "6eb3cd3f13ec8ae7c195068d33f873a3",
+      "abilities": [
+        { "Keyword": "Riot" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spider" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Riot" }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                ]
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "DamageCantBePrevented": {} } } }
+      ]
+    }
+  ]
+}

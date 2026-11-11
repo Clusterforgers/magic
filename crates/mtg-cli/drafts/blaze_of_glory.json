@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b330ac89-790e-4cc9-96a5-532c48252088",
+  "name": "Blaze of Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blaze of Glory",
+      "oracle_fingerprint": "a3b7f306e282d8a9ac359132aec2dfea",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": {
+                      "who": { "Target": 0 },
+                      "attacker": { "Each": [{ "Type": "Creature" }, "Attacking"] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "588eecbf-dcfc-4b97-b81c-8b9f3d39e08f",
+  "name": "Mortarion, Daemon Primarch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mortarion, Daemon Primarch",
+      "oracle_fingerprint": "ef23f52fabcda13bc719a4b7d5f11fae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

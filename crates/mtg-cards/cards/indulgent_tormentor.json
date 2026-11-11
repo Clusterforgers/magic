@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8b202c63-c961-4590-958f-d17e76610ab5",
+  "name": "Indulgent Tormentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indulgent Tormentor",
+      "oracle_fingerprint": "6e0dd125e3fe6219f1b3487d0675803c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [
+                    {
+                      "OneOf": [
+                        [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                        [{ "PayLife": 3 }]
+                      ]
+                    }
+                  ],
+                  "unpaid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "2a9f97c9-825b-43dc-96a5-807d1a15fdce",
+  "oracle_id": "5b7ccdd2-40aa-4619-a147-0792dc02b2e5",
+  "multiverse_ids": [
+    634743
+  ],
+  "tcgplayer_id": 519309,
+  "cardmarket_id": 738566,
+  "name": "Martha Jones",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/2a9f97c9-825b-43dc-96a5-807d1a15fdce",
+  "scryfall_uri": "https://scryfall.com/card/who/48/martha-jones?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:51:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669",
+    "normal": "https://cards.scryfall.io/normal/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669",
+    "large": "https://cards.scryfall.io/large/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669",
+    "png": "https://cards.scryfall.io/png/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.png?1783914669",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.webp?1783914669",
+    "grid": "https://cards.scryfall.io/grid/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.webp?1783914669",
+    "display": "https://cards.scryfall.io/display/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.webp?1783914669",
+    "art": "https://cards.scryfall.io/art/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.webp?1783914669",
+    "crop": "https://cards.scryfall.io/crop/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.webp?1783914669",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/a/2a9f97c9-825b-43dc-96a5-807d1a15fdce.jpg?1783914669"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Cleric",
+  "oracle_text": "Woman Who Walked the Earth — When Martha Jones enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, Martha Jones and up to one other target creature can't be blocked this turn.\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Investigate",
+    "Woman Who Walked the Earth",
+    "Doctor's companion"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1145be5c-62f5-43ef-8dea-3a1e85ad9b72",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/1145be5c-62f5-43ef-8dea-3a1e85ad9b72"
+    },
+    {
+      "object": "related_card",
+      "id": "6335929d-6de3-4278-9f4b-883453ad1dc6",
+      "component": "combo_piece",
+      "name": "Martha Jones",
+      "type_line": "Legendary Creature — Human Cleric",
+      "uri": "https://api.scryfall.com/cards/6335929d-6de3-4278-9f4b-883453ad1dc6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2a9f97c9-825b-43dc-96a5-807d1a15fdce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5b7ccdd2-40aa-4619-a147-0792dc02b2e5&unique=prints",
+  "collector_number": "48",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Correia",
+  "artist_ids": [
+    "d383f00d-0078-4c43-92f6-cbf62ab5df05"
+  ],
+  "illustration_id": "3634b428-bdce-4655-8b9b-0f9a8ae80e31",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9292,
+  "preview": {
+    "source": "Princess Weekes",
+    "source_uri": "https://youtu.be/yhFHKNTnMkg?si=t6VKcCCJVv54YfUf",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "0.85",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.45",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634743&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMartha%2BJones",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMartha%2BJones",
+    "edhrec": "https://edhrec.com/route/?cc=Martha+Jones"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519309%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738566&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Martha+Jones&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

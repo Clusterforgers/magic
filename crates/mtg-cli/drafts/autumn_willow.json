@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c8c868f8-19a5-4cc5-b769-aa382f7b97ad",
+  "name": "Autumn Willow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Autumn Willow",
+      "oracle_fingerprint": "c6b1c85643cd7e2b7695886eebbe6dcd",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "IgnoreHexproof": { "by": { "Target": 0 }, "what": "This", "shroud": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

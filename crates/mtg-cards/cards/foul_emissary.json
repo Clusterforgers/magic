@@ -1,0 +1,48 @@
+{
+  "oracle_id": "034c2b40-6bcc-4bb5-be94-4602496ddcc6",
+  "name": "Foul Emissary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Foul Emissary",
+      "oracle_fingerprint": "3c5ed0f7d11aa0e895feeca3b5ab1e16",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 202, "end": 323 }
+          }
+        }
+      ]
+    }
+  ]
+}

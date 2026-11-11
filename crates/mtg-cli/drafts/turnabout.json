@@ -1,0 +1,56 @@
+{
+  "oracle_id": "715d0777-4d36-463b-9102-6bb6bb00b7e9",
+  "name": "Turnabout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turnabout",
+      "oracle_fingerprint": "38e64bfd630ccf51f9d823221c8821da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardTypeOf": ["Artifact", "Creature", "Land"] },
+                  "as": "type"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "ChosenAs": "type" },
+                            "Untapped",
+                            { "ControlledBy": { "Target": 0 } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Untap": {
+                        "what": {
+                          "Each": [
+                            { "ChosenAs": "type" },
+                            "Tapped",
+                            { "ControlledBy": { "Target": 0 } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

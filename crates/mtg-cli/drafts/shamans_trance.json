@@ -1,0 +1,31 @@
+{
+  "oracle_id": "619d8d81-9e10-4353-b30d-a0f9c3451cd2",
+  "name": "Shaman's Trance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaman's Trance",
+      "oracle_fingerprint": "5eb4c98f3da843d58c53f93660f45098",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "OwnedBy": "You" } }],
+                      "from": "Graveyard",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

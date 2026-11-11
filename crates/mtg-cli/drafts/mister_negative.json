@@ -1,0 +1,49 @@
+{
+  "oracle_id": "c8da3262-826d-4ea8-bb22-06374bebefe5",
+  "name": "Mister Negative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mister Negative",
+      "oracle_fingerprint": "be2996f481fb2b7ca6c02ee2bc313108",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Let": { "as": "before", "amount": { "Life": "You" } } },
+                    { "ExchangeLife": { "with": { "Target": 0 } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Life": "You" },
+                            "op": "Lt",
+                            "right": { "Bound": "before" }
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": { "Difference": [{ "Bound": "before" }, { "Life": "You" }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

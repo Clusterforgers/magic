@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9baff93e-4ef9-404d-884b-f651a11f3742",
+  "name": "Fortune's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortune's Favor",
+      "oracle_fingerprint": "59c7ea4121bdfd6a634d6f6d9baf2677",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "SeparatePiles": {
+                  "who": { "Target": 0 },
+                  "what": { "Bound": "top" },
+                  "chooser": "You",
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

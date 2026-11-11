@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8bed92cc-b3f8-4201-bcbc-44535ff1bd96",
+  "name": "Tainted Adversary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tainted Adversary",
+      "oracle_fingerprint": "6e24f89c7cc7217404db05238ecd71af",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 328 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "04238d49-941e-4298-8ef6-8e8e723f4034",
+  "name": "Gorex, the Tombshell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorex, the Tombshell",
+      "oracle_fingerprint": "81d8d4e7bfd4b66fb7d19fe4c320e3da",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Times": { "by": 2, "of": "X" } }
+          }
+        },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

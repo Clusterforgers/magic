@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6c728edd-ab67-44ce-b19d-aa98dfce68bb",
+  "name": "Katilda, Dawnhart Prime",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Katilda, Dawnhart Prime",
+      "oracle_fingerprint": "e7935207bd217b5730533df1bd921c3f",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Werewolf" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 27, "end": 113 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}{G}" }, "Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

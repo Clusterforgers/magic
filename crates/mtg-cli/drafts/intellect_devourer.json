@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a06fa827-900b-46d4-8f48-b4e15964951a",
+  "name": "Intellect Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intellect Devourer",
+      "oracle_fingerprint": "2da1cc45204f6f9aea4ef1f8f3dd526c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Exile": {
+                        "what": { "Bound": "picked" },
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "play": true,
+                "spend_as": "AnyColor"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

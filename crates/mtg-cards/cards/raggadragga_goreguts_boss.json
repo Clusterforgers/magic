@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a7641ee0-9c0d-4201-9827-a775ed03797c",
+  "name": "Raggadragga, Goreguts Boss",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Raggadragga, Goreguts Boss",
+      "oracle_fingerprint": "7e0e65f44ec989883f4ccf44b267defa",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 57 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 128 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 7, "toughness": 7 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

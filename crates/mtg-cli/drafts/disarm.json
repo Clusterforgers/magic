@@ -1,0 +1,27 @@
+{
+  "oracle_id": "44d54814-2eeb-4df8-b8d3-789f0bcb307a",
+  "name": "Disarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disarm",
+      "oracle_fingerprint": "a169fa2d39c8f884466dcafa0b5848c3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Unattach": {
+                  "what": {
+                    "Each": [{ "AttachedTo": { "Target": 0 } }, { "Subtype": "Equipment" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

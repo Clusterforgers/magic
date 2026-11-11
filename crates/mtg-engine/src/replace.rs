@@ -629,6 +629,18 @@ fn counters_scaled(changed: CountersChanged, now: u32) -> Vec<Item> {
     }))]
 }
 
+/// Whether `by` changes the number in the event (`Pass::scale`).
+const fn scales(by: &ReplaceBy) -> bool {
+    matches!(
+        by,
+        ReplaceBy::Multiply(_)
+            | ReplaceBy::Add(_)
+            | ReplaceBy::Half
+            | ReplaceBy::Subtract(_)
+            | ReplaceBy::Cap(_)
+    )
+}
+
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
@@ -2006,14 +2018,7 @@ impl Pass<'_> {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
-            (
-                ReplaceBy::Multiply(_)
-                | ReplaceBy::Add(_)
-                | ReplaceBy::Half
-                | ReplaceBy::Subtract(_)
-                | ReplaceBy::Cap(_),
-                _,
-            ) => {
+            (by, _) if scales(by) => {
                 self.scale(at, by, &applied);
             }
             (

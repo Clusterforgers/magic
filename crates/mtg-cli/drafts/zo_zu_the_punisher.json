@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0e412b68-9179-4094-960a-95692428855b",
+  "name": "Zo-Zu the Punisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zo-Zu the Punisher",
+      "oracle_fingerprint": "d9106c15304761c94412121a8e01507e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Land" }], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "TriggeringFirst" }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

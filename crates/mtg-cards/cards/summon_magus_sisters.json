@@ -1,0 +1,143 @@
+{
+  "oracle_id": "06f11ff8-cc99-411d-b00b-464ba4b7b87d",
+  "name": "Summon: Magus Sisters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Magus Sisters",
+      "oracle_fingerprint": "198788defe6c1746ac0730ee8b8dd7cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "label": "Combine Powers!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Defense!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } }
+                        },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Fight!",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "label": "Combine Powers!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Defense!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } }
+                        },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Fight!",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "label": "Combine Powers!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Defense!",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } }
+                        },
+                        { "GainLife": { "amount": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Fight!",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Haste" }
+      ]
+    }
+  ]
+}

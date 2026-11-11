@@ -1,0 +1,89 @@
+{
+  "oracle_id": "090d815b-b2c8-48cd-a0b3-dc662d5352ac",
+  "name": "Thanos, the Mad Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thanos, the Mad Titan",
+      "oracle_fingerprint": "22bc638532099d17b782694a29694845",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": "{C}{W}{U}{B}{R}{G}",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              { "ChooseValue": { "kind": { "Options": ["odd", "even"] }, "as": "parity" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "parity", "word": "even" } },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Other",
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Eq",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Other",
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

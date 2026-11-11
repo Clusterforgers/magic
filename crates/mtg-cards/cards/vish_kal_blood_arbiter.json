@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba3bfe0c-2bd6-469c-802c-440b7caf7fb5",
+  "name": "Vish Kal, Blood Arbiter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vish Kal, Blood Arbiter",
+      "oracle_fingerprint": "ffb5030b769042c30012331e0d6fa175",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 117, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

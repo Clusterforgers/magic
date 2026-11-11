@@ -1,0 +1,21 @@
+{
+  "oracle_id": "fdd3482d-7bce-411b-80c4-956a12fc143d",
+  "name": "Darksteel Monolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Monolith",
+      "oracle_fingerprint": "5f5045c88cd787351d543fba3e9fea5c",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": ["Colorless"], "from": "Hand", "free": true, "once": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

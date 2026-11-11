@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8d4d70c4-0490-4239-ac8f-dd1d1a008f08",
+  "name": "Anurid Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anurid Scavenger",
+      "oracle_fingerprint": "ff442699d8f83cb802522a1a3cc851d4",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ToLibrary": { "from": "Graveyard", "filter": [], "bottom": true } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

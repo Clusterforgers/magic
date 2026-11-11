@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fa8b3557-b35a-4a68-ab85-cf09683f3bc5",
+  "name": "Jiang Yanggu, Alone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jiang Yanggu, Alone",
+      "oracle_fingerprint": "87c6635d12917cd7f96ee2b268544b77",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "AttackingPlayer": "EachPlayer" }
+                ]
+              }
+            },
+            "effects": [
+              { "Discard": {} },
+              { "Draw": {} },
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": "+1/+1",
+                  "count": { "Tallied": { "who": "You", "what": "Discarded" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

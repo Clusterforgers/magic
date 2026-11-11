@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f0db78c7-09b5-4981-8ca8-6dbab597c5d9",
+  "name": "Waylay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waylay",
+      "oracle_fingerprint": "14c123a13382aefffdd915b16654fc83",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 3,
+                  "as": "knights"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Cleanup" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "knights" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

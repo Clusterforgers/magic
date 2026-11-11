@@ -1,0 +1,20 @@
+{
+  "oracle_id": "20fa17d4-9c3e-470b-9993-a4a2799e33d1",
+  "name": "Wall of Caltrops",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wall of Caltrops",
+      "oracle_fingerprint": "a9174f1fc8fe017b51c85f8a4f68b971",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 39, "end": 424 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0f1c14c5-7a28-47b0-a603-33cc592b00ad",
+  "name": "Soraya the Falconer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Soraya the Falconer",
+      "oracle_fingerprint": "8725c9fff1a2754d084d00c34f9c79b9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Bird" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 26, "end": 421 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "727511d8-be1a-4c2e-92f6-5cc9d67a2b0c",
+  "oracle_id": "579225b5-50e2-4891-8871-0bf6dbc07e33",
+  "multiverse_ids": [],
+  "resource_id": "E76A8170833FC651C4AB8B59C5DF64CF7E07D464BE2C024DF7BA3D3EA7DDD8DA",
+  "mtgo_id": 156402,
+  "tcgplayer_id": 717804,
+  "cardmarket_id": 909796,
+  "name": "Omnath, Locus of the Void",
+  "lang": "en",
+  "released_at": "2026-10-02",
+  "uri": "https://api.scryfall.com/cards/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c",
+  "scryfall_uri": "https://scryfall.com/card/frc/3/omnath-locus-of-the-void?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-09-17T11:26:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395",
+    "normal": "https://cards.scryfall.io/normal/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395",
+    "large": "https://cards.scryfall.io/large/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395",
+    "png": "https://cards.scryfall.io/png/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.png?1789644395",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.webp?1789644395",
+    "grid": "https://cards.scryfall.io/grid/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.webp?1789644395",
+    "display": "https://cards.scryfall.io/display/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.webp?1789644395",
+    "art": "https://cards.scryfall.io/art/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.webp?1789644395",
+    "crop": "https://cards.scryfall.io/crop/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.webp?1789644395",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/2/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c.jpg?1789644395"
+  },
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Elemental",
+  "oracle_text": "Omnath gets +1/+1 for each unspent mana you have.\nIf you would lose unspent mana, that mana becomes colorless instead.\nLandfall — Whenever a land you control enters, add {C}{C}.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Landfall"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cfd10490-7397-4143-bda7-d388b877636f",
+  "set": "frc",
+  "set_name": "Reality Fracture Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/cfd10490-7397-4143-bda7-d388b877636f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/frc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/727511d8-be1a-4c2e-92f6-5cc9d67a2b0c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A579225b5-50e2-4891-8871-0bf6dbc07e33&unique=prints",
+  "collector_number": "3",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "echoverse",
+  "flavor_text": "Unconnected to the land, it hungers.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Arif Wijaya",
+  "artist_ids": [
+    "a1d47f27-cbf6-4a7b-bbbb-8f051c9069d6"
+  ],
+  "illustration_id": "a0d63eec-c6d4-49f1-ac12-08bb2d6ea162",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10489,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://youtu.be/mvTyHbTbfBo",
+    "previewed_at": "2026-09-16"
+  },
+  "prices": {
+    "usd": "3.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.89",
+    "eur_foil": null,
+    "tix": "1.11"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOmnath%252C%2BLocus%2Bof%2Bthe%2BVoid",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOmnath%252C%2BLocus%2Bof%2Bthe%2BVoid",
+    "edhrec": "https://edhrec.com/route/?cc=Omnath%2C+Locus+of+the+Void"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F717804%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=909796&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156402?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

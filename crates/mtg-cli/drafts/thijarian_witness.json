@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d273033b-3b8b-4ce9-afe8-208d82dd20f1",
+  "name": "Thijarian Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thijarian Witness",
+      "oracle_fingerprint": "2293eca05b256e75782527b04445aa8f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Any": [
+                { "Matches": { "subject": "Triggering", "selector": ["AttackingAlone"] } },
+                {
+                  "All": [
+                    { "Matches": { "subject": "Triggering", "selector": ["Blocking"] } },
+                    {
+                      "CountOf": {
+                        "subject": { "Each": ["Blocking"] },
+                        "selector": ["Blocking"],
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering" } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

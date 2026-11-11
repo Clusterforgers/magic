@@ -1,0 +1,58 @@
+{
+  "oracle_id": "3bc757c1-3adb-4321-8832-8e1cc9e687f7",
+  "name": "Lurrus of the Dream-Den",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurrus of the Dream-Den",
+      "oracle_fingerprint": "ea61c132c77cc3ae272dc19079571d14",
+      "abilities": [
+        {
+          "Keyword": {
+            "Companion": {
+              "Each": {
+                "of": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" },
+                      { "Type": "Battle" }
+                    ]
+                  }
+                ],
+                "has": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }]
+              }
+            }
+          }
+        },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                ],
+                "from": "Graveyard",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

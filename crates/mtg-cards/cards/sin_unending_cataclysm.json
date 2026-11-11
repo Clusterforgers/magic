@@ -1,0 +1,33 @@
+{
+  "oracle_id": "48534bbf-06b6-46a0-8a86-b14f38caee58",
+  "name": "Sin, Unending Cataclysm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sin, Unending Cataclysm",
+      "oracle_fingerprint": "1bbf60dbac3588f6e2b9f9644ca3fcba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 207 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCountersOf": { "on": { "Target": 0 }, "of": "This" } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "153be768-ddad-44f2-bcdd-c40353c807d7",
+  "oracle_id": "d7947858-f11d-438c-8ad3-991afe950a11",
+  "multiverse_ids": [
+    534866
+  ],
+  "resource_id": "C15860B3BF3E155F8FBD6F62FA94AE9EED5CA51C0054741F47180C1E820811B8",
+  "mtgo_id": 93146,
+  "arena_id": 78437,
+  "tcgplayer_id": 248087,
+  "cardmarket_id": 574905,
+  "name": "Diregraf Horde",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/153be768-ddad-44f2-bcdd-c40353c807d7",
+  "scryfall_uri": "https://scryfall.com/card/mid/96/diregraf-horde?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:53:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620",
+    "normal": "https://cards.scryfall.io/normal/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620",
+    "large": "https://cards.scryfall.io/large/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620",
+    "png": "https://cards.scryfall.io/png/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.png?1783925620",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.webp?1783925620",
+    "grid": "https://cards.scryfall.io/grid/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.webp?1783925620",
+    "display": "https://cards.scryfall.io/display/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.webp?1783925620",
+    "art": "https://cards.scryfall.io/art/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.webp?1783925620",
+    "crop": "https://cards.scryfall.io/crop/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.webp?1783925620",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/5/153be768-ddad-44f2-bcdd-c40353c807d7.jpg?1783925620"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Zombie",
+  "oracle_text": "When this creature enters, create two 2/2 black Zombie creature tokens with decayed. When you do, exile up to two target cards from graveyards. (A creature with decayed can't block. When it attacks, sacrifice it at end of combat.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6adb8607-1066-451d-a719-74ad32358278",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/6adb8607-1066-451d-a719-74ad32358278"
+    },
+    {
+      "object": "related_card",
+      "id": "153be768-ddad-44f2-bcdd-c40353c807d7",
+      "component": "combo_piece",
+      "name": "Diregraf Horde",
+      "type_line": "Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/153be768-ddad-44f2-bcdd-c40353c807d7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/153be768-ddad-44f2-bcdd-c40353c807d7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad7947858-f11d-438c-8ad3-991afe950a11&unique=prints",
+  "collector_number": "96",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Negrea",
+  "artist_ids": [
+    "fbfc9dde-935f-4b2f-a0e3-bcec89809f6d"
+  ],
+  "illustration_id": "08a9468c-918a-42ec-a740-ce0c8e5f1625",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18552,
+  "penny_rank": 14852,
+  "preview": {
+    "source": "Owl Central Games",
+    "source_uri": "https://www.facebook.com/owlcentralgames/photos/a.1088264351188015/4910578622289883/",
+    "previewed_at": "2021-09-07"
+  },
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=534866&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDiregraf%2BHorde",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDiregraf%2BHorde",
+    "edhrec": "https://edhrec.com/route/?cc=Diregraf+Horde"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248087%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574905&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93146?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

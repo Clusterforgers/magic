@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f47419a5-b975-4934-a987-ea064a0c7c1a",
+  "name": "Warrior's Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior's Blades",
+      "oracle_fingerprint": "582366ade54c605b31cc6926960d02a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

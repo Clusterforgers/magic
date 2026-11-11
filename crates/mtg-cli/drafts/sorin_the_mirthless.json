@@ -1,0 +1,73 @@
+{
+  "oracle_id": "fbffaf9f-40e7-4113-a037-533b733cebce",
+  "name": "Sorin the Mirthless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin the Mirthless",
+      "oracle_fingerprint": "14d02f83a7a25673291b48f7b7b55de5",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 2,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 13 } },
+              { "GainLife": { "amount": 13 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

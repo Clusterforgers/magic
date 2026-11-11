@@ -1,0 +1,64 @@
+{
+  "oracle_id": "212af747-2ac1-4d33-9456-8b3cc8988f5d",
+  "name": "Find // Finality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Find",
+      "oracle_fingerprint": "806bccd76949a46e358841c03c881427",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Finality",
+      "oracle_fingerprint": "0c9ee0c4d6254cfc2704290609375324",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "creature"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "creature" },
+                        "counter": "+1/+1",
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

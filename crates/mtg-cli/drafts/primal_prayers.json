@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8d087fe0-d554-4d7c-ba22-32db2cf71887",
+  "name": "Primal Prayers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Prayers",
+      "oracle_fingerprint": "b4c1d546864200aa945905c0812233b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ],
+                "from": "Hand",
+                "flash": true,
+                "rather": [{ "PayEnergy": 1 }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

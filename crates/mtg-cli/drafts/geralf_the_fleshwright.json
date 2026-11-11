@@ -1,0 +1,76 @@
+{
+  "oracle_id": "a62e6cf4-1adb-4c28-b24b-91287bb23e96",
+  "name": "Geralf, the Fleshwright",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geralf, the Fleshwright",
+      "oracle_fingerprint": "857dff8a8a94b2cd8d1131a4939b9d52",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                    "op": "Ge",
+                    "right": 2
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Rogue",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Rogue"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "You",
+                          "filter": [{ "Subtype": "Zombie" }]
+                        }
+                      },
+                      -1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

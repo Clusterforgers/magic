@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7255705c-b788-4bb1-824a-9262f4a0864e",
+  "name": "Elemental Teachings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Teachings",
+      "oracle_fingerprint": "afc1e4ce7b9d4522a925d288638cbce0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "min": 0, "max": 4 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Bound": "found" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Graveyard" } },
+              {
+                "Move": { "what": { "Bound": "rest" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

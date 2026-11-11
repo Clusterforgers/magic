@@ -1,0 +1,83 @@
+{
+  "oracle_id": "97f3afdb-dcee-44da-b210-c8d20030baff",
+  "name": "Questing Phelddagrif",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Questing Phelddagrif",
+      "oracle_fingerprint": "3cbe582d9fc69a3a5e856e63c0e8fff6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Hippo",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hippo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddKeyword": { "Protection": [{ "Color": "Black" }] } },
+                    { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

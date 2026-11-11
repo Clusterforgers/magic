@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3d19823a-dbb8-4384-81f4-5c6818b7f46d",
+  "name": "Agrus Kos, Eternal Soldier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Agrus Kos, Eternal Soldier",
+      "oracle_fingerprint": "3107dd6398ea0bb29b6b47c38b244201",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

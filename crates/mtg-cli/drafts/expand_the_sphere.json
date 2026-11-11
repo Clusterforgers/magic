@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0fac3187-9b86-4854-854b-a4c203526a64",
+  "name": "Expand the Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expand the Sphere",
+      "oracle_fingerprint": "556212064d023b8c1e72d5002d324aa4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Is": { "Bound": "top" } }, { "Type": "Land" }, { "In": "Library" }]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "lands" } } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "lands" },
+                      "selector": [],
+                      "op": "Lt",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "Proliferate": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "lands" },
+                      "selector": [],
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

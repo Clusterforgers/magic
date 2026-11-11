@@ -1667,9 +1667,34 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
         .collect()
 }
 
+/// The wordings of a card's flash permission from its hand and of the revealed cards of hands and libraries.
+fn ep27_rule_texts(
+    rule: &GameRule,
+    condition: Option<&Condition>,
+    from: ZoneKind,
+) -> Option<Vec<String>> {
+    match (rule, from) {
+        (_, ZoneKind::Hand) => Some(super::ep27_flash::ep27_flash_texts(rule, condition, from)),
+        (GameRule::RevealHand(who), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(ep27_hand_revealed_text(who).into_iter().collect())
+        }
+        (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(vec![
+                "Play with the top card of your library revealed".to_owned(),
+            ])
+        }
+        (GameRule::RadiationGainsLife(Ref::You), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(vec![
+                "You gain life rather than lose life from radiation".to_owned(),
+            ])
+        }
+        _ => None,
+    }
+}
+
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
-    if from == ZoneKind::Hand {
-        return super::ep27_flash::ep27_flash_texts(rule, condition, from);
+    if let Some(texts) = ep27_rule_texts(rule, condition, from) {
+        return texts;
     }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
@@ -1688,20 +1713,11 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::CantBeCountered(Ref::Each(_)), ZoneKind::Battlefield) => {
             super::c11h_rules::c11h_cant_be_countered_texts(rule)
         }
-        (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) => {
-            vec!["Play with the top card of your library revealed".to_owned()]
-        }
-        (GameRule::RevealHand(who), ZoneKind::Battlefield) => {
-            ep27_hand_revealed_text(who).into_iter().collect()
-        }
         (GameRule::NoMaxHandSize(Ref::You), ZoneKind::Battlefield) => {
             vec!["You have no maximum hand size".to_owned()]
         }
         (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
             vec!["Players have no maximum hand size".to_owned()]
-        }
-        (GameRule::RadiationGainsLife(Ref::You), ZoneKind::Battlefield) => {
-            vec!["You gain life rather than lose life from radiation".to_owned()]
         }
         (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
             vec!["Skip your draw step".to_owned()]

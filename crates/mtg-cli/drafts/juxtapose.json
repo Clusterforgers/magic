@@ -1,0 +1,102 @@
+{
+  "oracle_id": "a52ccb40-e950-4cd0-93ab-50daa52b03f3",
+  "name": "Juxtapose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Juxtapose",
+      "oracle_fingerprint": "abd5af47daac44d11f24cbcdf3fcf99b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "GreatestAmong": {
+                          "stat": "ManaValue",
+                          "group": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    ]
+                  },
+                  "as": "my_creature"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "Target": 0 } },
+                      {
+                        "GreatestAmong": {
+                          "stat": "ManaValue",
+                          "group": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        }
+                      }
+                    ]
+                  },
+                  "as": "their_creature"
+                }
+              },
+              {
+                "ExchangeControl": {
+                  "what": [{ "Bound": "my_creature" }, { "Bound": "their_creature" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "ControlledBy": "You" },
+                      {
+                        "GreatestAmong": {
+                          "stat": "ManaValue",
+                          "group": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    ]
+                  },
+                  "as": "my_artifact"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "ControlledBy": { "Target": 0 } },
+                      {
+                        "GreatestAmong": {
+                          "stat": "ManaValue",
+                          "group": [{ "Type": "Artifact" }, { "ControlledBy": { "Target": 0 } }]
+                        }
+                      }
+                    ]
+                  },
+                  "as": "their_artifact"
+                }
+              },
+              {
+                "ExchangeControl": {
+                  "what": [{ "Bound": "my_artifact" }, { "Bound": "their_artifact" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

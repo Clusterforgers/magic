@@ -1,0 +1,20 @@
+{
+  "oracle_id": "157813c8-af83-41b5-9ffb-4abd167c1bfc",
+  "name": "Firestorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firestorm",
+      "oracle_fingerprint": "433dd8a8145f94898ff4621c1120d033",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": "X", "max": "X" } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

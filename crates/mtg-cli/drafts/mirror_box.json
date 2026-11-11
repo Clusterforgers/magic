@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3bed1944-58dc-4679-9aee-7be4d94fb55c",
+  "name": "Mirror Box",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Box",
+      "oracle_fingerprint": "aebf544c47b4d23efa196896622c9b1f",
+      "abilities": [
+        { "Rule": { "rule": { "NoLegendRule": "You" } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Not": "Token" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } },
+                      { "SharesName": "Affected" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Affected" } },
+                      { "SharesName": "Affected" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

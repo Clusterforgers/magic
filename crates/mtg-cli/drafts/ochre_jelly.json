@@ -1,0 +1,60 @@
+{
+  "oracle_id": "2b757d32-09a3-49cd-ada4-84b5335178ce",
+  "name": "Ochre Jelly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ochre Jelly",
+      "oracle_fingerprint": "cf68dde429641f6959543da34930ca3a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Let": {
+                  "as": "half",
+                  "amount": {
+                    "Half": {
+                      "of": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "up": false
+                    }
+                  }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "CreateToken": { "token": { "CopyOf": { "of": "This" } }, "as": "token" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "token" },
+                        "counter": "+1/+1",
+                        "count": { "Bound": "half" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

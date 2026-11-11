@@ -1,0 +1,42 @@
+{
+  "oracle_id": "901ee0e3-1011-40e1-815a-09246112e8dc",
+  "name": "Arcane Endeavor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Endeavor",
+      "oracle_fingerprint": "3cd7131637edbf4d8fc87778abd68e22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 8, "dice": 2, "choose": true, "results": [] } },
+              { "Draw": { "count": { "DieResult": "Chosen" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "DieResult": "Other" }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

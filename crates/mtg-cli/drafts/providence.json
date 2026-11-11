@@ -6,15 +6,7 @@
     {
       "name": "Providence",
       "oracle_fingerprint": "74b85f2a9ddcc79d312b06afada17fd9",
-      "abilities": [
-        { "Spell": { "effects": [{ "SetLife": { "amount": 26 } }] } },
-        {
-          "OpeningReveal": {
-            "when": { "StepBegins": { "step": "Upkeep" } },
-            "effects": [{ "SetLife": { "amount": 26 } }]
-          }
-        }
-      ]
+      "abilities": [{ "Spell": { "effects": [{ "SetLife": { "amount": 26 } }] } }]
     }
   ]
 }

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3416ac84-c5ef-44be-894f-ab3b89e592ce",
+  "name": "Undead Sprinter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Sprinter",
+      "oracle_fingerprint": "a6a3949359e06737b7325120c732ef36",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Zombie" } }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

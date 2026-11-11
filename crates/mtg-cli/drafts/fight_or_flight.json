@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2fc42640-983a-49ca-9020-7756135077b4",
+  "name": "Fight or Flight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fight or Flight",
+      "oracle_fingerprint": "980882f55cfc9d0318e14f5f526e7e9b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "Opponents" } },
+            "effects": [
+              {
+                "SeparatePiles": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] },
+                  "chooser": "Triggering",
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "rest" },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

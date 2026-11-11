@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f25af42d-f1bf-4bd3-aded-ecadafdbf6e6",
+  "name": "Do or Die",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Do or Die",
+      "oracle_fingerprint": "c63000f23e450e274f1e1997b550abab",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "SeparatePiles": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "chooser": { "Target": 0 },
+                  "as": "chosen",
+                  "rest_as": "other"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" }, "regenerate": false } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

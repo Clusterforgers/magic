@@ -1,0 +1,67 @@
+{
+  "oracle_id": "dbe792f9-22be-4972-b418-99a6190c4421",
+  "name": "Transmute Artifact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transmute Artifact",
+      "oracle_fingerprint": "1df0b1374de7b84b50138f1ff38de29f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }], "as": "sac" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Search": { "filter": [{ "Type": "Artifact" }], "as": "card" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } },
+                            "op": "Le",
+                            "right": { "Stat": { "of": { "Bound": "sac" }, "stat": "ManaValue" } }
+                          }
+                        },
+                        "then": [
+                          { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                        ],
+                        "otherwise": [
+                          {
+                            "Pay": {
+                              "cost": "{1}",
+                              "times": {
+                                "Difference": [
+                                  { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } },
+                                  { "Stat": { "of": { "Bound": "sac" }, "stat": "ManaValue" } }
+                                ]
+                              },
+                              "paid": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "card" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ],
+                              "unpaid": [
+                                { "Move": { "what": { "Bound": "card" }, "to": "Graveyard" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

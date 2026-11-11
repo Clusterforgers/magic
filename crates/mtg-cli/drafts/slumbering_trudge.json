@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d04bce9a-822b-4a52-8826-b503ef5f5b2e",
+  "name": "Slumbering Trudge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slumbering Trudge",
+      "oracle_fingerprint": "df2da8c14bb33899c478d372850c16be",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": { "Other": "stun" },
+                "count": { "Sum": [3, { "Times": { "by": -1, "of": "X" } }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

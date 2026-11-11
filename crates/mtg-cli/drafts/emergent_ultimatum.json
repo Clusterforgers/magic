@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0eecdfb3-3b05-4051-a660-060ff6df80ef",
+  "name": "Emergent Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergent Ultimatum",
+      "oracle_fingerprint": "984a76de2c0347825eaa044ab6ac60e5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }],
+                  "count": { "min": 0, "max": 3 },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opponent" },
+                  "from": { "Bound": "found" },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "chosen" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "rest" },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "536c1112-694f-42f8-a7b1-604389e54a95",
+  "name": "Chandra, the Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, the Firebrand",
+      "oracle_fingerprint": "a6cec82caa32b616c8290c2a08ac6f35",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 6 } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

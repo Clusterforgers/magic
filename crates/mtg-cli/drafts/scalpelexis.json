@@ -1,0 +1,39 @@
+{
+  "oracle_id": "99eb50ef-352f-47c4-91e3-32813cbe0649",
+  "name": "Scalpelexis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scalpelexis",
+      "oracle_fingerprint": "dae7a34df9769a3e17e132ae1259a1bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": { "of": [{ "Is": { "Bound": "exiled" } }], "stat": "Name" }
+                      },
+                      "op": "Lt",
+                      "right": { "CountOf": { "of": { "Bound": "exiled" }, "filter": [] } }
+                    }
+                  },
+                  "effects": [
+                    { "ExileTop": { "who": "TriggeringPlayer", "count": 4, "as": "exiled" } }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

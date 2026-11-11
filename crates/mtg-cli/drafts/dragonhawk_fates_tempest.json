@@ -1,0 +1,70 @@
+{
+  "oracle_id": "f7f435bc-1716-4412-9505-a1f2f2d83d08",
+  "name": "Dragonhawk, Fate's Tempest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonhawk, Fate's Tempest",
+      "oracle_fingerprint": "7ed612b9a3004e6e76592cb92a20b990",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "as": "impulse"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": "Opponents",
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "CountOf": {
+                                "of": { "Bound": "impulse" },
+                                "filter": [{ "In": "Exile" }]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

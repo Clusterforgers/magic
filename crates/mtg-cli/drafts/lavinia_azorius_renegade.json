@@ -1,0 +1,54 @@
+{
+  "oracle_id": "81ba3a33-0e04-4f68-9a42-1dd717733b57",
+  "name": "Lavinia, Azorius Renegade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavinia, Azorius Renegade",
+      "oracle_fingerprint": "c47ed8c122be851ca72e9a8c474a567b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "Not": { "Type": "Creature" } },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          "op": "Gt",
+                          "right": {
+                            "Count": [
+                              { "Type": "Land" },
+                              { "ControlledBy": { "ControllerOf": "Candidate" } }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

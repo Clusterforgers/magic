@@ -1,0 +1,41 @@
+{
+  "oracle_id": "5bc8e918-7824-4ad7-a5c0-05537ce81641",
+  "name": "Jungle Patrol",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jungle Patrol",
+      "oracle_fingerprint": "8ba4160561240ff7d0b6a2a9b4c24e92",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wood",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wall"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Defender" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 116 }
+          }
+        }
+      ]
+    }
+  ]
+}

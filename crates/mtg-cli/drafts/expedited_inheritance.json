@@ -1,0 +1,47 @@
+{
+  "oracle_id": "11e2f581-7c3c-4f2f-877f-e41540ab967e",
+  "name": "Expedited Inheritance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedited Inheritance",
+      "oracle_fingerprint": "5c85186d936702969853bf3d6e2c7ce1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": { "Each": [{ "Type": "Creature" }] } } },
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "effects": [
+                    {
+                      "ExileTop": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "count": "Triggering",
+                        "as": "impulse"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "ControllerOf": "Triggering" },
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

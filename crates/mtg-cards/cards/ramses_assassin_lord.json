@@ -1,0 +1,26 @@
+{
+  "oracle_id": "170182ed-af1d-442a-8868-d74a96e17f03",
+  "name": "Ramses, Assassin Lord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ramses, Assassin Lord",
+      "oracle_fingerprint": "eb36d1d25b5185c9f10377a9be8c38a0",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Assassin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 50, "end": 164 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0c85a577-db82-4a36-bc42-49644eba1cf2",
+  "name": "Zevlor, Elturel Exile",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zevlor, Elturel Exile",
+      "oracle_fingerprint": "55dc424c2bcc295c742faa257ac3ac20",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

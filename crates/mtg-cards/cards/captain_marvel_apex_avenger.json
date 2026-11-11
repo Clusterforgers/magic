@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6d86d783-7116-4426-8c0f-718c2d904887",
+  "name": "Captain Marvel, Apex Avenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Captain Marvel, Apex Avenger",
+      "oracle_fingerprint": "c0d2f16332a46bd0eb37bad8f77ce52f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Indestructible" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 38, "end": 184 }
+          }
+        }
+      ]
+    }
+  ]
+}

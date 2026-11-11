@@ -1,0 +1,50 @@
+{
+  "oracle_id": "55ae9711-65ac-4166-8a51-1deeb10a8904",
+  "name": "Dwarven Sea Clan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Sea Clan",
+      "oracle_fingerprint": "ae4ee066ffd242db33222846371d10d4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "All": ["InCombat", { "Not": { "Step": "EndCombat" } }] },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    {
+                      "Test": {
+                        "left": {
+                          "Count": [
+                            { "Subtype": "Island" },
+                            { "ControlledBy": { "ControllerOf": "Candidate" } }
+                          ]
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

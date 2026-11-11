@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dff11626-ad4d-443a-b7db-f508790b5fd2",
+  "name": "Namor the Sub-Mariner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Namor the Sub-Mariner",
+      "oracle_fingerprint": "b74a10bf0b445665c50a28495814ee5c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

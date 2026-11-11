@@ -1,0 +1,91 @@
+{
+  "oracle_id": "18ed0c8a-db8f-4247-87c4-544b833f01bd",
+  "name": "Master of Ceremonies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Ceremonies",
+      "oracle_fingerprint": "01e427c2f09c34272a7d087d388c2297",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "p" },
+                        "kind": { "Options": ["money", "friends", "secrets"] },
+                        "as": "choice"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "choice", "word": "money" } },
+                        "then": [
+                          { "CreateToken": { "token": { "Named": "treasure" } } },
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "p" },
+                              "token": { "Named": "treasure" }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "choice", "word": "friends" } },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Citizen",
+                                  "colors": ["Green", "White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Citizen"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "p" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Citizen",
+                                  "colors": ["Green", "White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Citizen"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "choice", "word": "secrets" } },
+                        "then": [{ "Draw": {} }, { "Draw": { "who": { "Bound": "p" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

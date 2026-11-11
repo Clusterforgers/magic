@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ead0820e-fc6b-4ab2-9110-048d6d53985d",
+  "name": "Panther Pounce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panther Pounce",
+      "oracle_fingerprint": "d7da99241fb27e02d201b6c1d5fec687",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "CreateToken": { "who": { "Target": 0 }, "token": { "Named": "clue" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

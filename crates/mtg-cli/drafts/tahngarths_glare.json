@@ -1,0 +1,27 @@
+{
+  "oracle_id": "390cbc61-6291-4e7d-b262-4de57c827702",
+  "name": "Tahngarth's Glare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tahngarth's Glare",
+      "oracle_fingerprint": "be73c4bfb2218f54488f17a452e0cf06",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

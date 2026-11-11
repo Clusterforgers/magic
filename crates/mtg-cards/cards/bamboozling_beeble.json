@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b8645fe4-884b-4511-b138-ea4ba2eee943",
+  "name": "Bamboozling Beeble",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bamboozling Beeble",
+      "oracle_fingerprint": "19bacbdd0644a18193a4f8f94b5a99b9",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Robot" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 23, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

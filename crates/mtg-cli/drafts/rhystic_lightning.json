@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f6d371e6-e25e-4820-8cf7-f692a4d9be11",
+  "name": "Rhystic Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Lightning",
+      "oracle_fingerprint": "4e7c9b0c751cfc375690e64342aec612",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "cost": "{2}",
+                  "paid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }],
+                  "unpaid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

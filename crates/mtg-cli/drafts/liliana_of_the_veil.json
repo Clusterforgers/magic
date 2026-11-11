@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0ba134d8-ee7d-48ec-8dc6-57942b8e9261",
+  "name": "Liliana of the Veil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana of the Veil",
+      "oracle_fingerprint": "2a87e24ece54a0df204f5221dafa2036",
+      "abilities": [
+        {
+          "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Discard": { "who": "EachPlayer" } }] }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "SeparatePiles": {
+                  "what": { "Each": [{ "ControlledBy": { "Target": 0 } }] },
+                  "chooser": { "Target": 0 },
+                  "as": "pile",
+                  "rest_as": "other_pile"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "pile" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "pile" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0d6e9468-adb2-4feb-87cf-9113db8717b1",
+  "name": "Musician",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Musician",
+      "oracle_fingerprint": "588ffd612959c65522f4a4a4b9a3cd80",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 364 }
+          }
+        }
+      ]
+    }
+  ]
+}

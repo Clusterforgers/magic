@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a2d3e3f0-7399-4eb9-a0cf-831710c3d431",
+  "name": "Presumed Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Presumed Dead",
+      "oracle_fingerprint": "a33e2e619bb15f3be348edec0ee4baa8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "under": { "OwnerOf": "This" } } },
+                                "as": "returned"
+                              }
+                            },
+                            { "Suspect": { "what": { "Bound": "returned" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

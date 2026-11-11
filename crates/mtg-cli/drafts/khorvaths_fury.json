@@ -1,0 +1,70 @@
+{
+  "oracle_id": "c3575cf9-847a-472c-94b3-ef70712c297d",
+  "name": "Khorvath's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khorvath's Fury",
+      "oracle_fingerprint": "0f6bc5c9ca2d2b7aec4de7494b230fed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Options": ["friend", "foe"] }, "as": "side" } },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "side", "word": "friend" } },
+                        "then": [
+                          {
+                            "Discard": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              },
+                              "as": "discarded"
+                            }
+                          },
+                          {
+                            "Draw": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Sum": [
+                                  {
+                                    "Count": [
+                                      { "In": "Graveyard" },
+                                      { "Is": { "Bound": "discarded" } }
+                                    ]
+                                  },
+                                  1
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "player" },
+                              "amount": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

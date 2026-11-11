@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "0cd26961-ed53-417c-8a1e-2641d5f05640",
+  "oracle_id": "84137013-7a23-4bc8-b855-04889373fdae",
+  "multiverse_ids": [
+    636355
+  ],
+  "mtgo_id": 120112,
+  "tcgplayer_id": 517261,
+  "cardmarket_id": 736420,
+  "name": "Witch-king, Sky Scourge",
+  "lang": "en",
+  "released_at": "2023-11-03",
+  "uri": "https://api.scryfall.com/cards/0cd26961-ed53-417c-8a1e-2641d5f05640",
+  "scryfall_uri": "https://scryfall.com/card/ltc/511/witch-king-sky-scourge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:43:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189",
+    "normal": "https://cards.scryfall.io/normal/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189",
+    "large": "https://cards.scryfall.io/large/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189",
+    "png": "https://cards.scryfall.io/png/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.png?1783914189",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.webp?1783914189",
+    "grid": "https://cards.scryfall.io/grid/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.webp?1783914189",
+    "display": "https://cards.scryfall.io/display/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.webp?1783914189",
+    "art": "https://cards.scryfall.io/art/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.webp?1783914189",
+    "crop": "https://cards.scryfall.io/crop/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.webp?1783914189",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/c/0cd26961-ed53-417c-8a1e-2641d5f05640.jpg?1783914189"
+  },
+  "mana_cost": "{5}{B}{R}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Wraith Noble",
+  "oracle_text": "Flying\nWhenever you attack with one or more Wraiths, exile the top X cards of your library, where X is their total power. You may play those cards this turn.\nUndying (When this creature dies, if it had no +1/+1 counters on it, return it to the battlefield under its owner's control with a +1/+1 counter on it.)",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Undying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0cd26961-ed53-417c-8a1e-2641d5f05640/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A84137013-7a23-4bc8-b855-04889373fdae&unique=prints",
+  "collector_number": "511",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "d837095e-b97b-4728-9903-21b64c3b5553",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 12112,
+  "prices": {
+    "usd": "2.74",
+    "usd_foil": "1.74",
+    "usd_etched": null,
+    "eur": "2.77",
+    "eur_foil": "2.77",
+    "tix": "0.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636355&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWitch-king%252C%2BSky%2BScourge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWitch-king%252C%2BSky%2BScourge",
+    "edhrec": "https://edhrec.com/route/?cc=Witch-king%2C+Sky+Scourge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F517261%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=736420&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120112?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

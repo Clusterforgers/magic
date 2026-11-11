@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a8291d04-240e-456b-8c86-1fb4eb460476",
+  "name": "Hylda's Crown of Winter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hylda's Crown of Winter",
+      "oracle_fingerprint": "326745f6d9c6e1caa591bb4fb7f144f7",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 88 } }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

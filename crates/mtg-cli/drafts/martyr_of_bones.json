@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a099d8fa-d51e-4dbc-a03f-6f912097d41e",
+  "name": "Martyr of Bones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Bones",
+      "oracle_fingerprint": "227c61bfc7686e60757238e66856e4ac",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RevealFromHand": { "filter": [{ "Color": "Black" }], "count": "X" } },
+              "SacrificeSelf"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

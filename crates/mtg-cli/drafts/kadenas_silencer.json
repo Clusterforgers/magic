@@ -1,0 +1,31 @@
+{
+  "oracle_id": "02095128-82cd-4531-b47e-471307746f81",
+  "name": "Kadena's Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kadena's Silencer",
+      "oracle_fingerprint": "a986c5f74899610de01dac93805df026",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "Counter": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Megamorph": "{1}{U}" } }
+      ]
+    }
+  ]
+}

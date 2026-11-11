@@ -1,0 +1,20 @@
+{
+  "oracle_id": "25ba6f57-3d50-4c3e-ab55-284e91d684a6",
+  "name": "March from Velis Vel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "March from Velis Vel",
+      "oracle_fingerprint": "fa16130f1c0f5e2653d1f3439e8a8c0a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 162 }
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{U}" } }
+      ]
+    }
+  ]
+}

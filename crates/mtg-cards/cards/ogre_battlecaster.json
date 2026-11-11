@@ -1,0 +1,20 @@
+{
+  "oracle_id": "00ba0c24-a671-493e-ba46-13e45d1818f1",
+  "name": "Ogre Battlecaster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ogre Battlecaster",
+      "oracle_fingerprint": "c4b1b1f80e79a12f06eec800c58b248c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 326 }
+          }
+        }
+      ]
+    }
+  ]
+}

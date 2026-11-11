@@ -1,0 +1,134 @@
+{
+  "oracle_id": "4a7b89b2-5fe9-4d39-9d42-3ca78bcf6d40",
+  "name": "Global Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Global Ruin",
+      "oracle_fingerprint": "a604d6e78954cb9ed998678660b74d3f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "each" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Land" },
+                                  { "Subtype": "Plains" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              },
+                              "as": "plains"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "each" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Land" },
+                                  { "Subtype": "Island" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              },
+                              "as": "island"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "each" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Land" },
+                                  { "Subtype": "Swamp" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              },
+                              "as": "swamp"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "each" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Land" },
+                                  { "Subtype": "Mountain" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              },
+                              "as": "mountain"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "each" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Land" },
+                                  { "Subtype": "Forest" },
+                                  { "ControlledBy": { "Bound": "each" } }
+                                ]
+                              },
+                              "as": "forest"
+                            }
+                          },
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "each" },
+                              "filter": [
+                                { "Type": "Land" },
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Is": { "Bound": "plains" } },
+                                      { "Is": { "Bound": "island" } },
+                                      { "Is": { "Bound": "swamp" } },
+                                      { "Is": { "Bound": "mountain" } },
+                                      { "Is": { "Bound": "forest" } }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "count": {
+                                "Count": [
+                                  { "Type": "Land" },
+                                  { "ControlledBy": { "Bound": "each" } },
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Is": { "Bound": "plains" } },
+                                        { "Is": { "Bound": "island" } },
+                                        { "Is": { "Bound": "swamp" } },
+                                        { "Is": { "Bound": "mountain" } },
+                                        { "Is": { "Bound": "forest" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

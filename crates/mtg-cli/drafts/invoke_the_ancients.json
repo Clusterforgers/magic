@@ -1,0 +1,73 @@
+{
+  "oracle_id": "868b3c65-d753-4f32-b6ca-31e58782ea92",
+  "name": "Invoke the Ancients",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke the Ancients",
+      "oracle_fingerprint": "389aaf76dbaab27e013b7b6e43fb80e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 4,
+                      "toughness": 5
+                    }
+                  },
+                  "count": 2,
+                  "as": "spirits"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "spirits" },
+                  "as": "spirit",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [
+                            {
+                              "PutCounters": {
+                                "on": { "Bound": "spirit" },
+                                "counter": { "Other": "reach" }
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "PutCounters": {
+                                "on": { "Bound": "spirit" },
+                                "counter": { "Other": "vigilance" }
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "PutCounters": {
+                                "on": { "Bound": "spirit" },
+                                "counter": { "Other": "trample" }
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6ca0078f-d6b5-4643-b801-e7a98706f21c",
+  "name": "Archdemon of Paliano",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Archdemon of Paliano",
+      "oracle_fingerprint": "b4172df50579fd1b725112d9c5dfb9ca",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 24 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 245 }
+          }
+        },
+        { "Keyword": "Flying" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "23ea480c-99e3-4cbf-8d24-9ea92230f57b",
+  "name": "Wojek Apothecary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Apothecary",
+      "oracle_fingerprint": "882d117069208eb881aa2a6f6487a771",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "SharesColor": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "other",
+                  "effects": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "to": { "Bound": "other" } } },
+                        "by": { "PreventUpTo": 1 },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

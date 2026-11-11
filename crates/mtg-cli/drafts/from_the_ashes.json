@@ -1,0 +1,60 @@
+{
+  "oracle_id": "3e229329-65e4-4240-959a-b97b26908c0e",
+  "name": "From the Ashes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "From the Ashes",
+      "oracle_fingerprint": "d232422694bfadd2e4784b047b8489d4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] },
+                  "as": "destroyed"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "land",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "ControllerOf": { "Bound": "land" } },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "ControllerOf": { "Bound": "land" } },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "as": "basic"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "basic" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Searched": { "zone": "Library" } }
+                    }
+                  },
+                  "as": "searcher",
+                  "effects": [{ "Shuffle": { "who": { "Bound": "searcher" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

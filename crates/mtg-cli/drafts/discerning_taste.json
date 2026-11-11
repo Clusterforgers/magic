@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1896c513-ec48-4c8f-9acb-30bc6357fce2",
+  "name": "Discerning Taste",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discerning Taste",
+      "oracle_fingerprint": "321f5b2ba4da691596f06f9e1a606516",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard", "as": "graved" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [
+                        { "Is": { "Bound": "graved" } },
+                        { "Type": "Creature" },
+                        { "In": "Graveyard" }
+                      ],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

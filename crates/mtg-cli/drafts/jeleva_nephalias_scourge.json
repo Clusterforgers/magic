@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a014f283-c531-415c-ac00-e6773ea5d64d",
+  "name": "Jeleva, Nephalia's Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeleva, Nephalia's Scourge",
+      "oracle_fingerprint": "f6e8c7f43271fef125f28b39f16a9d5d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": "EachPlayer",
+                  "count": { "ManaSpent": { "of": null } },
+                  "as": "exiled"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

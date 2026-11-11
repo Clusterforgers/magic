@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9879a4f3-3b9c-45cf-af03-7f2ae4c689b4",
+  "name": "Tolaria",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tolaria",
+      "oracle_fingerprint": "048b0c851a96ee001eea5b418a69778d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 142 }
+          }
+        }
+      ]
+    }
+  ]
+}

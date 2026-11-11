@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1c4cf7c9-9dc5-49da-8d43-1ecd41c74ad3",
+  "name": "Conduit of Storms // Conduit of Emrakul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conduit of Storms",
+      "oracle_fingerprint": "09b40b42af9cf77086a0dabaec22bc4c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{3}{R}{R}", "effects": [{ "Transform": { "what": "This" } }] } }
+      ]
+    },
+    {
+      "name": "Conduit of Emrakul",
+      "oracle_fingerprint": "2f0caca27a32505069fad9fc869a203d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

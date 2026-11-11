@@ -1,0 +1,56 @@
+{
+  "oracle_id": "31f3a9f3-881e-4dc9-b71d-5d1fc86477bf",
+  "name": "Mindblaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindblaze",
+      "oracle_fingerprint": "3e86ebed5a8997e6bb7183d97404bcfd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                  "as": "name"
+                }
+              },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [
+                      1,
+                      { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                    ]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "Reveal": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Eq",
+                      "right": { "ChosenAs": "number" }
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 8 } }]
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

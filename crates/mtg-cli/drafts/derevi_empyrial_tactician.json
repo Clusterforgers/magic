@@ -1,0 +1,39 @@
+{
+  "oracle_id": "afa49a09-146f-4439-850e-dd1938c93cef",
+  "name": "Derevi, Empyrial Tactician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Derevi, Empyrial Tactician",
+      "oracle_fingerprint": "87eed4553774d6a013e14965399db1d2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "DealsDamage": {
+                    "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "to": "EachPlayer",
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{U}{G}",
+            "from": "Command",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

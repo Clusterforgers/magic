@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0afcf1eb-ac2c-4bb0-8823-9fe45968c2d9",
+  "name": "The Fourteenth Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Fourteenth Doctor",
+      "oracle_fingerprint": "36bb3d6b4f202dfc268de34cf61ea8fa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "effects": [
+              { "LookAtTop": { "count": 14, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Doctor" }
+                    ]
+                  },
+                  "to": "Graveyard"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "In": "Graveyard" },
+                  { "OwnedBy": "You" },
+                  { "Subtype": "Doctor" },
+                  { "ArrivedFrom": "Library" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

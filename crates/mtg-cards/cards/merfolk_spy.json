@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d004b481-a1d5-459d-8282-76baa9d13652",
+  "name": "Merfolk Spy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Merfolk Spy",
+      "oracle_fingerprint": "0d890b04209a56ea9bb6f78db2151db8",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

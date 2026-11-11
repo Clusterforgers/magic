@@ -1,0 +1,56 @@
+{
+  "oracle_id": "663d451b-f848-41cc-b541-0c6fe37d3d54",
+  "name": "Hofri Ghostforge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hofri Ghostforge",
+      "oracle_fingerprint": "f9f30c8ec36b3aa8bbb03514219b1fb5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddSubtype": "Spirit" }] }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cbd106fb-c9c5-4c5e-8801-619b7c8ff5a6",
+  "name": "Qasali Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Qasali Ambusher",
+      "oracle_fingerprint": "53ff4a417ce200b5df8dbae777523c7b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "AltCast": {
+            "way": "Free",
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "flash": true
+          }
+        }
+      ]
+    }
+  ]
+}

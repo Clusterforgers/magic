@@ -1,0 +1,52 @@
+{
+  "oracle_id": "cfc9a2f9-92fa-4608-b98d-f9763c89fc40",
+  "name": "Ob Nixilis of the Black Oath",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ob Nixilis of the Black Oath",
+      "oracle_fingerprint": "7466e7ee2a587bbbb36e12c56ff1212e",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Demon",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 289 }
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

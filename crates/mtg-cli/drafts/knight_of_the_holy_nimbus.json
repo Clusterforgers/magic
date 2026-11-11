@@ -1,0 +1,35 @@
+{
+  "oracle_id": "4e92c705-19c2-42df-ad12-808d272c505e",
+  "name": "Knight of the Holy Nimbus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of the Holy Nimbus",
+      "oracle_fingerprint": "97097d033bc91f549da680b475f5c428",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Replacement": {
+            "when": { "Destroyed": { "what": ["This"] } },
+            "by": {
+              "Instead": [
+                { "Tap": { "what": "This" } },
+                { "RemoveFromCombat": { "what": "This" } },
+                { "RemoveDamage": { "what": "This" } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Opponents",
+            "effects": [
+              { "Rule": { "rule": { "CantBeRegenerated": "This" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "473a7998-669d-4181-83fe-f178a2e781f0",
+  "name": "Out of the Tombs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Out of the Tombs",
+      "oracle_fingerprint": "daff16f9d9977a48a7347b14ab2f2c1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "eon" }, "count": 2 } },
+              {
+                "Mill": { "count": { "Counters": { "on": "This", "counter": { "Other": "eon" } } } }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                {
+                  "If": {
+                    "condition": {
+                      "CountOf": {
+                        "subject": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "selector": [],
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    },
+                    "then": [{ "LoseGame": {} }],
+                    "otherwise": [
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          },
+                          "as": "picked"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                    ]
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "CountOf": {
+                "subject": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "selector": [],
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

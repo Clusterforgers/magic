@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1fb53b6a-b456-4252-9614-12ac72968113",
+  "name": "Wardscale Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wardscale Dragon",
+      "oracle_fingerprint": "8d41daea73891729f134036aaf97c543",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Defending", "action": { "Cast": {} } } },
+            "condition": { "Matches": { "subject": "This", "selector": ["Attacking"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
+  "name": "Bilbo, Luckwearer // Burglar's Plot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bilbo, Luckwearer",
+      "oracle_fingerprint": "8ff4205d7ec73c1c5ba72d697dfb8967",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Burglar's Plot",
+      "oracle_fingerprint": "7af31b8bca60a4a0915e21af93c85d90",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 141 }
+          }
+        }
+      ]
+    }
+  ]
+}

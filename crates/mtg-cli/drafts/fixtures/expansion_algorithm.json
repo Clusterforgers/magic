@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "ef261999-1c18-46f3-bbd6-72911e14328f",
+  "oracle_id": "afbc348a-7b27-4577-8c24-cd6d5b894dc1",
+  "multiverse_ids": [],
+  "resource_id": "65D73EAB8D0C13EFBE15E7705F4D1F589563BC84053F4CC7C09D5D910266DA47",
+  "mtgo_id": 148605,
+  "tcgplayer_id": 687344,
+  "cardmarket_id": 881248,
+  "name": "Expansion Algorithm",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/ef261999-1c18-46f3-bbd6-72911e14328f",
+  "scryfall_uri": "https://scryfall.com/card/soc/19/expansion-algorithm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:51:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861",
+    "normal": "https://cards.scryfall.io/normal/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861",
+    "large": "https://cards.scryfall.io/large/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861",
+    "png": "https://cards.scryfall.io/png/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.png?1783903861",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.webp?1783903861",
+    "grid": "https://cards.scryfall.io/grid/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.webp?1783903861",
+    "display": "https://cards.scryfall.io/display/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.webp?1783903861",
+    "art": "https://cards.scryfall.io/art/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.webp?1783903861",
+    "crop": "https://cards.scryfall.io/crop/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.webp?1783903861",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/f/ef261999-1c18-46f3-bbd6-72911e14328f.jpg?1783903861"
+  },
+  "mana_cost": "{X}{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Proliferate X times. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Proliferate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set": "soc",
+  "set_name": "Secrets of Strixhaven Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ef261999-1c18-46f3-bbd6-72911e14328f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aafbc348a-7b27-4577-8c24-cd6d5b894dc1&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"When you find an equation that works, all that's left is finding its many applications.\"\n—Zimone",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Serena Malyon",
+  "artist_ids": [
+    "d9fee7a6-7c5e-48a5-8639-bba25abc8a06"
+  ],
+  "illustration_id": "4ba8776c-ae87-42ef-9856-96a02f0d2c4e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5824,
+  "prices": {
+    "usd": "2.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.72",
+    "eur_foil": null,
+    "tix": "1.83"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExpansion%2BAlgorithm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExpansion%2BAlgorithm",
+    "edhrec": "https://edhrec.com/route/?cc=Expansion+Algorithm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687344%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881248&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/148605?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

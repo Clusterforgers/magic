@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1e1a787a-2294-472d-908d-d4d72821a7cc",
+  "name": "Panoptic Projektor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panoptic Projektor",
+      "oracle_fingerprint": "51f9c0ee2f5ea6de801cdea9d970014a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Type": "Creature" }, { "CastWith": "FaceDown" }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{3}" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "TriggerAgain": { "cause": { "TurnedFaceUp": { "what": [] } } } } } }
+      ]
+    }
+  ]
+}

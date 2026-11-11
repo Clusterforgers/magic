@@ -1,0 +1,48 @@
+{
+  "oracle_id": "53467cf4-5db2-4b9c-af2b-03b044c558cd",
+  "name": "This Is How It Ends",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "This Is How It Ends",
+      "oracle_fingerprint": "b6a91a984289fc5278587ad67990aae4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "VillainousChoice": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "first": [{ "LoseLife": { "who": { "OwnerOf": { "Target": 0 } }, "amount": 5 } }],
+                  "second": [
+                    {
+                      "Choose": {
+                        "who": { "OwnerOf": { "Target": 0 } },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": { "OwnerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "as": "other"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "other" },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ],
+                  "they": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

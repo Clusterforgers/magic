@@ -1,0 +1,51 @@
+{
+  "oracle_id": "5063f015-bd1c-4e14-9888-63e202be2ac8",
+  "name": "Advice from the Fae",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Advice from the Fae",
+      "oracle_fingerprint": "0111232bb32df4e43155fbbb71166f1b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "op": "Gt",
+                      "right": { "Largest": { "who": "Opponents", "of": [{ "Type": "Creature" }] } }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Bound": "top" },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "kept"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+                  ],
+                  "otherwise": [
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept1" } },
+                    { "Move": { "what": { "Bound": "kept1" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

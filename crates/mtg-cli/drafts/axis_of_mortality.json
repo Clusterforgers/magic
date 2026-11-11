@@ -1,0 +1,31 @@
+{
+  "oracle_id": "158cb888-a115-4d50-a82f-746622f0578e",
+  "name": "Axis of Mortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axis of Mortality",
+      "oracle_fingerprint": "70c8ab7bed7bf6a4a41f5edf71f0c2b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExchangeLife": { "who": { "Target": 0 }, "with": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

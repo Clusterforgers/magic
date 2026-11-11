@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a726c27d-2955-4d41-b8a6-fca654c020a2",
+  "name": "Cecily, Haunted Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cecily, Haunted Mage",
+      "oracle_fingerprint": "58808b6dd2c1128c41ceb11308a0850d",
+      "abilities": [
+        { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 11 } } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Draw": {} },
+              { "LoseLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 11
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "spell"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Friends forever" } }
+      ]
+    }
+  ]
+}

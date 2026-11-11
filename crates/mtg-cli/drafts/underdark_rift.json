@@ -1,0 +1,169 @@
+{
+  "oracle_id": "199c7604-6b4b-4cec-b6c2-b6b2918b11c8",
+  "name": "Underdark Rift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underdark Rift",
+      "oracle_fingerprint": "d4c934e7269e5b865a4008aa384b8f3a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 10,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 1,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 1 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 2,
+                      "to": 2,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 2 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 3,
+                      "to": 3,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 3 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 4,
+                      "to": 4,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 4 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 5,
+                      "to": 5,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 5 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 6,
+                      "to": 6,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 6 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 7,
+                      "to": 7,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 7 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 8,
+                      "to": 8,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 8 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 9,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 9 } } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 10,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": { "Below": 10 } } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

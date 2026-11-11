@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b5aae2f9-ced6-41d3-9121-418831ef5b8f",
+  "name": "Hunted Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunted Nightmare",
+      "oracle_fingerprint": "bf4ec34487f4791fcd704055823131eb",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "creature"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "creature" },
+                  "counter": { "Other": "deathtouch" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d6accaed-ff35-4324-b31b-35e6837bc079",
+  "name": "Encouraging Aviator // Jump",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encouraging Aviator",
+      "oracle_fingerprint": "f3f5f006c2a63fd3a73c056315fc365a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jump",
+      "oracle_fingerprint": "c48522980e2af999adbc793d489037e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "0a8956d0-bd37-4305-8443-4df043796f6e",
+  "name": "Sail into the West",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sail into the West",
+      "oracle_fingerprint": "49d92801c2e89cdd3c40af5d46d3fc3a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["return", "embark"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "return" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "embark" } }
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "p",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "p" },
+                              "from": {
+                                "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "p" } }]
+                              },
+                              "count": { "min": 0, "max": 2 },
+                              "as": "cards"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "cards" }, "to": "Hand" } }
+                        ]
+                      }
+                    },
+                    { "Exile": { "what": "This" } }
+                  ],
+                  "otherwise": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "p",
+                        "effects": [
+                          {
+                            "May": {
+                              "who": { "Bound": "p" },
+                              "effects": [
+                                {
+                                  "Discard": {
+                                    "who": { "Bound": "p" },
+                                    "count": {
+                                      "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "p" } }]
+                                    }
+                                  }
+                                },
+                                { "Draw": { "who": { "Bound": "p" }, "count": 7 } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

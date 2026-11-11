@@ -1,0 +1,54 @@
+{
+  "oracle_id": "abb5210f-597c-450d-9239-6253a9136680",
+  "name": "Idris, Soul of the TARDIS",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idris, Soul of the TARDIS",
+      "oracle_fingerprint": "40fd1531308a4c4ea35f62b5af301712",
+      "abilities": [
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Artifact" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "artifact"
+                }
+              },
+              {
+                "Exile": { "what": { "Bound": "artifact" }, "duration": "WhileSourceOnBattlefield" }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "GainAbilitiesOf": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } },
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "toughness": {
+                    "Total": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

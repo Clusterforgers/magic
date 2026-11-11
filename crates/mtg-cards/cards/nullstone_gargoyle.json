@@ -1,0 +1,17 @@
+{
+  "oracle_id": "7b175a33-a05c-49fa-802a-36f7013c892a",
+  "name": "Nullstone Gargoyle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nullstone Gargoyle",
+      "oracle_fingerprint": "1b4fb61dcaecced3b5c13a9575b3bce1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 82 } }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "67dae813-907e-456d-9e91-2d7c85f1d574",
+  "name": "Clockwork Servant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Servant",
+      "oracle_fingerprint": "075387fcbdeb0c22a17ecb20ea618733",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Any": [
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "White" } }, "op": "Ge", "right": 3 }
+                },
+                { "Compare": { "left": { "ManaSpent": { "of": "Blue" } }, "op": "Ge", "right": 3 } },
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "Black" } }, "op": "Ge", "right": 3 }
+                },
+                { "Compare": { "left": { "ManaSpent": { "of": "Red" } }, "op": "Ge", "right": 3 } },
+                {
+                  "Compare": { "left": { "ManaSpent": { "of": "Green" } }, "op": "Ge", "right": 3 }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

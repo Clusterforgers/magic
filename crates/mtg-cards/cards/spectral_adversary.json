@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0de4171e-5908-408e-9852-25f148d0fb47",
+  "name": "Spectral Adversary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spectral Adversary",
+      "oracle_fingerprint": "f4580329c788ef8f1b0b7df86a64e0ec",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

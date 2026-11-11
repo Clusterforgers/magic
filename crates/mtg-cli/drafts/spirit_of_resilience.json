@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ddc85b23-113a-46e9-ab09-fae9312c72fa",
+  "name": "Spirit of Resilience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of Resilience",
+      "oracle_fingerprint": "094934be9533c0b13e40cc1147049b0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": "Triggering", "as": "card" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "card" },
+                            "selector": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "BecomeCopy": {
+                              "what": "This",
+                              "of": { "Bound": "card" },
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

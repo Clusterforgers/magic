@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0308b9f2-11da-41d0-8d18-18e8c0c600ab",
+  "name": "Matopi Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matopi Golem",
+      "oracle_fingerprint": "26f39423382d986ef556c62c1b753cba",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "Regenerate": { "what": "This" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Did": { "action": "Regenerated", "what": ["This"] } },
+                  "this_turn": true,
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "-1/-1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

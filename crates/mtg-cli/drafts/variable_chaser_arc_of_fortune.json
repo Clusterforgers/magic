@@ -1,0 +1,42 @@
+{
+  "oracle_id": "67c603cc-ad66-4a1c-8386-5901c9c01bfb",
+  "name": "Variable Chaser // Arc of Fortune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Variable Chaser",
+      "oracle_fingerprint": "62c354cdbbb3d18e9b2a0767ae0da59f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Prowess" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } }
+      ]
+    },
+    {
+      "name": "Arc of Fortune",
+      "oracle_fingerprint": "22f7899239c2dce6149c84c6820de812",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "May": {
+                  "who": "EachPlayer",
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": "EachPlayer",
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                      }
+                    },
+                    { "Draw": { "who": "EachPlayer", "count": 7 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

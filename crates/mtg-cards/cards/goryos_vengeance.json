@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3ea3c681-f0ad-45a2-bc25-2813efd8d560",
+  "name": "Goryo's Vengeance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goryo's Vengeance",
+      "oracle_fingerprint": "7304f660a6ac48123ffa0040825a4a22",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Supertype": "Legendary" },
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

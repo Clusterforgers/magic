@@ -1,0 +1,112 @@
+{
+  "oracle_id": "2458aa66-5b20-4811-a4a4-8375ad0a6498",
+  "name": "Jaya, Fiery Negotiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaya, Fiery Negotiator",
+      "oracle_fingerprint": "583bee2981f739e62900fd9621583ad3",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monk",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Monk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "exiled" } },
+              { "Choose": { "from": { "Bound": "exiled" }, "as": "chosen" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "chosen" } }],
+                      "from": "Exile",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "victim" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "This",
+                        "to": { "Bound": "victim" },
+                        "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [
+                              { "Color": "Red" },
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                            ],
+                            "by": "You"
+                          }
+                        },
+                        "effects": [
+                          { "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

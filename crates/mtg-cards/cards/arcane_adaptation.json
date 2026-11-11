@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2188c03f-11b6-4651-914a-b4fdd59127e3",
+  "name": "Arcane Adaptation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Adaptation",
+      "oracle_fingerprint": "ba73b3e561d2fc7639faa704db8774b2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": ["AddChosenSubtype"]
+          }
+        }
+      ]
+    }
+  ]
+}

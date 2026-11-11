@@ -1,0 +1,27 @@
+{
+  "oracle_id": "42750e30-d022-4623-a290-d91fa80721c9",
+  "name": "Nev, the Practical Dean",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nev, the Practical Dean",
+      "oracle_fingerprint": "43fb33112acc6717a7b72582e7b82a2f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 158 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1f47c869-f4a9-43b0-aec0-8da4e3a3fec5",
+  "name": "Extrapolate the Impossible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extrapolate the Impossible",
+      "oracle_fingerprint": "b55942cf5d286e9d64e5d317ebfd9ca4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "OwnedBy": "You" }],
+                  "count": { "min": 2, "max": 2 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Choose": { "who": "Opponents", "from": { "Bound": "found" }, "as": "chosen" } },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

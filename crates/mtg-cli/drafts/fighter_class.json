@@ -1,0 +1,69 @@
+{
+  "oracle_id": "8a280ba8-6b7b-46dd-9c2b-6d0027cfff30",
+  "name": "Fighter Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fighter Class",
+      "oracle_fingerprint": "b6d35348e1eaee5e38c524fac2cceadb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Subtype": "Equipment" }], "reveal": true, "as": "found" }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "activating": "Equip"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{W}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "Triggering" }
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

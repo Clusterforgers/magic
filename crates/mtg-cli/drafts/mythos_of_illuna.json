@@ -1,0 +1,70 @@
+{
+  "oracle_id": "42b10f0f-19cd-45d2-a2db-d5463ddc5e5b",
+  "name": "Mythos of Illuna",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mythos of Illuna",
+      "oracle_fingerprint": "eedda068643f193cf3758607bfffbb51",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "All": [{ "ManaSpent": "Red" }, { "ManaSpent": "Green" }] },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Target": 0 },
+                            "except": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": {
+                                      "ZoneChange": { "what": ["This"], "to": "Battlefield" }
+                                    },
+                                    "if": {
+                                      "Matches": {
+                                        "subject": "This",
+                                        "selector": [{ "Type": "Creature" }]
+                                      }
+                                    },
+                                    "targets": [
+                                      {
+                                        "what": {
+                                          "Object": [
+                                            { "Type": "Creature" },
+                                            { "Not": { "ControlledBy": "You" } }
+                                          ]
+                                        },
+                                        "bounds": { "min": 0, "max": 1 }
+                                      }
+                                    ],
+                                    "effects": [
+                                      { "Fight": { "what": "This", "with": { "Target": 0 } } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "151d9035-c8e8-4794-8405-dc7744eb99a2",
+  "name": "Bargaining Table",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bargaining Table",
+      "oracle_fingerprint": "1058f97c203103966b54426e6f919f68",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Changed": {
+                  "change": "Increase",
+                  "mana": "{1}",
+                  "per": { "LowestHand": "Opponents" }
+                }
+              },
+              "Tap"
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

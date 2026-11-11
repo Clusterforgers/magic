@@ -1,0 +1,77 @@
+{
+  "oracle_id": "16182e01-22ff-4786-985d-919b47c4aa4d",
+  "name": "Matzalantli, the Great Door // The Core",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Matzalantli, the Great Door",
+      "oracle_fingerprint": "c75b83d6c233bb5299fecd803fb87a02",
+      "abilities": [
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "CardTypes": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Core",
+      "oracle_fingerprint": "33f88fa4bbd6f254a006138eb229dfa1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "Count": [
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "158db438-52ba-4c30-b7bf-d1c4f76da917",
+  "name": "Sphinx's Tutelage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx's Tutelage",
+      "oracle_fingerprint": "f98b25128eef3d9bb3c34eb8a7099d28",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [
+                        { "Not": { "Type": "Land" } },
+                        { "SharesColor": { "Bound": "milled" } }
+                      ],
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2, "as": "milled" } }],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{5}{U}", "effects": [{ "Draw": {} }, { "Discard": {} }] } }
+      ]
+    }
+  ]
+}

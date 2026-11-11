@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "11988c46-6d0c-46a8-85aa-8c6da72bfe30",
+  "oracle_id": "c358b9e2-524c-434b-b3fa-74d2aa6d1df7",
+  "multiverse_ids": [
+    159265
+  ],
+  "mtgo_id": 27813,
+  "mtgo_foil_id": 27814,
+  "name": "Nether Shadow",
+  "lang": "en",
+  "released_at": "2007-09-10",
+  "uri": "https://api.scryfall.com/cards/11988c46-6d0c-46a8-85aa-8c6da72bfe30",
+  "scryfall_uri": "https://scryfall.com/card/me1/77/nether-shadow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:42:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949",
+    "normal": "https://cards.scryfall.io/normal/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949",
+    "large": "https://cards.scryfall.io/large/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949",
+    "png": "https://cards.scryfall.io/png/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.png?1783942949",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.webp?1783942949",
+    "grid": "https://cards.scryfall.io/grid/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.webp?1783942949",
+    "display": "https://cards.scryfall.io/display/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.webp?1783942949",
+    "art": "https://cards.scryfall.io/art/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.webp?1783942949",
+    "crop": "https://cards.scryfall.io/crop/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.webp?1783942949",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/1/11988c46-6d0c-46a8-85aa-8c6da72bfe30.jpg?1783942949"
+  },
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Haste\nAt the beginning of your upkeep, if this card is in your graveyard with three or more creature cards above it, you may put this card onto the battlefield.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set": "me1",
+  "set_name": "Masters Edition",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/11988c46-6d0c-46a8-85aa-8c6da72bfe30/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac358b9e2-524c-434b-b3fa-74d2aa6d1df7&unique=prints",
+  "collector_number": "77",
+  "digital": true,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Rush",
+  "artist_ids": [
+    "c96773f0-346c-4f7d-9271-2d98cc5d86e1"
+  ],
+  "illustration_id": "d7cc7160-b159-428a-9160-2d98be0fe5fa",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22101,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.25"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=159265&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNether%2BShadow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNether%2BShadow",
+    "edhrec": "https://edhrec.com/route/?cc=Nether+Shadow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DNether%2BShadow%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Nether+Shadow&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/27813?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

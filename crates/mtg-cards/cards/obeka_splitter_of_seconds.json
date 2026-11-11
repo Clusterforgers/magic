@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1d15a06f-5471-48f2-8c4a-9b0886bef5af",
+  "name": "Obeka, Splitter of Seconds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Obeka, Splitter of Seconds",
+      "oracle_fingerprint": "f5a85df1607b911e93cfa0a3a0f0e96f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 114 }
+          }
+        }
+      ]
+    }
+  ]
+}

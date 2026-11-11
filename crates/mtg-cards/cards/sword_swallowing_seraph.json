@@ -1,0 +1,27 @@
+{
+  "oracle_id": "01efde9a-a20d-4972-b17f-c2d9eb024b0b",
+  "name": "Sword-Swallowing Seraph",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sword-Swallowing Seraph",
+      "oracle_fingerprint": "6c909451493b1f27154ae1c3fe1d7cb2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 103 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 104, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "04166d20-88c9-4c89-be9d-3e422f90959a",
+  "name": "Fangorn, Tree Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fangorn, Tree Shepherd",
+      "oracle_fingerprint": "dd3ce2e43118e272423ea648f6962e3f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Treefolk" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Times": { "by": 2, "of": "Triggering" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Green" } } } }
+      ]
+    }
+  ]
+}

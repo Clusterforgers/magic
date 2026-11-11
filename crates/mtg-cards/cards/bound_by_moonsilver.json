@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7a98a1d1-7366-4b38-9047-48269790d328",
+  "name": "Bound by Moonsilver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bound by Moonsilver",
+      "oracle_fingerprint": "c51e19248303256207c26ae2bcca331d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 70 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": ["Other"] } }],
+            "timing": "Sorcery",
+            "limit": "OncePerTurn",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

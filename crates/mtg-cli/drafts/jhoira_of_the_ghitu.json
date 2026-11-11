@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ad3f4ec9-9905-421b-98ed-78bb6fc9b450",
+  "name": "Jhoira of the Ghitu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jhoira of the Ghitu",
+      "oracle_fingerprint": "c5ae7ced474bf502f9d82e63eb99823b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "ExileFromHand": { "filter": [{ "Not": { "Type": "Land" } }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "Paid", "counter": { "Other": "time" }, "count": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

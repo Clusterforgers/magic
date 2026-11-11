@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1c772df4-bd88-4f7e-853c-5dd06f4cf70e",
+  "name": "Territorial Hellkite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Territorial Hellkite",
+      "oracle_fingerprint": "9b6e29d48a1a7b2f194758b50c21e086",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 257 }
+          }
+        }
+      ]
+    }
+  ]
+}

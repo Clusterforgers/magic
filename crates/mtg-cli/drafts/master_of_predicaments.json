@@ -1,0 +1,69 @@
+{
+  "oracle_id": "503447d9-2489-46d7-b5aa-a14bbb22dcc8",
+  "name": "Master of Predicaments",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of Predicaments",
+      "oracle_fingerprint": "a9fd630d392a5f2f78eb4b91bc9d2bab",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "ChooseValue": {
+                  "who": "Triggering",
+                  "kind": { "Options": ["greater", "not greater"] },
+                  "as": "guess"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "guess", "word": "greater" } },
+                          {
+                            "Matches": {
+                              "subject": { "Bound": "card" },
+                              "selector": [
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "guess", "word": "not greater" } },
+                          {
+                            "Matches": {
+                              "subject": { "Bound": "card" },
+                              "selector": [
+                                { "Compare": { "stat": "ManaValue", "op": "Gt", "to": 4 } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

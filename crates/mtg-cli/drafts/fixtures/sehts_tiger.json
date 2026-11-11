@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41",
+  "oracle_id": "7d71a78d-fda8-424d-b343-b901a0df3acf",
+  "multiverse_ids": [
+    433004
+  ],
+  "tcgplayer_id": 139789,
+  "cardmarket_id": 300280,
+  "name": "Seht's Tiger",
+  "lang": "en",
+  "released_at": "2017-08-25",
+  "uri": "https://api.scryfall.com/cards/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41",
+  "scryfall_uri": "https://scryfall.com/card/c17/72/sehts-tiger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:45:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924",
+    "normal": "https://cards.scryfall.io/normal/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924",
+    "large": "https://cards.scryfall.io/large/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924",
+    "png": "https://cards.scryfall.io/png/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.png?1783935924",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.webp?1783935924",
+    "grid": "https://cards.scryfall.io/grid/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.webp?1783935924",
+    "display": "https://cards.scryfall.io/display/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.webp?1783935924",
+    "art": "https://cards.scryfall.io/art/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.webp?1783935924",
+    "crop": "https://cards.scryfall.io/crop/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.webp?1783935924",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/9/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41.jpg?1783935924"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Cat",
+  "oracle_text": "Flash (You may cast this spell any time you could cast an instant.)\nWhen this creature enters, you gain protection from the color of your choice until end of turn. (You can't be targeted, dealt damage, or enchanted by anything of the chosen color.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set": "c17",
+  "set_name": "Commander 2017",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac17&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c17?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5970a4c8-0e1f-42cc-bd8e-7ba3946c6e41/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7d71a78d-fda8-424d-b343-b901a0df3acf&unique=prints",
+  "collector_number": "72",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Thomas Gianni",
+  "artist_ids": [
+    "d7f03c52-e573-4082-9937-6c039b11ca70"
+  ],
+  "illustration_id": "34fab1ec-ff64-45c7-b818-8ccbbe1fd4f1",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14367,
+  "penny_rank": 10075,
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=433004&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeht%2527s%2BTiger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeht%2527s%2BTiger",
+    "edhrec": "https://edhrec.com/route/?cc=Seht%27s+Tiger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F139789%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=300280&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Seht%27s+Tiger&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

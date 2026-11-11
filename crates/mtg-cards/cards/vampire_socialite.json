@@ -1,0 +1,40 @@
+{
+  "oracle_id": "91a45e96-2a93-4c48-b472-11904d2b856d",
+  "name": "Vampire Socialite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vampire Socialite",
+      "oracle_fingerprint": "b4dbc75e37798b39d80967235dbbf7a7",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 191, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

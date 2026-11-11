@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0b1557e8-3dd6-4276-8b8e-505e7ea944ec",
+  "name": "Eye of Ojer Taq // Apex Observatory",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Eye of Ojer Taq",
+      "oracle_fingerprint": "87b1fdd8a5f64121b3fa4b11d3e2be13",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 32, "end": 270 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Apex Observatory",
+      "oracle_fingerprint": "f204eb7383b9c67eaee9fb1534c62bf1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 109 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 110, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

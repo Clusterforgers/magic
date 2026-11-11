@@ -1,0 +1,25 @@
+{
+  "oracle_id": "1534d90f-fc88-42dc-bf01-8b0986485e78",
+  "name": "Blood Sun",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blood Sun",
+      "oracle_fingerprint": "ea96a26831b770096bff703dc649219a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 43, "end": 94 }
+          }
+        }
+      ]
+    }
+  ]
+}

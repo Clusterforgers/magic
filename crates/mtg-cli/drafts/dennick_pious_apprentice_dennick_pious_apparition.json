@@ -1,0 +1,38 @@
+{
+  "oracle_id": "45802eb2-6848-416c-95e0-c1c1ea0620d0",
+  "name": "Dennick, Pious Apprentice // Dennick, Pious Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dennick, Pious Apprentice",
+      "oracle_fingerprint": "0be7dda008aa3e0d931b34bb1c354512",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Rule": { "rule": "GraveyardCardsUntargetable" } },
+        { "Keyword": { "Disturb": "{2}{W}{U}" } }
+      ]
+    },
+    {
+      "name": "Dennick, Pious Apparition",
+      "oracle_fingerprint": "f73ec3bcd5b65b70027e55776118aa44",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Graveyard" } }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

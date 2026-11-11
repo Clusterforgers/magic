@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e48f9fc7-72cf-4c3a-b3b3-d237edc01310",
+  "name": "Extraplanar Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extraplanar Lens",
+      "oracle_fingerprint": "40c628dc15833765b04186fff2e342d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "TappedForMana": {
+                "what": [
+                  { "Type": "Land" },
+                  { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                ]
+              }
+            },
+            "effects": [{ "AddMana": { "who": "Triggering", "mana": "OfTapped" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

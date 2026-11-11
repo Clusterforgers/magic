@@ -1,0 +1,61 @@
+{
+  "oracle_id": "96480e86-70a8-401d-abf8-a7d509311b73",
+  "name": "Extract a Confession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract a Confession",
+      "oracle_fingerprint": "1970baa1777ca19d010e7bf652c09d66",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "opponent",
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "opponent" },
+                              "filter": [
+                                { "Type": "Creature" },
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Ge",
+                                    "to": {
+                                      "Greatest": {
+                                        "of": [
+                                          { "Type": "Creature" },
+                                          { "ControlledBy": { "Bound": "opponent" } }
+                                        ],
+                                        "stat": "Power"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

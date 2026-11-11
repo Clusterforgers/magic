@@ -1,0 +1,46 @@
+{
+  "oracle_id": "03a4b997-4738-41a9-933f-e1f765e3a75a",
+  "name": "Rakdos, the Showstopper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos, the Showstopper",
+      "oracle_fingerprint": "b4340c23c4ae5c70fb7a8a6a6878fffc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Subtype": "Demon" } },
+                      { "Not": { "Subtype": "Devil" } },
+                      { "Not": { "Subtype": "Imp" } }
+                    ]
+                  },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "lose": [
+                          { "Remember": { "what": { "Bound": "creature" }, "slot": "tails" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Remembered": { "on": "This", "slot": "tails" } } } },
+              { "Forget": { "slot": "tails" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

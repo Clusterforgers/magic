@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9e608ace-2844-419b-9204-9054127557b2",
+  "name": "Flamebreak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flamebreak",
+      "oracle_fingerprint": "773ffd4a057e7953c8a5ebd7dccaa76a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": 3
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 3 } },
+              {
+                "Rule": {
+                  "rule": {
+                    "CantBeRegenerated": {
+                      "Each": [{ "Type": "Creature" }, { "DamagedBy": "This" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

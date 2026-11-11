@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8ae1bda5-8f70-48ec-9df0-89e58a4ab21c",
+  "name": "Stilt-Man, Towering Terror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stilt-Man, Towering Terror",
+      "oracle_fingerprint": "bffc9777c7d519bc52f9b3a88d855580",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "Sacrifice" } },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "d5e9942e-096f-433f-8668-4b594f3c1b02",
+  "name": "Orzhov Advokist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Advokist",
+      "oracle_fingerprint": "6932f7d7159f0fa8f5077f1fdcccf178",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "chosen"
+                            }
+                          },
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "chosen" },
+                              "counter": "+1/+1",
+                              "count": 2
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "mods": [{ "CantAttackYou": "Both" }],
+                              "duration": "UntilYourNextTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "354b4623-50a0-41f1-ad1e-7dd6ac3852df",
+  "oracle_id": "33c0a8c0-d1d9-4b03-869d-65dab8ace3df",
+  "multiverse_ids": [
+    616954
+  ],
+  "mtgo_id": 112158,
+  "arena_id": 84816,
+  "tcgplayer_id": 499454,
+  "cardmarket_id": 716945,
+  "name": "Fall of Cair Andros",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/354b4623-50a0-41f1-ad1e-7dd6ac3852df",
+  "scryfall_uri": "https://scryfall.com/card/ltr/124/fall-of-cair-andros?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:18:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289",
+    "normal": "https://cards.scryfall.io/normal/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289",
+    "large": "https://cards.scryfall.io/large/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289",
+    "png": "https://cards.scryfall.io/png/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.png?1783916289",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.webp?1783916289",
+    "grid": "https://cards.scryfall.io/grid/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.webp?1783916289",
+    "display": "https://cards.scryfall.io/display/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.webp?1783916289",
+    "art": "https://cards.scryfall.io/art/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.webp?1783916289",
+    "crop": "https://cards.scryfall.io/crop/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.webp?1783916289",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/5/354b4623-50a0-41f1-ad1e-7dd6ac3852df.jpg?1783916289"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature an opponent controls is dealt excess noncombat damage, amass Orcs X, where X is that excess damage. (Put X +1/+1 counters on an Army you control. It's also an Orc. If you don't control an Army, create a 0/0 black Orc Army creature token first.)\n{7}{R}: This enchantment deals 7 damage to target creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Amass"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4dcfd032-ab7f-48e1-a02a-7611aa7354e1",
+      "component": "combo_piece",
+      "name": "Fall of Cair Andros",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/4dcfd032-ab7f-48e1-a02a-7611aa7354e1"
+    },
+    {
+      "object": "related_card",
+      "id": "6943f966-fd21-427c-a13f-44727edcaa4b",
+      "component": "token",
+      "name": "Orc Army",
+      "type_line": "Token Creature — Orc Army",
+      "uri": "https://api.scryfall.com/cards/6943f966-fd21-427c-a13f-44727edcaa4b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/354b4623-50a0-41f1-ad1e-7dd6ac3852df/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A33c0a8c0-d1d9-4b03-869d-65dab8ace3df&unique=prints",
+  "collector_number": "124",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Shahab Alizadeh",
+  "artist_ids": [
+    "0bab3964-6224-4a02-acb3-f46d92dfc45d"
+  ],
+  "illustration_id": "437f5fdb-994a-44b5-918e-7b0c59ffbcf4",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6941,
+  "penny_rank": 9566,
+  "preview": {
+    "source": "Press Start",
+    "source_uri": "https://press-start.com.au/news/2023/06/08/heres-an-exclusive-magic-the-gathering-the-lord-of-the-rings-tales-of-middle-earth-card-preview/",
+    "previewed_at": "2023-06-07"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": "0.44",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=616954&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFall%2Bof%2BCair%2BAndros",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFall%2Bof%2BCair%2BAndros",
+    "edhrec": "https://edhrec.com/route/?cc=Fall+of+Cair+Andros"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499454%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716945&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112158?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

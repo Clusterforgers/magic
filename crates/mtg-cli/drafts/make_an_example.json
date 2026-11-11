@@ -1,0 +1,45 @@
+{
+  "oracle_id": "591edddc-3736-44cf-9719-117c24ff3980",
+  "name": "Make an Example",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make an Example",
+      "oracle_fingerprint": "05cccbcffd2e1971e3e0d176e93579d4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "SeparatePiles": {
+                        "who": { "Bound": "opp" },
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "opp" } }]
+                        },
+                        "chooser": "You",
+                        "as": "chosen",
+                        "rest_as": "other"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "opp" },
+                        "filter": [{ "Is": { "Bound": "chosen" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "chosen" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

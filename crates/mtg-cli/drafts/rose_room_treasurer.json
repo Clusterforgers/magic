@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d73f02e0-53fa-4437-ab3a-89a9a1db27c5",
+  "name": "Rose Room Treasurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rose Room Treasurer",
+      "oracle_fingerprint": "4daa5a8df8615617734b6092ff31044d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Le", "right": 2 } },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "cost": "{X}",
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": "AnyTarget" }],
+                              "effects": [
+                                { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

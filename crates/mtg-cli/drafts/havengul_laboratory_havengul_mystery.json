@@ -1,0 +1,88 @@
+{
+  "oracle_id": "e71ac446-02a4-4468-8d29-f28b21617665",
+  "name": "Havengul Laboratory // Havengul Mystery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Havengul Laboratory",
+      "oracle_fingerprint": "bf80e8ee967d7b8ca19f6765157e8a31",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Sacrificed",
+                    "who": "You",
+                    "filter": [{ "Subtype": "Clue" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Havengul Mystery",
+      "oracle_fingerprint": "defafb75d4e75377815d84728e092e35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Remember": {
+                  "what": { "Arrived": { "of": { "Target": 0 }, "zone": "Battlefield" } },
+                  "slot": "returned"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": { "Remembered": { "on": "This", "slot": "returned" } } }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

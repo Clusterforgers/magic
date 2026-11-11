@@ -1,0 +1,81 @@
+{
+  "oracle_id": "1ff91cc1-2233-4ceb-91ba-6a49c7147f32",
+  "name": "The Wedding of River Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wedding of River Song",
+      "oracle_fingerprint": "5be7f041c3ca1fd810c9ed20a63445a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "mine"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "mine" }, "as": "mine_exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "mine_exiled" },
+                        "counter": { "Other": "time" },
+                        "count": {
+                          "Stat": { "of": { "Bound": "mine_exiled" }, "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Target": 0 },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "theirs"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "theirs" }, "as": "theirs_exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "theirs_exiled" },
+                        "counter": { "Other": "time" },
+                        "count": {
+                          "Stat": { "of": { "Bound": "theirs_exiled" }, "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "TimeTravel": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

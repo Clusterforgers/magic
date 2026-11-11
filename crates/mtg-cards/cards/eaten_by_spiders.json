@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d4c04cec-3a0d-4e86-95ed-8d367fe7220d",
+  "name": "Eaten by Spiders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eaten by Spiders",
+      "oracle_fingerprint": "a2581798abdc35c04c4fb31514883ca1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [{ "AttachedTo": { "Target": 0 } }, { "Subtype": "Equipment" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

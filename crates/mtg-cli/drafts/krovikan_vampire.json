@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8fa93c01-f9ea-4d48-a040-418d1ca6be19",
+  "name": "Krovikan Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krovikan Vampire",
+      "oracle_fingerprint": "77a35ee60ae27c50ffbfa13e5fce8a63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "CountOf": {
+                "subject": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    "GravedThisTurn",
+                    { "DamagedBy": "This" }
+                  ]
+                },
+                "selector": [],
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      "GravedThisTurn",
+                      { "DamagedBy": "This" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8587ec98-f35d-476c-ba67-0ef8bcd1f253",
+  "name": "Risen Executioner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Risen Executioner",
+      "oracle_fingerprint": "ab7f08196aff0885493a51440d433990",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Zombie" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 73, "end": 198 }
+          }
+        }
+      ]
+    }
+  ]
+}

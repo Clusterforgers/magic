@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7e93ea61-bc16-4d22-a5e5-e6ba0f7ae14f",
+  "name": "Cemetery Puca",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Puca",
+      "oracle_fingerprint": "a28ab27ea3f7ee993ebbf9cadb8168d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Departed": "Triggering" },
+                        "except": ["ThisAbility"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7f10540f-eaba-4e06-a79e-101f7409ac6c",
+  "name": "Vastwood Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vastwood Hydra",
+      "oracle_fingerprint": "314340ef2dba0268bdff5d4c0d9d969e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 50, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

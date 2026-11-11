@@ -1,0 +1,50 @@
+{
+  "oracle_id": "437661f7-a32f-45c9-a006-05a1e38ee8d9",
+  "name": "Suncleanser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suncleanser",
+      "oracle_fingerprint": "6c9cb1761764df5f15e0ae7fc515c6a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "RemoveAllCounters": { "from": { "Target": 0 } } },
+                        {
+                          "Rule": {
+                            "rule": { "Cant": { "who": { "Target": 0 }, "action": "PutCounter" } },
+                            "duration": "WhileSourceOnBattlefield"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "RemoveAllCounters": { "from": { "Target": 0 } } },
+                        {
+                          "Rule": {
+                            "rule": { "Cant": { "who": { "Target": 0 }, "action": "PutCounter" } },
+                            "duration": "WhileSourceOnBattlefield"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

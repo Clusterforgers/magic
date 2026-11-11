@@ -12,6 +12,7 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               { "LookAtTop": { "count": 6, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Choose": {
                   "from": {
@@ -27,14 +28,13 @@
                       }
                     ]
                   },
-                  "as": "kept2"
+                  "as": "kept"
                 }
               },
-              { "Reveal": { "what": { "Bound": "top" } } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
               {
                 "Move": {
-                  "what": { "Bound": "top" },
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               }

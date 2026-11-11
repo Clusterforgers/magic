@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b48befc5-a9f2-4a64-a16d-c883b034ea9c",
+  "name": "Soul Conduit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Conduit",
+      "oracle_fingerprint": "883aefa75c34664cc88ab5bba5cfcba0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [{ "ExchangeLife": { "who": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

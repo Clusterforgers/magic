@@ -1,0 +1,27 @@
+{
+  "oracle_id": "df702b0c-e011-497f-ae29-9876efac4a4c",
+  "name": "Moonlit Meditation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Moonlit Meditation",
+      "oracle_fingerprint": "8f902bd3a6176a2cd309b3f1b2f950ed",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+              { "ControlledBy": "You" }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 41, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

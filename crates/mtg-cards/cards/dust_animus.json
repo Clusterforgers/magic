@@ -1,0 +1,21 @@
+{
+  "oracle_id": "494f8c29-7626-43ed-b0b8-fb9afd4cd5d3",
+  "name": "Dust Animus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dust Animus",
+      "oracle_fingerprint": "a96219cc98f23114557a6f35303a77b2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 125 }
+          }
+        },
+        { "Keyword": { "Plot": "{1}{W}" } }
+      ]
+    }
+  ]
+}

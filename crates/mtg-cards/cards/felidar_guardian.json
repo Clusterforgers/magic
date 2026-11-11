@@ -1,0 +1,29 @@
+{
+  "oracle_id": "33869ba6-13e5-4e48-8963-92f7965648fb",
+  "name": "Felidar Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felidar Guardian",
+      "oracle_fingerprint": "95c1212b7f2062e70d4fd01f87ca0f2c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

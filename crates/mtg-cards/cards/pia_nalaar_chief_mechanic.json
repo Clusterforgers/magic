@@ -1,0 +1,39 @@
+{
+  "oracle_id": "31cb87bf-1020-4fd5-95f7-8ecb197d823b",
+  "name": "Pia Nalaar, Chief Mechanic",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pia Nalaar, Chief Mechanic",
+      "oracle_fingerprint": "f0a9e33d16c4b4eeb6d08f74f9aa10ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 122, "end": 334 }
+          }
+        }
+      ]
+    }
+  ]
+}

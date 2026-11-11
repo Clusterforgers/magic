@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d22b7d4a-0ac7-4221-80fd-a47edad03b84",
+  "name": "Glyph Keeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glyph Keeper",
+      "oracle_fingerprint": "faf20f02c71505e7d0545c4ce9b2e74b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "BecomesTarget": { "what": ["This"] } }, "nth": 1 } },
+            "effects": [{ "Counter": { "what": "Dealer" } }]
+          }
+        },
+        { "Keyword": { "Embalm": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

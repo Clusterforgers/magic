@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a1e691f3-a3e9-4cfa-a761-d7e020364dfa",
+  "name": "Regenerations Restored",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regenerations Restored",
+      "oracle_fingerprint": "be5ee7ecbcde69ea58a19450fc607e32",
+      "abilities": [
+        { "Keyword": { "Vanishing": 12 } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } }
+            },
+            "effects": [
+              { "Scry": {} },
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": "This" } },
+                    { "Reflexive": { "effects": [{ "ExtraTurn": {} }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

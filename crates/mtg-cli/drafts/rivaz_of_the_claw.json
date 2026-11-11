@@ -37,8 +37,9 @@
             "when": {
               "SpellCast": {
                 "what": [
+                  { "Type": "Creature" },
                   { "Subtype": "Dragon" },
-                  { "WasCast": { "from": "Graveyard" } },
+                  { "CastFrom": "Graveyard" },
                   { "OwnedBy": "You" }
                 ],
                 "by": "You"
@@ -54,7 +55,7 @@
                         "Triggered": {
                           "when": {
                             "ZoneChange": {
-                              "what": ["This"],
+                              "what": ["This", { "Type": "Creature" }],
                               "from": "Battlefield",
                               "to": "Graveyard"
                             }

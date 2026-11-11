@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "277aeb73-4c7c-4132-b9f9-55181d57e75d",
+  "oracle_id": "bfecd486-8326-426b-ac2b-54946f6ae707",
+  "multiverse_ids": [
+    602572
+  ],
+  "mtgo_id": 106299,
+  "arena_id": 83742,
+  "tcgplayer_id": 478285,
+  "cardmarket_id": 692391,
+  "name": "Blade of Shared Souls",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/277aeb73-4c7c-4132-b9f9-55181d57e75d",
+  "scryfall_uri": "https://scryfall.com/card/one/42/blade-of-shared-souls?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:47:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068",
+    "normal": "https://cards.scryfall.io/normal/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068",
+    "large": "https://cards.scryfall.io/large/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068",
+    "png": "https://cards.scryfall.io/png/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.png?1783918068",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.webp?1783918068",
+    "grid": "https://cards.scryfall.io/grid/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.webp?1783918068",
+    "display": "https://cards.scryfall.io/display/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.webp?1783918068",
+    "art": "https://cards.scryfall.io/art/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.webp?1783918068",
+    "crop": "https://cards.scryfall.io/crop/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.webp?1783918068",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/7/277aeb73-4c7c-4132-b9f9-55181d57e75d.jpg?1783918068"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "For Mirrodin! (When this Equipment enters, create a 2/2 red Rebel creature token, then attach this to it.)\nWhenever this Equipment becomes attached to a creature, for as long as this Equipment remains attached to it, you may have that creature become a copy of another target creature you control.\nEquip {2}",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "For Mirrodin!",
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a41eb9df-d8b4-4697-a759-886faf16754d",
+      "component": "token",
+      "name": "Rebel",
+      "type_line": "Token Creature — Rebel",
+      "uri": "https://api.scryfall.com/cards/a41eb9df-d8b4-4697-a759-886faf16754d"
+    },
+    {
+      "object": "related_card",
+      "id": "e1e3aa37-80dc-4c5a-b118-788298ee3fd5",
+      "component": "combo_piece",
+      "name": "Blade of Shared Souls",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/e1e3aa37-80dc-4c5a-b118-788298ee3fd5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "04bef644-343f-4230-95ee-255f29aa67a2",
+  "set": "one",
+  "set_name": "Phyrexia: All Will Be One",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/04bef644-343f-4230-95ee-255f29aa67a2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aone&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/one?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/277aeb73-4c7c-4132-b9f9-55181d57e75d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abfecd486-8326-426b-ac2b-54946f6ae707&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "bc1171f7-8e0a-4c7d-a765-eb40983bc330",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12357,
+  "penny_rank": 10452,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2023-01-12"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.18",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=602572&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlade%2Bof%2BShared%2BSouls",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlade%2Bof%2BShared%2BSouls",
+    "edhrec": "https://edhrec.com/route/?cc=Blade+of+Shared+Souls"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478285%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=692391&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106299?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "object": "card",
+  "id": "823b019e-10c0-4712-8167-d4f37a71e782",
+  "oracle_id": "e71ac446-02a4-4468-8d29-f28b21617665",
+  "multiverse_ids": [],
+  "mtgo_id": 105947,
+  "tcgplayer_id": 268625,
+  "cardmarket_id": 651581,
+  "name": "Havengul Laboratory // Havengul Mystery",
+  "lang": "en",
+  "released_at": "2022-03-03",
+  "uri": "https://api.scryfall.com/cards/823b019e-10c0-4712-8167-d4f37a71e782",
+  "scryfall_uri": "https://scryfall.com/card/slx/9/havengul-laboratory-havengul-mystery?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:20:15Z",
+  "cmc": 0.0,
+  "type_line": "Legendary Land // Legendary Land",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Investigate",
+    "Transform"
+  ],
+  "produced_mana": [
+    "B",
+    "C"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Havengul Laboratory",
+      "mana_cost": "",
+      "type_line": "Legendary Land",
+      "oracle_text": "{T}: Add {C}.\n{4}, {T}: Investigate. (Create a colorless Clue artifact token with \"{2}, Sacrifice this artifact: Draw a card.\")\nAt the beginning of your end step, if you sacrificed three or more Clues this turn, transform Havengul Laboratory.",
+      "colors": [],
+      "artist": "Rafater",
+      "artist_id": "5157b931-ac23-49b6-a2c4-c4cf4bbc2118",
+      "illustration_id": "84fe4f64-3be6-4611-8d92-e1e7475a8f66",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "normal": "https://cards.scryfall.io/normal/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "large": "https://cards.scryfall.io/large/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "png": "https://cards.scryfall.io/png/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.png?1783923615",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "thumb": "https://cards.scryfall.io/thumb/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "grid": "https://cards.scryfall.io/grid/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "display": "https://cards.scryfall.io/display/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "art": "https://cards.scryfall.io/art/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "crop": "https://cards.scryfall.io/crop/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "jpeg": "https://cards.scryfall.io/normal/front/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Havengul Mystery",
+      "mana_cost": "",
+      "type_line": "Legendary Land",
+      "oracle_text": "When this land transforms into Havengul Mystery, return target creature card from your graveyard to the battlefield.\nWhen the creature put onto the battlefield with Havengul Mystery leaves the battlefield, transform Havengul Mystery.\n{T}, Pay 1 life: Add {B}.",
+      "colors": [],
+      "artist": "Rafater",
+      "artist_id": "5157b931-ac23-49b6-a2c4-c4cf4bbc2118",
+      "illustration_id": "d0ced786-4b78-4d24-a182-712c9afd4d4c",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "normal": "https://cards.scryfall.io/normal/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "large": "https://cards.scryfall.io/large/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "png": "https://cards.scryfall.io/png/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.png?1783923615",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615",
+        "thumb": "https://cards.scryfall.io/thumb/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "grid": "https://cards.scryfall.io/grid/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "display": "https://cards.scryfall.io/display/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "art": "https://cards.scryfall.io/art/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "crop": "https://cards.scryfall.io/crop/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.webp?1783923615",
+        "jpeg": "https://cards.scryfall.io/normal/back/8/2/823b019e-10c0-4712-8167-d4f37a71e782.jpg?1783923615"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b7c52125-929a-4e03-a955-d55ae34a905b",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/b7c52125-929a-4e03-a955-d55ae34a905b"
+    },
+    {
+      "object": "related_card",
+      "id": "823b019e-10c0-4712-8167-d4f37a71e782",
+      "component": "combo_piece",
+      "name": "Havengul Laboratory // Havengul Mystery",
+      "type_line": "Legendary Land // Legendary Land",
+      "uri": "https://api.scryfall.com/cards/823b019e-10c0-4712-8167-d4f37a71e782"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/823b019e-10c0-4712-8167-d4f37a71e782/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae71ac446-02a4-4468-8d29-f28b21617665&unique=prints",
+  "collector_number": "9",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Rafater",
+  "artist_ids": [
+    "5157b931-ac23-49b6-a2c4-c4cf4bbc2118"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9211,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/wizards_magic/status/1499521989047951362",
+    "previewed_at": "2022-03-03"
+  },
+  "prices": {
+    "usd": "0.57",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHavengul%2BLaboratory%2B%252F%252F%2BHavengul%2BMystery",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHavengul%2BLaboratory%2B%252F%252F%2BHavengul%2BMystery",
+    "edhrec": "https://edhrec.com/route/?cc=Havengul+Laboratory"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268625%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651581&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105947?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

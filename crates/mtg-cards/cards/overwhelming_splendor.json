@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1099588c-cc26-4523-8bd2-90e1e1433f53",
+  "name": "Overwhelming Splendor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Overwhelming Splendor",
+      "oracle_fingerprint": "67999ee2367a722fdd54d9622d43c5f4",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }] },
+            "mods": ["LoseAbilities", { "SetPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 109, "end": 199 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "2fd5b7e5-496c-4f6d-85e0-256afb7544d1",
+  "name": "Vexing Arcanix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Arcanix",
+      "oracle_fingerprint": "62bd2209b8f388bd1b46f920819a4994",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": { "who": { "Target": 0 }, "kind": { "CardName": [] }, "as": "name" }
+              },
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "ChosenAs": "name" }]
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }],
+                  "otherwise": [
+                    { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } },
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

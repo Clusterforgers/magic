@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8955996a-76c9-496a-9238-5fd89bcdaae4",
+  "name": "Perish the Thought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perish the Thought",
+      "oracle_fingerprint": "1922e14c851248fe840c1fb734e9d0ce",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

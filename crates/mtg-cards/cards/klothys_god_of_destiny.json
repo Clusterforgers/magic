@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e8473969-195f-41ee-a84d-463cc8c0ef02",
+  "name": "Klothys, God of Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Klothys, God of Destiny",
+      "oracle_fingerprint": "e462d3b67c9eeb0dd0f5bc86ef85bd49",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Red", "Green"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }],
+                  "otherwise": [
+                    { "GainLife": { "amount": 2 } },
+                    { "DealDamage": { "to": "Opponents", "amount": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

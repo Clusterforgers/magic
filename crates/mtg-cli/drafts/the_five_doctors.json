@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dbdd93d2-f2c6-43f9-93e6-2185c7df83bc",
+  "name": "The Five Doctors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Five Doctors",
+      "oracle_fingerprint": "2fcf991e9b4246ecabac8315448127e2",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Subtype": "Doctor" }],
+                  "count": { "min": 0, "max": 5 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

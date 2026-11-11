@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ad6dd363-e1b7-4df4-b9b6-4f5c1fae3bc6",
+  "name": "Petting Zookeeper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Petting Zookeeper",
+      "oracle_fingerprint": "3f4298d1eefb9097c6b323140ea8fa36",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 117 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "oracle_id": "a20dd48d-d344-4db1-b0e9-a2b71c3cc9d1",
+  "name": "Karn, the Great Creator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, the Great Creator",
+      "oracle_fingerprint": "a6930d7c31384ae0f0b144ec76e28945",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Activate": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Search": {
+                              "zone": "Outside",
+                              "filter": [{ "Type": "Artifact" }, { "OwnedBy": "You" }],
+                              "reveal": true,
+                              "as": "found"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+                        ],
+                        "second": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Artifact" },
+                                  { "OwnedBy": "You" },
+                                  { "In": "Exile" },
+                                  { "Not": "FaceDown" }
+                                ]
+                              },
+                              "as": "chosen"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

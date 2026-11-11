@@ -1,0 +1,50 @@
+{
+  "oracle_id": "967c2c79-7e49-448d-8d30-b2eb08b21d0a",
+  "name": "Angry Mob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angry Mob",
+      "oracle_fingerprint": "dd5068695548dc56308703db0a4c5913",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "When": {
+                      "condition": "YourTurn",
+                      "then": {
+                        "Sum": [
+                          { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "Opponents" }] },
+                          2
+                        ]
+                      },
+                      "otherwise": 2
+                    }
+                  },
+                  "toughness": {
+                    "When": {
+                      "condition": "YourTurn",
+                      "then": {
+                        "Sum": [
+                          { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "Opponents" }] },
+                          2
+                        ]
+                      },
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "120b565a-e22b-4d5d-9841-b11750b4ee49",
+  "name": "Samite Alchemist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Alchemist",
+      "oracle_fingerprint": "6bba1a90f1bde616321353bf13f3dd5e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{W}{W}" }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 4 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

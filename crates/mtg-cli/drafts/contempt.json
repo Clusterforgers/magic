@@ -1,0 +1,38 @@
+{
+  "oracle_id": "811c8364-fafb-49c8-a5bf-7b6cdfceb475",
+  "name": "Contempt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contempt",
+      "oracle_fingerprint": "f351f2d8db698f2a1725e19d979af990",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "creature" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "creature" }, "to": "Hand" } },
+                          { "Move": { "what": "This", "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

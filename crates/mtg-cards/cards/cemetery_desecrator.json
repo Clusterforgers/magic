@@ -1,0 +1,20 @@
+{
+  "oracle_id": "85e9a43e-5676-4d12-ac27-e8cf57307d5e",
+  "name": "Cemetery Desecrator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cemetery Desecrator",
+      "oracle_fingerprint": "198007e17c16a9b17f7bce84624ab1de",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 308 }
+          }
+        }
+      ]
+    }
+  ]
+}

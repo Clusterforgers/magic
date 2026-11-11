@@ -1,0 +1,50 @@
+{
+  "oracle_id": "eae3e762-dacd-4bd2-923c-3abb5ceb729a",
+  "name": "Aisha of Sparks and Smoke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aisha of Sparks and Smoke",
+      "oracle_fingerprint": "534c5903a6c6587169caf394a2894e10",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": "{R/W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Sorcery" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "spell"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

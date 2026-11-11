@@ -1,0 +1,32 @@
+{
+  "oracle_id": "913383a1-9c0d-40a1-8c5a-b0a8a95c09a6",
+  "name": "Umori, the Collector",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Umori, the Collector",
+      "oracle_fingerprint": "d722a8181901d2cc958b5870a3f6d4e0",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 186 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardType" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

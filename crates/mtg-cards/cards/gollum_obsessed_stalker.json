@@ -1,0 +1,20 @@
+{
+  "oracle_id": "95d59a06-5144-4da3-8a9c-846b087975b9",
+  "name": "Gollum, Obsessed Stalker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gollum, Obsessed Stalker",
+      "oracle_fingerprint": "3f79b21c4145538a73cad64d2beb0d7c",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 72, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

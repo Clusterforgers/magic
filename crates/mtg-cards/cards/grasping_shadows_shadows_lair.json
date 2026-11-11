@@ -1,0 +1,64 @@
+{
+  "oracle_id": "522a4b02-24c7-45d2-9097-2803cc9fffad",
+  "name": "Grasping Shadows // Shadows' Lair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasping Shadows",
+      "oracle_fingerprint": "31e3ae255623845cc0b301f9f11d4365",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "dread" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "dread" } } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shadows' Lair",
+      "oracle_fingerprint": "f28fa667797d48cf4b1c12383772e2aa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "dread" } } }
+            ],
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

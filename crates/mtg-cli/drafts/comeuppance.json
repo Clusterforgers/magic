@@ -1,0 +1,78 @@
+{
+  "oracle_id": "01f29158-2dc9-4b9d-b726-add5d3fd5782",
+  "name": "Comeuppance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Comeuppance",
+      "oracle_fingerprint": "8ab7b3ec8821eadac6dbcd2d8803db0c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": [{ "Not": { "ControlledBy": "You" } }] }
+                  },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": { "subject": "Dealer", "selector": [{ "Type": "Creature" }] }
+                          },
+                          "then": [{ "DealDamage": { "to": "Dealer", "amount": "Triggering" } }],
+                          "otherwise": [
+                            {
+                              "DealDamage": {
+                                "to": { "ControllerOf": "Dealer" },
+                                "amount": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                      "source": [{ "Not": { "ControlledBy": "You" } }]
+                    }
+                  },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": { "subject": "Dealer", "selector": [{ "Type": "Creature" }] }
+                          },
+                          "then": [{ "DealDamage": { "to": "Dealer", "amount": "Triggering" } }],
+                          "otherwise": [
+                            {
+                              "DealDamage": {
+                                "to": { "ControllerOf": "Dealer" },
+                                "amount": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "83b0b716-bcb0-4044-b64a-354e3cbbd563",
+  "oracle_id": "c880fbdc-bdd9-4f80-81d4-e3e1124f76ca",
+  "multiverse_ids": [],
+  "mtgo_id": 105931,
+  "tcgplayer_id": 268613,
+  "cardmarket_id": 651574,
+  "name": "Bjorna, Nightfall Alchemist",
+  "lang": "en",
+  "released_at": "2022-03-03",
+  "uri": "https://api.scryfall.com/cards/83b0b716-bcb0-4044-b64a-354e3cbbd563",
+  "scryfall_uri": "https://scryfall.com/card/slx/2/bjorna-nightfall-alchemist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:20:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612",
+    "normal": "https://cards.scryfall.io/normal/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612",
+    "large": "https://cards.scryfall.io/large/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612",
+    "png": "https://cards.scryfall.io/png/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.png?1783923612",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.webp?1783923612",
+    "grid": "https://cards.scryfall.io/grid/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.webp?1783923612",
+    "display": "https://cards.scryfall.io/display/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.webp?1783923612",
+    "art": "https://cards.scryfall.io/art/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.webp?1783923612",
+    "crop": "https://cards.scryfall.io/crop/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.webp?1783923612",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/3/83b0b716-bcb0-4044-b64a-354e3cbbd563.jpg?1783923612"
+  },
+  "mana_cost": "{U}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "{T}, Sacrifice an artifact: Bjorna, Nightfall Alchemist deals 1 damage to target creature. Goad that creature. (Until your next turn, that creature attacks each combat if able and attacks a player other than you if able.)\nPartner—Friends forever (You can have two commanders if both have this ability.)",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Goad",
+    "Partner"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/83b0b716-bcb0-4044-b64a-354e3cbbd563/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac880fbdc-bdd9-4f80-81d4-e3e1124f76ca&unique=prints",
+  "collector_number": "2",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jamroz Gary",
+  "artist_ids": [
+    "b4e55cf2-f8c9-4c11-9b99-058f88cbde6c"
+  ],
+  "illustration_id": "a001a091-2056-4de4-b33d-8dbdcab4802c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12202,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/wizards_magic/status/1499521989047951362",
+    "previewed_at": "2022-03-03"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": "1.61"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBjorna%252C%2BNightfall%2BAlchemist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBjorna%252C%2BNightfall%2BAlchemist",
+    "edhrec": "https://edhrec.com/route/?cc=Bjorna%2C+Nightfall+Alchemist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268613%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651574&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105931?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

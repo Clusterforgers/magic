@@ -1,0 +1,35 @@
+{
+  "oracle_id": "87864421-505c-4bdb-b1e3-3e44e05f2beb",
+  "name": "From Father to Son",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "From Father to Son",
+      "oracle_fingerprint": "02b060661c9dc4798d68963ca18cb32a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Subtype": "Vehicle" }], "reveal": true, "as": "vehicle" }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "vehicle" }, "to": { "Battlefield": {} } } }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "vehicle" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{W}{W}{W}" } }
+      ]
+    }
+  ]
+}

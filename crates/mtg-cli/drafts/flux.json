@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b8cff5f1-6871-49d2-89a7-24870308aadb",
+  "name": "Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flux",
+      "oracle_fingerprint": "f358b9b69aab7febff9bc6570368fd03",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                          }
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "player" },
+                        "count": { "Count": [{ "In": "Hand" }, { "Is": { "Bound": "chosen" } }] },
+                        "filter": [{ "Is": { "Bound": "chosen" } }],
+                        "as": "discarded"
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Count": [{ "In": "Graveyard" }, { "Is": { "Bound": "discarded" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

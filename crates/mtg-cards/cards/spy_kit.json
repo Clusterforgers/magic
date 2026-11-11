@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4d94f5bd-42c6-4d15-a693-8be189ec3746",
+  "name": "Spy Kit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spy Kit",
+      "oracle_fingerprint": "2a96434aa27d9cc523b1a218dfb039fb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 102 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

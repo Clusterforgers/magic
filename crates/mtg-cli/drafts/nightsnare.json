@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b9efd1bd-d82a-43ad-aba7-df172b9751ce",
+  "name": "Nightsnare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightsnare",
+      "oracle_fingerprint": "627a0c66d1c48a468f1e54fb14e201a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Discard": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Is": { "Bound": "card" } }],
+                        "by": "You"
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

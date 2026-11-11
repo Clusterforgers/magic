@@ -1,0 +1,67 @@
+{
+  "oracle_id": "d732d9b8-dea0-41c4-8cff-67b2b3d36ecb",
+  "name": "Fortunate Few",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortunate Few",
+      "oracle_fingerprint": "7be34f1a6b60f410b96d5728711e9278",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Battlefield" },
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "ControlledBy": "You" } }
+                    ]
+                  },
+                  "as": "first"
+                }
+              },
+              { "Remember": { "what": { "Bound": "first" }, "slot": "chosen" } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "p" },
+                        "from": {
+                          "Each": [
+                            { "In": "Battlefield" },
+                            { "Not": { "Type": "Land" } },
+                            { "Not": { "ControlledBy": { "Bound": "p" } } },
+                            {
+                              "Not": { "Is": { "Remembered": { "on": "This", "slot": "chosen" } } }
+                            }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Remember": { "what": { "Bound": "pick" }, "slot": "chosen" } }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Remembered": { "on": "This", "slot": "chosen" } } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

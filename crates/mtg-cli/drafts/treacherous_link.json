@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b7902113-9ddf-4d81-a76a-b54b8a36c154",
+  "name": "Treacherous Link",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treacherous Link",
+      "oracle_fingerprint": "2e5b866fed546292bc35ef8de9d831f7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached" } },
+            "by": {
+              "Instead": [
+                {
+                  "DealDamage": {
+                    "source": "Dealer",
+                    "to": { "ControllerOf": "Attached" },
+                    "amount": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

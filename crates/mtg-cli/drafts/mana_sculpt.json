@@ -1,0 +1,52 @@
+{
+  "oracle_id": "35e2f82e-7ca3-4a92-9134-b7999eef5337",
+  "name": "Mana Sculpt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Sculpt",
+      "oracle_fingerprint": "11d36c7ca3bf228560a0dd105bb152e6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "AnyOf": [
+                            { "StepBegins": { "step": "Main1", "whose": "You" } },
+                            { "StepBegins": { "step": "Main2", "whose": "You" } }
+                          ]
+                        },
+                        "effects": [
+                          {
+                            "AddMana": {
+                              "mana": { "Fixed": ["Colorless"] },
+                              "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaSpent" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

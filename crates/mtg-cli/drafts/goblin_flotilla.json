@@ -1,0 +1,51 @@
+{
+  "oracle_id": "014ca38f-d4ac-4417-bfa8-785a7d6fce43",
+  "name": "Goblin Flotilla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Flotilla",
+      "oracle_fingerprint": "c5b7c586ec7ad0f5f7a16b7c6b746a29",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "unpaid": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "AnyOf": [
+                            {
+                              "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] }
+                            },
+                            { "Blocks": { "what": [{ "Type": "Creature" }], "blocking": ["This"] } }
+                          ]
+                        },
+                        "once": false,
+                        "until": "UntilEndOfCombat",
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": "Triggering",
+                              "mods": [{ "AddKeyword": "FirstStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

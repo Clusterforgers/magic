@@ -1,0 +1,74 @@
+{
+  "oracle_id": "76c43ac8-a878-4239-b0e3-f0254ef63e50",
+  "name": "Jin Sakai, Ghost of Tsushima",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jin Sakai, Ghost of Tsushima",
+      "oracle_fingerprint": "cb9869e2429e749e9feb98cf6d19f74b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "AttackingPlayer": "Against" },
+                    { "Not": { "Is": "Triggering" } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Standoff",
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Ghost",
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

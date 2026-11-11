@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3d1d30e1-8934-4451-9b32-c6db2167fc2e",
+  "name": "Rowdy Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowdy Crew",
+      "oracle_fingerprint": "9a420d432aa4a59d5a9808f3ea73384a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "Discard": { "count": 2, "random": true, "as": "discarded" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

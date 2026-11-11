@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e6bfac15-ec3c-4a55-946a-0b4514eabafd",
+  "name": "Profaner of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Profaner of the Dead",
+      "oracle_fingerprint": "45bfa875a07d144814774831d137cae8",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": ["This"] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      {
+                        "Compare": {
+                          "stat": "Toughness",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "Against", "stat": "Toughness" } }
+                        }
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

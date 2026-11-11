@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e9022d1c-2f5c-4a1f-a44e-0e4f9651e729",
+  "name": "Hideous Laughter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hideous Laughter",
+      "oracle_fingerprint": "4cc84c10fb518301b0ccff47f3eb3a46",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 43, "end": 217 }
+          }
+        }
+      ]
+    }
+  ]
+}

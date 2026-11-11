@@ -1,0 +1,52 @@
+{
+  "oracle_id": "752566b4-d3f5-4f10-b6f5-7185809f7a9d",
+  "name": "Lullmage Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lullmage Mentor",
+      "oracle_fingerprint": "06e2cd4ec84adec67f9f3aae18e147fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "Did": { "action": "Countered", "what": ["Spell"] } },
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Merfolk",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Merfolk"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Merfolk" }], "count": 7 } }],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

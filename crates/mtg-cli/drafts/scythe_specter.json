@@ -1,0 +1,57 @@
+{
+  "oracle_id": "529ace49-c50e-4d3e-ac29-91e08af57fdc",
+  "name": "Scythe Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scythe Specter",
+      "oracle_fingerprint": "0d25a543b08b0dfc0ab2b42ccdbd6593",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Discard": { "who": "Opponents", "as": "discarded" } },
+              {
+                "Let": {
+                  "as": "greatest",
+                  "amount": {
+                    "Greatest": { "of": [{ "Is": { "Bound": "discarded" } }], "stat": "ManaValue" }
+                  }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "CountOf": {
+                          "subject": { "Bound": "discarded" },
+                          "selector": [
+                            { "OwnedBy": "You" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Eq",
+                                "to": { "Bound": "greatest" }
+                              }
+                            }
+                          ],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "amount": { "Bound": "greatest" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

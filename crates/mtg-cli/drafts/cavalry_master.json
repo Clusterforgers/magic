@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7083dedd-b246-4fe0-b1ca-00c490ed9c6b",
+  "name": "Cavalry Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavalry Master",
+      "oracle_fingerprint": "29c83636412a7186a3d9a3d4233c99e6",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                "Other",
+                { "HasKeyword": { "Macro": { "name": "flanking", "amount": 0 } } }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "flanking", "amount": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

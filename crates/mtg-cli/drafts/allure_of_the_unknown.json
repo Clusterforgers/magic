@@ -1,0 +1,55 @@
+{
+  "oracle_id": "252d9b25-45a1-40ca-b563-4cdefc791a44",
+  "name": "Allure of the Unknown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Allure of the Unknown",
+      "oracle_fingerprint": "b761e344ae197cb453be4e7c684fa39a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opp" },
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "exiled" } } }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "Bound": "opp" },
+                  "what": { "Arrived": { "of": { "Bound": "exiled" }, "zone": "Exile" } },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

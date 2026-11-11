@@ -1,0 +1,42 @@
+{
+  "oracle_id": "5168be9b-ffca-41c5-a944-92a1a2e30779",
+  "name": "Mutated Cultist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutated Cultist",
+      "oracle_fingerprint": "e4f1913df31d4ab306b7e1583c7e0db2",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "targets": [
+              {
+                "what": { "Either": [{ "Object": [] }, "Opponent"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Let": { "as": "removed", "amount": { "AnyCounters": { "Target": 0 } } } },
+              { "RemoveAllCounters": { "from": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "benefit": {
+                        "Cost": { "change": "Reduce", "mana": "{1}", "per": { "Bound": "removed" } }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Deathtouch" }
+      ]
+    }
+  ]
+}

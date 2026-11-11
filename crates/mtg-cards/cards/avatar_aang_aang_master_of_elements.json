@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b4872bac-5822-4c35-9b73-38c4e3ffa477",
+  "name": "Avatar Aang // Aang, Master of Elements",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Avatar Aang",
+      "oracle_fingerprint": "3c3a10c5bfe3a0f8abe85e44ff77e447",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 22, "end": 154 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Aang, Master of Elements",
+      "oracle_fingerprint": "fb6e07722b9c426a6c33a8f5472dfe6b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{W}{U}{B}{R}{G}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "May": { "effects": [{ "Transform": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "GainLife": { "amount": 4 } },
+                    { "Draw": { "count": 4 } },
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 4 } },
+                    { "DealDamage": { "to": "Opponents", "amount": 4 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

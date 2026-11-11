@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4ef583ab-e0a0-4e4b-bd65-af766038b1fd",
+  "name": "Ghost Vacuum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Vacuum",
+      "oracle_fingerprint": "578229152bdbbed14f2e05ca7b5a5320",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                  },
+                  "to": {
+                    "Battlefield": { "under": "You", "counters": [[{ "Other": "flying" }, 1]] }
+                  },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }, { "AddSubtype": "Spirit" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

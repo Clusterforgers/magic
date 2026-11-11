@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6230c179-0263-4fa4-b0ff-f2cb621de147",
+  "name": "Portcullis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Portcullis",
+      "oracle_fingerprint": "9efca7868d98e2eeaf6ef37c47495f08",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "Not": { "Is": "Triggering" } }] },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

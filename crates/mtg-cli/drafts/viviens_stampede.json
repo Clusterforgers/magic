@@ -1,0 +1,58 @@
+{
+  "oracle_id": "b0700c79-f948-4235-ad87-f8c6079a368a",
+  "name": "Vivien's Stampede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Stampede",
+      "oracle_fingerprint": "263f68f06b5a96bce944e9899996689b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Melee" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Main2" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Players": {
+                            "PlayersWhere": {
+                              "who": "EachPlayer",
+                              "test": {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "You", "what": "CombatDamageTaken" }
+                                  },
+                                  "op": "Gt",
+                                  "right": 0
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

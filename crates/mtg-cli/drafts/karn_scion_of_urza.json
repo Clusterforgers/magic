@@ -1,0 +1,92 @@
+{
+  "oracle_id": "060209fa-4b7d-4e08-bf8b-8759bba5641b",
+  "name": "Karn, Scion of Urza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Scion of Urza",
+      "oracle_fingerprint": "45b51b5870928c00ed7c6aff5e9e5d07",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "rest" }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "silver" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" },
+                      { "HasCounter": { "Other": "silver" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Construct",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Construct"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

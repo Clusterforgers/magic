@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dc25bdde-1c73-4c61-99d8-b772aae278cd",
+  "name": "Custodi Soulcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Custodi Soulcaller",
+      "oracle_fingerprint": "d4012a74b34e3eab5e512720b588c264",
+      "abilities": [
+        { "Keyword": "Melee" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Players": "Attacked" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

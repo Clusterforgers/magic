@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e911f9d9-da04-4997-a8d7-449b566cd1ce",
+  "name": "Murderous Spoils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murderous Spoils",
+      "oracle_fingerprint": "c3d6c27f9e160e4af739c63d50dee532",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "Subtype": "Equipment" }, { "AttachedTo": { "Target": 0 } }]
+                  },
+                  "as": "equipment"
+                }
+              },
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "equipment" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

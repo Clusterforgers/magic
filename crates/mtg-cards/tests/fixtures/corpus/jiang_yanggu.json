@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "eb8dae9a-dac2-4b80-b546-852b989bd8c1",
+  "oracle_id": "b15c8f43-685d-4901-9cad-47bc6dc6346f",
+  "multiverse_ids": [
+    447070
+  ],
+  "tcgplayer_id": 167152,
+  "cardmarket_id": 358246,
+  "name": "Jiang Yanggu",
+  "lang": "en",
+  "released_at": "2018-06-22",
+  "uri": "https://api.scryfall.com/cards/eb8dae9a-dac2-4b80-b546-852b989bd8c1",
+  "scryfall_uri": "https://scryfall.com/card/gs1/22/jiang-yanggu?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:23:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627",
+    "normal": "https://cards.scryfall.io/normal/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627",
+    "large": "https://cards.scryfall.io/large/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627",
+    "png": "https://cards.scryfall.io/png/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.png?1783934627",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.webp?1783934627",
+    "grid": "https://cards.scryfall.io/grid/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.webp?1783934627",
+    "display": "https://cards.scryfall.io/display/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.webp?1783934627",
+    "art": "https://cards.scryfall.io/art/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.webp?1783934627",
+    "crop": "https://cards.scryfall.io/crop/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.webp?1783934627",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/b/eb8dae9a-dac2-4b80-b546-852b989bd8c1.jpg?1783934627"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Yanggu",
+  "oracle_text": "+1: Target creature gets +2/+2 until end of turn.\n−1: If you don't control a creature named Mowu, create Mowu, a legendary 3/3 green Dog creature token.\n−5: Until end of turn, target creature gains trample and gets +X/+X, where X is the number of lands you control.",
+  "loyalty": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "eb8dae9a-dac2-4b80-b546-852b989bd8c1",
+      "component": "combo_piece",
+      "name": "Jiang Yanggu",
+      "type_line": "Legendary Planeswalker — Yanggu",
+      "uri": "https://api.scryfall.com/cards/eb8dae9a-dac2-4b80-b546-852b989bd8c1"
+    },
+    {
+      "object": "related_card",
+      "id": "3da5b115-84b5-4eb3-bbef-e5024601ebc8",
+      "component": "combo_piece",
+      "name": "Journey for the Elixir",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/3da5b115-84b5-4eb3-bbef-e5024601ebc8"
+    },
+    {
+      "object": "related_card",
+      "id": "b10441dd-9029-4f95-9566-d3771ebd36bd",
+      "component": "token",
+      "name": "Mowu // Mowu",
+      "type_line": "Token Legendary Creature — Dog // Token Legendary Creature — Dog",
+      "uri": "https://api.scryfall.com/cards/b10441dd-9029-4f95-9566-d3771ebd36bd"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "19c285e9-68e0-45e1-b82b-ac6051eb43be",
+  "set": "gs1",
+  "set_name": "Global Series Jiang Yanggu & Mu Yanling",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/19c285e9-68e0-45e1-b82b-ac6051eb43be",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ags1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/gs1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/eb8dae9a-dac2-4b80-b546-852b989bd8c1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab15c8f43-685d-4901-9cad-47bc6dc6346f&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tingting Yeh",
+  "artist_ids": [
+    "39d11b40-5702-41cc-b3da-22c1d75abe79"
+  ],
+  "illustration_id": "359409bc-dbcc-4b14-8ec8-106511ab8abf",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 20641,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.76",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "1.23",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=447070&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJiang%2BYanggu",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJiang%2BYanggu",
+    "edhrec": "https://edhrec.com/route/?cc=Jiang+Yanggu"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167152%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358246&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jiang+Yanggu&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

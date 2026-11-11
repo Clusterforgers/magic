@@ -1,0 +1,67 @@
+{
+  "oracle_id": "680a8e14-053f-4cde-a060-e1b36873cf14",
+  "name": "Rediscover the Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rediscover the Way",
+      "oracle_fingerprint": "0fc86aab359dd208b1a4ce95d612375a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AnyOf": [{ "Chapter": { "number": 1 } }, { "Chapter": { "number": 2 } }] },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "DoubleStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

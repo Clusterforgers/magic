@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f9701c1f-66c7-4ac7-8106-074d6f557ad6",
+  "name": "Quicksilver Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quicksilver Dragon",
+      "oracle_fingerprint": "5f663f49449e8dfcb5972f545d80b2ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 129 }
+          }
+        },
+        { "Keyword": { "Morph": "{4}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1206b672-e075-45ba-97d4-7c3012be062d",
+  "name": "Unmoored Ego",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unmoored Ego",
+      "oracle_fingerprint": "0dbe219c2daf442b76b29de88c2ce1ff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }, { "In": "Library" }] },
+                      { "ChosenAs": "name" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 4 },
+                  "as": "found"
+                }
+              },
+              {
+                "Let": {
+                  "as": "fromhand",
+                  "amount": {
+                    "CountOf": { "of": { "Bound": "found" }, "filter": [{ "In": "Hand" }] }
+                  }
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "exiled" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              { "Draw": { "who": { "Target": 0 }, "count": { "Bound": "fromhand" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

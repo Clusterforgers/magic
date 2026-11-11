@@ -1,0 +1,20 @@
+{
+  "oracle_id": "71a7f695-06b9-461d-9646-ffb975b375fc",
+  "name": "Edgewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edgewalker",
+      "oracle_fingerprint": "656061a0ee82d328f23a11b1bbb99eea",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Cleric" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{W}{B}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "109a9464-ce30-4747-874e-3bbf75913081",
+  "oracle_id": "e6e4ad3c-079d-429b-9f29-b9e42a1a236f",
+  "multiverse_ids": [
+    655008
+  ],
+  "mtgo_id": 124045,
+  "arena_id": 90413,
+  "tcgplayer_id": 544224,
+  "cardmarket_id": 763560,
+  "name": "Slickshot Lockpicker",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/109a9464-ce30-4747-874e-3bbf75913081",
+  "scryfall_uri": "https://scryfall.com/card/otj/67/slickshot-lockpicker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:04:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840",
+    "large": "https://cards.scryfall.io/large/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840",
+    "png": "https://cards.scryfall.io/png/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.png?1783911840",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.webp?1783911840",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.webp?1783911840",
+    "display": "https://cards.scryfall.io/display/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.webp?1783911840",
+    "art": "https://cards.scryfall.io/art/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.webp?1783911840",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.webp?1783911840",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/109a9464-ce30-4747-874e-3bbf75913081.jpg?1783911840"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue",
+  "oracle_text": "When this creature enters, target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost. (You may cast that card from your graveyard for its flashback cost. Then exile it.)\nPlot {2}{U} (You may pay {2}{U} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Plot"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f07677af-88a4-4ff5-b591-e1e3ac05235d",
+      "component": "combo_piece",
+      "name": "Plot",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/f07677af-88a4-4ff5-b591-e1e3ac05235d"
+    },
+    {
+      "object": "related_card",
+      "id": "109a9464-ce30-4747-874e-3bbf75913081",
+      "component": "combo_piece",
+      "name": "Slickshot Lockpicker",
+      "type_line": "Creature — Human Rogue",
+      "uri": "https://api.scryfall.com/cards/109a9464-ce30-4747-874e-3bbf75913081"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/109a9464-ce30-4747-874e-3bbf75913081/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae6e4ad3c-079d-429b-9f29-b9e42a1a236f&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wei Wei",
+  "artist_ids": [
+    "8653c534-a280-4e96-8426-0dc0578e64f7"
+  ],
+  "illustration_id": "221c1334-40c0-4d32-9670-076820e9aa1e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11727,
+  "penny_rank": 6910,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.28",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655008&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlickshot%2BLockpicker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlickshot%2BLockpicker",
+    "edhrec": "https://edhrec.com/route/?cc=Slickshot+Lockpicker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544224%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=763560&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124045?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

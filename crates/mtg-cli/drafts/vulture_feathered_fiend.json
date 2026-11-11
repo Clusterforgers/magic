@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c598d97f-fec6-4238-8eed-8051e9541d31",
+  "name": "Vulture, Feathered Fiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulture, Feathered Fiend",
+      "oracle_fingerprint": "42c0d1f4fc838f2af72c84e61866431d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasKeyword": "Flying" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": { "Each": [{ "Is": "Triggering" }] }, "counter": "+1/+1" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

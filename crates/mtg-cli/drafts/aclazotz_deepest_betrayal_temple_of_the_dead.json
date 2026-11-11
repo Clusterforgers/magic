@@ -1,0 +1,96 @@
+{
+  "oracle_id": "fcdfe9d5-2743-4d3e-ab57-bf0f96beaa15",
+  "name": "Aclazotz, Deepest Betrayal // Temple of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aclazotz, Deepest Betrayal",
+      "oracle_fingerprint": "fc5ade0cccea53014c33fc2d121b71a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "cant",
+                  "amount": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": { "left": { "LowestHand": "You" }, "op": "Eq", "right": 0 }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "Discard": { "who": "Opponents" } },
+              { "Draw": { "count": { "Bound": "cant" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Land" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "tapped": true, "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Temple of the Dead",
+      "oracle_fingerprint": "f275a84f6edf88b4ebbe6ce712b63f91",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": { "left": { "LowestHand": "EachPlayer" }, "op": "Le", "right": 1 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

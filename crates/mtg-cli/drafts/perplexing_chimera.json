@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7d075b8a-a606-4590-b52b-b4ef3a9e342f",
+  "name": "Perplexing Chimera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perplexing Chimera",
+      "oracle_fingerprint": "ecd28f0188fd7fba4527fefb18fe7862",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExchangeControl": { "what": ["This", "Triggering"], "duration": "Forever" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [{ "ChangeTargets": { "what": "Triggering", "to": "Choose" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

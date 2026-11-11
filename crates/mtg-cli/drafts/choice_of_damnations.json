@@ -1,0 +1,48 @@
+{
+  "oracle_id": "506714a8-b9c2-443a-a9e8-ef9130e674ba",
+  "name": "Choice of Damnations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choice of Damnations",
+      "oracle_fingerprint": "6ccc5fdad85a70c980b8e23c87704fb6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": { "Target": 0 },
+                  "kind": { "Number": [0, 1000000] },
+                  "as": "number"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": { "ChosenAs": "number" } } }
+                  ],
+                  "second": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Target": 0 },
+                        "filter": [],
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "ControlledBy": { "Target": 0 } }] },
+                            { "Times": { "by": -1, "of": { "ChosenAs": "number" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -33,7 +33,7 @@ fn telepathy(who: &str) -> Arc<CardDefinition> {
 fn shown(driver: &Driver, seat: PlayerId, seats: usize) -> bool {
     let state = driver.state();
     let hand = state.zone(Zone::Hand(seat)).to_vec();
-    assert!(!hand.is_empty());
+    assert_ne!(hand.len(), 0, "the hand holds cards");
     let all = hand
         .iter()
         .all(|id| (0..seats).all(|viewer| state.is_shown_to(pid(viewer), *id)));

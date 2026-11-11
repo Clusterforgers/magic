@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f1ae89ff-b23b-44b2-a30c-6f2ae3216189",
+  "name": "Petra Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petra Sphinx",
+      "oracle_fingerprint": "06b587d7e412a670091e9e8e72baba57",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": { "who": { "Target": 0 }, "kind": { "CardName": [] }, "as": "name" }
+              },
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [],
+                  "as": "card",
+                  "revealed_as": "seen"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "ChosenAs": "name" }]
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }],
+                  "otherwise": [{ "Move": { "what": { "Bound": "card" }, "to": "Graveyard" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

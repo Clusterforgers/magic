@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fe902db2-3b1d-4266-88eb-307f878fc317",
+  "name": "Pendrell Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pendrell Flux",
+      "oracle_fingerprint": "dffe8a319a0212e1fd44fe56f7161306",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": ["OwnManaCost"],
+                          "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

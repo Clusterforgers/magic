@@ -1,0 +1,55 @@
+{
+  "oracle_id": "564ffd21-bffb-488d-a496-cca29f344cdc",
+  "name": "Tears of Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tears of Rage",
+      "oracle_fingerprint": "6e6342530be951fa59fde53381ca3c5f",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareAttackers" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "as": "attackers"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "attackers" },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "attackers" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "attackers" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

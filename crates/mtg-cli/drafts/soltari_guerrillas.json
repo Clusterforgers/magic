@@ -1,0 +1,29 @@
+{
+  "oracle_id": "37da03c2-c03e-453c-8fbf-e1039faceb8c",
+  "name": "Soltari Guerrillas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soltari Guerrillas",
+      "oracle_fingerprint": "8e4357a760691ae57ba5d5266387b417",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "Opponents", "source": ["This"], "combat": true } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "dcb9337b-d5fd-4cd2-a41f-900d170a5ded",
+  "name": "The Most Dangerous Gamer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Most Dangerous Gamer",
+      "oracle_fingerprint": "0e9a9999b0f092b1d82faa4d8eb32a99",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 83 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 165 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 166, "end": 238 }
+          }
+        }
+      ]
+    }
+  ]
+}

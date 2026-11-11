@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0cdece2a-0bdf-4e6d-9ddc-4a8d58b2ec29",
+  "name": "Tree of Perdition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tree of Perdition",
+      "oracle_fingerprint": "a8a8f65eabc950047c63f80b7127e038",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Let": { "as": "life", "amount": { "Life": { "Target": 0 } } } },
+              {
+                "Let": {
+                  "as": "toughness",
+                  "amount": { "Stat": { "of": "This", "stat": "Toughness" } }
+                }
+              },
+              { "SetLife": { "who": { "Target": 0 }, "amount": { "Bound": "toughness" } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetToughness": { "Bound": "life" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

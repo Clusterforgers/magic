@@ -1,0 +1,53 @@
+{
+  "oracle_id": "75bf0f27-9df1-4ab4-97a8-94bb3223bdf9",
+  "name": "Zimone, Mystery Unraveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zimone, Mystery Unraveler",
+      "oracle_fingerprint": "87f527c8a2609bd763698ab1fa795b18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [
+                    { "LookAtTop": { "count": 2, "as": "looked" } },
+                    {
+                      "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" }
+                    },
+                    { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+                    { "Manifest": {} }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": { "Each": [{ "ControlledBy": "You" }] },
+                              "as": "perm"
+                            }
+                          },
+                          { "TurnFaceUp": { "what": { "Bound": "perm" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

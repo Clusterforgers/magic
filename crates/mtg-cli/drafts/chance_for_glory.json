@@ -1,0 +1,33 @@
+{
+  "oracle_id": "324af60d-142b-4b6c-afe9-6aa36267d5ee",
+  "name": "Chance for Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chance for Glory",
+      "oracle_fingerprint": "2389ba7c532274e10565e9c8bf303e3c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "Forever"
+                }
+              },
+              { "ExtraTurn": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "LoseGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "e5e2e4ef-1d78-41eb-b634-1a90d4cb7125",
+  "name": "The Master, Gallifrey's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master, Gallifrey's End",
+      "oracle_fingerprint": "a38906fc69fb8ee177daa4c71d0be27e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Artifact" },
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "Triggering", "as": "exiled" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Let": { "as": "most", "amount": { "HighestLife": "Opponents" } } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Life": "You" },
+                                "op": "Eq",
+                                "right": { "Bound": "most" }
+                              }
+                            }
+                          }
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "chosen" },
+                        "first": [{ "LoseLife": { "who": { "Bound": "chosen" }, "amount": 4 } }],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": { "CopyOf": { "of": { "Bound": "exiled" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

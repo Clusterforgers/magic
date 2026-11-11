@@ -28,9 +28,22 @@
             "when": { "StepBegins": { "step": "Upkeep" } },
             "effects": [
               {
-                "RemoveAllCounters": {
-                  "from": { "Each": [{ "ControlledBy": "ActivePlayer" }] },
-                  "counter": { "Other": "hourglass" }
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "ControlledBy": "Triggering" },
+                      { "HasCounter": { "Other": "hourglass" } }
+                    ]
+                  },
+                  "as": "perm",
+                  "effects": [
+                    {
+                      "RemoveAllCounters": {
+                        "from": { "Bound": "perm" },
+                        "counter": { "Other": "hourglass" }
+                      }
+                    }
+                  ]
                 }
               }
             ]

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "87266dec-ac03-4f21-b235-67c14c3024db",
+  "name": "Stonebinder's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonebinder's Familiar",
+      "oracle_fingerprint": "6a6aa31333f7441e164fbde892a07c71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "ZoneChange": { "what": [], "to": "Exile" } } },
+            "if": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

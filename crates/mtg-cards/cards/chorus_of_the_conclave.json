@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e4e6ffab-3f0c-43f8-b1c3-b59c7fcb095d",
+  "name": "Chorus of the Conclave",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chorus of the Conclave",
+      "oracle_fingerprint": "bf36b9145e56d2c730ad36654c02db79",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

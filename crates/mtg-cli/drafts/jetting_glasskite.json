@@ -1,0 +1,20 @@
+{
+  "oracle_id": "65b61373-835a-4b22-90d1-d019446e98f7",
+  "name": "Jetting Glasskite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jetting Glasskite",
+      "oracle_fingerprint": "3563cb8a58726bbb3ef34a9a87d6373c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "BecomesTarget": { "what": ["This"] } }, "nth": 1 } },
+            "effects": [{ "Counter": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

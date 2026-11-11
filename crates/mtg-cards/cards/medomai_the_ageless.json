@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b6b91ea7-a22c-4835-8c62-3360b0fd3a8b",
+  "name": "Medomai the Ageless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Medomai the Ageless",
+      "oracle_fingerprint": "712c799ce076f57214ce1281dd074ce5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 132 }
+          }
+        }
+      ]
+    }
+  ]
+}

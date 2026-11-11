@@ -1,0 +1,125 @@
+{
+  "oracle_id": "e7dfe47f-41fc-4071-9ad3-96cd8d9be52e",
+  "name": "Gylwain, Casting Director",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gylwain, Casting Director",
+      "oracle_fingerprint": "6db9c630ee06b79f5e25465150918696",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Royal Role",
+                                "types": ["Enchantment"],
+                                "subtypes": ["Aura", "Role"],
+                                "abilities": [
+                                  { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                  {
+                                    "Static": {
+                                      "affected": "Attached",
+                                      "mods": [
+                                        { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                        { "AddKeyword": { "Ward": "{1}" } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "as": "role"
+                          }
+                        },
+                        { "Attach": { "what": { "Bound": "role" }, "to": "Triggering" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Sorcerer Role",
+                                "types": ["Enchantment"],
+                                "subtypes": ["Aura", "Role"],
+                                "abilities": [
+                                  { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                  {
+                                    "Static": {
+                                      "affected": "Attached",
+                                      "mods": [
+                                        { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                        {
+                                          "GrantAbility": {
+                                            "Triggered": {
+                                              "when": { "Attacks": { "what": ["This"] } },
+                                              "effects": [{ "Scry": {} }]
+                                            }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "as": "role"
+                          }
+                        },
+                        { "Attach": { "what": { "Bound": "role" }, "to": "Triggering" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Monster Role",
+                                "types": ["Enchantment"],
+                                "subtypes": ["Aura", "Role"],
+                                "abilities": [
+                                  { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                                  {
+                                    "Static": {
+                                      "affected": "Attached",
+                                      "mods": [
+                                        { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                        { "AddKeyword": "Trample" }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "as": "role"
+                          }
+                        },
+                        { "Attach": { "what": { "Bound": "role" }, "to": "Triggering" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

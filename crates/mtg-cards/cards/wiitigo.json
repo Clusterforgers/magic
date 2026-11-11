@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7f956a21-854e-41cc-96f9-ad774e69fa8e",
+  "name": "Wiitigo",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wiitigo",
+      "oracle_fingerprint": "6930d0e84a43da058136ee2a9446e111",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 6 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 222 }
+          }
+        }
+      ]
+    }
+  ]
+}

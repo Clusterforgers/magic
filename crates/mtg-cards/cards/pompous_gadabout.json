@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0361b9b7-9097-4aae-aa06-c63a5fb47a76",
+  "name": "Pompous Gadabout",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pompous Gadabout",
+      "oracle_fingerprint": "05d03ac9b3a6bf2a97eef73b87042050",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 113 }
+          }
+        }
+      ]
+    }
+  ]
+}

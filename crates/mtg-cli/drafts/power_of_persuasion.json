@@ -1,0 +1,76 @@
+{
+  "oracle_id": "5c615c99-77b7-4bea-9286-1e8d257153fb",
+  "name": "Power of Persuasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power of Persuasion",
+      "oracle_fingerprint": "92883dff4c12a3356f9ac48f86325775",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "OneOf": {
+                            "who": { "OwnerOf": { "Target": 0 } },
+                            "options": [
+                              [
+                                {
+                                  "Move": {
+                                    "what": { "Target": 0 },
+                                    "to": { "Library": { "place": "Top" } }
+                                  }
+                                }
+                              ],
+                              [
+                                {
+                                  "Move": {
+                                    "what": { "Target": 0 },
+                                    "to": { "Library": { "place": "Bottom" } }
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "SetController": "You" }],
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

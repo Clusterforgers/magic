@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49",
+  "oracle_id": "b68df6d7-d69e-446f-9b1b-7a6ca56efbec",
+  "multiverse_ids": [
+    484912
+  ],
+  "mtgo_id": 80711,
+  "tcgplayer_id": 212184,
+  "cardmarket_id": 452253,
+  "name": "Selective Adaptation",
+  "lang": "en",
+  "released_at": "2020-04-17",
+  "uri": "https://api.scryfall.com/cards/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49",
+  "scryfall_uri": "https://scryfall.com/card/c20/65/selective-adaptation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:26:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208",
+    "large": "https://cards.scryfall.io/large/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208",
+    "png": "https://cards.scryfall.io/png/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.png?1783931208",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.webp?1783931208",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.webp?1783931208",
+    "display": "https://cards.scryfall.io/display/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.webp?1783931208",
+    "art": "https://cards.scryfall.io/art/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.webp?1783931208",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.webp?1783931208",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49.jpg?1783931208"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Reveal the top seven cards of your library. Choose from among them a card with flying, a card with first strike, and so on for double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, reach, trample, and vigilance. Put one of the chosen cards onto the battlefield, the other chosen cards into your hand, and the rest into your graveyard.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set": "c20",
+  "set_name": "Commander 2020",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f60ec786-1f8d-42f7-9abc-0d880fe243f6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/adbd8ffa-c7d3-4ef6-b3a7-8a967b50ce49/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab68df6d7-d69e-446f-9b1b-7a6ca56efbec&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tomasz Jedruszek",
+  "artist_ids": [
+    "bba69285-2445-4a4b-a847-59397be972ea"
+  ],
+  "illustration_id": "f6a8b274-9ce0-4d31-9a92-bfb043851b48",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17435,
+  "preview": {
+    "source": "Commander Rules Committee",
+    "source_uri": "https://mtgcommander.net/",
+    "previewed_at": "2020-04-05"
+  },
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": null,
+    "tix": "0.31"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=484912&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSelective%2BAdaptation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSelective%2BAdaptation",
+    "edhrec": "https://edhrec.com/route/?cc=Selective+Adaptation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212184%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452253&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80711?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

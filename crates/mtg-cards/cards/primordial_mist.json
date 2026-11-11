@@ -1,0 +1,25 @@
+{
+  "oracle_id": "afc9e1d3-b012-49e9-8d22-89abbee03c22",
+  "name": "Primordial Mist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Primordial Mist",
+      "oracle_fingerprint": "b9e3794234b4a5556cfcac3e44f9f7c2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "May": { "effects": [{ "Manifest": {} }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 209, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

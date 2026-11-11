@@ -1,0 +1,29 @@
+{
+  "oracle_id": "30ac0f06-3dd3-4827-8136-4cf8adbf9b12",
+  "name": "Titania's Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titania's Song",
+      "oracle_fingerprint": "03f847188f30b7c302c6bee2a1812489",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] },
+            "mods": [
+              "LoseAbilities",
+              { "AddType": "Artifact" },
+              { "AddType": "Creature" },
+              {
+                "SetPT": {
+                  "power": { "Stat": { "of": "Affected", "stat": "ManaValue" } },
+                  "toughness": { "Stat": { "of": "Affected", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

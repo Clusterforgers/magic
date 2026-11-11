@@ -1,0 +1,78 @@
+{
+  "oracle_id": "8e4d0da0-c7d8-4a20-9bfd-02c1331a7a49",
+  "name": "Primal Amulet // Primal Wellspring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Amulet",
+      "oracle_fingerprint": "3caa6ef834964d2dcff4773c98495481",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 4 } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "RemoveAllCounters": { "from": "This", "counter": "charge" } },
+                          { "Transform": { "what": "This" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Primal Wellspring",
+      "oracle_fingerprint": "78615235097d1096df8fdf65a8715456",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "when_spent": {
+                    "spell": { "types": ["Instant", "Sorcery"] },
+                    "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

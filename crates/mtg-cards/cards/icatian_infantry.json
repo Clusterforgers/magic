@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9eb274f3-ef55-4545-81b4-29454a48f075",
+  "name": "Icatian Infantry",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Icatian Infantry",
+      "oracle_fingerprint": "466750876b6b14f5f2bb556c46c26980",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 427 }
+          }
+        }
+      ]
+    }
+  ]
+}

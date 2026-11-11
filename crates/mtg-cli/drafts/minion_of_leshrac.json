@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8af3b981-6eda-46b0-a7b8-226bc719d137",
+  "name": "Minion of Leshrac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minion of Leshrac",
+      "oracle_fingerprint": "1ba6dd0f08c9557cc8a4e76d21bef955",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "unpaid": [
+                    { "DealDamage": { "to": "You", "amount": 5 } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": "DamageDealtThisWay", "op": "Gt", "right": 0 }
+                        },
+                        "then": [{ "Tap": { "what": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

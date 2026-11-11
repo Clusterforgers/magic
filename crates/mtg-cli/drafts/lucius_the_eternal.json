@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fa726aac-f4ae-4e34-ac08-36c1f50215f3",
+  "name": "Lucius the Eternal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lucius the Eternal",
+      "oracle_fingerprint": "5891687fa06df0b6b1af54b2761d7a35",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

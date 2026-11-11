@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2993dc7d-723d-4a9b-94bd-4bb02a9f7243",
+  "name": "Tishana's Tidebinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tishana's Tidebinder",
+      "oracle_fingerprint": "8d334fd4060bc2e02fe37224a2d29349",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "In": "Stack" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

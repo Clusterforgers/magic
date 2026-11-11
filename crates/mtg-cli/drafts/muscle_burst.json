@@ -1,0 +1,44 @@
+{
+  "oracle_id": "97487ea5-2bbd-4ef6-a870-7e9f2db5e5e0",
+  "name": "Muscle Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muscle Burst",
+      "oracle_fingerprint": "20b9a4c8d89a9595222e4885e3401eed",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Sum": [
+                            3,
+                            { "Count": [{ "Named": "Muscle Burst" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "toughness": {
+                          "Sum": [
+                            3,
+                            { "Count": [{ "Named": "Muscle Burst" }, { "In": "Graveyard" }] }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

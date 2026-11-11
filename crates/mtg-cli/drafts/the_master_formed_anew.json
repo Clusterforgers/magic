@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e7828284-543d-4f8b-9c5e-a8f082010398",
+  "name": "The Master, Formed Anew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master, Formed Anew",
+      "oracle_fingerprint": "3dd894c1b2745f6fa13f92e94bb77991",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "exiled" },
+                        "counter": { "Other": "takeover" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "Type": "Creature" },
+                  { "In": "Exile" },
+                  { "HasCounter": { "Other": "takeover" } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

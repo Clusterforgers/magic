@@ -1,0 +1,51 @@
+{
+  "oracle_id": "198d31e4-1ae1-4bf9-a05a-7fa45c0aeddb",
+  "name": "Command the Dreadhorde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command the Dreadhorde",
+      "oracle_fingerprint": "2b2b846d22154d9133abb1b001ea88dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "You",
+                  "amount": {
+                    "Total": {
+                      "of": [{ "Is": { "Target": 0 } }, { "In": "Graveyard" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              },
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

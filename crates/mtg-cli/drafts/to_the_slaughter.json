@@ -1,0 +1,50 @@
+{
+  "oracle_id": "518cf9ce-14aa-4f51-81bf-f8c2692a4244",
+  "name": "To the Slaughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "To the Slaughter",
+      "oracle_fingerprint": "464d9c7c976a99875283ada9d26e07f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } },
+                    {
+                      "Sacrifice": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Type": "Planeswalker" }]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Target": 0 },
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

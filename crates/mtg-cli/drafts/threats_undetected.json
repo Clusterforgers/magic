@@ -1,0 +1,43 @@
+{
+  "oracle_id": "24108160-e72b-4451-b1b1-b2b3ac3ede85",
+  "name": "Threats Undetected",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Threats Undetected",
+      "oracle_fingerprint": "7e8b7a1143ec2895d9f6cd64ae70e549",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 0, "max": 4 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Bound": "found" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "chosen" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

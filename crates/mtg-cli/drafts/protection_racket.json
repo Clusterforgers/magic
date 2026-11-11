@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4b51edb1-37cc-4993-a8a5-2eb5f79fa191",
+  "name": "Protection Racket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protection Racket",
+      "oracle_fingerprint": "65fe82d9ebf7b073c0ec1e449bf035f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [
+                          {
+                            "PayLife": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                          }
+                        ],
+                        "paid": [{ "Exile": { "what": { "Bound": "top" } } }],
+                        "unpaid": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

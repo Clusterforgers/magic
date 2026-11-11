@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4d891515-39da-492e-ac19-1aa524245449",
+  "name": "Supper for Spiders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supper for Spiders",
+      "oracle_fingerprint": "fc226fbff00434b6fee3f7ab23574923",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "Opponents" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "cards"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Arrived": { "of": { "Bound": "cards" }, "zone": "Battlefield" } },
+                  "mods": [
+                    { "SetTypes": ["Artifact"] },
+                    { "AddSubtype": "Food" },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                          "effects": [{ "GainLife": { "amount": 3 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

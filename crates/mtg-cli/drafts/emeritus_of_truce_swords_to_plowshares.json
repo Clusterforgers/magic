@@ -1,0 +1,69 @@
+{
+  "oracle_id": "e6c41473-2398-4888-9f0c-467dce7c39a4",
+  "name": "Emeritus of Truce // Swords to Plowshares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emeritus of Truce",
+      "oracle_fingerprint": "d6b9d66b279eeda67cd49ba1cbf121da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Largest": { "who": "Opponents", "of": [{ "Type": "Creature" }] } },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [{ "Prepare": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Swords to Plowshares",
+      "oracle_fingerprint": "03c7ae8fb4c3ffc6452288ebefb73e42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

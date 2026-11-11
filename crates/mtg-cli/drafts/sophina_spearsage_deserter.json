@@ -1,0 +1,29 @@
+{
+  "oracle_id": "095dabda-4570-4764-8d62-4a29eb19d3e6",
+  "name": "Sophina, Spearsage Deserter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sophina, Spearsage Deserter",
+      "oracle_fingerprint": "f7bb58a83c7a9ee44e1df1cc03de35bc",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }, "Attacking"] },
+                  "as": "attacker",
+                  "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Friends forever" } }
+      ]
+    }
+  ]
+}

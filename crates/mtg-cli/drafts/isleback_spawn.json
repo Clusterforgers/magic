@@ -1,0 +1,40 @@
+{
+  "oracle_id": "05ad7ec4-f48d-4cbe-be58-f871dc19702b",
+  "name": "Isleback Spawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isleback Spawn",
+      "oracle_fingerprint": "38b5f52ca42fa3ff965158afd7b409e3",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 8 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                          "op": "Le",
+                          "right": 20
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

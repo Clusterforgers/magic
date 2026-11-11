@@ -1,0 +1,33 @@
+{
+  "oracle_id": "37abcc92-9466-47ea-9e0b-5eda2eb62c8e",
+  "name": "Teferi's Puzzle Box",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Puzzle Box",
+      "oracle_fingerprint": "305bf1efbc852b9faaee1c24766c6ee2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "n",
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Draw": { "who": "Triggering", "count": { "Bound": "n" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

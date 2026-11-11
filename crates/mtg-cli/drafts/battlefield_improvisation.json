@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c5b85aa7-6a76-4fe2-a63e-4f376b6c9af7",
+  "name": "Battlefield Improvisation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlefield Improvisation",
+      "oracle_fingerprint": "4cb72aea1d70f10fccbcb5461f270267",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": ["Attacking"] }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                              },
+                              "count": {
+                                "min": 0,
+                                "max": {
+                                  "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                                }
+                              },
+                              "as": "equipment"
+                            }
+                          },
+                          { "Attach": { "what": { "Bound": "equipment" }, "to": { "Target": 0 } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "d21beb25-09a4-4d7f-84e3-87178e1721eb",
+  "oracle_id": "3afe854a-7daa-4745-a5d9-04879e5d940a",
+  "multiverse_ids": [
+    509554
+  ],
+  "mtgo_id": 86753,
+  "tcgplayer_id": 233923,
+  "cardmarket_id": 544886,
+  "name": "Shivan Sand-Mage",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/d21beb25-09a4-4d7f-84e3-87178e1721eb",
+  "scryfall_uri": "https://scryfall.com/card/tsr/189/shivan-sand-mage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:29:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788",
+    "normal": "https://cards.scryfall.io/normal/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788",
+    "large": "https://cards.scryfall.io/large/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788",
+    "png": "https://cards.scryfall.io/png/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.png?1783927788",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.webp?1783927788",
+    "grid": "https://cards.scryfall.io/grid/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.webp?1783927788",
+    "display": "https://cards.scryfall.io/display/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.webp?1783927788",
+    "art": "https://cards.scryfall.io/art/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.webp?1783927788",
+    "crop": "https://cards.scryfall.io/crop/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.webp?1783927788",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/2/d21beb25-09a4-4d7f-84e3-87178e1721eb.jpg?1783927788"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Lizard Shaman",
+  "oracle_text": "When this creature enters, choose one —\n• Remove two time counters from target permanent or suspended card.\n• Put two time counters on target permanent with a time counter on it or suspended card.\nSuspend 4—{R}",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Suspend"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d21beb25-09a4-4d7f-84e3-87178e1721eb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3afe854a-7daa-4745-a5d9-04879e5d940a&unique=prints",
+  "collector_number": "189",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Kendall",
+  "artist_ids": [
+    "8a5540a8-18c9-4fa9-802c-59d6866114d5"
+  ],
+  "illustration_id": "c019001f-1a0a-4289-8a04-b7553093b799",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15709,
+  "penny_rank": 10403,
+  "preview": {
+    "source": "Full Metal Gaming",
+    "source_uri": "https://www.facebook.com/FMGFullMetalGaming/posts/1087353665010166",
+    "previewed_at": "2021-03-02"
+  },
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": "0.62",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.35",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509554&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShivan%2BSand-Mage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShivan%2BSand-Mage",
+    "edhrec": "https://edhrec.com/route/?cc=Shivan+Sand-Mage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F233923%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=544886&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86753?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

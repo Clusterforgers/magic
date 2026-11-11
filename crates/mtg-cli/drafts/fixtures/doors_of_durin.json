@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "8ebd8813-4aaf-48bf-9243-3ec4099b8372",
+  "oracle_id": "d82c77a1-2b81-415d-9f18-47e059c15e01",
+  "multiverse_ids": [
+    617029
+  ],
+  "mtgo_id": 112308,
+  "arena_id": 84891,
+  "tcgplayer_id": 498487,
+  "cardmarket_id": 715957,
+  "name": "Doors of Durin",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/8ebd8813-4aaf-48bf-9243-3ec4099b8372",
+  "scryfall_uri": "https://scryfall.com/card/ltr/199/doors-of-durin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:17:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256",
+    "normal": "https://cards.scryfall.io/normal/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256",
+    "large": "https://cards.scryfall.io/large/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256",
+    "png": "https://cards.scryfall.io/png/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.png?1783916256",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.webp?1783916256",
+    "grid": "https://cards.scryfall.io/grid/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.webp?1783916256",
+    "display": "https://cards.scryfall.io/display/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.webp?1783916256",
+    "art": "https://cards.scryfall.io/art/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.webp?1783916256",
+    "crop": "https://cards.scryfall.io/crop/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.webp?1783916256",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/e/8ebd8813-4aaf-48bf-9243-3ec4099b8372.jpg?1783916256"
+  },
+  "mana_cost": "{3}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "Whenever you attack, scry 2, then you may reveal the top card of your library. If a creature card is revealed this way, put it onto the battlefield tapped and attacking. Until your next turn, it gains trample if you control a Dwarf and hexproof if you control an Elf.",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8ebd8813-4aaf-48bf-9243-3ec4099b8372/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad82c77a1-2b81-415d-9f18-47e059c15e01&unique=prints",
+  "collector_number": "199",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Speak, friend, and enter.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marc Simonetti",
+  "artist_ids": [
+    "8089db55-5105-47b0-8c64-f320e08c97f0"
+  ],
+  "illustration_id": "0f62e74a-0e3d-4ad6-b4f3-e13cdb70ccc3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5005,
+  "penny_rank": 12779,
+  "preview": {
+    "source": "Family the Gathering",
+    "source_uri": "https://twitter.com/FamilytheGathe1/status/1663767483088551936?s=20",
+    "previewed_at": "2023-05-30"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.70",
+    "usd_etched": null,
+    "eur": "0.35",
+    "eur_foil": "0.84",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=617029&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDoors%2Bof%2BDurin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDoors%2Bof%2BDurin",
+    "edhrec": "https://edhrec.com/route/?cc=Doors+of+Durin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F498487%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=715957&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112308?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

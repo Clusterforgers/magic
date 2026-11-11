@@ -1,0 +1,64 @@
+{
+  "oracle_id": "5b3f041e-ad4a-47ea-bdc4-1be2353f2e18",
+  "name": "Invoke Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke Calamity",
+      "oracle_fingerprint": "537e302b11fd7d3f5ad91cfbafcf5643",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "spells"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": { "of": [{ "Is": { "Bound": "spells" } }], "stat": "ManaValue" }
+                      },
+                      "op": "Le",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": { "what": { "Bound": "spells" }, "free": true, "as": "cast" }
+                    },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

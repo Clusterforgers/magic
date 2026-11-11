@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0586fdc7-3025-4040-8eaf-f8a57a21aff0",
+  "name": "Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Justice",
+      "oracle_fingerprint": "b1552b4a32380a5a00f9d2902614fd4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{W}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Color": "Red" }, { "AnyOf": [{ "Type": "Creature" }, "Spell"] }]
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

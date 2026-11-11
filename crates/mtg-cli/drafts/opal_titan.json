@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce06fe83-a8c5-46b7-b30c-b8189d217741",
+  "name": "Opal Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Titan",
+      "oracle_fingerprint": "e1ceab7d0dcbd63b4293b0335608491e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Enchantment" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Giant" },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": { "Protection": [{ "SharesColor": "Triggering" }] } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

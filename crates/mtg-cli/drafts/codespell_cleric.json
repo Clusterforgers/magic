@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4388af80-118f-4bf4-8fd7-e68c58398ee8",
+  "name": "Codespell Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Codespell Cleric",
+      "oracle_fingerprint": "1d2d172b48685e1b53764bd4ec25a843",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "AsCast": {
+                "Compare": {
+                  "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                  "op": "Eq",
+                  "right": 2
+                }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

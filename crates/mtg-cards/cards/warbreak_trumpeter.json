@@ -1,0 +1,20 @@
+{
+  "oracle_id": "40e5c7fe-4d7a-41c0-8b90-ea0b46a01c9d",
+  "name": "Warbreak Trumpeter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Warbreak Trumpeter",
+      "oracle_fingerprint": "c95236f6699bcc555359e099d6d9f9f0",
+      "abilities": [
+        { "Keyword": { "Morph": "{X}{X}{R}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

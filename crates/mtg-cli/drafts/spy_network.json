@@ -1,0 +1,29 @@
+{
+  "oracle_id": "81a5893a-764c-41ea-ba81-346b3c7558a4",
+  "name": "Spy Network",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spy Network",
+      "oracle_fingerprint": "e65b934ce2ab46ebe24712b4c4694eae",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "their_top" } },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

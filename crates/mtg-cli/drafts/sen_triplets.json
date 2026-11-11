@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f0c5864f-83c3-4d99-8f97-0ab92608fff3",
+  "name": "Sen Triplets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sen Triplets",
+      "oracle_fingerprint": "8d2d42b3f425ca453675f2b06969e374",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Cast": {} } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Activate": [] } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "OwnedBy": { "Target": 0 } }],
+                      "from": "Hand",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
+  "name": "Virtue of Knowledge // Vantress Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virtue of Knowledge",
+      "oracle_fingerprint": "4e5e63f6dfa0302b65eaa1e6bd03c1d7",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "cause": { "ZoneChange": { "what": [], "to": "Battlefield" } } }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vantress Visions",
+      "oracle_fingerprint": "305b0ef8b4790c6b693ad53ad8c95b6d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    { "In": "Stack" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

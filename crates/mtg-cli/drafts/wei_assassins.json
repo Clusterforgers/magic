@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e87dd341-416c-4e93-8eb4-1519ecd2674c",
+  "name": "Wei Assassins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wei Assassins",
+      "oracle_fingerprint": "c30e2df1a7499540b171a6e60e9209cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "chosen"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

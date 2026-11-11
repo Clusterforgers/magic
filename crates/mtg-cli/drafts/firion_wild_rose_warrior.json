@@ -1,0 +1,65 @@
+{
+  "oracle_id": "df42c768-34ca-4ebf-8f66-eaccf7261f70",
+  "name": "Firion, Wild Rose Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firion, Wild Rose Warrior",
+      "oracle_fingerprint": "aab54d2ad2817222c8ec4f14eab60958",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasAttached": [{ "Subtype": "Equipment" }] }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Equipment" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Triggering",
+                      "except": [
+                        {
+                          "GrantAbility": {
+                            "CostModifier": {
+                              "applies_to": ["This"],
+                              "change": "Reduce",
+                              "mana": "{2}",
+                              "activating": "Equip"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

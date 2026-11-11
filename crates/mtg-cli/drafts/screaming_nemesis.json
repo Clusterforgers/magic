@@ -1,0 +1,55 @@
+{
+  "oracle_id": "fcb7c93c-46ab-49b5-a6e0-35d73f3be8f0",
+  "name": "Screaming Nemesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Screaming Nemesis",
+      "oracle_fingerprint": "2c46549cf21edc5b44dce9cd4da08b2e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        { "Not": "This" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": "DamageDealtThisWay", "op": "Gt", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "Rule": { "rule": { "CantGainLife": { "Target": 0 } }, "duration": "Forever" }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ce936736-915f-44bb-a709-b3bdcf90a3be",
+  "name": "Orcish Squatters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Squatters",
+      "oracle_fingerprint": "d6ce5c55b52883b2d9319c7c65dfc239",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "WhileYouControlSource"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

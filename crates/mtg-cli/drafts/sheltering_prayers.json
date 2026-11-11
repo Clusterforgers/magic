@@ -1,0 +1,28 @@
+{
+  "oracle_id": "44075eea-ab9d-4252-b77c-597d19a10fc4",
+  "name": "Sheltering Prayers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheltering Prayers",
+      "oracle_fingerprint": "a2f8ffac5ebc7bc52ededa9ed1c3727c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Supertype": "Basic" }, { "Type": "Land" }] },
+            "mods": [{ "AddKeyword": "Shroud" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Land" }, { "ControlledBy": { "ControllerOf": "Affected" } }]
+                },
+                "op": "Le",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

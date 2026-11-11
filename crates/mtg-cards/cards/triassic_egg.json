@@ -1,0 +1,80 @@
+{
+  "oracle_id": "4f27abe8-3e98-4bb8-afdb-e4b718d83032",
+  "name": "Triassic Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triassic Egg",
+      "oracle_fingerprint": "072fe6e24285043cf75611d982675329",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "hatchling" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "hatchling" } } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Creature" },
+                                      { "In": "Hand" },
+                                      { "OwnedBy": "You" }
+                                    ]
+                                  },
+                                  "as": "card"
+                                }
+                              },
+                              {
+                                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

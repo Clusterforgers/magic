@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b1461f2a-2f12-49ae-8821-d934dddcb567",
+  "name": "Notorious Throng",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Notorious Throng",
+      "oracle_fingerprint": "0770c00f2fdbbb961916e4a2f2119357",
+      "abilities": [
+        { "Keyword": { "Prowl": "{5}{U}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Faerie Rogue",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Faerie", "Rogue"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": {
+                          "Tallied": { "who": { "Bound": "opponent" }, "what": "DamageTaken" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "If": { "condition": { "CastWith": "Prowl" }, "then": [{ "ExtraTurn": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

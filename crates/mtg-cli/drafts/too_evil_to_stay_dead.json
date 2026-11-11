@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e50fecff-8872-42f5-8882-41ad13d9d1ae",
+  "name": "Too Evil to Stay Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Too Evil to Stay Dead",
+      "oracle_fingerprint": "763b17c960f7a35fd0f6c9307073b9af",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 4 } } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } },
+                        {
+                          "Test": {
+                            "left": {
+                              "When": {
+                                "condition": "AdditionalCostPaid",
+                                "then": 1,
+                                "otherwise": 0
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

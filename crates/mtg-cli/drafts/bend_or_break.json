@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4362efe4-339d-40e1-bd72-3cc9e41bf93f",
+  "name": "Bend or Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bend or Break",
+      "oracle_fingerprint": "7deced228bb0597ac695e5209106aa34",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": { "Not": { "Among": { "Bound": "player" } } }
+                          }
+                        },
+                        "as": "opponent"
+                      }
+                    },
+                    {
+                      "SeparatePiles": {
+                        "who": { "Bound": "player" },
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Not": "Token" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "chooser": { "Bound": "opponent" },
+                        "as": "chosen",
+                        "rest_as": "other"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "chosen" }, "as": "all_chosen", "adds": true } },
+                    { "Bind": { "what": { "Bound": "other" }, "as": "all_other", "adds": true } }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Bound": "all_chosen" } } },
+              { "Tap": { "what": { "Bound": "all_other" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

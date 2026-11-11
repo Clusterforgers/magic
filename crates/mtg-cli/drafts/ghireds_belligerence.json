@@ -1,0 +1,55 @@
+{
+  "oracle_id": "d543cc69-4b8a-4c45-99e1-84143d663f25",
+  "name": "Ghired's Belligerence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghired's Belligerence",
+      "oracle_fingerprint": "d3569ab5a37d9f8a5f3a6d73e9070fa9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Is": { "Target": 0 } },
+                        { "DamagedBy": "This" }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
+                        },
+                        "as": "populated"
+                      }
+                    },
+                    { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "populated" } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

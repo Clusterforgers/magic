@@ -1,0 +1,73 @@
+{
+  "oracle_id": "d1dac139-de12-46ba-94b1-42e107c2c95f",
+  "name": "Common Cause",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Common Cause",
+      "oracle_fingerprint": "efb3ae31fa9da4e542648a8e9eb64825",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Any": [
+                {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                    },
+                    "selector": [{ "Not": { "Color": "White" } }],
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                    },
+                    "selector": [{ "Not": { "Color": "Blue" } }],
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                    },
+                    "selector": [{ "Not": { "Color": "Black" } }],
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                    },
+                    "selector": [{ "Not": { "Color": "Red" } }],
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                    },
+                    "selector": [{ "Not": { "Color": "Green" } }],
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

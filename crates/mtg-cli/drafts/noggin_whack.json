@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c637fedc-b7b9-4da8-bab4-0488e7c1fac1",
+  "name": "Noggin Whack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noggin Whack",
+      "oracle_fingerprint": "daef1dab08017576d1bb6f9fc3840fc9",
+      "abilities": [
+        { "Keyword": { "Prowl": "{1}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Choose": {
+                  "from": { "Bound": "revealed" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": 2,
+                  "filter": [{ "Is": { "Bound": "chosen" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

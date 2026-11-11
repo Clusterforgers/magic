@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f2bf5014-677a-4880-b926-d93457348bdc",
+  "name": "Death in Heaven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death in Heaven",
+      "oracle_fingerprint": "74a11bbffe35abe7bddb63b6edc40824",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "heaven" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "heaven" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

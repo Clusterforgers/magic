@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9ea58595-fcb9-455c-9558-b6a3fb2b83c5",
+  "name": "Karmic Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karmic Justice",
+      "oracle_fingerprint": "0e831d04a25a6eafbd386e4211b270fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Did": {
+                    "action": "Destroyed",
+                    "what": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "by": "Opponents"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": { "ControllerOf": "Dealer" } }] } }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

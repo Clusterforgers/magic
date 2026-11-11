@@ -1,0 +1,31 @@
+{
+  "oracle_id": "42b44108-4a03-4333-bf5a-e42493f4d5e4",
+  "name": "Outmaneuver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outmaneuver",
+      "oracle_fingerprint": "3fc2337af42aa972e29306c077e17209",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking", { "Not": "Unblocked" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AssignsAsUnblocked" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

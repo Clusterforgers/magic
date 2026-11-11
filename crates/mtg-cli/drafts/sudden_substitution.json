@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e5ddacfb-e5a8-4885-a4c9-fa117f321293",
+  "name": "Sudden Substitution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Substitution",
+      "oracle_fingerprint": "597d27d8e597d835deb6e505608a7bed",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "In": "Stack" }, { "Not": { "Type": "Creature" } }]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              },
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

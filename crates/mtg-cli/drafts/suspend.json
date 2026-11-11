@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fef9425d-82d5-470b-9cbc-8c03a001099e",
+  "name": "Suspend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suspend",
+      "oracle_fingerprint": "92d02d2c90fdf3d4ae22594b5278569b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

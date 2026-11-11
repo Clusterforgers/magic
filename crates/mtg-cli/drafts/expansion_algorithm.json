@@ -1,0 +1,27 @@
+{
+  "oracle_id": "afbc348a-7b27-4577-8c24-cd6d5b894dc1",
+  "name": "Expansion Algorithm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expansion Algorithm",
+      "oracle_fingerprint": "4dac81dac411d09bcb3c6bc996ef199a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Ge", "right": 0 } },
+                  "effects": [{ "Proliferate": {} }],
+                  "most": 100,
+                  "times": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

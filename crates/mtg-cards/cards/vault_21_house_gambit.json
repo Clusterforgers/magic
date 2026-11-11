@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8d83d816-518c-4557-a3c4-0255f772c57a",
+  "name": "Vault 21: House Gambit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vault 21: House Gambit",
+      "oracle_fingerprint": "57281a6aaa78d24f1df2c9916c85febd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Discard": {} }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Discard": {} }, { "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 297 }
+          }
+        }
+      ]
+    }
+  ]
+}

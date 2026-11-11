@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b5ae8016-92ed-4ae8-83a8-65068defc616",
+  "name": "Tannuk, Steadfast Second",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tannuk, Steadfast Second",
+      "oracle_fingerprint": "3af9f7f7f297801bf4e6b2466e626ff2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 40, "end": 273 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e83236f8-1c45-4d31-8937-1c76db549955",
+  "name": "Nissa's Pilgrimage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa's Pilgrimage",
+      "oracle_fingerprint": "a70bc6a1a3ac2293d3268d4c21a2d73c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": 3,
+                        "otherwise": 2
+                      }
+                    }
+                  },
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Choose": { "from": { "Bound": "land" }, "as": "kept", "rest_as": "rest" } },
+              {
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

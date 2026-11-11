@@ -1,0 +1,82 @@
+{
+  "oracle_id": "b392fabc-51f2-4ae4-b21c-1c662e4c6953",
+  "name": "Verdant Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Mastery",
+      "oracle_fingerprint": "db5129176691c28298f5864938eb0a06",
+      "abilities": [
+        { "AltCast": { "way": "Alternative", "cost": "{3}{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 4 },
+                  "reveal": true,
+                  "as": "lands"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "CastWith": "Alternative" },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Bound": "lands" },
+                        "as": "gift",
+                        "rest_as": "remaining"
+                      }
+                    },
+                    { "Choose": { "from": "Opponents", "as": "opp" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "gift" },
+                        "to": { "Battlefield": { "tapped": true, "under": { "Bound": "opp" } } }
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": { "Bound": "remaining" },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": { "Bound": "lands" },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

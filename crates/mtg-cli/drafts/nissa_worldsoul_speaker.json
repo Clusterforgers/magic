@@ -1,0 +1,46 @@
+{
+  "oracle_id": "00037840-6089-42ec-8c5c-281f9f474504",
+  "name": "Nissa, Worldsoul Speaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Worldsoul Speaker",
+      "oracle_fingerprint": "30cfbb43824b9326ccd57078501708b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Planeswalker" },
+                      { "Type": "Battle" }
+                    ]
+                  }
+                ],
+                "rather": [{ "PayEnergy": 8 }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

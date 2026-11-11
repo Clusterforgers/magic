@@ -1,0 +1,27 @@
+{
+  "oracle_id": "dd2f698c-b3b4-4dc8-9950-9be03ca7dc9e",
+  "name": "Tinder Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tinder Wall",
+      "oracle_fingerprint": "514c322521c12faebdcb03519b41d946",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "BlockedBy": "This" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

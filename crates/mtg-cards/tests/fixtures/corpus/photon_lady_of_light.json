@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "fa755966-0b96-4747-ba1f-26182d265335",
+  "oracle_id": "2d0aa801-1227-4226-8c27-3bdd441857aa",
+  "multiverse_ids": [],
+  "resource_id": "2FA727A8851F905FB7FF415987EC3FFBFF025F719C013E7A8C9ADD0997B2E647",
+  "mtgo_id": 151661,
+  "arena_id": 105616,
+  "tcgplayer_id": 697141,
+  "cardmarket_id": 891928,
+  "name": "Photon, Lady of Light",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/fa755966-0b96-4747-ba1f-26182d265335",
+  "scryfall_uri": "https://scryfall.com/card/msc/606/photon-lady-of-light?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.png?1783903079",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.webp?1783903079",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.webp?1783903079",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.webp?1783903079",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.webp?1783903079",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.webp?1783903079",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa755966-0b96-4747-ba1f-26182d265335.jpg?1783903079"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Hero",
+  "oracle_text": "Flying\nWhenever Photon attacks, exile up to one other target creature you control, then return that card to the battlefield under its owner's control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa755966-0b96-4747-ba1f-26182d265335/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2d0aa801-1227-4226-8c27-3bdd441857aa&unique=prints",
+  "collector_number": "606",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "In the darkest times, she shines brightest.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Diego Gisbert",
+  "artist_ids": [
+    "3f4e975d-092c-40e4-b850-2d582bf4b5cb"
+  ],
+  "illustration_id": "c78bf258-af08-4d83-a0e8-a0754ce2b393",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 22642,
+  "prices": {
+    "usd": "0.44",
+    "usd_foil": "1.63",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.26",
+    "tix": "0.23"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPhoton%252C%2BLady%2Bof%2BLight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPhoton%252C%2BLady%2Bof%2BLight",
+    "edhrec": "https://edhrec.com/route/?cc=Photon%2C+Lady+of+Light"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697141%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891928&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151661?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

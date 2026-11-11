@@ -1,0 +1,67 @@
+{
+  "oracle_id": "7492ea06-24d5-4a1f-a6ac-c33743e91aa7",
+  "name": "Unesh, Criosphinx Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unesh, Criosphinx Sovereign",
+      "oracle_fingerprint": "bdf41a48e6377be7d4b3e0367b7b8173",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Subtype": "Sphinx" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": ["Other", { "Subtype": "Sphinx" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "separator" },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

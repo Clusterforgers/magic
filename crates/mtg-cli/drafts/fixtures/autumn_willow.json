@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "9d0a2c3b-ab86-44af-919e-c95c8751157e",
+  "oracle_id": "c8c868f8-19a5-4cc5-b769-aa382f7b97ad",
+  "multiverse_ids": [
+    159205
+  ],
+  "mtgo_id": 28079,
+  "mtgo_foil_id": 28080,
+  "name": "Autumn Willow",
+  "lang": "en",
+  "released_at": "2007-09-10",
+  "uri": "https://api.scryfall.com/cards/9d0a2c3b-ab86-44af-919e-c95c8751157e",
+  "scryfall_uri": "https://scryfall.com/card/me1/113/autumn-willow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:42:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940",
+    "normal": "https://cards.scryfall.io/normal/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940",
+    "large": "https://cards.scryfall.io/large/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940",
+    "png": "https://cards.scryfall.io/png/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.png?1783942940",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.webp?1783942940",
+    "grid": "https://cards.scryfall.io/grid/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.webp?1783942940",
+    "display": "https://cards.scryfall.io/display/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.webp?1783942940",
+    "art": "https://cards.scryfall.io/art/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.webp?1783942940",
+    "crop": "https://cards.scryfall.io/crop/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.webp?1783942940",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/d/9d0a2c3b-ab86-44af-919e-c95c8751157e.jpg?1783942940"
+  },
+  "mana_cost": "{4}{G}{G}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Avatar",
+  "oracle_text": "Shroud (This creature can't be the target of spells or abilities.)\n{G}: Until end of turn, Autumn Willow can be the target of spells and abilities controlled by target player as though it didn't have shroud.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Shroud"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set": "me1",
+  "set_name": "Masters Edition",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/407d388d-1abf-4c1d-b0c6-f56280898a1a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9d0a2c3b-ab86-44af-919e-c95c8751157e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac8c868f8-19a5-4cc5-b769-aa382f7b97ad&unique=prints",
+  "collector_number": "113",
+  "digital": true,
+  "rarity": "rare",
+  "flavor_text": "\"We must shake her limbs and rattle her brains.\"\n—Grandmother Sengir",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Margaret Organ-Kean",
+  "artist_ids": [
+    "95951caa-bec8-4720-b836-471f7e7740cb"
+  ],
+  "illustration_id": "2994c3f9-0bfb-4642-97bf-defa4d4e3c37",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29906,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=159205&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAutumn%2BWillow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAutumn%2BWillow",
+    "edhrec": "https://edhrec.com/route/?cc=Autumn+Willow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DAutumn%2BWillow%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Autumn+Willow&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/28079?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "06c47664-2b4b-468e-a38d-04b62e6edd67",
+  "name": "Suppressor Skyguard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Suppressor Skyguard",
+      "oracle_fingerprint": "5906539293e2f3a362f453311a3a56a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 165 }
+          }
+        }
+      ]
+    }
+  ]
+}

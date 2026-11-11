@@ -1,0 +1,48 @@
+{
+  "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
+  "name": "Emeritus of Woe // Demonic Tutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emeritus of Woe",
+      "oracle_fingerprint": "16a3cf71b02c9d2a6541dedc79894551",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "Prepare": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demonic Tutor",
+      "oracle_fingerprint": "e759f75c52513ff4702fecc196ac14e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

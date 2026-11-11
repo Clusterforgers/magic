@@ -1,0 +1,17 @@
+{
+  "oracle_id": "e75f1834-10b8-4362-adbe-847ad9909dee",
+  "name": "Thrashing Frontliner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thrashing Frontliner",
+      "oracle_fingerprint": "7dd526ced9d6130718f70f0c90b21775",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 8, "end": 81 } }
+        }
+      ]
+    }
+  ]
+}

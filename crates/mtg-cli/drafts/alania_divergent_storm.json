@@ -1,0 +1,57 @@
+{
+  "oracle_id": "63d50d5e-56de-44c4-b906-b2a21a56e3f3",
+  "name": "Alania, Divergent Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alania, Divergent Storm",
+      "oracle_fingerprint": "0ed73603a4754aef1b65b4ae8fbde25c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Nth": {
+                    "event": { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "You" } },
+                    "nth": 1
+                  }
+                },
+                {
+                  "Nth": {
+                    "event": { "SpellCast": { "what": [{ "Type": "Sorcery" }], "by": "You" } },
+                    "nth": 1
+                  }
+                },
+                {
+                  "Nth": {
+                    "event": {
+                      "SpellCast": {
+                        "what": [
+                          { "Subtype": "Otter" },
+                          { "Not": { "Named": "Alania, Divergent Storm" } }
+                        ],
+                        "by": "You"
+                      }
+                    },
+                    "nth": 1
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "May": { "effects": [{ "Draw": { "who": { "Target": 0 } } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

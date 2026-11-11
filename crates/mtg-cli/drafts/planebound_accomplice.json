@@ -1,0 +1,45 @@
+{
+  "oracle_id": "01076e04-3106-4968-8ef4-b26fc3786699",
+  "name": "Planebound Accomplice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planebound Accomplice",
+      "oracle_fingerprint": "c04e523714a3c7fa855ee03213968e10",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "card" } }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

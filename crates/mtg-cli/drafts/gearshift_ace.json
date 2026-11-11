@@ -1,0 +1,29 @@
+{
+  "oracle_id": "dde61c4c-1815-45b3-9e68-3097c28c363c",
+  "name": "Gearshift Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gearshift Ace",
+      "oracle_fingerprint": "561d409b6e44db816bbb5e213b8d1c1e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "BecomesCrewed": { "what": [{ "Subtype": "Vehicle" }] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Crewed": "Triggering" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "11e3f1d3-9d78-4c00-b965-e14407fd5210",
+  "name": "Old-Growth Troll",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Old-Growth Troll",
+      "oracle_fingerprint": "131edb191ef0dfd45a61237b67ffc1fb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

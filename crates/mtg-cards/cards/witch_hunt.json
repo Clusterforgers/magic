@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e86bd38f-7804-449d-af29-21e96a56ab30",
+  "name": "Witch Hunt",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Witch Hunt",
+      "oracle_fingerprint": "1cb1ac9ee06a3cb7392b283ba66164c4",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 4 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 98, "end": 200 }
+          }
+        }
+      ]
+    }
+  ]
+}

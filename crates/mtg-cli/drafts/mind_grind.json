@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8965ca34-5ea2-4797-9093-5a8ee02bfa43",
+  "name": "Mind Grind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Grind",
+      "oracle_fingerprint": "08158661088440f012692b54341c58ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "opp" },
+                        "filter": [{ "Type": "Land" }],
+                        "count": "X",
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

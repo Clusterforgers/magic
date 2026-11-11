@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4e9df979-c1c2-4de1-944e-c5e2d782e66e",
+  "name": "Flames of the Blood Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flames of the Blood Hand",
+      "oracle_fingerprint": "53443acfbbc9f0bccb5e79b59cf12ade",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4, "unpreventable": true } },
+              {
+                "Rule": {
+                  "rule": { "CantGainLife": { "OrController": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

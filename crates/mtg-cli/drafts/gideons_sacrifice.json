@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1af63a5e-2bec-4f8d-a373-d9ce43a7d242",
+  "name": "Gideon's Sacrifice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gideon's Sacrifice",
+      "oracle_fingerprint": "2aac33a3749ee6292089c18c931970da",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "Redirect": { "to": { "Bound": "chosen" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "You" }] } } },
+                  "by": { "Redirect": { "to": { "Bound": "chosen" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "cbf68ddd-596f-4b2d-b93c-3b7976ba4d37",
+  "name": "Fumble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fumble",
+      "oracle_fingerprint": "1ccb959de20f2be3708e9aeb0b312f23",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "AttachedTo": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "gear"
+                }
+              },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "gear" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                  "as": "other"
+                }
+              },
+              { "Attach": { "what": { "Bound": "gear" }, "to": { "Bound": "other" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

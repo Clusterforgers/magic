@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e9e5e17a-95fc-41b7-af4f-aec4802960a0",
+  "name": "Lurking Jackals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurking Jackals",
+      "oracle_fingerprint": "baee7f20b712167dcfce7aefd348e81e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": { "left": { "LowestLife": "Opponents" }, "op": "Le", "right": 10 }
+                }
+              }
+            },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Enchantment" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetTypes": ["Creature"] },
+                    { "SetCreatureTypes": ["Jackal"] },
+                    { "SetPT": { "power": 3, "toughness": 2 } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

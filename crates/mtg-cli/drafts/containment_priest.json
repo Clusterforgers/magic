@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8a76a9b9-3127-45fe-b20f-a8f643276281",
+  "name": "Containment Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Containment Priest",
+      "oracle_fingerprint": "5a03ce640f416eae07a2400c53aa67b3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "Not": { "WasCast": {} } }],
+                "to": "Battlefield"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

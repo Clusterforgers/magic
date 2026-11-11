@@ -1,0 +1,74 @@
+{
+  "oracle_id": "da1ea03f-747f-46c9-8ff5-7e85996df804",
+  "name": "Thought Prison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Prison",
+      "oracle_fingerprint": "1b0ea51810c5725b84395fe29550d03b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" } } },
+                    { "Remember": { "what": { "Bound": "card" }, "slot": "imprint" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "SharesColor": { "Remembered": { "on": "This", "slot": "imprint" } } },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          "op": "Eq",
+                          "right": {
+                            "Stat": {
+                              "of": { "Remembered": { "on": "This", "slot": "imprint" } },
+                              "stat": "ManaValue"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

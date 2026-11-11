@@ -1,0 +1,26 @@
+{
+  "oracle_id": "26aba6fa-830f-4a7f-8618-488d8e00215a",
+  "name": "Falkenrath Gorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Gorger",
+      "oracle_fingerprint": "e2914d8595149cb8bb8fab1f588580f1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Vampire" },
+                { "OwnedBy": "You" },
+                { "Not": { "In": "Battlefield" } }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Madness": ["OwnManaCost"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

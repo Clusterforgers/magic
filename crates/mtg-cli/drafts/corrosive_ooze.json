@@ -1,0 +1,67 @@
+{
+  "oracle_id": "416cca4a-b1b2-49d5-9cac-ec347056bdb0",
+  "name": "Corrosive Ooze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corrosive Ooze",
+      "oracle_fingerprint": "c8e0b6d2d62c5d33cd3f2855627738dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "BecomesBlocked": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] }
+                    ],
+                    "by": ["This"]
+                  }
+                },
+                {
+                  "BecomesBlocked": {
+                    "what": ["This"],
+                    "by": [{ "Type": "Creature" }, { "HasAttached": [{ "Subtype": "Equipment" }] }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] },
+                      { "AnyOf": [{ "BlockedBy": "This" }, { "Blocks": "This" }] }
+                    ]
+                  },
+                  "as": "that_creature"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Subtype": "Equipment" },
+                            { "AttachedTo": { "Bound": "that_creature" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

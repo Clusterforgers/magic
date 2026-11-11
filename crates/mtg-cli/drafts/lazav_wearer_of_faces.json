@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4ec0b64d-c793-47a6-9c26-9ad4d9e9c182",
+  "name": "Lazav, Wearer of Faces",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazav, Wearer of Faces",
+      "oracle_fingerprint": "b2067c0b6fcbb76dd26eb9eb439e838c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Exile" },
+                            { "ExiledWith": "This" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Bound": "card" },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

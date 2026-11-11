@@ -1,0 +1,24 @@
+{
+  "oracle_id": "30ec73ad-c7a1-4527-8dc6-44bdd65b9ba6",
+  "name": "Imp's Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imp's Mischief",
+      "oracle_fingerprint": "1466df26660073a5ff7be6e55ec4af93",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

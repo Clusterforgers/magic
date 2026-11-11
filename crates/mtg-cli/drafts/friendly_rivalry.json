@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e6850561-3c57-4354-8850-c467a6449563",
+  "name": "Friendly Rivalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Friendly Rivalry",
+      "oracle_fingerprint": "76c3775f54084188754345b44d6dd916",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Another": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Supertype": "Legendary" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "earlier": [0]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 2 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 1 },
+                  "to": { "Target": 2 },
+                  "amount": { "Stat": { "of": { "Target": 1 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "69db9cb8-9152-4d1b-9ac9-16aac42c0908",
+  "name": "Virtual Assistant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Virtual Assistant",
+      "oracle_fingerprint": "672ab34aaaf8807932449ed23d388692",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 9, "end": 121 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "12b859f8-36f3-43cd-b537-6e07857b247e",
+  "name": "Bismuth Mindrender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bismuth Mindrender",
+      "oracle_fingerprint": "39c37a9105624a8c8902c93ddbfc9ce4",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": "Triggering",
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "rather": [
+                    { "PayLife": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

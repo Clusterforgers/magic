@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e88b3066-eb10-4ade-8207-af4de40facec",
+  "name": "Pledge of Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pledge of Loyalty",
+      "oracle_fingerprint": "31f8cc1ac85dd252b92b6f46acc627ae",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "ProtectionSparing": {
+                    "from": [{ "SharesColor": { "Each": [{ "ControlledBy": "You" }] } }],
+                    "spares": ["This"]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

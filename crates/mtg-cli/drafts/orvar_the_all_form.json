@@ -1,0 +1,54 @@
+{
+  "oracle_id": "276c4643-13ad-43bf-840b-08c025ebc065",
+  "name": "Orvar, the All-Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orvar, the All-Form",
+      "oracle_fingerprint": "485560134acfa807a2ca16042422c475",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "Targeting": ["Other", { "ControlledBy": "You" }] }]
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "TargetedBy": "Triggering" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "as": "perm"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "perm" } } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "Discarded": { "what": ["This"], "by": "You" } },
+                "by": "Opponents"
+              }
+            },
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

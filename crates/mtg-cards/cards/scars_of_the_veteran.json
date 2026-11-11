@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5f0ad09f-a9ee-42df-b32d-9d842ce5dd00",
+  "name": "Scars of the Veteran",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Scars of the Veteran",
+      "oracle_fingerprint": "6b7f188e89552b125e2f5f028d9313ad",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "ExileFromHand": { "filter": [{ "Color": "White" }] } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "f1bd0d32-7513-4d1d-94aa-d06101a940c0",
+  "name": "Etched Slith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etched Slith",
+      "oracle_fingerprint": "cab3021db22f35c31d7425cdc29957db",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Reflexive": {
+                  "targets": [{ "what": { "Either": [{ "Object": ["Other"] }, "Opponent"] } }],
+                  "effects": [
+                    { "May": { "effects": [{ "RemoveCounters": { "from": { "Target": 0 } } }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

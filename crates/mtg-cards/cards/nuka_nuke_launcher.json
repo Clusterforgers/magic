@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7fb88a5d-9b72-4da9-ade4-d09cadd7e1cb",
+  "name": "Nuka-Nuke Launcher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nuka-Nuke Launcher",
+      "oracle_fingerprint": "a503f8237eb951fc5f651f5d28e2789e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }, { "AddKeyword": "Intimidate" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 289 }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

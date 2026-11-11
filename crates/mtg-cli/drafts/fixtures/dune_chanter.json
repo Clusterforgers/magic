@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "cbed084b-c0bc-4c05-9a89-ce4630f0897c",
+  "oracle_id": "7811b50d-af76-43cd-8753-43cf65fbefa3",
+  "multiverse_ids": [
+    658351
+  ],
+  "mtgo_id": 125193,
+  "tcgplayer_id": 545118,
+  "cardmarket_id": 764526,
+  "name": "Dune Chanter",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/cbed084b-c0bc-4c05-9a89-ce4630f0897c",
+  "scryfall_uri": "https://scryfall.com/card/otc/31/dune-chanter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:06:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.png?1783911963",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.webp?1783911963",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.webp?1783911963",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.webp?1783911963",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.webp?1783911963",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.webp?1783911963",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbed084b-c0bc-4c05-9a89-ce4630f0897c.jpg?1783911963"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Plant Druid",
+  "oracle_text": "Reach\nLands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.\nLands you control have \"{T}: Add one mana of any color.\"\n{T}: Mill two cards. You gain 1 life for each land card milled this way.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Mill"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbed084b-c0bc-4c05-9a89-ce4630f0897c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7811b50d-af76-43cd-8753-43cf65fbefa3&unique=prints",
+  "collector_number": "31",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dmitry Burmak",
+  "artist_ids": [
+    "9872f5c0-274a-48ce-a9ad-6f0d5654e29c"
+  ],
+  "illustration_id": "e13fb37f-0e64-48c8-8d16-9d46106efab9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6283,
+  "prices": {
+    "usd": "1.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.64",
+    "eur_foil": null,
+    "tix": "1.94"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658351&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDune%2BChanter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDune%2BChanter",
+    "edhrec": "https://edhrec.com/route/?cc=Dune+Chanter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545118%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764526&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125193?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "926ce6a2-7bdd-4380-ac65-bc902ba0c284",
+  "name": "Thran Portal",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thran Portal",
+      "oracle_fingerprint": "a6670e0a6e8d047c2ec47118e80a6a24",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Le",
+                  "right": 2
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "BasicLandType" }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 177, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

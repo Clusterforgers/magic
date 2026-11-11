@@ -1,0 +1,54 @@
+{
+  "oracle_id": "586da84b-1384-4da2-983d-340c22b73eb8",
+  "name": "Disorder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disorder",
+      "oracle_fingerprint": "87c68d749c66793af18f583705343400",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+                        "amount": 2
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": {
+                              "Compare": {
+                                "left": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "Color": "White" },
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        },
+                        "amount": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

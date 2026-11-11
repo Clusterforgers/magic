@@ -1,0 +1,49 @@
+{
+  "oracle_id": "fa09e18c-e7cf-4f08-9cc4-324e36594063",
+  "name": "Beamsplitter Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beamsplitter Mage",
+      "oracle_fingerprint": "5a40e5dd4d3b2582e876d60f76fcbaff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  { "Targeting": ["This"] }
+                ],
+                "by": "You"
+              }
+            },
+            "if": {
+              "CountOf": {
+                "subject": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "selector": [],
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "chosen"
+                }
+              },
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "each_target": [{ "Is": { "Bound": "chosen" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "4ef2b9aa-4f7c-4640-bb34-9775e1be0935",
+  "oracle_id": "eb70939f-c4ce-4224-ab74-acc24771d7f0",
+  "multiverse_ids": [
+    531943
+  ],
+  "mtgo_id": 92562,
+  "tcgplayer_id": 243755,
+  "cardmarket_id": 572205,
+  "name": "Belt of Giant Strength",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/4ef2b9aa-4f7c-4640-bb34-9775e1be0935",
+  "scryfall_uri": "https://scryfall.com/card/afc/38/belt-of-giant-strength?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:04:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245",
+    "normal": "https://cards.scryfall.io/normal/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245",
+    "large": "https://cards.scryfall.io/large/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245",
+    "png": "https://cards.scryfall.io/png/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.png?1783926245",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.webp?1783926245",
+    "grid": "https://cards.scryfall.io/grid/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.webp?1783926245",
+    "display": "https://cards.scryfall.io/display/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.webp?1783926245",
+    "art": "https://cards.scryfall.io/art/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.webp?1783926245",
+    "crop": "https://cards.scryfall.io/crop/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.webp?1783926245",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/e/4ef2b9aa-4f7c-4640-bb34-9775e1be0935.jpg?1783926245"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature has base power and toughness 10/10.\nEquip {10}. This ability costs {X} less to activate, where X is the power of the creature it targets.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set": "afc",
+  "set_name": "Forgotten Realms Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4ef2b9aa-4f7c-4640-bb34-9775e1be0935/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeb70939f-c4ce-4224-ab74-acc24771d7f0&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Viko Menezes",
+  "artist_ids": [
+    "92dfef2a-d0fa-42fd-bdd6-bc4c9286cb56"
+  ],
+  "illustration_id": "5e248604-0e43-4474-b0cb-06c213967b7e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7137,
+  "prices": {
+    "usd": "2.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.85",
+    "eur_foil": null,
+    "tix": "4.86"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=531943&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBelt%2Bof%2BGiant%2BStrength",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBelt%2Bof%2BGiant%2BStrength",
+    "edhrec": "https://edhrec.com/route/?cc=Belt+of+Giant+Strength"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243755%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=572205&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/92562?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

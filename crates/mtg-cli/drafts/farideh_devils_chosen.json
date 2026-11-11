@@ -1,0 +1,33 @@
+{
+  "oracle_id": "faf5c18c-2642-4df3-a21f-3b237527e6a6",
+  "name": "Farideh, Devil's Chosen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farideh, Devil's Chosen",
+      "oracle_fingerprint": "59dc8cf18b7b18c80cb493320f5e1935",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "highest": true } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 10 } },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

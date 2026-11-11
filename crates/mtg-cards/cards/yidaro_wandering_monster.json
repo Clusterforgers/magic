@@ -1,0 +1,22 @@
+{
+  "oracle_id": "6c0e22f2-f0f3-43e6-87c5-c543032112d8",
+  "name": "Yidaro, Wandering Monster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yidaro, Wandering Monster",
+      "oracle_fingerprint": "f1d11beb223513be2d6572953b5023cc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        { "Keyword": { "Cycling": "{1}{R}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 30, "end": 275 }
+          }
+        }
+      ]
+    }
+  ]
+}

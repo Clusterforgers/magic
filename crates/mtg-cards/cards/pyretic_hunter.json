@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6ea507d3-2b8d-4f08-824c-0de0ae214da5",
+  "name": "Pyretic Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pyretic Hunter",
+      "oracle_fingerprint": "5bb25b65ee092f51eb03cd9b23154881",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 110 }
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 184, "end": 305 }
+          }
+        }
+      ]
+    }
+  ]
+}

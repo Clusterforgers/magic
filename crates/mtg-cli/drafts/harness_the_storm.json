@@ -1,0 +1,38 @@
+{
+  "oracle_id": "38eaf0ea-8cdd-45f4-bfb9-0f8d0fcf863a",
+  "name": "Harness the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harness the Storm",
+      "oracle_fingerprint": "7097e802838d0c6e8f69071581b96aec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "SharesName": "TriggeringFirst" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CastFromZone": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

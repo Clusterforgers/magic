@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e46d0b57-5eec-4ab6-b9a7-a5c5cc01cc34",
+  "name": "Galadriel's Dismissal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galadriel's Dismissal",
+      "oracle_fingerprint": "13e4968404773f9849cd00c667529708",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{W}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }, { "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "PhaseOut": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

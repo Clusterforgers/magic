@@ -1,0 +1,28 @@
+{
+  "oracle_id": "320d8f2b-005d-4769-80d2-f46d96afffe7",
+  "name": "Serra Bestiary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serra Bestiary",
+      "oracle_fingerprint": "94d877045cc084890c3c5fb4199e983c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{W}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

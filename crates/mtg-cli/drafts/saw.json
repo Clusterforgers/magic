@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d88bfa98-6869-4d64-a9d2-07a308a67fe2",
+  "name": "Saw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saw",
+      "oracle_fingerprint": "5857c50aa81d40534f79a4ed90e35762",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Not": { "Is": "Triggering" } }, { "Not": "This" }]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "If": { "condition": "Performed", "then": [{ "Draw": {} }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

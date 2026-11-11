@@ -1,0 +1,52 @@
+{
+  "oracle_id": "76c142ef-0f07-4215-8d11-d25f7114c70d",
+  "name": "Tempt with Reflections",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Reflections",
+      "oracle_fingerprint": "e4bb343b17357ff6676ef287cc8cff0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "opponent" },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "opponent" },
+                              "token": { "CopyOf": { "of": { "Target": 0 } } }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

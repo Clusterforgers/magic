@@ -1,0 +1,50 @@
+{
+  "oracle_id": "aa5b06a4-90c3-45e7-ab83-cb5c96ded21d",
+  "name": "Norman Osborn // Green Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norman Osborn",
+      "oracle_fingerprint": "0c8c9e77012c34ed66288fc5b88e2d74",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}{B}{R}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Green Goblin",
+      "oracle_fingerprint": "e839d5692d9adde0902783d86683d62f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "CostModifier": {
+            "applies_to": [{ "CastFrom": "Graveyard" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Not": { "Type": "Land" } }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Mayhem": ["OwnManaCost"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

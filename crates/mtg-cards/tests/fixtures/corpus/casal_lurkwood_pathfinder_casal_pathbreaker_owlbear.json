@@ -1,0 +1,184 @@
+{
+  "object": "card",
+  "id": "d571c367-c786-41f9-9cdb-cb02594fa413",
+  "oracle_id": "b7bdb688-f8ee-4d22-a679-37a2ecd390a1",
+  "multiverse_ids": [],
+  "tcgplayer_id": 630007,
+  "cardmarket_id": 806652,
+  "name": "Casal, Lurkwood Pathfinder // Casal, Pathbreaker Owlbear",
+  "lang": "en",
+  "released_at": "2025-04-25",
+  "uri": "https://api.scryfall.com/cards/d571c367-c786-41f9-9cdb-cb02594fa413",
+  "scryfall_uri": "https://scryfall.com/card/slx/29/casal-lurkwood-pathfinder-casal-pathbreaker-owlbear?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:39:29Z",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Tiefling Druid // Legendary Creature — Bird Bear",
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Transform",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Casal, Lurkwood Pathfinder",
+      "mana_cost": "{3}{G}",
+      "type_line": "Legendary Creature — Tiefling Druid",
+      "oracle_text": "Vigilance\nWhen Casal enters, search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nWhenever Casal attacks, you may pay {1}{G}. If you do, transform her.",
+      "colors": [
+        "G"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "38835875-142b-47fb-9dc3-bb1ae2b269a5",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "normal": "https://cards.scryfall.io/normal/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "large": "https://cards.scryfall.io/large/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "png": "https://cards.scryfall.io/png/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.png?1783906769",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "thumb": "https://cards.scryfall.io/thumb/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "grid": "https://cards.scryfall.io/grid/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "display": "https://cards.scryfall.io/display/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "art": "https://cards.scryfall.io/art/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "crop": "https://cards.scryfall.io/crop/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "jpeg": "https://cards.scryfall.io/normal/front/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Casal, Pathbreaker Owlbear",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Bird Bear",
+      "oracle_text": "Vigilance, trample\nWhen this creature transforms into Casal, Pathbreaker Owlbear, other legendary creatures you control get +2/+2 and gain trample until end of turn.\nAt the beginning of your upkeep, transform Casal.",
+      "colors": [
+        "G"
+      ],
+      "color_indicator": [
+        "G"
+      ],
+      "power": "6",
+      "toughness": "6",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "b3f2b347-5c8a-4822-968a-23ae2431cea4",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "normal": "https://cards.scryfall.io/normal/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "large": "https://cards.scryfall.io/large/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "png": "https://cards.scryfall.io/png/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.png?1783906769",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769",
+        "thumb": "https://cards.scryfall.io/thumb/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "grid": "https://cards.scryfall.io/grid/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "display": "https://cards.scryfall.io/display/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "art": "https://cards.scryfall.io/art/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "crop": "https://cards.scryfall.io/crop/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.webp?1783906769",
+        "jpeg": "https://cards.scryfall.io/normal/back/d/5/d571c367-c786-41f9-9cdb-cb02594fa413.jpg?1783906769"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d571c367-c786-41f9-9cdb-cb02594fa413/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab7bdb688-f8ee-4d22-a679-37a2ecd390a1&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Victor Adame Minguez",
+  "artist_ids": [
+    "bd8f7368-5b10-4554-b6b8-d052c6aca89f"
+  ],
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "instore"
+  ],
+  "edhrec_rank": 10269,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/news/announcements/earn-d-and-d-themed-promo-cards-with-magic-presents-spring-flourishes",
+    "previewed_at": "2025-01-13"
+  },
+  "prices": {
+    "usd": "29.41",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "17.68",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCasal%252C%2BLurkwood%2BPathfinder%2B%252F%252F%2BCasal%252C%2BPathbreaker%2BOwlbear",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCasal%252C%2BLurkwood%2BPathfinder%2B%252F%252F%2BCasal%252C%2BPathbreaker%2BOwlbear",
+    "edhrec": "https://edhrec.com/route/?cc=Casal%2C+Lurkwood+Pathfinder"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F630007%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=806652&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Casal%2C+Lurkwood+Pathfinder&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

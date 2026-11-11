@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a",
+  "oracle_id": "0403bfb0-2174-4360-994d-68d8ca96fc55",
+  "multiverse_ids": [],
+  "resource_id": "10C10D2E83B10CF8CFBD8E65194EBBFF7C57ACA6A5944276F2D3C317C776B148",
+  "mtgo_id": 145586,
+  "arena_id": 98239,
+  "tcgplayer_id": 662442,
+  "cardmarket_id": 857911,
+  "name": "Nightmares and Daydreams",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a",
+  "scryfall_uri": "https://scryfall.com/card/tle/94/nightmares-and-daydreams?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:07:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828",
+    "large": "https://cards.scryfall.io/large/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828",
+    "png": "https://cards.scryfall.io/png/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.png?1783904828",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.webp?1783904828",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.webp?1783904828",
+    "display": "https://cards.scryfall.io/display/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.webp?1783904828",
+    "art": "https://cards.scryfall.io/art/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.webp?1783904828",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.webp?1783904828",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a.jpg?1783904828"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II, III — Until your next turn, whenever you cast an instant or sorcery spell, target player mills cards equal to that spell's mana value.\nIV — Draw a card. If a graveyard has twenty or more cards in it, draw three cards instead.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1c2e1d6d-e7c3-4dd4-b8e1-cd89c28afa3a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0403bfb0-2174-4360-994d-68d8ca96fc55&unique=prints",
+  "collector_number": "94",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "AKAGI",
+  "artist_ids": [
+    "84c7086f-5e33-40cc-90bc-620e07d1ed17"
+  ],
+  "illustration_id": "9117b240-be3d-49f0-a5a6-8dbf14f72952",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 18968,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "1.16",
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": "0.59",
+    "tix": "0.29"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNightmares%2Band%2BDaydreams",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNightmares%2Band%2BDaydreams",
+    "edhrec": "https://edhrec.com/route/?cc=Nightmares+and+Daydreams"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662442%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857911&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145586?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

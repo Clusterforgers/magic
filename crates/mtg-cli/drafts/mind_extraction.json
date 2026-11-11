@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0077740a-528b-4ee3-b331-fac321b95302",
+  "name": "Mind Extraction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Extraction",
+      "oracle_fingerprint": "f9bdd4af4928b92a5f41adba15c70c02",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "SharesColor": "Paid" }
+                    ]
+                  },
+                  "filter": [{ "SharesColor": "Paid" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

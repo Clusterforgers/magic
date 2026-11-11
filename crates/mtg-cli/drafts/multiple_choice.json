@@ -1,0 +1,88 @@
+{
+  "oracle_id": "b4d23acf-ff1f-4a6a-9ede-2667a99e9665",
+  "name": "Multiple Choice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multiple Choice",
+      "oracle_fingerprint": "e525d5a49ad8e6e4b0bb0857ef90cdc4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      { "Compare": { "left": "X", "op": "Eq", "right": 1 } },
+                      { "Compare": { "left": "X", "op": "Ge", "right": 4 } }
+                    ]
+                  },
+                  "then": [{ "Scry": {} }, { "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      { "Compare": { "left": "X", "op": "Eq", "right": 2 } },
+                      { "Compare": { "left": "X", "op": "Ge", "right": 4 } }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Choose": { "from": "EachPlayer", "as": "player" } },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "returned"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      { "Compare": { "left": "X", "op": "Eq", "right": 3 } },
+                      { "Compare": { "left": "X", "op": "Ge", "right": 4 } }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Blue", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

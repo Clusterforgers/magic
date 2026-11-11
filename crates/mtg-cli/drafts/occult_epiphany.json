@@ -1,0 +1,37 @@
+{
+  "oracle_id": "6df1c314-b97b-4bbc-8b7e-a07785347a49",
+  "name": "Occult Epiphany",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Occult Epiphany",
+      "oracle_fingerprint": "4dffab443ee59069cff74e024dbe62b9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": "X" } },
+              { "Discard": { "count": "X", "as": "discarded" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "CardTypes": [{ "Is": { "Bound": "discarded" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

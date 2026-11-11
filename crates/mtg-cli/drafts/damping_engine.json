@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3584a055-5220-4721-89f8-de33f779122f",
+  "name": "Damping Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damping Engine",
+      "oracle_fingerprint": "c5f532bd3b9eb02e3634a31b4e8c21d6",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": { "Largest": { "who": "Opponents", "of": [] } }
+                      }
+                    }
+                  }
+                },
+                "action": "PlayLand"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

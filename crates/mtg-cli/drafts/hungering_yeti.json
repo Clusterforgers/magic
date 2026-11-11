@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5c179fae-f767-4246-88d3-aa38da5bf6f4",
+  "name": "Hungering Yeti",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hungering Yeti",
+      "oracle_fingerprint": "1e1b46c8e694818b353dc17dd27f4e63",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "AnyOf": [{ "Color": "Green" }, { "Color": "Blue" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

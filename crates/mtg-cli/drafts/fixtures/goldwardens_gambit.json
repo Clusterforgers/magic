@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "0cb7f413-f9b9-4b1c-898a-c49c571613f0",
+  "oracle_id": "cf113674-f809-4b97-9e8d-e22385446ddb",
+  "multiverse_ids": [
+    605695
+  ],
+  "mtgo_id": 106889,
+  "tcgplayer_id": 478418,
+  "cardmarket_id": 693265,
+  "name": "Goldwardens' Gambit",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/0cb7f413-f9b9-4b1c-898a-c49c571613f0",
+  "scryfall_uri": "https://scryfall.com/card/onc/13/goldwardens-gambit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:49:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159",
+    "normal": "https://cards.scryfall.io/normal/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159",
+    "large": "https://cards.scryfall.io/large/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159",
+    "png": "https://cards.scryfall.io/png/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.png?1783918159",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.webp?1783918159",
+    "grid": "https://cards.scryfall.io/grid/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.webp?1783918159",
+    "display": "https://cards.scryfall.io/display/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.webp?1783918159",
+    "art": "https://cards.scryfall.io/art/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.webp?1783918159",
+    "crop": "https://cards.scryfall.io/crop/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.webp?1783918159",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/c/0cb7f413-f9b9-4b1c-898a-c49c571613f0.jpg?1783918159"
+  },
+  "mana_cost": "{6}{R}{R}",
+  "cmc": 8.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Affinity for Equipment (This spell costs {1} less to cast for each Equipment you control.)\nCreate five 2/2 red Rebel creature tokens. They gain haste until end of turn. For each of those tokens, you may attach an Equipment you control to it.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Affinity"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a41eb9df-d8b4-4697-a759-886faf16754d",
+      "component": "token",
+      "name": "Rebel",
+      "type_line": "Token Creature — Rebel",
+      "uri": "https://api.scryfall.com/cards/a41eb9df-d8b4-4697-a759-886faf16754d"
+    },
+    {
+      "object": "related_card",
+      "id": "5ddb9e94-a565-44d0-bf27-69d159c8ef9f",
+      "component": "combo_piece",
+      "name": "Goldwardens' Gambit",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/5ddb9e94-a565-44d0-bf27-69d159c8ef9f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set": "onc",
+  "set_name": "Phyrexia: All Will Be One Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aonc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/onc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0cb7f413-f9b9-4b1c-898a-c49c571613f0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf113674-f809-4b97-9e8d-e22385446ddb&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "At Neyali's command, they took position. At Otharri's signal, they struck.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Manuel Castañón",
+  "artist_ids": [
+    "35f11eeb-36ff-4059-bb70-d1274f5bd858"
+  ],
+  "illustration_id": "7b0ee849-5c17-4d1c-878a-47bae14d3869",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10822,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=80xv4ZP1k-E",
+    "previewed_at": "2023-01-18"
+  },
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": null,
+    "tix": "0.59"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=605695&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGoldwardens%2527%2BGambit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGoldwardens%2527%2BGambit",
+    "edhrec": "https://edhrec.com/route/?cc=Goldwardens%27+Gambit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478418%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=693265&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106889?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

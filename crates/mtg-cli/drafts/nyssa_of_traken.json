@@ -1,0 +1,67 @@
+{
+  "oracle_id": "07802bd6-29ca-40c5-beba-c2baf7a92555",
+  "name": "Nyssa of Traken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyssa of Traken",
+      "oracle_fingerprint": "28c264cadcb80bd87696e936cf70c86a",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": { "Bound": "sacrificed" }, "filter": [] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }] },
+                            "bounds": {
+                              "min": 0,
+                              "max": {
+                                "CountOf": { "of": { "Bound": "sacrificed" }, "filter": [] }
+                              }
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Tap": { "what": { "Target": 0 } } },
+                          {
+                            "Draw": {
+                              "count": {
+                                "CountOf": { "of": { "Bound": "sacrificed" }, "filter": [] }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

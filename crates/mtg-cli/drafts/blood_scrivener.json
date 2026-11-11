@@ -1,0 +1,26 @@
+{
+  "oracle_id": "af66da4b-2f36-4dd2-a5c6-18e6023c5aba",
+  "name": "Blood Scrivener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Scrivener",
+      "oracle_fingerprint": "d1b0d798eb3f5279eb8c96103785bd54",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 1 } }] },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

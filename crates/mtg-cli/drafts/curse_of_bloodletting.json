@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3383a72f-fb83-4b9a-aca6-b736ed929c2e",
+  "name": "Curse of Bloodletting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Bloodletting",
+      "oracle_fingerprint": "aa71a1bab5358aa108cdd67220c3ddb5",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "AttachedPlayer" } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

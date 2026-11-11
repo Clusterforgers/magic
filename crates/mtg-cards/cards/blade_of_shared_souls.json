@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bfecd486-8326-426b-ac2b-54946f6ae707",
+  "name": "Blade of Shared Souls",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blade of Shared Souls",
+      "oracle_fingerprint": "1fdea3b8b04061be110d04ff239d4f87",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 297 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

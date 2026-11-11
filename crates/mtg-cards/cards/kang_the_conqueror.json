@@ -1,0 +1,20 @@
+{
+  "oracle_id": "da6e24a4-8adc-41a1-b5eb-3e31dc1250c9",
+  "name": "Kang the Conqueror",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kang the Conqueror",
+      "oracle_fingerprint": "f1eec4a1d08a2787dec68cb29cc77514",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "68f81fcf-2dcf-41b9-ad7c-588149feb12a",
+  "name": "Antagonism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Antagonism",
+      "oracle_fingerprint": "3e09c41fa87e3f77a7272cdb7966a3b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tallied": {
+                          "who": {
+                            "PlayersWhere": {
+                              "who": "EachPlayer",
+                              "test": { "Not": { "Among": "Triggering" } }
+                            }
+                          },
+                          "what": "DamageTaken"
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "source": "This", "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

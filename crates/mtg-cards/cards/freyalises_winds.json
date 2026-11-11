@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ffeb792a-6df0-46c1-badc-4deb857f7d48",
+  "name": "Freyalise's Winds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Freyalise's Winds",
+      "oracle_fingerprint": "b161528a56d94e23e278061a4ed26cee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": { "Other": "wind" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 193 }
+          }
+        }
+      ]
+    }
+  ]
+}

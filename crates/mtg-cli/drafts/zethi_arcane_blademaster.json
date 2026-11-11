@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ac136d46-32b7-4222-a840-b8be011c1872",
+  "name": "Zethi, Arcane Blademaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zethi, Arcane Blademaster",
+      "oracle_fingerprint": "21d1a9bbd235c91c573569c326c82f80",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{W/U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Instant" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": "Kicks" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "kick" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CopyCard": {
+                  "what": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" },
+                      { "HasCounter": { "Other": "kick" } }
+                    ]
+                  },
+                  "as": "copies"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "copies" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

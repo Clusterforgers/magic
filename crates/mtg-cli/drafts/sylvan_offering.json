@@ -1,0 +1,83 @@
+{
+  "oracle_id": "732aaa4b-22ea-49e2-b09f-e6169f726537",
+  "name": "Sylvan Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Offering",
+      "oracle_fingerprint": "995cd3be03b11b880b115d3c4d3ee8aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opp1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Treefolk",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Treefolk"]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Bound": "opp1" },
+                  "token": {
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Treefolk",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Treefolk"]
+                      }
+                    }
+                  }
+                }
+              },
+              { "Choose": { "from": "Opponents", "as": "opp2" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Bound": "opp2" },
+                  "token": {
+                    "Custom": {
+                      "name": "Elf Warrior",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elf", "Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

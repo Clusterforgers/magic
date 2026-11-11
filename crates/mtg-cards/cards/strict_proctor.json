@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b967870d-9773-4ad5-bf06-c3be5465dab9",
+  "name": "Strict Proctor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Strict Proctor",
+      "oracle_fingerprint": "de1d122237e2118277e7eab3d62996d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 128 }
+          }
+        }
+      ]
+    }
+  ]
+}

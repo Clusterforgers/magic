@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a30f30e3-dbbf-4cb2-b3d0-76f57dffb2dd",
+  "name": "Black Bolt, Inhuman King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Bolt, Inhuman King",
+      "oracle_fingerprint": "ae32187f55d2d49b86ff3eef9d91fabe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "Opponents" }] }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": { "ControllerOf": "Dealer" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "310c1280-dee8-426f-8440-6132a634a1e0",
+  "name": "Solstice Revelations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solstice Revelations",
+      "oracle_fingerprint": "c64c47840c28403d14f5763d466c99fd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "card",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } },
+                      "op": "Lt",
+                      "right": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "card" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{R}" } }
+      ]
+    }
+  ]
+}

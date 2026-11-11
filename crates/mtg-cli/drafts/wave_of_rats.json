@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ccb0f59b-7947-4563-9e16-5d23246f4232",
+  "name": "Wave of Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wave of Rats",
+      "oracle_fingerprint": "47af45eb041207cb8c8da2b311667357",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "DidThisTurn": { "event": "Damaged", "to": "EachPlayer", "combat": true } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "under": { "OwnerOf": "Triggering" } } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{4}{B}" } }
+      ]
+    }
+  ]
+}

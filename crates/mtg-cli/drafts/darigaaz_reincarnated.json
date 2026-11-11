@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c2f42c67-ff88-4248-bfa5-79a18c6473d5",
+  "name": "Darigaaz Reincarnated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darigaaz Reincarnated",
+      "oracle_fingerprint": "9fadec2feaf468a41980e33e45f6b68f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "This", "as": "exiled" } },
+                {
+                  "PutCounters": {
+                    "on": { "Bound": "exiled" },
+                    "counter": { "Other": "egg" },
+                    "count": 3
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "In": "Exile" }, { "HasCounter": { "Other": "egg" } }]
+              }
+            },
+            "from": "Exile",
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "egg" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "egg" } } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

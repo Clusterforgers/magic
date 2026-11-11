@@ -1,0 +1,52 @@
+{
+  "oracle_id": "6bb8c22c-8b01-45f8-8c9e-f683e6b4f022",
+  "name": "Melira, the Living Cure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melira, the Living Cure",
+      "oracle_fingerprint": "67167faea7dbb3004008c9737ba92299",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "CountersPut": { "on": "You", "counter": "poison" } },
+            "by": {
+              "Instead": [
+                { "PutCounters": { "on": "You", "counter": "poison" } },
+                {
+                  "Rule": {
+                    "rule": { "Cant": { "who": "You", "action": { "PutCounterOf": "poison" } } },
+                    "duration": "UntilEndOfTurn"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "to": "Graveyard" }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

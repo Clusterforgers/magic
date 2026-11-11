@@ -1,0 +1,68 @@
+{
+  "oracle_id": "b82d8bdf-e292-490a-aee7-d830cc2c29df",
+  "name": "Over the Top",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Over the Top",
+      "oracle_fingerprint": "e40c0c90811b659ca108f82f383c46dc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "LookAtTop": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Count": [
+                            { "Not": { "Type": "Land" } },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "top"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    { "Bind": { "what": { "Bound": "top" }, "as": "revealed", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "revealed" } },
+                      { "In": "Library" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "revealed" } }, { "In": "Library" }] },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

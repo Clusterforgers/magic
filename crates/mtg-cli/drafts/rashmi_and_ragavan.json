@@ -1,0 +1,74 @@
+{
+  "oracle_id": "bdef246c-cf66-40a1-aae4-a591846e73ca",
+  "name": "Rashmi and Ragavan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rashmi and Ragavan",
+      "oracle_fingerprint": "7b8108f82f03d913b77f01582e1140c9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
+            "if": "YourTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [
+                        { "Not": { "Type": "Land" } },
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Lt",
+                            "to": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "exiled" },
+                        "free": true,
+                        "otherwise": [
+                          {
+                            "Rule": {
+                              "rule": {
+                                "MayCast": {
+                                  "what": [{ "Is": { "Bound": "exiled" } }],
+                                  "from": "Exile"
+                                }
+                              },
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "what": [{ "Is": { "Bound": "exiled" } }], "from": "Exile" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

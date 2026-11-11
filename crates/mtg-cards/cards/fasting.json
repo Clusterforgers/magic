@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0d787c6b-ab82-42c5-b840-8f3a09af30ac",
+  "name": "Fasting",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fasting",
+      "oracle_fingerprint": "4329fa6d44922f1ae6f047fb870a5d4d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "hunger" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "hunger" } } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 151, "end": 245 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "Destroy": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

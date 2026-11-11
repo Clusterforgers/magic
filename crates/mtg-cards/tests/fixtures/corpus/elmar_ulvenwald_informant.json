@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "95d197b3-fc56-43a2-981f-b5b905222b5c",
+  "oracle_id": "5a35201d-e9b1-433a-bb70-3280ceedbcd6",
+  "multiverse_ids": [],
+  "mtgo_id": 105935,
+  "tcgplayer_id": 268617,
+  "cardmarket_id": 651576,
+  "name": "Elmar, Ulvenwald Informant",
+  "lang": "en",
+  "released_at": "2022-03-03",
+  "uri": "https://api.scryfall.com/cards/95d197b3-fc56-43a2-981f-b5b905222b5c",
+  "scryfall_uri": "https://scryfall.com/card/slx/4/elmar-ulvenwald-informant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:20:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613",
+    "normal": "https://cards.scryfall.io/normal/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613",
+    "large": "https://cards.scryfall.io/large/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613",
+    "png": "https://cards.scryfall.io/png/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.png?1783923613",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.webp?1783923613",
+    "grid": "https://cards.scryfall.io/grid/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.webp?1783923613",
+    "display": "https://cards.scryfall.io/display/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.webp?1783923613",
+    "art": "https://cards.scryfall.io/art/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.webp?1783923613",
+    "crop": "https://cards.scryfall.io/crop/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.webp?1783923613",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/5/95d197b3-fc56-43a2-981f-b5b905222b5c.jpg?1783923613"
+  },
+  "mana_cost": "{1}{R}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "Haste\nWhenever you cast your second spell each turn, untap target creature, then investigate. (Create a colorless Clue artifact token with \"{2}, Sacrifice this artifact: Draw a card.\")\nPartner—Friends forever (You can have two commanders if both have this ability.)",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Investigate",
+    "Haste",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b7c52125-929a-4e03-a955-d55ae34a905b",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/b7c52125-929a-4e03-a955-d55ae34a905b"
+    },
+    {
+      "object": "related_card",
+      "id": "95d197b3-fc56-43a2-981f-b5b905222b5c",
+      "component": "combo_piece",
+      "name": "Elmar, Ulvenwald Informant",
+      "type_line": "Legendary Creature — Human",
+      "uri": "https://api.scryfall.com/cards/95d197b3-fc56-43a2-981f-b5b905222b5c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/95d197b3-fc56-43a2-981f-b5b905222b5c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a35201d-e9b1-433a-bb70-3280ceedbcd6&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eliz Roxs",
+  "artist_ids": [
+    "17e629f2-3465-44cc-82f6-4e2386341bd7"
+  ],
+  "illustration_id": "ecf4c108-9c43-4d67-817c-73ca848c390a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13188,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/wizards_magic/status/1499521989047951362",
+    "previewed_at": "2022-03-03"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "1.16"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElmar%252C%2BUlvenwald%2BInformant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElmar%252C%2BUlvenwald%2BInformant",
+    "edhrec": "https://edhrec.com/route/?cc=Elmar%2C+Ulvenwald+Informant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268617%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651576&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105935?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

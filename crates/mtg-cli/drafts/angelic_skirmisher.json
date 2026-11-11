@@ -1,0 +1,60 @@
+{
+  "oracle_id": "29e07d57-0f05-441c-844f-cf1d71102b2d",
+  "name": "Angelic Skirmisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Skirmisher",
+      "oracle_fingerprint": "b25e244e8a3e7ed0f779c26c0472f2b2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [{ "AddKeyword": "FirstStrike" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [{ "AddKeyword": "Vigilance" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [{ "AddKeyword": "Lifelink" }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

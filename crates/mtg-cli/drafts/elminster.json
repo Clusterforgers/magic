@@ -1,0 +1,64 @@
+{
+  "oracle_id": "56773795-bd8b-4ac4-8f2c-a9d6275989bb",
+  "name": "Elminster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elminster",
+      "oracle_fingerprint": "f532c5a416417e2ab68d512c03a4d413",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": {
+                        "Cost": { "change": "Reduce", "mana": "{1}", "per": "Triggering" }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "Draw": {} }, { "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              { "ExileTop": { "as": "top" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie Dragon",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie", "Dragon"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

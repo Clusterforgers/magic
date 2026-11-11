@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b9a62c6b-5848-44b1-932b-8d5de2560976",
+  "name": "Surge of Salvation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge of Salvation",
+      "oracle_fingerprint": "601e1d62bf9da8d9f84236a81496f44f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "You", "keyword": "Hexproof" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "source": [{ "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

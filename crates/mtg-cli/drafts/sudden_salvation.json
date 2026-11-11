@@ -1,0 +1,62 @@
+{
+  "oracle_id": "a5b0f351-5536-41ec-aa09-1e5344a0effb",
+  "name": "Sudden Salvation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Salvation",
+      "oracle_fingerprint": "19c63f715cf5fd9cc816aea73cd2852c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "ArrivedFrom": "Battlefield" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } },
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "CountOf": {
+                            "subject": {
+                              "Arrived": { "of": { "Target": 0 }, "zone": "Battlefield" }
+                            },
+                            "selector": [{ "ControlledBy": "You" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

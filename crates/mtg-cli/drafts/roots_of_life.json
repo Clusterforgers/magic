@@ -1,0 +1,51 @@
+{
+  "oracle_id": "29ec9b49-fbe5-49ac-8ad6-7159cb88bc66",
+  "name": "Roots of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roots of Life",
+      "oracle_fingerprint": "c1636e4cefa502325820e7b003ad1027",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Island", "Swamp"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Tapped": {
+                "what": [
+                  { "Type": "Land" },
+                  { "ControlledBy": "Opponents" },
+                  { "AnyOf": [{ "Subtype": "Island" }, { "Subtype": "Swamp" }] }
+                ]
+              }
+            },
+            "if": {
+              "Any": [
+                {
+                  "All": [
+                    { "EnteredAs": "Island" },
+                    {
+                      "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Island" }] }
+                    }
+                  ]
+                },
+                {
+                  "All": [
+                    { "EnteredAs": "Swamp" },
+                    { "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Swamp" }] } }
+                  ]
+                }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

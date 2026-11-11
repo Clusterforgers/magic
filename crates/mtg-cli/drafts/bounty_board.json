@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e40c66cf-0a4a-4833-98bf-c685d35b9309",
+  "name": "Bounty Board",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bounty Board",
+      "oracle_fingerprint": "733c96fd3566b1f640ca7094878602a5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "bounty" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasCounter": { "Other": "bounty" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "ControllerOf": "Triggering" } } }
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "ControllerOf": "Triggering" } } }
+                    }
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

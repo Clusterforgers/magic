@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+  "name": "Charred Foyer // Warped Space",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charred Foyer",
+      "oracle_fingerprint": "80f6dc0f63c813ae78ceff886020e257",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warped Space",
+      "oracle_fingerprint": "2b8b375412e06f00295daac493adbefa",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "In": "Exile" }], "free": true, "once": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "fe5690d3-547b-4ce9-8e94-77fdc0e9c5c6",
+  "name": "Kefka, Dancing Mad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kefka, Dancing Mad",
+      "oracle_fingerprint": "92e4e234b0cac645bfc2dd7b900b8333",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "ChooseAtRandom": {
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "opp" } }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" } } },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "exiled", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "c",
+                  "effects": [
+                    { "CastFromZone": { "what": { "Bound": "c" }, "free": true, "as": "spell" } },
+                    {
+                      "LoseLife": {
+                        "who": { "OwnerOf": { "Bound": "spell" } },
+                        "amount": { "Stat": { "of": { "Bound": "spell" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

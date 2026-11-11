@@ -1,0 +1,26 @@
+{
+  "oracle_id": "932a86e5-9640-4ef5-8264-2ce97bde33e2",
+  "name": "Haktos the Unscarred",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Haktos the Unscarred",
+      "oracle_fingerprint": "3ff32855f36f67b3a3754d807767b7c5",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 36, "end": 82 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 83, "end": 155 }
+          }
+        }
+      ]
+    }
+  ]
+}

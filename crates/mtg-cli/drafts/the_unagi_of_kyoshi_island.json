@@ -1,0 +1,21 @@
+{
+  "oracle_id": "be922360-ee9f-4cfb-bf10-d481c5de5cb1",
+  "name": "The Unagi of Kyoshi Island",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Unagi of Kyoshi Island",
+      "oracle_fingerprint": "6912e35d1637862528751463a4aece5d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Ward": [{ "Waterbend": 4 }] } },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 2 } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

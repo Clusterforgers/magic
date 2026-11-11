@@ -1,0 +1,20 @@
+{
+  "oracle_id": "48a909b6-e6ee-4148-8b50-b35f11bc065f",
+  "name": "Mizzium Meddler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mizzium Meddler",
+      "oracle_fingerprint": "ebef9f0b4d2810823b5699c530aef8b1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 163 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ed202f1d-3511-45f4-bfbc-e6b76d4311d1",
+  "name": "The Valeyard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Valeyard",
+      "oracle_fingerprint": "16b9d30b328dd7ef0eecb9fd3c4b53bd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 135 }
+          }
+        },
+        { "Rule": { "rule": { "VoteAgain": "You" } } }
+      ]
+    }
+  ]
+}

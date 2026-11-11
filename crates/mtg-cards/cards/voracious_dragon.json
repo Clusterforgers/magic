@@ -1,0 +1,21 @@
+{
+  "oracle_id": "7f39bbae-6c84-4cb3-9a58-d746a723ad35",
+  "name": "Voracious Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Voracious Dragon",
+      "oracle_fingerprint": "7b5955fefe8b81c69ad3c4ef29d592c4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 239 }
+          }
+        }
+      ]
+    }
+  ]
+}

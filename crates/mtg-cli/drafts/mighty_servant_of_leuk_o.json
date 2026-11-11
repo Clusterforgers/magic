@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0b59099f-2172-4eab-9c0d-7048e6771018",
+  "name": "Mighty Servant of Leuk-o",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mighty Servant of Leuk-o",
+      "oracle_fingerprint": "f9292c88162de6531f19a9ce77ed6955",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "BecomesCrewed": { "what": ["This"] } }, "nth": 1 } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Crewed": "This" }] }, "op": "Eq", "right": 2 }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": { "count": 2 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

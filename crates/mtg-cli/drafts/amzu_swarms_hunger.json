@@ -1,0 +1,61 @@
+{
+  "oracle_id": "6777863c-e52c-4a7c-b8d2-a16b1438b3d2",
+  "name": "Amzu, Swarm's Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amzu, Swarm's Hunger",
+      "oracle_fingerprint": "872d6affe49f6bc7bbe29d10a8e56f92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": { "Each": ["Other", { "Subtype": "Insect" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Black", "Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "insect"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "insect" },
+                        "counter": "+1/+1",
+                        "count": {
+                          "Greatest": { "of": [{ "Is": "Triggering" }], "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

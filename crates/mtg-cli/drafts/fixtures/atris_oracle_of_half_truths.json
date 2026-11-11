@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "db6c91ec-df14-460f-967c-f182562fe7d8",
+  "oracle_id": "8b2b00ab-f1c5-4057-9957-d7daac95a847",
+  "multiverse_ids": [
+    476460
+  ],
+  "mtgo_id": 79542,
+  "arena_id": 70720,
+  "tcgplayer_id": 206670,
+  "cardmarket_id": 430234,
+  "name": "Atris, Oracle of Half-Truths",
+  "lang": "en",
+  "released_at": "2020-01-24",
+  "uri": "https://api.scryfall.com/cards/db6c91ec-df14-460f-967c-f182562fe7d8",
+  "scryfall_uri": "https://scryfall.com/card/thb/209/atris-oracle-of-half-truths?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:32:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525",
+    "normal": "https://cards.scryfall.io/normal/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525",
+    "large": "https://cards.scryfall.io/large/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525",
+    "png": "https://cards.scryfall.io/png/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.png?1783931525",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.webp?1783931525",
+    "grid": "https://cards.scryfall.io/grid/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.webp?1783931525",
+    "display": "https://cards.scryfall.io/display/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.webp?1783931525",
+    "art": "https://cards.scryfall.io/art/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.webp?1783931525",
+    "crop": "https://cards.scryfall.io/crop/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.webp?1783931525",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/b/db6c91ec-df14-460f-967c-f182562fe7d8.jpg?1783931525"
+  },
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "Menace\nWhen Atris enters, target opponent looks at the top three cards of your library and separates them into a face-down pile and a face-up pile. Put one pile into your hand and the other into your graveyard.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f23a78d-cda1-462a-8be3-a62b40c34913",
+  "set": "thb",
+  "set_name": "Theros Beyond Death",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f23a78d-cda1-462a-8be3-a62b40c34913",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Athb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/thb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/db6c91ec-df14-460f-967c-f182562fe7d8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b2b00ab-f1c5-4057-9957-d7daac95a847&unique=prints",
+  "collector_number": "209",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bastien L. Deharme",
+  "artist_ids": [
+    "798f63ec-41ad-474e-9708-df08193345c6"
+  ],
+  "illustration_id": "3e413dc1-dbb9-4bc0-9739-2f80fec21625",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12582,
+  "penny_rank": 3853,
+  "preview": {
+    "source": "Brainstorm Brewery",
+    "source_uri": "https://twitter.com/BrainstormBrew/status/1212061700784054277",
+    "previewed_at": "2019-12-31"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.23",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=476460&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAtris%252C%2BOracle%2Bof%2BHalf-Truths",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAtris%252C%2BOracle%2Bof%2BHalf-Truths",
+    "edhrec": "https://edhrec.com/route/?cc=Atris%2C+Oracle+of+Half-Truths"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F206670%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=430234&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/79542?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

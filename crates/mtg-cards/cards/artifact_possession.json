@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5c641df8-97d7-484b-8d0e-790279fd6177",
+  "name": "Artifact Possession",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Artifact Possession",
+      "oracle_fingerprint": "26fff3699e149ec521cca058504c15ed",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

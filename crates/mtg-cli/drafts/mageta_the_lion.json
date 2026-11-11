@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cd170b1c-879b-414e-9f0e-5e7fb099e7bb",
+  "name": "Mageta the Lion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mageta the Lion",
+      "oracle_fingerprint": "a494ee67d9361ef3989fdf8c8e9a47a7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{W}" }, "Tap", { "Discard": { "count": 2 } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": "This" }] },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

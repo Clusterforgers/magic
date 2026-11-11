@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4563ae4b-6226-4cc9-abde-582d0ab83433",
+  "name": "Gandalf, Westward Voyager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf, Westward Voyager",
+      "oracle_fingerprint": "101177cf75ec229fdfc28164bc77ab80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": ["TopOfLibrary", { "In": "Library" }, { "OwnedBy": "Opponents" }]
+                  },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed" },
+                      "selector": [{ "SharesType": "Triggering" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "CopySpell": { "what": "Triggering", "new_targets": true } },
+                    { "Draw": { "who": "Opponents" } }
+                  ],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

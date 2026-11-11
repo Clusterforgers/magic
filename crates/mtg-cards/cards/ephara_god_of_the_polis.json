@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5968ecb5-5728-429f-9324-0c108820ebe8",
+  "name": "Ephara, God of the Polis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ephara, God of the Polis",
+      "oracle_fingerprint": "69232e83c7a5c0cdc4a8ab63876cff21",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["White", "Blue"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 228 }
+          }
+        }
+      ]
+    }
+  ]
+}

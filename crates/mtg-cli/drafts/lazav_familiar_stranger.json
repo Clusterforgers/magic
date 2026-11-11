@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ca60623a-1a98-4153-a0ee-2f34981de5cb",
+  "name": "Lazav, Familiar Stranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazav, Familiar Stranger",
+      "oracle_fingerprint": "b7371b95d74042a685914cd238da3072",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": { "Each": [{ "In": "Graveyard" }] }, "as": "card" } },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "BecomeCopy": {
+                              "what": "This",
+                              "of": { "Bound": "exiled" },
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

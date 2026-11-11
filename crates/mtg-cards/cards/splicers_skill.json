@@ -1,0 +1,38 @@
+{
+  "oracle_id": "96fe9bab-0ffa-4d8a-81b7-a48fd532d3f2",
+  "name": "Splicer's Skill",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Splicer's Skill",
+      "oracle_fingerprint": "70bf8e3eb37b44690ed73e80648564fa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 259 }
+          }
+        }
+      ]
+    }
+  ]
+}

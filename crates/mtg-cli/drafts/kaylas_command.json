@@ -1,0 +1,75 @@
+{
+  "oracle_id": "3d937cd9-b1e1-406d-9e29-3b9d3ceea3be",
+  "name": "Kayla's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kayla's Command",
+      "oracle_fingerprint": "94e593501c49308ebc89fad28c6a69e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Construct",
+                                "types": ["Artifact", "Creature"],
+                                "subtypes": ["Construct"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "creature"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Bound": "creature" }, "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "creature" },
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                            "reveal": true,
+                            "as": "land"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

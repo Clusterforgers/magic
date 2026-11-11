@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ecba74bd-850e-4cbe-9b1c-b0d4d6f27d1c",
+  "name": "Drought",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Drought",
+      "oracle_fingerprint": "b3bf5b2640aa3ade6989015d834cab80",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{W}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 83, "end": 184 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 185, "end": 309 }
+          }
+        }
+      ]
+    }
+  ]
+}

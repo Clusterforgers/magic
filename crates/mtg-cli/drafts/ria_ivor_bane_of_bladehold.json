@@ -1,0 +1,56 @@
+{
+  "oracle_id": "785f55bb-d47c-470c-94d4-95f69055e35f",
+  "name": "Ria Ivor, Bane of Bladehold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ria Ivor, Bane of Bladehold",
+      "oracle_fingerprint": "40476734363e77f143539b2da29feee9",
+      "abilities": [
+        { "Keyword": "BattleCry" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "EachPlayer",
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "combat": true
+                    }
+                  },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Phyrexian Mite",
+                              "types": ["Artifact", "Creature"],
+                              "subtypes": ["Phyrexian", "Mite"],
+                              "power": 1,
+                              "toughness": 1,
+                              "abilities": [
+                                { "Keyword": { "Toxic": 1 } },
+                                { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                              ]
+                            }
+                          },
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

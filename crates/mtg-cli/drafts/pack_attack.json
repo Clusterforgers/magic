@@ -1,0 +1,50 @@
+{
+  "oracle_id": "84b385cd-9dfd-4513-af3c-20fc1cc8fea0",
+  "name": "Pack Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pack Attack",
+      "oracle_fingerprint": "391535a85094781117c65ac6468743c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Players": {
+                            "PlayersWhere": {
+                              "who": "EachPlayer",
+                              "test": {
+                                "CountOf": {
+                                  "subject": {
+                                    "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }]
+                                  },
+                                  "selector": [],
+                                  "op": "Gt",
+                                  "right": 0
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

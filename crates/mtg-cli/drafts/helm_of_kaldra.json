@@ -1,0 +1,113 @@
+{
+  "oracle_id": "38a3c87f-006e-4fc2-8c67-77b5bbb0471f",
+  "name": "Helm of Kaldra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helm of Kaldra",
+      "oracle_fingerprint": "34beb0508b9666082d967fce3aa62fa7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Subtype": "Equipment" },
+                              { "ControlledBy": "You" },
+                              { "Named": "Helm of Kaldra" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Subtype": "Equipment" },
+                              { "ControlledBy": "You" },
+                              { "Named": "Sword of Kaldra" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Subtype": "Equipment" },
+                              { "ControlledBy": "You" },
+                              { "Named": "Shield of Kaldra" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Kaldra",
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Avatar"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        },
+                        "as": "kaldra"
+                      }
+                    },
+                    {
+                      "Attach": {
+                        "what": {
+                          "Each": [
+                            { "Subtype": "Equipment" },
+                            { "ControlledBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "Named": "Helm of Kaldra" },
+                                { "Named": "Sword of Kaldra" },
+                                { "Named": "Shield of Kaldra" }
+                              ]
+                            }
+                          ]
+                        },
+                        "to": { "Bound": "kaldra" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

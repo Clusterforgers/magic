@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0c9336c0-c0ec-4fb4-af7c-a7766265e927",
+  "name": "Hold for Ransom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hold for Ransom",
+      "oracle_fingerprint": "cf3dbdf8b65f3ccdc4db5c9ef334bca5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "CantAttack",
+              "CantBlock",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{7}",
+                    "timing": "Sorcery",
+                    "effects": [
+                      {
+                        "Sacrifice": {
+                          "who": { "ControllerOf": "Granter" },
+                          "filter": [{ "Is": "Granter" }]
+                        }
+                      },
+                      { "Draw": { "who": { "ControllerOf": "Granter" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

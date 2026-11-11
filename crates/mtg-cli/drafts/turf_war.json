@@ -1,0 +1,71 @@
+{
+  "oracle_id": "8e1b84d7-b0ae-4e9d-bc1a-c84832fea9f9",
+  "name": "Turf War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turf War",
+      "oracle_fingerprint": "00e054a4c046b45cc28ed4ec3e062ab5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "PerPlayer": { "players": "EachPlayer", "what": [{ "Type": "Land" }] } } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "contested" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Land" },
+                    { "ControlledBy": "TriggeringPlayer" },
+                    { "HasCounter": { "Other": "contested" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Dealer" },
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "TriggeringPlayer" },
+                      { "HasCounter": { "Other": "contested" } }
+                    ]
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "land" },
+                  "mods": [{ "SetController": { "ControllerOf": "Dealer" } }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": { "Bound": "land" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

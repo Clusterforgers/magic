@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "37332798-462e-49d3-b197-72411ccf67e5",
+  "oracle_id": "71c68002-1489-4858-a8fb-1f575641983e",
+  "multiverse_ids": [
+    695964
+  ],
+  "mtgo_id": 138087,
+  "tcgplayer_id": 624326,
+  "cardmarket_id": 818696,
+  "name": "Infantry Shield",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/37332798-462e-49d3-b197-72411ccf67e5",
+  "scryfall_uri": "https://scryfall.com/card/tdc/35/infantry-shield?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:46:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173",
+    "normal": "https://cards.scryfall.io/normal/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173",
+    "large": "https://cards.scryfall.io/large/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173",
+    "png": "https://cards.scryfall.io/png/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.png?1783907173",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.webp?1783907173",
+    "grid": "https://cards.scryfall.io/grid/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.webp?1783907173",
+    "display": "https://cards.scryfall.io/display/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.webp?1783907173",
+    "art": "https://cards.scryfall.io/art/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.webp?1783907173",
+    "crop": "https://cards.scryfall.io/crop/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.webp?1783907173",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/7/37332798-462e-49d3-b197-72411ccf67e5.jpg?1783907173"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature has menace and mobilize X, where X is its power. (Whenever it attacks, create X tapped and attacking 1/1 red Warrior creature tokens. Sacrifice them at the beginning of the next end step.)\nEquip {2}",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "40afa26f-443d-4eed-b32d-cb7ef2293ac8",
+      "component": "combo_piece",
+      "name": "Infantry Shield",
+      "type_line": "Artifact — Equipment",
+      "uri": "https://api.scryfall.com/cards/40afa26f-443d-4eed-b32d-cb7ef2293ac8"
+    },
+    {
+      "object": "related_card",
+      "id": "7edc0515-a130-45a7-aa09-0e23bba41587",
+      "component": "token",
+      "name": "Warrior",
+      "type_line": "Token Creature — Warrior",
+      "uri": "https://api.scryfall.com/cards/7edc0515-a130-45a7-aa09-0e23bba41587"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/37332798-462e-49d3-b197-72411ccf67e5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A71c68002-1489-4858-a8fb-1f575641983e&unique=prints",
+  "collector_number": "35",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Xabi Gaztelua",
+  "artist_ids": [
+    "35b87e24-bfe0-43f4-83c3-2fa9574d6026"
+  ],
+  "illustration_id": "55c350c9-3d8d-4dfb-af82-eced74eb92ae",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3220,
+  "prices": {
+    "usd": "1.47",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.21",
+    "eur_foil": null,
+    "tix": "2.52"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=695964&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInfantry%2BShield",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInfantry%2BShield",
+    "edhrec": "https://edhrec.com/route/?cc=Infantry+Shield"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624326%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=818696&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138087?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

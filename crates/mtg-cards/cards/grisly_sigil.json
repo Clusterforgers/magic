@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b9d9d118-a073-4e73-90fe-026462d1d895",
+  "name": "Grisly Sigil",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grisly Sigil",
+      "oracle_fingerprint": "fa61c9c46f925408fa20a087da6dce0f",
+      "abilities": [
+        { "Keyword": { "Casualty": 1 } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 166, "end": 370 }
+          }
+        }
+      ]
+    }
+  ]
+}

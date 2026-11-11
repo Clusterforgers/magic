@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ad97333e-733c-402f-8ca3-e836c96b843c",
+  "name": "Pili-Pala",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pili-Pala",
+      "oracle_fingerprint": "22f2014451242141ea4de9a69ba4ac0c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Untap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

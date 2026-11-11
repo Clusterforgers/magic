@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b86b1878-65a9-48df-9727-1e80683d7e86",
+  "name": "Fury Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fury Charm",
+      "oracle_fingerprint": "5c5f56d50d4727395dcf931a8a58e942",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": [
+                              { "Object": [] },
+                              { "Object": [{ "In": "Exile" }, "Suspended"] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": { "Other": "time" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

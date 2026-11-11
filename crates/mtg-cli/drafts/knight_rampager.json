@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2fa681b2-ca94-4f0c-83a4-98f00b8e1af8",
+  "name": "Knight Rampager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight Rampager",
+      "oracle_fingerprint": "3b9422cb382438d0851356c933c4c505",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": "This", "players": { "Bound": "opponent" } }
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opponent" } },
+              { "DealDamage": { "source": "This", "to": { "Bound": "opponent" }, "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c6792d9f-8b74-43c4-814f-ba4adab2fdea",
+  "name": "Thawing Glaciers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thawing Glaciers",
+      "oracle_fingerprint": "14a42d8dafddf62d1971287f4f4d49ae",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{1}" }],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Cleanup" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

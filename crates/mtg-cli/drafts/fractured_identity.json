@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1515b0c2-1b55-4cd4-ad81-fb6b1f3e8188",
+  "name": "Fractured Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractured Identity",
+      "oracle_fingerprint": "b36eb255c49412e6814e070cc2865a74",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "ControllerOf": { "Target": 0 } } } }
+                    }
+                  },
+                  "token": { "CopyOf": { "of": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

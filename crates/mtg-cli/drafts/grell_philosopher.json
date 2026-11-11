@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d5dc00cb-1510-4ce9-8dd9-0722f65d34b4",
+  "name": "Grell Philosopher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grell Philosopher",
+      "oracle_fingerprint": "b9d0fa580d4dcd94df5a9521a986b789",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Horror" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "GainAbilitiesOf": { "Target": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

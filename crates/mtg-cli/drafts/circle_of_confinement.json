@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d1cd7a93-4b83-4755-90bc-17cb64bfb131",
+  "name": "Circle of Confinement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Confinement",
+      "oracle_fingerprint": "7c2d7e4830e24563eb7e058b67097fb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Subtype": "Vampire" },
+                  { "SharesName": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] } }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

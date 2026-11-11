@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fed77e0a-a4a6-4409-9cab-bf0fc2cd9f9b",
+  "name": "Crown of Doom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Crown of Doom",
+      "oracle_fingerprint": "f386156a76eb6d4a0dd37bb5570e96d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 96, "end": 200 }
+          }
+        }
+      ]
+    }
+  ]
+}

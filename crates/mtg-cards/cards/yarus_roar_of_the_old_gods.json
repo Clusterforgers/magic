@@ -1,0 +1,39 @@
+{
+  "oracle_id": "30fd6171-3e57-4c05-a86b-e1c0479ba236",
+  "name": "Yarus, Roar of the Old Gods",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yarus, Roar of the Old Gods",
+      "oracle_fingerprint": "c88ae6a8f303d4173360d43b7f003e45",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 138, "end": 298 }
+          }
+        }
+      ]
+    }
+  ]
+}

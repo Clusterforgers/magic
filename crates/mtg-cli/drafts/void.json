@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fdb28fd3-70fb-43c3-b367-9cf0d2c46e06",
+  "name": "Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void",
+      "oracle_fingerprint": "d9dd5ebb089be366a886713249149322",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, 100] }, "as": "n" } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": { "ChosenAs": "n" } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": { "ChosenAs": "n" } } }
+                    ]
+                  },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": { "ChosenAs": "n" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

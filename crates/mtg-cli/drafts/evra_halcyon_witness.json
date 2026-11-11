@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cf4b538d-7115-406d-94bf-bfa25197b6ef",
+  "name": "Evra, Halcyon Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evra, Halcyon Witness",
+      "oracle_fingerprint": "49e7f17e60cab83a7e62f6400c2dfc07",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              { "Let": { "as": "life", "amount": { "Life": "You" } } },
+              { "Let": { "as": "power", "amount": { "Stat": { "of": "This", "stat": "Power" } } } },
+              { "SetLife": { "amount": { "Bound": "power" } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPower": { "Bound": "life" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

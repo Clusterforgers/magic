@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8ffe9e3f-fd9f-4d8b-9467-4cd301e3c8b4",
+  "name": "Voltaic Visionary // Volt-Charged Berserker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Voltaic Visionary",
+      "oracle_fingerprint": "fad841fd560d2e7f985ac83d78003846",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "DealDamage": { "to": "You", "amount": 2 } },
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 140, "end": 212 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Volt-Charged Berserker",
+      "oracle_fingerprint": "6789c3591d527fd5afdf867fd8025deb",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+    }
+  ]
+}

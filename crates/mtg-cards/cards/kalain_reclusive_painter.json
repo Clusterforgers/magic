@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4fca09ac-8134-43d9-a84b-686db5e2bf69",
+  "name": "Kalain, Reclusive Painter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kalain, Reclusive Painter",
+      "oracle_fingerprint": "631cc35b8910d5a9b0698355ff33e332",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 125, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

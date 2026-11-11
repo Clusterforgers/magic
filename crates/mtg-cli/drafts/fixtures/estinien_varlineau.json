@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "7812c768-8417-4689-9a51-f577c1cf5dc0",
+  "oracle_id": "29cf1dc2-3a6a-4a8b-8d61-4b6f0e74f271",
+  "multiverse_ids": [],
+  "resource_id": "CB86D1D0F198E6147B5DB8F5C0CBB47B25B83827A3442D821E03F3600C98B77E",
+  "mtgo_id": 140155,
+  "arena_id": 98130,
+  "tcgplayer_id": 631266,
+  "cardmarket_id": 824712,
+  "name": "Estinien Varlineau",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/7812c768-8417-4689-9a51-f577c1cf5dc0",
+  "scryfall_uri": "https://scryfall.com/card/fic/82/estinien-varlineau?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346",
+    "normal": "https://cards.scryfall.io/normal/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346",
+    "large": "https://cards.scryfall.io/large/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346",
+    "png": "https://cards.scryfall.io/png/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.png?1783906346",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.webp?1783906346",
+    "grid": "https://cards.scryfall.io/grid/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.webp?1783906346",
+    "display": "https://cards.scryfall.io/display/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.webp?1783906346",
+    "art": "https://cards.scryfall.io/art/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.webp?1783906346",
+    "crop": "https://cards.scryfall.io/crop/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.webp?1783906346",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/8/7812c768-8417-4689-9a51-f577c1cf5dc0.jpg?1783906346"
+  },
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elf Warrior",
+  "oracle_text": "Whenever you cast a noncreature spell, put a +1/+1 counter on Estinien Varlineau. It gains flying until end of turn.\nAt the beginning of your second main phase, you draw X cards and lose X life, where X is the number of your opponents who were dealt combat damage by Estinien Varlineau or a Dragon this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7812c768-8417-4689-9a51-f577c1cf5dc0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A29cf1dc2-3a6a-4a8b-8d61-4b6f0e74f271&unique=prints",
+  "collector_number": "82",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fang Xinyu",
+  "artist_ids": [
+    "83ef4d6d-7ca1-4ec9-98ce-437d34f8e464"
+  ],
+  "illustration_id": "369717d7-2869-49ba-98a4-b55d1d35889d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffxiv",
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10149,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": "0.42"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEstinien%2BVarlineau",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEstinien%2BVarlineau",
+    "edhrec": "https://edhrec.com/route/?cc=Estinien+Varlineau"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631266%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824712&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140155?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

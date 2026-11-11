@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8460abd9-ab5d-4a7e-8132-185b4a310190",
+  "name": "Leashling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leashling",
+      "oracle_fingerprint": "068788e002f89ba84ab76b87ffa5c38c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ToLibrary": { "from": "Hand", "filter": [] } }],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

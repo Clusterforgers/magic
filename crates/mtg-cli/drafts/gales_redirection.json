@@ -1,0 +1,64 @@
+{
+  "oracle_id": "8676f007-bf5f-4312-968c-59f4549f7d51",
+  "name": "Gale's Redirection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gale's Redirection",
+      "oracle_fingerprint": "876eeafe7397d1c45d6f3570d8e6e01f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "what": [{ "Is": { "Bound": "exiled" } }],
+                                "from": "Exile",
+                                "spend_as": "AnyColor"
+                              }
+                            },
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 15,
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "what": [{ "Is": { "Bound": "exiled" } }],
+                                "from": "Exile",
+                                "free": true
+                              }
+                            },
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

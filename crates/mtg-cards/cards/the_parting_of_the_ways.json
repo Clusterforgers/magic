@@ -1,0 +1,39 @@
+{
+  "oracle_id": "58d5b285-eb0c-4478-b137-26a897075f70",
+  "name": "The Parting of the Ways",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Parting of the Ways",
+      "oracle_fingerprint": "14eb78d1817cd1ce9357f97f332d2441",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 287 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "TimeTravel": {} }, { "TimeTravel": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Artifact" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

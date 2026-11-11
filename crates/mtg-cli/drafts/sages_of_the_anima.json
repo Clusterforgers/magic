@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d6c008c7-6c87-4677-ba0e-6d95f10d10bc",
+  "name": "Sages of the Anima",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sages of the Anima",
+      "oracle_fingerprint": "5874f646fe7ada1365268b00a73f0373",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "LookAtTop": { "count": 3, "as": "top" } },
+                { "Reveal": { "what": { "Bound": "top" } } },
+                {
+                  "Move": {
+                    "what": {
+                      "Each": [
+                        { "In": "Library" },
+                        { "Is": { "Bound": "top" } },
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    "to": "Hand"
+                  }
+                },
+                {
+                  "Move": {
+                    "what": { "Bound": "top" },
+                    "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

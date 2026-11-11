@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e2ee410f-2467-4f1f-84a0-8a79faedc0b3",
+  "name": "Heart of Kiran",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heart of Kiran",
+      "oracle_fingerprint": "c1dcbc20415c51541396c03ce7da5c26",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Crew": 3 } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 156, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

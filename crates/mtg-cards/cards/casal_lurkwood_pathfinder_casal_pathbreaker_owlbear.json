@@ -1,0 +1,72 @@
+{
+  "oracle_id": "b7bdb688-f8ee-4d22-a679-37a2ecd390a1",
+  "name": "Casal, Lurkwood Pathfinder // Casal, Pathbreaker Owlbear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casal, Lurkwood Pathfinder",
+      "oracle_fingerprint": "5c7ba648647c15bb37bf0678b03495da",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Forest" }], "as": "land" } },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Pay": { "cost": "{1}{G}", "paid": [{ "Transform": { "what": "This" } }] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Casal, Pathbreaker Owlbear",
+      "oracle_fingerprint": "93cd79370ba4c4e7abd1891cba6977f8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

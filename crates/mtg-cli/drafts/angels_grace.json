@@ -1,0 +1,32 @@
+{
+  "oracle_id": "66ca8a60-e028-4a5f-8177-860b888cb9d1",
+  "name": "Angel's Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel's Grace",
+      "oracle_fingerprint": "de55ee4af4270cf848ff3c510c6fed73",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "LifeFloor": { "who": "You", "floor": 1 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f80d151c-7489-4189-8c5b-6d2a730d238e",
+  "name": "Recoup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recoup",
+      "oracle_fingerprint": "6daeb8e988c53bca6c581d2374204d4f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Sorcery" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{R}" } }
+      ]
+    }
+  ]
+}

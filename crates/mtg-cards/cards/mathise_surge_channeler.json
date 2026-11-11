@@ -1,0 +1,45 @@
+{
+  "oracle_id": "61be7df8-cc78-4822-9e70-f226a8a96c9d",
+  "name": "Mathise, Surge Channeler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mathise, Surge Channeler",
+      "oracle_fingerprint": "52469db7584054f8846f4c72ca240aac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "RollDice": { "sides": 20, "results": [] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 119 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 120, "end": 144 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 145, "end": 207 }
+          }
+        }
+      ]
+    }
+  ]
+}

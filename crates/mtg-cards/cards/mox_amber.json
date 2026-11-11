@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7a43bd27-fdd8-41f0-9bc4-92568f3408f1",
+  "name": "Mox Amber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mox Amber",
+      "oracle_fingerprint": "692d3059a37d44ebb1fcde7be46b18b0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColorAmong": [
+                      { "Supertype": "Legendary" },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

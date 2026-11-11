@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2f24637d-8d8e-49de-b229-4cdb97595ed7",
+  "name": "Beatrix, Loyal General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beatrix, Loyal General",
+      "oracle_fingerprint": "ef18fc32c01227998dc14ef261241ea4",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "equipment"
+                }
+              },
+              { "Attach": { "what": { "Bound": "equipment" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

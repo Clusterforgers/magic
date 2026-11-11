@@ -1,0 +1,22 @@
+{
+  "oracle_id": "baf93873-35e6-4bf2-bdcc-78a5206422fb",
+  "name": "Painter's Servant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Painter's Servant",
+      "oracle_fingerprint": "83efd1fe45d66f32359434b313fe050b",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 41, "end": 161 }
+          }
+        }
+      ]
+    }
+  ]
+}

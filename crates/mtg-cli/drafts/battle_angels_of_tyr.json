@@ -1,0 +1,87 @@
+{
+  "oracle_id": "c2bd0c24-3973-48bc-a591-3779e3640c5d",
+  "name": "Battle Angels of Tyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Angels of Tyr",
+      "oracle_fingerprint": "434526f6c14c2916a345c69985e2cd89",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "TriggeringPlayer" }] },
+                      "op": "Gt",
+                      "right": {
+                        "Largest": {
+                          "who": {
+                            "PlayersWhere": {
+                              "who": "EachPlayer",
+                              "test": { "Not": { "Among": "TriggeringPlayer" } }
+                            }
+                          },
+                          "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                        }
+                      }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Land" }, { "ControlledBy": "TriggeringPlayer" }]
+                      },
+                      "op": "Gt",
+                      "right": {
+                        "Largest": {
+                          "who": {
+                            "PlayersWhere": {
+                              "who": "EachPlayer",
+                              "test": { "Not": { "Among": "TriggeringPlayer" } }
+                            }
+                          },
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": "TriggeringPlayer" },
+                      "op": "Gt",
+                      "right": {
+                        "HighestLife": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": { "Not": { "Among": "TriggeringPlayer" } }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

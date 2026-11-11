@@ -1,0 +1,49 @@
+{
+  "oracle_id": "880c2b0a-b708-4f11-a88a-ec990c904602",
+  "name": "Squall, Gunblade Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squall, Gunblade Duelist",
+      "oracle_fingerprint": "d299c8264d91d8b82765048f470853fd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Number": { "min": 0, "max": 1000 } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "if": {
+              "CountOf": {
+                "subject": "Triggering",
+                "selector": [
+                  {
+                    "AnyOf": [
+                      { "Compare": { "stat": "Power", "op": "Eq", "to": "Chosen" } },
+                      { "Compare": { "stat": "Toughness", "op": "Eq", "to": "Chosen" } }
+                    ]
+                  }
+                ],
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "Defending",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

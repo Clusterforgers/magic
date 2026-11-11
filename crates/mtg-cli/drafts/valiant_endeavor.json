@@ -1,0 +1,52 @@
+{
+  "oracle_id": "4ba1f2c5-6456-4809-a563-fd5bd311869a",
+  "name": "Valiant Endeavor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valiant Endeavor",
+      "oracle_fingerprint": "afb49ff308c3ac018869ab9c009edd56",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 6, "dice": 2, "choose": true, "results": [] } },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                          "op": "Ge",
+                          "right": { "DieResult": "Chosen" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": { "DieResult": "Other" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "aee473c7-c659-421c-96b5-05f57ca2ed97",
+  "name": "Hinata, Dawn-Crowned",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hinata, Dawn-Crowned",
+      "oracle_fingerprint": "8fc6b413fb0b33a761775379f8e7465a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 70 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 136 }
+          }
+        }
+      ]
+    }
+  ]
+}

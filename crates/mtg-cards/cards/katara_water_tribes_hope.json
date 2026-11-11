@@ -1,0 +1,41 @@
+{
+  "oracle_id": "234fb291-0b62-4092-9071-81311c71bd53",
+  "name": "Katara, Water Tribe's Hope",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Katara, Water Tribe's Hope",
+      "oracle_fingerprint": "5ce56a294599a301f27d6060db0fe2f7",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ally",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ally"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 311 }
+          }
+        }
+      ]
+    }
+  ]
+}

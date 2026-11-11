@@ -1,0 +1,62 @@
+{
+  "oracle_id": "b5585eb5-4df3-4ae2-8c39-a8e7a9706dc2",
+  "name": "Kusari-Gama",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kusari-Gama",
+      "oracle_fingerprint": "f2c3ba148b47919874e9293c7ae1f589",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{2}",
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }, "Blocking"] }
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Defending" },
+                      { "Not": { "Is": "Triggering" } }
+                    ]
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

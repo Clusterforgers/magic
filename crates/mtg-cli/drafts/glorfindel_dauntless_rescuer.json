@@ -1,0 +1,66 @@
+{
+  "oracle_id": "93842030-2017-4233-a7ac-7112361c019f",
+  "name": "Glorfindel, Dauntless Rescuer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorfindel, Dauntless Rescuer",
+      "oracle_fingerprint": "3fbf5dc99bae209604e9a944473e8e2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Combat": {
+                                "who": "This",
+                                "quirk": { "MustBeBlocked": "AtLeastOne" }
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "MaxBlockers": 1 }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

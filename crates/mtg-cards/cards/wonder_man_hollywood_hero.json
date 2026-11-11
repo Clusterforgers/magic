@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e2c49754-711e-43b3-82f1-5376a4d99701",
+  "name": "Wonder Man, Hollywood Hero",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wonder Man, Hollywood Hero",
+      "oracle_fingerprint": "e4bd120029d04d1d669ab9a716c84ed0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 91 } }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{R}{R}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

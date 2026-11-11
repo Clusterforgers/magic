@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ee6099b0-fb1f-42f1-b862-7708c6e36d05",
+  "name": "Lion's Eye Diamond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lion's Eye Diamond",
+      "oracle_fingerprint": "2f4757ba3d91f8f5d835638ff7ea45c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "SacrificeSelf",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "timing": "AsInstant",
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

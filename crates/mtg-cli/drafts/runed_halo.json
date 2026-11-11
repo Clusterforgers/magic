@@ -1,0 +1,24 @@
+{
+  "oracle_id": "14cefb15-d833-4c70-80c9-f2d34b6c846b",
+  "name": "Runed Halo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runed Halo",
+      "oracle_fingerprint": "a4d8629a1dfd48e91d24567d5fc60244",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "PlayersHave": { "who": "You", "keyword": { "Protection": ["ChosenName"] } } }
+          }
+        }
+      ]
+    }
+  ]
+}

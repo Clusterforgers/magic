@@ -1,0 +1,91 @@
+{
+  "oracle_id": "5f1fdc23-9af0-41a1-aeba-7288f9642734",
+  "name": "Mari, the Killing Quill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mari, the Killing Quill",
+      "oracle_fingerprint": "97e952d468061228db803ce718be0db6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "hit" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Subtype": "Assassin" },
+                    { "Subtype": "Mercenary" },
+                    { "Subtype": "Rogue" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              { "AddKeyword": "Deathtouch" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "Choose": {
+                                "from": {
+                                  "Each": [
+                                    { "In": "Exile" },
+                                    { "OwnedBy": "Triggering" },
+                                    { "HasCounter": { "Other": "hit" } }
+                                  ]
+                                },
+                                "as": "card"
+                              }
+                            },
+                            {
+                              "RemoveCounters": {
+                                "from": { "Bound": "card" },
+                                "counter": { "Other": "hit" }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "If": {
+                          "condition": "Performed",
+                          "then": [
+                            { "Draw": {} },
+                            { "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

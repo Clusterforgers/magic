@@ -1,0 +1,40 @@
+{
+  "oracle_id": "69cc006d-172f-4e4c-bb75-10d772b061b1",
+  "name": "Mitotic Manipulation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mitotic Manipulation",
+      "oracle_fingerprint": "a7e68b00f703f316985e8003241b4d29",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "SharesName": { "Each": [{ "In": "Battlefield" }] } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

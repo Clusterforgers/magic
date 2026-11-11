@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2270daaf-252d-40c4-bed5-bd46ae15f041",
+  "name": "Liesa, Shroud of Dusk",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liesa, Shroud of Dusk",
+      "oracle_fingerprint": "b64ba412185da809c504f330c7ec926a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 126 }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

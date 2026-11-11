@@ -1,0 +1,44 @@
+{
+  "oracle_id": "378ae023-04d3-44cc-9248-3d787796ed6c",
+  "name": "Living Conundrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living Conundrum",
+      "oracle_fingerprint": "87a1f625f9d58295a83498d8161beb62",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": "Prevent",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 10, "toughness": 10 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Vigilance" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

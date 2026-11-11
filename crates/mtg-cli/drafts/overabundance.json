@@ -1,0 +1,22 @@
+{
+  "oracle_id": "b1ee0503-be92-4a06-89cd-5dfa937930d3",
+  "name": "Overabundance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overabundance",
+      "oracle_fingerprint": "0412ff11fe723ed77f03b493bc7e25cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }] } },
+            "effects": [
+              { "AddMana": { "who": "Triggering", "mana": "OfTapped" } },
+              { "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

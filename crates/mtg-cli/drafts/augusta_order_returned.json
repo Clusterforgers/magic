@@ -1,0 +1,71 @@
+{
+  "oracle_id": "a80a1f84-ea49-4c8d-912d-c7036b814a6c",
+  "name": "Augusta, Order Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Augusta, Order Returned",
+      "oracle_fingerprint": "9682b437d96a94e7b4dcbff2c39ddbf0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "p" },
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "p" } }] },
+                        "as": "c"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "c" }, "as": "ex" } },
+                    { "Bind": { "what": { "Bound": "ex" }, "as": "all", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Let": {
+                  "as": "n",
+                  "amount": {
+                    "CountOf": {
+                      "of": { "Bound": "all" },
+                      "filter": [{ "Not": { "Type": "Land" } }]
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Bound": "n" }, "op": "Ge", "right": 1 } },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Target": 0 },
+                              "counter": "+1/+1",
+                              "count": { "Bound": "n" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

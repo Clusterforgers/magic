@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9938d178-0ce6-45c0-b317-fd5c54231579",
+  "name": "Curator of Destinies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curator of Destinies",
+      "oracle_fingerprint": "e86d367f0ef90322ec060af80150ed21",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" } } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "SeparatePiles": {
+                  "what": { "Bound": "top" },
+                  "chooser": { "Bound": "opponent" },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

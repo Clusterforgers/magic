@@ -1,0 +1,61 @@
+{
+  "oracle_id": "50ddd513-e06e-4728-b6cd-981839d0fba6",
+  "name": "Keeper of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Dead",
+      "oracle_fingerprint": "b53d7408bbf0b598ab1cc8b6a19316d1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{B}" }],
+            "targets": [
+              { "what": "Opponent" },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Color": "Black" } },
+                    { "ControlledBy": { "Target": 0 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": { "Target": 0 } }
+                            ]
+                          },
+                          2
+                        ]
+                      },
+                      "op": "Le",
+                      "right": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

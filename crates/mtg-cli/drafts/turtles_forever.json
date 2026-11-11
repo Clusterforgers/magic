@@ -1,0 +1,48 @@
+{
+  "oracle_id": "cff5aca2-72c5-4053-a32c-c0bd3174c52d",
+  "name": "Turtles Forever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtles Forever",
+      "oracle_fingerprint": "bc59b63d02f8734b003c5524c3d47fa2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Supertype": "Legendary" },
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" }
+                  ],
+                  "count": { "min": 4, "max": 4 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Bound": "found" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

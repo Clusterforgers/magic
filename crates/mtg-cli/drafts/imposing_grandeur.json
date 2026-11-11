@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c9ef02d6-717d-4f2a-aa10-0af717d6360f",
+  "name": "Imposing Grandeur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imposing Grandeur",
+      "oracle_fingerprint": "41c3e2d686303dd11bf4703728f416d6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Discard": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              }
+                            }
+                          },
+                          {
+                            "Draw": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Greatest": {
+                                  "of": [
+                                    "Commander",
+                                    { "OwnedBy": { "Bound": "player" } },
+                                    { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                                  ],
+                                  "stat": "ManaValue"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

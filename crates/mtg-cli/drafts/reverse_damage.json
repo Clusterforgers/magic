@@ -1,0 +1,36 @@
+{
+  "oracle_id": "eaaf7c30-f463-4115-a40e-7dc717063413",
+  "name": "Reverse Damage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverse Damage",
+      "oracle_fingerprint": "cec7efdd858e112b31e6ff12e238e8ca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": { "InsteadNext": [{ "GainLife": { "amount": "Triggering" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

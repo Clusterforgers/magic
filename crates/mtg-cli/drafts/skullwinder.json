@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d3d8dd6e-a80b-4063-a542-ff67ef8dad4f",
+  "name": "Skullwinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullwinder",
+      "oracle_fingerprint": "dc4354cd6ffbee4abf49f4ac3b9cbdad",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opp" },
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "opp" } }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

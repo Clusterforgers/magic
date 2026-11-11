@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9519a4ea-c4a0-4127-b06a-aac9ffaf7a32",
+  "name": "Arwen, Mortal Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arwen, Mortal Queen",
+      "oracle_fingerprint": "5f35a6c1ea74bd8dc26711b62a320f41",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "indestructible" }, "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": { "Other": "indestructible" } } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "lifelink" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

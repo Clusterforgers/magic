@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7234bbf8-b962-4515-bedf-68d111c6137e",
+  "name": "Sabin, Master Monk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sabin, Master Monk",
+      "oracle_fingerprint": "76d6436c9ee00710da05fb6f4a946baa",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": { "Blitz": [{ "Mana": "{2}{R}{R}" }, { "Discard": {} }] } },
+        {
+          "AltCast": {
+            "way": "Blitz",
+            "cost": [{ "Mana": "{2}{R}{R}" }, { "Discard": {} }],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

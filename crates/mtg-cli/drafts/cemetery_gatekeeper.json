@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fa450433-85b0-4f95-bd4e-f141ba036bee",
+  "name": "Cemetery Gatekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Gatekeeper",
+      "oracle_fingerprint": "c04f075a0625141c4b1f4b0ca430371b",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }] }, "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "PlayedLand", "what": [{ "Type": "Land" }] } },
+                { "SpellCast": {} }
+              ]
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "SharesType": { "Remembered": { "on": "This", "slot": "exiled" } } }]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

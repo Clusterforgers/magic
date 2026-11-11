@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fecbbc79-2f74-46b3-a049-45736f904f58",
+  "name": "Prisoner's Dilemma",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Prisoner's Dilemma",
+      "oracle_fingerprint": "589d7b5ca14e399f8ee78e0307275634",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 327 }
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{R}{R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "affa0b6c-a9fd-49fc-b9ce-9a3486af8320",
+  "name": "Welcome the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Welcome the Dead",
+      "oracle_fingerprint": "2a1f16356b02aea086245f3a152ec8dc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": {} },
+              { "LoseLife": { "amount": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Druid",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Druid"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "ArrivedFrom": "Hand" }, { "ArrivedFrom": "Library" }] }
+                    ]
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{B}" } }
+      ]
+    }
+  ]
+}

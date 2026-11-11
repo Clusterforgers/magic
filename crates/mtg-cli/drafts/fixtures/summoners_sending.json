@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "8150be1a-4bac-4c67-9165-9d6fc04a69cc",
+  "oracle_id": "46b01055-4839-4b95-aa53-b954e9669e03",
+  "multiverse_ids": [],
+  "resource_id": "FCA93922198AF3F04032ADA244516A24200BC068F10F3AE8C410D23851F02E84",
+  "mtgo_id": 140049,
+  "tcgplayer_id": 631168,
+  "cardmarket_id": 824517,
+  "name": "Summoner's Sending",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/8150be1a-4bac-4c67-9165-9d6fc04a69cc",
+  "scryfall_uri": "https://scryfall.com/card/fic/29/summoners-sending?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365",
+    "large": "https://cards.scryfall.io/large/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365",
+    "png": "https://cards.scryfall.io/png/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.png?1783906365",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.webp?1783906365",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.webp?1783906365",
+    "display": "https://cards.scryfall.io/display/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.webp?1783906365",
+    "art": "https://cards.scryfall.io/art/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.webp?1783906365",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.webp?1783906365",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/8150be1a-4bac-4c67-9165-9d6fc04a69cc.jpg?1783906365"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your end step, you may exile target creature card from a graveyard. If you do, create a 1/1 white Spirit creature token with flying. Put a +1/+1 counter on it if the exiled card's mana value is 4 or greater.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c539c201-64c2-475c-b934-8a738d071b02",
+      "component": "combo_piece",
+      "name": "Summoner's Sending",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/c539c201-64c2-475c-b934-8a738d071b02"
+    },
+    {
+      "object": "related_card",
+      "id": "004f2ea4-0477-49b2-ad06-5aac7991103d",
+      "component": "token",
+      "name": "Spirit",
+      "type_line": "Token Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/004f2ea4-0477-49b2-ad06-5aac7991103d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8150be1a-4bac-4c67-9165-9d6fc04a69cc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A46b01055-4839-4b95-aa53-b954e9669e03&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The sending takes them to the Farplane, where they may rest in peace.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yumi Yaoshida",
+  "artist_ids": [
+    "4aa6d30b-cfee-4b70-8454-0c7a616ea191"
+  ],
+  "illustration_id": "0ca74cab-86fb-418e-acda-4ad990775042",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8712,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.56"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSummoner%2527s%2BSending",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSummoner%2527s%2BSending",
+    "edhrec": "https://edhrec.com/route/?cc=Summoner%27s+Sending"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631168%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824517&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140049?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

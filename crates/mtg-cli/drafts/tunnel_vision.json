@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0e134040-1fe3-410c-aac5-94ae1bd17637",
+  "name": "Tunnel Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tunnel Vision",
+      "oracle_fingerprint": "6feeab83434e1d89b2781431aca9b03b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "ChosenAs": "name" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Shuffle": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7e8198e9-0f3b-420b-ab09-74f13f4fd548",
+  "name": "Throne of Makindi",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Throne of Makindi",
+      "oracle_fingerprint": "ce52038a4d6809f9b30cfb937d3338a8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 59, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

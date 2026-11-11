@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8d6b94d5-bb53-4941-8c6b-7ebef764c1ce",
+  "name": "Elvish Guidance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Guidance",
+      "oracle_fingerprint": "bc96f3d2ca70e073913736d746b479ad",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }, { "Type": "Land" }] } },
+            "effects": [
+              {
+                "AddMana": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Count": [{ "Subtype": "Elf" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

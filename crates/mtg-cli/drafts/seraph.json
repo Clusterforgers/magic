@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a1c50bd1-120d-44ac-af20-13a90fc991e6",
+  "name": "Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seraph",
+      "oracle_fingerprint": "5d964facd0ed1e689b79e638cc8f68c3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Battlefield": { "under": "You" } },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "Did": { "action": "ChangedController", "what": ["This"] } },
+                        "effects": [
+                          { "Sacrifice": { "filter": [{ "Is": { "Bound": "returned" } }] } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "14fe4531-96cd-415b-aa4a-b41fd271d902",
+  "name": "Cemetery Illuminator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Illuminator",
+      "oracle_fingerprint": "692a3919c86f66fdc9fa86f0fc4b4456",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }] }, "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  "TopOfLibrary",
+                  { "SharesType": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                ],
+                "from": "Library",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

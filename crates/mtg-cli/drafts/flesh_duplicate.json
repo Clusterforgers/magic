@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1869eb1e-7786-4fea-8a92-2bd839de47df",
+  "name": "Flesh Duplicate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flesh Duplicate",
+      "oracle_fingerprint": "5454ea1dfc0ed1b2aa7a1b385a1564c8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [{ "AddKeyword": { "Vanishing": 3 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

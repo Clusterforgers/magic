@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e024870c-af13-4ef3-be27-cdd84dab7d7d",
+  "name": "Thirsting Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thirsting Axe",
+      "oracle_fingerprint": "4c949656116e0fb38435afc26e371677",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [
+                  {
+                    "Not": {
+                      "DidThisTurn": {
+                        "event": "Damaged",
+                        "to": { "Each": [{ "Type": "Creature" }] },
+                        "combat": true
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": [{ "Is": "Attached" }] } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

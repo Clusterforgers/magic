@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a25ba5cc-6ff8-4215-b70d-7e86e15e3c1a",
+  "name": "Óin the Brave",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Óin the Brave",
+      "oracle_fingerprint": "961cbed26a9a069cd6fe2aba68364df8",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 129 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 198 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c180f21b-f553-4839-80c7-a3ce2fae9b5a",
+  "name": "Hex Parasite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hex Parasite",
+      "oracle_fingerprint": "3472a1b16819f5c18d3815cb9bc2fd4b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}{B/P}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Let": { "as": "before", "amount": { "AnyCounters": { "Target": 0 } } } },
+              { "RemoveCounters": { "from": { "Target": 0 }, "count": "X", "up_to": true } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Difference": [{ "Bound": "before" }, { "AnyCounters": { "Target": 0 } }]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

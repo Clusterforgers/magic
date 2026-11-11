@@ -1,0 +1,61 @@
+{
+  "oracle_id": "6742c4b9-8fa6-439f-844d-04a09fa20c45",
+  "name": "Ib Halfheart, Goblin Tactician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ib Halfheart, Goblin Tactician",
+      "oracle_fingerprint": "35c0767c89f020acc7fedd28d62c8393",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["Other", { "Subtype": "Goblin" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Is": "Triggering" }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": "Triggering",
+                        "to": { "Each": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] },
+                        "amount": 4
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Mountain" }], "count": 2 } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

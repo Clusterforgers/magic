@@ -1,0 +1,38 @@
+{
+  "oracle_id": "115c7ca7-c27b-43ca-9281-be6913e90059",
+  "name": "Sabertooth Cobra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sabertooth Cobra",
+      "oracle_fingerprint": "44e785049b37c5035d9cd82e78b86bdf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "poison" } },
+              { "Bind": { "what": "Triggering", "as": "player" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": { "Bound": "player" } } },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{2}",
+                        "unpaid": [
+                          { "PutCounters": { "on": { "Bound": "player" }, "counter": "poison" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

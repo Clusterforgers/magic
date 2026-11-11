@@ -1,0 +1,21 @@
+{
+  "oracle_id": "349a18bf-5c61-4fe6-a5e5-5e7cad6b4ba6",
+  "name": "Uphill Battle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uphill Battle",
+      "oracle_fingerprint": "2744b6a3170716d9c848582a8d03584e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "WasCast": { "by": "Opponents" } }] }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

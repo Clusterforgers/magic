@@ -1,0 +1,80 @@
+{
+  "oracle_id": "d2341a16-ffde-42fa-9746-0d8888e812d4",
+  "name": "Jace, Cunning Castaway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, Cunning Castaway",
+      "oracle_fingerprint": "14586116a26724b8e7ee59745af7e037",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Batch": {
+                      "DealsDamage": {
+                        "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "to": "EachPlayer",
+                        "combat": true
+                      }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }, { "Discard": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+                            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "This", "except": [{ "RemoveSupertype": "Legendary" }] }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

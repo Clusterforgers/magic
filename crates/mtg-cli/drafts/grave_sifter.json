@@ -1,0 +1,50 @@
+{
+  "oracle_id": "07a26388-773e-4614-a3de-f133c6694d59",
+  "name": "Grave Sifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Sifter",
+      "oracle_fingerprint": "48d0df832b13e20b45fd7c870d3b5473",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "player" },
+                        "kind": "CreatureType",
+                        "as": "type"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "ChosenAs": "type" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

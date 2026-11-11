@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7c2c460d-8059-41ff-b2d7-374aa498f011",
+  "name": "Historian's Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Historian's Wisdom",
+      "oracle_fingerprint": "1b9a15075fd231f3a4b83f010e68494a",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [
+                  { "Type": "Creature" },
+                  { "GreatestAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Type": "Creature" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

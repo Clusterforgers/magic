@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f44ffa35-bd88-4996-8b20-46329565df9b",
+  "name": "Catti-brie of Mithral Hall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Catti-brie of Mithral Hall",
+      "oracle_fingerprint": "87411cb7dcb6fd2ffb86dfabd0bb50e5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Let": {
+                  "as": "removed",
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              },
+              { "RemoveAllCounters": { "from": "This", "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Bound": "removed" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

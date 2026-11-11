@@ -1,0 +1,45 @@
+{
+  "oracle_id": "53716e0b-4d4e-40b0-8370-38e11f73d195",
+  "name": "Demon of Fate's Design",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Demon of Fate's Design",
+      "oracle_fingerprint": "e3ebce4bae30e2ab3d60737f93d9f49e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 154 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Enchantment" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Paid", "stat": "ManaValue" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

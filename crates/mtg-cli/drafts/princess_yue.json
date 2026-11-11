@@ -1,0 +1,51 @@
+{
+  "oracle_id": "08c59e5e-d01c-49b7-a812-8ea75e9e945d",
+  "name": "Princess Yue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Princess Yue",
+      "oracle_fingerprint": "0da0d9769ee58b1b0ba34693b0d4e798",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }]
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                  "as": "moon"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moon" },
+                  "mods": [
+                    { "SetTypes": ["Land"] },
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Scry": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

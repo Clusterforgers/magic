@@ -1,0 +1,131 @@
+{
+  "oracle_id": "480ea052-87d7-4fea-ac97-b6121b78f863",
+  "name": "Invasion of New Phyrexia // Teferi Akosa of Zhalfir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of New Phyrexia",
+      "oracle_fingerprint": "0d52f6336abd5dcbbbec59c2731912c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teferi Akosa of Zhalfir",
+      "oracle_fingerprint": "0c9dd746da0bc06bff54b21b1d14205c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "Discard": { "filter": [{ "Type": "Creature" }] } }],
+                    [{ "Discard": { "count": 2 } }]
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          { "ModifyPT": { "power": 1, "toughness": 0 } },
+                          { "AddKeyword": { "Ward": "{1}" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tapped"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tapped" } } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Not": { "Type": "Land" } },
+                          { "ControlledBy": "Opponents" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "CountOf": { "of": { "Bound": "tapped" }, "filter": [] } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "32e9a83f-be4b-4116-8e0d-61c159286ae0",
+  "oracle_id": "1d8c8c71-d569-450d-adc1-1a1b9aea0123",
+  "multiverse_ids": [
+    580488
+  ],
+  "mtgo_id": 103026,
+  "tcgplayer_id": 283683,
+  "cardmarket_id": 672628,
+  "name": "Robaran Mercenaries",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/32e9a83f-be4b-4116-8e0d-61c159286ae0",
+  "scryfall_uri": "https://scryfall.com/card/dmc/22/robaran-mercenaries?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:30Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470",
+    "normal": "https://cards.scryfall.io/normal/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470",
+    "large": "https://cards.scryfall.io/large/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470",
+    "png": "https://cards.scryfall.io/png/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.png?1783921470",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.webp?1783921470",
+    "grid": "https://cards.scryfall.io/grid/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.webp?1783921470",
+    "display": "https://cards.scryfall.io/display/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.webp?1783921470",
+    "art": "https://cards.scryfall.io/art/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.webp?1783921470",
+    "crop": "https://cards.scryfall.io/crop/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.webp?1783921470",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/2/32e9a83f-be4b-4116-8e0d-61c159286ae0.jpg?1783921470"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Mercenary",
+  "oracle_text": "Vigilance\nThis creature has all activated abilities of all legendary creatures you control.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/32e9a83f-be4b-4116-8e0d-61c159286ae0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1d8c8c71-d569-450d-adc1-1a1b9aea0123&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"We learned from the best. And the worst. Pretty much whoever was available.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chuck Lukacs",
+  "artist_ids": [
+    "2bdf4da7-c66c-4c46-a253-284c856ccfab"
+  ],
+  "illustration_id": "4646d5b7-e970-4284-b4fe-95805c11fb7d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 18035,
+  "penny_rank": 13370,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.42",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580488&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRobaran%2BMercenaries",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRobaran%2BMercenaries",
+    "edhrec": "https://edhrec.com/route/?cc=Robaran+Mercenaries"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283683%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=672628&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103026?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

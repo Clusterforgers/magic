@@ -1,0 +1,15 @@
+{
+  "oracle_id": "10758aa7-0f64-499f-8010-514e8fc31b7e",
+  "name": "Magus of the Future",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Future",
+      "oracle_fingerprint": "cc08baed647cdf709b31280bda91e86b",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        { "Rule": { "rule": { "MayCast": { "from": "Library", "play": true } } } }
+      ]
+    }
+  ]
+}

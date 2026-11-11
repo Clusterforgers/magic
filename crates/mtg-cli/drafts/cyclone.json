@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fc9e82b2-f148-431b-9312-97b7101cffe4",
+  "name": "Cyclone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclone",
+      "oracle_fingerprint": "2ea26efc1d4f0cac800f94ba084144b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "wind" } } },
+              {
+                "Pay": {
+                  "cost": "{G}",
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "wind" } } },
+                  "paid": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }] },
+                        "amount": { "Counters": { "on": "This", "counter": { "Other": "wind" } } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": "EachPlayer",
+                        "amount": { "Counters": { "on": "This", "counter": { "Other": "wind" } } }
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

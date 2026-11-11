@@ -1,0 +1,50 @@
+{
+  "oracle_id": "dd27c5fa-4355-4e5c-8219-b74cfe209da0",
+  "name": "High Perfect Morcant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Perfect Morcant",
+      "oracle_fingerprint": "4ad8ef738388d7403fdd9dff8cd43d8d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": ["This", { "Subtype": "Elf" }] }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "opp" } }]
+                        },
+                        "as": "blighted"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "blighted" }, "counter": "-1/-1" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Elf" }], "count": 3 } }],
+            "timing": "Sorcery",
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

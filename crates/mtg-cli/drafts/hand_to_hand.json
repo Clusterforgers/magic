@@ -1,0 +1,24 @@
+{
+  "oracle_id": "bf45f579-539c-4ffe-89df-4896a394158f",
+  "name": "Hand to Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hand to Hand",
+      "oracle_fingerprint": "7350b6af8bee14d2179bf8f6bdc6682c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "Type": "Instant" }] } }
+              }
+            },
+            "condition": "InCombat"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "oracle_id": "0b299983-9f0f-404a-acd1-8f142572b1f1",
+  "name": "Extus, Oriq Overlord // Awaken the Blood Avatar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Extus, Oriq Overlord",
+      "oracle_fingerprint": "f4e789bd81f77b0ecdb0636e32b66118",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Awaken the Blood Avatar",
+      "oracle_fingerprint": "b7eb76397dc81c4ef5b4e2193b748f70",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 157 }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Avatar",
+                      "colors": ["Black", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Avatar"],
+                      "power": 3,
+                      "toughness": 6,
+                      "abilities": [
+                        { "Keyword": "Haste" },
+                        {
+                          "Triggered": {
+                            "when": { "Attacks": { "what": ["This"] } },
+                            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 3 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

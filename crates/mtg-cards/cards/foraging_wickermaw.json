@@ -1,0 +1,25 @@
+{
+  "oracle_id": "11ceb2db-021e-422d-976e-7bfe3b67a8aa",
+  "name": "Foraging Wickermaw",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Foraging Wickermaw",
+      "oracle_fingerprint": "175b5395a6c11f4c1f20c5f1d7c1bd75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 114, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

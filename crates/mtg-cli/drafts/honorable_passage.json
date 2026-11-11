@@ -1,0 +1,61 @@
+{
+  "oracle_id": "66805334-1015-4b41-ba9b-116de94b0744",
+  "name": "Honorable Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honorable Passage",
+      "oracle_fingerprint": "dc4b6196cc0b72393b3f6379b32f5782",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": {
+                              "subject": { "Bound": "source" },
+                              "selector": [{ "Color": "Red" }]
+                            }
+                          },
+                          "then": [
+                            {
+                              "DealDamage": {
+                                "source": "This",
+                                "to": { "ControllerOf": { "Bound": "source" } },
+                                "amount": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

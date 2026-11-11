@@ -1,0 +1,32 @@
+{
+  "oracle_id": "06c25d71-f3f4-4089-b9bc-de96fbad73a5",
+  "name": "The Cyber-Controller",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Cyber-Controller",
+      "oracle_fingerprint": "01492ef39ff6f03c1cd4acef4bbc36cc",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 193 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

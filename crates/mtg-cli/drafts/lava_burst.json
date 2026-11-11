@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f7be3da5-55b2-46f2-a5aa-277dee242b94",
+  "name": "Lava Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lava Burst",
+      "oracle_fingerprint": "03c3f96808308ca7d16fac032da26933",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": { "to": { "Target": 0 }, "amount": "X", "unpreventable": true }
+                    }
+                  ],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

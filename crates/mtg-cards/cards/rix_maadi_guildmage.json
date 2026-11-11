@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cb88ada9-d3bf-4f0a-817a-c41f0ea9cc78",
+  "name": "Rix Maadi Guildmage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rix Maadi Guildmage",
+      "oracle_fingerprint": "4a09859fa27b629c901b264bf7a418c0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Blocking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 122 }
+          }
+        }
+      ]
+    }
+  ]
+}

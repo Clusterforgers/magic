@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e36f4649-934d-4e8a-bd5f-39f164ea6937",
+  "name": "Land Grant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Land Grant",
+      "oracle_fingerprint": "0544ddcf117562030b9509b9ae2e8d25",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 99 } }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Forest" }], "reveal": true, "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

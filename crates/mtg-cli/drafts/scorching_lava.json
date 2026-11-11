@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e42fb51e-254a-43ac-ad02-9f0fad0f4c8a",
+  "name": "Scorching Lava",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorching Lava",
+      "oracle_fingerprint": "fc408956e3ebc74a10973d33e361be0b",
+      "abilities": [
+        { "Keyword": { "Kicker": "{R}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "CantBeRegenerated": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

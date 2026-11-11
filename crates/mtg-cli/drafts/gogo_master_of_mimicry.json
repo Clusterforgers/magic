@@ -1,0 +1,31 @@
+{
+  "oracle_id": "61586052-7d69-489c-84c4-0359228d131b",
+  "name": "Gogo, Master of Mimicry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gogo, Master of Mimicry",
+      "oracle_fingerprint": "2eacc190dabbccc06badd9dcabfc2b14",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{X}" }, "Tap", { "XAtLeast": 1 }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CopyAbility": { "what": { "Target": 0 }, "count": "X", "new_targets": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

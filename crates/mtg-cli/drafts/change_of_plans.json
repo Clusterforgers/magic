@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b2f43df5-ec64-4375-b67f-b198732ab0b1",
+  "name": "Change of Plans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Change of Plans",
+      "oracle_fingerprint": "8cc727e467633d4dfc292fc3a1e08a13",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Connive": { "what": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Target": 0 },
+                  "count": { "min": 0, "max": null },
+                  "as": "phasing"
+                }
+              },
+              { "PhaseOut": { "what": { "Bound": "phasing" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

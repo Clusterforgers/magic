@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "f16df768-06de-43a0-b548-44fb0887490b",
+  "oracle_id": "64e163c2-2378-4e4c-aefe-5e0d2fd19988",
+  "multiverse_ids": [
+    2480
+  ],
+  "tcgplayer_id": 4821,
+  "cardmarket_id": 6256,
+  "name": "Oath of Lim-Dûl",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/f16df768-06de-43a0-b548-44fb0887490b",
+  "scryfall_uri": "https://scryfall.com/card/ice/156/oath-of-lim-d%C3%BBl?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496",
+    "normal": "https://cards.scryfall.io/normal/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496",
+    "large": "https://cards.scryfall.io/large/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496",
+    "png": "https://cards.scryfall.io/png/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.png?1783947496",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.webp?1783947496",
+    "grid": "https://cards.scryfall.io/grid/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.webp?1783947496",
+    "display": "https://cards.scryfall.io/display/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.webp?1783947496",
+    "art": "https://cards.scryfall.io/art/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.webp?1783947496",
+    "crop": "https://cards.scryfall.io/crop/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.webp?1783947496",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/1/f16df768-06de-43a0-b548-44fb0887490b.jpg?1783947496"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you lose life, for each 1 life you lost, sacrifice a permanent other than this enchantment unless you discard a card. (Damage dealt to you causes you to lose life.)\n{B}{B}: Draw a card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f16df768-06de-43a0-b548-44fb0887490b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A64e163c2-2378-4e4c-aefe-5e0d2fd19988&unique=prints",
+  "collector_number": "156",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douglas Shuler",
+  "artist_ids": [
+    "a9ddb513-51c7-455c-ab8f-5b90aae9f75b"
+  ],
+  "illustration_id": "ffdca608-c27a-4b4f-a4b3-7b8a07769cd8",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21543,
+  "prices": {
+    "usd": "0.51",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.74",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2480&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOath%2Bof%2BLim-D%25C3%25BBl",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOath%2Bof%2BLim-D%25C3%25BBl",
+    "edhrec": "https://edhrec.com/route/?cc=Oath+of+Lim-D%C3%BBl"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4821%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6256&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Oath+of+Lim-D%C3%BBl&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

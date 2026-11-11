@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c5cbd852-c42f-4592-a0bb-a8bffa2dd2f4",
+  "name": "Hostile Negotiations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostile Negotiations",
+      "oracle_fingerprint": "f96aa7e182ae39d37e70c766971425f2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "pile1", "sealed": true } },
+              { "ExileTop": { "count": 3, "as": "pile2", "sealed": true } },
+              {
+                "Either": {
+                  "first": [{ "Reveal": { "what": { "Bound": "pile1" } } }],
+                  "second": [{ "Reveal": { "what": { "Bound": "pile2" } } }]
+                }
+              },
+              {
+                "OneOf": {
+                  "who": "Opponents",
+                  "options": [
+                    [
+                      { "Move": { "what": { "Bound": "pile1" }, "to": "Hand" } },
+                      { "Move": { "what": { "Bound": "pile2" }, "to": "Graveyard" } }
+                    ],
+                    [
+                      { "Move": { "what": { "Bound": "pile2" }, "to": "Hand" } },
+                      { "Move": { "what": { "Bound": "pile1" }, "to": "Graveyard" } }
+                    ]
+                  ]
+                }
+              },
+              { "LoseLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "eea18c55-8695-4ba1-9b38-3e7638692f5f",
+  "name": "Saw in Half",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saw in Half",
+      "oracle_fingerprint": "c17a5dbb5632e8b370dfbe296a2d53d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "destroyed~moved" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Bound": "destroyed" },
+                            "except": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Half": {
+                                      "of": {
+                                        "Stat": { "of": { "Bound": "destroyed" }, "stat": "Power" }
+                                      },
+                                      "up": true
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Half": {
+                                      "of": {
+                                        "Stat": {
+                                          "of": { "Bound": "destroyed" },
+                                          "stat": "Toughness"
+                                        }
+                                      },
+                                      "up": true
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "28d500ea-720f-4332-891e-404fb03acb5c",
+  "name": "Arachne, Psionic Weaver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arachne, Psionic Weaver",
+      "oracle_fingerprint": "d011015a3cf3dd56d4a0a1d7af541a4e",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{W}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 121, "end": 212 }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype"],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

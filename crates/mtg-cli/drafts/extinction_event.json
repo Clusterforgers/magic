@@ -1,0 +1,83 @@
+{
+  "oracle_id": "0a11a3a8-ee5f-4caf-bf84-c8248e07c825",
+  "name": "Extinction Event",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extinction Event",
+      "oracle_fingerprint": "b345aee10330e50647993898f9cfe407",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "Options": ["odd", "even"] }, "as": "parity" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "parity", "word": "odd" } },
+                  "then": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Eq",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

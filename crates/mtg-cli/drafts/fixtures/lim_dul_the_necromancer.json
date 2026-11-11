@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "b8a3cdfe-0289-474b-b9c4-07e8c6588ec5",
+  "oracle_id": "820052b3-d217-4b30-acc4-fa5af7465e9e",
+  "multiverse_ids": [
+    113522
+  ],
+  "mtgo_id": 25629,
+  "mtgo_foil_id": 25630,
+  "tcgplayer_id": 14280,
+  "cardmarket_id": 13893,
+  "name": "Lim-Dûl the Necromancer",
+  "lang": "en",
+  "released_at": "2006-10-06",
+  "uri": "https://api.scryfall.com/cards/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5",
+  "scryfall_uri": "https://scryfall.com/card/tsp/114/lim-d%C3%BBl-the-necromancer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:47:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231",
+    "large": "https://cards.scryfall.io/large/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231",
+    "png": "https://cards.scryfall.io/png/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.png?1783943231",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.webp?1783943231",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.webp?1783943231",
+    "display": "https://cards.scryfall.io/display/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.webp?1783943231",
+    "art": "https://cards.scryfall.io/art/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.webp?1783943231",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.webp?1783943231",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5.jpg?1783943231"
+  },
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "Whenever a creature an opponent controls dies, you may pay {1}{B}. If you do, return that card to the battlefield under your control. If it's a creature, it's a Zombie in addition to its other creature types.\n{1}{B}: Regenerate target Zombie.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Regenerate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c1d109bc-ffd8-428f-8d7d-3f8d7e648046",
+  "set": "tsp",
+  "set_name": "Time Spiral",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c1d109bc-ffd8-428f-8d7d-3f8d7e648046",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b8a3cdfe-0289-474b-b9c4-07e8c6588ec5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A820052b3-d217-4b30-acc4-fa5af7465e9e&unique=prints",
+  "collector_number": "114",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Cavotta",
+  "artist_ids": [
+    "2e6a0611-9411-4ba4-98e3-c0e18cbf9f83"
+  ],
+  "illustration_id": "a97f4018-b481-484f-8d8f-b5a73d580640",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19898,
+  "penny_rank": 17453,
+  "prices": {
+    "usd": "1.28",
+    "usd_foil": "8.68",
+    "usd_etched": null,
+    "eur": "0.57",
+    "eur_foil": "2.90",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=113522&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLim-D%25C3%25BBl%2Bthe%2BNecromancer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLim-D%25C3%25BBl%2Bthe%2BNecromancer",
+    "edhrec": "https://edhrec.com/route/?cc=Lim-D%C3%BBl+the+Necromancer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F14280%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=13893&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/25629?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
