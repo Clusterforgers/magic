@@ -205,7 +205,7 @@ describe('the entry for the admin in the menu', () => {
   }
 
   it('offers Accounts first to the admin, who reaches the page with it', async () => {
-    const app = await open('/', { admin: ADA.username, signedIn: ADA.username })
+    const app = await open('/', { admins: [ADA.username], signedIn: ADA.username })
     expect(await menuItems(app)).toEqual(['Accounts', 'Account settings', 'Sign out'])
     await app.user.click(screen.getByRole('menuitem', { name: 'Accounts' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Accounts' })).toBeInTheDocument()
@@ -213,12 +213,12 @@ describe('the entry for the admin in the menu', () => {
   })
 
   it('offers nobody else the entry', async () => {
-    const app = await open('/', { admin: 'someone_else', signedIn: ADA.username })
+    const app = await open('/', { admins: ['someone_else'], signedIn: ADA.username })
     expect(await menuItems(app)).toEqual(['Account settings', 'Sign out'])
   })
 
   it('goes home when the admin signs out of the Accounts page, like any page that needs an account', async () => {
-    const app = await open('/accounts', { admin: ADA.username, signedIn: ADA.username })
+    const app = await open('/accounts', { admins: [ADA.username], signedIn: ADA.username })
     await screen.findByRole('heading', { level: 1, name: 'Accounts' })
     await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))

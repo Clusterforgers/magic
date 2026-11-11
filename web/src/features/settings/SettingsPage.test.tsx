@@ -204,7 +204,7 @@ describe('deleting the account', () => {
   })
 
   it('does not offer the admin account to be deleted, and says why in plain words', async () => {
-    const app = await open({ admin: ADA.username })
+    const app = await open({ admins: [ADA.username] })
     await screen.findByRole('form', { name: 'Change password' })
     const section = screen.getByRole('region', { name: 'Delete account' })
     expect(section).toHaveTextContent(
@@ -220,7 +220,7 @@ describe('deleting the account', () => {
   })
 
   it('still offers every other account the deletion', async () => {
-    await open({ admin: 'someone_else' })
+    await open({ admins: ['someone_else'] })
     await screen.findByRole('form', { name: 'Change password' })
     const section = screen.getByRole('region', { name: 'Delete account' })
     expect(section).toHaveTextContent('This cannot be undone.')

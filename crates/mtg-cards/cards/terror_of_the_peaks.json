@@ -1,7 +1,7 @@
 {
   "oracle_id": "f8e17f4f-080d-4bba-bd05-ca27e94ccecc",
   "name": "Terror of the Peaks",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Terror of the Peaks",
@@ -9,7 +9,12 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 94 } }
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Increase",
+            "mana": "{0}",
+            "life": 3
+          }
         },
         {
           "Triggered": {

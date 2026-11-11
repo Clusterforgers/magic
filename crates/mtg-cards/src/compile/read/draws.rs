@@ -106,6 +106,20 @@ pub(super) fn discarded_filtered_text(
     };
     let kind = super::selectors::phrase_text(filter, super::selectors::Form::Count)?;
     let kind = kind.strip_suffix(" card").unwrap_or(&kind);
+    // A card in a hand is no permanent: "a nonland card", "a card with mana value 3 or greater".
+    if let Some(card) = wf26_in_hand(filter)
+        .filter(|card| kind.contains("permanent") || card.contains("permanent card"))
+    {
+        return match count {
+            Amount::Fixed(1) => Some(format!("a {card}")),
+            Amount::Fixed(number) => Some(format!(
+                "{} {}",
+                count_word(u32::try_from(*number).ok()?)?,
+                card.replacen(" card", " cards", 1)
+            )),
+            _ => None,
+        };
+    }
     match count {
         Amount::Fixed(1) => Some(format!("a {kind} card")),
         Amount::Fixed(number) => Some(format!(
@@ -114,6 +128,21 @@ pub(super) fn discarded_filtered_text(
         )),
         _ => None,
     }
+}
+
+/// The words of the cards a filter allows in a hand, which the selector writer says of a permanent without the zone:
+/// "nonland card" for `[Not Land]`, "nonland permanent card" for the permanent types but land.
+fn wf26_in_hand(filter: &Selector) -> Option<String> {
+    let mut said = filter.clone();
+    said.0
+        .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+    let text = super::selectors::phrase_text(&said, super::selectors::Form::Subject)?;
+    let card = text
+        .strip_suffix(" from your hand")
+        .or_else(|| text.strip_suffix(" in your hand"))?;
+    card.split(' ')
+        .any(|word| word == "card")
+        .then(|| card.to_owned())
 }
 
 /// "an additional card", "three additional cards": the cards a draw step gives beyond the one it always draws.

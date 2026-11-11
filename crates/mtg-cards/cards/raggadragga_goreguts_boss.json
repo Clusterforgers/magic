@@ -8,7 +8,12 @@
       "oracle_fingerprint": "7e0e65f44ec989883f4ccf44b267defa",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 57 } }
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasAbility": "Mana" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
         },
         {
           "Manual": {

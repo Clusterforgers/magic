@@ -1,0 +1,26 @@
+{
+  "oracle_id": "47657df2-0e58-46c8-87e2-cc752708a612",
+  "name": "Sliver Legion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sliver Legion",
+      "oracle_fingerprint": "2ee8908191ced4e8257d4da82fae52f4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Sum": [{ "Count": [{ "Subtype": "Sliver" }] }, -1] },
+                  "toughness": { "Sum": [{ "Count": [{ "Subtype": "Sliver" }] }, -1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

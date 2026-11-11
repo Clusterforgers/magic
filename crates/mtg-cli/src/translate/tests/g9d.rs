@@ -76,10 +76,6 @@ fn an_exile_until_the_source_leaves_lasts_while_it_stays(#[case] line: &str, #[c
     "ChangeZoneAll | Origin$ Battlefield | Destination$ Exile | ChangeType$ Creature | Duration$ UntilEndOfTurn",
     "key:ChangeZoneAll.Duration"
 )]
-#[case::picked_from_a_hand(
-    "ChangeZone | Origin$ Hand | Destination$ Exile | ValidTgts$ Opponent | Chooser$ You | ChangeType$ Card.nonLand | ChangeNum$ 1 | Duration$ UntilHostLeavesPlay",
-    "key:ChangeZone.Choose.Duration"
-)]
 fn an_exile_until_from_elsewhere_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let script = spell(line);
     assert!(has_gap(&script, gap), "{:?}", gaps(&script));

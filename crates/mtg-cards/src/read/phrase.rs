@@ -79,6 +79,11 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
+        Ref::Union(parts) => parts
+            .iter()
+            .map(|part| who(ctx, part))
+            .collect::<Vec<_>>()
+            .join(" and "),
     }
 }
 
@@ -314,6 +319,9 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Subtype(subtype) => Part::Subtype(subtype.0.clone()),
         Pred::Color(color) => Part::Before(lower(color)),
         Pred::Colorless => Part::Before("colorless".to_owned()),
+        Pred::OutsideCommanderIdentity => {
+            Part::After("of a color outside your commander's color identity".to_owned())
+        }
         Pred::Token => Part::Before("token".to_owned()),
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),

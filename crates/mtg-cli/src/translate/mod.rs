@@ -52,6 +52,8 @@ mod ep24_rules;
 mod ep25_repeat;
 mod ep26_next_spell;
 mod ep28_under;
+mod ep30_paid;
+mod ep32_discard;
 pub mod filter;
 mod fix26_printed;
 pub mod forget;

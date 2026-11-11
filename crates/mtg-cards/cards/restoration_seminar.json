@@ -1,7 +1,7 @@
 {
   "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
   "name": "Restoration Seminar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Restoration Seminar",
@@ -31,12 +31,7 @@
             "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 77, "end": 276 }
-          }
-        }
+        { "Keyword": "Paradigm" }
       ]
     }
   ]

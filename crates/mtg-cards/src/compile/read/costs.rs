@@ -435,6 +435,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
@@ -628,7 +629,11 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
     if mana_x || (!required && cost.has_x()) {
         return None;
     }
-    Some(Ability::AdditionalCost { cost, required })
+    Some(Ability::AdditionalCost {
+        cost,
+        required,
+        repeatable: false,
+    })
 }
 
 /// "discard a card or pay 3 life", "sacrifice a creature, discard a card, or pay 4 life", "reveal a Giant card from your

@@ -1,7 +1,7 @@
 {
   "oracle_id": "573151f0-00d4-4a8a-8a09-745c5f376532",
   "name": "Hydroelectric Specimen // Hydroelectric Laboratory",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hydroelectric Specimen",
@@ -9,9 +9,28 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 132 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    "SingleTarget"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ChangeTargets": { "what": { "Target": 0 }, "to": "One", "onto": "This" } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

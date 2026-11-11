@@ -141,6 +141,27 @@ fn colored(name: &'static str) -> Value {
 /// The rows. Words that need an engine fact are not here: they stay gaps.
 pub(super) const ATOMS: &[Atom] = &[
     Atom {
+        word: "NoAbilities",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Muraganda Petroglyphs",
+        lower: |_| one(json!({"Not": {"HasAbility": "Any"}})),
+    },
+    Atom {
+        word: "hasManaAbility",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Raggadragga, Goreguts Boss",
+        lower: |_| one(json!({"HasAbility": "Mana"})),
+    },
+    Atom {
+        word: "hasNonManaActivatedAbility",
+        scopes: OBJECT,
+        reads_target: false,
+        probe: "Ravager Wurm",
+        lower: |_| one(json!({"HasAbility": "NonManaActivated"})),
+    },
+    Atom {
         word: "YouDontOwn",
         scopes: OBJECT,
         reads_target: false,

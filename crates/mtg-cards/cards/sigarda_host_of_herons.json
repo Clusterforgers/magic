@@ -1,7 +1,7 @@
 {
   "oracle_id": "e55104e2-4900-48de-b288-d3e6abd5e09e",
   "name": "Sigarda, Host of Herons",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sigarda, Host of Herons",
@@ -9,12 +9,7 @@
       "abilities": [
         { "Keyword": "Flying" },
         { "Keyword": "Hexproof" },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 101 }
-          }
-        }
+        { "Rule": { "rule": { "OpponentsCantMakeSacrifice": "You" } } }
       ]
     }
   ]

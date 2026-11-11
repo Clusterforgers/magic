@@ -292,6 +292,7 @@ Colossus Hammer
 Combat Celebrant
 Command Tower
 Commander's Insignia
+Commander's Plate
 Commence the Endgame
 Conclave Sledge-Captain
 Conclave Tribunal
@@ -370,6 +371,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Decorum Dissertation
 Decree of Justice
 Decree of Pain
 Deekah, Fractal Theorist
@@ -605,6 +607,7 @@ General's Enforcer
 Generous Ent
 Genesis Storm
 Genesis Wave
+Germination Practicum
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
@@ -898,6 +901,7 @@ Loreseeker's Stone
 Lotleth Troll
 Lotus Petal
 Love Song of Night and Day
+Loxodon Smiter
 Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
@@ -1056,6 +1060,7 @@ Ob Nixilis, the Ascended
 Obscura Storefront
 Obscuring Haze
 Observed Stasis
+Obstinate Baloth
 Octomancer
 Octopus Umbra
 Okiba Reckoner Raid // Nezumi Road Captain
@@ -1222,6 +1227,7 @@ Replication Technique
 Rescue Skiff
 Reshape
 Resplendent Angel
+Restoration Seminar
 Retaliation
 Retreat to Coralhelm
 Revel Ruiner
@@ -1735,6 +1741,7 @@ Wild Ride
 Wild Wasteland
 Wilderness Elemental
 Will of the Sultai
+Wilt-Leaf Liege
 Windborn Muse
 Windbrisk Heights
 Windfall

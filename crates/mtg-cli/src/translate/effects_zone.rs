@@ -965,8 +965,9 @@ fn choose_and_move(ctx: &mut Ctx, p: &Params, origin: &str, destination: &str) -
     match p.get("Duration") {
         None => {}
         // "Exile any number of creatures you control until ~ leaves the battlefield": each returns when the source goes.
+        // "Exile that card until ~ leaves the battlefield" of a card from a hand: it goes back to that hand (CR 610.3c).
         Some("UntilHostLeavesPlay")
-            if origin == "Battlefield"
+            if matches!(origin, "Battlefield" | "Hand")
                 && who.each.is_none()
                 && moved.len() == 1
                 && moved[0].get("Exile").is_some() =>

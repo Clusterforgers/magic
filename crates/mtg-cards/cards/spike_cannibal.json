@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c175ab0e-7085-41ec-83e4-38fc85c338fa",
+  "name": "Spike Cannibal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spike Cannibal",
+      "oracle_fingerprint": "c5d2873dc5a6398eabf6e2f2c5991ac3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": { "Each": [{ "Type": "Creature" }] },
+                  "to": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Counters": { "on": { "Each": [{ "Type": "Creature" }] }, "counter": "+1/+1" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

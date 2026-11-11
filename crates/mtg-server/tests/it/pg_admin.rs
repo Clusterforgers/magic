@@ -1,4 +1,4 @@
-//! Goal: the admin account and nobody else makes accounts: the start-up sync marks the account `MTG_ADMIN_USERNAME` names and clears every other flag; `POST /api/admin/users` and `GET /api/admin/users` answer 503, 401 and 403 in that order before the body is read, read the flag from the database on every request, make an account without signing anyone in whether registration is open or closed, follow the registration rules and errors, keep a throttle of their own, and list accounts without anything that opens them; `me` carries the flag, `GET /api/auth/options` tells a visitor whether registering is open, and no password reaches the logs.
+//! Goal: the admin account and nobody else makes accounts: the start-up sync marks the accounts `MTG_ADMIN_USERNAMES` names and clears every other flag; `POST /api/admin/users` and `GET /api/admin/users` answer 503, 401 and 403 in that order before the body is read, read the flag from the database on every request, make an account without signing anyone in whether registration is open or closed, follow the registration rules and errors, keep a throttle of their own, and list accounts without anything that opens them; `me` carries the flag, `GET /api/auth/options` tells a visitor whether registering is open, and no password reaches the logs.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -47,7 +47,10 @@ async fn start_with(pool: &PgPool, change: impl FnOnce(&mut ServerConfig)) -> Te
 
 /// A server whose admin is `admin` (as the setting spells it).
 async fn start_admin(pool: &PgPool, admin: Option<&str>) -> TestServer {
-    start_with(pool, |config| config.auth.admin = admin.map(str::to_owned)).await
+    start_with(pool, |config| {
+        config.auth.admins = admin.into_iter().map(str::to_owned).collect();
+    })
+    .await
 }
 
 /// A server on a database where `ADMIN` and a friend already have accounts, with `ADMIN` the admin
@@ -58,7 +61,7 @@ async fn world(pool: &PgPool, change: impl FnOnce(&mut ServerConfig)) -> (TestSe
     register(first.addr, "Friend_1", PASSWORD).await;
     drop(first);
     let server = start_with(pool, |config| {
-        config.auth.admin = Some(ADMIN.to_owned());
+        config.auth.admins = vec![ADMIN.to_owned()];
         change(config);
     })
     .await;

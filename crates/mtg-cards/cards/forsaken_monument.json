@@ -1,7 +1,7 @@
 {
   "oracle_id": "7777fab1-df3f-467f-b9e2-46dd2bd2166e",
   "name": "Forsaken Monument",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Forsaken Monument",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 103 }
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [], "by": "You", "produced": "Colorless" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
           }
         },
         {

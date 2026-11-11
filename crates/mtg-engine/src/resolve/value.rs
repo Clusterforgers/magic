@@ -10,7 +10,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_cards::ability::Ability;
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{AbilityKind, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{
+    AbilityKind, HeldAbility, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind,
+};
 use mtg_cards::value::{
     Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TallyEvent, TurnTally,
 };
@@ -287,6 +289,33 @@ fn double_faced(seen: &Seen<'_>, back: bool) -> bool {
     }
     matches!(card.def.layout, Layout::Transform | Layout::ModalDfc)
 }
+
+/// Whether `seen` has an ability of the kind: the abilities the card has now (printed, or as the layers leave them on the
+/// battlefield), its plain mana abilities, its keywords and, for any ability, a clause the table plays by hand. An
+/// ability on the stack has none.
+fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bool {
+    let Some(card) = seen.card.filter(|card| card.kind() != ObjectKind::Ability) else {
+        return false;
+    };
+    let rules = crate::ability_reader::abilities_of(state, card.id());
+    let plain_mana = !seen.chars.abilities.is_empty();
+    match held {
+        HeldAbility::Any => {
+            plain_mana
+                || !rules.is_empty()
+                || seen.keywords.is_some_and(|held| !held.is_empty())
+                || !card.card().manual.is_empty()
+        }
+        HeldAbility::Mana => plain_mana || rules.iter().any(|(_, rule)| rule.is_mana_ability()),
+        HeldAbility::NonManaActivated => rules.iter().any(|(_, rule)| {
+            matches!(**rule, Ability::Loyalty { .. })
+                || (matches!(**rule, Ability::Activated { .. }) && !rule.is_mana_ability())
+        }),
+    }
+}
+
+#[cfg(test)]
+mod ep31_held_tests;
 
 /// Whether `seen` is an ability on the stack of this kind.
 fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
@@ -1140,7 +1169,21 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Object)
                 .collect(),
+            Ref::Union(parts) => self.union_refs(parts)?,
         })
+    }
+
+    /// Every player and object any of the references names, each once, in the order the references give them.
+    fn union_refs(&self, parts: &[Ref]) -> Result<Vec<Target>, ResolveError> {
+        let mut named = Vec::new();
+        for part in parts {
+            for found in self.refs(part)? {
+                if !named.contains(&found) {
+                    named.push(found);
+                }
+            }
+        }
+        Ok(named)
     }
 
     /// The object that dealt the damage or blocked, when the cause names one.
@@ -1678,10 +1721,15 @@ impl<'a> Scope<'a> {
             }
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
+            Pred::OutsideCommanderIdentity => !seen
+                .chars
+                .colors
+                .is_subset_of(crate::commanders::dk25_identity(state, self.controller)),
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Ability(kind) => is_ability(seen, *kind),
+            Pred::HasAbility(held) => ep31_has_ability(state, seen, *held),
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
             Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
@@ -1985,6 +2033,8 @@ impl<'a> Scope<'a> {
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
+            Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))
+                .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,

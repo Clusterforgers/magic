@@ -642,6 +642,17 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
                 self.selector(selector);
             }
+            // Only a damage recipient reads it: a player and objects together.
+            Ref::Union(parts) => {
+                if want != Kind::Either || parts.len() < 2 {
+                    self.problem(
+                        "a union of references is read only as a damage recipient".to_owned(),
+                    );
+                }
+                for (i, part) in parts.iter().enumerate() {
+                    self.at(format!("[{i}]"), |w| w.reference(part, Kind::Either));
+                }
+            }
         }
     }
 
@@ -725,6 +736,7 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
+            Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::AttackingPlayer(r)
@@ -827,6 +839,7 @@ impl<'a> Walker<'a> {
             | Pred::Supertype(_)
             | Pred::Color(_)
             | Pred::Colorless
+            | Pred::OutsideCommanderIdentity
             | Pred::Token
             | Pred::Commander
             | Pred::Spell
@@ -874,6 +887,11 @@ impl<'a> Walker<'a> {
             self.uses("Amount", "Kicks");
             if !self.has_kicker {
                 self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
+            }
+        } else if *amount == Amount::AdditionalPaid {
+            self.uses("Amount", "AdditionalPaid");
+            if !self.has_additional_cost {
+                self.problem("`AdditionalPaid` needs an additional cost the caster may pay");
             }
         } else {
             self.uses("Amount", "Promised");
@@ -1056,6 +1074,7 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
+            Amount::AdditionalPaid => self.paid_amount(amount),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -2591,6 +2610,13 @@ impl Walker<'_> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
+            // The named card's own rules come with it when the game loads it to conjure.
+            TokenRef::Card(name) => {
+                if name.trim().is_empty() {
+                    self.problem("a token copy of a card needs the card's name");
+                }
+                self.uses("Effect", "CreateToken.Card");
+            }
             TokenRef::Sized {
                 size,
                 toughness,
@@ -2758,9 +2784,11 @@ impl Walker<'_> {
                 .get(usize::from(*index))
                 .map_or(Kind::Either, |t| t.0),
             Ref::Bound(name) => self.scope.lookup(name).unwrap_or(Kind::Either),
-            Ref::Triggering | Ref::TriggeringFirst | Ref::Against | Ref::Remembered { .. } => {
-                Kind::Either
-            }
+            Ref::Triggering
+            | Ref::TriggeringFirst
+            | Ref::Against
+            | Ref::Remembered { .. }
+            | Ref::Union(_) => Kind::Either,
         }
     }
 
@@ -3907,7 +3935,7 @@ impl Walker<'_> {
                 inner.names.clone_from(&w.scope.names);
                 inner.numbers.clone_from(&w.scope.numbers);
                 let saved = std::mem::replace(&mut w.scope, inner);
-                w.body_checks(targets, effects, false);
+                w.body_checks(targets, effects, true);
                 w.scope = saved;
             }
             Effect::If {
@@ -4407,7 +4435,18 @@ impl Walker<'_> {
                 }
             }
             modifier @ Ability::CostModifier { .. } => w.e14e_cost_modifier(modifier),
-            Ability::AdditionalCost { cost, required } => w.additional_cost(cost, *required),
+            Ability::AdditionalCost {
+                cost,
+                required,
+                repeatable,
+            } => {
+                if *repeatable && *required {
+                    w.problem(
+                        "only a cost the caster may pay is paid any number of times".to_owned(),
+                    );
+                }
+                w.additional_cost(cost, *required);
+            }
             Ability::FreeCast { condition, cost } => {
                 w.w14c_free_cast(condition.as_ref(), cost.as_ref());
             }
@@ -4798,9 +4837,14 @@ impl Walker<'_> {
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
             | ReplaceWhen::TurnedFaceUp { what }
-            | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::Discarded { what, by } => {
+                self.at("what", |w| w.selector(what));
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
             }
             ReplaceWhen::CountersPut { on, by, .. } => {
                 if let Some(by) = by {
@@ -5359,11 +5403,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         _ => false,
     });
     walker.counts_x = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if cost.has_x()),
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
-    walker.pays_objects = card
-        .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true } if picks(cost)));
+    walker.pays_objects = card.abilities().any(
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)),
+    );
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -6862,6 +6906,14 @@ mod tests {
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
         "`Kicks` needs a Kicker"
     )]
+    #[case::ep30_payments_without_a_cost(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"AdditionalPaid"}}]}}"#,
+        "`AdditionalPaid` needs an additional cost"
+    )]
+    #[case::ep30_a_union_of_players_to_draw(
+        r#"{"Spell":{"effects":[{"Draw":{"who":{"Union":["You","Opponents"]}}}]}}"#,
+        "a union of references is read only as a damage recipient"
+    )]
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
         "`Modal` must be the only effect"
@@ -6949,6 +7001,25 @@ mod tests {
     )]
     fn r1g_taken_names_outlive_their_branch(#[case] ability: &str, #[case] expected: &[&str]) {
         assert_eq!(problems(ability), expected, "{ability}");
+    }
+
+    /// A reflexive trigger is an ability of its own (CR 603.12): "When you do, choose two —" is modal when the `Modal` is
+    /// the only effect of the trigger, and refused beside another effect of it.
+    #[rstest]
+    #[case::alone(r#"[{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, false)]
+    #[case::beside_a_draw(r#"[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, true)]
+    fn dk25_a_reflexive_trigger_may_be_modal(#[case] effects: &str, #[case] refused: bool) {
+        let json = format!(
+            r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"Pay":{{"cost":[{{"Sacrifice":{{"filter":[{{"Type":"Creature"}},"Other"]}}}}],"paid":[{{"Reflexive":{{"effects":{effects}}}}}]}}}}]}}}}"#
+        );
+        let found = problems(&json);
+        assert_eq!(
+            found
+                .iter()
+                .any(|p| p.contains("`Modal` must be the only effect")),
+            refused,
+            "{found:?}"
+        );
     }
 
     /// A modal ability may choose up to a number the game decides; only a fixed choice past the modes is refused.

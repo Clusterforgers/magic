@@ -148,6 +148,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 }
 
 mod dk1d_spells;
+mod dk25_identity_protection;
 mod fix8_writers;
 mod fix9_writers;
 mod r7c_writers;
@@ -290,6 +291,9 @@ mod ep26_writers;
 mod ep27_writers;
 mod ep28_writers;
 mod ep29_writers;
+mod ep30_writers;
+mod ep31_writers;
+mod ep32_writers;
 mod evasion;
 mod event_batches;
 mod events;
@@ -1221,3 +1225,4 @@ mod w22_moves;
 mod w22_shields;
 mod wf24_writers;
 mod wf25_writers;
+mod wf26_writers;

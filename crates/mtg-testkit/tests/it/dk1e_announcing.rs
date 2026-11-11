@@ -132,6 +132,7 @@ fn a_cast_whose_discard_a_manual_action_took_away_asks_for_the_discard_again(
                     filter: None,
                 }]),
                 required: true,
+                repeatable: false,
             }),
     );
     let mut driver = Driver::from_scenario(
