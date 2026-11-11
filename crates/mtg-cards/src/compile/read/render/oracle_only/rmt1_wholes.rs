@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const RMT1_WHOLES: [(&str, &str); 19] = [
+const RMT1_WHOLES: [(&str, &str); 31] = [
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Not":{"Type":"Land"}},"Other",{"ControlledBy":"You"}]},"count":{"min":0,"max":null},"as":"chosen"}},{"Exile":{"what":{"Bound":"chosen"},"as":"exiled","duration":"WhileSourceOnBattlefield"}},{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":{"Count":[{"Is":{"Bound":"exiled"}}]}}}]}}"#,
         "When ~ enters, exile any number of other nonland permanents you control until ~ leaves the battlefield. Create a 1/1 white Soldier creature token for each permanent exiled this way.",
@@ -81,6 +81,54 @@ const RMT1_WHOLES: [(&str, &str); 19] = [
     (
         r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":"{X}","paid":[{"RememberValue":{"value":"X","slot":"paid"}}]}}]}},{"Mill":{"who":"EachPlayer","count":{"Remembered":{"on":"This","slot":"paid"}}}}]}}"#,
         "Starting with you, each player may pay any amount of mana. Each player mills X cards, where X is the total amount of mana paid this way.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"OwnedBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"from":"Graveyard","effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}}}}]}}"#,
+        "Whenever a nontoken creature is put into your graveyard from the battlefield, if this card is in your graveyard, create a 2/2 black Zombie creature token.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},"from":"Graveyard","effects":[{"Exile":{"what":"This"}}]}}"#,
+        "When a creature is put into an opponent's graveyard from the battlefield, if this card is in your graveyard, exile this card.",
+    ),
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{1}{G}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]}}],"effects":[{"If":{"condition":{"Matches":{"subject":"This","selector":[{"In":"Battlefield"}]}},"then":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":{"Stat":{"of":"This","stat":"Power"}}}},{"DealDamage":{"source":{"Target":0},"to":"This","amount":{"Stat":{"of":{"Target":0},"stat":"Power"}}}}]}}]}}"#,
+        "{1}{G}, {T}: If this creature is on the battlefield, it deals damage equal to its power to target attacking creature. That creature deals damage equal to its power to this creature.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"targets":[{"what":"Opponent"}],"effects":[{"Pay":{"who":{"Target":0},"cost":[{"ExileFromGraveyard":{"filter":[]}}],"unpaid":[{"May":{"effects":[{"Draw":{}}]}}]}}]}}"#,
+        "At the beginning of your upkeep, target opponent may exile a card from their graveyard. If that player doesn't, you may draw a card.",
+    ),
+    (
+        r#"{"Spell":{"targets":[{"what":"Player","bounds":{"min":2,"max":2}}],"effects":[{"RepeatEach":{"over":{"Target":0},"as":"player","effects":[{"Search":{"who":{"Bound":"player"},"filter":[],"as":"card"}},{"Shuffle":{"who":{"Bound":"player"}}},{"Move":{"what":{"Bound":"card"},"to":{"Library":{"place":"Top"}}}}]}}]}}"#,
+        "Choose two target players. Each of them searches their library for a card, then shuffles and puts that card on top.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":1}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
+        "I — Gungnir — Destroy target creature an opponent controls.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":1}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
+        "Gungnir — Destroy target creature an opponent controls.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":2}},"effects":[{"Continuous":{"affected":"This","mods":[{"GrantAbility":{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"LoseGame":{"who":"Triggering"}}]}}}],"duration":"Forever"}}]}}"#,
+        "II — Zantetsuken — This creature gains \"Whenever this creature deals combat damage to a player, that player loses the game.\"",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":2}},"effects":[{"Continuous":{"affected":"This","mods":[{"GrantAbility":{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"LoseGame":{"who":"Triggering"}}]}}}],"duration":"Forever"}}]}}"#,
+        "Zantetsuken — This creature gains \"Whenever this creature deals combat damage to a player, that player loses the game.\"",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":3}},"effects":[{"Draw":{"count":2}},{"LoseLife":{"who":"EachPlayer","amount":2}}]}}"#,
+        "III — Hall of Sorrow — Draw two cards. Each player loses 2 life.",
+    ),
+    (
+        r#"{"Triggered":{"when":{"Chapter":{"number":3}},"effects":[{"Draw":{"count":2}},{"LoseLife":{"who":"EachPlayer","amount":2}}]}}"#,
+        "Hall of Sorrow — Draw two cards. Each player loses 2 life.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Land"},{"ControlledBy":"You"}]},"mods":[{"AddSubtype":"Plains"},{"AddSubtype":"Island"},{"AddSubtype":"Swamp"},{"AddSubtype":"Mountain"},{"AddSubtype":"Forest"}],"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}"#,
+        "Lands you control gain all basic land types until end of turn.\nDraw a card.",
     ),
 ];
 

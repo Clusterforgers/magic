@@ -142,6 +142,78 @@ macro_rules! rmt1_card {
     "\"cost\":\"{X}\"",
     "\"cost\":\"{X}{X}\""
 )]
+#[case::bridge_from_below_0(
+    rmt1_card!("bridge_from_below"),
+    "Whenever a nontoken creature is put into your graveyard from the battlefield, if this card is in your graveyard, create a 2/2 black Zombie creature token.",
+    "\"power\":2",
+    "\"power\":3"
+)]
+#[case::bridge_from_below_1(
+    rmt1_card!("bridge_from_below"),
+    "When a creature is put into an opponent's graveyard from the battlefield, if this card is in your graveyard, exile this card.",
+    "\"OwnedBy\":\"Opponents\"",
+    "\"OwnedBy\":\"You\""
+)]
+#[case::durkwood_tracker_0(
+    rmt1_card!("durkwood_tracker"),
+    "{1}{G}, {T}: If this creature is on the battlefield, it deals damage equal to its power to target attacking creature. That creature deals damage equal to its power to this creature.",
+    "\"Attacking\"",
+    "\"Blocking\""
+)]
+#[case::gravestorm_0(
+    rmt1_card!("gravestorm"),
+    "At the beginning of your upkeep, target opponent may exile a card from their graveyard. If that player doesn't, you may draw a card.",
+    "{\"May\":{\"effects\":[{\"Draw\":{}}]}}",
+    "{\"Draw\":{}}"
+)]
+#[case::scheming_symmetry_0(
+    rmt1_card!("scheming_symmetry"),
+    "Choose two target players. Each of them searches their library for a card, then shuffles and puts that card on top.",
+    "\"place\":\"Top\"",
+    "\"place\":\"Bottom\""
+)]
+#[case::summon_primal_odin_0(
+    rmt1_card!("summon_primal_odin"),
+    "I — Gungnir — Destroy target creature an opponent controls.",
+    "\"Opponents\"",
+    "\"You\""
+)]
+#[case::summon_primal_odin_1(
+    rmt1_card!("summon_primal_odin"),
+    "Gungnir — Destroy target creature an opponent controls.",
+    "\"Opponents\"",
+    "\"You\""
+)]
+#[case::summon_primal_odin_2(
+    rmt1_card!("summon_primal_odin"),
+    "II — Zantetsuken — This creature gains \"Whenever this creature deals combat damage to a player, that player loses the game.\"",
+    "\"combat\":true",
+    "\"combat\":false"
+)]
+#[case::summon_primal_odin_3(
+    rmt1_card!("summon_primal_odin"),
+    "Zantetsuken — This creature gains \"Whenever this creature deals combat damage to a player, that player loses the game.\"",
+    "\"combat\":true",
+    "\"combat\":false"
+)]
+#[case::summon_primal_odin_4(
+    rmt1_card!("summon_primal_odin"),
+    "III — Hall of Sorrow — Draw two cards. Each player loses 2 life.",
+    "\"count\":2",
+    "\"count\":3"
+)]
+#[case::summon_primal_odin_5(
+    rmt1_card!("summon_primal_odin"),
+    "Hall of Sorrow — Draw two cards. Each player loses 2 life.",
+    "\"count\":2",
+    "\"count\":3"
+)]
+#[case::energybending_0(
+    rmt1_card!("energybending"),
+    "Lands you control gain all basic land types until end of turn.\nDraw a card.",
+    "\"Forest\"",
+    "\"Wastes\""
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

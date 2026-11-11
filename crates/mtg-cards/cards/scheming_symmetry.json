@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6dfb50d7-359b-4644-90e3-7ecdacee7c12",
+  "name": "Scheming Symmetry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scheming Symmetry",
+      "oracle_fingerprint": "54e49663a590e6a829ce9077a5b564a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player", "bounds": { "min": 2, "max": 2 } }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "player",
+                  "effects": [
+                    { "Search": { "who": { "Bound": "player" }, "filter": [], "as": "card" } },
+                    { "Shuffle": { "who": { "Bound": "player" } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

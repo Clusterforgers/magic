@@ -1,0 +1,60 @@
+{
+  "oracle_id": "032f59c3-9f47-4db3-a43c-065a99ed7efe",
+  "name": "Summon: Primal Odin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Primal Odin",
+      "oracle_fingerprint": "8cb41627d8c80f7704d3eba83168a42f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "LoseGame": { "who": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
