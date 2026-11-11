@@ -52,7 +52,7 @@ function Row({
         data-tone={state.tone}
         onClick={onPick}
         className={cn(
-          'grid w-full gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
+          'grid w-full grid-cols-1 gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
           current ? 'bg-accent font-medium' : null,
           outcome === undefined ? null : 'text-muted-foreground',
         )}
@@ -86,7 +86,10 @@ function Row({
   )
 }
 
-/** The review's list (from `lg`): To read and To check, each headed with what is left of it, every row its state. */
+/**
+ * The review's list (from `lg`): To read and To check, each headed with what is left of it, every row its state. Every
+ * grid in it has one `minmax(0, 1fr)` column, so a long name is cut short instead of widening the list under the card.
+ */
 export function ReviewList({ items, done, shown, onPick, target, listRef }: ReviewListProps) {
   const parts = [
     { kind: 'read' as const, title: 'To read', items: items.filter((item) => item.kind === 'read') },
@@ -96,13 +99,18 @@ export function ReviewList({ items, done, shown, onPick, target, listRef }: Revi
     <nav aria-label="Cards to review" className="hidden lg:sticky lg:top-4 lg:block">
       <div
         ref={listRef}
-        className="surface grid max-h-[calc(100dvh-14rem)] gap-2 overflow-y-auto overscroll-contain p-1"
+        className="surface grid max-h-[calc(100dvh-14rem)] grid-cols-1 gap-2 overflow-y-auto overscroll-contain p-1"
       >
         {parts.map((part) => {
           const left = part.items.filter((item) => !done.has(item.id)).length
           const id = `review-part-${part.kind}`
           return (
-            <section key={part.kind} aria-labelledby={id} data-part={part.kind} className="grid gap-0.5">
+            <section
+              key={part.kind}
+              aria-labelledby={id}
+              data-part={part.kind}
+              className="grid grid-cols-1 gap-0.5"
+            >
               <h2
                 id={id}
                 className="sticky top-0 z-10 flex items-baseline justify-between rounded-md bg-surface px-2 pt-1.5 pb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
@@ -112,7 +120,7 @@ export function ReviewList({ items, done, shown, onPick, target, listRef }: Revi
                   {left === 0 ? 'done' : `${left} left`}
                 </span>
               </h2>
-              <ul className="grid gap-0.5">
+              <ul className="grid grid-cols-1 gap-0.5">
                 {part.items.map((item) => (
                   <Row
                     key={item.id}

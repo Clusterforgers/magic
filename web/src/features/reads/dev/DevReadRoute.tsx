@@ -28,6 +28,8 @@ function optionsOf(view: DevReadView): ReadFixtureOptions {
       return { listFails: 'network' }
     case 'stale':
       return { stale: true }
+    case 'long':
+      return { long: true }
     default:
       return { delayMs: 150 }
   }
@@ -52,8 +54,8 @@ function DialogScene() {
 
 /**
  * `/dev/read?view=deck`: the real review screen over made-up cards in memory, signed in. `view` is `deck`, `precon`, `all`,
- * `done` (nothing left to read), `loading`, `error`, `stale` (every verdict meets a changed draft) or `dialog` (the
- * table's `ReadDialog`).
+ * `done` (nothing left to read), `loading`, `error`, `stale` (every verdict meets a changed draft), `dialog` (the
+ * table's `ReadDialog`) or `long` (55 cards to read, one with a name far wider than the list).
  */
 export function DevReadRoute() {
   const { view } = useSearch({ from: '/dev/read' })

@@ -43,6 +43,7 @@ describe('parseDevReadSearch', () => {
       'error',
       'stale',
       'dialog',
+      'long',
     ])
   })
 })
@@ -55,6 +56,7 @@ describe('/dev/read', () => {
     ['done', 'Nothing to review'],
     ['error', 'The cards could not be loaded'],
     ['dialog', 'Read the rules of Tidecaller of the Long Shoal'],
+    ['long', '55 left'],
   ])('draws the %s view', async (view, words) => {
     await visit(`/dev/read?view=${view}`)
     expect(await screen.findByText(words)).toBeInTheDocument()
