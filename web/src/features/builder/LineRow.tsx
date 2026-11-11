@@ -68,6 +68,12 @@ export function LineRow({
       <HoverPicture
         oracleId={card.oracle_id}
         name={card.name}
+        info={{
+          typeLine: card.type_line,
+          count: line.count,
+          support: check.support,
+          reasons: reasons.map((r) => r.text),
+        }}
         className="order-1 justify-self-start sm:order-none"
       >
         <button

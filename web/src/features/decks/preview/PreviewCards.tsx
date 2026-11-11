@@ -89,7 +89,12 @@ function Tile({ card, onOpen }: { card: PreviewCard; onOpen: (card: PreviewCard)
   const hand = !runsWhole(card.support)
   return (
     <li data-card={card.oracleId} data-support={card.support} className="min-w-0">
-      <HoverPicture oracleId={card.oracleId} name={card.name} className="block">
+      <HoverPicture
+        oracleId={card.oracleId}
+        name={card.name}
+        info={{ typeLine: card.typeLine, count: card.count, support: card.support, reasons: card.reasons }}
+        className="block"
+      >
         <button
           type="button"
           aria-haspopup="dialog"

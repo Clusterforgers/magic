@@ -1,4 +1,5 @@
 // Goal: the builder's deck check tells a deck whose cards are Verified or approved reads from one with drafts waiting: the marker says "Whole deck runs", the counts line names the copies on reads, the check bar says "N cards to read" with the saved deck's review address (once, however many zones hold the card), and the cards played by hand say whether their draft waits or was found wrong.
+import { within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { checked } from './checkedDeck'
 import type { Entry } from './checkedDeck'
@@ -45,7 +46,8 @@ describe('a deck with drafts waiting for a read', () => {
   })
 
   it('says on each card played by hand whether its draft waits for a read or was found wrong', async () => {
-    await renderBuilder({ view: checked(WAITING) })
+    const { user } = await renderBuilder({ view: checked(WAITING) })
+    await user.click(within(deckPane()).getByRole('tab', { name: /^Played by hand/ }))
     const entry = (id: string): Element | null => deckPane().querySelector(`li[data-hand="${id}"]`)
     expect(entry(GROWTH.oracle_id)?.querySelector('[data-draft="pending"]')).toHaveTextContent(
       'A draft of its rules waits for a player to read it',

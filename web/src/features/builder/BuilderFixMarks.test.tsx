@@ -83,7 +83,7 @@ describe('the flag on a picture', () => {
 describe('the flag on a card played by hand', () => {
   it('is beside the name in the list, for every card of it', async () => {
     const { user } = await renderBuilder({ view: checked(), fixMarks: marks() })
-    await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
+    await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     const hand = pane().getByRole('list', { name: 'Cards played by hand' })
     expect(within(hand).getAllByRole('button', { name: /important to fix$/ })).toHaveLength(3)
   })
