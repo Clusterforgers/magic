@@ -68,8 +68,8 @@ fn mana_of_a_chosen_or_reflected_kind(#[case] script: &str, #[case] holds: &str)
 }
 
 #[rstest]
-#[case::colors_among_permanents(
-    "Name:T\nTypes:Land\nA:AB$ ManaReflected | Cost$ T | ColorOrType$ Color | Valid$ Permanent.Legendary+YouCtrl | ReflectProperty$ Is\n"
+#[case::colors_of_the_imprinted_card(
+    "Name:T\nTypes:Land\nA:AB$ ManaReflected | Cost$ T | ColorOrType$ Color | Valid$ Defined.Imprinted | ReflectProperty$ Is\n"
 )]
 #[case::chosen_color_of_an_unwritten_amount(
     "Name:T\nTypes:Land\nA:AB$ Mana | Cost$ T | Produced$ Chosen | Amount$ X\nSVar:X:Count$Valid Creature.YouCtrl\n"

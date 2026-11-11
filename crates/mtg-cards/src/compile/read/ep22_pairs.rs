@@ -24,6 +24,7 @@ pub(super) fn texts(first: &Ability, second: &Ability) -> Vec<String> {
             targeting: None,
             activating: None,
             least: 0,
+            life: 0,
         },
     ) = (first, second)
     else {

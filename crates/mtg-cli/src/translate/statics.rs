@@ -1063,10 +1063,11 @@ const COST_MODIFIER: [&str; 19] = [
 /// `ReduceCost` and `RaiseCost` of spells and of activated abilities.
 fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     keys(p, "CostModifier", &COST_MODIFIER)?;
-    let mana_cost = match cost_key(ctx, p, change)? {
+    let (mana_cost, life) = match cost_key(ctx, p, change)? {
         CostKey::Own(ability) => return Ok(ability),
-        CostKey::Mana(mana) => Some(mana),
-        CostKey::None => None,
+        CostKey::Mana(mana) => (Some(mana), None),
+        CostKey::Life(life) => (Some("0"), Some(life)),
+        CostKey::None => (None, None),
     };
     if p.get("ValidSpell") == Some("Spell,Activated.!ManaAbility") && !p.has("Type") {
         // "Spells your opponents cast cost {1} more to cast and abilities your opponents activate cost {1} more to
@@ -1142,6 +1143,9 @@ fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     if let Some(kind) = activating {
         built["CostModifier"]["activating"] = json!(kind);
     }
+    if let Some(life) = life {
+        built["CostModifier"]["life"] = json!(life);
+    }
     if let Some(targets) = ability_targets {
         built["CostModifier"]["targeting"] = json!(targets);
     }
@@ -1212,6 +1216,21 @@ enum CostKey<'a> {
     Mana(&'a str),
     /// The spell's own additional cost, as the ability that states it.
     Own(Value),
+    /// Life paid besides the mana by the spells of other cards ("cost an additional 3 life to cast").
+    Life(u32),
+}
+
+/// The life of `Cost$ PayLife<N>` on an increase of spells that is not the spell's own cost and counts no amount.
+fn ep25_life(p: &Params, change: &str, text: &str) -> Option<u32> {
+    let life = text
+        .strip_prefix("PayLife<")?
+        .strip_suffix('>')?
+        .parse()
+        .ok()?;
+    let spells = p.get("Type") == Some("Spell") && !p.has("ValidSpell");
+    (change == "Increase" && spells && p.get("ValidCard") != Some("Card.Self") && !p.has("Amount"))
+        .then_some(life)
+        .filter(|life| *life > 0)
 }
 
 /// Reads `Cost$` of a cost modifier line: mana of an increase, or the spell's own additional cost.
@@ -1219,6 +1238,9 @@ fn cost_key<'a>(ctx: &Ctx, p: &'a Params, change: &str) -> Tr<CostKey<'a>> {
     let Some(text) = p.get("Cost") else {
         return Ok(CostKey::None);
     };
+    if let Some(life) = ep25_life(p, change, text) {
+        return Ok(CostKey::Life(life));
+    }
     if !super::cost::parts(text)
         .iter()
         .all(|word| super::cost::is_mana(word))

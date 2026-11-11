@@ -78,6 +78,9 @@ pub(crate) fn w5d_run_instead(
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
 /// a finished step folds its names into the run (`fold::step_done`). An effect that needs its own events folded first
 /// (`Next::Again`) or casts a spell is an error.
+///
+/// A step reads the state the steps before it leave ("draw a card, then discard a card" offers the card drawn): their
+/// events are folded onto a copy of the state, which the real fold repeats in the same order once the batch is applied.
 fn drive(
     base: &Base<'_>,
     object: ObjectId,
@@ -88,6 +91,7 @@ fn drive(
     let mut events = Vec::new();
     let mut steps = 0_usize;
     let mut moved = std::collections::BTreeSet::new();
+    let mut after: Option<GameState> = None;
     while let Some(effect) = tree::effect_at(effects, &[], &resolving.position) {
         steps += 1;
         if steps > 10_000 {
@@ -95,7 +99,7 @@ fn drive(
                 "effects run in the middle of an event went on without end".into(),
             ));
         }
-        match step(base, &resolving, effect)? {
+        match step(base, after.as_ref(), &resolving, effect)? {
             Run::Ask(decision) => match answer() {
                 Some(given) => resolving.journal.push(given),
                 None => return Ok(Inline::Ask(decision)),
@@ -124,13 +128,20 @@ fn drive(
                     return Ok(Inline::Declined);
                 }
                 // An object an earlier step moved is a new object (CR 400.7): a later step's move of it finds nothing.
-                let made: Vec<Event> = made
-                    .into_iter()
-                    .filter_map(|event| still_there(event, &moved))
-                    .collect();
+                // A step that read the folded state found it as the new object it is, which it may move.
+                let made: Vec<Event> = if after.is_some() {
+                    made
+                } else {
+                    made.into_iter()
+                        .filter_map(|event| still_there(event, &moved))
+                        .collect()
+                };
                 moved.extend(made.iter().filter_map(moved_object));
-                events.extend(made);
                 let position = tree::after(effects, &[], &resolving.position, next);
+                if !made.is_empty() && tree::effect_at(effects, &[], &position).is_some() {
+                    after = folded(after.as_ref().unwrap_or_else(|| base.state()), &made);
+                }
+                events.extend(made);
                 crate::fold::step_done(&mut resolving, &position, &bound, &snapshots)
                     .map_err(ResolveError::Invalid)?;
             }
@@ -156,21 +167,39 @@ enum Base<'s> {
     },
 }
 
+/// `state` with `events` folded onto a copy of it, or `None` when one of them does not fold there: the steps after then
+/// read the state the run began in, as they did before any step was folded.
+fn folded(state: &GameState, events: &[Event]) -> Option<GameState> {
+    let mut copy = state.clone();
+    events
+        .iter()
+        .all(|event| crate::fold::apply_event(&mut copy, event).is_ok())
+        .then_some(copy)
+}
+
 impl Base<'_> {
-    /// The scope of a step: the base, with the names and objects the steps before it bound and moved away.
-    fn scope<'a>(&'a self, resolving: &'a Resolving) -> Scope<'a> {
+    /// The state the run began in.
+    const fn state(&self) -> &GameState {
+        match self {
+            Base::Mana { state, .. } | Base::Instead { state, .. } => state,
+        }
+    }
+
+    /// The scope of a step: the base read in `after` (the state the steps before it left) when given, with the names and
+    /// objects the steps before it bound and moved away.
+    fn scope<'a>(&'a self, after: Option<&'a GameState>, resolving: &'a Resolving) -> Scope<'a> {
         let mut scope = match self {
             Base::Mana {
                 state,
                 player,
                 source,
-            } => Scope::announcing(state, *player, *source),
+            } => Scope::announcing(after.unwrap_or(state), *player, *source),
             Base::Instead {
                 state,
                 player,
                 source,
                 cause,
-            } => Scope::triggered(state, *player, *source, cause),
+            } => Scope::triggered(after.unwrap_or(state), *player, *source, cause),
         };
         scope.bindings = &resolving.bindings;
         scope.inline = Some(resolving);
@@ -181,9 +210,14 @@ impl Base<'_> {
 }
 
 /// One step of the run at the position `resolving` stands at.
-fn step(base: &Base<'_>, resolving: &Resolving, effect: &Effect) -> Result<Run, ResolveError> {
+fn step(
+    base: &Base<'_>,
+    after: Option<&GameState>,
+    resolving: &Resolving,
+    effect: &Effect,
+) -> Result<Run, ResolveError> {
     let cx = Cx {
-        scope: base.scope(resolving),
+        scope: base.scope(after, resolving),
         resolving,
     };
     prim::run(&cx, effect)

@@ -276,6 +276,10 @@ pub enum Ability {
         /// A reduction never takes the cost below this much mana (the cost itself when it is already less).
         #[serde(default, skip_serializing_if = "is_zero")]
         least: u32,
+        /// Life the caster pays besides the mana, each time, with the other parts of the cost ("cost an additional 3 life
+        /// to cast", CR 119.4): an increase of spells only.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        life: u32,
     },
     /// "As an additional cost to cast this spell, you may ..." (CR 118.8): a cost the caster may pay as the spell is announced,
     /// read by `Condition::AdditionalCostPaid`; without "you may" (`required`) the spell is cast only by paying it (CR 601.2b).

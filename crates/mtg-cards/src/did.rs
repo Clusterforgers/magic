@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 /// object for an action of a permanent) and `what` the object it was done to or by, when the action has one.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Action {
-    /// An ability was activated; `what` is its source.
+    /// An ability that isn't a mana ability was activated; `what` is its source.
     Activated,
     /// A loyalty ability was activated (CR 606.4); `what` is its source.
     ActivatedLoyalty,
@@ -95,7 +95,11 @@ impl Action {
     #[must_use]
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
-            Action::Activated => ("activate an ability", "activates an ability"),
+            // The engine logs no activation of a mana ability (CR 605.3b), so the words say so.
+            Action::Activated => (
+                "activate an ability that isn't a mana ability",
+                "activates an ability that isn't a mana ability",
+            ),
             Action::ActivatedLoyalty => {
                 ("activate a loyalty ability", "activates a loyalty ability")
             }
@@ -156,5 +160,26 @@ impl Action {
                 | Action::Exploited
                 | Action::LostGame
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the words of an action say what the engine counts: an activation is never of a mana ability (CR 605.3b).
+    use super::Action;
+    use rstest::rstest;
+
+    #[rstest]
+    #[case::activated(Action::Activated, true)]
+    #[case::loyalty(Action::ActivatedLoyalty, false)]
+    fn an_activation_says_it_is_no_mana_ability(#[case] action: Action, #[case] says: bool) {
+        let (you, they) = action.verbs();
+        for words in [you, they] {
+            assert_eq!(
+                words.ends_with("that isn't a mana ability"),
+                says,
+                "{words}"
+            );
+        }
     }
 }

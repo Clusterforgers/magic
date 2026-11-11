@@ -17,7 +17,12 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .iter()
         .filter_map(|text| {
             let (event, rest) = text.split_once(", ")?;
-            if !event.contains('~') || rest.starts_with('~') || !rest.contains(" ~") {
+            // After a target is named, "it" is that target, never the source.
+            if !event.contains('~')
+                || rest.starts_with('~')
+                || !rest.contains(" ~")
+                || rest.contains("target ")
+            {
                 return None;
             }
             let said = rest.replace(" ~.", " it.").replace(" ~ ", " it ");

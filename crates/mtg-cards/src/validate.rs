@@ -1608,12 +1608,17 @@ impl<'a> Walker<'a> {
             condition,
             targeting,
             activating,
+            change,
+            life,
             ..
         } = modifier
         else {
             return;
         };
         self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        if *life > 0 && (*change != crate::ability::CostChange::Increase || activating.is_some()) {
+            self.problem("life is added only to the cost of spells, by an increase");
+        }
         let Some(targeting) = targeting else {
             return;
         };
@@ -2746,9 +2751,13 @@ impl Walker<'_> {
         effects: &[Effect],
         most: u32,
         at_least_once: bool,
+        ask: Option<&Ref>,
     ) {
         if !at_least_once {
             self.at("condition", |w| w.condition(condition));
+            if let Some(ask) = ask {
+                self.at("ask", |w| w.reference(ask, Kind::Player));
+            }
         }
         if effects.is_empty() {
             self.problem("a repeat with nothing to do");
@@ -2762,6 +2771,9 @@ impl Walker<'_> {
         if at_least_once {
             self.effect_list_open("effects", effects, false, None);
             self.at("condition", |w| w.condition(condition));
+            if let Some(ask) = ask {
+                self.at("ask", |w| w.reference(ask, Kind::Player));
+            }
             self.scope.names.pop();
         } else {
             self.effect_list("effects", effects, false);
@@ -3552,8 +3564,9 @@ impl Walker<'_> {
                 most,
                 times,
                 at_least_once,
+                ask,
             } => {
-                w.repeat_while(condition, effects, *most, *at_least_once);
+                w.repeat_while(condition, effects, *most, *at_least_once, ask.as_ref());
                 if let Some(times) = times {
                     w.at("times", |w| w.amount(times));
                 }
@@ -5800,6 +5813,18 @@ mod tests {
         let found = problems(json);
         assert_eq!(found.len(), 1, "{found:?}");
         assert!(found[0].contains("not by an {X}"), "{found:?}");
+    }
+
+    #[rstest]
+    #[case::spells_cost_life(r#"{"CostModifier":{"applies_to":["Spell",{"Targeting":["This"]}],"change":"Increase","mana":"{0}","life":3}}"#, true)]
+    #[case::a_reduction_of_life(
+        r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{0}","life":3}}"#,
+        false
+    )]
+    #[case::life_of_an_ability(r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Increase","mana":"{0}","life":1,"activating":"Any"}}"#, false)]
+    fn ep25_life_is_added_only_to_the_cost_of_spells(#[case] json: &str, #[case] valid: bool) {
+        let found = problems(json);
+        assert_eq!(found.is_empty(), valid, "{found:?}");
     }
 
     #[rstest]

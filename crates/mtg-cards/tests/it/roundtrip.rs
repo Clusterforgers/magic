@@ -1433,7 +1433,8 @@ fn ability() -> impl Strategy<Value = Ability> {
                     per,
                     condition,
                     activating: None,
-                    least: 0
+                    least: 0,
+                    life: 0
                 }
             ),
         keyword().prop_map(Ability::Keyword),

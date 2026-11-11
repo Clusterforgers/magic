@@ -219,7 +219,7 @@ pub fn add_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     ) {
         (Some(valid), None, None) => Some(json!({"Each": selector_any(ctx, valid)?})),
         (None, Some(_), None) => Some(player_ref(p.get("ValidPlayer"))?),
-        (None, None, Some("Permanent.inZoneBattlefield,Player")) => None,
+        (None, None, Some("Permanent.inZoneBattlefield,Player" | "Permanent,Player")) => None,
         (None, None, Some(valid)) if !valid.contains(',') => {
             Some(json!({"Each": selector_any(ctx, valid.trim_end_matches("+inZoneBattlefield"))?}))
         }

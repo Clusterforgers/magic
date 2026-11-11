@@ -49,6 +49,7 @@ pub mod effects_zone;
 mod enters_with;
 mod ep24_mana;
 mod ep24_rules;
+mod ep25_repeat;
 mod ep26_next_spell;
 pub mod filter;
 mod fix26_printed;

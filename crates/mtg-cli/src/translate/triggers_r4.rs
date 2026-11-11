@@ -40,6 +40,19 @@ fn activation(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({ "Did": node }))
 }
 
+/// "An ability of an artifact" names a permanent (CR 109.2): Forge's bare type also matches a card cycled from a hand,
+/// which Oracle does not, so a source of an object type without a zone is on the battlefield.
+fn on_the_battlefield(mut found: Value, valid: Option<&str>) -> Value {
+    let Some(what) = found.pointer_mut("/Did/what").and_then(Value::as_array_mut) else {
+        return found;
+    };
+    let zoned = what.iter().any(|pred| pred.get("In").is_some());
+    if !zoned && valid.is_some_and(|valid| !valid.contains("Card")) {
+        what.push(json!({ "In": "Battlefield" }));
+    }
+    found
+}
+
 fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(
         p,
@@ -58,7 +71,7 @@ fn ability_cast(ctx: &Ctx, p: &Params) -> Tr<Value> {
     };
     let Some(opponent) = loyalty else {
         activation_word(word, "AbilityCast")?;
-        return activation(ctx, p);
+        return Ok(on_the_battlefield(activation(ctx, p)?, p.get("ValidCard")));
     };
     let mut found = activation(ctx, p)?;
     let node = &mut found["Did"];

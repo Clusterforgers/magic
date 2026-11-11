@@ -102,8 +102,8 @@ fn rule_statics(#[case] line: &str, #[case] rule: Value) {
 }
 
 #[rstest]
-#[case::draw_limit(
-    "Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ 1",
+#[case::draw_limit_of_a_count(
+    "Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ X",
     "key:Static.CantDraw.DrawLimit"
 )]
 #[case::land_origin(

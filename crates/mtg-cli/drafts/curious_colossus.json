@@ -10,10 +10,13 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
                   "mods": [
                     { "SetPT": { "power": 1, "toughness": 1 } },
                     { "AddSubtype": "Coward" },

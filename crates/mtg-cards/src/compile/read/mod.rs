@@ -265,6 +265,7 @@ mod w8b_then;
 mod w9b_clash;
 mod w9c_replaced;
 mod w9d_exert;
+mod wf24_token_bind;
 mod where_x;
 mod written_memo;
 mod zone_moves;
