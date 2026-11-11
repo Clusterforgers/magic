@@ -1,0 +1,26 @@
+{
+  "oracle_id": "faf081dc-1fb2-47ac-a9c7-8001b4904120",
+  "name": "Callaphe, Beloved of the Sea",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Callaphe, Beloved of the Sea",
+      "oracle_fingerprint": "5b8246d8b037cb8a44985e8374869155",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": { "Devotion": ["Blue"] }, "toughness": 3 } }],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 144, "end": 266 }
+          }
+        }
+      ]
+    }
+  ]
+}

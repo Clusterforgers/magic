@@ -244,6 +244,11 @@ pub enum Duration {
     /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
     /// player skips a turn lasts this long.
     UntilTurnSkipped,
+    /// Until the step or combat phase its rule makes a player skip has been skipped once ("skips their next untap step",
+    /// "skips their next combat phase", CR 614.10): only the rule that a player skips a step or combat lasts this long.
+    UntilSkipped,
+    /// As `UntilSkipped`, and it also ends with the turn ("skips their next combat phase this turn").
+    UntilSkippedThisTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -427,6 +432,8 @@ pub enum Prohibited {
     SkipStep(Step),
     /// Skip their turns (CR 614.10).
     SkipTurn,
+    /// Skip the steps of their combat phases (CR 614.10, 506.1).
+    SkipCombat,
     /// Cast spells (CR 601): those whose card the filter selects (any when empty), and with `more_than` only once they have
     /// cast that many such spells this turn; with `unless` only while the condition does not hold for the caster.
     Cast {

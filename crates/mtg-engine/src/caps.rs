@@ -248,6 +248,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
+    "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
     "Effect.PutCountersOf",
     "Effect.Tap",
@@ -423,6 +424,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Transform",
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
+    "Rule.Cant.SkipCombat",
     "Rule.Cant.Cast",
     "Rule.Cant.Attack",
     "Rule.Cant.ActivateKind",
@@ -1226,6 +1228,7 @@ mod tests {
     #[case::cant_transform("Rule.Cant.Transform", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
+    #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]
     #[case::cant_cast("Rule.Cant.Cast", true)]
     #[case::cant_attack("Rule.Cant.Attack", true)]
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]

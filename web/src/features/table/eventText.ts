@@ -238,6 +238,8 @@ function durationWords(
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
+    UntilSkipped: ' until the step or combat it skips',
+    UntilSkippedThisTurn: ' until the step or combat it skips this turn',
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'

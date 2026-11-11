@@ -1,0 +1,35 @@
+{
+  "oracle_id": "91520db8-2d50-4c17-9f0e-2f92f63285f7",
+  "name": "Avizoa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avizoa",
+      "oracle_fingerprint": "bee484c093dafada554bb7c7d54203ea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Untap" } } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

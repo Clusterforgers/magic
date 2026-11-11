@@ -59,6 +59,10 @@ const C7_UNTAP_ONLY: &str =
 
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
+/// Only the rule that a player skips a step or combat lasts until it is skipped.
+const RMT3_SKIP_ONLY: &str =
+    "only the rule that a player skips a step or combat lasts until it is skipped";
+
 /// Only a continuous effect lasts until a card is cast from exile.
 const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
 
@@ -3728,6 +3732,10 @@ impl Walker<'_> {
                     w.at("each", |w| w.amount(each));
                 }
             }
+            Effect::SpellEntersWith { spell, count } => {
+                w.at("spell", |w| w.reference(spell, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::MoveCounters {
                 from, to, count, ..
             } => {
@@ -3861,6 +3869,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -3888,6 +3899,17 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
+                }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn)
+                    && !matches!(
+                        rule,
+                        GameRule::Cant {
+                            action: Prohibited::SkipStep(_) | Prohibited::SkipCombat,
+                            ..
+                        }
+                    )
+                {
+                    w.problem(RMT3_SKIP_ONLY);
                 }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
@@ -3939,6 +3961,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
+                }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);

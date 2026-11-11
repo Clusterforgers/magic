@@ -1,0 +1,27 @@
+{
+  "oracle_id": "377d0fa7-1b3d-4b97-b066-dceeff3734d0",
+  "name": "Pramikon, Sky Rampart",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pramikon, Sky Rampart",
+      "oracle_fingerprint": "31bfba0d0679ad9744febb33362a2826",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Defender" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 17, "end": 58 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 59, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

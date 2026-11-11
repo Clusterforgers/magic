@@ -776,6 +776,15 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// The permanent spells `spell` names enter the battlefield with `count` additional +1/+1 counters on them as they
+    /// resolve (CR 614.1c): "that creature enters with an additional +1/+1 counter on it" after a creature spell is cast.
+    SpellEntersWith {
+        /// The spells on the stack.
+        spell: Ref,
+        /// How many counters, worked out now.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     /// When `from` names several objects ("from other permanents you control"), each gives up to the count in turn.
     MoveCounters {

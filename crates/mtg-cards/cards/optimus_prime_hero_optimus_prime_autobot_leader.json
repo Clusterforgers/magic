@@ -1,0 +1,50 @@
+{
+  "oracle_id": "199c4a1a-2082-417c-a174-f479d7334d15",
+  "name": "Optimus Prime, Hero // Optimus Prime, Autobot Leader",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Optimus Prime, Hero",
+      "oracle_fingerprint": "61585a99e264af64cc550d32874b8fff",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 89 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Bolster": { "count": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 240, "end": 330 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Optimus Prime, Autobot Leader",
+      "oracle_fingerprint": "928198873b5a82fede2fe4e68ebe1eb3",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 74, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

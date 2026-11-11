@@ -198,6 +198,7 @@ mod repeat_modes;
 mod return_damager;
 mod return_this_card;
 mod rmt1_wholes;
+mod rmt3_wordings;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -906,6 +907,7 @@ fn third_sample_of_m_to_r(ability: &Ability, texts: &mut Vec<String>) {
     delayed_first::add(ability, texts);
     energy_cost_words::add(ability, texts);
     flash_permission::add(ability, texts);
+    rmt3_wordings::add(ability, texts);
     graveyard_shuffle::add(ability, texts);
     have_cards::add(ability, texts);
     home_pair::add(ability, texts);

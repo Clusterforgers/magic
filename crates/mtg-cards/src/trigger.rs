@@ -1101,7 +1101,7 @@ impl ShieldShape {
                 },
             ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
-            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped | ReplaceBy::WithCounters { .. })
                 if !names_objects(what) =>
             {
                 Some(Self::Class)

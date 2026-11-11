@@ -49,6 +49,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveCounters { .. }
         | Effect::RemoveAllCounters { .. }
         | Effect::MoveCounters { .. }
+        | Effect::SpellEntersWith { .. }
         | Effect::MultiplyCounters { .. }
         | Effect::PutCountersOf { .. }
         | Effect::Tap { .. }

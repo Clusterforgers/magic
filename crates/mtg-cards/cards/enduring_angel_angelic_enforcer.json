@@ -1,0 +1,43 @@
+{
+  "oracle_id": "93d1e21b-7326-4aad-9f6e-e0e391845a18",
+  "name": "Enduring Angel // Angelic Enforcer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enduring Angel",
+      "oracle_fingerprint": "07c94e84c7c5e7c2edeb8eba5c4729a3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 41, "end": 221 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Angelic Enforcer",
+      "oracle_fingerprint": "ff22eb4805d7c903f041b799678f3d49",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": { "Life": "You" }, "toughness": { "Life": "You" } } }],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 100, "end": 155 }
+          }
+        }
+      ]
+    }
+  ]
+}

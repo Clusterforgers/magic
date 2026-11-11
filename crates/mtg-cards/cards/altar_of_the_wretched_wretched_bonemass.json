@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c551f007-9740-4a2a-8ef5-7be1a7afe14b",
+  "name": "Altar of the Wretched // Wretched Bonemass",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Altar of the Wretched",
+      "oracle_fingerprint": "fd658105809751bdf1b335f2b7d5cd78",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 143 }
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{2}{B}{B}" },
+              { "Craft": { "filter": [{ "Type": "Creature" }, "Other"], "count": "X" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wretched Bonemass",
+      "oracle_fingerprint": "0d26da14e5e5f6594e4f85f676da5622",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 111 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 112, "end": 347 }
+          }
+        }
+      ]
+    }
+  ]
+}

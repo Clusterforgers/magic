@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0741e5b5-35c8-4f4d-b49f-c53e960240b9",
+  "name": "The Master, Multiplied",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Master, Multiplied",
+      "oracle_fingerprint": "b758da243611bebb5111c6638853844f",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 70 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 71, "end": 169 }
+          }
+        }
+      ]
+    }
+  ]
+}

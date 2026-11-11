@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3715e8b8-31df-499b-8a91-1bcd1199d6eb",
+  "name": "Experimental Frenzy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Experimental Frenzy",
+      "oracle_fingerprint": "58dcd43bcc4f0c09d381452c8a3e5734",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 55, "end": 119 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 120, "end": 171 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 172, "end": 205 }
+          }
+        }
+      ]
+    }
+  ]
+}

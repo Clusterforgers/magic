@@ -117,6 +117,7 @@ Baral's Expertise
 Barbarian Class
 Barbed Batterfist
 Bard's Bow
+Bard's Company
 Barter in Blood
 Basalt Monolith
 Basilica Screecher
@@ -428,6 +429,7 @@ Doom Blade
 Doom Whisperer
 Door of Destinies
 Doublecast
+Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
 Dragonlord Dromoka
@@ -539,6 +541,7 @@ Faithless Looting
 Fall from Favor
 Fall of the Hammer
 Fallen Ideal
+False Floor
 Familiar Ground
 Famine
 Fanatic of Rhonas
@@ -682,6 +685,7 @@ Gravitational Shift
 Greater Good
 Greater Mossdog
 Green Goblin, Back for More
+Gremlin Mine
 Grenzo's Cutthroat
 Griffin Aerie
 Grim Flayer
@@ -720,6 +724,7 @@ Hatut Zeraze Strike Force
 Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
+Heartless Act
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
@@ -931,6 +936,7 @@ Lumen-Class Frigate
 Lurching Rotbeast
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
+Mabel, Bitter Recluse
 Machine God's Effigy
 Maestros Theater
 Mage Hunter
@@ -1251,6 +1257,7 @@ Relic Seeker
 Relic of Progenitus
 Relic of Sauron
 Remorseful Cleric
+Render Inert
 Renewed Faith
 Replication Technique
 Rescue Skiff
@@ -1331,6 +1338,7 @@ Savage Ventmaw
 Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
+Scarring Memories
 Scatter to the Winds
 Scavenging Ooze
 Schema Thief
@@ -1354,6 +1362,7 @@ Seekers' Squire
 Seize the Day
 Seraph of the Sword
 Sergeant John Benton
+Serpent of the Pass
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
@@ -1553,6 +1562,7 @@ Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Tainted Isle
+Tainted Remedy
 Tamiyo's Logbook
 Tandem Lookout
 Tangle Tumbler

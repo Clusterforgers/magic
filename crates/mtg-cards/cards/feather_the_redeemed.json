@@ -1,0 +1,20 @@
+{
+  "oracle_id": "aa219936-661b-4ccb-8741-78b70cff2b1a",
+  "name": "Feather, the Redeemed",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Feather, the Redeemed",
+      "oracle_fingerprint": "f4df273286b7ef0a73995782d917cca5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 236 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -212,7 +212,7 @@ fn the_frontier_of_the_compiler() {
 /// The clause without its ability word ("Landfall — "), which is flavor.
 fn without_ability_word(text: &str) -> &str {
     match text.split_once(" \u{2014} ") {
-        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 5 => {
+        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 6 => {
             rest
         }
         _ => text,

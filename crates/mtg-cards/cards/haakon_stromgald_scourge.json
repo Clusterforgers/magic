@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8f089280-e5da-4fda-8bff-dea2971d0292",
+  "name": "Haakon, Stromgald Scourge",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Haakon, Stromgald Scourge",
+      "oracle_fingerprint": "3aa717fe3f4f9240e4cc9baa2c261e95",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 71 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 72, "end": 160 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -41,6 +41,7 @@ mod read_tier;
 mod reminder_cards;
 mod rmt1_cards;
 mod rmt2_readback;
+mod rmt3_writers;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

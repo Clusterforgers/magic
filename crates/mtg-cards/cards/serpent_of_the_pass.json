@@ -1,0 +1,43 @@
+{
+  "oracle_id": "98e36c6e-a868-4679-a5b5-6f02097f560b",
+  "name": "Serpent of the Pass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serpent of the Pass",
+      "oracle_fingerprint": "4dd334bde20aa3ea3d51e8811628e5b8",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "Subtype": "Lesson" }]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "Not": { "Type": "Creature" } },
+                { "Not": { "Type": "Land" } },
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

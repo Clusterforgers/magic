@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5b7515f2-7a5a-4e2a-9784-6cbacd768172",
+  "name": "Lich",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lich",
+      "oracle_fingerprint": "ccfaac00c066726ac5916fbb6a186911",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 67 }
+          }
+        },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 119, "end": 172 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 173, "end": 276 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 277, "end": 363 }
+          }
+        }
+      ]
+    }
+  ]
+}

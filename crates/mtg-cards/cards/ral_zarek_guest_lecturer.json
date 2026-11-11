@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0dc76b7f-6405-44a1-8c55-31fa480ff70b",
+  "name": "Ral Zarek, Guest Lecturer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ral Zarek, Guest Lecturer",
+      "oracle_fingerprint": "12d77e5fada15db25075e7e796061917",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Surveil": { "count": 2 } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 15, "end": 68 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 167, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

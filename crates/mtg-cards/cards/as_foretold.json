@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e4b3e0af-5caa-47c1-b5be-c56a875cbb15",
+  "name": "As Foretold",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "As Foretold",
+      "oracle_fingerprint": "bd0c9f0fd2ad69d23d98f01d431c55f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 73, "end": 242 }
+          }
+        }
+      ]
+    }
+  ]
+}

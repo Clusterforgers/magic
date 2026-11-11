@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "017a5dbf-5773-448d-abf3-9a3d42bde9e5",
+  "oracle_id": "c0128941-240a-4ca1-9816-b32f47523fdb",
+  "multiverse_ids": [
+    620707
+  ],
+  "mtgo_id": 113074,
+  "tcgplayer_id": 499779,
+  "cardmarket_id": 717193,
+  "name": "Fealty to the Realm",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/017a5dbf-5773-448d-abf3-9a3d42bde9e5",
+  "scryfall_uri": "https://scryfall.com/card/ltc/21/fealty-to-the-realm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032",
+    "normal": "https://cards.scryfall.io/normal/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032",
+    "large": "https://cards.scryfall.io/large/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032",
+    "png": "https://cards.scryfall.io/png/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.png?1783916032",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.webp?1783916032",
+    "grid": "https://cards.scryfall.io/grid/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.webp?1783916032",
+    "display": "https://cards.scryfall.io/display/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.webp?1783916032",
+    "art": "https://cards.scryfall.io/art/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.webp?1783916032",
+    "crop": "https://cards.scryfall.io/crop/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.webp?1783916032",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/1/017a5dbf-5773-448d-abf3-9a3d42bde9e5.jpg?1783916032"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhen this Aura enters, you become the monarch.\nThe monarch controls enchanted creature.\nEnchanted creature attacks each combat if able and can't attack you.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "63455c28-3e53-45b1-8d0b-a5045dab1fb9",
+      "component": "combo_piece",
+      "name": "The Monarch",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/63455c28-3e53-45b1-8d0b-a5045dab1fb9"
+    },
+    {
+      "object": "related_card",
+      "id": "0f7577cf-4803-477f-9060-34afe9a70f98",
+      "component": "combo_piece",
+      "name": "Fealty to the Realm",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/0f7577cf-4803-477f-9060-34afe9a70f98"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/017a5dbf-5773-448d-abf3-9a3d42bde9e5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac0128941-240a-4ca1-9816-b32f47523fdb&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lorenzo Mastroianni",
+  "artist_ids": [
+    "70213e7d-47e0-4543-a1ae-451009053e2d"
+  ],
+  "illustration_id": "776407d1-998b-4594-a989-2af1bf7a2cc2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10445,
+  "penny_rank": 2909,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620707&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFealty%2Bto%2Bthe%2BRealm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFealty%2Bto%2Bthe%2BRealm",
+    "edhrec": "https://edhrec.com/route/?cc=Fealty+to+the+Realm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499779%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717193&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113074?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
