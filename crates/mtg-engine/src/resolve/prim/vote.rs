@@ -11,16 +11,17 @@ use crate::choose::{
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
 /// The ballots of a vote, the controller first, in turn order; a player who has left the game does not vote. A player
-/// who may vote an additional time (CR 701.38d) casts a second ballot right after the first, which they may leave
-/// blank (`true`).
+/// who gets additional votes casts them right after the first, and one who may vote an additional time (CR 701.38d)
+/// casts a last ballot they may leave blank (`true`).
 fn voters(cx: &Cx<'_>) -> Vec<(PlayerId, bool)> {
     let state = cx.state();
     state
         .turn_order_from(cx.scope.controller)
         .into_iter()
         .flat_map(|player| {
+            let extra = crate::rules::ep33_extra_votes(state, player);
             let again = crate::rules::w17c_votes_again(state, player);
-            std::iter::once((player, false)).chain(again.then_some((player, true)))
+            std::iter::repeat_n((player, false), 1 + extra).chain(again.then_some((player, true)))
         })
         .collect()
 }

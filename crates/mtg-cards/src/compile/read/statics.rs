@@ -638,6 +638,14 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(|r| {
+        r.need("while voting")?;
+        r.punct(',').then_some(())?;
+        r.need("you get an additional vote")?;
+        Some(GameRule::ExtraVote(Ref::You))
+    }) {
+        return Some(rule);
+    }
     lands::additional(r)
 }
 
@@ -1765,8 +1773,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
-        (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
-            vec!["While voting, you may vote an additional time".to_owned()]
+        (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {
+            vec![super::ep33_spend::ep33_vote_text(rule)]
         }
         (
             GameRule::GraveyardCardsUntargetable

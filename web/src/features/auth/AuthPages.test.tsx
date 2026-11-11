@@ -419,7 +419,7 @@ describe('registering', () => {
     await type(app, NEW.username, NEW.password)
     await app.user.click(submitButton('Create account'))
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'New accounts are made by the admin. Ask them to add you.',
+      'New accounts are made by an admin. Ask one to add you.',
     )
     expect(screen.getByRole('alert')).toHaveFocus()
   })
@@ -601,7 +601,7 @@ describe('a server where the admin makes the accounts', () => {
   it('says so on the sign-up page in place of a form that could only fail', async () => {
     const app = await openClosed('/register')
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'New accounts are made by the admin' }),
+      await screen.findByRole('heading', { level: 1, name: 'New accounts are made by an admin' }),
     ).toBeVisible()
     expect(screen.getByText(/Ask them to add you/)).toBeVisible()
     expect(screen.queryByRole('form')).not.toBeInTheDocument()
@@ -621,7 +621,7 @@ describe('a server where the admin makes the accounts', () => {
   it('tells the sign-in form to ask the admin instead of offering to create an account', async () => {
     await openClosed('/login')
     const note = await screen.findByText(/No account yet\?/)
-    expect(note).toHaveTextContent('No account yet? New accounts are made by the admin. Ask them to add you.')
+    expect(note).toHaveTextContent('No account yet? New accounts are made by an admin. Ask one to add you.')
     expect(within(form()).queryByRole('link', { name: 'Create one' })).not.toBeInTheDocument()
   })
 

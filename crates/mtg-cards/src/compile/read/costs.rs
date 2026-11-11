@@ -649,7 +649,11 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
     if mana_x || (!required && cost.has_x()) {
         return None;
     }
-    Some(Ability::AdditionalCost { cost, required })
+    Some(Ability::AdditionalCost {
+        cost,
+        required,
+        repeatable: false,
+    })
 }
 
 /// "discard a card or pay 3 life", "sacrifice a creature, discard a card, or pay 4 life", "reveal a Giant card from your

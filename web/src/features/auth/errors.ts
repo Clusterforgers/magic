@@ -31,7 +31,7 @@ const OUT_OF_DATE =
 const TRY_LATER = 'The server ran into a problem. Try again in a moment.'
 
 /** What a visitor is told where an account would be made on a server that leaves it to the admin. */
-export const CLOSED = 'New accounts are made by the admin. Ask them to add you.'
+export const CLOSED = 'New accounts are made by an admin. Ask one to add you.'
 
 /** "30 seconds", "about 15 minutes", "about 2 hours"; "a few minutes" when the server did not say. */
 export function waitText(seconds: number | null): string {
@@ -65,7 +65,7 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => Sh
         : 'That username is already taken (upper and lower case count as the same). Choose another one, or sign in if it is yours.',
   }),
   registration_closed: () => form(CLOSED),
-  forbidden: () => form('Only the admin can make accounts.'),
+  forbidden: () => form('Only an admin can make accounts.'),
   unknown_account: () => form('That account is already gone. The list shows who is left.'),
   admin_account: (_error, mode) =>
     form(

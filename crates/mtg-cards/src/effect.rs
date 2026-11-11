@@ -116,6 +116,13 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
     },
+    /// The battlefield face down (CR 708.3): a 2/2 creature with nothing else that its controller alone may look at,
+    /// turned face up only for its morph, megamorph or disguise cost.
+    BattlefieldFaceDown {
+        /// Enters under this player's control; its owner's when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -756,8 +763,9 @@ pub enum Effect {
         counter: Option<CounterKind>,
     },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
+    /// When `from` names several objects ("from other permanents you control"), each gives up to the count in turn.
     MoveCounters {
-        /// The object they leave.
+        /// The object or objects they leave.
         from: Ref,
         /// The object they go onto.
         to: Ref,
@@ -768,6 +776,10 @@ pub enum Effect {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+        /// The controller picks the counters one at a time and may stop before the count ("move any number of +1/+1
+        /// counters", the count being every one there is).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        up_to: bool,
     },
     /// Multiplies the counters an object or player holds: each one gets `factor` times as many, so "double" puts as many
     /// more as there are (CR 122.1).
@@ -2065,7 +2077,7 @@ mod tests {
     )]
     #[case::unattach_the_source(Effect::Unattach { what: Ref::This }, r#"{"Unattach":{"what":"This"}}"#)]
     #[case::move_two_counters(
-        Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: Some(CounterKind::PlusOnePlusOne), count: Amount::Fixed(2) },
+        Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: Some(CounterKind::PlusOnePlusOne), count: Amount::Fixed(2), up_to: false },
         r#"{"MoveCounters":{"from":{"Target":0},"to":{"Target":1},"counter":"+1/+1","count":2}}"#
     )]
     fn effects_have_stable_json(#[case] value: Effect, #[case] json: &str) {

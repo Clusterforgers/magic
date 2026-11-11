@@ -137,7 +137,7 @@ fn a_doubling_shield_doubles_only_the_damage_it_names(
     "replacement:DamageDone-shield-source-control"
 )]
 #[case::unknown_recipient(
-    "ValidTarget$ Player,Battle",
+    "ValidTarget$ Player,Battle.IsRemembered",
     TWICE,
     "replacement:DamageDone-shield-recipient"
 )]

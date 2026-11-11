@@ -39,7 +39,7 @@ pub(crate) struct User {
     pub(crate) id: UserId,
     /// The username as it was registered.
     pub(crate) username: String,
-    /// Whether this is the admin account; read with the account, so a demotion shows on the next request.
+    /// Whether this is an admin account; read with the account, so a demotion shows on the next request.
     pub(crate) is_admin: bool,
 }
 
@@ -63,7 +63,7 @@ pub(crate) struct Listed {
     pub(crate) username: String,
     /// When it was made, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
     pub(crate) created_at: String,
-    /// Whether this is the admin account.
+    /// Whether this is an admin account.
     pub(crate) is_admin: bool,
 }
 
@@ -159,21 +159,22 @@ impl Accounts {
         }))
     }
 
-    /// Makes the account whose lower-case username is `name` the admin and every other account not, in one
-    /// statement, so at most one admin exists; with `None` nobody is. Returns how many admins there are now: 0
-    /// when `name` belongs to no account.
-    pub(crate) async fn set_admin(&self, name: Option<&str>) -> Result<i64, AccountError> {
-        let row = sqlx::query!(
+    /// Makes the accounts whose usernames are among `names` (ignoring case) the admins and every other account
+    /// not, in one statement; with no names nobody is. Returns the usernames that are admins now, sorted ignoring
+    /// case: a name that belongs to no account is missing.
+    pub(crate) async fn set_admins(&self, names: &[String]) -> Result<Vec<String>, AccountError> {
+        let keys: Vec<String> = names.iter().map(|name| name.to_lowercase()).collect();
+        let rows = sqlx::query!(
             r#"WITH updated AS (
-                   UPDATE users SET is_admin = (username_key = lower(coalesce($1::text, '')))
-                   RETURNING is_admin
+                   UPDATE users SET is_admin = (username_key = ANY($1::text[]))
+                   RETURNING username, username_key, is_admin
                )
-               SELECT count(*) FILTER (WHERE is_admin) AS "admins!" FROM updated"#,
-            name,
+               SELECT username FROM updated WHERE is_admin ORDER BY username_key"#,
+            &keys,
         )
-        .fetch_one(&self.pool)
+        .fetch_all(&self.pool)
         .await?;
-        Ok(row.admins)
+        Ok(rows.into_iter().map(|row| row.username).collect())
     }
 
     /// Every account, oldest first.
@@ -398,7 +399,10 @@ mod tests {
             account(&accounts, "Ann_1").await,
             account(&accounts, "Bob_2").await,
         );
-        assert_eq!(accounts.set_admin(Some("ann_1")).await.unwrap(), 1);
+        assert_eq!(
+            accounts.set_admins(&["ann_1".into()]).await.unwrap(),
+            ["Ann_1"]
+        );
         for user in [ann.id, bob.id] {
             let digest = TokenDigest::of(&format!("session-of-{user}"));
             accounts
@@ -452,7 +456,10 @@ mod tests {
         assert_eq!(accounts.list_users().await.unwrap().len(), 1);
 
         // Once the flag moves, the account that was the admin can go like any other.
-        assert_eq!(accounts.set_admin(None).await.unwrap(), 0);
+        assert_eq!(
+            accounts.set_admins(&[]).await.unwrap(),
+            Vec::<String>::new()
+        );
         assert_eq!(accounts.delete_user(ann.id).await.unwrap(), Outcome::Done);
     }
 

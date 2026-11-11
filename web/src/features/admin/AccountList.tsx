@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, useAuthStore } from '@/features/auth/context'
 import { AccountItem } from './AccountItem'
 
-/** Every account, oldest first, with when it was made; the admin's own row carries an "Admin" badge, a friend's row the actions on it. */
+/** Every account, oldest first, with when it was made; an admin's row carries an "Admin" badge, a friend's row the actions on it. */
 export function AccountList() {
   const { status, users, error } = useAuth(useShallow((state) => state.accounts))
   const store = useAuthStore()

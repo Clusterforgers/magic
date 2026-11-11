@@ -766,6 +766,10 @@ object: ObjectId, } } | { "Learned": {
 /**
  * Who learned.
  */
+player: PlayerId, } } | { "EvidenceCollected": { 
+/**
+ * Who collected it.
+ */
 player: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.

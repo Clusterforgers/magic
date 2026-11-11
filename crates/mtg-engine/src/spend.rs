@@ -3,7 +3,7 @@
 //! A restricted mana stays in the pool with what it allows until the pool empties. A payment may use it only for a
 //! spell or an ability its restriction allows, and a source whose mana is restricted is a source of such a payment only.
 
-use mtg_cards::spend::{ManaLasts, SpendOn, SpendTraits};
+use mtg_cards::spend::{ManaLasts, SpecialAction, SpendOn, SpendTraits};
 use mtg_core::card::Subtype;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
@@ -39,6 +39,8 @@ pub enum SpendKind {
     Spell,
     /// Activating an ability.
     Ability,
+    /// Taking a special action of the kind (CR 116.2).
+    Special(SpecialAction),
 }
 
 /// What a payment is for: the thing restricted mana is checked against.
@@ -66,12 +68,21 @@ impl Spend {
         Spend::default()
     }
 
+    /// A payment for the special action `action`: mana restricted to it or to other costs pays it.
+    pub fn special(action: SpecialAction) -> Self {
+        Spend {
+            kind: SpendKind::Special(action),
+            ..Spend::default()
+        }
+    }
+
     /// `caster` casting `spell`; `has_x` when its cost has {X}.
     pub fn for_spell(state: &GameState, spell: ObjectId, caster: PlayerId, has_x: bool) -> Self {
         let mut traits = traits_of(state, spell);
         if let Some(object) = state.object(spell) {
             traits.not_owned = object.owner() != caster;
             traits.shares_commander_type = shares_commander_type(state, spell, caster);
+            traits.your_commander = state.is_commander(spell) && object.owner() == caster;
             // A card on its way to the stack is still in its zone; one on the stack remembers where it came from.
             traits.from_graveyard = match object.zone() {
                 Zone::Graveyard(_) => true,
@@ -115,6 +126,7 @@ impl Spend {
     pub fn face_down(mut self) -> Self {
         self.traits = SpendTraits::default();
         self.traits.types = self.traits.types.with(mtg_core::card::CardType::Creature);
+        self.traits.face_down = true;
         self
     }
 
@@ -154,7 +166,11 @@ impl Spend {
                     self.kind == SpendKind::Ability && filter.holds(&self.traits)
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
-                SpendOn::OtherCosts => self.kind == SpendKind::Other,
+                // A special action is paid as a cost that is neither a spell's nor an ability's.
+                SpendOn::OtherCosts => {
+                    matches!(self.kind, SpendKind::Other | SpendKind::Special(_))
+                }
+                SpendOn::Special(action) => self.kind == SpendKind::Special(*action),
                 // A rider limits nothing, so it neither allows nor refuses a payment.
                 SpendOn::When(_)
                 | SpendOn::Uncounterable(_)

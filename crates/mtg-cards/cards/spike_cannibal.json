@@ -19,10 +19,12 @@
             "effects": [
               {
                 "MoveCounters": {
-                  "from": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "from": { "Each": [{ "Type": "Creature" }] },
                   "to": "This",
                   "counter": "+1/+1",
-                  "count": { "Total": { "of": [{ "Type": "Creature" }, "Other"], "stat": "Power" } }
+                  "count": {
+                    "Counters": { "on": { "Each": [{ "Type": "Creature" }] }, "counter": "+1/+1" }
+                  }
                 }
               }
             ]

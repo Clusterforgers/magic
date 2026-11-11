@@ -33,6 +33,7 @@ mod pg_account_settings;
 mod pg_accounts;
 mod pg_admin;
 mod pg_admin_manage;
+mod pg_admins;
 mod pg_bulk_reads;
 mod pg_card_decks;
 mod pg_card_rules;

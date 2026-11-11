@@ -178,7 +178,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 transformed: *transformed,
                 counters,
                 attached_to: None,
+                face_down: false,
             };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
+        Destination::BattlefieldFaceDown { under } => {
+            let entry = Entry::face_down(entering_under(cx, under.as_ref())?);
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::BattlefieldAttached { to } => {
@@ -194,6 +199,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 transformed: false,
                 counters: &[],
                 attached_to: Some(NamedHost { host }),
+                face_down: false,
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -218,6 +224,22 @@ struct Entry<'a> {
     counters: &'a [(CounterKind, u32)],
     /// Attached to the permanent the move names, when it names one.
     attached_to: Option<NamedHost>,
+    /// Face down (CR 708.3): a 2/2 creature with nothing else that enters with nothing its card would bring.
+    face_down: bool,
+}
+
+impl Entry<'_> {
+    /// A card put onto the battlefield face down under `under`, its owner when none.
+    const fn face_down(under: Option<PlayerId>) -> Self {
+        Entry {
+            tapped: false,
+            under,
+            transformed: false,
+            counters: &[],
+            attached_to: None,
+            face_down: true,
+        }
+    }
 }
 
 /// The permanent a move onto the battlefield attaches its cards to.
@@ -283,6 +305,7 @@ fn onto_battlefield(
         transformed,
         counters,
         attached_to,
+        face_down,
     } = *entry;
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
@@ -298,11 +321,14 @@ fn onto_battlefield(
         };
         let spell = object.base_types().contains(CardType::Instant)
             || object.base_types().contains(CardType::Sorcery);
-        if object.zone() == Zone::Battlefield || spell {
+        // A face-down card is a 2/2 creature whatever its card is (CR 708.2a), so an instant or a sorcery enters too.
+        if object.zone() == Zone::Battlefield || (spell && !face_down) {
             continue;
         }
         let controller = under.unwrap_or_else(|| object.owner());
-        let host = if let Some(named) = attached_to {
+        let host = if face_down {
+            None
+        } else if let Some(named) = attached_to {
             match attached_entry(state, object, controller, named.host) {
                 Entering::Stays => continue,
                 Entering::Enters(host) => host,
@@ -320,7 +346,10 @@ fn onto_battlefield(
                 },
             }
         };
-        let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
+        let (mut event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
+        if face_down && let Event::ZoneChanged { cause, .. } = &mut event {
+            *cause = ZoneCause::PutFaceDown { by: controller };
+        }
         events.push(event);
         snapshots.extend(shot);
         entered.push(object.id());
@@ -355,9 +384,11 @@ fn onto_battlefield(
         }
         // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what enters with
         // counters can reach it (CR 306.5b).
-        events.extend(loyalty::entering(state, object.id()));
-        events.extend(battle::entering(state, object.id()));
-        events.extend(saga::entering(state, object.id()));
+        if !face_down {
+            events.extend(loyalty::entering(state, object.id()));
+            events.extend(battle::entering(state, object.id()));
+            events.extend(saga::entering(state, object.id()));
+        }
         events.extend(host.map(|to| Event::Attached {
             object: object.id(),
             to,

@@ -23,6 +23,7 @@ const spell = (traits: Partial<PaySpend['traits']> = {}, has_x = false): PaySpen
 })
 const ability: PaySpend = { kind: 'Ability', traits: { types: CREATURE, colors: 0 } }
 const onSpell = (filter: SpendFilter): SpendOn => ({ Spell: filter })
+const TURN_UP: PaySpend = { kind: { Special: 'TurnFaceUp' }, traits: { types: 0, colors: 0 } }
 const RIDER = { When: {} } as unknown as SpendOn
 const ENTERS: SpendOn = { Enters: { spell: { types: ['Creature'] }, keyword: 'Haste', this_turn: true } }
 
@@ -91,6 +92,14 @@ describe('spendAllows', () => {
     ['a cost without X is not paid by it', spell(), ['CostWithX'], false],
     ['other costs pay neither a spell nor an ability', undefined, ['OtherCosts'], true],
     ['other costs do not pay a spell', spell(), ['OtherCosts'], false],
+    ['your commander', spell({ your_commander: true }), [onSpell({ facts: ['YourCommander'] })], true],
+    ['another spell is not your commander', spell(), [onSpell({ facts: ['YourCommander'] })], false],
+    ['a face-down spell', spell({ face_down: true }), [onSpell({ facts: ['FaceDown'] })], true],
+    ['turning face up pays turning face up', TURN_UP, [{ Special: 'TurnFaceUp' }], true],
+    ['other costs pay a special action', TURN_UP, ['OtherCosts'], true],
+    ['unlocking does not pay turning face up', TURN_UP, [{ Special: 'Unlock' }], false],
+    ['turning face up does not pay a spell', spell(), [{ Special: 'TurnFaceUp' }], false],
+    ['turning face up does not pay other costs', undefined, [{ Special: 'TurnFaceUp' }], false],
   ])('%s', (_name, spend, only, expected) => {
     expect(spendAllows(spend, only)).toBe(expected)
   })
@@ -100,6 +109,7 @@ describe('spendAllows', () => {
     [[{ Ability: {} }], 'abilities'],
     [['CostWithX'], 'costs with {X}'],
     [['OtherCosts'], 'other costs'],
+    [[{ Special: 'TurnFaceUp' }], 'turning face up'],
     [[onSpell({ subtypes: ['Elf'] }), { Ability: {} }], 'elf spells or abilities'],
     [[RIDER], 'anything'],
   ])('words %j', (only, words) => {

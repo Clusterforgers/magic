@@ -594,6 +594,7 @@ const BECAUSE: Record<
     | { Haunting: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
+    | { PutFaceDown: unknown }
   >,
   string
 > = {
@@ -619,6 +620,7 @@ function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Haunting' in cause) return 'is exiled haunting a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
+  if ('PutFaceDown' in cause) return 'is put onto the battlefield face down'
   return 'is exiled for a while'
 }
 
@@ -923,6 +925,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('EmblemCreated' in event) return line(`${n.seat(event.EmblemCreated.owner)} gets an emblem`)
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
+  if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)

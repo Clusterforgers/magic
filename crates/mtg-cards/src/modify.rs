@@ -632,6 +632,8 @@ pub enum GameRule {
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
     /// (CR 701.38d).
     VoteAgain(Ref),
+    /// The players get an additional vote each time they vote: "While voting, you get an additional vote." (CR 701.38d).
+    ExtraVote(Ref),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such

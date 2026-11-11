@@ -53,6 +53,7 @@ impl Slot {
                 "WithCountersType",
                 "WithCountersAmount",
                 "Transformed",
+                "FaceDown",
                 "AttachedTo",
             ],
             Slot::Actor | Slot::Pool | Slot::Count => &[],
@@ -546,6 +547,7 @@ fn goes_in(
             "WithCountersType",
             "Transformed",
             "AttachedTo",
+            "FaceDown",
         ] {
             if key == "WithCountersType" && destination == "Exile" {
                 continue;
@@ -575,6 +577,7 @@ fn goes_in(
             let host = defined(ctx, p.get("AttachedTo").unwrap_or_default())?;
             Goes::To(json!({"BattlefieldAttached": {"to": host}}))
         }
+        "Battlefield" if p.has("FaceDown") => face_down(ctx, p)?,
         "Battlefield" => {
             let mut enters = json!({"tapped": tapped});
             match p.get("Transformed") {
@@ -628,6 +631,26 @@ fn goes_in(
         }
         other => return unmapped(format!("zone:Destination={other}")),
     })
+}
+
+/// `FaceDown$ True` onto the battlefield: a face-down 2/2 (CR 708.3), under the player `GainControl$` names or its owner.
+/// Any other way of entering, and the face-down characteristics an effect sets (`FaceDownPower$`), are gaps.
+fn face_down(ctx: &Ctx, p: &Params) -> Tr<Goes> {
+    if p.get("FaceDown") != Some("True") {
+        return unmapped("key:ChangeZone.FaceDown");
+    }
+    for key in ["Tapped", "Attacking", "WithCountersType", "Transformed"] {
+        if p.has(key) {
+            return unmapped(format!("key:ChangeZone.FaceDown-with-{key}"));
+        }
+    }
+    let mut enters = json!({});
+    match p.get("GainControl") {
+        None | Some("False") => {}
+        Some("True") => enters["under"] = json!("You"),
+        Some(word) => enters["under"] = one_player(ctx, word, "Frame.GainControl")?,
+    }
+    Ok(Goes::To(json!({ "BattlefieldFaceDown": enters })))
 }
 
 /// The counters a card enters with (`WithCountersType$ P1P1 | WithCountersAmount$ 2`): one kind with a fixed number, one

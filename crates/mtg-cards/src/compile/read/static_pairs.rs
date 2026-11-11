@@ -55,6 +55,11 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
         return otherwise;
     }
     let paid_less = super::ep22_pairs::texts(first, second);
+    let paid_less = if paid_less.is_empty() {
+        super::ep30_paid::ep30_paid_texts(first, second)
+    } else {
+        paid_less
+    };
     if !paid_less.is_empty() {
         return paid_less;
     }

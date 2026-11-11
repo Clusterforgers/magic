@@ -1158,6 +1158,10 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
                 ..
             },
         ] => true,
+        // "return ~ from your graveyard to the battlefield face up or face down".
+        [Effect::Either { first, second }] => {
+            super::ep33_face_down::ep33_face_up_or_down(first, second).is_some()
+        }
         _ => false,
     }
 }

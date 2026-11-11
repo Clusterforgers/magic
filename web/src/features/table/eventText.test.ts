@@ -109,6 +109,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
+  EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -413,6 +414,17 @@ const MORE: [Event, string][] = [
   [
     { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
     'Forest is cloaked',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
+        to: 'Battlefield',
+        cause: { PutFaceDown: { by: 0 } },
+      },
+    },
+    'Forest is put onto the battlefield face down',
   ],
   [
     {

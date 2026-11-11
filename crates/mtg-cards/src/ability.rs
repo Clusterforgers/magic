@@ -289,6 +289,10 @@ pub enum Ability {
         /// The caster must pay the cost: a spell whose caster cannot is not cast.
         #[serde(default, skip_serializing_if = "is_false")]
         required: bool,
+        /// The caster may pay it any number of times, counted by `Amount::AdditionalPaid` ("you may exile any number of
+        /// white cards from your hand": one card each time); only a cost that is not `required`.
+        #[serde(default, skip_serializing_if = "is_false")]
+        repeatable: bool,
     },
     /// "If [condition], you may cast this spell without paying its mana cost." (CR 118.9): an alternative cost of zero mana that
     /// is open while the condition holds; the additional costs, the commander tax and the cost modifiers still apply (CR 118.9d).

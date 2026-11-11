@@ -286,12 +286,19 @@ pub fn remove(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 
 /// "Move a +1/+1 counter from target creature onto ~.", "Move a charge counter from ~ onto target
 /// artifact.", "Move a counter from target permanent you control onto a second target permanent.", "Move all counters
-/// from ~ onto target creature." One of the two is the card itself or a second target.
+/// from ~ onto target creature.", "Move any number of +1/+1 counters from ~ onto another target creature." One of the
+/// two is the card itself or a second target.
 pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("move")?;
+    // "any number of": every counter there is, which the controller may stop short of.
+    let up_to = r.words("any number of");
     // Counters of any kind: one the controller picks, or every one there is.
-    let all = r.words("all counters");
-    let (counter, number) = if all || r.words("a counter") {
+    let all = r.words("all counters") || (up_to && r.words("counters"));
+    let (counter, number) = if up_to && !all {
+        let counter = kind(r)?;
+        r.need("counters")?;
+        (Some(counter), 0)
+    } else if all || r.words("a counter") {
         (None, 1)
     } else {
         let (counter, number) = counters(r)?;
@@ -311,16 +318,20 @@ pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         place(r)?
     };
     (from != to).then_some(())?;
-    let count = if all {
-        Amount::AnyCounters(from.clone())
-    } else {
-        Amount::Fixed(i32::try_from(number).ok()?)
+    let count = match &counter {
+        _ if all => Amount::AnyCounters(from.clone()),
+        Some(kind) if up_to => Amount::Counters {
+            on: from.clone(),
+            counter: kind.clone(),
+        },
+        _ => Amount::Fixed(i32::try_from(number).ok()?),
     };
     Some(vec![Effect::MoveCounters {
         from,
         to,
         counter,
         count,
+        up_to,
     }])
 }
 
@@ -331,11 +342,45 @@ pub(super) fn ep21_move_text(
     count: &Amount,
     from: &Ref,
 ) -> Option<String> {
+    // Every counter of the kind where they leave: "all +1/+1 counters".
+    if let Some(kind) = counter
+        && *count
+            == (Amount::Counters {
+                on: from.clone(),
+                counter: kind.clone(),
+            })
+    {
+        return Some(format!("all {} counters", kind_text(kind)?));
+    }
     match counter {
         Some(counter) => text(counter, count),
         None if *count == Amount::one() => Some("a counter".to_owned()),
         None if *count == Amount::AnyCounters(from.clone()) => Some("all counters".to_owned()),
         None => None,
+    }
+}
+
+/// The counters of a move the controller may stop ("any number of +1/+1 counters", "any number of counters"): the count
+/// must be every counter of the kind, or of any kind, where they leave.
+pub(super) fn ep30_any_number_text(
+    counter: Option<&CounterKind>,
+    count: &Amount,
+    from: &Ref,
+) -> Option<String> {
+    match counter {
+        Some(kind)
+            if *count
+                == (Amount::Counters {
+                    on: from.clone(),
+                    counter: kind.clone(),
+                }) =>
+        {
+            Some(format!("any number of {} counters", kind_text(kind)?))
+        }
+        None if *count == Amount::AnyCounters(from.clone()) => {
+            Some("any number of counters".to_owned())
+        }
+        _ => None,
     }
 }
 
