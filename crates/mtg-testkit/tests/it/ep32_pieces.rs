@@ -14,7 +14,7 @@ use mtg_engine::choose::{CardsChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::forest;
+use mtg_testkit::cards::{cost, forest};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -106,6 +106,7 @@ fn lesson() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Lesson")
             .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[]))
             .with_rules(Ability::Keyword(Keyword::Paradigm))
             .with_rules(spell),
     )
