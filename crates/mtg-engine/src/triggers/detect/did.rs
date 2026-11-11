@@ -159,6 +159,9 @@ pub(super) fn did_happened(
         }
         Event::PlayerLost { player, .. } => found.push(did(Action::LostGame, Some(*player), None)),
         Event::Learned { player } => found.push(did(Action::Learned, Some(*player), None)),
+        Event::EvidenceCollected { player } => {
+            found.push(did(Action::CollectedEvidence, Some(*player), None));
+        }
         _ => {}
     }
     found.extend(from_found(fresh, &of));

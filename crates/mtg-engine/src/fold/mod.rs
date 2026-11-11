@@ -431,6 +431,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::Learned { .. }
+        | Event::EvidenceCollected { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }

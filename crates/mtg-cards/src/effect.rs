@@ -116,6 +116,13 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
     },
+    /// The battlefield face down (CR 708.3): a 2/2 creature with nothing else that its controller alone may look at,
+    /// turned face up only for its morph, megamorph or disguise cost.
+    BattlefieldFaceDown {
+        /// Enters under this player's control; its owner's when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.

@@ -106,6 +106,7 @@ mod ep27_flash;
 mod ep28_under;
 mod ep29_flash;
 mod ep32_discard;
+mod ep33_face_down;
 mod equip_options;
 mod evasion;
 mod event_wordings;

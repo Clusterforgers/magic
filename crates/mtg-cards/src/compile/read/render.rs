@@ -2891,6 +2891,7 @@ impl Writer<'_> {
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))
             .or_else(|| self.reanimated(effect))
+            .or_else(|| super::ep33_face_down::ep33_put_face_down(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))
             .or_else(|| cast::text(effect))
@@ -3140,7 +3141,10 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
-            Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
+            Effect::Either { first, second } => {
+                super::ep33_face_down::ep33_face_up_or_down(first, second)
+                    .or_else(|| self.dk1c5_either_text(first, second))?
+            }
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {
                     "Undercity"

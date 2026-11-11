@@ -2569,7 +2569,10 @@ impl Walker<'_> {
         match to {
             Destination::Battlefield {
                 under: Some(who), ..
-            } => self.at("under", |w| w.reference(who, Kind::Player)),
+            }
+            | Destination::BattlefieldFaceDown { under: Some(who) } => {
+                self.at("under", |w| w.reference(who, Kind::Player));
+            }
             Destination::BattlefieldAttached { to } => {
                 self.at("to", |w| w.reference(to, Kind::Object));
             }
@@ -3096,6 +3099,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.Attached");
+            }
+            Effect::Move {
+                to: Destination::BattlefieldFaceDown { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.FaceDown");
             }
             Effect::Move {
                 to:

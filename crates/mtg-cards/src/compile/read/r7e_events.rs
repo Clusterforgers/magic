@@ -165,6 +165,11 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
         Action::Scried => player_verb(who, "scry")?,
         Action::Surveilled => player_verb(who, "surveil")?,
         Action::Proliferated => player_verb(who, "proliferate")?,
+        Action::CollectedEvidence => match who {
+            Ref::You => "you collect evidence".to_owned(),
+            Ref::Opponents => "an opponent collects evidence".to_owned(),
+            _ => return None,
+        },
         Action::Shuffled => match who {
             Ref::You => "you shuffle your library".to_owned(),
             _ => format!("{} their library", player_verb(who, "shuffle")?),
