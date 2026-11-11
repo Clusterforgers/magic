@@ -8,6 +8,7 @@ import type { CardSize } from './cardSize'
 import { CardRow } from './CardRow'
 import type { CardBox } from './CardRow'
 import { useGhosts } from './fx/hooks'
+import { GridCardContext } from './gridCard'
 import { SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
 import { useSeatNamer } from './names'
@@ -161,7 +162,10 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const creatureGhosts = useGhosts(seat, 'creatures').length
   const otherGhosts = useGhosts(seat, 'other').length
   const landGhosts = useGhosts(seat, 'lands').length
-  const layout = useMemo(
+  const grid = useContext(GridCardContext)
+  const most = grid?.most ?? null
+  // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
+  const alone = useMemo(
     () =>
       layoutSeat({
         box,
@@ -173,6 +177,27 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
       }),
     [box, stacks, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
   )
+  const aloneWidth = alone.fit?.cardWidth ?? null
+  const layout = useMemo(
+    () =>
+      most === null || aloneWidth === null || aloneWidth <= most
+        ? alone
+        : layoutSeat({
+            box,
+            stacks,
+            facing,
+            opened,
+            marked,
+            held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
+            most,
+          }),
+    [alone, aloneWidth, most, box, stacks, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts],
+  )
+  const report = grid?.report
+  useLayoutEffect(() => {
+    report?.(seat, aloneWidth)
+  }, [report, seat, aloneWidth])
+  useLayoutEffect(() => () => report?.(seat, null), [report, seat])
   // The toggle names a stack by a member, so a lane that keeps its ids keeps the callback while keys change.
   const keys = useRef(layout.stacks)
   useLayoutEffect(() => {
