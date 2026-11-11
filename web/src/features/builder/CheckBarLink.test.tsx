@@ -1,4 +1,4 @@
-// Goal: the builder's check bar links a saved deck with cards played by hand or drafts waiting to its not-validated list ("Cards to check", `/decks/$deckId/unvalidated`), and draws no link for a deck the game runs whole or a deck that is not saved.
+// Goal: the builder's check bar links a saved deck with cards played by hand or drafts waiting to its review ("Review cards", `/review?deck=`), and draws no link for a deck the game runs whole or a deck that is not saved.
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { counts } from '@/features/decks/fakeDecks'
@@ -37,8 +37,8 @@ describe('the link of a saved deck', () => {
       expect(link()).toBeNull()
       return
     }
-    expect(link()).toHaveTextContent(/^Cards to check$/)
-    expect(link()).toHaveAttribute('href', '/decks/deck-1/unvalidated')
+    expect(link()).toHaveTextContent(/^Review cards$/)
+    expect(link()).toHaveAttribute('href', '/review?deck=deck-1')
   })
 })
 
@@ -61,6 +61,6 @@ describe('a deck that is not saved', () => {
     )
     expect(await screen.findByRole('combobox', { name: 'Sort cards' })).toBeInTheDocument()
     expect(document.querySelector('[data-slot="check-counts"]')).toHaveTextContent(/3 played by hand/)
-    expect(screen.queryByRole('link', { name: 'Cards to check' })).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Review cards' })).toBeNull()
   })
 })

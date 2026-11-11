@@ -132,14 +132,14 @@ export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: Unvalid
         <div className="flex flex-wrap items-center gap-2">
           {state.status === 'ready' && toRead > 0 ? (
             <Link
-              to="/read"
+              to="/review"
               search={single ? { deck: scope.id } : { mine: true }}
               data-slot="read-all"
               data-read-path={readPath(single ? { deck: scope.id } : { mine: true })}
               className={buttonVariants({ size: 'sm' })}
             >
               <BookOpenIcon aria-hidden="true" />
-              {`Read ${toRead} ${toRead === 1 ? 'card' : 'cards'}`}
+              {`Review ${toRead} ${toRead === 1 ? 'card' : 'cards'}`}
             </Link>
           ) : null}
           {single ? (

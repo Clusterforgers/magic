@@ -298,7 +298,7 @@ const STOPS: readonly Stop[] = [
   {
     name: 'The review screen (dev), a deck to read',
     fitsFrom: Infinity,
-    actions: { Correct: 'main [data-verdict="correct"]', Wrong: 'main [data-verdict="wrong"]' },
+    actions: { 'Reads right': 'main [data-verdict="correct"]', 'Reads wrong': 'main [data-verdict="wrong"]' },
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/read`)
       await expect(page.locator('[data-slot="read-card"]')).toBeVisible()
@@ -347,17 +347,17 @@ const STOPS: readonly Stop[] = [
   {
     name: 'The cards to check (dev), drafts waiting beside a deck on reads',
     fitsFrom: Infinity,
-    actions: { Read: 'text:Read 3 cards' },
+    actions: { Review: 'text:Review 3 cards' },
     shots: true,
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/unvalidated?view=reads`)
-      await expect(page.getByRole('link', { name: 'Read 3 cards' })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Review 3 cards' })).toBeVisible()
     },
   },
   {
     name: 'The review screen (dev), the dialog from the table',
     fitsFrom: Infinity,
-    actions: { Correct: '[data-slot="read-dialog"] [data-verdict="correct"]' },
+    actions: { 'Reads right': '[data-slot="read-dialog"] [data-verdict="correct"]' },
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/read?view=dialog`)
       await expect(page.locator('[data-slot="read-dialog"] [data-slot="read-card"]')).toBeVisible()

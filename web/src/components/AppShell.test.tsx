@@ -1,4 +1,4 @@
-// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games" and "Cards to check" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
+// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games" and "Review cards" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -55,7 +55,7 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
-  it('adds Decks, My games and Cards to check, between Precons and Create, for an account', async () => {
+  it('adds Decks, My games and Review cards, between Precons and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual([
@@ -63,7 +63,7 @@ describe('the main navigation', () => {
       'Precons',
       'Decks',
       'My games',
-      'Cards to check',
+      'Review cards',
       'Create',
     ])
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
@@ -71,7 +71,7 @@ describe('the main navigation', () => {
       '/precons',
       '/decks',
       '/games',
-      '/decks/unvalidated',
+      '/review?mine=true',
       '/new',
     ])
   })
@@ -95,7 +95,7 @@ describe('the main navigation', () => {
   })
 })
 
-describe('the Cards to check tab', () => {
+describe('the Review cards tab', () => {
   const waiting = (oracleId: string, inDecks: boolean, state: ReadState = 'pending') => ({
     oracle_id: oracleId,
     name: oracleId,
@@ -114,7 +114,7 @@ describe('the Cards to check tab', () => {
     await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
     return app
   }
-  const tab = () => within(mainNav()).getByRole('link', { name: /^Cards to check/ })
+  const tab = () => within(mainNav()).getByRole('link', { name: /^Review cards/ })
 
   it.each([
     ['cards of your decks, each once', [waiting('a', true), waiting('b', true), waiting('a', true)], 2],
@@ -122,13 +122,13 @@ describe('the Cards to check tab', () => {
     ['a pending draft only', [waiting('a', true), waiting('b', true, 'approved')], 1],
   ])('counts %s on a badge named in the label', async (_case, cards, count) => {
     await openWith(cards)
-    await waitFor(() => expect(tab()).toHaveAccessibleName(`Cards to check, ${count} to read`))
+    await waitFor(() => expect(tab()).toHaveAccessibleName(`Review cards, ${count} to read`))
     expect(tab().querySelector('[data-slot="to-read-badge"]')).toHaveTextContent(String(count))
-    expect(tab()).toHaveAttribute('href', '/decks/unvalidated')
+    expect(tab()).toHaveAttribute('href', '/review?mine=true')
   })
 
-  it('is the current page on the list of cards to check, and Decks is not', async () => {
-    await renderApp('/decks/unvalidated', {
+  it('is the current page on the review of your decks, and Decks is not', async () => {
+    await renderApp('/review?mine=true', {
       accounts: { users: { [ADA.username]: ADA.password }, signedIn: ADA.username },
     })
     await waitFor(() => expect(tab()).toHaveAttribute('aria-current', 'page'))
@@ -138,26 +138,26 @@ describe('the Cards to check tab', () => {
   it('shows no badge when none of your cards waits', async () => {
     const app = await openWith([waiting('x', false)])
     await app.settle()
-    expect(tab()).toHaveAccessibleName('Cards to check')
+    expect(tab()).toHaveAccessibleName('Review cards')
     expect(tab().querySelector('[data-slot="to-read-badge"]')).toBeNull()
   })
 
   it('shows 99+ for a long list', async () => {
     await openWith(Array.from({ length: 120 }, (_, at) => waiting(`c${at}`, true)))
-    await waitFor(() => expect(tab()).toHaveAccessibleName('Cards to check, 120 to read'))
+    await waitFor(() => expect(tab()).toHaveAccessibleName('Review cards, 120 to read'))
     expect(tab().querySelector('[data-slot="to-read-badge"]')).toHaveTextContent('99+')
   })
 
   it('is not there for a guest, who is not asked for the count', async () => {
     const app = await openWith([waiting('a', true)], false)
     await app.settle()
-    expect(within(mainNav()).queryByRole('link', { name: /^Cards to check/ })).toBeNull()
+    expect(within(mainNav()).queryByRole('link', { name: /^Review cards/ })).toBeNull()
   })
 
   it('tells the home page to point there while cards wait', async () => {
     await openWith([waiting('a', true), waiting('b', true)])
     const notice = await screen.findByRole('link', { name: '2 cards wait for your read' })
-    expect(notice).toHaveAttribute('href', '/decks/unvalidated')
+    expect(notice).toHaveAttribute('href', '/review?mine=true')
   })
 
   it('leaves the home page without the notice when none waits', async () => {

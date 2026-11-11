@@ -103,8 +103,8 @@ describe('the deck preview', () => {
   })
 
   it.each([
-    [{ deck: 'deck-1' }, '/read?deck=deck-1'],
-    [{ precon: 'c18-x' }, '/read?precon=c18-x'],
+    [{ deck: 'deck-1' }, '/review?deck=deck-1'],
+    [{ precon: 'c18-x' }, '/review?precon=c18-x'],
   ] as const)(
     'says how many cards wait for a read, with a link to the review screen at %j',
     async (readTarget, path) => {

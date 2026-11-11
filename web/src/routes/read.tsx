@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { parseReadSearch, targetOf } from '@/features/reads/model'
-import { ReadPage } from '@/features/reads/ReadPage'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { parseReadSearch } from '@/features/reads/model'
 
-function ReadRoute() {
-  const search = Route.useSearch()
-  return <ReadPage target={targetOf(search)} />
-}
-
-export const Route = createFileRoute('/read')({ validateSearch: parseReadSearch, component: ReadRoute })
+/** The old address of the review screen: forwards to `/review` with the same deck, precon or `mine`. */
+export const Route = createFileRoute('/read')({
+  validateSearch: parseReadSearch,
+  beforeLoad: ({ search }) => {
+    throw redirect({ to: '/review', search, replace: true })
+  },
+})

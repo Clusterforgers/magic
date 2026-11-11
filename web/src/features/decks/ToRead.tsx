@@ -17,7 +17,7 @@ interface ToReadProps {
 
 /**
  * "3 cards to read" with a book beside it, where a deck check says drafts wait for a player; nothing for none. With a
- * target it links to the review screen (`/read?deck=<id>`, `/read?precon=<code>` or `/read`, also in
+ * target it links to the review screen (`/review?deck=<id>`, `/review?precon=<code>` or `/review`, also in
  * `data-read-path`).
  */
 export function ToRead({ count, target, className }: ToReadProps) {
@@ -38,10 +38,10 @@ export function ToRead({ count, target, className }: ToReadProps) {
   }
   return (
     <Link
-      to="/read"
+      to="/review"
       search={target ?? {}}
       data-slot="to-read"
-      data-read-path={target === null ? '/read' : readPath(target)}
+      data-read-path={target === null ? '/review' : readPath(target)}
       className={cn(look, 'underline-offset-4 hover:underline')}
       onClick={(event) => event.stopPropagation()}
     >

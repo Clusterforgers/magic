@@ -86,8 +86,8 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
         )}
         {hasUnvalidated(deck.summary.counts) ? (
           <Link
-            to="/decks/$deckId/unvalidated"
-            params={{ deckId: deck.id }}
+            to="/review"
+            search={{ deck: deck.id }}
             aria-label={`${link} in ${deck.name}`}
             className="w-fit text-sm text-muted-foreground underline-offset-4 hover:underline"
           >

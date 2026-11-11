@@ -26,8 +26,3 @@ export function groupByRule(reads: BulkReads): RuleGroup[] {
 export function wordingOnly(count: number, what: string): string {
   return `${count} ${count === 1 ? 'card' : 'cards'} ${what}`
 }
-
-/** The read page's link text: "12 wording-only, approve in bulk". */
-export function bulkLinkText(count: number): string {
-  return `${count} wording-only, approve in bulk`
-}

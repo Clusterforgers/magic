@@ -7,8 +7,8 @@ import type { CheckedDeck, DeckRef } from './model'
 /** Decks checked at once. */
 const AT_ONCE = 4
 
-/** What to list: the cards of every saved deck, or of one. */
-export type Scope = { kind: 'all' } | { kind: 'deck'; id: string }
+/** What to list: the cards of every saved deck, of one, or none (nothing is asked). */
+export type Scope = { kind: 'all' } | { kind: 'deck'; id: string } | { kind: 'none' }
 
 /** The checked decks as the page sees them. */
 export type UnvalidatedState =
@@ -56,7 +56,7 @@ export function useUnvalidated(
 ): { state: UnvalidatedState; reload: () => void } {
   const [round, setRound] = useState(0)
   const reload = useCallback(() => setRound((n) => n + 1), [])
-  const scopeKey = scope.kind === 'all' ? '*' : scope.id
+  const scopeKey = scope.kind === 'all' ? '*' : scope.kind === 'none' ? '' : scope.id
   const key = `${scopeKey}#${round}`
   const [progress, setProgress] = useState<{ key: string; done: number; total: number | null }>({
     key,
@@ -72,6 +72,10 @@ export function useUnvalidated(
       if (mine()) setSettled({ key, state })
     }
     const load = async (): Promise<void> => {
+      if (scopeKey === '') {
+        finish({ status: 'ready', decks: [], failed: [], saved: 0 })
+        return
+      }
       if (scopeKey !== '*') {
         const view = await api.get(scopeKey)
         finish({

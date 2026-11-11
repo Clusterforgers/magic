@@ -108,7 +108,7 @@ export function LineRow({
           <SupportMark support={check.support} />
           {check.support === 'unverified' && readTarget !== undefined ? (
             <Link
-              to="/read"
+              to="/review"
               search={readTarget}
               data-slot="line-read"
               className="pt-1 text-xs font-medium text-primary underline-offset-4 hover:underline"
