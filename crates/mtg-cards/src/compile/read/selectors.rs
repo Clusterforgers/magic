@@ -1936,6 +1936,15 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     None => format!("target {phrase}"),
                 }
             }
+            // "Any target chosen at random", "target opponent chosen at random".
+            Targetable::AtRandom(inner) => {
+                let one = TargetSpec {
+                    what: (**inner).clone(),
+                    bounds: spec.bounds.clone(),
+                    divide: None,
+                };
+                format!("{} chosen at random", spec_text(&one)?)
+            }
             Targetable::Together { .. }
             | Targetable::PerPlayer { .. }
             | Targetable::ChosenBy { .. } => return None,

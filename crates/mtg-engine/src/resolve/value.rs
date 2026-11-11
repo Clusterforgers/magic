@@ -71,6 +71,7 @@ impl From<ResolveError> for crate::error::EngineError {
 static NO_CHOICES: Choices = Choices {
     modes: Vec::new(),
     random_modes: false,
+    random_targets: 0,
     x: None,
     targets: Vec::new(),
     division: Vec::new(),
@@ -920,7 +921,8 @@ impl<'a> Scope<'a> {
         let mut what = &spec.what;
         while let Targetable::Together { what: inner, .. }
         | Targetable::Another { what: inner, .. }
-        | Targetable::ChosenBy { what: inner, .. } = what
+        | Targetable::ChosenBy { what: inner, .. }
+        | Targetable::AtRandom(inner) = what
         {
             what = inner;
         }
@@ -933,7 +935,8 @@ impl<'a> Scope<'a> {
             Targetable::Opponent => self.refs(&Ref::Opponents),
             Targetable::Together { .. }
             | Targetable::Another { .. }
-            | Targetable::ChosenBy { .. } => {
+            | Targetable::ChosenBy { .. }
+            | Targetable::AtRandom(_) => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(

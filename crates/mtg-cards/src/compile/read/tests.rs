@@ -285,6 +285,7 @@ mod ep21_plus;
 mod ep22_writers;
 mod ep23_writers;
 mod ep24_writers;
+mod ep26_writers;
 mod evasion;
 mod event_batches;
 mod events;

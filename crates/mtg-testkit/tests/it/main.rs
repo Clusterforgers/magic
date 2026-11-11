@@ -241,6 +241,7 @@ mod ep24_haste_abilities;
 mod ep24_limits;
 mod ep24_spend_as;
 mod ep24_unspent_mana;
+mod ep26_random_targets;
 mod equip_to;
 mod equipment;
 mod equipment_creature;

@@ -15,6 +15,7 @@ use crate::choose::{
 use crate::decision::{Decision, DecisionKind};
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::Scope;
+use crate::rng::GameRng;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
 /// (CR 303.4a), otherwise those of the rules or, for a modal ability, of the modes chosen.
@@ -126,6 +127,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             return Some(Next::Drop);
         }
         options.max = options.max.min(left);
+        if let Targetable::AtRandom(_) = &specs[index].what {
+            pick(ctx, work, options.legal, options.max);
+            continue;
+        }
         if !asks(&options) {
             work.choices.targets.push(Vec::new());
             continue;
@@ -143,6 +148,22 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return Some(ctx.ask(DecisionKind::ChooseTargets(options)));
     }
     None
+}
+
+/// "Chosen at random": the game draws `count` of the `legal` targets with the next substream of its random source, after
+/// those the modes drawn and the earlier random specifications spent. The choices count it, and the event that puts the
+/// spell or ability on the stack spends the substream; nothing is drawn when there is nothing to choose from.
+fn pick(ctx: &Ctx<'_>, work: &mut Work<'_>, mut legal: Vec<crate::choose::Target>, count: u32) {
+    let count = usize::try_from(count).unwrap_or(usize::MAX);
+    if count == 0 || legal.is_empty() {
+        work.choices.targets.push(Vec::new());
+        return;
+    }
+    let spent = u64::from(work.choices.random_modes) + u64::from(work.choices.random_targets);
+    GameRng::substream(ctx.state.seed, ctx.state.rng_index + spent).shuffle(&mut legal);
+    legal.truncate(count);
+    work.choices.targets.push(legal);
+    work.choices.random_targets = work.choices.random_targets.saturating_add(1);
 }
 
 /// Who chooses the targets of `spec`: for "target creature of their choice" the first player it names, in turn order

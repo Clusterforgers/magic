@@ -989,6 +989,14 @@ pub fn target_spec(ctx: &Ctx, params: &Params, zone: Option<&str>) -> Tr<Value> 
     if let Some(word) = params.get("TargetingPlayer") {
         what = chosen_by(ctx, params, word, &what)?;
     }
+    // "Any target chosen at random": one target the game draws; a random number of random targets is not read.
+    match params.get("TargetsAtRandom") {
+        None | Some("False") => {}
+        Some("True") if !params.has("TargetMin") && !params.has("TargetMax") => {
+            what = json!({"AtRandom": what});
+        }
+        Some(_) => return unmapped("key:TargetsAtRandom-shape"),
+    }
     let min = params.get("TargetMin");
     let max = params.get("TargetMax");
     let mut spec = json!({ "what": what });

@@ -479,6 +479,7 @@ const RUNS: &[&str] = &[
     "Target.TotalManaValue",
     "Target.Another",
     "Target.ChosenBy",
+    "Target.AtRandom",
     "Effect.FlipCoin",
     "Effect.Clash",
     "Effect.Modal.AtRandom",

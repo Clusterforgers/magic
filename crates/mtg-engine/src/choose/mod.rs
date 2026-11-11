@@ -116,6 +116,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub random_modes: bool,
+    /// How many target specifications the game filled with its random source ("any target chosen at random"), each with
+    /// the next substream after the modes: the event that carries these choices spends them.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u8>", optional))]
+    pub random_targets: u8,
     /// The value of X, which outlives the spell (CR 107.3).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]

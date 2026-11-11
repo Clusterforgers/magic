@@ -548,6 +548,9 @@ pub enum Targetable {
         /// What may be chosen.
         what: Box<Targetable>,
     },
+    /// "Any target chosen at random": what the inner kind allows, picked by the game's random source among the legal
+    /// targets as the spell or ability is announced, not by a player (CR 115.7 rulings).
+    AtRandom(Box<Targetable>),
 }
 
 impl Targetable {

@@ -212,6 +212,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             targetable(ctx, what, plural),
             who(ctx, chooser)
         ),
+        Targetable::AtRandom(what) => format!("{} chosen at random", targetable(ctx, what, plural)),
     }
 }
 

@@ -207,7 +207,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
             .modes
             .insert((put.source, put.origin, put.ability, *mode));
     }
-    state.rng_index += u64::from(put.choices.random_modes);
+    state.rng_index += u64::from(put.choices.random_modes) + u64::from(put.choices.random_targets);
     let source = put.source;
     // A triggered ability leaves the queue as it goes on the stack and takes what waited with it: the rules of a
     // delayed trigger and the names it captured.
