@@ -19,6 +19,7 @@ Adventurous Eater // Have a Bite
 Aeromunculus
 Aether Gale
 Aether Hub
+Aethersnatch
 Agate Instigator
 Aggravated Assault
 Ainok Bond-Kin
@@ -31,6 +32,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
+Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
@@ -38,6 +40,7 @@ All of History, All at Once
 Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
+Alter Reality
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -74,6 +77,7 @@ Archway Commons
 Armguard Familiar
 Arrogant Wurm
 Artful Maneuver
+Artificial Evolution
 Artistic Refusal
 Arvad the Cursed
 Ash Barrens
@@ -308,6 +312,7 @@ Colossus Hammer
 Combat Celebrant
 Combustion Technique
 Command Tower
+Commandeer
 Commander's Insignia
 Commander's Plate
 Commence the Endgame
@@ -347,6 +352,7 @@ Crypt Ghast
 Crypt of Agadeem
 Crystal Barricade
 Crystal Quarry
+Crystal Spray
 Cuboid Colony
 Culling Ritual
 Cultivate
@@ -420,6 +426,7 @@ Determined Iteration
 Devastation Tide
 Devoted Druid
 Diffusion Sliver
+Dig Up
 Dimir Cutpurse
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -517,6 +524,7 @@ Emmara Tandris
 Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
+Emrakul, the Promised End
 Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
@@ -586,6 +594,7 @@ Fertile Ground
 Fetid Heath
 Field Trip
 Fierce Guardianship
+Fierce Retribution
 Fiery Confluence
 Fiery Fall
 Fiery Temper
@@ -680,6 +689,7 @@ Girder Goons
 Gisa and Geralf
 Gixian Infiltrator
 Glacial Ray
+Glamerdye
 Glassworks // Shattered Yard
 Glimpse of Freedom
 Glimpse the Core
@@ -886,6 +896,7 @@ Kang, Temporal Tyrant
 Karador, Ghost Chieftain
 Karametra's Favor
 Karametra, God of Harvests
+Karn Liberated
 Karn's Bastion
 Kathari Screecher
 Kaya's Wrath
@@ -998,6 +1009,7 @@ Mabel, Bitter Recluse
 Machine God's Effigy
 Maestros Theater
 Mage Hunter
+Magical Hack
 Magistrate's Scepter
 Magmatic Insight
 Magus of the Moon
@@ -1059,9 +1071,11 @@ Midnight Pathlighter
 Migratory Greathorn
 Migratory Route
 Millikin
+Mind Bend
 Mind Flayer
 Mindless Conscription
 Mindlock Orb
+Mindslaver
 Ministrant of Obligation
 Mirari
 Mirari's Wake
@@ -1165,6 +1179,7 @@ Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
 Oona's Blackguard
+Opposition Agent
 Opt
 Oran-Rief, the Vastwood
 Orazca Relic
@@ -1193,9 +1208,11 @@ Panther Habit
 Panther Robot
 Paradise Druid
 Paradise Plume
+Parasitic Grasp
 Parhelion Patrol
 Pariah
 Patagia Viper
+Path of Peril
 Path of the Animist
 Path of the Enigma
 Path of the Ghosthunter
@@ -1511,6 +1528,7 @@ Skyshroud Behemoth
 Skyshroud Ridgeback
 Skysovereign, Consul Flagship
 Sleep
+Sleight of Mind
 Slip Through Space
 Slitherhead
 Sluiceway Scorpion
@@ -1540,6 +1558,7 @@ Space Marine Devastator
 Spawn of Mayhem
 Species Specialist
 Spectral Rider
+Spectral Shift
 Spectral Steel
 Spellbreaker Behemoth
 Sphere of Safety
@@ -1763,6 +1782,7 @@ Toxic Deluge
 Trace of Abundance
 Trade Caravan
 Trailtracker Scout
+Trait Doctoring
 Trash for Treasure
 Traumatic Visions
 Traveler's Cloak
@@ -1891,6 +1911,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Whim of Volrath
 Whiptongue Hydra
 Whir of Invention
 Whirlpool Whelm
@@ -1913,6 +1934,7 @@ Winds of Qal Sisma
 Winds of Rath
 Winged Boots
 Winged Hive Tyrant
+Winged Portent
 Winged Words
 Wings of the Guard
 Winter Moon
@@ -1927,6 +1949,7 @@ Wooded Bastion
 Woodland Bellower
 Woodripper
 Worldspine Wurm
+Worst Fears
 Wrath of God
 Wretched Confluence
 Wrexial, the Risen Deep

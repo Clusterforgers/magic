@@ -1,0 +1,133 @@
+{
+  "artist": "Eric Deschamps",
+  "artist_ids": [
+    "37970e22-9cee-44c1-af44-5ee27cf26b76"
+  ],
+  "booster": true,
+  "border_color": "black",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "cardmarket_id": 266623,
+  "cmc": 8.0,
+  "collector_number": "87",
+  "color_identity": [
+    "B"
+  ],
+  "colors": [
+    "B"
+  ],
+  "digital": false,
+  "edhrec_rank": 8591,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "flavor_text": "Elspeth feared that her trespass into Nyx would not go unanswered.",
+  "foil": true,
+  "frame": "2003",
+  "full_art": false,
+  "game_changer": false,
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "highres_image": true,
+  "id": "8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020",
+  "illustration_id": "fa500ac3-c542-4485-8ef4-352d93e96577",
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:43:47Z",
+  "image_uris": {
+    "art": "https://cards.scryfall.io/art/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.webp?1783939427",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "crop": "https://cards.scryfall.io/crop/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.webp?1783939427",
+    "display": "https://cards.scryfall.io/display/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.webp?1783939427",
+    "grid": "https://cards.scryfall.io/grid/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.webp?1783939427",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "large": "https://cards.scryfall.io/large/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "normal": "https://cards.scryfall.io/normal/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "png": "https://cards.scryfall.io/png/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.png?1783939427",
+    "small": "https://cards.scryfall.io/small/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.jpg?1783939427",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/f/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020.webp?1783939427"
+  },
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "legalities": {
+    "alchemy": "not_legal",
+    "brawl": "legal",
+    "commander": "legal",
+    "competitivebrawl": "legal",
+    "duel": "legal",
+    "future": "not_legal",
+    "gladiator": "legal",
+    "historic": "legal",
+    "legacy": "legal",
+    "modern": "legal",
+    "oathbreaker": "legal",
+    "oldschool": "not_legal",
+    "pauper": "not_legal",
+    "paupercommander": "not_legal",
+    "penny": "legal",
+    "pioneer": "legal",
+    "predh": "not_legal",
+    "premodern": "not_legal",
+    "standard": "not_legal",
+    "standardbrawl": "not_legal",
+    "timeless": "legal",
+    "tlr": "not_legal",
+    "vintage": "legal"
+  },
+  "mana_cost": "{7}{B}",
+  "mtgo_foil_id": 52227,
+  "mtgo_id": 52226,
+  "multiverse_ids": [
+    380528
+  ],
+  "name": "Worst Fears",
+  "nonfoil": true,
+  "object": "card",
+  "oracle_id": "face0a43-6604-4508-b511-81ab0bef7b18",
+  "oracle_text": "You control target player during that player's next turn. Exile Worst Fears. (You see all cards that player could see and make all decisions for them.)",
+  "oversized": false,
+  "penny_rank": 7091,
+  "prices": {
+    "eur": "1.92",
+    "eur_foil": "12.78",
+    "tix": "0.02",
+    "usd": "2.20",
+    "usd_etched": null,
+    "usd_foil": "28.62"
+  },
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aface0a43-6604-4508-b511-81ab0bef7b18&unique=prints",
+  "promo": false,
+  "purchase_uris": {
+    "cardhoarder": "https://www.cardhoarder.com/cards/52226?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=266623&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F82228%3Fpage%3D1"
+  },
+  "rarity": "mythic",
+  "related_uris": {
+    "edhrec": "https://edhrec.com/route/?cc=Worst+Fears",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=380528&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWorst%2BFears",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWorst%2BFears"
+  },
+  "released_at": "2014-05-02",
+  "reprint": false,
+  "reserved": false,
+  "rulings_uri": "https://api.scryfall.com/cards/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020/rulings",
+  "scryfall_set_uri": "https://scryfall.com/sets/jou?utm_source=api",
+  "scryfall_uri": "https://scryfall.com/card/jou/87/worst-fears?utm_source=api",
+  "set": "jou",
+  "set_id": "204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set_name": "Journey into Nyx",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajou&unique=prints",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "story_spotlight": false,
+  "tcgplayer_id": 82228,
+  "textless": false,
+  "type_line": "Sorcery",
+  "uri": "https://api.scryfall.com/cards/8f4e21ac-4f3e-4a3e-83c0-0a59a1b84020",
+  "variation": false
+}

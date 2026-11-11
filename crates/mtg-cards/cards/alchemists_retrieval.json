@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8651da8e-9b2c-4530-a521-aea490ad88d4",
+  "name": "Alchemist's Retrieval",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemist's Retrieval",
+      "oracle_fingerprint": "2a46998afe7b70df6a4401e19bbd9b6c",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{1}{U}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -107,6 +107,7 @@ mod stack_fixture;
 mod sync;
 mod table_hidden;
 mod target_legality_view;
+mod tc34_control_view;
 mod token_offers_view;
 mod token_printed_view;
 mod transcript;

@@ -100,6 +100,7 @@ pub mod statics_exert;
 pub mod statics_look;
 mod statics_rules;
 pub mod stored;
+mod tc34_control;
 pub mod tokens;
 mod tokens_copy;
 pub mod triggered;

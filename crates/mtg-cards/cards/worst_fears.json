@@ -1,0 +1,22 @@
+{
+  "oracle_id": "face0a43-6604-4508-b511-81ab0bef7b18",
+  "name": "Worst Fears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worst Fears",
+      "oracle_fingerprint": "4927cd65f93d71e989511d7523339603",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ControlPlayer": { "who": { "Target": 0 } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -66,6 +66,12 @@ export function playerOf(state: PlayState, seat: PlayerId): PlayerView | undefin
   return state.view?.players.find((player) => player.seat === seat)
 }
 
+/** The seat whose hand the viewer plays from: the active player while the viewer controls them (CR 722), else the viewer. */
+export function handSeat(state: PlayState, viewer: PlayerId): PlayerId {
+  const turn = state.view?.turn
+  return turn !== undefined && turn.controlled_by === viewer ? turn.active : viewer
+}
+
 /** The role of one object in the current combat; a string, so it needs no `useShallow`. */
 export function combatRoleIn(state: PlayState, id: ObjectId): CombatRole | null {
   return state.view === null ? null : combatRoleOf(state.view.combat, id)

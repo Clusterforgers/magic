@@ -1,16 +1,26 @@
 {
   "oracle_id": "054c00b4-c940-455a-ad88-b8aa35931ecf",
   "name": "Alter Reality",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Alter Reality",
       "oracle_fingerprint": "81c59e10dda93d4f4dc74c043b14ae5d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 137 }
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Flashback": "{1}{U}" } }

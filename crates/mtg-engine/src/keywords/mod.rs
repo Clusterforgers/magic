@@ -27,6 +27,7 @@ mod casualty;
 mod changeling;
 mod choose_a_background;
 pub(crate) mod cipher;
+pub(crate) mod cleave;
 mod companion;
 mod conspire;
 mod convoke;
@@ -580,6 +581,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Banding => &banding::Banding,
         Keyword::BandsWithOther(_) => &banding::BandsWithOther,
         Keyword::Splice { .. } => &splice::Splice,
+        Keyword::Cleave { .. } => &cleave::Cleave,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -1001,6 +1003,13 @@ mod tests {
                 onto: mtg_cards::keyword::SpliceOnto::Arcane,
                 cost: cost(),
             },
+            Keyword::Cleave {
+                cost: cost(),
+                spell: Box::new(mtg_cards::ability::Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
@@ -1124,6 +1133,7 @@ mod tests {
         "Keyword.Banding",
         "Keyword.BandsWithOther",
         "Keyword.Splice",
+        "Keyword.Cleave",
         "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",

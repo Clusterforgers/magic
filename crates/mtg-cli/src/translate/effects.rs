@@ -61,6 +61,12 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     if let Some(out) = super::e17b_memory::returned_with_counters(ctx, p, top) {
         return out;
     }
+    if let Some(out) = super::tc34_control::control_with_extra_turn(ctx, p, top) {
+        return out;
+    }
+    if let Some(out) = super::tc34_control::restart_game(ctx, p) {
+        return out;
+    }
     ctx.mark_parent();
     // A condition on a line that picks its own target reads that target, which the line declares only after it.
     let coming = p
@@ -562,6 +568,9 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         return found;
     }
     if let Some(found) = super::effects_digital::effects(ctx, p, api) {
+        return found;
+    }
+    if let Some(found) = super::tc34_control::effects(ctx, p, api) {
         return found;
     }
     if let Some(found) = super::effects_verbs::effects(ctx, p, api) {

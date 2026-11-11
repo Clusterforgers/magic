@@ -1,0 +1,143 @@
+{
+  "arena_id": 78881,
+  "artist": "Nicholas Gregory",
+  "artist_ids": [
+    "a1bba8ff-63b4-4786-b1c4-f1bfe5d3ab1c"
+  ],
+  "booster": true,
+  "border_color": "black",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "cardmarket_id": 582875,
+  "cmc": 3.0,
+  "collector_number": "89",
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "edhrec_rank": 11333,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "flavor_text": "\"No, no, it's just a murder of crows, not an omen of murder . . . I think.\"\n—York, Kessig tracker",
+  "foil": true,
+  "frame": "2015",
+  "full_art": false,
+  "game_changer": false,
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "highres_image": true,
+  "id": "3494a4fc-37e5-4095-a3bb-5cd9280f4c77",
+  "illustration_id": "68556e94-6744-430e-973d-aab1bfc1c699",
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:41:16Z",
+  "image_uris": {
+    "art": "https://cards.scryfall.io/art/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.webp?1783924876",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "crop": "https://cards.scryfall.io/crop/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.webp?1783924876",
+    "display": "https://cards.scryfall.io/display/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.webp?1783924876",
+    "grid": "https://cards.scryfall.io/grid/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.webp?1783924876",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "large": "https://cards.scryfall.io/large/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "normal": "https://cards.scryfall.io/normal/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "png": "https://cards.scryfall.io/png/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.png?1783924876",
+    "small": "https://cards.scryfall.io/small/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.jpg?1783924876",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/4/3494a4fc-37e5-4095-a3bb-5cd9280f4c77.webp?1783924876"
+  },
+  "keywords": [
+    "Cleave"
+  ],
+  "lang": "en",
+  "layout": "normal",
+  "legalities": {
+    "alchemy": "not_legal",
+    "brawl": "legal",
+    "commander": "legal",
+    "competitivebrawl": "legal",
+    "duel": "legal",
+    "future": "not_legal",
+    "gladiator": "legal",
+    "historic": "legal",
+    "legacy": "legal",
+    "modern": "legal",
+    "oathbreaker": "legal",
+    "oldschool": "not_legal",
+    "pauper": "not_legal",
+    "paupercommander": "not_legal",
+    "penny": "not_legal",
+    "pioneer": "legal",
+    "predh": "not_legal",
+    "premodern": "not_legal",
+    "standard": "not_legal",
+    "standardbrawl": "not_legal",
+    "timeless": "legal",
+    "tlr": "legal",
+    "vintage": "legal"
+  },
+  "mana_cost": "{1}{U}{U}",
+  "mtgo_id": 94494,
+  "multiverse_ids": [
+    540933
+  ],
+  "name": "Winged Portent",
+  "nonfoil": true,
+  "object": "card",
+  "oracle_id": "378567f8-7aef-42b6-853e-8591641052e8",
+  "oracle_text": "Cleave {4}{G}{U} (You may cast this spell for its cleave cost. If you do, remove the words in square brackets.)\nDraw a card for each creature you control [with flying].",
+  "oversized": false,
+  "penny_rank": 8496,
+  "preview": {
+    "previewed_at": "2021-11-04",
+    "source": "MTGPioneer",
+    "source_uri": "https://twitter.com/MtgPioneer/status/1456034463687774209"
+  },
+  "prices": {
+    "eur": "0.24",
+    "eur_foil": "0.32",
+    "tix": "0.03",
+    "usd": "0.36",
+    "usd_etched": null,
+    "usd_foil": "0.38"
+  },
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A378567f8-7aef-42b6-853e-8591641052e8&unique=prints",
+  "promo": false,
+  "purchase_uris": {
+    "cardhoarder": "https://www.cardhoarder.com/cards/94494?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=582875&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253737%3Fpage%3D1"
+  },
+  "rarity": "rare",
+  "related_uris": {
+    "edhrec": "https://edhrec.com/route/?cc=Winged+Portent",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540933&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWinged%2BPortent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWinged%2BPortent"
+  },
+  "released_at": "2021-11-19",
+  "reprint": false,
+  "reserved": false,
+  "rulings_uri": "https://api.scryfall.com/cards/3494a4fc-37e5-4095-a3bb-5cd9280f4c77/rulings",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "scryfall_uri": "https://scryfall.com/card/vow/89/winged-portent?utm_source=api",
+  "security_stamp": "oval",
+  "set": "vow",
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "story_spotlight": false,
+  "tcgplayer_id": 253737,
+  "textless": false,
+  "type_line": "Instant",
+  "uri": "https://api.scryfall.com/cards/3494a4fc-37e5-4095-a3bb-5cd9280f4c77",
+  "variation": false
+}

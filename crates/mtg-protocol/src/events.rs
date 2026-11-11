@@ -353,6 +353,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::TurnBegan { .. }
         | Event::ExtraTurnAdded { .. }
         | Event::ExtraTurnSkipped { .. }
+        | Event::PlayerControlGained { .. }
+        | Event::GameRestarted { .. }
+        | Event::SpellControlGained { .. }
         | Event::PhasesAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }

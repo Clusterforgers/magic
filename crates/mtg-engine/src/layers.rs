@@ -37,6 +37,7 @@ use crate::land_types;
 use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::resolve::{Scope, lower, zone_kind};
 use crate::state::GameState;
+use crate::text_change::TextWord;
 use crate::zones::Zone;
 
 mod reads;
@@ -45,9 +46,10 @@ use reads::{
     Traits, reads_of_condition, reads_of_modification, reads_of_ref, writes, writes_of_wanted,
 };
 
-/// The layers the pass walks, in the order of CR 613.1 (copy and text-changing effects are not in the engine).
-const LAYERS: [Layer; 8] = [
+/// The layers the pass walks, in the order of CR 613.1 (copy effects are worked out with the copiable values, `copies.rs`).
+const LAYERS: [Layer; 9] = [
     Layer::Control,
+    Layer::Text,
     Layer::Type,
     Layer::Color,
     Layer::Ability,
@@ -164,6 +166,8 @@ pub(crate) struct Held {
     locked: Vec<Keyword>,
     /// The mana cost its card prints, which a keyword given "equal to its mana cost" reads.
     own_cost: Option<mtg_core::mana::ManaCost>,
+    /// The subtypes its card prints, which a text change can replace (CR 612).
+    printed_subtypes: Vec<mtg_core::card::Subtype>,
     /// Whether it has the ability "This creature can't block" its suspected designation gives (CR 701.60c): an effect
     /// that takes every ability away takes it too.
     pub(crate) suspect_cant_block: bool,
@@ -215,6 +219,7 @@ impl Held {
             counter_keywords: Vec::new(),
             locked: Vec::new(),
             own_cost: object.mana_cost().cloned(),
+            printed_subtypes: object.card().subtypes.clone(),
             suspect_cant_block: suspected,
             applied: Vec::new(),
         }
@@ -248,6 +253,45 @@ impl Held {
                 .cloned()
                 .collect(),
             ..self.clone()
+        }
+    }
+
+    /// A text change of a subtype the card prints (CR 612): the printed subtypes of that kind stop counting, so the others
+    /// are held as given ones, and the new word is given in place of the old.
+    fn retype_printed(&mut self, from: &TextWord, to: &TextWord) {
+        let (TextWord::Subtype(from), TextWord::Subtype(to)) = (from, to) else {
+            return;
+        };
+        if from == to
+            || !self.printed_subtypes.contains(from)
+            || !self.chars.has_subtype(&self.printed_subtypes, from)
+        {
+            return;
+        }
+        let creature = from.is_creature_type();
+        let of_kind = |subtype: &mtg_core::card::Subtype| {
+            if creature {
+                subtype.is_creature_type()
+            } else {
+                land_types::is_land_type(subtype)
+            }
+        };
+        for kept in self
+            .printed_subtypes
+            .iter()
+            .filter(|subtype| of_kind(subtype) && *subtype != from)
+        {
+            if !self.chars.subtypes.contains(kept) {
+                self.chars.subtypes.push(kept.clone());
+            }
+        }
+        if !self.chars.subtypes.contains(to) {
+            self.chars.subtypes.push(to.clone());
+        }
+        if creature {
+            self.chars.creature_types_set = true;
+        } else {
+            self.chars.land_types_set = true;
         }
     }
 
@@ -373,6 +417,18 @@ impl Held {
                 keyword: None,
             }),
             Modification::GainAbilities(borrowed) => self.gain_borrowed(borrowed, stamp),
+            Modification::ChangeText { from, to } => {
+                self.retype_printed(from, to);
+                for held in &mut self.abilities {
+                    held.body = crate::text_change::ability(&held.body, from, to);
+                    if let Some(keyword) = held.keyword.as_mut() {
+                        *keyword = crate::text_change::keyword(keyword, from, to);
+                    }
+                }
+                for keyword in &mut self.keywords {
+                    *keyword = crate::text_change::keyword(keyword, from, to);
+                }
+            }
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -657,6 +713,7 @@ fn is_player_ref(affected: &Ref) -> bool {
 fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     Some(match wanted {
         Wanted::SetController(_) => Layer::Control,
+        Wanted::ChangeTextChosen { .. } => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)

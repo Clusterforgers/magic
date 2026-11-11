@@ -338,6 +338,12 @@ pub enum ValueKind {
     CardTypeOf(Vec<CardType>),
     /// A creature type other than these ("choose a creature type other than Wall").
     CreatureTypeExcept(Vec<String>),
+    /// A basic land type (CR 205.3i): Plains, Island, Swamp, Mountain or Forest.
+    BasicLandType,
+    /// A color word or a basic land type, the word a text change replaces (CR 612): "one color word or one basic land type".
+    ColorOrBasicLandType,
+    /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
+    LikeChosen(String),
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -1005,6 +1011,20 @@ pub enum Effect {
         /// Who unlocks it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
+    /// player during that player's next turn."
+    ControlPlayer {
+        /// The player controlled.
+        who: Ref,
+        /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        extra_turn: bool,
+    },
+    /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
+    RestartGame {
+        /// The exiled cards kept.
+        keep: Selector,
     },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {

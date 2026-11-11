@@ -1,0 +1,29 @@
+{
+  "oracle_id": "99dba614-40d3-41c1-a3b2-edc8777b010f",
+  "name": "Sleight of Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sleight of Mind",
+      "oracle_fingerprint": "42311e324ce89dbdd30cfcebd831e16e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -968,6 +968,7 @@ mod shapes2;
 mod shapes3;
 mod slots;
 mod t19a;
+mod tc34;
 mod vp20;
 mod w18;
 mod w19;

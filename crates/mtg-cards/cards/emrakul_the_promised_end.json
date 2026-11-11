@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4e7a8817-1a66-45c3-ade9-eac79b40b89f",
+  "name": "Emrakul, the Promised End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emrakul, the Promised End",
+      "oracle_fingerprint": "b7cba14a81f09e766fa01878f7004561",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "ControlPlayer": { "who": { "Target": 0 }, "extra_turn": true } }]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Protection": [{ "Type": "Instant" }] } }
+      ]
+    }
+  ]
+}

@@ -144,6 +144,33 @@ pub enum Event {
         /// Whose turn.
         player: PlayerId,
     },
+    /// A player gains control of a spell or ability on the stack (CR 110.2): it resolves for them, and a permanent spell
+    /// enters under their control.
+    SpellControlGained {
+        /// The spell or ability.
+        object: ObjectId,
+        /// Its new controller.
+        player: PlayerId,
+    },
+    /// A player will control another during that player's next turn (CR 722): its decisions go to `by`.
+    PlayerControlGained {
+        /// The player controlled.
+        player: PlayerId,
+        /// The player who controls them.
+        by: PlayerId,
+        /// Whether the controlled player takes an extra turn after that turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        extra_turn: bool,
+    },
+    /// The game restarted (CR 727): every card goes back to its owner's library (a commander to the command zone), tokens
+    /// and other objects cease to exist, the players start over and the opening runs again with `by` as the starting
+    /// player; `kept` stays in exile and enters the battlefield under `by`'s control once the opening is over.
+    GameRestarted {
+        /// The player whose effect restarted the game.
+        by: PlayerId,
+        /// The exiled cards left out of the new game.
+        kept: Vec<ObjectId>,
+    },
     /// Phases were added after the current one (CR 500.8): each is the step it begins with, in the order they begin,
     /// before any phase added earlier.
     PhasesAdded {
@@ -1230,6 +1257,7 @@ impl Event {
             | Event::RuleExpired { .. }
             | Event::ShieldUsed { .. }
             | Event::FirstPlayerChosen { .. }
+            | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
             | Event::MulliganKept { .. }
@@ -1237,6 +1265,7 @@ impl Event {
             | Event::TurnBegan { .. }
             | Event::ExtraTurnAdded { .. }
             | Event::ExtraTurnSkipped { .. }
+            | Event::PlayerControlGained { .. }
             | Event::PhasesAdded { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
@@ -1343,6 +1372,7 @@ impl Event {
             | Event::Solved { object }
             | Event::Harnessed { object }
             | Event::PermanentTapped { object }
+            | Event::SpellControlGained { object, .. }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }
             | Event::PermanentPhasedIn { object }

@@ -32,6 +32,8 @@ pub(crate) enum Progress {
 /// Computes the next batch of events or the next decision from `state` alone.
 pub(crate) fn next(state: &GameState) -> Progress {
     match state.stage() {
+        // A restart (CR 727) opens the new game once the spell or ability that restarted it has finished resolving.
+        Stage::PreGame if state.resolving().is_some() => resolve::next(state),
         Stage::PreGame => Progress::Events(mulligan::pregame(state)),
         // A player can concede during the opening, so it needs the same end-of-game handling as turns.
         Stage::Mulligan => settle(state).unwrap_or_else(|| mulligan::next(state)),

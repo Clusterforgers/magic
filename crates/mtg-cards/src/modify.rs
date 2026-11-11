@@ -81,6 +81,15 @@ pub enum Modification {
     /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
     /// creature type of your choice". Only an effect of a spell or ability has it.
     SetCreatureTypesChosen(String),
+    /// Changes the text (layer 3, CR 612): every instance of the word the resolution chose under `from` becomes the word it
+    /// chose under `to` ("replacing all instances of one color word with another"). Only an effect of a spell or ability
+    /// has it.
+    ChangeTextChosen {
+        /// The name of the word replaced.
+        from: String,
+        /// The name of the word written.
+        to: String,
+    },
     /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
     /// other types". Only a static ability has it; with no type chosen it changes nothing.
     AddChosenSubtype,
@@ -170,6 +179,7 @@ impl Modification {
             | Modification::SetName(_)
             | Modification::ThisAbility => Some("1"),
             Modification::SetController(_) => Some("2"),
+            Modification::ChangeTextChosen { .. } => Some("3"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -701,6 +711,11 @@ pub enum GameRule {
         /// The cards added to the size; removed when negative.
         by: Amount,
     },
+    /// The rule's controller controls the players while they search their libraries (CR 722): "You control your
+    /// opponents while they're searching their libraries."
+    ControlSearches(Ref),
+    /// The players exile what they find in their libraries; you may play it from exile (Opposition Agent).
+    ExileFound(Ref),
     /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
     NoLegendRule(Ref),
     /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:

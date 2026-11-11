@@ -1,0 +1,131 @@
+{
+  "artist": "Mike Dringenberg",
+  "artist_ids": [
+    "a1407afa-0f54-43f8-938b-88b268074f91"
+  ],
+  "booster": true,
+  "border_color": "black",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "cardmarket_id": 16257,
+  "cmc": 1.0,
+  "collector_number": "93",
+  "color_identity": [
+    "U"
+  ],
+  "colors": [
+    "U"
+  ],
+  "digital": false,
+  "edhrec_rank": 15658,
+  "finishes": [
+    "nonfoil"
+  ],
+  "foil": false,
+  "frame": "2003",
+  "full_art": false,
+  "game_changer": false,
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "highres_image": true,
+  "id": "692a5bfa-9a50-4610-acd7-19fc0a53f798",
+  "illustration_id": "f4abcb52-e241-4b96-a6ac-6066fe665f93",
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:44:14Z",
+  "image_uris": {
+    "art": "https://cards.scryfall.io/art/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.webp?1783943054",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "crop": "https://cards.scryfall.io/crop/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.webp?1783943054",
+    "display": "https://cards.scryfall.io/display/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.webp?1783943054",
+    "grid": "https://cards.scryfall.io/grid/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.webp?1783943054",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "large": "https://cards.scryfall.io/large/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "normal": "https://cards.scryfall.io/normal/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "png": "https://cards.scryfall.io/png/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.png?1783943054",
+    "small": "https://cards.scryfall.io/small/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.jpg?1783943054",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/9/692a5bfa-9a50-4610-acd7-19fc0a53f798.webp?1783943054"
+  },
+  "keywords": [],
+  "lang": "en",
+  "layout": "normal",
+  "legalities": {
+    "alchemy": "not_legal",
+    "brawl": "not_legal",
+    "commander": "legal",
+    "competitivebrawl": "not_legal",
+    "duel": "legal",
+    "future": "not_legal",
+    "gladiator": "not_legal",
+    "historic": "not_legal",
+    "legacy": "legal",
+    "modern": "legal",
+    "oathbreaker": "legal",
+    "oldschool": "not_legal",
+    "pauper": "not_legal",
+    "paupercommander": "not_legal",
+    "penny": "legal",
+    "pioneer": "not_legal",
+    "predh": "legal",
+    "premodern": "legal",
+    "standard": "not_legal",
+    "standardbrawl": "not_legal",
+    "timeless": "not_legal",
+    "tlr": "legal",
+    "vintage": "legal"
+  },
+  "mana_cost": "{U}",
+  "mtgo_foil_id": 27025,
+  "mtgo_id": 27024,
+  "multiverse_ids": [
+    129644
+  ],
+  "name": "Mind Bend",
+  "nonfoil": true,
+  "object": "card",
+  "oracle_id": "d8377869-f8f7-4b4b-93ad-3ad3c4826b1a",
+  "oracle_text": "Change the text of target permanent by replacing all instances of one color word with another or one basic land type with another. (For example, you may change \"nonblack creature\" to \"nongreen creature\" or \"forestwalk\" to \"islandwalk.\" This effect lasts indefinitely.)",
+  "oversized": false,
+  "penny_rank": 15149,
+  "prices": {
+    "eur": "1.02",
+    "eur_foil": null,
+    "tix": "0.02",
+    "usd": "3.09",
+    "usd_etched": null,
+    "usd_foil": null
+  },
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad8377869-f8f7-4b4b-93ad-3ad3c4826b1a&unique=prints",
+  "promo": false,
+  "purchase_uris": {
+    "cardhoarder": "https://www.cardhoarder.com/cards/27024?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=16257&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F15216%3Fpage%3D1"
+  },
+  "rarity": "rare",
+  "related_uris": {
+    "edhrec": "https://edhrec.com/route/?cc=Mind+Bend",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=129644&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMind%2BBend",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMind%2BBend"
+  },
+  "released_at": "2007-07-13",
+  "reprint": true,
+  "reserved": false,
+  "rulings_uri": "https://api.scryfall.com/cards/692a5bfa-9a50-4610-acd7-19fc0a53f798/rulings",
+  "scryfall_set_uri": "https://scryfall.com/sets/10e?utm_source=api",
+  "scryfall_uri": "https://scryfall.com/card/10e/93/mind-bend?utm_source=api",
+  "set": "10e",
+  "set_id": "a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "set_name": "Tenth Edition",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A10e&unique=prints",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a66a6124-0d81-488d-b080-91f5ba7fbad0",
+  "story_spotlight": false,
+  "tcgplayer_id": 15216,
+  "textless": false,
+  "type_line": "Instant",
+  "uri": "https://api.scryfall.com/cards/692a5bfa-9a50-4610-acd7-19fc0a53f798",
+  "variation": false
+}

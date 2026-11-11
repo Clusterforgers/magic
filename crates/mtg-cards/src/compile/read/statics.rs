@@ -615,6 +615,21 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("players have no maximum hand size") {
         return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
     }
+    if r.words("you control your opponents while they're searching their libraries") {
+        return Some(GameRule::ControlSearches(Ref::Opponents));
+    }
+    if let Some(rule) = r.attempt(|r| {
+        r.need("while an opponent is searching their library")?;
+        r.punct(',').then_some(())?;
+        r.need("they exile each card they find")?;
+        r.punct('.').then_some(())?;
+        r.need("you may play those cards for as long as they remain exiled")?;
+        r.punct(',').then_some(())?;
+        r.need("and you may spend mana as though it were mana of any color to cast them")?;
+        Some(GameRule::ExileFound(Ref::Opponents))
+    }) {
+        return Some(rule);
+    }
     if r.words("you gain life rather than lose life from radiation") {
         return Some(GameRule::RadiationGainsLife(Ref::You));
     }
@@ -1721,8 +1736,27 @@ fn ep27_rule_texts(
     }
 }
 
+/// The wordings of the rules about a player's hand size, draw step and searches of a permanent.
+fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
+    Some(vec![match rule {
+        GameRule::NoMaxHandSize(Ref::You) => "You have no maximum hand size".to_owned(),
+        GameRule::NoMaxHandSize(Ref::EachPlayer) => "Players have no maximum hand size".to_owned(),
+        GameRule::SkipDrawStep(Ref::You) => "Skip your draw step".to_owned(),
+        GameRule::ControlSearches(Ref::Opponents) => {
+            "You control your opponents while they're searching their libraries".to_owned()
+        }
+        GameRule::ExileFound(Ref::Opponents) => "While an opponent is searching their library, they exile each card they find. You may play those cards for as long as they remain exiled, and you may spend mana as though it were mana of any color to cast them".to_owned(),
+        _ => return None,
+    }])
+}
+
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     if let Some(texts) = ep27_rule_texts(rule, condition, from) {
+        return texts;
+    }
+    if from == ZoneKind::Battlefield
+        && let Some(texts) = player_rule_texts(rule)
+    {
         return texts;
     }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
@@ -1741,15 +1775,6 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::CantBeCountered(Ref::Each(_)), ZoneKind::Battlefield) => {
             super::c11h_rules::c11h_cant_be_countered_texts(rule)
-        }
-        (GameRule::NoMaxHandSize(Ref::You), ZoneKind::Battlefield) => {
-            vec!["You have no maximum hand size".to_owned()]
-        }
-        (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
-            vec!["Players have no maximum hand size".to_owned()]
-        }
-        (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
-            vec!["Skip your draw step".to_owned()]
         }
         (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
             vec!["You may look at the top card of your library any time".to_owned()]

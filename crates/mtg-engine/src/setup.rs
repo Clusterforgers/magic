@@ -548,6 +548,7 @@ impl GameState {
             rmt8_upkeeps: std::collections::BTreeMap::new(),
             last_turn_of: None,
             monarch: None,
+            player_controls: Vec::new(),
             citys_blessing: std::collections::BTreeSet::new(),
             enduring_story: std::collections::BTreeSet::new(),
             speeds: crate::speed::Speeds::default(),
@@ -561,6 +562,7 @@ impl GameState {
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
             memory: crate::memory::Memory::new(),
+            restart: None,
         };
         game.note_what_cards_can_do();
         // An Attraction card goes to the junkyard by a replacement effect (CR 717.6).

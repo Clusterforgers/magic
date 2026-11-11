@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 107] = [
+const TEMPLATES: [Template; 111] = [
     super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -51,6 +51,10 @@ const TEMPLATES: [Template; 107] = [
     super::w7e_phase::w7e_protected,
     super::w7e_phase::w7e_phase_out,
     super::w6e_control::w6e_those_untapped,
+    super::tc34_control::tc34_control_player,
+    super::tc34_control::tc34_text_change,
+    super::tc34_control::tc34_take_spell,
+    super::tc34_control::tc34_restart,
     super::w6e_control::w6e_gain_control,
     super::w6e_control::w6e_exchange,
     super::c11b_cast_target::c11b_cast_target,
@@ -711,19 +715,23 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     predicate(r, who).map(|effect| vec![effect])
 }
 
-/// "Target player exiles a card from their graveyard.": that player chooses the card, bound as `exiled_card`, and it is
-/// exiled.
+/// "Target player exiles a card from their graveyard." (or "from their hand", Karn Liberated): that player chooses the
+/// card, bound as `exiled_card`, and it is exiled.
 fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     matches!(who, Ref::Target(_)).then_some(())?;
     (r.word("exile") || r.word("exiles")).then_some(())?;
-    r.need("a card from their graveyard")?;
+    r.need("a card from their")?;
+    let zone = if r.word("graveyard") {
+        ZoneKind::Graveyard
+    } else if r.word("hand") {
+        ZoneKind::Hand
+    } else {
+        return None;
+    };
     Some(vec![
         Effect::Choose {
             who: who.clone(),
-            from: Ref::Each(Selector(vec![
-                Pred::In(ZoneKind::Graveyard),
-                Pred::OwnedBy(who.clone()),
-            ])),
+            from: Ref::Each(Selector(vec![Pred::In(zone), Pred::OwnedBy(who.clone())])),
             count: Bounds::default(),
             bind: EXILED_CARD.to_owned(),
             rest_as: None,

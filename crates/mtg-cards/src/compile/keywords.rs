@@ -429,6 +429,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        "cleave" => spell_cost(rest).map(cleave),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -800,6 +801,17 @@ fn plain(name: &str) -> Option<Keyword> {
 /// The quality a protection names, when it is one colour, colourless, multicolored, one kind of permanent, a mana value
 /// bound or everything: "from red", "from creatures", "from mana value 3 or less", "from everything". The empty selector
 /// matches every source.
+/// Cleave at `cost`, its spell filled in by the compiler from the text without the bracketed words.
+fn cleave(cost: crate::cost::Cost) -> Keyword {
+    Keyword::Cleave {
+        cost,
+        spell: Box::new(crate::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
+    }
+}
+
 fn protection(rest: &str) -> Option<Selector> {
     let printed = rest.strip_prefix("from ")?.trim_end_matches('.');
     let word = printed.to_ascii_lowercase();
@@ -828,6 +840,7 @@ fn kind_quality(words: &str) -> Option<Selector> {
             }]));
         }
         "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
+        "instants" => return Some(Selector(vec![Pred::Type(CardType::Instant)])),
         "legendary creatures" => {
             return Some(Selector(vec![
                 creature,
@@ -869,6 +882,7 @@ pub fn kind_quality_word(quality: &Selector) -> Option<String> {
             },
         ] => "monocolored".to_owned(),
         [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
+        [Pred::Type(CardType::Instant)] => "instants".to_owned(),
         [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
             "legendary creatures".to_owned()
         }
@@ -1185,6 +1199,7 @@ mod tests {
         &[protects(Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) })]
     )]
     #[case::snow("Protection from snow", &[protects(Pred::Supertype(Supertype::Snow))])]
+    #[case::instants("Protection from instants", &[protects(Pred::Type(CardType::Instant))])]
     #[case::two_colours(
         "Protection from white and from blue",
         &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]
@@ -2038,6 +2053,7 @@ mod tests {
             "Banding",
             "Bands with other Dinosaurs",
             "Splice onto Arcane {1}{R}",
+            "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

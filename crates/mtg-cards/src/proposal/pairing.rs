@@ -198,6 +198,14 @@ fn bare(keyword: &Keyword) -> Keyword {
             count: *count,
             abilities: Vec::new(),
         },
+        // The spell of cleave is read from the spell lines without the bracketed words, not from the keyword line.
+        Keyword::Cleave { cost, .. } => Keyword::Cleave {
+            cost: cost.clone(),
+            spell: Box::new(Ability::Spell {
+                targets: Vec::new(),
+                effects: Vec::new(),
+            }),
+        },
         other => super::r6c_bare::canonical(other),
     }
 }

@@ -124,6 +124,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        Event::GameRestarted { by, kept } => {
+            crate::restart::fold(state, *by, kept);
+            Ok(())
+        }
         Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
             crate::companions::fold(state, event)
         }
@@ -357,6 +361,7 @@ fn begin_turn(
     state.turn.combats = 0;
     state.turn.ahead.clear();
     state.turn.ending = false;
+    crate::player_control::turn_began(state, number, active);
     if !extra && (before == 0 || state.opens_round(previous, active)) {
         state.turn.round += 1;
     }
@@ -392,6 +397,11 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player: *player,
             skip_untap: *skip_untap,
         }),
+        Event::PlayerControlGained {
+            player,
+            by,
+            extra_turn,
+        } => crate::player_control::gain(state, *player, *by, *extra_turn),
         Event::ExtraTurnSkipped { player } => {
             if state.extra_turns.pop().map(|turn| turn.player) != Some(*player) {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
@@ -434,9 +444,18 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { .. }
         | Event::ExtraTurnAdded { .. }
+        | Event::PlayerControlGained { .. }
         | Event::ExtraTurnSkipped { .. }
         | Event::PhasesAdded { .. }
         | Event::StepBegan { .. } => apply_turn(state, event)?,
+        Event::SpellControlGained { object, player } => {
+            let spell = state
+                .objects
+                .get_mut(object)
+                .filter(|spell| spell.zone() == Zone::Stack)
+                .ok_or_else(|| invalid(format!("{object:?} is no spell on the stack")))?;
+            spell.controller = *player;
+        }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }

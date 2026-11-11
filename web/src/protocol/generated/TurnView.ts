@@ -47,4 +47,8 @@ monarch?: PlayerId,
 /**
  * The player who has the initiative (CR 725); left out while nobody has it.
  */
-initiative?: PlayerId, };
+initiative?: PlayerId, 
+/**
+ * The player who controls the active player this turn (CR 722); left out while the active player controls themselves.
+ */
+controlled_by?: PlayerId, };

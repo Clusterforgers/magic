@@ -2081,6 +2081,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -3353,6 +3354,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::RestartGame { keep } => w.at("keep", |w| w.selector(keep)),
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -3538,6 +3540,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
+            | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
@@ -4295,6 +4298,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::ChangeTextChosen { .. }
             )
         }) {
             self.at("mods", |w| {
@@ -4714,6 +4718,8 @@ impl Walker<'_> {
                 w.cant_action(action);
             }),
             GameRule::TriggerAgain { .. }
+            | GameRule::ControlSearches(_)
+            | GameRule::ExileFound(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
@@ -4746,7 +4752,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRule(who)
+            | GameRule::ControlSearches(who)
+            | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }

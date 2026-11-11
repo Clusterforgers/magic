@@ -69,6 +69,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
+        "Continuous" if p.has("ControlOpponentsSearchingLibrary") => control_searches(p),
         "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
         "Continuous" if p.has("AdditionalOptionalVote") || p.has("AdditionalVote") => {
             e14c_vote_again(p)
@@ -324,6 +325,20 @@ fn ignore_hexproof(ctx: &Ctx, p: &Params) -> Tr<Value> {
         rule["players"] = json!("Opponents");
     }
     Ok(json!({"IgnoreHexproof": rule}))
+}
+
+/// `ControlOpponentsSearchingLibrary$ You` over `Affected$ Opponent`: "You control your opponents while they're searching
+/// their libraries."
+fn control_searches(p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Continuous",
+        &["Affected", "ControlOpponentsSearchingLibrary"],
+    )?;
+    match (p.get("Affected"), p.get("ControlOpponentsSearchingLibrary")) {
+        (Some("Opponent"), Some("You")) => Ok(json!({"ControlSearches": "Opponents"})),
+        _ => unmapped("key:Static.ControlOpponentsSearchingLibrary"),
+    }
 }
 
 /// `SetMaxHandSize$` of the players `Affected$` names.

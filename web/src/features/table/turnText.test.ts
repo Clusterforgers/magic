@@ -121,6 +121,14 @@ describe('badgeText', () => {
     expect(words[viewer]).toBe('Your turn · 5 · Precombat main')
   })
 
+  it.each<[number, number, string]>([
+    [0, 1, "Bo's turn · you control them · 5 · Precombat main"],
+    [1, 1, 'Your turn · Alice controls you · 5 · Precombat main'],
+    [2, 1, "Bo's turn · Alice controls them · 5 · Precombat main"],
+  ])('says who controls the active player to seat %i on seat %i\'s turn', (viewer, active, text) => {
+    expect(badgeText({ ...turn(active, 'Main1'), controlledBy: 0 }, viewer, name)).toBe(text)
+  })
+
   it('names the active player when the viewer is not known yet', () => {
     expect(badgeText(turn(0, 'Main1'), null, name)).toBe("Alice's turn · 5 · Precombat main")
   })

@@ -82,6 +82,8 @@ pub enum CastWay {
     Evoke,
     /// Overload (CR 702.96): every "target" reads "each".
     Overload,
+    /// Cleave (CR 702.148): the spell reads without the words in square brackets.
+    Cleave,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
     /// Miracle (CR 702.94): from a hand for its miracle cost when it is the first card its owner drew this turn.

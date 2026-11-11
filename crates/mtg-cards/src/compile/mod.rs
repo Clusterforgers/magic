@@ -131,7 +131,12 @@ fn read_face(
     listed: &mut Vec<Clause>,
 ) -> Vec<Ability> {
     let partners = Partners::of(shown, known);
-    let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
+    let cleave = is_cleave(shown);
+    let text = if cleave {
+        normalize::normalize_cleave(&shown.oracle_text, &own_names(shown))
+    } else {
+        normalize::normalize(&shown.oracle_text, &own_names(shown))
+    };
     let (spell, aura) = (is_spell(shown), is_aura(shown));
     let walker = is_planeswalker(shown);
     let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
@@ -174,6 +179,9 @@ fn read_face(
         });
     }
     let has_spell_lines = read_spell_lines(&mut pending, x_free, &own);
+    if cleave {
+        fill_cleave(&mut pending, shown, x_free, &own);
+    }
     if spell && !has_spell_lines {
         // The modes of an instant or sorcery are its whole spell ability when no other line is.
         let mut modals = pending
@@ -209,6 +217,48 @@ fn read_face(
         });
     }
     abilities
+}
+
+/// Whether the face has cleave (CR 702.148): its spell reads with the words in square brackets and its keyword without.
+fn is_cleave(shown: &PrintedFace) -> bool {
+    shown
+        .oracle_text
+        .lines()
+        .any(|line| line.starts_with("Cleave "))
+}
+
+/// Gives the cleave keyword the spell ability as it reads without the words in square brackets; a card whose cleaved text
+/// does not read leaves the keyword to the table.
+fn fill_cleave(pending: &mut [Pending], shown: &PrintedFace, x_free: bool, own: &read::Own) {
+    let Some(clause) = pending.iter_mut().find(|clause| {
+        matches!(
+            &clause.ability,
+            Some(Ability::Keyword(Keyword::Cleave { .. }))
+        )
+    }) else {
+        return;
+    };
+    let cleaved = normalize::normalize(
+        &normalize::without_bracketed(&shown.oracle_text),
+        &own_names(shown),
+    );
+    let lines: Vec<String> = clauses::split(&cleaved)
+        .into_iter()
+        .map(|raw| cleaved.slice(raw.range))
+        .filter(|line| classify::classify(line, true) == ClauseKind::Spell)
+        .collect();
+    let x_free = x_free || shown.oracle_text.contains("Cleave {X}");
+    let read = (!lines.is_empty())
+        .then(|| read::clause_with(&lines.join("\n"), ClauseKind::Spell, x_free, own))
+        .flatten();
+    if let (Some(read), Some(Ability::Keyword(Keyword::Cleave { spell, .. }))) =
+        (read, &mut clause.ability)
+    {
+        **spell = read;
+    } else {
+        clause.ability = None;
+        clause.read = false;
+    }
 }
 
 /// The names a "Partner with" line may use: the card's own and those of the cards the library holds.
@@ -447,7 +497,7 @@ fn can_be_granted(ability: &Ability) -> bool {
 }
 
 /// Whether a spell or static clause is a keyword line the keyword reader does not know
-/// (`Cleave {1}{B}`): one line without a closing period that no template reads. It is kept as a
+/// (`Gloom {1}{B}`): one line without a closing period that no template reads. It is kept as a
 /// keyword clause so that it does not stand in the way of the effect lines around it.
 fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &read::Own) -> bool {
     matches!(kind, ClauseKind::Spell | ClauseKind::Static)
@@ -920,7 +970,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::with_a_cost("Cleave {1}{B}")]
+    #[case::with_a_cost("Gloom {1}{B}")]
     #[case::with_a_number("Squad 2")]
     #[case::with_a_word("Compleated")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
@@ -972,7 +1022,7 @@ mod tests {
     )]
     #[case::a_static_keyword_like_line(
         "Creature \u{2014} Elf",
-        "Cleave {1}{B}",
+        "Gloom {1}{B}",
         ClauseKind::Keyword
     )]
     #[case::a_level_block(
