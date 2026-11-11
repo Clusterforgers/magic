@@ -18,4 +18,9 @@ assign_damage: boolean,
 /**
  * A step where a permanent of the seat has an ability its timing lets it use becomes a window for it.
  */
-smart_stops: boolean, };
+smart_stops: boolean, 
+/**
+ * Every triggered ability on top of the stack, any seat's, is passed for at once at the seat's priority, out of
+ * Full Control; left out (false) when off.
+ */
+skip_triggers?: boolean, };

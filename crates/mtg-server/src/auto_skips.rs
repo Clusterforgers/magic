@@ -32,9 +32,9 @@ pub(crate) fn answer(decision: &Decision, stops: &Stops, state: &GameState) -> O
         }
         DecisionKind::OrderTriggers(options) => {
             let keys = trigger_keys(options, state)?;
-            let mut set = keys.clone();
-            set.sort();
-            let order = stops.auto_order(seat, &set)?;
+            let mut sorted = keys.clone();
+            sorted.sort();
+            let order = stops.auto_order(seat, &sorted)?;
             in_rule_order(&keys, order).map(Answer::OrderTriggers)
         }
         _ => None,

@@ -157,6 +157,7 @@ describe('handing the turn over', () => {
         end_turn_by_hand: false,
         auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
         auto_yields: [],
+        auto_skips: [],
       },
       { type: 'Snapshot', seq: 2, state: fixture.view },
     )

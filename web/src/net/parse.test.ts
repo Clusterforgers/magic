@@ -162,7 +162,7 @@ describe('parseFrame refuses what is not a message', () => {
 })
 
 /** Fields an older server leaves out, which read as their default. */
-const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand', 'Welcome.auto_choices', 'Welcome.auto_yields'])
+const MAY_BE_MISSING = new Set(['Welcome.end_turn_by_hand', 'Welcome.auto_choices', 'Welcome.auto_yields', 'Welcome.auto_skips'])
 
 describe('parseFrame checks the fields of each message', () => {
   const missing = Object.entries(samples).flatMap(([type, sample]) =>

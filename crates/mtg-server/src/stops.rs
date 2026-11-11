@@ -230,10 +230,14 @@ impl Stops {
         }
     }
 
-    /// The order in which `seat` puts exactly the triggers `set` (sorted) on the stack, if it holds one.
-    pub(crate) fn auto_order(&self, seat: PlayerId, set: &[TriggerKey]) -> Option<&[TriggerKey]> {
+    /// The order in which `seat` puts exactly the triggers `sorted` on the stack, if it holds one.
+    pub(crate) fn auto_order(
+        &self,
+        seat: PlayerId,
+        sorted: &[TriggerKey],
+    ) -> Option<&[TriggerKey]> {
         let key = AutoSkip::Order {
-            triggers: set.to_vec(),
+            triggers: sorted.to_vec(),
         };
         match self.auto_skip(seat, &key)? {
             AutoSkip::Order { triggers } => Some(triggers),
@@ -494,7 +498,7 @@ impl<S: EventStore> GameActor<S> {
         }
         let mut stops = self.stops.clone();
         stops.set_auto_choices(seat, choices);
-        self.take_stops(seat, stops).await
+        self.take_stops_passing(seat, stops).await
     }
 
     /// Puts `seat` in Full Control mode `mode` and tells it if the mode changed.

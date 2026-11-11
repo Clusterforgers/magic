@@ -1,4 +1,4 @@
-//! Goal: a seat's rules for its own triggers answer for it out of Full Control: an optional trigger's yes or no and the order of triggers that go on together, each only for its own key; a yield to an ability passes a seat at 2 to 4 seats only while that ability is on top, so an opponent's other spell still stops it; Full Control asks anyway, and the rules end with the game.
+//! Goal: "Auto-skip triggers" passes a seat at every triggered ability on top of the stack, from the stack alone, and at nothing else, unless in Full Control; a seat's rules for its own triggers answer for it out of Full Control: an optional trigger's yes or no and the order of triggers that go on together, each only for its own key; a yield to an ability passes a seat at 2 to 4 seats only while that ability is on top, so an opponent's other spell still stops it; Full Control asks anyway, and the rules end with the game.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -9,11 +9,12 @@ use mtg_cards::refs::Ref;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{Choice, Target, TargetChoice};
 use mtg_engine::decision::{PayChoice, PriorityAction};
+use mtg_engine::object::ObjectKind;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, DecisionKind, Event, GameSetup, GameState};
 use mtg_protocol::{
-    AutoSkip, AutoYield, ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage,
-    TriggerKey,
+    AutoChoices, AutoSkip, AutoYield, ClientMessage, DecisionId, ErrorCode, FullControlMode,
+    ServerMessage, TriggerKey,
 };
 use mtg_server::{Dwell, EventStore, GameConfig, GameHandle, MemoryStore, Pace, spawn_game_with};
 use mtg_testkit::cards::{burn, free_creature, gain_life, instant, mountain, pinger};
@@ -212,14 +213,11 @@ async fn an_answer_rule_answers_its_own_optional_trigger_out_of_full_control(
     // Turning Full Control off (or keeping it) and passing lets the trigger resolve.
     send(&handle, &clients[1], ClientMessage::FullControl { mode }).await;
     if mode != FullControlMode::Off {
+        // A Resync sends the pending decision again; seat 1 passes on it.
+        send(&handle, &clients[1], ClientMessage::Resync).await;
         let (id, _) = clients[1].decision().await;
-        reply(
-            &handle,
-            &clients[1],
-            id,
-            Answer::Priority(PriorityAction::Pass),
-        )
-        .await;
+        let pass = Answer::Priority(PriorityAction::Pass);
+        reply(&handle, &clients[1], id, pass).await;
     }
     quiet(&handle).await;
     let sent = clients[1].drain();
@@ -237,24 +235,28 @@ async fn an_answer_rule_answers_its_own_optional_trigger_out_of_full_control(
     }
 }
 
-/// The key of the ability on top of the stack as seat `client` reads it, if the stack holds one.
+/// The key of the ability on top of the stack as seat `client` reads it, if an ability is on top.
 async fn top_key(handle: &GameHandle, client: &mut Client) -> Option<AutoYield> {
     client.drain();
     send(handle, client, ClientMessage::Resync).await;
-    client
+    let state = client
         .until(|message| match message {
             ServerMessage::Snapshot { state, .. } => Some(state.clone()),
             _ => None,
         })
-        .await
-        .and_then(|state| {
-            let top = *state.table.stack.cards.last()?;
-            let object = state.objects.iter().find(|object| object.id == top)?;
-            Some(AutoYield {
-                name: object.name.clone(),
-                text: object.rules_text.clone().unwrap_or_default(),
-            })
+        .await;
+    let state = *state;
+    {
+        let top = *state.table.stack.cards.as_ref()?.last()?;
+        let object = state.objects.iter().find(|object| object.id == top)?;
+        if object.kind != ObjectKind::Ability {
+            return None;
+        }
+        Some(AutoYield {
+            name: object.name.clone(),
+            text: object.rules_text.clone().unwrap_or_default(),
         })
+    }
 }
 
 /// The key of a watcher's trigger.
@@ -369,7 +371,12 @@ async fn top_of_stack(handle: &GameHandle, client: &mut Client) -> ObjectId {
     send(handle, client, ClientMessage::Resync).await;
     client
         .until(|message| match message {
-            ServerMessage::Snapshot { state, .. } => state.table.stack.cards.last().copied(),
+            ServerMessage::Snapshot { state, .. } => state
+                .table
+                .stack
+                .cards
+                .as_ref()
+                .and_then(|cards| cards.last().copied()),
             _ => None,
         })
         .await
@@ -521,4 +528,136 @@ async fn the_rules_end_with_the_game_and_bad_ones_are_refused() {
             ..
         }]
     ));
+}
+
+/// How many objects are on the stack, as `client` sees it.
+async fn stack_size(handle: &GameHandle, client: &mut Client) -> usize {
+    client.drain();
+    send(handle, client, ClientMessage::Resync).await;
+    client
+        .until(|message| match message {
+            ServerMessage::Snapshot { state, .. } => {
+                eprintln!(
+                    "STACK {:?}",
+                    state
+                        .objects
+                        .iter()
+                        .filter(|o| o.zone == mtg_engine::zones::Zone::Stack)
+                        .map(|o| (o.id, o.name.clone(), o.kind))
+                        .collect::<Vec<_>>()
+                );
+                Some(state.table.stack.count)
+            }
+            _ => None,
+        })
+        .await as usize
+}
+
+/// The choices with "Auto-skip triggers" as given and the rest off.
+fn skipping(on: bool) -> AutoChoices {
+    AutoChoices {
+        skip_triggers: on,
+        ..AutoChoices::default()
+    }
+}
+
+#[rstest]
+#[case::off_asks(false, FullControlMode::Off, true)]
+#[case::on_passes(true, FullControlMode::Off, false)]
+#[case::full_control_asks_anyway(true, FullControlMode::Held, true)]
+#[tokio::test(start_paused = true)]
+async fn auto_skip_triggers_passes_an_opponents_trigger_on_top(
+    #[case] on: bool,
+    #[case] mode: FullControlMode,
+    #[case] asked: bool,
+) {
+    let first = watcher("First", when::any_creature_dies(), vec![gain_life(1)]);
+    let setup = Scenario::new(2)
+        .hand(0, [burn("Bolt", 3), instant("Zap", 0, &[])])
+        .battlefield(0, [ready(mountain())])
+        .battlefield(1, [ready(free_creature("Victim", 1, 1)), ready(first)])
+        .setup()
+        .unwrap();
+    let victim = object_named(&setup, "Victim");
+    let (handle, _) = spawn(setup);
+    let mut clients = Vec::new();
+    for n in 0..2 {
+        clients.push(Client::join(&handle, n).await);
+    }
+    let choices = skipping(on);
+    send(&handle, &clients[0], ClientMessage::AutoChoices { choices }).await;
+    ready_all(&handle, &clients).await;
+    burn_the_victim(&handle, &mut clients, victim).await;
+    send(&handle, &clients[0], ClientMessage::FullControl { mode }).await;
+    pass_the_bolt(&handle, &mut clients[0]).await;
+    quiet(&handle).await;
+    assert_eq!(waiting(&handle).await, Some(seat(0)));
+    let held = stack_size(&handle, &mut clients[0]).await;
+    assert_eq!(held == 1, asked, "asked at the trigger: stack of {held}");
+}
+
+#[tokio::test(start_paused = true)]
+async fn auto_skip_triggers_never_passes_an_activated_ability() {
+    let (handle, _) = spawn(pinger_table(3));
+    let mut clients = Vec::new();
+    for n in 0..3 {
+        clients.push(Client::join(&handle, n).await);
+    }
+    let held = FullControlMode::Held;
+    send(
+        &handle,
+        &clients[0],
+        ClientMessage::FullControl { mode: held },
+    )
+    .await;
+    let choices = skipping(true);
+    send(&handle, &clients[2], ClientMessage::AutoChoices { choices }).await;
+    ready_all(&handle, &clients).await;
+    foe_plays(&handle, &mut clients[0], false).await;
+    assert_eq!(
+        waiting(&handle).await,
+        Some(seat(2)),
+        "a Pinger activation is no trigger"
+    );
+}
+
+#[tokio::test(start_paused = true)]
+async fn turning_auto_skip_triggers_on_at_a_trigger_passes_at_once() {
+    let first = watcher("First", when::any_creature_dies(), vec![gain_life(1)]);
+    let setup = Scenario::new(2)
+        .hand(0, [burn("Bolt", 3), instant("Zap", 0, &[])])
+        .battlefield(0, [ready(mountain())])
+        .battlefield(1, [ready(free_creature("Victim", 1, 1)), ready(first)])
+        .setup()
+        .unwrap();
+    let victim = object_named(&setup, "Victim");
+    let (handle, _) = spawn(setup);
+    let mut clients = Vec::new();
+    for n in 0..2 {
+        clients.push(Client::join(&handle, n).await);
+    }
+    ready_all(&handle, &clients).await;
+    burn_the_victim(&handle, &mut clients, victim).await;
+    pass_the_bolt(&handle, &mut clients[0]).await;
+    quiet(&handle).await;
+    assert_eq!(
+        stack_size(&handle, &mut clients[0]).await,
+        1,
+        "asked at the trigger"
+    );
+    let choices = skipping(true);
+    send(&handle, &clients[0], ClientMessage::AutoChoices { choices }).await;
+    quiet(&handle).await;
+    assert_eq!(
+        stack_size(&handle, &mut clients[0]).await,
+        0,
+        "passed at once"
+    );
+}
+
+/// Seat 0, which holds a free instant, is asked over its own Bolt and passes.
+async fn pass_the_bolt(handle: &GameHandle, client: &mut Client) {
+    let (id, decision) = client.decision().await;
+    assert!(matches!(decision.kind, DecisionKind::Priority(_)));
+    reply(handle, client, id, Answer::Priority(PriorityAction::Pass)).await;
 }

@@ -8,15 +8,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import { resetDefaultStops, saveDefaultStops, useFlowPrefs } from '@/play/flowPrefs'
-import { ruleKey, ruleWords } from '../autoSkips'
 import { defaultStopsWords } from './stopModel'
 
 /**
  * The pace settings at the foot of the Full Control menu: "End my turn by hand" (the server holds the seat at its own
  * end step until it ends the turn), the decisions the server answers for the seat outside Full Control (its triggers in
  * timestamp order, combat damage lethal in order), smart stops (a step where a permanent of the seat can act is a
- * window), the abilities it always yields to and its auto-skips, the rules that answer its own triggers' questions (a
- * click takes one back; Full Control sets them all aside while on), and the pinned stops saved as the default of
+ * window), the abilities it always yields to (a click takes one back), and the pinned stops saved as the default of
  * every new game, with a reset. The end-turn setting and the default stops are kept in this browser (or on the account)
  * and applied when a game is joined.
  */
@@ -27,8 +25,6 @@ export function FlowMenuItems() {
   const byHand = usePlay((state) => state.endTurnByHand)
   const auto = usePlay((state) => state.autoChoices)
   const yields = usePlay((state) => state.autoYields)
-  const skips = usePlay((state) => state.autoSkips)
-  const paused = usePlay((state) => state.fullControl !== 'Off')
   const online = usePlay((state) => state.status === 'open')
   const pinned = stops.filter((stop) => stop.keep)
   return (
@@ -84,33 +80,6 @@ export function FlowMenuItems() {
                 <X aria-hidden="true" className="text-muted-foreground" />
               </DropdownMenuItem>
             ))}
-          </DropdownMenuGroup>
-        </>
-      )}
-      {skips.length === 0 ? null : (
-        <>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuLabel data-slot="auto-skips">
-              Auto-skips
-              {paused ? <span className="font-normal text-muted-foreground"> (off in Full Control)</span> : null}
-            </DropdownMenuLabel>
-            {skips.map((rule) => {
-              const words = ruleWords(rule)
-              return (
-                <DropdownMenuItem
-                  key={ruleKey(rule)}
-                  data-slot="cancel-auto-skip"
-                  disabled={!online}
-                  title={words.label}
-                  aria-label={words.remove}
-                  onClick={() => session.cancelAutoSkip(rule)}
-                >
-                  <span className="min-w-0 flex-1 truncate">{words.label}</span>
-                  <X aria-hidden="true" className="text-muted-foreground" />
-                </DropdownMenuItem>
-              )
-            })}
           </DropdownMenuGroup>
         </>
       )}

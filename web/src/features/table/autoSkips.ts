@@ -63,3 +63,13 @@ export function ruleWords(rule: AutoSkip): { label: string; remove: string } {
   const names = rule.triggers.map((t) => t.name).join(', then ')
   return { label: `Order: ${names}`, remove: `Stop ordering ${names}` }
 }
+
+/** What the switch does, read with its name. */
+export const AUTO_SKIP_DESCRIPTION =
+  'Passes for you at once whenever a triggered ability is on top of the stack, for every game. Full Control asks anyway.'
+
+/** The name of the list button: how many per-card rules the seat holds. */
+export function autoSkipListName(count: number): string {
+  if (count === 0) return 'Auto-skip list, empty'
+  return `Auto-skip list, ${count} ${count === 1 ? 'rule' : 'rules'}`
+}

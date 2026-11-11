@@ -10,6 +10,7 @@ import type {
   AttackerView,
   AutoChoices,
   AutoSkip,
+  TriggerKey,
   AutoYield,
   CombatForecast,
   CreatureForecast,
@@ -426,7 +427,8 @@ function isAutoChoices(value: unknown): value is SentAutoChoices {
     isRecord(value) &&
     isFlag(value.order_triggers) &&
     isFlag(value.assign_damage) &&
-    (value.smart_stops === undefined || isFlag(value.smart_stops))
+    (value.smart_stops === undefined || isFlag(value.smart_stops)) &&
+    (value.skip_triggers === undefined || isFlag(value.skip_triggers))
   )
 }
 
@@ -445,7 +447,12 @@ function isAutoSkip(value: unknown): value is AutoSkip {
   if (!isRecord(value)) return false
   if (value.kind === 'Answer') return isAutoYield(value.ability) && isFlag(value.yes)
   if (value.kind !== 'Order') return false
-  return isListOf(value.triggers, (t) => isRecord(t) && isText(t.name) && isCount(t.ability))
+  return isListOf(value.triggers, isTriggerKey)
+}
+
+/** Whether `value` is a `TriggerKey`: a source's name and an ability index. */
+function isTriggerKey(value: unknown): value is TriggerKey {
+  return isRecord(value) && isText(value.name) && isCount(value.ability)
 }
 
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {

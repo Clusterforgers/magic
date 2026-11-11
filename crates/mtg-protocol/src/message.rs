@@ -134,6 +134,7 @@ pub enum FullControlMode {
 ///
 /// Full Control overrides them: a seat in Full Control is asked every question at every step.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+#[allow(clippy::struct_excessive_bools)] // independent settings, each its own switch
 pub struct AutoChoices {
     /// Its triggers go on the stack in the order they triggered, by timestamp.
     pub order_triggers: bool,
@@ -142,6 +143,11 @@ pub struct AutoChoices {
     /// A step where a permanent of the seat has an ability its timing lets it use becomes a window for it.
     #[serde(default)]
     pub smart_stops: bool,
+    /// Every triggered ability on top of the stack, any seat's, is passed for at once at the seat's priority, out of
+    /// Full Control; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub skip_triggers: bool,
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see
@@ -198,6 +204,7 @@ pub enum AutoSkip {
 
 impl AutoSkip {
     /// What tells two rules apart: a new rule replaces the one with the same key, and a cancel names it.
+    #[must_use]
     pub fn key(&self) -> AutoSkip {
         match self {
             AutoSkip::Answer { ability, .. } => AutoSkip::Answer {

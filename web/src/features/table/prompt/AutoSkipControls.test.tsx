@@ -1,12 +1,12 @@
-/** Goal: the seat's own ability asking yes or no on top of the stack offers "Always Yes" and "Always No", which send the rule keyed by the ability's name and words and then the answer, and no other question offers them; the trigger-order prompt sends "Always use this order" as the confirmed order by source name and ability before the answer, and only when ticked; the Full Control menu lists every rule with a remove button and says Full Control sets them aside. */
+/** Goal: the seat's own ability asking yes or no on top of the stack offers "Always Yes" and "Always No", which send the rule keyed by the ability's name and words and then the answer, and no other question offers them; the trigger-order prompt sends "Always use this order" as the confirmed order by source name and ability before the answer, and only when ticked; an "Auto-skip triggers" switch is in sight beside Full Control at every width and asks for the other value, its list is one click away and removes each rule, and the top stack chip offers "Auto-pass this trigger" for an ability, never for a spell or under Full Control. */
 import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
-import type { Answer, AutoSkip, DecisionKind, ObjectView, TriggerEntry } from '@/protocol/generated'
+import type { Answer, AutoChoices, AutoSkip, AutoYield, DecisionKind, ObjectView, TriggerEntry } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf } from '@/test-utils/combatTable'
 import { renderTable } from '@/test-utils/tableHarness'
-import { answerKeyOf, orderRule, ruleKey, ruleWords } from '../autoSkips'
+import { answerKeyOf, autoSkipListName, orderRule, ruleKey, ruleWords } from '../autoSkips'
 
 const fixture = fixtureOf(2)
 const mine = must(creaturesOf(fixture, 0)[0])
@@ -29,7 +29,7 @@ function onTop(source: number, controller: number, spell = false) {
       view: {
         ...view,
         objects: [...view.objects, top],
-        table: { ...view.table, stack: { count: 1, cards: [ABILITY] } },
+        stack: { count: 1, cards: [ABILITY] },
       },
       objectsById: { ...state.objectsById, [ABILITY]: top },
     }
@@ -146,28 +146,98 @@ describe('the rules', () => {
     expect(answerKeyOf({ ...ability, name: '' }, 0, 3)).toBeNull()
   })
 
-  const fullControlOptions = (): HTMLElement => screen.getByRole('button', { name: 'Full Control options' })
+  it.each([
+    [0, 'Auto-skip list, empty'],
+    [1, 'Auto-skip list, 1 rule'],
+    [3, 'Auto-skip list, 3 rules'],
+  ])('the list button names %i rules as "%s"', (count, name) => {
+    expect(autoSkipListName(count)).toBe(name)
+  })
+})
 
-  it.each(['Off', 'Held'] as const)('in mode %s the menu lists each rule and a click removes it', async (mode) => {
-    const cancelAutoSkip = vi.fn((_rule: AutoSkip) => true)
-    const { user } = renderTable({
-      session: { cancelAutoSkip },
-      state: (state) => ({ ...state, autoSkips: [answerRule, order], fullControl: mode }),
-    })
-    await user.click(fullControlOptions())
-    const label = await screen.findByText('Auto-skips')
-    expect(label.textContent).toBe(mode === 'Off' ? 'Auto-skips' : 'Auto-skips (off in Full Control)')
-    const items = screen.getAllByRole('menuitem', { name: /^Stop (answering|ordering)/ })
-    expect(items.map((item) => item.textContent)).toEqual([ruleWords(answerRule).label, ruleWords(order).label])
-    expect(items[1]).toHaveAccessibleName('Stop ordering First, then Second')
-    await user.click(must(items[0]))
-    expect(cancelAutoSkip).toHaveBeenCalledExactlyOnceWith(answerRule)
+describe('the Auto-skip triggers switch', () => {
+  const answerRule: AutoSkip = { kind: 'Answer', ability: { name: 'Owl', text: WORDS }, yes: true }
+  const order: AutoSkip = {
+    kind: 'Order',
+    triggers: [
+      { name: 'First', ability: 0 },
+      { name: 'Second', ability: 1 },
+    ],
+  }
+  const choices = { order_triggers: true, assign_damage: false, smart_stops: false }
+
+  it.each([
+    [1920, true],
+    [1600, true],
+    [1280, false],
+    [390, false],
+  ])('at %i px is in sight beside Full Control without opening anything (in its group: %s)', (width, inGroup) => {
+    renderTable({ options: { viewport: { width, height: 900 } } })
+    const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+    expect(toggle.closest('[data-slot="full-control"]') !== null).toBe(inGroup)
+    expect(toggle.closest('[data-slot="auto-skip"]')).not.toBeNull()
   })
 
-  it('lists nothing without a rule', async () => {
-    const { user } = renderTable({ state: (state) => ({ ...state, autoSkips: [] }) })
-    await user.click(fullControlOptions())
-    await screen.findByRole('menuitemcheckbox', { name: /End my turn by hand/ })
-    expect(screen.queryByText('Auto-skips')).toBeNull()
+  it.each([false, true])('held %s: shows what the server holds and asks for the other, keeping the rest', async (on) => {
+    const setAutoChoices = vi.fn((_c: AutoChoices) => true)
+    const { user } = renderTable({
+      session: { setAutoChoices },
+      state: (state) => ({ ...state, autoChoices: { ...choices, skip_triggers: on } }),
+    })
+    const toggle = screen.getByRole('switch', { name: 'Auto-skip triggers' })
+    expect(toggle).toHaveAttribute('aria-checked', String(on))
+    await user.click(toggle)
+    expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith({ ...choices, skip_triggers: !on })
+  })
+
+  it.each(['Off', 'Held'] as const)('in mode %s the list is one click away and a remove button takes a rule back', async (mode) => {
+    const cancelAutoSkip = vi.fn((_rule: AutoSkip) => true)
+    const clearAutoYield = vi.fn((_a: AutoYield) => true)
+    const warden: AutoYield = { name: 'Soul Warden', text: 'Whenever another creature enters, you gain 1 life.' }
+    const { user } = renderTable({
+      session: { cancelAutoSkip, clearAutoYield },
+      state: (state) => ({ ...state, autoYields: [warden], autoSkips: [answerRule, order], fullControl: mode }),
+    })
+    await user.click(screen.getByRole('button', { name: 'Auto-skip list, 3 rules' }))
+    const title = await screen.findByText('Auto-skips')
+    expect(title.textContent).toBe(mode === 'Off' ? 'Auto-skips' : 'Auto-skips (off in Full Control)')
+    const list = must(document.querySelector('[data-slot="auto-skip-list"]'))
+    expect([...list.querySelectorAll('li')].map((row) => row.textContent)).toEqual([
+      'Auto-pass Soul Warden',
+      ruleWords(answerRule).label,
+      ruleWords(order).label,
+    ])
+    await user.click(screen.getByRole('button', { name: 'Stop ordering First, then Second' }))
+    expect(cancelAutoSkip).toHaveBeenCalledExactlyOnceWith(order)
+    await user.click(screen.getByRole('button', { name: `Stop auto-passing Soul Warden: ${warden.text}` }))
+    expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith(warden)
+  })
+})
+
+describe('auto-pass this trigger', () => {
+  it.each([
+    ['the top stack chip', '[data-slot="stack-chips"]'],
+  ])('on %s asks the server to auto-pass the ability, and pressed again to stop', async (_, within) => {
+    const autoYield = vi.fn((_id: number) => true)
+    const clearAutoYield = vi.fn((_a: AutoYield) => true)
+    const { user, update } = renderTable({ session: { autoYield, clearAutoYield }, state: onTop(mine, 1) })
+    const area = must(document.querySelector(within))
+    const button = must(area.querySelector<HTMLElement>('[data-slot="auto-pass"]'))
+    expect(button).toHaveAccessibleName(`Auto-pass this trigger: ${nameOf(mine)}`)
+    await user.click(button)
+    expect(autoYield).toHaveBeenCalledExactlyOnceWith(ABILITY)
+    update((state) => ({ ...state, autoYields: [{ name: nameOf(mine), text: WORDS }] }))
+    const held = screen.getByRole('button', { name: `Stop auto-passing ${nameOf(mine)}` })
+    expect(held).toHaveAttribute('aria-pressed', 'true')
+    await user.click(held)
+    expect(clearAutoYield).toHaveBeenCalledExactlyOnceWith({ name: nameOf(mine), text: WORDS })
+  })
+
+  it.each([
+    ['a spell on top', onTop(mine, 0, true), {}],
+    ['Full Control', onTop(mine, 0), { fullControl: 'Held' as const }],
+  ])('is not offered for %s', (_, patch, extra) => {
+    renderTable({ state: (state) => ({ ...patch(state), ...extra }) })
+    expect(document.querySelector('[data-slot="auto-pass"]')).toBeNull()
   })
 })

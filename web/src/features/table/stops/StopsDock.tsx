@@ -5,12 +5,14 @@ import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/compone
 import { usePlay } from '@/features/game/gameContext'
 import { canSetStops } from '../selectors'
 import { stopsButtonName } from './stopModel'
+import { AutoSkipToggle } from './AutoSkipToggle'
 import { StopsBar } from './StopsBar'
 
 /**
  * The stops in the controls dock: the ladder and Full Control in one line when the dock has the room (`row`), else one
  * "Stops" button that opens the same content as a popover above it. Never both. The popover stays in the page while
- * shut, so the Keep toggle and the picked side keep their state and the Control keys go on working.
+ * shut, so the Keep toggle and the picked side keep their state and the Control keys go on working. The "Auto-skip
+ * triggers" switch stays in sight either way: beside Full Control in the row, beside the Stops button otherwise.
  */
 export function StopsDock({ row }: { row: boolean }) {
   const { shown, count, mode } = usePlay(
@@ -23,6 +25,7 @@ export function StopsDock({ row }: { row: boolean }) {
   if (!shown) return null
   if (row) return <StopsBar layout="row" />
   return (
+    <>
     <Popover>
       <PopoverTrigger
         render={
@@ -52,5 +55,7 @@ export function StopsDock({ row }: { row: boolean }) {
         <StopsBar layout="panel" />
       </PopoverContent>
     </Popover>
+    <AutoSkipToggle />
+    </>
   )
 }

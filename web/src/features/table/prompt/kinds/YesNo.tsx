@@ -120,7 +120,7 @@ function PlainYesNo({
 function useOwnAbility(source: ObjectView['id']): AutoYield | null {
   const seat = usePlay((state) => state.seat)
   const top = usePlay((state) => {
-    const id = state.view?.table.stack.cards?.at(-1)
+    const id = state.view?.stack.cards?.at(-1)
     return id === undefined ? undefined : state.objectsById[id]
   })
   return useMemo(() => answerKeyOf(top, seat, source), [top, seat, source])

@@ -110,6 +110,7 @@ fn read(stored: StoredPrefs) -> UserPrefs {
             order_triggers: stored.auto_order_triggers,
             assign_damage: stored.auto_assign_damage,
             smart_stops: stored.auto_smart_stops,
+            skip_triggers: stored.auto_skip_triggers,
         },
         auto_yields: serde_json::from_value(stored.auto_yields).unwrap_or_default(),
         hand_sort: stored
@@ -138,6 +139,7 @@ pub(crate) async fn put(
         auto_order_triggers: prefs.auto_choices.order_triggers,
         auto_assign_damage: prefs.auto_choices.assign_damage,
         auto_smart_stops: prefs.auto_choices.smart_stops,
+        auto_skip_triggers: prefs.auto_choices.skip_triggers,
         auto_yields: serde_json::to_value(&prefs.auto_yields)
             .map_err(|_| ApiError::unavailable())?,
         hand_sort: (prefs.hand_sort != HandSort::default())
