@@ -256,3 +256,164 @@ fn a_permanent_becomes_one_card_type(#[case] duration: &str, #[case] said: bool)
         "{texts:?}"
     );
 }
+
+#[rstest]
+#[case::taken(
+    r#"{"Move":{"what":"Triggering","to":{"Battlefield":{"under":"You"}}}}"#,
+    true
+)]
+#[case::returned_to_hand(r#"{"Move":{"what":"Triggering","to":"Hand"}}"#, false)]
+fn a_permanent_put_into_a_graveyard_is_taken_unless_paid(#[case] unpaid: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":[{{"ControlledBy":"Opponents"}}],"from":"Battlefield","to":"Graveyard"}}}},"effects":[{{"Pay":{{"who":{{"ControllerOf":"Triggering"}},"cost":[{{"PayLife":3}}],"unpaid":[{unpaid}]}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "Whenever a permanent an opponent controls is put into a graveyard, put that card onto the battlefield under your control unless that opponent pays 3 life.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::the_sources_controller(r#"{"ControllerOf":"This"}"#, Some("~'s controller loses 2 life"))]
+#[case::the_targets_controller(r#"{"ControllerOf":{"Target":0}}"#, None)]
+fn the_controller_of_the_source_loses_life(#[case] who: &str, #[case] said: Option<&str>) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":"{{3}}","by":"Anyone","effects":[{{"LoseLife":{{"who":{who},"amount":2}}}},{{"Draw":{{}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    match said {
+        Some(words) => assert!(texts.iter().any(|text| text.contains(words)), "{texts:?}"),
+        None => assert!(
+            !texts.iter().any(|text| text.contains("~'s controller")),
+            "{texts:?}"
+        ),
+    }
+}
+
+#[rstest]
+#[case::at_least_one(r#",{"XAtLeast":1}"#, true)]
+#[case::any_x("", false)]
+fn an_x_that_cannot_be_zero(#[case] least: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{X}}{{U}}{{U}}{{B}}{{B}}"}},{{"ExileFromGraveyard":{{"filter":[{{"Type":"Creature"}}],"count":"X"}}}}{least}],"timing":"Sorcery","effects":[{{"Transform":{{"what":"This"}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{X}{U}{U}{B}{B}, Exile X creature cards from your graveyard: Transform ~. X can't be 0. Activate only as a sorcery.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::and_vehicles(
+    r#"[{"AnyOf":[{"Type":"Creature"},{"Subtype":"Vehicle"}]},{"ControlledBy":"You"}]"#,
+    true
+)]
+#[case::creatures_alone(r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#, false)]
+fn creatures_and_vehicles_gain_a_keyword(#[case] each: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":"{{4}}{{R}}{{G}}","effects":[{{"Continuous":{{"affected":{{"Each":{each}}},"mods":[{{"AddKeyword":"Trample"}}],"duration":"UntilEndOfTurn"}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{4}{R}{G}: Creatures and Vehicles you control gain trample until end of turn.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::while_tapped(
+    r#"["LoseAbilities","CantAttack","CantBlock"],"duration":"WhileSourceTapped""#,
+    true
+)]
+#[case::this_turn(
+    r#"["LoseAbilities","CantAttack","CantBlock"],"duration":"UntilEndOfTurn""#,
+    false
+)]
+fn a_target_loses_its_abilities_while_the_source_stays_tapped(
+    #[case] mods: &str,
+    #[case] said: bool,
+) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{3}}{{W}}"}},"Tap"],"targets":[{{"what":{{"Object":["Other"]}}}}],"effects":[{{"Continuous":{{"affected":{{"Target":0}},"mods":{mods}}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{3}{W}, {T}: For as long as ~ remains tapped, another target permanent loses all abilities and can't attack or block.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::face_down(
+    r#"{"BattlefieldFaceDown":{"under":{"OwnerOf":{"Bound":"exiled"}}}}"#,
+    true
+)]
+#[case::face_up(r#"{"Battlefield":{}}"#, false)]
+fn the_source_returns_face_down(#[case] to: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":"{{U}}","effects":[{{"Exile":{{"what":"This","as":"exiled"}}}},{{"Move":{{"what":{{"Bound":"exiled"}},"to":{to}}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted =
+        "{U}: Exile ~, then return it to the battlefield face down under its owner's control.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::yours(r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#, true)]
+#[case::the_source(r#""This""#, false)]
+fn each_creature_you_control_becomes_prepared(#[case] what: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":"{{1}}","effects":[{{"Prepare":{{"what":{what}}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{1}: Each creature you control becomes prepared.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+/// An activation that names a card and reveals one at random from the hand, then `then` if it has the name.
+fn named(hand: &str, selector: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{3}}"}},"Tap"],"targets":[{{"what":"AnyTarget"}}],"effects":[{{"ChooseValue":{{"kind":{{"CardName":[]}},"as":"name"}}}},{{"ChooseAtRandom":{{"from":{{"Each":{hand}}},"as":"revealed"}}}},{{"Reveal":{{"what":{{"Bound":"revealed"}}}}}},{{"If":{{"condition":{{"Matches":{{"subject":{{"Bound":"revealed"}},"selector":{selector}}}}},"then":[{{"DealDamage":{{"to":{{"Target":0}},"amount":2}}}}]}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::your_hand(
+    r#"[{"OwnedBy":"You"},{"In":"Hand"}]"#,
+    r#"[{"ChosenAs":"name"}]"#,
+    true
+)]
+#[case::an_opponents_hand(
+    r#"[{"OwnedBy":"Opponents"},{"In":"Hand"}]"#,
+    r#"[{"ChosenAs":"name"}]"#,
+    false
+)]
+#[case::another_test(r#"[{"OwnedBy":"You"},{"In":"Hand"}]"#, r#"[{"Type":"Land"}]"#, false)]
+fn a_card_named_then_revealed_at_random(
+    #[case] hand: &str,
+    #[case] selector: &str,
+    #[case] said: bool,
+) {
+    let texts = written(&named(hand, selector));
+    let wanted = "{3}, {T}: Choose a card name, then reveal a card at random from your hand. If that card has the chosen name, ~ deals 2 damage to any target.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::for_good(r#""Forever""#, true)]
+#[case::this_turn(r#""UntilEndOfTurn""#, false)]
+fn the_source_becomes_new_creature_types_for_good(#[case] duration: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{1}}{{W}}"}},{{"CollectEvidence":2}}],"effects":[{{"Continuous":{{"affected":"This","mods":[{{"SetCreatureTypes":["Human","Detective"]}},{{"SetPT":{{"power":4,"toughness":4}}}},{{"AddKeyword":"Vigilance"}}],"duration":{duration}}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{1}{W}, Collect evidence 2: ~ becomes a Human Detective with base power and toughness 4/4 and gains vigilance.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}
+
+#[rstest]
+#[case::a_citizen(r#"[{"Subtype":"Citizen"}]"#, true)]
+#[case::a_tapped_citizen(r#"[{"Subtype":"Citizen"},"Tapped"]"#, false)]
+fn the_source_of_a_creature_type_becomes_another(#[case] selector: &str, #[case] said: bool) {
+    let json = format!(
+        r#"{{"Activated":{{"cost":"{{W/B}}{{W/B}}","effects":[{{"If":{{"condition":{{"Matches":{{"subject":"This","selector":{selector}}}}},"then":[{{"Continuous":{{"affected":"This","mods":[{{"SetCreatureTypes":["Halfling","Scout"]}},{{"SetPT":{{"power":2,"toughness":3}}}},{{"AddKeyword":"Lifelink"}}],"duration":"Forever"}}}}]}}}}]}}}}"#
+    );
+    let texts = written(&json);
+    let wanted = "{W/B}{W/B}: If ~ is a Citizen, it becomes a Halfling Scout with base power and toughness 2/3 and lifelink.";
+    assert_eq!(texts.iter().any(|text| text == wanted), said, "{texts:?}");
+}

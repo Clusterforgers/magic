@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8be62f5c-0ab2-4869-97a2-d8a69a3fde95",
+  "name": "Frodo, Sauron's Bane",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Frodo, Sauron's Bane",
+      "oracle_fingerprint": "2bd2ba2e42d49a75b51b0da17f1f4d35",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W/B}{W/B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Citizen" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Halfling", "Scout"] },
+                          { "SetPT": { "power": 2, "toughness": 3 } },
+                          { "AddKeyword": "Lifelink" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 350 }
+          }
+        }
+      ]
+    }
+  ]
+}

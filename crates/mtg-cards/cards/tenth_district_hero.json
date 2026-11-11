@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0953772c-9374-4616-9c04-5838aaf626c9",
+  "name": "Tenth District Hero",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tenth District Hero",
+      "oracle_fingerprint": "18483f272dbb8ad88d19745462be5ad8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, { "CollectEvidence": 2 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetCreatureTypes": ["Human", "Detective"] },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

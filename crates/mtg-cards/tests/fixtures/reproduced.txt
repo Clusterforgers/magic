@@ -551,6 +551,7 @@ Elvish Rejuvenator
 Emergency Eject
 Emmara Tandris
 Empowered Autogenerator
+Empyrial Archangel
 Empyrial Plate
 Empyrial Storm
 Emrakul, the Promised End
@@ -820,6 +821,7 @@ Hei Bai, Spirit of Balance
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
+Hellkite Overlord
 Hellkite Tyrant
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway

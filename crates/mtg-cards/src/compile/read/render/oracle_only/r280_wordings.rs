@@ -5,6 +5,7 @@
 
 use crate::ability::Ability;
 use crate::effect::Effect;
+use crate::effect::ValueKind;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, ZoneKind};
 use crate::value::{Amount, Condition};
@@ -31,6 +32,310 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     targets_only_this(ability, texts);
     if_this_is_a_type(ability, texts);
     becomes_a_type(ability, texts);
+    stolen_unless_paid(ability, texts);
+    source_controller(ability, texts);
+    x_not_zero(ability, texts);
+    creatures_and_vehicles(ability, texts);
+    lost_while_tapped(ability, texts);
+    returned_face_down(ability, texts);
+    each_prepared(ability, texts);
+    named_and_revealed(ability, texts);
+    became_for_good(ability, texts);
+}
+
+/// "~ becomes a Human Detective with base power and toughness 4/4 and gains vigilance.", and the same under "If ~ is a
+/// Citizen, it becomes ...": a change of the source for good, written from the twin that lasts until end of turn.
+fn became_for_good(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Activated { effects, .. } = ability else {
+        return;
+    };
+    let (subtype, change) = match effects.as_slice() {
+        [change @ Effect::Continuous { .. }] => (None, change),
+        [
+            Effect::If {
+                condition:
+                    Condition::Matches {
+                        subject: Ref::This,
+                        selector,
+                    },
+                then,
+                otherwise,
+            },
+        ] if otherwise.is_empty() => {
+            let ([Pred::Subtype(subtype)], [change @ Effect::Continuous { .. }]) =
+                (selector.0.as_slice(), then.as_slice())
+            else {
+                return;
+            };
+            (Some(subtype), change)
+        }
+        _ => return,
+    };
+    let Effect::Continuous {
+        affected: Ref::This,
+        mods,
+        duration: Duration::Forever,
+    } = change
+    else {
+        return;
+    };
+    if !mods
+        .iter()
+        .any(|m| matches!(m, Modification::SetCreatureTypes(_)))
+    {
+        return;
+    }
+    let mut twin = ability.clone();
+    if let Ability::Activated { effects, .. } = &mut twin {
+        *effects = vec![Effect::Continuous {
+            affected: Ref::This,
+            mods: mods.clone(),
+            duration: Duration::UntilEndOfTurn,
+        }];
+    }
+    let mut found = Vec::new();
+    for text in crate::compile::written_variants(&twin) {
+        let Some((cost, rest)) = text.split_once(": ~ becomes ") else {
+            continue;
+        };
+        let Some(change) = rest.strip_suffix(" until end of turn.") else {
+            continue;
+        };
+        match subtype {
+            None => found.push(format!("{cost}: ~ becomes {change}.")),
+            Some(subtype) => {
+                let subtype = &subtype.0;
+                let article = if subtype.starts_with(['A', 'E', 'I', 'O', 'U']) {
+                    "an"
+                } else {
+                    "a"
+                };
+                found.push(format!(
+                    "{cost}: If ~ is {article} {subtype}, it becomes {change}."
+                ));
+                if let Some((head, keyword)) = change.rsplit_once(" and gains ") {
+                    found.push(format!(
+                        "{cost}: If ~ is {article} {subtype}, it becomes {head} and {keyword}."
+                    ));
+                }
+            }
+        }
+    }
+    texts.extend(found);
+}
+
+/// "Choose a card name, then reveal a card at random from your hand. If that card has the chosen name, ~ deals 2 damage
+/// to any target.": written from the twin that only deals the damage.
+fn named_and_revealed(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Activated { effects, .. } = ability else {
+        return;
+    };
+    let [
+        Effect::ChooseValue {
+            who: Ref::You,
+            kind: ValueKind::CardName(any),
+            bind: name,
+        },
+        Effect::ChooseAtRandom {
+            from: Ref::Each(hand),
+            count: Amount::Fixed(1),
+            bind: picked,
+        },
+        Effect::Reveal {
+            what: Ref::Bound(revealed),
+        },
+        Effect::If {
+            condition:
+                Condition::Matches {
+                    subject: Ref::Bound(tested),
+                    selector,
+                },
+            then,
+            otherwise,
+        },
+    ] = effects.as_slice()
+    else {
+        return;
+    };
+    let yours = [Pred::OwnedBy(Ref::You), Pred::In(ZoneKind::Hand)];
+    if !any.0.is_empty()
+        || hand.0 != yours
+        || picked != revealed
+        || tested != picked
+        || selector.0 != [Pred::ChosenAs(name.clone())]
+        || !otherwise.is_empty()
+        || serde_json::to_string(then).is_ok_and(|text| text.contains("Bound"))
+    {
+        return;
+    }
+    let mut twin = ability.clone();
+    if let Ability::Activated { effects, .. } = &mut twin {
+        effects.clone_from(then);
+    }
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter_map(|text| {
+            let (cost, rest) = text.split_once(": ")?;
+            let (sentence, after) = rest.split_once('.')?;
+            Some(format!(
+                "{cost}: Choose a card name, then reveal a card at random from your hand. If that card has the chosen name, {}.{after}",
+                super::twin_json::lowered(sentence)
+            ))
+        })
+        .collect();
+    texts.extend(found);
+}
+
+/// The ability as JSON with `from` replaced by `to`, read back; `None` when `from` is not in it.
+fn json_twin(ability: &Ability, from: &str, to: &str) -> Option<Ability> {
+    let text = serde_json::to_string(ability).ok()?;
+    text.contains(from)
+        .then(|| serde_json::from_str(&text.replace(from, to)).ok())
+        .flatten()
+}
+
+/// "~'s controller loses 2 life": the controller of the source as the player of a step, written from the twin that names
+/// each opponent.
+fn source_controller(ability: &Ability, texts: &mut Vec<String>) {
+    let twin = json_twin(
+        ability,
+        r#""who":{"ControllerOf":"This"}"#,
+        r#""who":"Opponents""#,
+    );
+    swapped(
+        twin.clone(),
+        "Each opponent loses ",
+        "~'s controller loses ",
+        texts,
+    );
+    swapped(
+        twin,
+        " each opponent loses ",
+        " ~'s controller loses ",
+        texts,
+    );
+}
+
+/// "Transform ~. X can't be 0. Activate only as a sorcery.": an activation whose X is at least 1, written from the twin
+/// without that part of the cost.
+fn x_not_zero(ability: &Ability, texts: &mut Vec<String>) {
+    let Some(twin) = json_twin(ability, r#",{"XAtLeast":1}"#, "") else {
+        return;
+    };
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter(|text| text.contains("{X}"))
+        .map(|text| match text.find(" Activate only") {
+            Some(at) => format!("{} X can't be 0.{}", &text[..at], &text[at..]),
+            None => format!("{text} X can't be 0."),
+        })
+        .collect();
+    texts.extend(found);
+}
+
+/// "Creatures and Vehicles you control gain trample until end of turn.": written from the twin about creatures alone.
+fn creatures_and_vehicles(ability: &Ability, texts: &mut Vec<String>) {
+    let twin = json_twin(
+        ability,
+        r#"[{"AnyOf":[{"Type":"Creature"},{"Subtype":"Vehicle"}]},{"ControlledBy":"You"}]"#,
+        r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#,
+    );
+    swapped(
+        twin,
+        "Creatures you control ",
+        "Creatures and Vehicles you control ",
+        texts,
+    );
+}
+
+/// "For as long as ~ remains tapped, another target permanent loses all abilities and can't attack or block.": written
+/// from the twin that keeps the restriction for the turn.
+fn lost_while_tapped(ability: &Ability, texts: &mut Vec<String>) {
+    let Some(twin) = json_twin(
+        ability,
+        r#""mods":["LoseAbilities","CantAttack","CantBlock"],"duration":"WhileSourceTapped""#,
+        r#""mods":["CantAttack","CantBlock"],"duration":"UntilEndOfTurn""#,
+    ) else {
+        return;
+    };
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter_map(|text| {
+            let (cost, rest) = text.split_once(": ")?;
+            let subject = rest.strip_suffix(" can't attack or block this turn.")?;
+            let subject = super::twin_json::lowered(subject);
+            Some(format!(
+                "{cost}: For as long as ~ remains tapped, {subject} loses all abilities and can't attack or block."
+            ))
+        })
+        .collect();
+    texts.extend(found);
+}
+
+/// "Exile ~, then return it to the battlefield face down under its owner's control.": written from the twin that returns
+/// it face up.
+fn returned_face_down(ability: &Ability, texts: &mut Vec<String>) {
+    let twin = json_twin(
+        ability,
+        r#"{"BattlefieldFaceDown":{"under":{"OwnerOf":{"Bound":"exiled"}}}}"#,
+        r#"{"Battlefield":{}}"#,
+    );
+    swapped(
+        twin,
+        "return it to the battlefield under its owner's control",
+        "return it to the battlefield face down under its owner's control",
+        texts,
+    );
+}
+
+/// "Each creature you control becomes prepared.": written from the twin that prepares the source.
+fn each_prepared(ability: &Ability, texts: &mut Vec<String>) {
+    let twin = json_twin(
+        ability,
+        r#"{"Prepare":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
+        r#"{"Prepare":{"what":"This"}}"#,
+    );
+    swapped(
+        twin,
+        "~ becomes prepared",
+        "Each creature you control becomes prepared",
+        texts,
+    );
+}
+
+/// "Whenever a permanent an opponent controls is put into a graveyard, put that card onto the battlefield under your
+/// control unless that opponent pays 3 life.": the card that left taken unless its controller pays, written from the twin
+/// that draws a card instead.
+fn stolen_unless_paid(ability: &Ability, texts: &mut Vec<String>) {
+    let Ok(text) = serde_json::to_string(ability) else {
+        return;
+    };
+    let taken = r#""unpaid":[{"Move":{"what":"Triggering","to":{"Battlefield":{"under":"You"}}}}]"#;
+    let opponents = r#"{"ZoneChange":{"what":[{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}}"#;
+    if !text.contains(taken)
+        || !text.contains(opponents)
+        || !text.contains(r#""who":{"ControllerOf":"Triggering"}"#)
+    {
+        return;
+    }
+    let Ok(twin) =
+        serde_json::from_str::<Ability>(&text.replace(taken, r#""unpaid":[{"Draw":{}}]"#))
+    else {
+        return;
+    };
+    let found: Vec<String> = crate::compile::written_variants(&twin)
+        .into_iter()
+        .filter_map(|text| {
+            let (head, payer) = text.split_once(", draw a card unless that permanent's controller pays ")?;
+            let head = head
+                .strip_suffix(" dies")
+                .or_else(|| head.strip_suffix(" is put into a graveyard from the battlefield"))?;
+            Some(format!(
+                "{head} is put into a graveyard, put that card onto the battlefield under your control unless that opponent pays {payer}"
+            ))
+        })
+        .collect();
+    texts.extend(found);
 }
 
 /// "Exile a Fungus card from a graveyard: Put a spore counter on each Fungus on the battlefield.": a cost that takes a

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ec664e13-b7c4-4ca3-80d6-55a564d97937",
   "name": "Immovable Rod",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Immovable Rod",
@@ -15,9 +15,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 262 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["LoseAbilities", "CantAttack", "CantBlock"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
           }
         }
       ]

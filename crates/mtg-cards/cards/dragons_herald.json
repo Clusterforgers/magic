@@ -1,0 +1,29 @@
+{
+  "oracle_id": "85a38b39-5806-4df9-95cc-8d608e2b5e47",
+  "name": "Dragon's Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon's Herald",
+      "oracle_fingerprint": "8234939bbed666caa8cf0d380b4f08c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{R}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Black" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Red" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Green" }] } }
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Hellkite Overlord" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
