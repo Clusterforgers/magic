@@ -148,6 +148,25 @@ pub(crate) fn hidden_across(
         .collect()
 }
 
+/// The objects hidden from `viewer` across a batch of `events`, less the cards a reveal of the batch showed every seat:
+/// a card revealed and then put into a hand in the same answer is known to the table (`docs/protocol.md`, Visibility).
+pub(crate) fn hidden_across_events(
+    before: &GameState,
+    after: &GameState,
+    events: &[mtg_engine::Event],
+    viewer: PlayerId,
+) -> BTreeMap<ObjectId, String> {
+    let mut hidden = hidden_across(before, after, viewer);
+    for event in events {
+        if let mtg_engine::Event::Revealed(revealed) = event {
+            for card in &revealed.cards {
+                hidden.remove(card);
+            }
+        }
+    }
+    hidden
+}
+
 /// Describes every place `value` mentions one of the hidden objects.
 pub(crate) fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
     fn walk(value: &Value, key: &str, hidden: &BTreeMap<ObjectId, String>, out: &mut Vec<String>) {
@@ -1614,6 +1633,76 @@ fn a_reveal_shows_the_cards_to_every_seat(#[values(2, 3, 4)] seats: usize) {
         .expect("the top card was looked at");
     let hidden = BTreeMap::from([(top, after.object(top).unwrap().card().name.clone())]);
     for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+}
+
+/// Narset, Parter of Veils' −2 as a sorcery: the card it reveals and puts into the hand in the same answer is named to
+/// every seat and counts as known in that batch, while the three cards bottomed unrevealed stay hidden from the others.
+#[rstest]
+fn a_card_revealed_into_a_hand_is_known_to_every_seat_and_the_rest_stay_hidden(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let narset = mtg_testkit::corpus::card("Narset, Parter of Veils").unwrap();
+    let Some(mtg_cards::ability::Ability::Loyalty { effects, .. }) =
+        narset.rules.first().map(|rule| (**rule).clone())
+    else {
+        panic!("Narset's −2 is her first rule")
+    };
+    let spell = mtg_cards::CardDefinition::new("Peek")
+        .with_type(mtg_core::card::CardType::Sorcery)
+        .with_mana_cost(mtg_testkit::cards::cost(0, &[mtg_core::color::Color::Blue]))
+        .with_rules(mtg_cards::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects,
+        });
+    let scenario = library_table(seats, std::sync::Arc::new(spell), &[]);
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let top: Vec<ObjectId> = before
+        .zone(Zone::Library(PlayerId(0)))
+        .iter()
+        .rev()
+        .take(4)
+        .copied()
+        .collect();
+    let (after, events, batches) = play_spell(scenario, seats, "Peek", |decision| {
+        let DecisionKind::ChooseCards(options) = &decision.kind else {
+            panic!(
+                "the −2 asks only for the card, not {}",
+                decision.kind.name()
+            )
+        };
+        mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+            options.from[..1].to_vec(),
+        ))
+    });
+    let revealed = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::Revealed(revealed) => Some(revealed.cards.clone()),
+            _ => None,
+        })
+        .expect("the kept card is revealed");
+    let [kept] = revealed[..] else {
+        panic!("one card is revealed, not {revealed:?}")
+    };
+    assert_eq!(after.object(kept).unwrap().zone(), Zone::Hand(PlayerId(0)));
+    let name = after.object(kept).unwrap().card().name.clone();
+    assert!(
+        ["Lightning Bolt", "Giant Growth"].contains(&name.as_str()),
+        "{name} is noncreature, nonland"
+    );
+    for (seat, batch) in batches.iter().enumerate().skip(1) {
+        let viewer = PlayerId::from_index(seat);
+        let hidden = hidden_across_events(&before, &after, &events, viewer);
+        assert!(!hidden.contains_key(&kept), "the revealed card is known");
+        let looked: Vec<ObjectId> = top.iter().copied().filter(|id| *id != kept).collect();
+        assert_eq!(
+            looked.len(),
+            3,
+            "three cards were looked at besides the kept one"
+        );
+        assert!(looked.iter().all(|id| hidden.contains_key(id)));
         assert_clean(batch, &hidden);
     }
 }
