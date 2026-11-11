@@ -6,7 +6,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { ConcedeDialog } from './ConcedeDialog'
 import { canConcede } from './selectors'
-import { GlossaryPanel } from './GlossaryPanel'
+import { HelpMenu } from './HelpMenu'
 import { SideSheetButton } from './SideTabs'
 import { TableMenu } from './TableMenu'
 import { TableRules } from './TableRules'
@@ -73,7 +73,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <TurnBadge />
       <StepLadder />
       <TurnBanner />
-      <GlossaryPanel />
+      <HelpMenu compact={compact} />
       <TableRules />
       <SideSheetButton compact={compact} />
       <TableMenu

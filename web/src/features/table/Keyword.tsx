@@ -1,8 +1,9 @@
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { pieces } from '@/lib/glossary'
+import { showLexicon } from './lexicon/lexiconStore'
 import type { Term } from '@/lib/glossary'
 
-/** A keyword word with its reminder text on hover, focus or press. */
+/** A keyword word with its reminder text on hover, focus or press, and a way into the lexicon. */
 export function KeywordWord({ term, children }: { term: Term; children: string }) {
   return (
     <Popover>
@@ -17,6 +18,14 @@ export function KeywordWord({ term, children }: { term: Term; children: string }
       <PopoverContent align="start" className="w-64 gap-1 p-2 text-sm">
         <PopoverTitle>{term.title}</PopoverTitle>
         <p data-slot="keyword-reminder">{term.text}</p>
+        <button
+          type="button"
+          data-slot="keyword-lexicon"
+          onClick={() => showLexicon(term.title)}
+          className="justify-self-start rounded-sm text-xs text-primary underline-offset-2 hover:underline"
+        >
+          More in the lexicon
+        </button>
       </PopoverContent>
     </Popover>
   )

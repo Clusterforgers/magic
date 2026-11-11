@@ -21,10 +21,15 @@ export interface TableOptions {
   cues?: boolean
   /** Lay the table out for this window size instead of the browser's, which a test has no use for. */
   viewport?: Viewport
+  /** Start the table tour by itself in a browser that has not seen it and is not under automation; on everywhere but under vitest when left out. */
+  tour?: boolean
 }
 
 /** Whether battlefields stack equal permanents when `TableOptions.stacks` is left out. */
 export const STACKS_BY_DEFAULT = import.meta.env.MODE !== 'test'
+
+/** Whether the table tour starts by itself when `TableOptions.tour` is left out. */
+export const TOUR_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
 export const TableOptionsContext = createContext<TableOptions>({})
