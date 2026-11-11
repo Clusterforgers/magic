@@ -203,6 +203,9 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::SkipStep(skipped), Doing::SkipStep { player, step }) => {
             step_matches(*skipped, step) && covers(who, Some(player), None)
         }
+        (Prohibited::SkipCombat, Doing::SkipStep { player, step }) => {
+            step.phase() == crate::turn::Phase::Combat && covers(who, Some(player), None)
+        }
         (
             Prohibited::Cast {
                 filter,

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bd5310df-2e6c-4584-9a5a-03d6d06b3c20",
+  "name": "Blood Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Reckoning",
+      "oracle_fingerprint": "a8a592fad9fcff3526d7148cf0ee6e67",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+            },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

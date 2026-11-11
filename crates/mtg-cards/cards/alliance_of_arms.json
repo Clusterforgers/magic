@@ -1,0 +1,50 @@
+{
+  "oracle_id": "be2a4595-4378-4af8-8368-e3b2bb3cb5bb",
+  "name": "Alliance of Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alliance of Arms",
+      "oracle_fingerprint": "a5faef79d174271b85bb15ba1bbd36a7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{X}",
+                        "paid": [{ "RememberValue": { "value": "X", "slot": "paid" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Remembered": { "on": "This", "slot": "paid" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

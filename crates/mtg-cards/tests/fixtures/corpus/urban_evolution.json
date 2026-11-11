@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "85df7b1b-7cd6-499d-aa9d-5599a79a3512",
+  "oracle_id": "c715e525-fc3a-4cab-94a0-04e0a22a5013",
+  "multiverse_ids": [
+    559927
+  ],
+  "tcgplayer_id": 269399,
+  "cardmarket_id": 652939,
+  "name": "Urban Evolution",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/85df7b1b-7cd6-499d-aa9d-5599a79a3512",
+  "scryfall_uri": "https://scryfall.com/card/ncc/355/urban-evolution?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:13:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221",
+    "normal": "https://cards.scryfall.io/normal/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221",
+    "large": "https://cards.scryfall.io/large/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221",
+    "png": "https://cards.scryfall.io/png/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.png?1783923221",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.webp?1783923221",
+    "grid": "https://cards.scryfall.io/grid/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.webp?1783923221",
+    "display": "https://cards.scryfall.io/display/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.webp?1783923221",
+    "art": "https://cards.scryfall.io/art/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.webp?1783923221",
+    "crop": "https://cards.scryfall.io/crop/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.webp?1783923221",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/5/85df7b1b-7cd6-499d-aa9d-5599a79a3512.jpg?1783923221"
+  },
+  "mana_cost": "{3}{G}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw three cards. You may play an additional land this turn.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/85df7b1b-7cd6-499d-aa9d-5599a79a3512/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac715e525-fc3a-4cab-94a0-04e0a22a5013&unique=prints",
+  "collector_number": "355",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "As the Simic released more of their krasis experiments, they required new habitats, always at the expense of the locals.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eytan Zana",
+  "artist_ids": [
+    "0d8d6726-4051-445a-8374-a919aad98f38"
+  ],
+  "illustration_id": "95151720-7aa5-4775-8da8-e59e3a69a4e2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2444,
+  "penny_rank": 4890,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559927&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUrban%2BEvolution",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUrban%2BEvolution",
+    "edhrec": "https://edhrec.com/route/?cc=Urban+Evolution"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269399%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652939&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Urban+Evolution&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c983644d-6741-4aa1-aa68-a6e680c26bb6",
+  "name": "Serpentine Spike",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serpentine Spike",
+      "oracle_fingerprint": "bc1bd9b47a73efe0bd6a2f7023a1284a",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 33, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

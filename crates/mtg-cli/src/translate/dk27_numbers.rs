@@ -60,18 +60,22 @@ pub fn dk27_bid_life(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     let Some(then) = p.get("BidSubAbility") else {
         return unmapped("key:BidLife.no-BidSubAbility");
     };
-    let lose = ctx.sub(then)?;
+    let life_part = ctx.sub(then)?;
     only(
-        &lose,
+        &life_part,
         "LoseLife",
         &["DB", "Defined", "LifeAmount", "SubAbility"],
     )?;
-    let lost = (lose.get("DB"), lose.get("Defined"), lose.get("LifeAmount"));
+    let shape = (
+        life_part.get("DB"),
+        life_part.get("Defined"),
+        life_part.get("LifeAmount"),
+    );
     let chosen = ctx.svar("X").map(str::trim) == Some("Count$ChosenNumber");
-    if lost != (Some("LoseLife"), Some("Remembered"), Some("X")) || !chosen {
+    if shape != (Some("LoseLife"), Some("Remembered"), Some("X")) || !chosen {
         return unmapped("key:BidLife.BidSubAbility");
     }
-    let Some(then) = lose.get("SubAbility") else {
+    let Some(then) = life_part.get("SubAbility") else {
         return unmapped("key:BidLife.BidSubAbility");
     };
     let draw = ctx.sub(then)?;

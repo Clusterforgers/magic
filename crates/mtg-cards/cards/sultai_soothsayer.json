@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5fe127e0-ee38-4f80-969b-13e84712a26f",
+  "name": "Sultai Soothsayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sultai Soothsayer",
+      "oracle_fingerprint": "04080e75573f5d27d523df629c110f68",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c13079d5-6749-43e5-a8ee-ef3af31ff679",
+  "name": "Blast-Furnace Hellkite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blast-Furnace Hellkite",
+      "oracle_fingerprint": "3185ce8272af87063e8ee105a56954de",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 201 }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 224, "end": 278 }
+          }
+        }
+      ]
+    }
+  ]
+}

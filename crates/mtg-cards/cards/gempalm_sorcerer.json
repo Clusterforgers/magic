@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c3162232-b713-44be-b2af-29d801279ab2",
+  "name": "Gempalm Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gempalm Sorcerer",
+      "oracle_fingerprint": "0248be826ed86d200a639054505519ea",
+      "abilities": [
+        { "Keyword": { "Cycling": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Wizard" }] },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

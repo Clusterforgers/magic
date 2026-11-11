@@ -59,6 +59,10 @@ const C7_UNTAP_ONLY: &str =
 
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
+/// Only the rule that a player skips a step or combat lasts until it is skipped.
+const RMT3_SKIP_ONLY: &str =
+    "only the rule that a player skips a step or combat lasts until it is skipped";
+
 /// Only a continuous effect lasts until a card is cast from exile.
 const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
 
@@ -1316,6 +1320,7 @@ impl<'a> Walker<'a> {
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),
             Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
+            Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
@@ -2569,6 +2574,10 @@ impl Walker<'_> {
                     self.uses("Target", "TotalManaValue");
                     self.at("rule", |w| w.amount(most));
                 }
+                if let TargetSet::TotalPowerAtMost(most) = rule {
+                    self.uses("Target", "TotalPower");
+                    self.at("rule", |w| w.amount(most));
+                }
                 self.at("what", |w| w.targetable(what));
             }
             Targetable::Another { what, earlier } => {
@@ -3763,6 +3772,10 @@ impl Walker<'_> {
                     w.at("each", |w| w.amount(each));
                 }
             }
+            Effect::SpellEntersWith { spell, count } => {
+                w.at("spell", |w| w.reference(spell, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::MoveCounters {
                 from, to, count, ..
             } => {
@@ -3896,6 +3909,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -3908,7 +3924,7 @@ impl Walker<'_> {
                     w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
-                // Only the layers end an effect when the source changes controller.
+                // A rule ends when the layers give its source to another player (`RuleEffect::is_active`).
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
                 }
@@ -3923,6 +3939,17 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
+                }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn)
+                    && !matches!(
+                        rule,
+                        GameRule::Cant {
+                            action: Prohibited::SkipStep(_) | Prohibited::SkipCombat,
+                            ..
+                        }
+                    )
+                {
+                    w.problem(RMT3_SKIP_ONLY);
                 }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
@@ -3947,6 +3974,12 @@ impl Walker<'_> {
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
+            Effect::PutBeneathTop { what, below } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("below", |w| w.amount(below));
+            }
             Effect::Shield {
                 when,
                 by,
@@ -3969,6 +4002,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
+                }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
@@ -4709,7 +4745,8 @@ impl Walker<'_> {
             }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
-            | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
+            | GameRule::UntapDuring { .. }
+            | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
         }
     }
 
@@ -4775,6 +4812,10 @@ impl Walker<'_> {
             GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            GameRule::UntapLimit { who, what, .. } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
             }),
             _ => {}
         }
@@ -4925,9 +4966,11 @@ impl Walker<'_> {
         }
     }
 
-    /// A loss of the game is replaced only by steps that happen instead.
+    /// A loss of the game is replaced only by steps that happen instead (every time, or the next time).
     fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+        if matches!(when, ReplaceWhen::LoseGame { .. })
+            && !matches!(by, ReplaceBy::Instead(_) | ReplaceBy::InsteadNext(_))
+        {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
@@ -4996,6 +5039,16 @@ impl Walker<'_> {
     fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         match by {
             ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                // A shield over damage to targets gives each target its share of a division (`rmt2_shares`).
+                if matches!(
+                    when,
+                    ReplaceWhen::Damage {
+                        to: Some(Ref::Target(_)),
+                        ..
+                    }
+                ) {
+                    self.amounting = Amounting::Shared;
+                }
                 self.at("PreventCounted", |w| w.amount(amount));
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
@@ -5057,10 +5110,14 @@ impl Walker<'_> {
                 }
             }
             ReplaceBy::IntoLibrary { place, .. }
-                if !matches!(when, ReplaceWhen::ZoneChange { .. })
-                    || matches!(place, crate::effect::Place::Below(_)) =>
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. }
+                ) || matches!(place, crate::effect::Place::Below(_)) =>
             {
-                self.problem("`IntoLibrary` replaces a `ZoneChange`, on top, bottom or shuffled");
+                self.problem(
+                    "`IntoLibrary` replaces a `ZoneChange` or a `Countered`, on top, bottom or shuffled",
+                );
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(
@@ -5320,6 +5377,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
                 | CostItem::Forage
+                | CostItem::ExileTop(_)
         ),
     })
 }

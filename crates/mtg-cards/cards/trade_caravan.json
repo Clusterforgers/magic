@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8faccd56-dfc2-4cfc-880c-db40b935336a",
+  "name": "Trade Caravan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trade Caravan",
+      "oracle_fingerprint": "277fb14a13fa5e82e44b0ee2a0a44700",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "currency" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "currency" }, "count": 2 } }],
+            "condition": { "All": [{ "Not": "YourTurn" }, { "Step": "Upkeep" }] },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

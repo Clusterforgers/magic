@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "3a14d6c5-cfd1-4860-834a-5a0dc9df0320",
+  "oracle_id": "4b96c22a-0d5b-44fd-b326-5f3ffcc3917b",
+  "multiverse_ids": [],
+  "tcgplayer_id": 625925,
+  "cardmarket_id": 820170,
+  "name": "Deadpool, Trading Card",
+  "lang": "en",
+  "released_at": "2025-04-01",
+  "uri": "https://api.scryfall.com/cards/3a14d6c5-cfd1-4860-834a-5a0dc9df0320",
+  "scryfall_uri": "https://scryfall.com/card/sld/1753/deadpool-trading-card?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:50:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438",
+    "normal": "https://cards.scryfall.io/normal/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438",
+    "large": "https://cards.scryfall.io/large/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438",
+    "png": "https://cards.scryfall.io/png/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.png?1783907438",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.webp?1783907438",
+    "grid": "https://cards.scryfall.io/grid/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.webp?1783907438",
+    "display": "https://cards.scryfall.io/display/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.webp?1783907438",
+    "art": "https://cards.scryfall.io/art/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.webp?1783907438",
+    "crop": "https://cards.scryfall.io/crop/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.webp?1783907438",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/a/3a14d6c5-cfd1-4860-834a-5a0dc9df0320.jpg?1783907438"
+  },
+  "mana_cost": "{2}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Mutant Mercenary Hero",
+  "oracle_text": "As Deadpool enters, you may exchange his text box and another creature's.\nAt the beginning of your upkeep, you lose 3 life.\n{3}, Sacrifice this creature: Each other player draws a card.",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3a14d6c5-cfd1-4860-834a-5a0dc9df0320/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4b96c22a-0d5b-44fd-b326-5f3ffcc3917b&unique=prints",
+  "collector_number": "1753",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Draw me like one of your French cards.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justine Cruz",
+  "artist_ids": [
+    "4d6acc42-7bac-42cb-ac57-a56355292e89"
+  ],
+  "illustration_id": "194c6f28-197c-49ea-91e3-5312dc2b0a0b",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted",
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2675,
+  "prices": {
+    "usd": "14.05",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "13.79",
+    "eur_foil": "18.95",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeadpool%252C%2BTrading%2BCard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeadpool%252C%2BTrading%2BCard",
+    "edhrec": "https://edhrec.com/route/?cc=Deadpool%2C+Trading+Card"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F625925%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=820170&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Deadpool%2C+Trading+Card&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

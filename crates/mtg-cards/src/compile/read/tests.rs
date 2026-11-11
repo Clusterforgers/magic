@@ -210,6 +210,7 @@ mod e15b_writers;
 mod g12d_blight_cost;
 mod g9b;
 mod g9d_writers;
+mod rmt1_writers;
 // dk1b
 mod c6_blk_aura;
 mod c6_blk_draws;
@@ -403,6 +404,7 @@ mod reveal;
 mod reveal_cast_writers;
 mod reveal_until;
 mod riot;
+mod rmt4_writers;
 mod sample_af2_writers;
 mod sample_af_writers;
 mod sample_ba_writers;

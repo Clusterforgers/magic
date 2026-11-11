@@ -539,6 +539,26 @@ pub enum Effect {
         /// The creatures that leave combat.
         what: Ref,
     },
+    /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
+    LoseUnspentMana {
+        /// Whose mana pools empty.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// Puts objects into their owners' libraries just beneath the top `below` cards ("just beneath the top X cards of
+    /// that library"), the number worked out as the step runs; a library with fewer cards takes them at the bottom.
+    PutBeneathTop {
+        /// What is put.
+        what: Ref,
+        /// How many cards stay above them.
+        below: Amount,
+    },
+    /// Attacking creatures become blocked (CR 509.1h), even those that can't be blocked: each one not yet blocked is
+    /// blocked by no creature, so it deals no combat damage unless it has trample, and "becomes blocked" triggers.
+    BecomeBlocked {
+        /// The attacking creatures.
+        what: Ref,
+    },
     /// Exiles objects.
     Exile {
         /// What is exiled.
@@ -761,6 +781,15 @@ pub enum Effect {
         /// The one kind removed; every kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
+    },
+    /// The permanent spells `spell` names enter the battlefield with `count` additional +1/+1 counters on them as they
+    /// resolve (CR 614.1c): "that creature enters with an additional +1/+1 counter on it" after a creature spell is cast.
+    SpellEntersWith {
+        /// The spells on the stack.
+        spell: Ref,
+        /// How many counters, worked out now.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
     },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     /// When `from` names several objects ("from other permanents you control"), each gives up to the count in turn.

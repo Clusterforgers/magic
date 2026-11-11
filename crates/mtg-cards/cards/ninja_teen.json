@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
+  "name": "Ninja Teen",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ninja Teen",
+      "oracle_fingerprint": "29435b8f3e3311581affa2e10209d8fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 204, "end": 346 }
+          }
+        }
+      ]
+    }
+  ]
+}

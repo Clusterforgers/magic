@@ -1,0 +1,34 @@
+{
+  "oracle_id": "9a0bb238-f832-4b37-97ae-520899798e7a",
+  "name": "Firefright Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firefright Mage",
+      "oracle_fingerprint": "f81a202709bcaa86e05667c9d6196fbb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap", { "Discard": { "filter": [] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Not": { "AnyOf": [{ "Type": "Artifact" }, { "Color": "Red" }] } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

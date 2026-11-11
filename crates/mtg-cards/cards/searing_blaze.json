@@ -1,0 +1,55 @@
+{
+  "oracle_id": "74b08a70-b0bb-4340-98a0-b1d5b7c9d2cc",
+  "name": "Searing Blaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Searing Blaze",
+      "oracle_fingerprint": "65211f891a745c5c56bf0743b9437582",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": { "OrController": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "You",
+                          "filter": [{ "Type": "Land" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+                  ],
+                  "otherwise": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

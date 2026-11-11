@@ -65,6 +65,7 @@ mod prepared;
 mod preview;
 mod price;
 mod replace_dry;
+mod rmt3_skips;
 mod saga;
 mod sba;
 mod sneak;
@@ -138,6 +139,7 @@ pub mod replace;
 pub mod resolve;
 pub mod retargeted;
 mod ring;
+mod rmt4_untap_limit;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "5595a57a-a76c-467b-afaf-5affffc24f35",
+  "oracle_id": "523d3e3d-8fdf-44f8-868d-7b00995e4577",
+  "multiverse_ids": [
+    40188
+  ],
+  "mtgo_id": 17883,
+  "mtgo_foil_id": 17884,
+  "tcgplayer_id": 10517,
+  "cardmarket_id": 1753,
+  "name": "Words of Wind",
+  "lang": "en",
+  "released_at": "2002-10-07",
+  "uri": "https://api.scryfall.com/cards/5595a57a-a76c-467b-afaf-5affffc24f35",
+  "scryfall_uri": "https://scryfall.com/card/ons/122/words-of-wind?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:17:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074",
+    "normal": "https://cards.scryfall.io/normal/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074",
+    "large": "https://cards.scryfall.io/large/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074",
+    "png": "https://cards.scryfall.io/png/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.png?1783945074",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.webp?1783945074",
+    "grid": "https://cards.scryfall.io/grid/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.webp?1783945074",
+    "display": "https://cards.scryfall.io/display/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.webp?1783945074",
+    "art": "https://cards.scryfall.io/art/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.webp?1783945074",
+    "crop": "https://cards.scryfall.io/crop/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.webp?1783945074",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/5/5595a57a-a76c-467b-afaf-5affffc24f35.jpg?1783945074"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{1}: The next time you would draw a card this turn, each player returns a permanent they control to its owner's hand instead.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set": "ons",
+  "set_name": "Onslaught",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/914a6c6d-cb3b-45e8-a2db-9978a2339faf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aons&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ons?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5595a57a-a76c-467b-afaf-5affffc24f35/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A523d3e3d-8fdf-44f8-868d-7b00995e4577&unique=prints",
+  "collector_number": "122",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Be logical in all things. Do not allow instinct or passion to cloud your mind.\"\n—*Volume II, The Book of Insight*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Peterson",
+  "artist_ids": [
+    "0fc26d3b-4c0e-41d1-8eb3-286ab55a2328"
+  ],
+  "illustration_id": "a3419ea0-7baa-4a89-acf0-d377386792a3",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15745,
+  "penny_rank": 5353,
+  "prices": {
+    "usd": "3.65",
+    "usd_foil": "45.94",
+    "usd_etched": null,
+    "eur": "1.71",
+    "eur_foil": "16.92",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=40188&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWords%2Bof%2BWind",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWords%2Bof%2BWind",
+    "edhrec": "https://edhrec.com/route/?cc=Words+of+Wind"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10517%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1753&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17883?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

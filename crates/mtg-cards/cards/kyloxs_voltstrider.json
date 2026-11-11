@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e7b746c8-1b32-42ed-8328-4e16274209d8",
+  "name": "Kylox's Voltstrider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kylox's Voltstrider",
+      "oracle_fingerprint": "e2a8b69dabcf77a1b308bab5219255dd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 0, "end": 80 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 81, "end": 283 }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

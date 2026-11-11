@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c0128941-240a-4ca1-9816-b32f47523fdb",
+  "name": "Fealty to the Realm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fealty to the Realm",
+      "oracle_fingerprint": "89f68e02b4490086814aaf8229afa237",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 64, "end": 104 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 105, "end": 173 }
+          }
+        }
+      ]
+    }
+  ]
+}

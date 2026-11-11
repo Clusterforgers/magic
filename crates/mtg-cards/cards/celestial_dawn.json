@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b4d27fad-9a94-4760-80a6-6a2948109864",
+  "name": "Celestial Dawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Celestial Dawn",
+      "oracle_fingerprint": "262c107d27bb8df6c94df5ff871ff47c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [{ "SetLandTypes": ["Plains"] }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 30, "end": 169 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 170, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

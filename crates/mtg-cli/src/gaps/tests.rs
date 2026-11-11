@@ -402,7 +402,7 @@ fn the_examples_are_the_freed_cards_first_the_most_played_first_and_at_most_five
         ["Common", "Rare", "Shared", "Filler 0", "Filler 1"]
     );
     assert_eq!((a.blocked, a.freed), (9, 2));
-    assert_eq!(a.weight, 2.5);
+    assert!((a.weight - 2.5).abs() < f64::EPSILON);
 }
 
 #[test]

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "06b77a80-4968-4385-960a-fb66bb4faa94",
+  "name": "Dragonkin Berserker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dragonkin Berserker",
+      "oracle_fingerprint": "97298a6262adaab963368d131cf534d8",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 13, "end": 96 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 97, "end": 241 }
+          }
+        }
+      ]
+    }
+  ]
+}

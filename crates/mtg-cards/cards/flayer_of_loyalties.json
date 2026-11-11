@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1e9053b5-5cca-486c-9dd8-b198a7b666bf",
+  "name": "Flayer of Loyalties",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flayer of Loyalties",
+      "oracle_fingerprint": "b064c94eeccff6f30da2c67582717b5b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 10, "toughness": 10 } },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": { "Annihilator": 2 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Annihilator": 2 } },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

@@ -118,7 +118,7 @@ pub(super) fn counting(r: &mut Reader<'_>) -> Option<Amount> {
     if r.words("the amount of life you gained this turn") {
         return Some(Amount::Tallied {
             who: Ref::You,
-            what: TurnTally::LifeGained,
+            what: TurnTally::LifeGainedTotal,
         });
     }
     if r.words("the number of card types among") {
@@ -343,7 +343,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
         Amount::DieResult(which) => Some(super::chance::c11e_result_text(*which).to_owned()),
         Amount::Tallied {
             who: Ref::You,
-            what: TurnTally::LifeGained,
+            what: TurnTally::LifeGainedTotal,
         } => Some("the amount of life you gained this turn".to_owned()),
         Amount::Tallied { .. } => {
             died_text(amount, false).map(|text| format!("the number of {text}"))

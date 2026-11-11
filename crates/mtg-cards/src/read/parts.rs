@@ -337,6 +337,11 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             phrase::selectors(ctx, what),
             phrase::who(ctx, whose)
         ),
+        GameRule::UntapLimit { who, what, count } => format!(
+            "{} can't untap more than {count} of {} during their untap steps",
+            phrase::who(ctx, who),
+            phrase::selectors(ctx, what)
+        ),
         GameRule::MayCast(permission) => {
             let from = permission.from.map_or_else(String::new, |zone| {
                 format!(" from {}", phrase::zone_text(zone))

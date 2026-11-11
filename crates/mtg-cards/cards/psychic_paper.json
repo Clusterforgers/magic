@@ -1,0 +1,26 @@
+{
+  "oracle_id": "110b601c-bf38-4985-8de6-fcb477f543a8",
+  "name": "Psychic Paper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Psychic Paper",
+      "oracle_fingerprint": "a1952f0b67efd1f92bc1a5bad9df5db4",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 98 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 99, "end": 226 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "13ebe447-1f8f-4b12-9e35-9d334a863c19",
+  "name": "Flare of Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flare of Faith",
+      "oracle_fingerprint": "1e2a7822049839a2955be704e429cd23",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Human" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Indestructible" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

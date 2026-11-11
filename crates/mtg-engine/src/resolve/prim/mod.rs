@@ -33,6 +33,7 @@ mod join_attack;
 mod let_amount;
 mod retarget;
 mod ring_tempts;
+mod rmt2_shares;
 mod unattach;
 mod w2d_villainous;
 mod w6e_exchange;
@@ -92,6 +93,7 @@ mod one_of;
 mod pair;
 mod reflexive;
 mod remember;
+mod spell_enters_with;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
@@ -114,6 +116,9 @@ mod remove_from_combat;
 mod repeat_each;
 mod reveal;
 mod reveal_until;
+mod rmt1_become_blocked;
+mod rmt1_beneath;
+mod rmt1_unspent;
 pub(crate) mod roll_dice;
 mod rule;
 mod sacrifice;
@@ -226,6 +231,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
         Effect::RemoveAllCounters { .. } => remove_counters::run_all(cx, effect),
         Effect::MoveCounters { .. } => move_counters::run(cx, effect),
+        Effect::SpellEntersWith { .. } => spell_enters_with::run(cx, effect),
         Effect::MultiplyCounters { .. } => multiply_counters::run(cx, effect),
         Effect::PutCountersOf { .. } => g12b_counters_of::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
@@ -288,6 +294,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
+        Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
+        Effect::PutBeneathTop { .. } => rmt1_beneath::run(cx, effect),
+        Effect::LoseUnspentMana { .. } => rmt1_unspent::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::Reflexive { .. } => reflexive::run(cx, effect),
@@ -347,7 +356,7 @@ mod tests {
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
-        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
+        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"SpellEntersWith":{"spell":"This"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
@@ -361,6 +370,9 @@ mod tests {
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
+        {"BecomeBlocked":{"what":"This"}},
+        {"PutBeneathTop":{"what":"This","below":2}},
+        {"LoseUnspentMana":{}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
@@ -389,7 +401,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 115, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 119, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -449,6 +461,7 @@ mod tests {
         "Effect.PutCounters",
         "Effect.RemoveCounters",
         "Effect.MoveCounters",
+        "Effect.SpellEntersWith",
         "Effect.MultiplyCounters",
         "Effect.PutCountersOf",
         "Effect.Tap",
@@ -522,6 +535,9 @@ mod tests {
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
+        "Effect.BecomeBlocked",
+        "Effect.PutBeneathTop",
+        "Effect.LoseUnspentMana",
         "Effect.Shield",
         "Effect.DelayedTrigger",
         "Effect.Reflexive",

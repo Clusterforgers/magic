@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0222dc7c-459b-4909-a037-72b2eb248599",
+  "name": "Gluntch, the Bestower",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gluntch, the Bestower",
+      "oracle_fingerprint": "faf49ebc99ad8c0c45ba05684a398bc4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -21,7 +21,7 @@
                 "CreateToken": {
                   "token": {
                     "Sized": {
-                      "size": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                      "size": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
                       "token": {
                         "name": "Treefolk",
                         "colors": ["Green"],

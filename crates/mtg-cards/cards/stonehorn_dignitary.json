@@ -1,0 +1,27 @@
+{
+  "oracle_id": "65368569-68bf-4498-9979-d2935942ca49",
+  "name": "Stonehorn Dignitary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonehorn Dignitary",
+      "oracle_fingerprint": "a1e075eea5dfbfed460298900dacd230",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipCombat" } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

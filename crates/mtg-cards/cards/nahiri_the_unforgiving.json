@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d71d42e0-cd56-4f53-95ff-ecab7f8c6552",
+  "name": "Nahiri, the Unforgiving",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nahiri, the Unforgiving",
+      "oracle_fingerprint": "0357c45e7cc6a9caf8694759d59f1005",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 134 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 135, "end": 224 }
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Discard": {} }, { "Draw": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 263, "end": 477 }
+          }
+        }
+      ]
+    }
+  ]
+}

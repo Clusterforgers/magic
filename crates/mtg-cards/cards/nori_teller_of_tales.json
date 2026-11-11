@@ -1,0 +1,28 @@
+{
+  "oracle_id": "03253076-9add-4efb-9227-b0a062c86534",
+  "name": "Nori, Teller of Tales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nori, Teller of Tales",
+      "oracle_fingerprint": "c2d65a9503875b37fb7db44b8053fe7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

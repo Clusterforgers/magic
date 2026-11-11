@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9895a33f-9bbd-4440-8c1a-0d401431b77f",
+  "name": "Tomik, Distinguished Advokist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tomik, Distinguished Advokist",
+      "oracle_fingerprint": "dee66768b6e8fa94d067d7e83f2137de",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 128 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 129, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

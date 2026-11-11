@@ -1,0 +1,26 @@
+{
+  "oracle_id": "06bb4272-25d1-46db-8585-15f919267e1e",
+  "name": "One with the Multiverse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "One with the Multiverse",
+      "oracle_fingerprint": "a860506123b432ac6d318edf50c0f1a1",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 55, "end": 119 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 120, "end": 244 }
+          }
+        }
+      ]
+    }
+  ]
+}

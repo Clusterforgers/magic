@@ -1,0 +1,32 @@
+{
+  "oracle_id": "80c26f58-04b0-4db0-b84e-9b136609abe0",
+  "name": "Sarkhan, the Dragonspeaker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sarkhan, the Dragonspeaker",
+      "oracle_fingerprint": "37ff0100a4081e112fa555c524b0f802",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 0, "end": 171 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 219, "end": 369 }
+          }
+        }
+      ]
+    }
+  ]
+}

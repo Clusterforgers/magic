@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b1f857c5-cd22-4a4e-8039-1e7eeb3754d8",
+  "name": "Fire and Brimstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire and Brimstone",
+      "oracle_fingerprint": "c7b557d31a95ca0ca3daf8e201c1c727",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": "You", "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

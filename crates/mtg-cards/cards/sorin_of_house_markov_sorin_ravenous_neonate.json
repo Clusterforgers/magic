@@ -1,0 +1,99 @@
+{
+  "oracle_id": "84e84532-498b-40ea-9510-46fb2403939b",
+  "name": "Sorin of House Markov // Sorin, Ravenous Neonate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorin of House Markov",
+      "oracle_fingerprint": "a7f6859fdfddef8df3acda51d97384b2",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Extort" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sorin, Ravenous Neonate",
+      "oracle_fingerprint": "ed778aeeff8593a63616f80bfa6ae62b",
+      "abilities": [
+        { "Keyword": "Extort" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }, { "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Color": "White" },
+                          { "ControlledBy": "You" },
+                          "Other",
+                          { "Not": { "Is": { "Target": 0 } } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

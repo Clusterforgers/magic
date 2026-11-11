@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9794e31f-e73d-4aa0-a421-dc496080c987",
+  "name": "Invasion of Arcavios // Invocation of the Founders",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invasion of Arcavios",
+      "oracle_fingerprint": "4417f4208e771d198109831f0049b997",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 141, "end": 344 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invocation of the Founders",
+      "oracle_fingerprint": "6b8e3361e4b8dad4fb81910a5c20a9f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "CastFrom": "Hand" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

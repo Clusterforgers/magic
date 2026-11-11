@@ -1,0 +1,52 @@
+{
+  "oracle_id": "95dc1f55-9dad-4a35-ac5e-abc53d442ffb",
+  "name": "Runadi, Behemoth Caller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runadi, Behemoth Caller",
+      "oracle_fingerprint": "b36d0ed5441081d63cf1cbe4605146d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 5 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "SpellEntersWith": {
+                  "spell": "Triggering",
+                  "count": { "Sum": [{ "Stat": { "of": "Triggering", "stat": "ManaValue" } }, -4] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "CounterCount": { "kind": "+1/+1", "op": "Ge", "to": 3 } }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

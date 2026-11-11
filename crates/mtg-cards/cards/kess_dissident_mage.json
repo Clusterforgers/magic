@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f5092c14-eec4-472c-999c-ba96c36b2fbb",
+  "name": "Kess, Dissident Mage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kess, Dissident Mage",
+      "oracle_fingerprint": "0befe724041fad71087ab5db08450b86",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 177 }
+          }
+        }
+      ]
+    }
+  ]
+}

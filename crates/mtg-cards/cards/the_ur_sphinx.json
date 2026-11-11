@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4a3fdb8e-4699-4bd9-84e6-3cc7fea0e1ef",
+  "name": "The Ur-Sphinx",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Ur-Sphinx",
+      "oracle_fingerprint": "6085f601bb725e5f4c7f43b4b5538da0",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 133 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 141, "end": 320 }
+          }
+        }
+      ]
+    }
+  ]
+}

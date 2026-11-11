@@ -197,6 +197,8 @@ mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
 mod return_this_card;
+mod rmt1_wholes;
+mod rmt3_wordings;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -359,6 +361,9 @@ mod r5b_flow;
 mod r7c_conditions;
 mod r7c_searches;
 
+// rmt5
+mod rmt5_wholes;
+
 use crate::ability::Ability;
 
 /// Adds to `texts` the oracle wordings of the ability that the renderers do not write.
@@ -493,6 +498,8 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     fix20_each_then::add(texts);
     f25_wordings::add(ability, texts);
     f26_wordings::add(ability, texts);
+    // rmt5
+    rmt5_wholes::rmt5_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
@@ -720,6 +727,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
 fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     c11g_wholes::c11g_add_wholes(ability, texts);
+    rmt1_wholes::rmt1_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.
@@ -904,6 +912,7 @@ fn third_sample_of_m_to_r(ability: &Ability, texts: &mut Vec<String>) {
     delayed_first::add(ability, texts);
     energy_cost_words::add(ability, texts);
     flash_permission::add(ability, texts);
+    rmt3_wordings::add(ability, texts);
     graveyard_shuffle::add(ability, texts);
     have_cards::add(ability, texts);
     home_pair::add(ability, texts);

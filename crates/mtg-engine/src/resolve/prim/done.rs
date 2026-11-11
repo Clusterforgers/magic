@@ -49,6 +49,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveCounters { .. }
         | Effect::RemoveAllCounters { .. }
         | Effect::MoveCounters { .. }
+        | Effect::SpellEntersWith { .. }
         | Effect::MultiplyCounters { .. }
         | Effect::PutCountersOf { .. }
         | Effect::Tap { .. }
@@ -113,6 +114,9 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
+        | Effect::BecomeBlocked { .. }
+        | Effect::PutBeneathTop { .. }
+        | Effect::LoseUnspentMana { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
         | Effect::LoseGame { .. }

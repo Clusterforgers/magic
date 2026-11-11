@@ -1,0 +1,65 @@
+{
+  "oracle_id": "e87be082-eafd-480e-b150-d27fd937e1b1",
+  "name": "Tatsunari, Toad Rider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tatsunari, Toad Rider",
+      "oracle_fingerprint": "6d6a5894b33218efddb361ed9b17002c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 245 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G/U}",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Frog" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "HasKeyword": "Flying" }, { "HasKeyword": "Reach" }]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        {
+                          "Not": {
+                            "AnyOf": [{ "HasKeyword": "Flying" }, { "HasKeyword": "Reach" }]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

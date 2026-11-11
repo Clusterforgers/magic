@@ -1,0 +1,26 @@
+{
+  "oracle_id": "795a2b09-2ed1-4bc8-b6c9-fb26a81e6790",
+  "name": "Shaun & Rebecca, Agents",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shaun & Rebecca, Agents",
+      "oracle_fingerprint": "45c0179e4b36ba842f598e2afee3a697",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 10, "end": 154 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 155, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

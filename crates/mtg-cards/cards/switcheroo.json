@@ -1,0 +1,21 @@
+{
+  "oracle_id": "68227969-39cf-42cf-b3b8-cf8a04647d7e",
+  "name": "Switcheroo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Switcheroo",
+      "oracle_fingerprint": "fa7a63190a7c627309687fbf7a973bb2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [{ "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

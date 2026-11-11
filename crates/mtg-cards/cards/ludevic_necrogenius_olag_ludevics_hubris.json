@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f6f684f6-0c8a-4676-ba4e-d3e064293128",
+  "name": "Ludevic, Necrogenius // Olag, Ludevic's Hubris",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ludevic, Necrogenius",
+      "oracle_fingerprint": "371af981f5a704ffcbad4f28c0db2ff6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "Mill": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 49, "end": 170 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Olag, Ludevic's Hubris",
+      "oracle_fingerprint": "d1b8445dc9ea33bdb0984e0d57a22fda",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 341 }
+          }
+        }
+      ]
+    }
+  ]
+}

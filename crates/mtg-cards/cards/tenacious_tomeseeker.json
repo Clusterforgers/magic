@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b07bf08b-d9ec-429f-be6d-a7afa27c60c4",
+  "name": "Tenacious Tomeseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenacious Tomeseeker",
+      "oracle_fingerprint": "94080d236fe8bc0707a7db9cac27ac1f",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

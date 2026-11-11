@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2c1201b2-5036-4e68-b36d-cdaf54b4993d",
+  "name": "Mercadia's Downfall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercadia's Downfall",
+      "oracle_fingerprint": "cb48679be94f9ad9d1389ac51ad9d673",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Land" },
+                            { "Not": { "Supertype": "Basic" } },
+                            { "ControlledBy": "Defending" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

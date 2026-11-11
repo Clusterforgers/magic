@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c2c1e44c-2a19-466f-a6d5-4cb71a940b86",
+  "name": "Sarkhan, Dragonsoul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan, Dragonsoul",
+      "oracle_fingerprint": "b42f04f31b618f560911adf4de367b99",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Dragon" }, { "Type": "Creature" }],
+                  "count": { "min": 0, "max": null },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

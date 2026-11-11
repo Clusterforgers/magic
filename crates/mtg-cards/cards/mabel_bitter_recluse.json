@@ -1,0 +1,32 @@
+{
+  "oracle_id": "36924990-8e3a-434e-bcd1-f03603cb350d",
+  "name": "Mabel, Bitter Recluse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mabel, Bitter Recluse",
+      "oracle_fingerprint": "7b1928648ae480d711ea7a0fbb9872ec",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "RemoveCounters": { "from": { "Target": 0 }, "count": 3, "up_to": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

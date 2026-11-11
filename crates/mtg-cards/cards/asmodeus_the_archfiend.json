@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1e4032f6-9741-4845-9325-781c9e489172",
+  "name": "Asmodeus the Archfiend",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Asmodeus the Archfiend",
+      "oracle_fingerprint": "ac06d918cd10f0879985e6abe8c8ac5d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 98 }
+          }
+        },
+        { "Activated": { "cost": "{B}{B}{B}", "effects": [{ "Draw": { "count": 7 } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 128, "end": 221 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1083,6 +1083,10 @@ pub enum ShieldShape {
     Class,
     /// Damage prevented, changed or redirected.
     Damage,
+    /// The next draw, or the next loss of the game, of the players named is replaced by other steps, then the shield ends
+    /// ("the next time you would draw a card this turn, ... instead", "the next time you would lose the game this turn,
+    /// instead ..."; CR 614.1a).
+    Next,
 }
 
 impl ShieldShape {
@@ -1101,9 +1105,16 @@ impl ShieldShape {
                     _ => None,
                 }
             }
-            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_))
+            | (
+                ReplaceWhen::Countered { .. },
+                ReplaceBy::IntoLibrary {
+                    place: Place::Top | Place::Bottom,
+                    reveal: false,
+                },
+            ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
-            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped | ReplaceBy::WithCounters { .. })
                 if !names_objects(what) =>
             {
                 Some(Self::Class)
@@ -1122,6 +1133,10 @@ impl ShieldShape {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::Redirect { .. },
             ) => Some(Self::Damage),
+            (
+                ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
+                ReplaceBy::InsteadNext(_),
+            ) => Some(Self::Next),
             _ => None,
         }
     }

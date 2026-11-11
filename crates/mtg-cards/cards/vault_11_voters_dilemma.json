@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e2c00aff-696c-4b20-acd4-95b71b5f8b10",
+  "name": "Vault 11: Voter's Dilemma",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vault 11: Voter's Dilemma",
+      "oracle_fingerprint": "9664121a8edda92e4ad4b0566bdc5ac3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human", "Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 165, "end": 385 }
+          }
+        }
+      ]
+    }
+  ]
+}

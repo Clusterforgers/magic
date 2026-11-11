@@ -250,6 +250,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
+    "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
     "Effect.PutCountersOf",
     "Effect.Tap",
@@ -339,6 +340,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
@@ -346,6 +348,9 @@ const RUNS: &[&str] = &[
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
+    "Effect.BecomeBlocked",
+    "Effect.PutBeneathTop",
+    "Effect.LoseUnspentMana",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
@@ -395,6 +400,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLegendRule",
     "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
+    "Rule.UntapLimit",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
@@ -423,6 +429,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Transform",
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
+    "Rule.Cant.SkipCombat",
     "Rule.Cant.Cast",
     "Rule.Cant.Attack",
     "Rule.Cant.ActivateKind",
@@ -492,6 +499,7 @@ const RUNS: &[&str] = &[
     "Target.PerPlayer",
     "Target.Together",
     "Target.TotalManaValue",
+    "Target.TotalPower",
     "Target.Another",
     "Target.ChosenBy",
     "Target.AtRandom",
@@ -808,6 +816,7 @@ const RUNS: &[&str] = &[
     "Condition.Searched",
     "Condition.Step",
     "Condition.BeforeAttackers",
+    "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
@@ -999,7 +1008,7 @@ mod tests {
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
-        false
+        true
     )]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
@@ -1059,6 +1068,7 @@ mod tests {
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
     #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
+    #[case::untapping_at_most_some_permanents("Rule.UntapLimit", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
@@ -1228,6 +1238,7 @@ mod tests {
     #[case::cant_transform("Rule.Cant.Transform", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
+    #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]
     #[case::cant_cast("Rule.Cant.Cast", true)]
     #[case::cant_attack("Rule.Cant.Attack", true)]
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]

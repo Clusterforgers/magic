@@ -1,0 +1,35 @@
+{
+  "oracle_id": "247075c5-62f8-41a1-91b3-562ff0aabb30",
+  "name": "Narset's Rebuke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset's Rebuke",
+      "oracle_fingerprint": "d0daf33bd419bbc4dc64bb54c581cf38",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              { "AddMana": { "mana": { "Fixed": ["Blue", "Red", "White"] } } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

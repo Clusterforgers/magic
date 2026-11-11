@@ -197,6 +197,8 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+mod rmt4_untap_limit;
+mod rmt4_wordings;
 mod selectors;
 mod shortened;
 mod soulbond;
@@ -391,15 +393,14 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = match dk27_pairs::dk27_any_number_less(text) {
-        Some(found) => found,
-        None => {
-            let found = static_pairs::read(&mut reader)?;
-            if !reader.end() {
-                return None;
-            }
-            found
+    let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
+        found
+    } else {
+        let found = static_pairs::read(&mut reader)?;
+        if !reader.end() {
+            return None;
         }
+        found
     };
     let [first, second] = found.as_slice() else {
         return None;

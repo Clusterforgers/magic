@@ -29,7 +29,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(RESPONSE),
     blocks: Some(Duration::from_secs(45)),
-    think: Some(Duration::from_secs(60)),
+    think: Some(Duration::from_mins(1)),
     active: None,
     extension: None,
     grace: std::time::Duration::ZERO,
@@ -376,7 +376,7 @@ async fn the_active_player_is_not_hurried_to_choose_the_targets_of_its_trigger()
     assert!(matches!(decision.kind, DecisionKind::ChooseTargets(_)));
     assert_eq!(left, None);
     let status = handle.status().await.unwrap();
-    tokio::time::advance(Duration::from_secs(3600)).await;
+    tokio::time::advance(Duration::from_hours(1)).await;
     assert_eq!(quiet(&handle).await, status, "an hour later it still waits");
 }
 

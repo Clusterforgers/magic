@@ -33,6 +33,10 @@ pub(super) fn moments() -> Vec<(&'static str, Vec<Condition>)> {
             ],
         ),
         ("any upkeep step", vec![Condition::Step(Step::Upkeep)]),
+        (
+            "combat after blockers are declared",
+            vec![Condition::AfterBlockers],
+        ),
         ("combat", vec![Condition::InCombat]),
         (
             "the declare attackers step",

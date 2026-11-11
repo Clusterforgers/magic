@@ -1008,6 +1008,12 @@ fn about_players_and_permanents(
     found: &mut Vec<Happened>,
 ) {
     match event {
+        Event::AttackersBlocked { attackers } => {
+            found.extend(attackers.iter().map(|attacker| Happened::BecameBlocked {
+                attacker: *attacker,
+                blockers: Vec::new(),
+            }));
+        }
         Event::BlockersDeclared { blocks, player } => {
             found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
                 blocker: *blocker,

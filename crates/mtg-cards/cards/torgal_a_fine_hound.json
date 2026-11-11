@@ -1,0 +1,47 @@
+{
+  "oracle_id": "9d6ab594-aea9-4f13-8802-f3794ee45425",
+  "name": "Torgal, A Fine Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torgal, A Fine Hound",
+      "oracle_fingerprint": "e268b8cbd658669defecc711c8d42462",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "Type": "Creature" }, { "Subtype": "Human" }],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "SpellEntersWith": {
+                  "spell": "Triggering",
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Dog" }, { "Subtype": "Wolf" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

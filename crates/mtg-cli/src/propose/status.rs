@@ -114,7 +114,7 @@ mod tests {
             output_tokens: 6_000,
         };
         // 12 of 60 cards in 10 minutes: 1.2 cards a minute, 40 minutes left; 6000 tokens in 600 s.
-        let line = status_line(&tally, &budget(17, usage), 60, Duration::from_secs(600));
+        let line = status_line(&tally, &budget(17, usage), 60, Duration::from_mins(10));
         assert_eq!(
             line,
             "status: 12/60 cards done, 1 failed; Verified 3, Partial 1, Unchecked 4, Mismatch 1, Invalid 2, Empty 0; \
@@ -130,7 +130,7 @@ mod tests {
             verified: 1,
             ..Tally::default()
         };
-        let line = status_line(&tally, &budget, 2, Duration::from_secs(60));
+        let line = status_line(&tally, &budget, 2, Duration::from_mins(1));
         assert!(line.contains("cards/min; spent $1.234500; ETA"), "{line}");
     }
 
@@ -145,7 +145,7 @@ mod tests {
             &tally,
             &budget(5, Usage::default()),
             12,
-            Duration::from_secs(60),
+            Duration::from_mins(1),
         );
         assert!(
             line.contains("5/12 cards done, 0 failed, 7 not run;"),
@@ -173,7 +173,7 @@ mod tests {
             &tally,
             &budget(0, Usage::default()),
             total,
-            Duration::from_secs(60),
+            Duration::from_mins(1),
         );
         assert!(line.ends_with(eta), "{line}");
     }

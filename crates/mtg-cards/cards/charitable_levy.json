@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8a628875-96c8-4a28-aaff-99fd99ae778e",
+  "name": "Charitable Levy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charitable Levy",
+      "oracle_fingerprint": "83b19f1383615306a8ab47cc62da89cb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "collection" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [
+                        {
+                          "CounterCount": { "kind": { "Other": "collection" }, "op": "Ge", "to": 3 }
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": [{ "Is": { "Bound": "sacrificed" } }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Draw": {} },
+                          {
+                            "May": {
+                              "effects": [
+                                { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "found" } },
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "found" },
+                                    "to": { "Battlefield": { "tapped": true } }
+                                  }
+                                },
+                                { "Shuffle": {} }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

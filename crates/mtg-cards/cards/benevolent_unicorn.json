@@ -1,0 +1,16 @@
+{
+  "oracle_id": "b437c963-def5-40d6-b567-ae9f1d2a0fa5",
+  "name": "Benevolent Unicorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent Unicorn",
+      "oracle_fingerprint": "13fba2721dafb2893d4b0e4d9190d273",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Damage": { "source": ["Spell"] } }, "by": { "Subtract": 1 } }
+        }
+      ]
+    }
+  ]
+}

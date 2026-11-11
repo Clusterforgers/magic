@@ -1,0 +1,20 @@
+{
+  "oracle_id": "77a43c24-398f-42c6-a0d3-b28b33a0ce12",
+  "name": "Bounty of the Hunt",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bounty of the Hunt",
+      "oracle_fingerprint": "c2e7245886e48e5c7265649fe5e98074",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Green" }] } }] } },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 82, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

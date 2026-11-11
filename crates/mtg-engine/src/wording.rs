@@ -249,6 +249,10 @@ fn kind_of(what: &Targetable) -> (String, String) {
                     format!("with total mana value {most} or less")
                 }
                 TargetSet::TotalManaValueAtMost(_) => "with total mana value X or less".to_owned(),
+                TargetSet::TotalPowerAtMost(Amount::Fixed(most)) => {
+                    format!("with total power {most} or less")
+                }
+                TargetSet::TotalPowerAtMost(_) => "with total power X or less".to_owned(),
             };
             (head, join(&tail, &rule))
         }

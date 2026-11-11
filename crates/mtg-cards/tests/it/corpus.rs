@@ -312,6 +312,14 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no partner group",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::EnchantPlayer { opponent: true }) = ability
+                {
+                    // An Aura that enchants an opponent is printed as `Enchant opponent`.
+                    assert!(
+                        text.contains("enchant opponent"),
+                        "{}: the text has no enchant opponent",
+                        card.name
+                    );
                 } else if let Ability::Keyword(Keyword::EquipTo { .. }) = ability {
                     // An equip with a restriction is printed as `Equip legendary creature`.
                     assert!(

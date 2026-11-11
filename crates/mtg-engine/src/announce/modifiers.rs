@@ -103,7 +103,7 @@ fn dk27_most_counted(state: &GameState, player: PlayerId, spell: ObjectId) -> Op
     if card.card().x_in_cost > 0 {
         return None;
     }
-    let payer = crate::parts::Payer {
+    let paying = crate::parts::Payer {
         state,
         player,
         source: spell,
@@ -122,7 +122,7 @@ fn dk27_most_counted(state: &GameState, player: PlayerId, spell: ObjectId) -> Op
         .flatten()
         .filter_map(|item| crate::parts::Part::read(&item).ok().flatten())
         .filter(crate::parts::Part::is_counted)
-        .filter_map(|part| part.most(&payer))
+        .filter_map(|part| part.most(&paying))
         .min()
 }
 

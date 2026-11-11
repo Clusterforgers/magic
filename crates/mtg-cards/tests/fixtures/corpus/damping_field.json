@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "12ab9836-bc90-4d92-a86d-b8e1b7671aa7",
+  "oracle_id": "6b2184ce-d6b1-411e-80ac-05a6e5993a39",
+  "multiverse_ids": [
+    1068
+  ],
+  "tcgplayer_id": 3276,
+  "cardmarket_id": 6969,
+  "name": "Damping Field",
+  "lang": "en",
+  "released_at": "1994-03-04",
+  "uri": "https://api.scryfall.com/cards/12ab9836-bc90-4d92-a86d-b8e1b7671aa7",
+  "scryfall_uri": "https://scryfall.com/card/atq/5/damping-field?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:12:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373",
+    "normal": "https://cards.scryfall.io/normal/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373",
+    "large": "https://cards.scryfall.io/large/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373",
+    "png": "https://cards.scryfall.io/png/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.png?1783948373",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.webp?1783948373",
+    "grid": "https://cards.scryfall.io/grid/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.webp?1783948373",
+    "display": "https://cards.scryfall.io/display/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.webp?1783948373",
+    "art": "https://cards.scryfall.io/art/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.webp?1783948373",
+    "crop": "https://cards.scryfall.io/crop/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.webp?1783948373",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/2/12ab9836-bc90-4d92-a86d-b8e1b7671aa7.jpg?1783948373"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Players can't untap more than one artifact during their untap steps.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "819f9678-87dd-4aba-a47b-2d553bfea21f",
+  "set": "atq",
+  "set_name": "Antiquities",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/819f9678-87dd-4aba-a47b-2d553bfea21f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aatq&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/atq?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/12ab9836-bc90-4d92-a86d-b8e1b7671aa7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6b2184ce-d6b1-411e-80ac-05a6e5993a39&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Eventually, mages learned to harness the power of natural damping fields and use it for their own ends.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Hampton",
+  "artist_ids": [
+    "9af01712-e56b-4865-80d8-c77a69750077"
+  ],
+  "illustration_id": "229b1109-4a8d-49d1-9c28-04799aa719a7",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27399,
+  "prices": {
+    "usd": "7.52",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.74",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1068&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDamping%2BField",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDamping%2BField",
+    "edhrec": "https://edhrec.com/route/?cc=Damping+Field"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3276%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6969&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Damping+Field&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

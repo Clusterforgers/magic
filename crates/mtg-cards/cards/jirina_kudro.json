@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b122bf99-b003-452a-a854-b25597ff7ca2",
+  "name": "Jirina Kudro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jirina Kudro",
+      "oracle_fingerprint": "e63457361cf8262457dcc4880d492107",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "CommanderCasts": "You" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Human" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

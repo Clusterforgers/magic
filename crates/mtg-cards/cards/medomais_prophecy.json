@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e2ea1901-68ac-4afc-adc2-ac6bc7465311",
+  "name": "Medomai's Prophecy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Medomai's Prophecy",
+      "oracle_fingerprint": "5a672063e234fdb24af4fda212798ef3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 100, "end": 124 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 125, "end": 219 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 220, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

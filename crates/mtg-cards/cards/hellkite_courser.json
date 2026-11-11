@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c5abd58f-3e00-447b-a978-64cb88ad501b",
+  "name": "Hellkite Courser",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hellkite Courser",
+      "oracle_fingerprint": "80c247df467968dc80993d4f6813c067",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 194 }
+          }
+        }
+      ]
+    }
+  ]
+}

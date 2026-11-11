@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d48a38c9-3dcd-4c18-8840-1b057ede3ff0",
+  "name": "Erhnam Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erhnam Djinn",
+      "oracle_fingerprint": "c41ad5a92ff816f5b992d7cdccab78a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Wall" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }],
+                  "duration": "UntilYourNextUpkeep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

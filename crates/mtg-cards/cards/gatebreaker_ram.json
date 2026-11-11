@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3b0a97e2-e125-4f91-8581-307e3fa6b048",
+  "name": "Gatebreaker Ram",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatebreaker Ram",
+      "oracle_fingerprint": "d297fc9346ff868533f12725c152b5b3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

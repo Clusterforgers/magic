@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ef4c478c-7019-4ec0-8edf-2a3078a8e97a",
+  "name": "Drag to the Roots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drag to the Roots",
+      "oracle_fingerprint": "d403de0ae46693ec080e2b5305233a88",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

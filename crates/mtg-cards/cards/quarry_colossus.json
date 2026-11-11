@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ad5e2208-df68-4119-b225-a7c133b70359",
+  "name": "Quarry Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quarry Colossus",
+      "oracle_fingerprint": "73794e2ffa31b9caac7ec407323b5ac7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutBeneathTop": {
+                  "what": { "Target": 0 },
+                  "below": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

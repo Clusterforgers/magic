@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5733c3fb-c533-456c-b30e-5d2b9e206b6b",
+  "name": "Don't Blink",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Don't Blink",
+      "oracle_fingerprint": "fdc578aa59691645829e6f66dc03c778",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 0, "end": 154 }
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

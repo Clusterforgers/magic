@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2b6cbd55-5adc-4a34-ac45-8531705a7ee1",
+  "name": "Teferi, Mage of Zhalfir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Teferi, Mage of Zhalfir",
+      "oracle_fingerprint": "596b63685177defe9292c5a14d65cf04",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 6, "end": 71 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 72, "end": 142 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8b391f24-992f-4cc0-ac4d-31456983fc03",
+  "name": "Word of Blasting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Word of Blasting",
+      "oracle_fingerprint": "953ff7fd2533a3bae1be45d56b4b69f7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Wall" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

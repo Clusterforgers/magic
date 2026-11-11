@@ -1,0 +1,66 @@
+{
+  "oracle_id": "67d66678-a8e6-4f80-bade-1f1daf4b0610",
+  "name": "Ashiok, Wicked Manipulator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ashiok, Wicked Manipulator",
+      "oracle_fingerprint": "c87fe28f5adf698a195d243ad2360d2d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 136 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "exiled"
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 236, "end": 409 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Total": {
+                      "of": [{ "In": "Exile" }, { "OwnedBy": "You" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "as": "exiled"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -583,13 +583,21 @@ fn item_text(item: &CostItem) -> Option<String> {
                 taken_text(&said, &Amount::one())?
             )
         }
-        CostItem::RemoveCountersAmong {
-            counter,
-            count,
-            from,
-        } => dk27_among_text(counter.as_ref(), count, from)?,
-        _ => return None,
+        other => return dk27_among_item(other),
     })
+}
+
+/// The words of a `RemoveCountersAmong` part ([`dk27_among_text`]); `None` for another part.
+fn dk27_among_item(item: &CostItem) -> Option<String> {
+    let CostItem::RemoveCountersAmong {
+        counter,
+        count,
+        from,
+    } = item
+    else {
+        return None;
+    };
+    dk27_among_text(counter.as_ref(), count, from)
 }
 
 /// "Tap an untapped creature you control", "Tap another untapped Rogue you control": untapped permanents the payer

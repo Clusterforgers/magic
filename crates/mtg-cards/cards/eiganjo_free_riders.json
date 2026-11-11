@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0e381b7e-2d32-4a9a-a327-e9dd1236dc1b",
+  "name": "Eiganjo Free-Riders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eiganjo Free-Riders",
+      "oracle_fingerprint": "5f4fd920d81a839e37a2ab2b66ecebc2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "White" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

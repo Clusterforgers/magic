@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1b721ad3-d0f6-4eec-9bf0-f57ea9dfa392",
+  "name": "Lapse of Certainty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lapse of Certainty",
+      "oracle_fingerprint": "98692f43b331fadfd49f56d898b68857",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "IntoLibrary": { "place": "Top" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

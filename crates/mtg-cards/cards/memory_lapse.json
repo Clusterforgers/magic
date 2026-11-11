@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bbfb3e4a-b389-4391-8141-13b68c0ef2e0",
+  "name": "Memory Lapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Lapse",
+      "oracle_fingerprint": "98692f43b331fadfd49f56d898b68857",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "IntoLibrary": { "place": "Top" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

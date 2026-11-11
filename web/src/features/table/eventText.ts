@@ -238,6 +238,8 @@ function durationWords(
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
+    UntilSkipped: ' until the step or combat it skips',
+    UntilSkippedThisTurn: ' until the step or combat it skips this turn',
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'
@@ -1025,6 +1027,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
+  }
+  if ('AttackersBlocked' in event) {
+    const { attackers } = event.AttackersBlocked
+    const verb = attackers.length === 1 ? 'becomes' : 'become'
+    return line(`${joinWords(attackers.map(n.card))} ${verb} blocked`)
   }
   if ('TurnBegan' in event) {
     const { number, active, extra } = event.TurnBegan

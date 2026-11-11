@@ -1,0 +1,39 @@
+{
+  "oracle_id": "027989e7-20c4-4773-b6b4-20337cc5fe8c",
+  "name": "Eluge, the Shoreless Sea",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Eluge, the Shoreless Sea",
+      "oracle_fingerprint": "0632e5733b21de8551b7369cf4bf4f6e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 81, "end": 241 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 242, "end": 381 }
+          }
+        }
+      ]
+    }
+  ]
+}

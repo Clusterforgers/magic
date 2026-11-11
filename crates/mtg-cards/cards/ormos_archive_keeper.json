@@ -1,0 +1,35 @@
+{
+  "oracle_id": "06d60b71-a9f9-4a7f-ad69-15d760b6e5c3",
+  "name": "Ormos, Archive Keeper",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ormos, Archive Keeper",
+      "oracle_fingerprint": "3c2bc0e947f74511a67a1647b2202ed4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 113, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "458ca9f4-4622-48e1-9ca1-6a8117188973",
+  "name": "Diffusion Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diffusion Sliver",
+      "oracle_fingerprint": "95cc5041f5e6d6a28b41acebffdb6240",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "Subtype": "Sliver" }, { "ControlledBy": "You" }],
+                "by": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

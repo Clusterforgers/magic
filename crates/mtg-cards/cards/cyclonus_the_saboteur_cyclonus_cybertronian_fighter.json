@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7ead01b9-def3-4f9d-a860-af64e94cb45e",
+  "name": "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cyclonus, the Saboteur",
+      "oracle_fingerprint": "24cea345ac69f17e75aa34918fe3fc76",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 83 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 91, "end": 343 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cyclonus, Cybertronian Fighter",
+      "oracle_fingerprint": "d930974cfd0b9f99866777ab5b847ad5",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 73, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

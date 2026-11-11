@@ -331,7 +331,7 @@ fn cards_in_graveyards_that_count_the_creature_cards_of_graveyards_are_not_worke
         let _ = sent.send((stats_of(&game, "Alive"), stats_of(&game, "Dead 0")));
     });
     let (alive, dead) = received
-        .recv_timeout(std::time::Duration::from_secs(60))
+        .recv_timeout(std::time::Duration::from_mins(1))
         .expect("the counts did not end");
     assert_eq!(alive, (Some(16), Some(16)));
     assert_eq!(dead, (Some(16), Some(16)));

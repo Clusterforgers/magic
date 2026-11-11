@@ -1,0 +1,42 @@
+{
+  "oracle_id": "669701a5-fd7a-43f8-93f4-da7a8c4dd3dc",
+  "name": "Razor Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razor Barrier",
+      "oracle_fingerprint": "25129b41ac7abd96c988fd9573abb99b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Artifact" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["AddProtectionFromChosenColor"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

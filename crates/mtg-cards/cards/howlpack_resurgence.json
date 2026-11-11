@@ -1,0 +1,26 @@
+{
+  "oracle_id": "614c3f71-e231-4c12-9e6b-cb8ea1d100bf",
+  "name": "Howlpack Resurgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howlpack Resurgence",
+      "oracle_fingerprint": "beb324a8775e4b42d3864649de35eb1f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "AnyOf": [{ "Subtype": "Wolf" }, { "Subtype": "Werewolf" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ae3517db-bb96-4c29-91dc-5bd68683dced",
+  "name": "Manascape Refractor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Manascape Refractor",
+      "oracle_fingerprint": "4749fecd591743e2929d6f429540d438",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 29, "end": 103 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 104, "end": 216 }
+          }
+        }
+      ]
+    }
+  ]
+}

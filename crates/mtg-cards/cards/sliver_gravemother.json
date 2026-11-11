@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0d59f010-9669-4ad2-9ae9-cd88b85f282c",
+  "name": "Sliver Gravemother",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sliver Gravemother",
+      "oracle_fingerprint": "850ee85fd0bbace56ea15daf0384cc96",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 55 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 56, "end": 142 }
+          }
+        },
+        { "Keyword": { "Encore": "{5}" } }
+      ]
+    }
+  ]
+}

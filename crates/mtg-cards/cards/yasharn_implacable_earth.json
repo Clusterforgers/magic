@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6dc23410-4d8f-4c8a-92b4-a8b3fae1af4e",
+  "name": "Yasharn, Implacable Earth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yasharn, Implacable Earth",
+      "oracle_fingerprint": "d2b2ca2e0171d49eb56d802fbecfae50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Supertype": "Basic" },
+                    { "Subtype": "Plains" },
+                    { "Not": { "Is": { "Bound": "land" } } }
+                  ],
+                  "reveal": true,
+                  "as": "land2"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "land2" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 149, "end": 241 }
+          }
+        }
+      ]
+    }
+  ]
+}

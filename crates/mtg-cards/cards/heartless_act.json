@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3641d572-8335-4804-88ad-edf4dc67a8e4",
+  "name": "Heartless Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartless Act",
+      "oracle_fingerprint": "6073e36facfc11bd46435398487c9226",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "Not": "HasAnyCounter" }] }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "RemoveCounters": { "from": { "Target": 0 }, "count": 3, "up_to": true } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

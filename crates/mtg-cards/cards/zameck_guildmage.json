@@ -1,0 +1,38 @@
+{
+  "oracle_id": "98250fad-7fd0-431e-a87e-551185d26ec1",
+  "name": "Zameck Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zameck Guildmage",
+      "oracle_fingerprint": "a17ca8415b2d7aaad399941d21b1bd6b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}{G}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{U}{G}" },
+              { "RemoveCounters": { "counter": "+1/+1", "from": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
