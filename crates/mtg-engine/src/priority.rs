@@ -62,8 +62,16 @@ pub(crate) fn all_passed(state: &GameState) -> bool {
         .is_some_and(|p| state.alive_players().all(|a| p.passed.contains(&a)))
 }
 
-/// The mana abilities `player` can activate right now, to pay for something or at priority (`mana_ability.rs`).
+/// The mana abilities `player` can activate right now to pay for something (`mana_ability.rs`): without those that may be
+/// activated only as an instant.
 pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut found = mana_ability::options(state, player);
+    found.retain(|option| !option.priority_only);
+    found
+}
+
+/// The mana abilities `player` can activate while holding priority: every one, those activated only as an instant too.
+fn priority_mana(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     mana_ability::options(state, player)
 }
 
@@ -549,7 +557,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     if !silenced {
         faces.extend(prepared::options(state, player, &pool, &all_mana, life));
     }
-    let mana_abilities = crate::costly_mana::at_priority(state, &all_mana, &pool, life);
+    let mana_abilities =
+        crate::costly_mana::at_priority(state, &priority_mana(state, player), &pool, life);
     let offered = unplayable::Offered {
         lands: &playable_lands,
         castable: &castable,

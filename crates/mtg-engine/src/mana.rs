@@ -476,6 +476,11 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub repeat: bool,
+    /// "Activate only as an instant" (Lion's Eye Diamond): offered at priority only, never as a source of a payment; left out
+    /// means both.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub priority_only: bool,
 }
 
 /// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
@@ -539,6 +544,7 @@ impl ManaOption {
             cost: ManaCost::ZERO,
             takes: Vec::new(),
             repeat: false,
+            priority_only: false,
         }
     }
 

@@ -568,6 +568,8 @@ pub struct ManaShape<'a> {
     pub only: &'a [SpendOn],
     /// What spending the mana to cast a spell sets off.
     pub when_spent: Option<&'a WhenSpent>,
+    /// "Activate only as an instant": activated at priority only, never as a source of a payment.
+    pub priority_only: bool,
 }
 
 impl ManaShape<'_> {
@@ -585,6 +587,7 @@ impl ManaShape<'_> {
             && self.condition.is_none()
             && self.limit.is_none()
             && self.picks.is_empty()
+            && !self.priority_only
     }
 }
 
@@ -635,6 +638,11 @@ fn needs_no_answer(effect: &Effect) -> bool {
 /// Add X mana in any combination of {R} and/or {G}").
 fn pays_with_activation(item: &CostItem) -> bool {
     let fixed = match item {
+        // "Discard your hand": every card, so nobody chooses.
+        CostItem::Discard {
+            count: Amount::Count(cards),
+            filter: None,
+        } => cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)],
         CostItem::PayLife(amount)
         | CostItem::Mill(amount)
         | CostItem::PayEnergy(amount)
@@ -719,7 +727,7 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
 pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let Ability::Activated {
         cost,
-        timing: Timing::Instant,
+        timing: timing @ (Timing::Instant | Timing::AsInstant),
         condition,
         limit,
         by: Activators::Controller,
@@ -833,6 +841,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             then,
             only,
             when_spent: when_spent.as_deref(),
+            priority_only: *timing == Timing::AsInstant,
         })
 }
 

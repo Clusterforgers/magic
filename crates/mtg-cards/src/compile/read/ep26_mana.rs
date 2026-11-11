@@ -1,4 +1,4 @@
-//! Mana of the colours of a card the source exiled: "Add one mana of any of the exiled card's colors" (an imprint, the
+//! Mana of the colours of a card the source exiled and the order of a cost's parts. Mana: "Add one mana of any of the exiled card's colors" (an imprint, the
 //! one card the source remembers as imprinted) and "... of any of the exiled cards' colors" (every card exiled with it).
 
 use crate::refs::{EXILED_SLOT, Pred, Ref, Selector, ZoneKind};
@@ -21,4 +21,21 @@ pub(super) fn ep26_exiled_colors_text(among: &Selector) -> Option<&'static str> 
         }
         _ => None,
     }
+}
+
+/// The cost with "Sacrifice ~" moved last, as cards print it ("Discard your hand, Sacrifice ~"); `None` when it is last
+/// already or absent.
+pub(super) fn ep26_sacrifice_last(cost: &crate::cost::Cost) -> Option<crate::cost::Cost> {
+    use crate::cost::CostItem;
+    let at = cost
+        .0
+        .iter()
+        .position(|item| *item == CostItem::SacrificeSelf)?;
+    if at + 1 == cost.0.len() {
+        return None;
+    }
+    let mut items = cost.0.clone();
+    let sacrifice = items.remove(at);
+    items.push(sacrifice);
+    Some(crate::cost::Cost(items))
 }

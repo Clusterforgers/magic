@@ -115,6 +115,8 @@ pub(crate) enum Part {
     Damage(u32),
     /// The source stops being attached.
     Unattach,
+    /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
+    DiscardHand,
     /// Cards exiled from the top of the payer's library.
     ExileTop(u32),
     /// Counters put on the source.
@@ -334,6 +336,17 @@ impl Part {
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
         let (part, x) = match item {
+            CostItem::Discard {
+                count: Amount::Count(cards),
+                filter: None,
+            } if cards.0
+                == [
+                    Pred::In(ZoneKind::Hand),
+                    Pred::OwnedBy(mtg_cards::refs::Ref::You),
+                ] =>
+            {
+                (Part::DiscardHand, false)
+            }
             CostItem::PayLife(count) => {
                 let (number, x) = amount(count, item)?;
                 (Part::Life(number), x)
@@ -445,6 +458,7 @@ impl Part {
                 Part::Damage(_) => Part::Damage(x),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
+                Part::DiscardHand => Part::DiscardHand,
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
                     count: x,
@@ -498,7 +512,7 @@ impl Part {
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
-            Part::Exert | Part::Unattach | Part::X(_) => return None,
+            Part::Exert | Part::Unattach | Part::DiscardHand | Part::X(_) => return None,
         };
         Some(number)
     }
@@ -513,6 +527,7 @@ impl Part {
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::Unattach => "Cost.Unattach",
+            Part::DiscardHand => "Cost.Discard",
             Part::ExileTop(_) => "Cost.ExileTop",
             Part::Counters { .. } => "Cost.RemoveCounters",
             Part::PutCounters { .. } => "Cost.PutCounters",
@@ -554,6 +569,7 @@ impl Part {
             }
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::Unattach => "Unattach this permanent".to_owned(),
+            Part::DiscardHand => "Discard your hand".to_owned(),
             Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
             Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
             Part::Mill(1) => "Mill a card".to_owned(),
@@ -607,6 +623,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
+            Part::DiscardHand => Some(Vec::new()),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
                 let found = pick.candidates(payer);
@@ -675,6 +692,11 @@ impl Part {
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::Unattach => vec![unattach::event(source)],
+            Part::DiscardHand => state
+                .zone(crate::zones::Zone::Hand(player))
+                .iter()
+                .map(|object| discard::event(player, *object))
+                .collect(),
             Part::ExileTop(amount) => exile_top::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::PutCounters { counter, count } => source::put(state, source, counter, *count),

@@ -20,6 +20,9 @@ pub enum Timing {
     Instant,
     /// Only when the player could cast a sorcery.
     Sorcery,
+    /// "Activate only as an instant" of a mana ability: whenever the player has priority, never while a spell or ability
+    /// is being paid for, so the ability is no source of a payment.
+    AsInstant,
 }
 
 impl Timing {

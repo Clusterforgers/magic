@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap.
+//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap. A mana ability activated only as an instant (`InstantSpeed$ True`); another word or both speeds stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -115,4 +115,35 @@ fn ep26_mana_of_the_exiled_cards_colors(
 #[case::remembered("Defined.Remembered")]
 fn ep26_other_exiled_colors_stay_gaps(#[case] valid: &str) {
     assert!(!gaps(&mox(valid, false)).is_empty(), "{valid}");
+}
+
+fn diamond(speed: &str) -> String {
+    format!(
+        "Name:T\nTypes:Artifact\nA:AB$ Mana | Cost$ Sac<1/CARDNAME> Discard<0/Hand> | Produced$ Any | Amount$ 3{speed} | SpellDescription$ x\n"
+    )
+}
+
+fn timing(script: &str) -> Value {
+    abilities(script)
+        .first()
+        .and_then(|found| found.pointer("/Activated/timing"))
+        .cloned()
+        .unwrap_or_default()
+}
+
+#[rstest]
+#[case::as_an_instant(" | InstantSpeed$ True", json!("AsInstant"))]
+#[case::at_any_time("", Value::Null)]
+#[case::as_a_sorcery(" | SorcerySpeed$ True", json!("Sorcery"))]
+fn ep26_a_mana_ability_activated_only_as_an_instant(#[case] speed: &str, #[case] read: Value) {
+    let script = diamond(speed);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{speed}");
+    assert_eq!(timing(&script), read);
+}
+
+#[rstest]
+#[case::another_word(" | InstantSpeed$ Some")]
+#[case::both(" | InstantSpeed$ True | SorcerySpeed$ True")]
+fn ep26_other_speeds_stay_gaps(#[case] speed: &str) {
+    assert!(!gaps(&diamond(speed)).is_empty(), "{speed}");
 }

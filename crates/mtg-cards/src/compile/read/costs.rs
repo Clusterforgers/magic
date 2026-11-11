@@ -441,6 +441,12 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
+            count: Amount::Count(cards),
+            filter: None,
+        } if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
+            "Discard your hand".to_owned()
+        }
+        CostItem::Discard {
             count,
             filter: None,
         } => format!("Discard {}", cards_text(count)?),

@@ -428,6 +428,7 @@ fn rule_mana(
                     cost: cost.clone(),
                     takes: counted_to(&takes, &counted_takes, made.len()),
                     repeat,
+                    priority_only: shape.priority_only,
                 })
             })
             .collect();

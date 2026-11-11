@@ -446,13 +446,14 @@ impl<'a> Ctx<'a> {
 
 /// The keys every ability line may carry besides its verb's own: text for people, hints for Forge's computer player and
 /// the keys the chain reads.
-const COMMON: [&str; 11] = [
+const COMMON: [&str; 12] = [
     "SP",
     "AB",
     "DB",
     "Cost",
     "SubAbility",
     "SorcerySpeed",
+    "InstantSpeed",
     "PlayerTurn",
     "ActivationLimit",
     "ActivationZone",

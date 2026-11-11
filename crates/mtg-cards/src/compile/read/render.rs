@@ -1002,11 +1002,18 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                 return Vec::new();
             };
             // Exiling the card from the battlefield is "Exile ~", from the graveyard "Exile ~ from your graveyard".
-            let head = if *from == ZoneKind::Battlefield {
-                head.replace("Exile ~ from your graveyard", "Exile ~")
-            } else {
-                head
+            let at_home = |head: String| {
+                if *from == ZoneKind::Battlefield {
+                    head.replace("Exile ~ from your graveyard", "Exile ~")
+                } else {
+                    head
+                }
             };
+            // The parts of a cost are paid in any order (CR 601.2h): the card prints "Sacrifice ~" last.
+            let heads: Vec<String> = std::iter::once(head)
+                .chain(super::ep26_mana::ep26_sacrifice_last(cost).and_then(|c| costs::text(&c)))
+                .map(at_home)
+                .collect();
             let tails = match condition {
                 None => restriction_texts(*timing, *limit),
                 Some(condition) => {
@@ -1017,19 +1024,20 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
                     tails
                 }
             };
-            alternatives(targets, effects)
-                .iter()
-                .flat_map(|sentences| {
-                    let body = format!("{head}: {}", closed(sentences, true).join(" "));
-                    tails.iter().map(move |tail| {
-                        if tail.is_empty() {
+            let mut texts = Vec::new();
+            for head in &heads {
+                for sentences in alternatives(targets, effects) {
+                    let body = format!("{head}: {}", closed(&sentences, true).join(" "));
+                    for tail in &tails {
+                        texts.push(if tail.is_empty() {
                             body.clone()
                         } else {
                             format!("{body} {tail}")
-                        }
-                    })
-                })
-                .collect()
+                        });
+                    }
+                }
+            }
+            texts
         }
         Ability::Loyalty {
             cost,
@@ -1960,6 +1968,8 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
     match (timing, limit) {
         (Timing::Instant, None) => words(""),
         (Timing::Sorcery, None) => words("Activate only as a sorcery."),
+        (Timing::AsInstant, None) => words("Activate only as an instant."),
+        (Timing::AsInstant, Some(_)) => Vec::new(),
         (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
         (Timing::Instant, Some(Limit::OncePerGame)) => words("Activate only once."),
         (Timing::Sorcery, Some(Limit::OncePerGame)) => vec![
@@ -1982,6 +1992,7 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             let lead = match timing {
                 Timing::Sorcery => "Activate only as a sorcery and no more than",
                 Timing::Instant => "Activate no more than",
+                Timing::AsInstant => return Vec::new(),
             };
             vec![format!("{lead} {times} each turn.")]
         }

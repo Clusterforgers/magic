@@ -69,8 +69,9 @@ fn permanent_spell(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
 }
 
 /// The keys only an activated ability has.
-const ACTIVATION: [&str; 7] = [
+const ACTIVATION: [&str; 8] = [
     "SorcerySpeed",
+    "InstantSpeed",
     "ActivationLimit",
     "GameActivationLimit",
     "Exhaust",
@@ -249,6 +250,12 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         .is_some_and(|text| text.trim_end().ends_with(". Activate only as a sorcery."));
     if p.get("SorcerySpeed") == Some("True") || printed_sorcery {
         ability["timing"] = json!("Sorcery");
+    }
+    // "Activate only as an instant": a mana ability that is no source of a payment.
+    match p.get("InstantSpeed") {
+        None | Some("False") => {}
+        Some("True") if ability["timing"].is_null() => ability["timing"] = json!("AsInstant"),
+        Some(_) => return unmapped("key:AB.InstantSpeed-shape"),
     }
     if let Some(by) = by {
         if costs_the_source(&ability["cost"]) {
