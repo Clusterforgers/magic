@@ -1,16 +1,17 @@
 {
   "oracle_id": "bfd66214-e576-4a7e-8559-4e4e51d56b98",
   "name": "The Tarrasque",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Tarrasque",
       "oracle_fingerprint": "4a9f6658ade2b46ddc270ff2fe5447c1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 61 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": { "Ward": "{10}" } }],
+            "condition": { "Matches": { "subject": "This", "selector": [{ "WasCast": {} }] } }
           }
         },
         {

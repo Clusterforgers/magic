@@ -11,6 +11,17 @@ use crate::value::Condition;
 /// (`Condition::AdditionalCostPaid`), which the writer words as the gift.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     bargained(ability, texts);
+    if matches!(ability, Ability::Static { .. }) {
+        let more: Vec<String> = texts
+            .iter()
+            .flat_map(|text| anthem_wordings(text))
+            .collect();
+        for text in more {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
     for text in each_opponent_attacked(ability) {
         if !texts.contains(&text) {
             texts.push(text);
@@ -105,4 +116,76 @@ fn each_opponent_attacked(ability: &Ability) -> Vec<String> {
         }
     }
     found
+}
+
+/// The other wordings of a static ability over creatures of several subtypes: the articles of a list after "that's"
+/// left out but the first ("that's a Cat, Elemental, or Beast"), and "Each other creature you control that's a Ninja or
+/// a Rogue gets" as "Other Ninja and Rogue creatures you control get".
+fn anthem_wordings(text: &str) -> Vec<String> {
+    let mut found = Vec::new();
+    if let Some(bare) = bare_list(text) {
+        found.push(bare);
+    }
+    if let Some(plural) = plural_group(text) {
+        found.push(plural);
+    }
+    found
+}
+
+/// "that's a Cat, an Elemental, or a Beast" as "that's a Cat, Elemental, or Beast".
+fn bare_list(text: &str) -> Option<String> {
+    let (head, rest) = text.split_once("that's ")?;
+    let (list, tail) = rest.split_once(" gets ").map_or_else(
+        || {
+            rest.split_once(" get ")
+                .map(|(l, t)| (l, format!(" get {t}")))
+        },
+        |(l, t)| Some((l, format!(" gets {t}"))),
+    )?;
+    let items = subtype_items(list)?;
+    if items.len() < 2 {
+        return None;
+    }
+    let (first_article, first) = items.first()?;
+    let names: Vec<&str> = items.iter().skip(1).map(|(_, name)| *name).collect();
+    let (last, middle) = names.split_last()?;
+    let mut joined = format!("{first_article} {first}");
+    for name in middle {
+        joined.push_str(&format!(", {name}"));
+    }
+    let comma = if items.len() > 2 { "," } else { "" };
+    joined.push_str(&format!("{comma} or {last}"));
+    Some(format!("{head}that's {joined}{tail}"))
+}
+
+/// The items of "a Cat, an Elemental, or a Beast" (or "a Ninja or a Rogue"): each article and capitalized name.
+fn subtype_items(list: &str) -> Option<Vec<(&str, &str)>> {
+    let mut items = Vec::new();
+    for part in list.split(", ") {
+        let part = part.strip_prefix("or ").unwrap_or(part);
+        for piece in part.split(" or ") {
+            let (article, name) = piece.split_once(' ')?;
+            let capital = name.chars().next().is_some_and(char::is_uppercase);
+            if !matches!(article, "a" | "an") || !capital || name.contains(' ') {
+                return None;
+            }
+            items.push((article, name));
+        }
+    }
+    Some(items)
+}
+
+/// "Each other creature you control that's a Ninja or a Rogue gets +1/+1." as "Other Ninja and Rogue creatures you
+/// control get +1/+1.": two subtypes, and "has" after it as "have".
+fn plural_group(text: &str) -> Option<String> {
+    let rest = text.strip_prefix("Each other creature you control that's ")?;
+    let (list, tail) = rest.split_once(" gets ")?;
+    let items = subtype_items(list)?;
+    let [(_, first), (_, second)] = items.as_slice() else {
+        return None;
+    };
+    let tail = tail.replace(" and has ", " and have ");
+    Some(format!(
+        "Other {first} and {second} creatures you control get {tail}"
+    ))
 }

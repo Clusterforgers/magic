@@ -776,6 +776,7 @@ mod ring;
 mod rmt4_each_opponent_tokens;
 mod rmt4_poisonous;
 mod rmt4_untap_limits;
+mod rmt4_was_cast;
 mod rmt4_while_controlled;
 mod tapped_for_mana;
 mod target_reductions;

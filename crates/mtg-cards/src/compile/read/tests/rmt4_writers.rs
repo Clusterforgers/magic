@@ -150,3 +150,72 @@ fn rmt4_a_token_attacking_each_opponent(
 ) {
     assert_eq!(written(&json, clause), reads, "{json}");
 }
+
+/// A static over the other creatures you control of the subtypes, with the modifications.
+fn group_static(subtypes: &[&str], mods: &str) -> String {
+    let any: Vec<String> = subtypes
+        .iter()
+        .map(|s| format!(r#"{{"Subtype":"{s}"}}"#))
+        .collect();
+    format!(
+        r#"{{"Static":{{"affected":{{"Each":[{{"Type":"Creature"}},"Other",{{"ControlledBy":"You"}},{{"AnyOf":[{}]}}]}},"mods":[{mods}]}}}}"#,
+        any.join(",")
+    )
+}
+
+const PUMP: &str = r#"{"ModifyPT":{"power":1,"toughness":1}}"#;
+const PUMP_VIGILANCE: &str = r#"{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Vigilance"}"#;
+const FIVE: [&str; 5] = ["Cat", "Elemental", "Nightmare", "Dinosaur", "Beast"];
+
+#[rstest]
+#[case::bare_list(
+    group_static(&FIVE, PUMP_VIGILANCE),
+    "Each other creature you control that's a Cat, Elemental, Nightmare, Dinosaur, or Beast gets +1/+1 and has vigilance.",
+    true
+)]
+#[case::a_missing_subtype(
+    group_static(&FIVE[..4], PUMP_VIGILANCE),
+    "Each other creature you control that's a Cat, Elemental, Nightmare, Dinosaur, or Beast gets +1/+1 and has vigilance.",
+    false
+)]
+#[case::other_two_subtypes(
+    group_static(&["Ninja", "Rogue"], PUMP),
+    "Other Ninja and Rogue creatures you control get +1/+1.",
+    true
+)]
+#[case::two_subtypes_with_a_keyword(
+    group_static(&["Ninja", "Rogue"], PUMP_VIGILANCE),
+    "Other Ninja and Rogue creatures you control get +1/+1 and have vigilance.",
+    true
+)]
+#[case::another_subtype(group_static(&["Ninja", "Pirate"], PUMP), "Other Ninja and Rogue creatures you control get +1/+1.", false)]
+#[case::three_subtypes_are_not_two(
+    group_static(&["Ninja", "Rogue", "Pirate"], PUMP),
+    "Other Ninja and Rogue creatures you control get +1/+1.",
+    false
+)]
+fn rmt4_creatures_of_several_subtypes(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}
+
+/// Haste and ward {10} for this permanent while `selector` holds for it.
+fn while_it(selector: &str) -> String {
+    format!(
+        r#"{{"Static":{{"affected":"This","mods":[{{"AddKeyword":"Haste"}},{{"AddKeyword":{{"Ward":"{{10}}"}}}}],"condition":{{"Matches":{{"subject":"This","selector":[{selector}]}}}}}}}}"#
+    )
+}
+
+const TARRASQUE: &str = "~ has haste and ward {10} as long as it was cast.";
+
+#[rstest]
+#[case::cast_from_anywhere(while_it(r#"{"WasCast":{}}"#), TARRASQUE, true)]
+#[case::cast_from_the_hand_only(while_it(r#"{"WasCast":{"from":"Hand"}}"#), TARRASQUE, false)]
+#[case::cast_by_you_only(while_it(r#"{"WasCast":{"by":"You"}}"#), TARRASQUE, false)]
+#[case::tapped_is_not_cast(while_it(r#""Tapped""#), TARRASQUE, false)]
+fn rmt4_as_long_as_it_was_cast(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}
