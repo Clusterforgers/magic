@@ -228,6 +228,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         by_hand,
     } = assemble(source, &lines).await?;
     let attractions = attractions_of(source, &lines, &mut reads).await?;
+    let stickers = stickers_of(source, &lines, &mut reads).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
         format: deck.format.clone(),
@@ -252,7 +253,10 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
         None => chosen,
     };
-    let chosen = chosen.with_attractions(attractions).map_err(unreadable)?;
+    let chosen = chosen
+        .with_attractions(attractions)
+        .and_then(|chosen| chosen.with_stickers(stickers))
+        .map_err(unreadable)?;
     Ok(chosen
         .with_own_issues(report.legality.clone())
         .with_printings(printings))
@@ -368,6 +372,26 @@ async fn attractions_of(
         .zip(cards)
         .map(|((id, lights), card)| (id, AttractionCard { card, lights }))
         .collect())
+}
+
+/// The sticker sheets of `lines` (CR 123), one entry for each copy in line order: the oracle id and the sheet; the
+/// reads its sheets play on join `reads`.
+async fn stickers_of(
+    source: &CardSource,
+    lines: &[Line],
+    reads: &mut Reads,
+) -> Result<Vec<(String, Arc<CardDefinition>)>, ApiError> {
+    let ids: Vec<String> = lines
+        .iter()
+        .filter(|line| line.zone == DeckZone::Stickers)
+        .flat_map(|line| std::iter::repeat_n(line.oracle_id.clone(), line.count as usize))
+        .collect();
+    if ids.is_empty() {
+        return Ok(Vec::new());
+    }
+    let (sheets, pinned) = source.deck_pinned(&ids).await?;
+    reads.extend(pinned);
+    Ok(ids.into_iter().zip(sheets).collect())
 }
 
 /// Replaces each card of `cards` (the oracle ids of `ids`, one for one) that `manual` holds with that definition.

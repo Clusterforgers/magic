@@ -234,6 +234,19 @@ impl Scenario {
         self
     }
 
+    /// Gives a player sticker sheets (CR 123), in the order the seat brings them.
+    #[must_use]
+    pub fn stickers(
+        mut self,
+        player: usize,
+        sheets: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.stickers = sheets.into_iter().collect();
+        }
+        self
+    }
+
     /// Gives a player an Attraction deck (CR 717.2), top card first: each card with the numbers lit up on it.
     #[must_use]
     pub fn attractions(

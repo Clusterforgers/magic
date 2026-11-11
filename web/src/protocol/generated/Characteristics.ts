@@ -52,4 +52,9 @@ toughness: number | null,
 /**
  * Abilities.
  */
-abilities: Array<AbilityDef>, };
+abilities: Array<AbilityDef>, 
+/**
+ * The words name stickers added to its name, in the order they were put on (layer 3); the name is these words
+ * and the printed name after them.
+ */
+name_words?: Array<string>, };

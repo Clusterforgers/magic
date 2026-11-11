@@ -96,6 +96,7 @@ impl Gives {
             // A base power or toughness set alone shows no mark of its own, nor one ability taken away.
             Modification::SetPower(_)
             | Modification::SetToughness(_)
+            | Modification::AddNameWords(_)
             | Modification::LoseAbility(_) => {
                 return;
             }

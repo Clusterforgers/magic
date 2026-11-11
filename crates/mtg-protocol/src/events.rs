@@ -447,6 +447,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::EvidenceCollected { .. }
         | Event::DieRolled { .. }
         | Event::RolledToVisit { .. }
+        | Event::PrizeClaimed { .. }
+        | Event::StickerSheetsChosen { .. }
+        | Event::StickerPut { .. }
         | Event::CoinFlipped { .. }
         // A roll by hand is told to every seat, as a spell's roll is.
         | Event::ManualRolled { .. }

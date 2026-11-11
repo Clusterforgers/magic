@@ -998,6 +998,23 @@ pub enum Effect {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// "Put a sticker on a nonland permanent you own" (CR 123): the player chooses an object of `on` they own, a sticker
+    /// not yet used on one of their sticker sheets and pays its ticket cost; with no such object or no sticker they can
+    /// pay for, nothing happens.
+    PutSticker {
+        /// Who puts it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects it may go on.
+        on: Selector,
+    },
+    /// "Claim the prize" of the Attraction that is the source: its prize abilities trigger (`TriggerPattern::Prize`), as
+    /// do the abilities that wait for a player to claim a prize (`TriggerPattern::ClaimedPrize`).
+    ClaimPrize {
+        /// Who claims it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// "Roll to visit your Attractions" (CR 701.52): the player rolls a six-sided die and each Attraction they control
     /// with that number lit up is visited.
     RollToVisit {

@@ -56,6 +56,16 @@ Attractions (CR 717, `un33_attractions.rs`) are implemented once in the engine; 
 - Rolling to visit (CR 701.52) is a `DieRolled` (with `GameRule::ExtraDie`) and `RolledToVisit` naming the Attractions the player controls with the result lit up; the visit ability of each triggers (CR 702.159a), and the visits count for the turn (`TurnTally::AttractionsVisited`). The active player rolls as the precombat main phase begins while they control an Attraction (CR 505.5), after the Saga counters and the rad mill.
 - The junkyard (CR 717.6): an Attraction card that would go to a hand, a library or a graveyard goes to its owner's command zone face up instead, a replacement of the rules (`Origin::Junkyard`) that applies again to the same event. A token or a copy of an Attraction has no lights and goes where it would.
 - The table sees the deck as a count (`PlayerView.attraction_deck`) and the lights of every Attraction card it sees (`ObjectView.lights`); the deck's cards are in no zone view.
+- Visits and prizes: a roll that visits Attractions triggers `VisitedAttraction` once for each one visited; `Effect::ClaimPrize` is `PrizeClaimed`, which triggers the `Prize` abilities of that Attraction and every `ClaimedPrize`.
+
+## Stickers
+
+Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a sheet's rules list its stickers as `Ability::Sticker`, and cards only carry `Effect::PutSticker`.
+
+- Setup: `PlayerSetup::stickers` are the seat's sticker sheets, outside the game. A seat with three or fewer plays with all of them; with more, the opening chooses three at random after the Attraction decks are shuffled (`StickerSheetsChosen`, CR 103.2d). A game that skips the opening plays with the first three.
+- Putting a sticker on: the player chooses a permanent of the effect's selector they own (`ChooseCards`, unasked with one) and an unused sticker of their sheets whose tickets they hold (`ChooseOption`, the sheet's name before the sticker's words); the tickets are `CountersChanged` on the player, then `StickerPut`, then the sticker's continuous effect. With no permanent or no sticker to pay for, nothing happens. A sticker is used once.
+- A sticker's change is a `ContinuousEffect` without end on that very permanent (`Selector::Objects`), so it ends when the permanent leaves the battlefield, and the permanent's record of stickers goes with it: a name sticker adds its words to the name in layer 3 (`Modification::AddNameWords`, `Characteristics::name_words`; `GameState::name_of` is the name the rules read, for the legend rule, `Pred::Named` and a chosen name), an ability sticker grants its ability in layer 6 and a power/toughness sticker sets both in layer 7b. An art sticker changes nothing.
+- The table sees the sheets each seat plays with and which stickers are used (`PlayerView.sticker_sheets`) and the stickers on a permanent (`ObjectView.stickers`); its name holds the name words.
 
 ## Determinism and recovery
 

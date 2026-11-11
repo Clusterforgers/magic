@@ -32,6 +32,7 @@ import { SpeedChip } from './SpeedChip'
 import { PlayerCounterChips } from './PlayerCounterChips'
 import { PlayerEffectChips } from './PlayerEffectChips'
 import { CompanionChip } from './CompanionChip'
+import { StickerSheetsChip } from './StickerSheetsChip'
 import { ZoneButton } from './ZoneButton'
 
 interface SeatPanelProps {
@@ -211,6 +212,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <PlayerCounterChips owner={owner} player={player} density="line" />
             <PlayerEffectChips owner={owner} player={player} density="line" />
             <CompanionChip owner={owner} player={player} />
+            <StickerSheetsChip player={player} />
             {counts.attractions > 0 ? (
               <CountChip zone="attractions" count={counts.attractions} density="line" />
             ) : null}
@@ -257,6 +259,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <PlayerCounterChips owner={owner} player={player} density="line" />
       <PlayerEffectChips owner={owner} player={player} density="line" />
       <CompanionChip owner={owner} player={player} />
+      <StickerSheetsChip player={player} />
       {counts.attractions > 0 ? (
         <CountChip zone="attractions" count={counts.attractions} density="line" />
       ) : null}

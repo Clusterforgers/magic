@@ -1,7 +1,7 @@
 {
   "oracle_id": "67151297-3d25-4882-b562-56025ee81f48",
   "name": "Minotaur de Force",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Minotaur de Force",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 105 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

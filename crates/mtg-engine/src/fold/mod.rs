@@ -796,7 +796,7 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
 fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::Renowned { object, .. } => c6_kw_set_renowned(state, *object),
-        Event::Exploited { .. } => Ok(()),
+        Event::Exploited { .. } | Event::PrizeClaimed { .. } => Ok(()),
         Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
         Event::Exerted { object, player } => {
             crate::w11a_exert::w11a_fold_exerted(state, *object, *player)
@@ -815,6 +815,24 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::un33_attractions::fold_rolled(state, *player, visited);
             Ok(())
         }
+        Event::StickerSheetsChosen { player, sheets } => {
+            state.rng_index += 1;
+            crate::un34_stickers::fold_chosen(state, *player, sheets)
+        }
+        Event::StickerPut {
+            player,
+            object,
+            sheet,
+            sticker,
+        } => crate::un34_stickers::fold_put(
+            state,
+            crate::un34_stickers::StickerAt {
+                player: *player,
+                sheet: *sheet,
+                sticker: *sticker,
+            },
+            *object,
+        ),
         Event::InitiativeTaken { player, object } => {
             crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
         }

@@ -77,6 +77,11 @@ toughness: number | null,
  */
 lights?: Array<number>, 
 /**
+ * The stickers on a permanent (CR 123), in the order they were put on, each in its words; left out while it has
+ * none. The name already holds the words of its name stickers.
+ */
+stickers?: Array<string>, 
+/**
  * The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
  */
 printed_power?: number, 

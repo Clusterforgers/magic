@@ -47,7 +47,12 @@ pub(crate) fn groups(state: &GameState) -> Vec<Group> {
             && !crate::rules::no_legend_rule_for(state, id)
         {
             found
-                .entry((controller, object.card().name.clone()))
+                .entry((
+                    controller,
+                    state
+                        .name_of(id)
+                        .unwrap_or_else(|| object.card().name.clone()),
+                ))
                 .or_default()
                 .push(id);
         }

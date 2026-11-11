@@ -1,7 +1,7 @@
 {
   "oracle_id": "3786047e-f136-49f8-81d6-08beb3f9bcfd",
   "name": "Glitterflitter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glitterflitter",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 107 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "ticket" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

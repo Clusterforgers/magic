@@ -1795,7 +1795,9 @@ impl<'a> Scope<'a> {
             Pred::CounterCount { kind, op, to } => {
                 op.holds(i64::from(seen.counters.of(kind)), i64::from(*to))
             }
-            Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Pred::Named(name) => seen.card.is_some_and(|c| {
+                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
+            }),
             Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
                 self.chosen_pred(pred, seen)
             }
@@ -2226,7 +2228,9 @@ impl<'a> Scope<'a> {
                 .any(|color| seen.chars.colors.contains(*color)),
             Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
-            Chosen::Name(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Chosen::Name(name) => seen.card.is_some_and(|c| {
+                crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
+            }),
             Chosen::Player(_) | Chosen::Chapter(_) | Chosen::Number(_) | Chosen::Word(_) => false,
         }
     }

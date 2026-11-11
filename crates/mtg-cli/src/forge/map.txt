@@ -152,7 +152,7 @@ effect RingTemptsYou => -
 effect ChangeTargets => -
 effect Incubate => -
 effect Empower => -
-effect PutSticker => -
+effect PutSticker => Effect.PutSticker
 effect Earthbend => -
 effect Planeswalk => -
 
@@ -252,6 +252,7 @@ trigger CommitCrime => -
 trigger ManaExpend => -
 trigger DayTimeChanges => Trigger.DayNightChanges
 trigger StickerPlaced => -
+trigger VisitAttraction => Trigger.VisitedAttraction
 trigger RingTemptsYou => -
 trigger Specializes => -
 trigger UnlockDoor => -

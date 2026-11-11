@@ -95,6 +95,7 @@ mod store_failures;
 mod timer_bank;
 mod tutorial;
 mod un33_attraction_recipe;
+mod un34_sticker_recipe;
 mod visibility;
 mod windows;
 mod ws_games;

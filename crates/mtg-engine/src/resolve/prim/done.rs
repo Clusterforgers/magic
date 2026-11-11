@@ -86,6 +86,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Venture { .. }
         | Effect::OpenAttraction { .. }
         | Effect::RollToVisit { .. }
+        | Effect::PutSticker { .. }
+        | Effect::ClaimPrize { .. }
         | Effect::UnlockDoor { .. }
         | Effect::TakeInitiative { .. }
         | Effect::Monstrosity { .. }
