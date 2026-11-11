@@ -18,6 +18,7 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     texts.extend(super::fix32_pairs::damage_to_player_or_permanent(
         first, second,
     ));
+    texts.extend(super::wf25_writers::wf25_either_event_texts(first, second));
     texts
 }
 

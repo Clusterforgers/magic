@@ -19,7 +19,8 @@ const DIES: &str = r#"{"ZoneChange":{"what":[{"Type":"Creature"},{"OwnedBy":"You
 const DESTROY_IT: &str = r#"[{"Destroy":{"what":"Triggering"}}]"#;
 const CAST: &str = r#"{"SpellCast":{"by":"Opponents"}}"#;
 const COUNTER_IT: &str = r#"[{"Counter":{"what":"Triggering"}}]"#;
-const HITS: &str = r#"{"DealsDamage":{"source":["This"],"to":{"Each":[{"Type":"Creature"}]},"combat":true}}"#;
+const HITS: &str =
+    r#"{"DealsDamage":{"source":["This"],"to":{"Each":[{"Type":"Creature"}]},"combat":true}}"#;
 const HELD: &str = r#"[{"Tap":{"what":"Triggering"}},{"Continuous":{"affected":"Triggering","mods":["DoesntUntap"],"duration":"NextUntapStep"}}]"#;
 const KASHI: &str = "Whenever this creature deals combat damage to a creature, tap that creature and it doesn't untap during its controller's next untap step.";
 
@@ -70,25 +71,38 @@ const CELL: &str = "{T}, Remove any number of charge counters from this artifact
 #[case::battery(BATTERY, CELL, true)]
 #[case::battery_without_the_first(BATTERY, &CELL.replace("Add {B}, then add an additional {B}", "Add {B}"), false)]
 #[case::battery_other_first(&BATTERY.replacen("Black", "Red", 1), CELL, false)]
-fn wf25_mana_for_each_counter_removed(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+fn wf25_mana_for_each_counter_removed(
+    #[case] json: &str,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }
 
-const LEYLINE: &str = "If this card is in your opening hand, you may begin the game with it on the battlefield.";
+const LEYLINE: &str =
+    "If this card is in your opening hand, you may begin the game with it on the battlefield.";
 const ALONE: &str = r#"{"Rule":{"rule":{"Combat":{"who":"This","quirk":"CantAttackAlone"}}}}"#;
 const ANY_NUMBER: &str = r#"{"Static":{"affected":"This","mods":[{"BlocksAdditional":99}]}}"#;
 const STRONG: &str = r#"{"Static":{"affected":"This","mods":[{"CanBlockOnly":[{"AnyOf":[{"Not":{"Type":"Creature"}},{"Not":{"Compare":{"stat":"Power","op":"Ge","to":2}}}]}]}]}}"#;
 
 #[rstest]
 #[case::leyline(r#""OpeningHand""#, LEYLINE, true)]
-#[case::leyline_revealed(r#""OpeningHand""#, "You may reveal this card from your opening hand.", false)]
+#[case::leyline_revealed(
+    r#""OpeningHand""#,
+    "You may reveal this card from your opening hand.",
+    false
+)]
 #[case::attack_alone(ALONE, "This creature can't attack alone.", true)]
 #[case::block_alone(&ALONE.replace("Attack", "Block"), "This creature can't block alone.", true)]
 #[case::block_for_attack(&ALONE.replace("Attack", "Block"), "This creature can't attack alone.", false)]
 #[case::enchanted_alone(&ALONE.replace("This", "Attached"), "This creature can't attack alone.", false)]
 #[case::any_number(ANY_NUMBER, "This creature can block any number of creatures.", true)]
 #[case::two_more(&ANY_NUMBER.replace("99", "2"), "This creature can block any number of creatures.", false)]
-#[case::strong(STRONG, "This creature can't block creatures with power 2 or greater.", true)]
+#[case::strong(
+    STRONG,
+    "This creature can't block creatures with power 2 or greater.",
+    true
+)]
 #[case::stronger(&STRONG.replace(r#""to":2"#, r#""to":3"#), "This creature can't block creatures with power 2 or greater.", false)]
 #[case::weak(&STRONG.replace("Ge", "Le"), "This creature can't block creatures with power 2 or greater.", false)]
 #[case::strong_artifacts(&STRONG.replace("Creature", "Artifact"), "This creature can't block creatures with power 2 or greater.", false)]
@@ -119,6 +133,27 @@ const BEETLES: &str = "{T}: Exile up to three target cards from a single graveya
 #[case::different_owners(&SINGLE.replace("SameController", "DifferentControllers"), BEETLES, false)]
 #[case::your_graveyard(&SINGLE.replace(r#"{"In":"Graveyard"}"#, r#"{"In":"Graveyard"},{"OwnedBy":"You"}"#), BEETLES, false)]
 #[case::two(&SINGLE.replace(r#""max":3"#, r#""max":2"#), BEETLES, false)]
-fn wf25_cards_from_a_single_graveyard(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+fn wf25_cards_from_a_single_graveyard(
+    #[case] json: &str,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
     assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const TAPPED: &str = r#"{"Tapped":{"what":[{"Is":"Attached"}]}}"#;
+const CRYOSHATTER: &str = "When enchanted creature becomes tapped or is dealt damage, destroy it.";
+
+#[rstest]
+#[case::either(&trigger(TAPPED, DESTROY_IT), &trigger(DEALT, DESTROY_IT), true)]
+#[case::other_steps(&trigger(TAPPED, DESTROY_IT), &trigger(DEALT, &DESTROY_IT.replace("Destroy", "Exile")), false)]
+#[case::one_event_twice(&trigger(TAPPED, DESTROY_IT), &trigger(TAPPED, DESTROY_IT), false)]
+#[case::one_event_alone(&trigger(TAPPED, DESTROY_IT), r#"{"Keyword":"Flying"}"#, false)]
+fn wf25_two_events_of_one_subject(#[case] first: &str, #[case] second: &str, #[case] same: bool) {
+    let written = either_way_pair_texts(&ability(first), &ability(second));
+    assert_eq!(
+        written.iter().any(|text| same_text(text, CRYOSHATTER)),
+        same,
+        "{written:?}"
+    );
 }

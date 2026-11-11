@@ -322,6 +322,7 @@ Crush Contraband
 Crypt Ghast
 Crystal Barricade
 Crystal Quarry
+Cuboid Colony
 Culling Ritual
 Cultivate
 Curate
@@ -735,6 +736,7 @@ Hour of Revelation
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hungry Graffalon
 Hungry Lynx
 Hunt the Weak
 Huntmaster Liger
@@ -1093,6 +1095,7 @@ Patron of the Vein
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
 Peema Outrider
+Pensive Professor
 Pentad Prism
 Perch Protection
 Persist
@@ -1525,6 +1528,7 @@ Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
 Teval's Judgment
+Textbook Tabulator
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -1583,6 +1587,7 @@ Tithe Drinker
 Tithebearer Giant
 Tivash, Gloom Summoner
 Tomb Tyrant
+Topiary Lecturer
 Torrential Gearhulk
 Towering Titan
 Toxic Deluge

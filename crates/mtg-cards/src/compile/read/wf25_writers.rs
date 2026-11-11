@@ -41,7 +41,10 @@ const NOUNS: [&str; 8] = [
 /// with it on the battlefield."
 pub(super) fn wf25_whole(ability: &Ability) -> Option<Vec<String>> {
     matches!(ability, Ability::OpeningHand).then(|| {
-        vec!["If ~ is in your opening hand, you may begin the game with it on the battlefield.".to_owned()]
+        vec![
+            "If ~ is in your opening hand, you may begin the game with it on the battlefield."
+                .to_owned(),
+        ]
     })
 }
 
@@ -448,12 +451,13 @@ const REWRITES: [fn(&str) -> Option<String>; 7] = [
         (joined != text).then_some(joined)
     },
     |text| {
-        text.contains(". That creature doesn't untap during").then(|| {
-            text.replace(
-                ". That creature doesn't untap during",
-                ". It doesn't untap during",
-            )
-        })
+        text.contains(". That creature doesn't untap during")
+            .then(|| {
+                text.replace(
+                    ". That creature doesn't untap during",
+                    ". It doesn't untap during",
+                )
+            })
     },
     // The object of the event is one object.
     |text| {
@@ -510,7 +514,10 @@ pub(super) fn wf25_single_graveyard(
     };
     // One graveyard of any player: a graveyard named by its owner is single already.
     if !selector.0.contains(&Pred::In(ZoneKind::Graveyard))
-        || selector.0.iter().any(|pred| matches!(pred, Pred::OwnedBy(_)))
+        || selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::OwnedBy(_)))
         || spec.bounds.is_one()
     {
         return None;
@@ -524,6 +531,55 @@ pub(super) fn wf25_single_graveyard(
         .iter()
         .find_map(|graveyards| text.strip_suffix(graveyards))
         .map(|cards| format!("{cards} from a single graveyard"))
+}
+
+/// "When enchanted creature becomes tapped or is dealt damage, destroy it.": two triggers that do the same about one
+/// subject, its two events said after it with "or"; empty for any other two abilities.
+pub(super) fn wf25_either_event_texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let (Ok(mut one), Ok(mut other)) = (serde_json::to_value(first), serde_json::to_value(second))
+    else {
+        return Vec::new();
+    };
+    let (Some(one), Some(other)) = (
+        one.get_mut("Triggered").and_then(Value::as_object_mut),
+        other.get_mut("Triggered").and_then(Value::as_object_mut),
+    ) else {
+        return Vec::new();
+    };
+    let (Some(when), Some(other_when)) = (one.remove("when"), other.remove("when")) else {
+        return Vec::new();
+    };
+    if one != other || when == other_when {
+        return Vec::new();
+    }
+    let written = super::render::written_variants;
+    let (heads, others) = (heads_of(first, written), heads_of(second, written));
+    let mut texts = Vec::new();
+    for text in written(first) {
+        let Some((head, rest)) = split_head(&text, &heads) else {
+            continue;
+        };
+        for second_head in &others {
+            // The words both heads open with, up to the subject: "When enchanted creature ".
+            let shared = head
+                .split_inclusive(' ')
+                .zip(second_head.split_inclusive(' '))
+                .take_while(|(a, b)| a == b)
+                .map(|(a, _)| a.len())
+                .sum::<usize>();
+            let (Some(tail), Some(own)) = (second_head.get(shared..), head.get(shared..)) else {
+                continue;
+            };
+            if shared < "When x ".len() || tail.is_empty() || own.is_empty() {
+                continue;
+            }
+            let said = format!("{head} or {tail}, {rest}");
+            if !texts.contains(&said) {
+                texts.push(said);
+            }
+        }
+    }
+    texts
 }
 
 /// The block rules in their other printed words: "can block any number of creatures" is also printed "can block an
