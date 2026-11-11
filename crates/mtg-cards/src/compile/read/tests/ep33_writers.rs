@@ -1,4 +1,4 @@
-//! Goal: the writers of ep33 write the card's words and nothing near them. "Whenever you collect evidence" is the action of the card's controller, and a card put onto the battlefield face down is said with its controller and, from the graveyard, beside a face-up return; another player, action, effect, controller or way of entering does not read as it.
+//! Goal: the writers of ep33 write the card's words and nothing near them. "Whenever you collect evidence" is the action of the card's controller, and a card put onto the battlefield face down is said with its controller and, from the graveyard, beside a face-up return; another player, action, effect, controller or way of entering does not read as it. Restricted mana for your commander, for no spells and for special actions, manifest dread twice and "While voting, you get an additional vote" read the same way.
 use super::*;
 
 const EXAMINER: &str = "Whenever you collect evidence, investigate.";
@@ -207,4 +207,30 @@ fn ep33_restricted_mana_near_misses_differ(
 ) {
     let found = written_variants(&mana(only));
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+const BRAGO: &str = "While voting, you get an additional vote.";
+
+#[rstest]
+#[case::reads(r#"{"ExtraVote":"You"}"#, BRAGO, true)]
+#[case::may_vote_again(r#"{"VoteAgain":"You"}"#, BRAGO, false)]
+#[case::opponents(r#"{"ExtraVote":"Opponents"}"#, BRAGO, false)]
+#[case::the_optional_words(
+    r#"{"ExtraVote":"You"}"#,
+    "While voting, you may vote an additional time.",
+    false
+)]
+fn ep33_extra_vote_near_misses_differ(#[case] rule: &str, #[case] text: &str, #[case] reads: bool) {
+    let found = written_variants(&ability(&format!(r#"{{"Rule":{{"rule":{rule}}}}}"#)));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+#[test]
+fn ep33_extra_vote_reads() {
+    reads_as(
+        BRAGO,
+        ClauseKind::Static,
+        false,
+        r#"{"Rule":{"rule":{"ExtraVote":"You"}}}"#,
+    );
 }

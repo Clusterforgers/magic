@@ -149,3 +149,26 @@ fn ep33_the_card_exiled_with_the_source(#[case] memory: &str, #[case] keep: &str
 fn ep33_the_card_exiled_with_the_source_needs_its_memory(#[case] memory: &str, #[case] keep: &str) {
     assert!(!gaps(&crab(memory, keep)).is_empty());
 }
+
+fn voting(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Human\nPT:1/1\nS:Mode$ Continuous | {line} | Description$ While voting, you get an additional vote.\n"
+    )
+}
+
+#[test]
+fn ep33_an_additional_vote() {
+    let script = voting("Affected$ You | AdditionalVote$ 1");
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    assert_eq!(
+        abilities(&script),
+        vec![json!({"Rule": {"rule": {"ExtraVote": "You"}}})]
+    );
+}
+
+#[rstest]
+#[case::two_votes("Affected$ You | AdditionalVote$ 2")]
+#[case::opponents("Affected$ Opponent | AdditionalVote$ 1")]
+fn ep33_an_additional_vote_the_engine_lacks_is_a_gap(#[case] line: &str) {
+    assert!(!gaps(&voting(line)).is_empty());
+}

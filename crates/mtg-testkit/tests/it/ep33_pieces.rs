@@ -1,4 +1,4 @@
-//! Goal: the engine pieces of ep33 play by the rules at tables of two and three seats. A card an effect returns to the battlefield face down (`Destination::BattlefieldFaceDown`) is a 2/2 creature with no name under the player the move names, only that player looks at it, and it is turned face up for its morph cost and never for its mana cost; a face-down card that has no morph stays face down. Mana for turning permanents face up, or for any cost but a spell's, pays the morph cost and mana for another special action or for spells does not; mana for "your commander" casts the commander and no other spell.
+//! Goal: the engine pieces of ep33 play by the rules at tables of two and three seats. A card an effect returns to the battlefield face down (`Destination::BattlefieldFaceDown`) is a 2/2 creature with no name under the player the move names, only that player looks at it, and it is turned face up for its morph cost and never for its mana cost; a face-down card that has no morph stays face down. Mana for turning permanents face up, or for any cost but a spell's, pays the morph cost and mana for another special action or for spells does not; mana for "your commander" casts the commander and no other spell. "While voting, you get an additional vote" gives one more ballot, never blank, for each such rule.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -212,5 +212,89 @@ fn mana_for_your_commander_casts_only_the_commander(
         .map(|id| driver.state().object(*id).unwrap().card().name.clone())
         .collect();
     assert_eq!(names, ["Cmd"]);
+    Ok(())
+}
+
+/// A free sorcery: everyone votes for gift or life; if gift gets more votes, its caster draws a card, otherwise gains
+/// one life.
+fn ballot() -> Arc<CardDefinition> {
+    let spell: Ability = serde_json::from_str(
+        r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["gift","life"]}}},{"If":{"condition":{"Compare":{"left":{"Players":{"Bound":"gift"}},"op":"Gt","right":{"Players":{"Bound":"life"}}}},"then":[{"Draw":{}}],"otherwise":[{"GainLife":{"amount":1}}]}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Ballot")
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(spell),
+    )
+}
+
+/// An artifact with "While voting, you get an additional vote."
+fn representative(n: usize) -> Arc<CardDefinition> {
+    let rule: Ability = serde_json::from_str(r#"{"Rule":{"rule":{"ExtraVote":"You"}}}"#).unwrap();
+    Arc::new(
+        CardDefinition::new(&format!("Representative {n}"))
+            .with_type(CardType::Artifact)
+            .with_rules(rule),
+    )
+}
+
+/// Seat 0 controls `extra` representatives and votes gift with every ballot, the others life: seat 0 is asked once for
+/// each of its votes, with no blank ballot, before the others in turn order, and gift wins when its votes outnumber the
+/// others'.
+#[rstest]
+#[case::two_seats_one_extra(2, 1, true)]
+#[case::three_seats_one_extra_ties(3, 1, false)]
+#[case::three_seats_two_extras(3, 2, true)]
+#[case::four_seats_two_extras_tie(4, 2, false)]
+fn an_additional_vote_is_cast_and_counted(
+    #[case] seats: usize,
+    #[case] extra: usize,
+    #[case] drew: bool,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .seed(33)
+        .hand(0, [ballot()])
+        .battlefield(
+            0,
+            (0..extra)
+                .map(|n| ready(representative(n)))
+                .collect::<Vec<_>>(),
+        );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..6).map(|_| mtg_testkit::cards::forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    while driver.decision()?.player != pid(0) {
+        driver.pass()?;
+    }
+    let start = driver.state().player(pid(0)).unwrap().life();
+    driver.cast("Ballot")?;
+    let mut asked = Vec::new();
+    for _ in 0..100 {
+        let decision = driver.decision()?.clone();
+        match decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::ChooseOption(options) => {
+                assert_eq!(options.options.len(), 2, "no blank ballot");
+                let seat = decision.player.index();
+                asked.push(seat);
+                let vote = usize::from(seat != 0);
+                driver.answer(Answer::ChooseOption(mtg_engine::choose::OptionChoice(vote)))?;
+            }
+            _ => {
+                driver.pass()?;
+            }
+        }
+    }
+    let want: Vec<usize> = std::iter::repeat_n(0, 1 + extra).chain(1..seats).collect();
+    assert_eq!(asked, want);
+    assert_eq!(
+        driver.state().zone(Zone::Hand(pid(0))).len(),
+        usize::from(drew)
+    );
+    let life = driver.state().player(pid(0)).unwrap().life();
+    assert_eq!(life, start + i32::from(!drew));
     Ok(())
 }

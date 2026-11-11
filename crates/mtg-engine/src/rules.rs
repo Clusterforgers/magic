@@ -150,6 +150,8 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
+    /// The players get an additional vote (CR 701.38d).
+    ExtraVote(Vec<PlayerId>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
@@ -584,6 +586,8 @@ pub(crate) struct RulesInForce {
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
+    /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
+    extra_vote: Vec<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
@@ -957,6 +961,7 @@ impl RulesInForce {
                 }
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
+            Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
@@ -1268,6 +1273,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             change: *change,
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
+        GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
@@ -1448,6 +1454,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::VoteAgain(players)
+        | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
         | Rule::ExtraDie(players)
@@ -1605,6 +1612,7 @@ static NONE: RulesInForce = RulesInForce {
     no_search: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
+    extra_vote: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
@@ -2097,6 +2105,16 @@ pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
         .count()
         .min(5);
     1 << doublings
+}
+
+/// How many additional votes `player` gets while voting (CR 701.38d): one for each rule that gives one.
+pub fn ep33_extra_votes(state: &GameState, player: PlayerId) -> usize {
+    state
+        .rules()
+        .extra_vote
+        .iter()
+        .filter(|seat| **seat == player)
+        .count()
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

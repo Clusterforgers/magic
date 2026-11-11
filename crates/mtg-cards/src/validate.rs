@@ -4572,6 +4572,7 @@ impl Walker<'_> {
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::VoteAgain(who)
+            | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
             | GameRule::ExtraDie(who)
