@@ -1,0 +1,31 @@
+{
+  "oracle_id": "27b945ad-92a9-4615-87ec-790682e8c3e7",
+  "name": "Angel of Salvation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Salvation",
+      "oracle_fingerprint": "a726778d5e7fa9a3dc63902e49d10fbc",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": null }, "divide": 5 }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": "Divided" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

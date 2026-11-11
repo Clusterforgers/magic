@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f18cce8c-8fb6-49a7-8f79-2529c0ee3ecc",
+  "name": "Mog, Moogle Warrior",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mog, Moogle Warrior",
+      "oracle_fingerprint": "88cf631f5d8fbefa3f8937c20b575d62",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 9, "end": 341 }
+          }
+        }
+      ]
+    }
+  ]
+}

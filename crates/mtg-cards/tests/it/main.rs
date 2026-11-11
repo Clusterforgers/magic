@@ -40,6 +40,7 @@ mod read_sheet;
 mod read_tier;
 mod reminder_cards;
 mod rmt1_cards;
+mod rmt2_readback;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

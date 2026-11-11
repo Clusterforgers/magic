@@ -1,0 +1,47 @@
+{
+  "oracle_id": "65481ae1-54b2-44d2-91e1-20cd486386da",
+  "name": "Ob Nixilis Reignited",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ob Nixilis Reignited",
+      "oracle_fingerprint": "3e85cc576bafc836606dd973bdbbc952",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "who": { "Target": 0 },
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "Drew": {} },
+                        "effects": [{ "LoseLife": { "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

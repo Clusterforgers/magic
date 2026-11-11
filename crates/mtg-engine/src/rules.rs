@@ -13,6 +13,7 @@ use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
+use mtg_cards::effect::Place;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
@@ -326,6 +327,10 @@ pub enum Rule {
         /// Where they go instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
+        /// The place in its owner's library a countered spell goes to, when `to` is the library.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+        place: Option<Place>,
         /// It covers a spell that is countered only, not one that resolves or fizzles.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]

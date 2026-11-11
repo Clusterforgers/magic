@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4ee994a1-fd3b-43cf-be3c-9c705e60754a",
+  "name": "Misstep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misstep",
+      "oracle_fingerprint": "6624b914950911f4bbece6b244d4b084",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

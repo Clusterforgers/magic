@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f9de4cea-27c4-4343-8a7a-09b8f346c3b5",
+  "name": "Djinn of Infinite Deceits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Djinn of Infinite Deceits",
+      "oracle_fingerprint": "872f998787478e729b95399700995c22",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Not": "InCombat" },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

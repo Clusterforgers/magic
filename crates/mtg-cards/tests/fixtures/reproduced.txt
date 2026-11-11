@@ -81,6 +81,7 @@ Assassin's Trophy
 Assemble the Entmoot
 Atlantean Skirmisher
 Atmospheric Greenhouse
+Atreus, Impulsive Son
 Atzocan Seer
 Augury Raven
 Auntie's Hovel
@@ -249,6 +250,7 @@ Chains of Custody
 Challenger Troll
 Champion of Lambholt
 Champion's Helm
+Chandra, Awakened Inferno
 Changeling Outcast
 Changing Loyalty
 Charmbreaker Devils
@@ -415,6 +417,7 @@ Disrupt Decorum
 Distorting Wake
 Divine Visitation
 Diviner Spirit
+Djinn of Infinite Deceits
 Dockside Extortionist
 Dog Umbra
 Dokuchi Shadow-Walker
@@ -1076,6 +1079,7 @@ O'aka, Traveling Merchant
 Oath of Gideon
 Oath of Jace
 Oathsworn Vampire
+Ob Nixilis Reignited
 Ob Nixilis, the Ascended
 Obscura Storefront
 Obscuring Haze
@@ -1212,6 +1216,7 @@ Raging Goblinoids
 Rain of Thorns
 Rakdos Headliner
 Rakish Heir
+Ral, Storm Conduit
 Rally the Ranks
 Rambling Possum
 Ramos, Dragon Engine
@@ -1368,6 +1373,7 @@ Sharktocrab
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
+Shieldmage Elder
 Shields of Velis Vel
 Shifting Borders
 Shifting Sliver
@@ -1536,6 +1542,7 @@ Swarm Intelligence
 Swarm, Being of Bees
 Sweet-Gum Recluse
 Swiftfoot Boots
+Switcheroo
 Sword of Body and Mind
 Swords to Plowshares
 Sylvok Battle-Chair
@@ -1613,6 +1620,7 @@ Thriving Isle
 Thriving Moor
 Throes of Chaos
 Throne of the High City
+Thrull Champion
 Thunder-Thrash Elder
 Thunderclap Drake
 Thunderfoot Baloth
@@ -1729,6 +1737,7 @@ Vivid Marsh
 Vivid Meadow
 Voice of All
 Voice of the Blessed
+Voidmage Husher
 Volunteer Reserves
 Vona, Butcher of Magan
 Vorel of the Hull Clade

@@ -1092,7 +1092,14 @@ impl ShieldShape {
                     _ => None,
                 }
             }
-            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_))
+            | (
+                ReplaceWhen::Countered { .. },
+                ReplaceBy::IntoLibrary {
+                    place: Place::Top | Place::Bottom,
+                    reveal: false,
+                },
+            ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
             | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
                 if !names_objects(what) =>

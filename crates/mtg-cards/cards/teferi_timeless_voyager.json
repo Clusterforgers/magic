@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7240037f-ddea-425e-9824-866e2bb0dc84",
+  "name": "Teferi, Timeless Voyager",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Teferi, Timeless Voyager",
+      "oracle_fingerprint": "0626357c21dc1c880d1795afccdfd92c",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 72, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}
