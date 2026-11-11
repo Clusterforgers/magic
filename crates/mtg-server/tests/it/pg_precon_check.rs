@@ -26,7 +26,7 @@ fn twice_pack() -> PreconDeck {
         "Twice Pack",
         "Commander Deck",
         &[("Questing Beast", 1)],
-        &[("Auspicious Starrix", 2), ("Forest", 97)],
+        &[("Capricopian", 2), ("Forest", 97)],
     )
 }
 
