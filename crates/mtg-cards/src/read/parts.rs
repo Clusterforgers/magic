@@ -471,9 +471,14 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
         ReplaceWhen::Destroyed { what } => {
             format!("{} would be destroyed", phrase::selector(ctx, what))
         }
-        ReplaceWhen::Discarded { what } => {
+        ReplaceWhen::Discarded { what, by: None } => {
             format!("{} would be discarded", phrase::selector(ctx, what))
         }
+        ReplaceWhen::Discarded { what, by: Some(by) } => format!(
+            "a spell or ability {} control causes {} to be discarded",
+            phrase::who(ctx, by),
+            phrase::selector(ctx, what)
+        ),
         ReplaceWhen::Countered { what } => {
             format!("{} would be countered", phrase::selector(ctx, what))
         }

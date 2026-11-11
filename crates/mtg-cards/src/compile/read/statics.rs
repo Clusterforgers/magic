@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 46] = [
+const TEMPLATES: [Template; 47] = [
+    super::ep32_discard::ep32_discarded_by_opponent,
     super::ep29_flash::ep29_flash,
     super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
@@ -1330,6 +1331,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     group.extend(super::e18a_first::free_activation_texts(ability));
     group.extend(super::t15a_alt_costs::t15a_alt_cost_texts(ability));
     group.extend(super::w17c_cast_only::w17c_cast_only_texts(ability));
+    group.extend(super::ep32_discard::ep32_discarded_texts(ability));
     group.extend(super::w19a_flash::w19a_flash_texts(ability));
     group.extend(group_enters(ability));
     let sentences = match ability {

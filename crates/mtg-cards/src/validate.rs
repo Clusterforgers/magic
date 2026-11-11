@@ -4798,9 +4798,14 @@ impl Walker<'_> {
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
             | ReplaceWhen::TurnedFaceUp { what }
-            | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::Discarded { what, by } => {
+                self.at("what", |w| w.selector(what));
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
             }
             ReplaceWhen::CountersPut { on, by, .. } => {
                 if let Some(by) = by {

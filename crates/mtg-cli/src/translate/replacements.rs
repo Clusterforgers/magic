@@ -65,6 +65,9 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::ep28_under::ep28_under_opponent(ctx, &p, line_condition.as_ref()) {
         return found;
     }
+    if let Some(found) = super::ep32_discard::ep32_discarded(ctx, &p, line_condition.as_ref()) {
+        return found;
+    }
     let read = [
         "Event",
         "ValidCard",

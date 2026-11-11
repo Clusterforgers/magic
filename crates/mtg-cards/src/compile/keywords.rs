@@ -760,6 +760,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "split second" => Keyword::SplitSecond,
         "undaunted" => Keyword::Undaunted,
         "rebound" => Keyword::Rebound,
+        "paradigm" => Keyword::Paradigm,
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
@@ -1499,6 +1500,7 @@ mod tests {
     #[case::unearth("Unearth {1}{B}", Keyword::Unearth(mana("{1}{B}")))]
     #[case::unearth_in_mana_only_with_reminder("unearth {B}", Keyword::Unearth(mana("{B}")))]
     #[case::rebound("Rebound", Keyword::Rebound)]
+    #[case::paradigm("Paradigm", Keyword::Paradigm)]
     #[case::jump_start("Jump-start", Keyword::JumpStart)]
     #[case::retrace("retrace", Keyword::Retrace)]
     #[case::embalm("Embalm {3}{W}", Keyword::Embalm(mana("{3}{W}")))]
@@ -1942,6 +1944,7 @@ mod tests {
             "Unearth {1}",
             "Escape {1}",
             "Rebound",
+            "Paradigm",
             "Aftermath",
             "Jump-start",
             "Retrace",

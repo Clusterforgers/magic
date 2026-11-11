@@ -685,6 +685,7 @@ const RUNS: &[&str] = &[
     "Keyword.Unearth",
     "Keyword.Escape",
     "Keyword.Rebound",
+    "Keyword.Paradigm",
     "Keyword.Aftermath",
     "Keyword.Dash",
     "Keyword.Bestow",
@@ -1325,6 +1326,7 @@ mod tests {
     #[case::unearth("Keyword.Unearth", true)]
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
+    #[case::paradigm("Keyword.Paradigm", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
     #[case::bestow("Keyword.Bestow", true)]

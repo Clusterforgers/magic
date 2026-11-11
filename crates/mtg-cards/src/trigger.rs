@@ -747,6 +747,10 @@ pub enum ReplaceWhen {
     Discarded {
         /// The card that would be discarded.
         what: Selector,
+        /// Only a discard caused by a spell or ability these players control ("If a spell or ability an opponent
+        /// controls causes you to discard this card"); any discard when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
     },
     /// A spell matching the selector would be countered (CR 701.6): the move from the stack to the graveyard of a spell an
     /// effect counted, not of one that resolved, fizzled or could not be countered.

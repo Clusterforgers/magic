@@ -342,13 +342,14 @@ fn land_played(
     Ok(())
 }
 
-/// A spell with rebound that is cast from a hand is exiled by a replacement effect as it resolves (CR 702.88a), so the
-/// game has replacement effects to look for.
+/// A spell with rebound that is cast from a hand, or one with paradigm, is exiled by a replacement effect as it resolves
+/// (CR 702.88a), so the game has replacement effects to look for.
 fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
-    if matches!(from, Zone::Hand(_))
-        && crate::keywords::keywords_of(state, spell)
-            .iter()
-            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
+    let keywords = crate::keywords::keywords_of(state, spell);
+    let has =
+        |wanted: &mtg_cards::keyword::Keyword| keywords.iter().any(|keyword| *keyword == wanted);
+    if (matches!(from, Zone::Hand(_)) && has(&mtg_cards::keyword::Keyword::Rebound))
+        || has(&mtg_cards::keyword::Keyword::Paradigm)
     {
         state.possible.replacements = true;
     }
