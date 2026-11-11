@@ -106,6 +106,7 @@ const RUNS: &[&str] = &[
     "Amount.Total",
     "Amount.CardTypes",
     "Amount.Devotion",
+    "Amount.CardsAbove",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Amount.LowestHand",

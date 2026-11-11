@@ -1,0 +1,48 @@
+{
+  "oracle_id": "716a3bb8-04bd-41f5-a568-131f175e00a6",
+  "name": "Gavi, Nest Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gavi, Nest Warden",
+      "oracle_fingerprint": "7140ce74f1d2a1483ba33dbd7cf6b5c8",
+      "abilities": [
+        {
+          "FreeActivation": {
+            "kind": "Cycling",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": { "KindActivated": "Cycling" }, "who": "You", "filter": [] }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur Cat",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur", "Cat"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,9 +15,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 262, "end": 389 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "destroyed" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Phyrexian",
+                                  "colors": ["Black"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Phyrexian"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -445,6 +445,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Distinct { of, stat }
         | Amount::MostCommon { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
         Amount::Doors(of) => reads_of_selector(of),
+        Amount::CardsAbove { filter, .. } => reads_of_selector(filter),
         Amount::When {
             condition,
             then,

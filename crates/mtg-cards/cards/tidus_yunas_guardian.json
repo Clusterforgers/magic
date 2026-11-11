@@ -1,16 +1,28 @@
 {
   "oracle_id": "e8fbcafd-3617-4cd7-b55d-457fb7b60162",
   "name": "Tidus, Yuna's Guardian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tidus, Yuna's Guardian",
       "oracle_fingerprint": "529df1b6945b94fe7b292ecf078d59a0",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 139 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "MoveCounters": { "from": { "Target": 0 }, "to": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

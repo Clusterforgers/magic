@@ -175,6 +175,15 @@ fn w21a_tally_graveyards(
     if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::W21aLeftGraveyard);
     }
+    if from == Zone::Battlefield && matches!(to, Zone::Hand(_)) {
+        state.tally(owner, Tally::R287ToHand);
+    }
+    let is_card = state
+        .object(card.id)
+        .is_some_and(|object| object.kind() != ObjectKind::Token);
+    if to == Zone::Exile && from != Zone::Exile && is_card {
+        state.tally(owner, Tally::R287Exiled);
+    }
     if to == Zone::Battlefield {
         let controller = state.object(card.id).map(GameObject::controller);
         if let Some(controller) = controller {
@@ -207,6 +216,9 @@ fn w21a_tally_graveyards(
         if let Some(creature) = card.map(|object| object.base_types().contains(CardType::Creature))
         {
             state.tally(owner, Tally::G10cCardsGraved);
+            if from != Zone::Battlefield {
+                state.tally(owner, Tally::R287GravedElsewhere);
+            }
             if creature {
                 state.tally(owner, Tally::G10cCreatureCardsGraved);
             }

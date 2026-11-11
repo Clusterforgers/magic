@@ -1,16 +1,24 @@
 {
   "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
   "name": "Summon: Fenrir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Summon: Fenrir",
       "oracle_fingerprint": "7e28098de4890815170cd79179fb2f80",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 201 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
           }
         },
         {
@@ -28,9 +36,40 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 333, "end": 451 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Greatest": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Power"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": {
+                            "Greatest": { "of": [{ "Type": "Creature" }], "stat": "Power" }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
           }
         }
       ]

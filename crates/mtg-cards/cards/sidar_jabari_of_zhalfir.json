@@ -1,16 +1,27 @@
 {
   "oracle_id": "b229f314-a5e5-41a3-a8c6-217a3c5a61c3",
   "name": "Sidar Jabari of Zhalfir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sidar Jabari of Zhalfir",
       "oracle_fingerprint": "33c0dc0b4a91daadb196d31efdac38b0",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 152 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Knight" }, { "ControlledBy": "You" }] }
+            },
+            "from": "Command",
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
           }
         },
         { "Keyword": "Flying" },

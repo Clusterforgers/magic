@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a86710da-e498-4ca1-832c-8ba4abd6fa46",
+  "name": "Spellpyre Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellpyre Phoenix",
+      "oracle_fingerprint": "041f535dc381b21f3c96517203b81f79",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "HasKeywordNamed": "Cycling" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": { "KindActivated": "Cycling" }, "who": "You", "filter": [] }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

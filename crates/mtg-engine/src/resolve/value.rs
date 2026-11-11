@@ -26,6 +26,7 @@ use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
+mod r287_above;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -505,8 +506,14 @@ impl<'a> Scope<'a> {
             | TurnTally::NonlandPermanentsLeft
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
+            | TurnTally::CardsExiled
+            | TurnTally::PermanentsToHand
+            | TurnTally::CardsGravedNotFromBattlefield
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::CardsExiled => Tally::R287Exiled,
+                    TurnTally::PermanentsToHand => Tally::R287ToHand,
+                    TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
@@ -2021,6 +2028,7 @@ impl<'a> Scope<'a> {
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
             Amount::Devotion(colors) => self.devotion(colors)?,
+            Amount::CardsAbove { filter, directly } => self.r287_cards_above(filter, *directly)?,
             Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
