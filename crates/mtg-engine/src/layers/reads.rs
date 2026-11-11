@@ -361,6 +361,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured
+        | Amount::RemovedThisWay(_)
         | Amount::Bound(_)
         | Amount::CastWith(_)
         | Amount::ColorsSpent

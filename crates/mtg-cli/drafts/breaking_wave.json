@@ -8,6 +8,12 @@
       "oracle_fingerprint": "eb3e8be78c77265bbf63349a8bed0395",
       "abilities": [
         {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true, "additional": "{2}" } },
+            "from": "Hand"
+          }
+        },
+        {
           "Spell": {
             "effects": [
               { "Bind": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] }, "as": "tapped" } },

@@ -1,4 +1,4 @@
-//! Goal: a card taken at random from a graveyard is told to every seat as it was logged, at tables of two, three and four seats: the pick is public (the cards of a graveyard are seen by all), no seat gets a hidden form of it, the card it names is the one that moved to the hand, and a pick among cards of a hand or a library is refused by the engine, so no hidden form is needed.
+//! Goal: a card taken at random from a graveyard is told to every seat as it was logged, at tables of two, three and four seats: the pick is public (the cards of a graveyard are seen by all), no seat gets a hidden form of it, the card it names is the one that moved to the hand; a pick among cards of a hand or a library is told whole only to the seats that see them (`ep29_hidden_pick_view`).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::PlayerId;

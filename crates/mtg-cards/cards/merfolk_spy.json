@@ -1,7 +1,7 @@
 {
   "oracle_id": "d004b481-a1d5-459d-8282-76baa9d13652",
   "name": "Merfolk Spy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Merfolk Spy",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 201 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } }
+            ]
           }
         }
       ]

@@ -529,6 +529,9 @@ pub enum Amount {
     ResolvedThisTurn,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
+    /// How many counters of the kind the cost of the resolving ability removed from its source ("for each charge counter removed this
+    /// way" after "Remove all charge counters from ~"); zero outside such an ability.
+    RemovedThisWay(CounterKind),
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
     Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -756,6 +759,7 @@ enum Tagged {
     Promised,
     ResolvedThisTurn,
     Devoured,
+    RemovedThisWay(CounterKind),
     Bound(String),
     CastWith(CastWay),
     ColorsSpent,
@@ -883,6 +887,7 @@ enum TaggedRef<'a> {
     Promised,
     ResolvedThisTurn,
     Devoured,
+    RemovedThisWay(&'a CounterKind),
     Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
@@ -989,6 +994,7 @@ impl From<Tagged> for Amount {
             Tagged::Promised => Amount::Promised,
             Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
             Tagged::Devoured => Amount::Devoured,
+            Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -1079,6 +1085,9 @@ impl Serialize for Amount {
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
+            Amount::RemovedThisWay(counter) => {
+                TaggedRef::RemovedThisWay(counter).serialize(serializer)
+            }
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),

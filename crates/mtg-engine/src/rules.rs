@@ -154,6 +154,8 @@ pub enum Rule {
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
+    ExtraDie(Vec<PlayerId>),
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -585,6 +587,8 @@ pub(crate) struct RulesInForce {
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
+    extra_die: Vec<PlayerId>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -955,6 +959,7 @@ impl RulesInForce {
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -1265,6 +1270,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -1444,6 +1450,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::ExtraDie(players)
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -1600,6 +1607,7 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
+    extra_die: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -2064,6 +2072,19 @@ pub(crate) fn ep24_unspent_mana(
         .find(|(who, _)| *who == player)
         .map(|(_, into)| *into);
     (kept, becomes)
+}
+
+/// How many dice `player` rolls more than asked, ignoring as many of the lowest rolls: one for each rule that adds one, at
+/// most 8.
+pub fn ep29_extra_dice(state: &GameState, player: PlayerId) -> u32 {
+    let extra = state
+        .rules()
+        .extra_die
+        .iter()
+        .filter(|who| **who == player)
+        .count()
+        .min(8);
+    u32::try_from(extra).unwrap_or(0)
 }
 
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.

@@ -1,18 +1,13 @@
 {
   "oracle_id": "59faa1b9-17aa-4f2c-a8f8-17ab50392b36",
   "name": "Barbarian Class",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Barbarian Class",
       "oracle_fingerprint": "9cecfc093e95e97cb5d4e470f8e060e3",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 155 }
-          }
-        },
+        { "Rule": { "rule": { "ExtraDie": "You" } } },
         {
           "Activated": {
             "cost": "{1}{R}",

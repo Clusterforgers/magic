@@ -1,7 +1,7 @@
 {
   "oracle_id": "cd5bc95d-4915-4c5a-9b57-2730adf69797",
   "name": "Molten Hydra",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Molten Hydra",
@@ -14,9 +14,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 185 }
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "RemoveCounters": {
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "RemovedThisWay": "+1/+1" } } }
+            ]
           }
         }
       ]

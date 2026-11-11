@@ -1,7 +1,7 @@
 {
   "oracle_id": "ba3bfe0c-2bd6-469c-802c-440b7caf7fb5",
   "name": "Vish Kal, Blood Arbiter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vish Kal, Blood Arbiter",
@@ -24,9 +24,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 117, "end": 243 }
+          "Activated": {
+            "cost": [
+              {
+                "RemoveCounters": {
+                  "counter": "+1/+1",
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": { "RemovedThisWay": "+1/+1" } } },
+                        "toughness": { "Times": { "by": -1, "of": { "RemovedThisWay": "+1/+1" } } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

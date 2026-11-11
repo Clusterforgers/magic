@@ -207,6 +207,9 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     }
     if let Some(rest) = expression.strip_prefix("SVar$") {
         let (name, steps) = rest.split_once('/').unwrap_or((rest, ""));
+        if name == "CostCountersRemoved" {
+            return apply_steps(ctx, super::cost::ep29_removed(ctx)?, steps);
+        }
         return apply_steps(ctx, amount(ctx, name)?, steps);
     }
     let (base, steps) = expression.split_once('/').unwrap_or((expression, ""));

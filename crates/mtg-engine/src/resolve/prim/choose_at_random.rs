@@ -1,4 +1,4 @@
-//! `Effect::ChooseAtRandom`: cards of a public zone are picked at random and the pick is bound.
+//! `Effect::ChooseAtRandom`: cards or players are picked at random and the pick is bound.
 
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -8,14 +8,12 @@ use crate::choose::Target;
 use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::rng::GameRng;
-use crate::zones::Zone;
 
 /// Picks as many of the objects `from` names as `count` says, fewer when there are not so many, with the next
 /// substream of the game's random source, and binds the pick as `as`. The pick is logged whole as
 /// [`Event::ChosenAtRandom`], so a replay from the log gives the same game and the substream is spent. Nothing to pick
-/// from is no event. The cards must lie in a graveyard, on the battlefield or in exile: every seat sees them, so every
-/// seat may see which was picked; a pick among cards of a hand or a library would tell the seats that cannot see them
-/// which one it was, and is refused.
+/// from is no event. Cards of a hand or a library may be picked ("reveals a card at random from their hand"): the log
+/// tells a seat that cannot see them only how many were picked.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::ChooseAtRandom { from, count, bind } = effect else {
         return Err(wrong_effect("ChooseAtRandom"));
@@ -31,15 +29,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 "a pick at random is among cards, not players".into(),
             ));
         };
-        let public = cx
-            .state()
-            .object(object.id)
-            .is_some_and(|found| !matches!(found.zone(), Zone::Hand(_) | Zone::Library(_)));
-        if !public {
-            return Err(ResolveError::Invalid(
-                "a pick at random among hidden cards is not played".into(),
-            ));
-        }
         cards.push(object.id);
     }
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
@@ -109,7 +98,7 @@ fn e14c_players(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, refuses cards that a seat cannot see, and picks a player among players as a public event of players.
+    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, picks cards of a hand or a library too, and picks a player among players as a public event of players.
     use std::collections::BTreeSet;
 
     use mtg_core::ids::PlayerId;
@@ -119,6 +108,7 @@ mod tests {
     use crate::fixtures::{creature, setup};
     use crate::resolve::{Resolving, Scope};
     use crate::state::GameState;
+    use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
 
@@ -260,7 +250,7 @@ mod tests {
     }
 
     #[test]
-    fn cards_on_the_battlefield_may_be_picked_and_cards_of_a_hand_or_library_may_not() {
+    fn cards_of_any_zone_may_be_picked() {
         let game = game(1, 2);
         let battlefield = r#"{"Each":[{"In":"Battlefield"}]}"#;
         assert_eq!(names(&game, &pick_json(battlefield, "1")), ["Source"]);
@@ -268,13 +258,19 @@ mod tests {
             r#"{"Each":[{"In":"Hand"}]}"#,
             r#"{"Each":[{"In":"Library"}]}"#,
         ] {
-            assert!(
-                matches!(
-                    picks(&game, &pick_json(hidden, "1")),
-                    Err(ResolveError::Invalid(_))
-                ),
-                "{hidden}"
-            );
+            let zone = if hidden.contains("Hand") {
+                Zone::Hand(ME)
+            } else {
+                Zone::Library(ME)
+            };
+            let picked = names(&game, &pick_json(hidden, "1"));
+            let held: Vec<String> = game
+                .zone(zone)
+                .iter()
+                .map(|id| game.object(*id).unwrap().card().name.clone())
+                .collect();
+            assert_eq!(picked.len(), held.len().min(1), "{hidden}");
+            assert!(picked.iter().all(|name| held.contains(name)), "{hidden}");
         }
     }
 

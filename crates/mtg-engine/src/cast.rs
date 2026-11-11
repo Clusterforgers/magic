@@ -66,6 +66,7 @@ pub(crate) fn activation_events(
     let mut before = snapshot(state, ability.object)?;
     let mut events = Vec::new();
     let mut shots = Vec::new();
+    let mut removed = 0u32;
     match &*rules {
         Ability::Activated { cost, .. } => {
             let cost = &*crate::free_activation::cost(state, player, (ability, &rules), cost);
@@ -93,6 +94,7 @@ pub(crate) fn activation_events(
                 events.extend(part.w2f_events(state, (player, from), picked, &mut kinds));
                 if let Part::Counters { counter, count } = part {
                     parts::after_removal(&mut before.counters, counter, *count);
+                    removed = removed.saturating_add(*count);
                 }
             }
             // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
@@ -155,7 +157,10 @@ pub(crate) fn activation_events(
         ability: ability.ability,
         origin: ability.source,
         controller: player,
-        choices: choices.clone().with_cost_shots(shots),
+        choices: choices
+            .clone()
+            .with_cost_shots(shots)
+            .with_counters_removed(removed),
         cause: None,
         delayed: None,
     })));

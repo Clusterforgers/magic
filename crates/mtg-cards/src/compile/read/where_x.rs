@@ -224,8 +224,9 @@ fn stats(value: &Value, found: &mut Vec<Value>) {
 }
 
 /// The amounts that count, as the data names them.
-const COUNTS: [&str; 16] = [
+const COUNTS: [&str; 17] = [
     "Count",
+    "RemovedThisWay",
     "Greatest",
     "Total",
     "CardTypes",
@@ -253,6 +254,15 @@ fn counts(value: &Value, found: &mut Vec<Value>) {
                 found.push(value.clone());
             }
         }
+        // "Remove all charge counters from ~" counts the counters it takes, not what the effects count.
+        Value::Object(map)
+            if map.get("RemoveCounters").is_some_and(|cost| {
+                cost.get("from").is_none()
+                    && cost
+                        .get("count")
+                        .and_then(|count| count.get("Counters"))
+                        .is_some_and(|counted| counted.get("on") == Some(&Value::from("This")))
+            }) => {}
         Value::Object(map) => map.values().for_each(|child| counts(child, found)),
         Value::Array(items) => items.iter().for_each(|child| counts(child, found)),
         _ => {}
@@ -430,6 +440,16 @@ fn counted_wordings(json: &Value) -> Vec<String> {
     };
     let texts = render::variants(&replaced);
     let mut found = Vec::new();
+    // The counters a cost removed are also "that much": "Remove all charge counters from ~: It deals that much damage".
+    if matches!(amount, Amount::RemovedThisWay(_)) {
+        found.extend(
+            texts
+                .iter()
+                .filter(|text| text.matches(" X ").count() == 1)
+                .map(|text| text.replacen(" X damage", " that much damage", 1))
+                .filter(|text| !text.contains(" X ")),
+        );
+    }
     for said in &saids {
         let tail = format!(", where X is {said}");
         for text in &texts {

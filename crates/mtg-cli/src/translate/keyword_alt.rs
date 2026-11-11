@@ -66,12 +66,14 @@ fn abilities(way: CastWay, count: Option<&str>, cost_text: &str) -> Vec<Tr<Value
 
 /// `MayFlashCost:2`: the card may be cast as though it had flash if the caster pays the mana more (CR 601.3b, 118.8): a
 /// way to cast it at instant speed for its own mana cost and the extra mana.
-pub fn may_flash_cost(printed: &str, extra: &str) -> Tr<Value> {
-    // An alternative way holds no {X} in the engine: such a card would never be offered at instant speed.
+pub fn may_flash_cost(ctx: &super::ctx::Ctx, extra: &str) -> Tr<Value> {
+    let printed = ctx.mana_cost;
+    // An alternative way holds no {X} in the engine: a card with X, or one that pays something other than mana more, is
+    // cast through a permission of its own that adds the extra cost to its mana cost.
     let Some(total) = mana(&format!("{printed} {extra}"))
         .filter(|_| !printed.is_empty() && !printed.contains('X'))
     else {
-        return unmapped("keyword:MayFlashCost-cost");
+        return ep29_paid_flash(ctx, extra);
     };
     let ability = Ability::AltCast {
         way: CastWay::Alternative,
@@ -119,5 +121,31 @@ fn strive(cost_text: Option<&str>, rest: Option<&str>) -> Tr<Value> {
         "change": "Increase",
         "mana": mana,
         "per": {"Sum": [{"TargetCount": 0}, -1]},
+    }}))
+}
+
+/// `MayFlashCost` of a card with X or of a cost that is not mana alone ("if you behold a Dragon as an additional cost",
+/// "by tapping three untapped creatures you control with flying"): a `MayCast` rule of the card from its owner's hand
+/// with the extra cost added to the cast.
+fn ep29_paid_flash(ctx: &super::ctx::Ctx, extra: &str) -> Tr<Value> {
+    if ctx.mana_cost.is_empty() {
+        return unmapped("keyword:MayFlashCost-cost");
+    }
+    // The added cost the card words: mana ("if you pay {2} more") or a tap of permanents ("by tapping three untapped
+    // creatures you control with flying"); another (a behold) stays a gap.
+    let additional = match super::cost::cost(ctx, extra)? {
+        Value::String(mana) => serde_json::json!([{ "Mana": mana }]),
+        items
+            if items.as_array().is_some_and(|parts| {
+                parts.len() == 1 && parts[0].get("TapPermanents").is_some()
+            }) =>
+        {
+            items
+        }
+        _ => return unmapped("keyword:MayFlashCost-cost"),
+    };
+    Ok(serde_json::json!({"Rule": {
+        "rule": {"MayCast": {"what": ["This"], "flash": true, "additional": additional}},
+        "from": "Hand",
     }}))
 }

@@ -634,6 +634,9 @@ pub enum GameRule {
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
     /// rule doubles the coins again.
     FlipTwoCoins(Ref),
+    /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
+    /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
+    ExtraDie(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
     /// The players play with their hands revealed.

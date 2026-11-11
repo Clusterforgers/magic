@@ -371,6 +371,8 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
+    /// The ability under the walk is an activated one whose cost removes counters from its source: the kinds `RemovedThisWay` reads.
+    ep29_removes: Vec<crate::value::CounterKind>,
     /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
     rather_cost: bool,
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
@@ -412,6 +414,7 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
+            ep29_removes: Vec::new(),
             rather_cost: false,
             counts_x: false,
             x_free: false,
@@ -1026,6 +1029,7 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
                     self.problem(format!("`{name}` is not a number kept by an earlier `Let`"));
@@ -1038,7 +1042,18 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The counters the cost of the ability removed from its source ("for each charge counter removed this way").
+    fn ep29_removed(&mut self, counter: &crate::value::CounterKind) {
+        self.uses("Amount", "RemovedThisWay");
+        if !self.ep29_removes.contains(counter) {
+            self.problem(
+                "`RemovedThisWay` needs an activated ability whose cost removes counters of that kind from its source",
+            );
+        }
+    }
+
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
+    #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Tally { who, filter, .. } => {
@@ -1135,6 +1150,7 @@ impl<'a> Walker<'a> {
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured
+            | Amount::RemovedThisWay(_)
             | Amount::Bound(_)
             | Amount::PermanentsGraved
             | Amount::Tallied { .. }
@@ -4204,6 +4220,19 @@ impl Walker<'_> {
         effects: &[Effect],
     ) {
         let paid = std::mem::replace(&mut self.pays_objects, picks(cost));
+        let removes = cost
+            .0
+            .iter()
+            .filter_map(|item| match item {
+                CostItem::RemoveCounters {
+                    counter: Some(counter),
+                    from: None,
+                    ..
+                } => Some(counter.clone()),
+                _ => None,
+            })
+            .collect();
+        let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
@@ -4224,6 +4253,7 @@ impl Walker<'_> {
         self.x_now = cost.has_x();
         self.body(targets, effects, false);
         self.pays_objects = paid;
+        self.ep29_removes = outer;
     }
 
     /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.
@@ -4510,6 +4540,7 @@ impl Walker<'_> {
             | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::ExtraDie(who)
             | GameRule::KeepUnspentMana { who, .. }
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }

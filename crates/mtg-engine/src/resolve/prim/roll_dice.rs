@@ -46,6 +46,29 @@ fn c11e_chosen_last(
     )
 }
 
+/// "Roll that many dice plus one and ignore the lowest roll" (`GameRule::ExtraDie`), once for each such rule: `dice` plus
+/// `extra` dice come one after another from the next substream of the game's random stream, the `extra` lowest are
+/// ignored and the others are kept in the order rolled. Only the kept dice are logged, as the rolls whose results count;
+/// they spend the substream the extra dice came from.
+fn ep29_with_extra(state: &crate::state::GameState, sides: u32, dice: u32, extra: u32) -> Vec<u32> {
+    let mut rng = GameRng::substream(state.seed(), state.rng_index());
+    let all: Vec<u32> = (0..dice.saturating_add(extra))
+        .map(|_| u32::try_from(rng.below(u64::from(sides))).unwrap_or(0) + 1)
+        .collect();
+    let mut order: Vec<usize> = (0..all.len()).collect();
+    // The lowest first, the earlier of two equal rolls first: those are the ones ignored.
+    order.sort_by_key(|at| (all[*at], *at));
+    let ignored: Vec<usize> = order
+        .into_iter()
+        .take(usize::try_from(extra).unwrap_or(0))
+        .collect();
+    all.iter()
+        .enumerate()
+        .filter(|(at, _)| !ignored.contains(at))
+        .map(|(_, result)| *result)
+        .collect()
+}
+
 /// The first player the effect names who is still in the game rolls the die: the next substream of the game's random
 /// stream gives a number from 1 to the sides, logged as `DieRolled`, and the step goes on into the first row that holds
 /// that number plus `plus`, past the effect when no row does.
@@ -70,13 +93,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let mut rolled: Vec<u32> = (0..*dice)
-        .map(|at| {
-            let below = GameRng::substream(state.seed(), state.rng_index() + u64::from(at))
-                .below(u64::from(*sides));
-            u32::try_from(below).unwrap_or(0) + 1
-        })
-        .collect();
+    let extra = crate::rules::ep29_extra_dice(state, player);
+    let mut rolled: Vec<u32> = if extra == 0 {
+        (0..*dice)
+            .map(|at| {
+                let below = GameRng::substream(state.seed(), state.rng_index() + u64::from(at))
+                    .below(u64::from(*sides));
+                u32::try_from(below).unwrap_or(0) + 1
+            })
+            .collect()
+    } else {
+        ep29_with_extra(state, *sides, *dice, extra)
+    };
     if *choose {
         match c11e_chosen_last(cx, player, &rolled)? {
             Optioned::Done(taken) => {

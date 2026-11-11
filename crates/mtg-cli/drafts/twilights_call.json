@@ -8,6 +8,12 @@
       "oracle_fingerprint": "6e2efb56a186d3370b5d09479da5c23f",
       "abilities": [
         {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true, "additional": "{2}" } },
+            "from": "Hand"
+          }
+        },
+        {
           "Spell": {
             "effects": [
               {

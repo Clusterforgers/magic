@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 44] = [
+const TEMPLATES: [Template; 45] = [
+    super::ep29_flash::ep29_flash,
     super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
     super::w13b_mill_rad::w13b_tapped_for_counters,
@@ -1674,7 +1675,11 @@ fn ep27_rule_texts(
     from: ZoneKind,
 ) -> Option<Vec<String>> {
     match (rule, from) {
-        (_, ZoneKind::Hand) => Some(super::ep27_flash::ep27_flash_texts(rule, condition, from)),
+        (_, ZoneKind::Hand) => {
+            let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
+            texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
+            Some(texts)
+        }
         (GameRule::RevealHand(who), ZoneKind::Battlefield) if condition.is_none() => {
             Some(ep27_hand_revealed_text(who).into_iter().collect())
         }
@@ -1737,7 +1742,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (
-            GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_) | GameRule::FlipTwoCoins(_),
+            GameRule::CantSearch(_)
+            | GameRule::SkipExtraTurns(_)
+            | GameRule::FlipTwoCoins(_)
+            | GameRule::ExtraDie(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
         (

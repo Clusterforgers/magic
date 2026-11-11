@@ -279,6 +279,9 @@ fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
 }
 
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
+    if let Some(all) = r.attempt(ep29_remove_all) {
+        return Some(all);
+    }
     let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
     if r.source() {
@@ -403,7 +406,7 @@ pub fn text(cost: &Cost) -> Option<String> {
     let mut parts: Vec<String> = Vec::new();
     let mut after_sacrifice = false;
     for item in &cost.0 {
-        let part = item_text(item)?;
+        let part = ep29_remove_all_item(item).or_else(|| item_text(item))?;
         let single = matches!(item, CostItem::Sacrifice { filter, count }
             if *count == Amount::one() && !filter.0.contains(&Pred::Other));
         // "Sacrifice a Swamp and a Forest": a run of single sacrifices is one clause.
@@ -730,4 +733,50 @@ fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     };
     let may = if required { "" } else { "you may " };
     Some(format!("As an additional cost to cast ~, {may}{body}."))
+}
+
+/// "Remove all charge counters from ~": every counter of the kind on the source, counted as the ability is announced;
+/// "for each counter removed this way" reads the number (`Amount::CountersRemoved`).
+fn ep29_remove_all(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.word("all").then_some(())?;
+    let counter = super::counters::kind(r)?;
+    r.need("counters from")?;
+    r.source().then_some(())?;
+    Some(CostItem::RemoveCounters {
+        count: Amount::Counters {
+            on: Ref::This,
+            counter: counter.clone(),
+        },
+        counter: Some(counter),
+        from: None,
+    })
+}
+
+/// The words of a cost part that removes every counter of a kind from the source; `None` for another part.
+fn ep29_remove_all_item(item: &CostItem) -> Option<String> {
+    let CostItem::RemoveCounters {
+        counter,
+        count,
+        from: None,
+    } = item
+    else {
+        return None;
+    };
+    ep29_remove_all_text(counter.as_ref(), count)
+}
+
+/// The words of [`ep29_remove_all`]; `None` for another count.
+fn ep29_remove_all_text(counter: Option<&CounterKind>, count: &Amount) -> Option<String> {
+    let Amount::Counters {
+        on: Ref::This,
+        counter: all,
+    } = count
+    else {
+        return None;
+    };
+    (Some(all) == counter).then_some(())?;
+    Some(format!(
+        "Remove all {} counters from ~",
+        super::counters::kind_text(all)?
+    ))
 }

@@ -103,6 +103,7 @@ mod ep24_retarget;
 mod ep24_rules;
 mod ep26_mana;
 mod ep27_flash;
+mod ep29_flash;
 mod equip_options;
 mod evasion;
 mod event_wordings;

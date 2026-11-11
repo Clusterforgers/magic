@@ -157,6 +157,7 @@ fn not_moved(ctx: &mut Ctx, p: &Params, event: &str, condition: Option<&Value>) 
         "BeginPhase" => super::replacements_phase::skip_step(p, condition),
         "GameLoss" => super::replacements_loss::game_loss(ctx, p, condition),
         "BeginTurn" => super::statics_rules::skip_extra_turns(p),
+        "RollDice" if condition.is_none() => super::statics_rules::ep29_extra_die(ctx, p),
         "CreateToken" => super::replacements_token::create_token(ctx, p),
         "TurnFaceUp" => super::e14f_turn_up::turn_up(ctx, p, condition),
         "LoseMana" if condition.is_none() => super::ep24_mana::ep24_lose_mana(ctx, p),
