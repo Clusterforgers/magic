@@ -129,7 +129,7 @@ use super::where_x;
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
+use crate::effect::{Destination, Effect, Mode, NewTargets, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
@@ -522,6 +522,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
+    if matches!(ability, Ability::CostModifier { life, .. } if *life > 0) {
+        texts.retain(|text| text.contains(" life to "));
+    }
     texts
 }
 
@@ -547,6 +551,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(another);
     super::ep22_everywhere::ep22_variants(ability, &mut texts);
+    super::ep24_rules::ep24_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -1739,6 +1744,10 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
                 | Effect::CopySpell { .. }
+                | Effect::ChangeTargets {
+                    to: NewTargets::Another | NewTargets::One,
+                    ..
+                }
         )
 }
 
@@ -1919,6 +1928,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
+        Produce::AnyColorAmong(among) => super::ep24_rules::ep24_color_among_text(among)?,
         Produce::ProducedBy {
             among,
             count: 1,
@@ -2519,6 +2529,16 @@ impl Writer<'_> {
         Some(vec![format!("choose {target}"), format!("{each}, {token}")])
     }
 
+    /// A change of the targets of the one target, named the first time.
+    fn ep24_retarget(&mut self, effect: &Effect) -> Option<String> {
+        if self.named {
+            return None;
+        }
+        let text = super::ep24_retarget::ep24_retarget_text(effect, self.targets.first()?)?;
+        self.named = true;
+        Some(text)
+    }
+
     /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
     /// time.
     fn copy_effect(&mut self, effect: &Effect) -> Option<String> {
@@ -2660,6 +2680,7 @@ impl Writer<'_> {
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
+            Effect::ChangeTargets { .. } => self.ep24_retarget(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }

@@ -2769,6 +2769,8 @@ mod tests {
             Event::ManaPoolEmptied {
                 player: ME,
                 through: mtg_cards::spend::ManaLasts::Step,
+                kept: Vec::new(),
+                becomes: None,
             },
             died(&pre, "Bear"),
         ];

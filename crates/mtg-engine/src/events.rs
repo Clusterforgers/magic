@@ -280,6 +280,14 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "ManaLasts::is_step")]
         #[cfg_attr(feature = "ts", ts(as = "Option<ManaLasts>", optional))]
         through: ManaLasts,
+        /// The types a rule keeps in the pool ("you don't lose unspent red mana"); left out means none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
+        kept: Vec<ManaType>,
+        /// The type the rest becomes instead of being lost ("that mana becomes colorless instead"); left out means it is lost.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        becomes: Option<ManaType>,
     },
     /// Unspent mana cost its owner life under the house rule of mana burn; the `LifeLost` of the same amount follows.
     ManaBurned {

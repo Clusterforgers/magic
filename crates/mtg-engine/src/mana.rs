@@ -271,6 +271,55 @@ impl ManaPool {
         }
     }
 
+    /// [`ManaPool::empty`] under the rules of unspent mana: the mana of the `kept` types stays as it was, and the rest of
+    /// what would be lost becomes `becomes` instead, which lasts until the step ends.
+    pub(crate) fn empty_keeping(
+        &mut self,
+        through: ManaLasts,
+        kept: &[ManaType],
+        becomes: Option<ManaType>,
+    ) {
+        if kept.is_empty() && becomes.is_none() {
+            self.empty(through);
+            return;
+        }
+        let before = self.clone();
+        self.empty(through);
+        let mut changed = 0;
+        for mana in ManaType::ALL {
+            let at = mana.index();
+            if kept.contains(&mana) {
+                self.counts[at] = before.counts[at];
+                if let Some(old) = before.kept.as_deref() {
+                    let left = self.kept.get_or_insert_with(Box::default);
+                    left.combat_end[at] = old.combat_end[at];
+                    left.turn_end[at] = old.turn_end[at];
+                }
+            } else {
+                changed += before.counts[at] - self.counts[at];
+            }
+        }
+        let mut units = Vec::new();
+        for unit in before.restricted() {
+            if unit.lasts > through || kept.contains(&unit.mana) {
+                units.push(unit.clone());
+            } else if let Some(into) = becomes {
+                units.push(Restricted {
+                    mana: into,
+                    only: unit.only.clone(),
+                    lasts: ManaLasts::Step,
+                });
+            }
+        }
+        self.restricted = (!units.is_empty()).then(|| Box::new(units));
+        if let Some(into) = becomes {
+            self.counts[into.index()] += changed;
+        }
+        self.sources = before.sources;
+        self.tidy_kept();
+        self.tidy_sources();
+    }
+
     /// The shortest lifetime that takes out of the pool all that `empty(through)` would, so a log names only the
     /// lifetimes that went.
     pub fn least_through(&self, through: ManaLasts) -> ManaLasts {

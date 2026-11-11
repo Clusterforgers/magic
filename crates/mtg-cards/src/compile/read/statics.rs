@@ -1089,6 +1089,7 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         condition,
         activating: None,
         least: 0,
+        life: 0,
     })
 }
 
@@ -1132,6 +1133,32 @@ pub(super) fn cost_subject_text(applies_to: &Selector) -> Option<String> {
         ""
     };
     Some(format!("{group}{cast}{from}"))
+}
+
+/// The wordings of a cost change of spells, or of activated abilities of a kind with no condition; none for a change
+/// with a target selector, a least amount or life.
+fn cost_change_texts(ability: &Ability) -> Vec<String> {
+    let Ability::CostModifier {
+        targeting: None,
+        applies_to,
+        change,
+        mana,
+        per,
+        condition,
+        activating,
+        least: 0,
+        life: 0,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    match (activating, condition) {
+        (None, _) => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
+        (Some(kind), None) => super::g13g_activation_costs::g13g_activation_texts(
+            *kind, applies_to, *change, mana, per,
+        ),
+        _ => Vec::new(),
+    }
 }
 
 /// The wording of a cost modifier the template reads.
@@ -1333,22 +1360,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             ));
             written
         }
-        Ability::CostModifier {
-            targeting: None,
-            applies_to,
-            change,
-            mana,
-            per,
-            condition,
-            activating,
-            least: 0,
-        } => match (activating, condition) {
-            (None, _) => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
-            (Some(kind), None) => super::g13g_activation_costs::g13g_activation_texts(
-                *kind, applies_to, *change, mana, per,
-            ),
-            _ => Vec::new(),
-        },
+        Ability::CostModifier { .. } => cost_change_texts(ability),
         Ability::Replacement {
             when: ReplaceWhen::LifeGain { .. },
             ..
@@ -1677,6 +1689,16 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_) | GameRule::FlipTwoCoins(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
+        (
+            GameRule::KeepUnspentMana { .. }
+            | GameRule::UnspentManaBecomes { .. }
+            | GameRule::SpendManaAs { .. }
+            | GameRule::DrawLimit { .. }
+            | GameRule::AbilitiesAsThoughHaste(_)
+            | GameRule::PayLifeForMana { .. }
+            | GameRule::OpponentsCantMakeSacrifice(_),
+            ZoneKind::Battlefield,
+        ) => super::ep24_rules::ep24_rule_texts(rule),
         (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
             vec!["While voting, you may vote an additional time".to_owned()]
         }

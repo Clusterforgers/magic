@@ -1341,7 +1341,12 @@ fn ability() -> impl Strategy<Value = Ability> {
                     proptest::option::of(reference()),
                     proptest::option::of(counter())
                 )
-                    .prop_map(|(on, counter)| ReplaceWhen::CountersPut { on, counter }),
+                    .prop_map(|(on, counter)| ReplaceWhen::CountersPut {
+                        on,
+                        counter,
+                        by: None,
+                        effect: false,
+                    }),
                 reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
                 (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
@@ -1426,7 +1431,8 @@ fn ability() -> impl Strategy<Value = Ability> {
                     per,
                     condition,
                     activating: None,
-                    least: 0
+                    least: 0,
+                    life: 0
                 }
             ),
         keyword().prop_map(Ability::Keyword),

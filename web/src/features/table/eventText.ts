@@ -1057,7 +1057,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const symbols = event.ManaSpent.mana.map((mana) => `{${manaLetter(mana)}}`).join('')
     return quiet(`${n.seat(event.ManaSpent.player)} spends ${symbols}`)
   }
-  if ('ManaPoolEmptied' in event) return quiet(`${n.seat(event.ManaPoolEmptied.player)}'s mana pool empties`)
+  if ('ManaPoolEmptied' in event) {
+    const { player, kept, becomes } = event.ManaPoolEmptied
+    if (becomes) return quiet(`${n.seat(player)}'s unspent mana becomes {${manaLetter(becomes)}}`)
+    const except = kept?.length ? ` except ${kept.map((mana) => `{${manaLetter(mana)}}`).join('')}` : ''
+    return quiet(`${n.seat(player)}'s mana pool empties${except}`)
+  }
   if ('ManaBurned' in event) return quiet(`${n.seat(event.ManaBurned.player)}'s unspent mana burns`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)

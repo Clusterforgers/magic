@@ -769,6 +769,13 @@ pub enum ReplaceWhen {
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
+        /// Only counters these players put: the controller of the spell or ability that puts them, or the player of
+        /// the turn action; anyone when absent ("If you would put one or more counters").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
+        /// Only counters a resolving spell or ability puts, not a turn action ("If an effect would put").
+        #[serde(default, skip_serializing_if = "is_false")]
+        effect: bool,
     },
     /// A player would gain life.
     LifeGain {
@@ -845,6 +852,9 @@ pub enum ReplaceBy {
     Multiply(u32),
     /// The number or amount in the event is increased.
     Add(u32),
+    /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
+    /// on that permanent or player instead, rounded down").
+    Half,
     /// The event does not happen (prevention, CR 615).
     Prevent,
     /// The next damage event it covers does not happen, and the shield ends ("the next time a source of your choice would

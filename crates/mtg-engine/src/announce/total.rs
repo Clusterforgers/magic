@@ -4,6 +4,7 @@
 //! The mana of the total is what the payment step asks for, from the sources that may pay it.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::modify::SpendAs;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
@@ -31,9 +32,21 @@ pub(crate) struct Total {
     pub(crate) spend: Spend,
 }
 
+/// Works out the total cost, with the life the cost modifiers add kept for the payment of the other parts; a player
+/// whose life total is less than that life cannot pay it (CR 119.4) and the cast is taken back.
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
+    let life = modifiers::life(ctx, work.choices);
+    let short = ctx
+        .state
+        .player(ctx.player)
+        .is_none_or(|seat| i64::from(seat.life()) < i64::from(life));
+    if life > 0 && short {
+        return Some(Next::Drop);
+    }
+    work.done.modifier_life = life;
     match of(ctx, work.choices) {
-        Some(total) => {
+        Some(mut total) => {
+            total.life = total.life.saturating_add(life);
             work.total = Some(total);
             None
         }
@@ -51,6 +64,16 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
+    let spell = match ctx.what {
+        What::Spell(spell) => Some(*spell),
+        _ => None,
+    };
+    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell) {
+        SpendAs::AnyType => mana.map(|mana| mana.paid_by_any_mana()),
+        SpendAs::AnyColor => mana.map(|mana| mana.paid_by_any_color()),
+        SpendAs::Normal => mana,
+    };
+    let mana = mana.map(|mana| crate::rules::ep24_life_for_mana(ctx.state, ctx.player, mana));
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         What::Ability(_) if printed.waterbend => {

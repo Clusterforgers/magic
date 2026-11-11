@@ -715,6 +715,13 @@ describe('events with more than one shape', () => {
     expect(say({ ManaAdded: { player: 0, mana: 'Blue', source: null } })).toBe('Ana adds {U}')
   })
 
+  it('names the unspent mana a rule keeps or changes', () => {
+    expect(say({ ManaPoolEmptied: { player: 0, kept: ['Red'] } })).toBe("Ana's mana pool empties except {R}")
+    expect(say({ ManaPoolEmptied: { player: 0, becomes: 'Colorless' } })).toBe(
+      "Ana's unspent mana becomes {C}",
+    )
+  })
+
   it('says when nobody attacks or blocks', () => {
     expect(say({ AttackersDeclared: { player: 1, attackers: [] } })).toBe('Bo declares no attackers')
     expect(say({ BlockersDeclared: { player: 0, blocks: [] } })).toBe('Ana declares no blockers')

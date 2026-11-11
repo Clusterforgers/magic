@@ -19,7 +19,7 @@ use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use mtg_cards::value::Condition;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::ability_reader::{abilities_of, definition_has_rule, is_rule, may_hold};
@@ -154,6 +154,31 @@ pub enum Rule {
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
+    KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
+    /// Unspent mana the players would lose becomes mana of the type instead.
+    UnspentManaBecomes(Vec<PlayerId>, ManaType),
+    /// The players draw no more than this many cards each turn.
+    DrawLimit(Vec<PlayerId>, u32),
+    /// The players may pay 2 life rather than each mana symbol of the color in a cost.
+    PayLifeForMana(
+        Vec<PlayerId>,
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))] mtg_core::color::Color,
+    ),
+    /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
+    OpponentsCantMakeSacrifice(Vec<PlayerId>),
+    /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
+    /// picks or for everything when there is none.
+    SpendManaAs {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// Any color or any type.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spend_as: mtg_cards::modify::SpendAs,
+        /// The spells it is for; everything when absent.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: Option<Selector>,
+    },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
@@ -167,6 +192,8 @@ pub enum Rule {
     /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
     /// 704.5j).
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
+    /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
+    AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
     /// (CR 502.3).
     UntapDuring {
@@ -553,6 +580,18 @@ pub(crate) struct RulesInForce {
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
+    keep_mana: Vec<(PlayerId, Option<ManaType>)>,
+    /// The players whose lost mana becomes another type, in timestamp order.
+    mana_becomes: Vec<(PlayerId, ManaType)>,
+    /// The most cards each listed player may draw in a turn.
+    draw_limit: Vec<(PlayerId, u32)>,
+    /// The players who may pay 2 life rather than mana of a color.
+    life_for_mana: Vec<(PlayerId, mtg_core::color::Color)>,
+    /// The players whose opponents' spells and abilities can't make them sacrifice.
+    spared_sacrifice: BTreeSet<PlayerId>,
+    /// The players who may spend mana as though it were of any color or type, with the spells it is for.
+    spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
@@ -563,6 +602,8 @@ pub(crate) struct RulesInForce {
     hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
+    /// The creatures whose abilities may be activated as though they had haste, by rule.
+    haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -777,6 +818,15 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::AbilitiesAsThoughHaste(what) => {
+                if let Some(source) = source {
+                    self.haste_for_abilities.push(NoLegendFor {
+                        controller,
+                        source,
+                        what: what.clone(),
+                    });
+                }
+            }
             Rule::NoLegendRuleFor(what) => {
                 if let Some(source) = source {
                     self.no_legend_for.push(NoLegendFor {
@@ -897,12 +947,36 @@ impl RulesInForce {
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::KeepUnspentMana(players, mana) => {
+                self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
+            }
+            Rule::SpendManaAs {
+                players,
+                spend_as,
+                spells,
+            } => {
+                self.spend_mana_as
+                    .extend(players.iter().map(|p| (*p, *spend_as, spells.clone())));
+            }
+            Rule::DrawLimit(players, most) => {
+                self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
+            }
+            Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::PayLifeForMana(players, color) => {
+                self.life_for_mana
+                    .extend(players.iter().map(|p| (*p, *color)));
+            }
+            Rule::UnspentManaBecomes(players, into) => {
+                self.mana_becomes
+                    .extend(players.iter().map(|p| (*p, *into)));
+            }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
+            | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
             }
@@ -1182,6 +1256,28 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::KeepUnspentMana { who, mana } => {
+            Rule::KeepUnspentMana(scope.players(who)?, *mana)
+        }
+        GameRule::SpendManaAs {
+            who,
+            spend_as,
+            spells,
+        } => Rule::SpendManaAs {
+            players: scope.players(who)?,
+            spend_as: *spend_as,
+            spells: spells.clone(),
+        },
+        GameRule::DrawLimit { who, most } => Rule::DrawLimit(scope.players(who)?, *most),
+        GameRule::PayLifeForMana { who, color } => {
+            Rule::PayLifeForMana(scope.players(who)?, *color)
+        }
+        GameRule::OpponentsCantMakeSacrifice(who) => {
+            Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
+        }
+        GameRule::UnspentManaBecomes { who, into } => {
+            Rule::UnspentManaBecomes(scope.players(who)?, *into)
+        }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
@@ -1220,6 +1316,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::HandSizeChange { .. }
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
+        | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
@@ -1287,6 +1384,7 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         }
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
+        GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
             whose: scope.players(whose)?,
@@ -1336,6 +1434,12 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::KeepUnspentMana(players, _)
+        | Rule::UnspentManaBecomes(players, _)
+        | Rule::DrawLimit(players, _)
+        | Rule::PayLifeForMana(players, _)
+        | Rule::OpponentsCantMakeSacrifice(players)
+        | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
@@ -1362,7 +1466,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::Replaces { .. }
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
-        | Rule::NoLegendRuleFor(_) => false,
+        | Rule::NoLegendRuleFor(_)
+        | Rule::AbilitiesAsThoughHaste(_) => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1481,6 +1586,12 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
+    keep_mana: Vec::new(),
+    mana_becomes: Vec::new(),
+    draw_limit: Vec::new(),
+    life_for_mana: Vec::new(),
+    spared_sacrifice: BTreeSet::new(),
+    spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
@@ -1491,6 +1602,7 @@ static NONE: RulesInForce = RulesInForce {
     hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
     no_legend_for: Vec::new(),
+    haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -1806,6 +1918,103 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// Whether a rule lets the controller of the creature `id` activate its abilities as though it had haste, judged for the
+/// rule's controller.
+pub(crate) fn ep24_abilities_as_though_haste(state: &GameState, id: ObjectId) -> bool {
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    state.rules().haste_for_abilities.iter().any(|rule| {
+        Scope::announcing(state, rule.controller, rule.source)
+            .selects(&rule.what, object.reference())
+            .unwrap_or(false)
+    })
+}
+
+/// The cost `player` pays for `mana` under the rules that let them pay 2 life rather than mana of a color: each symbol of
+/// such a color is Phyrexian.
+pub(crate) fn ep24_life_for_mana(state: &GameState, player: PlayerId, mana: ManaCost) -> ManaCost {
+    state
+        .rules()
+        .life_for_mana
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .fold(mana, |mana, (_, color)| mana.with_phyrexian(*color))
+}
+
+/// How many more cards `player` may draw this turn under the draw limits in force; `None` when no limit holds.
+pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usize> {
+    let most = state
+        .rules()
+        .draw_limit
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .map(|(_, most)| *most)
+        .min()?;
+    let drawn = state.tallied(player, crate::state::Tally::Drawn);
+    usize::try_from(most.saturating_sub(drawn)).ok()
+}
+
+/// Whether a spell or ability `by` controls can't make `player` sacrifice permanents: a rule spares `player` from their
+/// opponents' effects.
+pub(crate) fn ep24_spared_sacrifice(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
+    by != player && state.rules().spared_sacrifice.contains(&player)
+}
+
+/// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any
+/// color over the normal rule.
+pub(crate) fn ep24_spend_as(
+    state: &GameState,
+    player: PlayerId,
+    spell: Option<ObjectId>,
+) -> SpendAs {
+    let mut found = SpendAs::Normal;
+    for (who, spend_as, spells) in &state.rules().spend_mana_as {
+        if *who != player {
+            continue;
+        }
+        let applies = match (spells, spell.and_then(|id| state.object(id))) {
+            (None, _) => true,
+            (Some(spells), Some(object)) => {
+                let reference = object.reference();
+                Scope::announcing(state, player, reference)
+                    .selects(spells, reference)
+                    .unwrap_or(false)
+            }
+            (Some(_), None) => false,
+        };
+        if applies {
+            match spend_as {
+                SpendAs::AnyType => return SpendAs::AnyType,
+                SpendAs::AnyColor => found = SpendAs::AnyColor,
+                SpendAs::Normal => {}
+            }
+        }
+    }
+    found
+}
+
+/// What happens to the unspent mana `player` would lose as a step or phase ends: the types kept (every type when the
+/// list holds `None`), and the type the rest becomes instead of being lost (the earliest such rule).
+pub(crate) fn ep24_unspent_mana(
+    state: &GameState,
+    player: PlayerId,
+) -> (Vec<Option<ManaType>>, Option<ManaType>) {
+    let rules = state.rules();
+    let kept = rules
+        .keep_mana
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .map(|(_, mana)| *mana)
+        .collect();
+    let becomes = rules
+        .mana_becomes
+        .iter()
+        .find(|(who, _)| *who == player)
+        .map(|(_, into)| *into);
+    (kept, becomes)
 }
 
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.

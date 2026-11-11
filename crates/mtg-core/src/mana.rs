@@ -420,6 +420,16 @@ impl ManaCost {
         }))
     }
 
+    /// The cost with each `{color}` symbol made Phyrexian (`{B}` becomes `{B/P}`): what a cost is when its controller may
+    /// pay 2 life rather than that mana ("For each {B} in a cost, you may pay 2 life rather than pay that mana").
+    #[must_use]
+    pub fn with_phyrexian(&self, color: Color) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Colored(own) if *own == color => ManaSymbol::Phyrexian(color),
+            other => *other,
+        }))
+    }
+
     /// The cost with each colored and hybrid symbol replaced by `{1}` and `{C}` kept: what the mana must cover when mana
     /// may be spent as though it were mana of any color, which gives a colored symbol no more than a color (CR 609.4b).
     #[must_use]

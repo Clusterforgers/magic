@@ -103,7 +103,7 @@ fn takes_of(
                         })
                     });
                 } else {
-                    from.sort_by_key(|id| !keywords::summoning_sick(state, *id));
+                    from.sort_by_key(|id| !keywords::sick_for_abilities(state, *id));
                 }
                 let take = Take {
                     sacrifice,
@@ -333,6 +333,11 @@ fn rule_mana(
                 }
                 types.into_iter().map(|t| vec![t]).collect()
             }
+            // "Add one mana of any color among legendary permanents you control": one way for each colour.
+            ManaProduced::AnyColorAmong(among) => colors_among(counting, among)
+                .into_iter()
+                .map(|mana| vec![mana])
+                .collect(),
             // "For each color among permanents you control, add one mana of that color": one way, all the colours.
             ManaProduced::EachColorAmong(among) => {
                 let colors = colors_among(counting, among);
@@ -485,7 +490,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         let Some(chars) = characteristics(state, id) else {
             continue;
         };
-        let sick = chars.is_creature() && keywords::summoning_sick(state, id);
+        let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
         let can_tap = !perm.tapped() && !sick;
         // Only a permanent with a mana ability reads the tax; a walk of the battlefield for every permanent is quadratic.
         if can_tap && !chars.abilities.is_empty() {

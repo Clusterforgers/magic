@@ -222,7 +222,7 @@ fn types_of(
                 found.extend(COLORS);
             }
             // What the game holds now: the colours among the permanents, the colours of some devotion.
-            ManaProduced::EachColorAmong(among) => {
+            ManaProduced::EachColorAmong(among) | ManaProduced::AnyColorAmong(among) => {
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(colors_among(&scope, among));
             }

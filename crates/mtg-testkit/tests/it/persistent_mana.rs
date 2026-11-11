@@ -140,7 +140,9 @@ fn mana_kept_to_the_end_of_the_turn_stays_through_the_steps_and_phases_and_goes_
         .events()
         .iter()
         .filter_map(|event| match event {
-            Event::ManaPoolEmptied { player, through } if *player == pid(0) => Some(*through),
+            Event::ManaPoolEmptied {
+                player, through, ..
+            } if *player == pid(0) => Some(*through),
             _ => None,
         })
         .collect();
@@ -341,7 +343,9 @@ fn mana_kept_to_the_end_of_combat_goes_as_the_combat_phase_ends(
         .events()
         .iter()
         .filter_map(|event| match event {
-            Event::ManaPoolEmptied { player, through } if *player == pid(0) => Some(*through),
+            Event::ManaPoolEmptied {
+                player, through, ..
+            } if *player == pid(0) => Some(*through),
             _ => None,
         })
         .collect();

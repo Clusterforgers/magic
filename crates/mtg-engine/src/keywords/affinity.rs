@@ -38,6 +38,7 @@ pub(crate) fn reduction(kind: &Selector) -> Ability {
         condition: None,
         activating: None,
         least: 0,
+        life: 0,
     }
 }
 

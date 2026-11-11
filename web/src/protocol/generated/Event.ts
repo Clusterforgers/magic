@@ -271,7 +271,15 @@ player: PlayerId,
 /**
  * The longest-lasting mana that went: all that lasts no longer than this; left out means the mana of the step.
  */
-through?: ManaLasts, } } | { "ManaBurned": { 
+through?: ManaLasts, 
+/**
+ * The types a rule keeps in the pool ("you don't lose unspent red mana"); left out means none.
+ */
+kept?: Array<ManaType>, 
+/**
+ * The type the rest becomes instead of being lost ("that mana becomes colorless instead"); left out means it is lost.
+ */
+becomes?: ManaType, } } | { "ManaBurned": { 
 /**
  * Whose pool.
  */

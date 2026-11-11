@@ -209,6 +209,85 @@ fn divided_again(
         .collect()
 }
 
+/// "Change a target of it to `onto`" (CR 115.7c): one target of `original` becomes `onto` when `onto` is a legal target
+/// in its place and not already a target of the same word "target". The chooser picks which target changes when more
+/// than one could; nothing changes when none can.
+pub(super) fn one_to(
+    cx: &Cx<'_>,
+    (player, judged): (PlayerId, PlayerId),
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    original: Original<'_>,
+    onto: Target,
+) -> Result<Retargeted, ResolveError> {
+    let state = cx.state();
+    let specs = announced_specs(original.ability, &original.choices.modes);
+    let bases = spec_bases(original.ability, &original.choices.modes);
+    let mut copy = original.choices.clone();
+    let mut changeable: Vec<(usize, Target)> = Vec::new();
+    for (at, spec) in specs.iter().enumerate() {
+        let Some(kept) = original.choices.targets.get(at).filter(|t| !t.is_empty()) else {
+            continue;
+        };
+        if kept.contains(&onto) {
+            continue;
+        }
+        let legal = legal_from(
+            state,
+            spec,
+            original.origin,
+            &[],
+            judged,
+            original.cause,
+            original.choices.x,
+            &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
+        );
+        if legal.contains(&onto) {
+            changeable.extend(kept.iter().map(|target| (at, *target)));
+        }
+    }
+    let (at, old) = match changeable.as_slice() {
+        [] => return Ok(Retargeted::Done(copy)),
+        [one] => *one,
+        _ => match answers.next() {
+            None => {
+                return Ok(Retargeted::Ask(Decision {
+                    player,
+                    kind: DecisionKind::ChooseTargets(TargetOptions {
+                        source: original.id,
+                        spec: 0,
+                        legal: changeable.iter().map(|(_, target)| *target).collect(),
+                        min: 1,
+                        max: 1,
+                        can_cancel: false,
+                        wording: "the target to change".to_owned(),
+                        triggered: false,
+                        apart: Vec::new(),
+                        together: None,
+                        total: None,
+                    }),
+                }));
+            }
+            Some(answer @ (who, Choice::Targets(targets))) if *who == player => {
+                let picked = match targets.as_slice() {
+                    [picked] => changeable.iter().find(|(_, target)| target == picked),
+                    _ => None,
+                };
+                *picked.ok_or_else(|| unexpected(answer))?
+            }
+            Some(other) => return Err(unexpected(other)),
+        },
+    };
+    if let Some(slot) = copy
+        .targets
+        .get_mut(at)
+        .and_then(|targets| targets.iter_mut().find(|target| **target == old))
+    {
+        *slot = onto;
+    }
+    copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
+    Ok(Retargeted::Done(copy))
+}
+
 fn unexpected(answer: &(PlayerId, Choice)) -> ResolveError {
     ResolveError::Invalid(format!(
         "{answer:?} is no answer to the new targets of a copy"

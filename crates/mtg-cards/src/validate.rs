@@ -14,7 +14,8 @@ use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_abil
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{
-    Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, ValueKind, VoteFor,
+    Destination, DieRow, Effect, Mode, NewTargets, Order, Place, Produce, TokenRef, ValueKind,
+    VoteFor,
 };
 use crate::keyword::Keyword;
 use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
@@ -1603,12 +1604,17 @@ impl<'a> Walker<'a> {
             condition,
             targeting,
             activating,
+            change,
+            life,
             ..
         } = modifier
         else {
             return;
         };
         self.cost_modifier(applies_to, mana, per, condition.as_ref());
+        if *life > 0 && (*change != crate::ability::CostChange::Increase || activating.is_some()) {
+            self.problem("life is added only to the cost of spells, by an increase");
+        }
         let Some(targeting) = targeting else {
             return;
         };
@@ -2736,9 +2742,13 @@ impl Walker<'_> {
         effects: &[Effect],
         most: u32,
         at_least_once: bool,
+        ask: Option<&Ref>,
     ) {
         if !at_least_once {
             self.at("condition", |w| w.condition(condition));
+            if let Some(ask) = ask {
+                self.at("ask", |w| w.reference(ask, Kind::Player));
+            }
         }
         if effects.is_empty() {
             self.problem("a repeat with nothing to do");
@@ -2752,6 +2762,9 @@ impl Walker<'_> {
         if at_least_once {
             self.effect_list_open("effects", effects, false, None);
             self.at("condition", |w| w.condition(condition));
+            if let Some(ask) = ask {
+                self.at("ask", |w| w.reference(ask, Kind::Player));
+            }
             self.scope.names.pop();
         } else {
             self.effect_list("effects", effects, false);
@@ -2945,6 +2958,9 @@ impl Walker<'_> {
             }
             Produce::ProducedBy { among, .. } => {
                 self.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
+            }
+            Produce::AnyColorAmong(among) => {
+                self.at("AnyColorAmong", |w| w.selector(among));
             }
             Produce::EachColorAmong(among) => {
                 self.at("EachColorAmong", |w| w.selector(among));
@@ -3539,8 +3555,9 @@ impl Walker<'_> {
                 most,
                 times,
                 at_least_once,
+                ask,
             } => {
-                w.repeat_while(condition, effects, *most, *at_least_once);
+                w.repeat_while(condition, effects, *most, *at_least_once, ask.as_ref());
                 if let Some(times) = times {
                     w.at("times", |w| w.amount(times));
                 }
@@ -3667,8 +3684,20 @@ impl Walker<'_> {
                     w.at("each_target", |w| w.selector(selector));
                 }
             }
-            Effect::ChangeTargets { what, .. } => {
+            Effect::ChangeTargets { what, to, onto } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+                match (to, onto) {
+                    (NewTargets::One, Some(onto)) => {
+                        w.at("onto", |w| w.reference(onto, Kind::Object));
+                    }
+                    (NewTargets::One, None) => {
+                        w.problem("a change of one target names the object it changes to");
+                    }
+                    (_, Some(_)) => {
+                        w.problem("only a change of one target names the object it changes to");
+                    }
+                    (_, None) => {}
+                }
             }
             Effect::CopyAbility { what, count, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4472,6 +4501,14 @@ impl Walker<'_> {
             | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::KeepUnspentMana { who, .. }
+            | GameRule::UnspentManaBecomes { who, .. }
+            | GameRule::DrawLimit { who, .. }
+            | GameRule::PayLifeForMana { who, .. }
+            | GameRule::OpponentsCantMakeSacrifice(who)
+            | GameRule::SpendManaAs {
+                who, spells: None, ..
+            }
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
@@ -4505,10 +4542,14 @@ impl Walker<'_> {
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
+            | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
             | GameRule::SpellCost { .. }
+            | GameRule::SpendManaAs {
+                spells: Some(_), ..
+            }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
@@ -4531,7 +4572,9 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::NoLegendRuleFor(what) => self.at(tag, |w| w.selector(what)),
+            GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
+                self.at(tag, |w| w.selector(what));
+            }
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }
@@ -4549,6 +4592,14 @@ impl Walker<'_> {
             GameRule::MayCastRather { only, .. } => {
                 self.at(tag, |w| w.reference(only, Kind::Object));
             }
+            GameRule::SpendManaAs {
+                who,
+                spells: Some(spells),
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+            }),
             GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -4676,7 +4727,10 @@ impl Walker<'_> {
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
             }
-            ReplaceWhen::CountersPut { on, .. } => {
+            ReplaceWhen::CountersPut { on, by, .. } => {
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
                 if let Some(on) = on {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
@@ -4775,8 +4829,16 @@ impl Walker<'_> {
         }
     }
 
-    /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`).
+    /// Only the counters of an event are halved.
+    fn ep24_half(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if *by == ReplaceBy::Half && !matches!(when, ReplaceWhen::CountersPut { .. }) {
+            self.problem("only the counters of an event are halved");
+        }
+    }
+
+    /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`) and halves only counters.
     fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        self.ep24_half(when, by);
         if matches!(when, ReplaceWhen::Mill { .. })
             && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
         {
@@ -5075,6 +5137,7 @@ fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
         Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
         Produce::ProducedBy { .. } => Some("ProducedBy"),
         Produce::EachColorAmong(_) => Some("EachColorAmong"),
+        Produce::AnyColorAmong(_) => Some("AnyColorAmong"),
         Produce::Devotion => Some("Devotion"),
         Produce::Instead { base, instead, .. } => {
             fix19_per_player(base).or_else(|| fix19_per_player(instead))
@@ -5740,6 +5803,18 @@ mod tests {
         let found = problems(json);
         assert_eq!(found.len(), 1, "{found:?}");
         assert!(found[0].contains("not by an {X}"), "{found:?}");
+    }
+
+    #[rstest]
+    #[case::spells_cost_life(r#"{"CostModifier":{"applies_to":["Spell",{"Targeting":["This"]}],"change":"Increase","mana":"{0}","life":3}}"#, true)]
+    #[case::a_reduction_of_life(
+        r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{0}","life":3}}"#,
+        false
+    )]
+    #[case::life_of_an_ability(r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Increase","mana":"{0}","life":1,"activating":"Any"}}"#, false)]
+    fn ep25_life_is_added_only_to_the_cost_of_spells(#[case] json: &str, #[case] valid: bool) {
+        let found = problems(json);
+        assert_eq!(found.is_empty(), valid, "{found:?}");
     }
 
     #[rstest]

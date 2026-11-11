@@ -161,6 +161,7 @@ pub(super) fn c11a_first_spell(r: &mut Reader<'_>) -> Option<Ability> {
         }),
         activating: None,
         least: 0,
+        life: 0,
     })
 }
 

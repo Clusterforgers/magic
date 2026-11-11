@@ -783,6 +783,8 @@ mod en4_look;
 mod en4_static_trigger;
 mod ep22;
 mod ep23;
+mod ep24;
+mod ep25;
 mod ev1;
 mod f1;
 mod f2;
