@@ -37,6 +37,7 @@ use rstest::rstest;
 #[case("Kirol, Attentive First-Year")]
 #[case("Koth, Fire of Resistance")]
 #[case("Maddening Hex")]
+#[case("Mana Short")]
 #[case("Mindlink Mech")]
 #[case("Minds Aglow")]
 #[case("Mirror Sheen")]

@@ -540,6 +540,7 @@ mod rmt1_become_blocked;
 mod rmt1_beneath;
 mod rmt1_smoke;
 mod rmt1_total_power;
+mod rmt1_unspent;
 mod rules_fuzz;
 mod rules_games;
 mod runed_crown;

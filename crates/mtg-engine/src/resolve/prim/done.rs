@@ -113,6 +113,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveFromCombat { .. }
         | Effect::BecomeBlocked { .. }
         | Effect::PutBeneathTop { .. }
+        | Effect::LoseUnspentMana { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
         | Effect::LoseGame { .. }

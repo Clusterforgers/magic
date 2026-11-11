@@ -339,6 +339,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveFromCombat",
     "Effect.BecomeBlocked",
     "Effect.PutBeneathTop",
+    "Effect.LoseUnspentMana",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",

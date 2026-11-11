@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const RMT1_WHOLES: [(&str, &str); 33] = [
+const RMT1_WHOLES: [(&str, &str); 34] = [
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Not":{"Type":"Land"}},"Other",{"ControlledBy":"You"}]},"count":{"min":0,"max":null},"as":"chosen"}},{"Exile":{"what":{"Bound":"chosen"},"as":"exiled","duration":"WhileSourceOnBattlefield"}},{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":{"Count":[{"Is":{"Bound":"exiled"}}]}}}]}}"#,
         "When ~ enters, exile any number of other nonland permanents you control until ~ leaves the battlefield. Create a 1/1 white Soldier creature token for each permanent exiled this way.",
@@ -137,6 +137,10 @@ const RMT1_WHOLES: [(&str, &str); 33] = [
     (
         r#"{"Activated":{"cost":"{1}{G/U}","targets":[{"what":{"Object":[{"Subtype":"Frog"},{"ControlledBy":"You"}]}}],"effects":[{"Continuous":{"affected":"This","mods":[{"CantBeBlockedBy":[{"Type":"Creature"},{"Not":{"AnyOf":[{"HasKeyword":"Flying"},{"HasKeyword":"Reach"}]}}]}],"duration":"UntilEndOfTurn"}},{"Continuous":{"affected":{"Target":0},"mods":[{"CantBeBlockedBy":[{"Type":"Creature"},{"Not":{"AnyOf":[{"HasKeyword":"Flying"},{"HasKeyword":"Reach"}]}}]}],"duration":"UntilEndOfTurn"}}]}}"#,
         "{1}{G/U}: ~ and target Frog you control can't be blocked this turn except by creatures with flying or reach.",
+    ),
+    (
+        r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Tap":{"what":{"Each":[{"Type":"Land"},{"ControlledBy":{"Target":0}}]}}},{"LoseUnspentMana":{"who":{"Target":0}}}]}}"#,
+        "Tap all lands target player controls and that player loses all unspent mana.",
     ),
 ];
 

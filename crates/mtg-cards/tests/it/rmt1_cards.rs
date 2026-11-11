@@ -44,6 +44,7 @@ const PACK: &[&str] = &[
     "Koth, Fire of Resistance",
     "Lich's Mastery",
     "Maddening Hex",
+    "Mana Short",
     "Mindlink Mech",
     "Minds Aglow",
     "Mirror Sheen",

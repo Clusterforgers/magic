@@ -280,6 +280,12 @@ macro_rules! rmt1_card {
     "\"Plains\"",
     "\"Forest\""
 )]
+#[case::mana_short_0(
+    rmt1_card!("mana_short"),
+    "Tap all lands target player controls and that player loses all unspent mana.",
+    "{\"LoseUnspentMana\":{\"who\":{\"Target\":0}}}",
+    "{\"LoseUnspentMana\":{}}"
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

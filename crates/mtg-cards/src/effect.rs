@@ -529,6 +529,12 @@ pub enum Effect {
         /// The creatures that leave combat.
         what: Ref,
     },
+    /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
+    LoseUnspentMana {
+        /// Whose mana pools empty.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// Puts objects into their owners' libraries just beneath the top `below` cards ("just beneath the top X cards of
     /// that library"), the number worked out as the step runs; a library with fewer cards takes them at the bottom.
     PutBeneathTop {
