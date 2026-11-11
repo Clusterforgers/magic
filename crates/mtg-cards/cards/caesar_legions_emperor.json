@@ -1,0 +1,82 @@
+{
+  "oracle_id": "8e62d05a-6efd-4764-bca8-97895e0cb613",
+  "name": "Caesar, Legion's Emperor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caesar, Legion's Emperor",
+      "oracle_fingerprint": "07397571a19af816bf8f10e5fe158051",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Modal": {
+                              "choose": { "min": 2, "max": 2 },
+                              "modes": [
+                                {
+                                  "effects": [
+                                    {
+                                      "CreateToken": {
+                                        "token": {
+                                          "Custom": {
+                                            "name": "Soldier",
+                                            "colors": ["Red", "White"],
+                                            "types": ["Creature"],
+                                            "subtypes": ["Soldier"],
+                                            "power": 1,
+                                            "toughness": 1,
+                                            "abilities": [{ "Keyword": "Haste" }]
+                                          }
+                                        },
+                                        "count": 2,
+                                        "tapped": true,
+                                        "attacking": true
+                                      }
+                                    }
+                                  ]
+                                },
+                                { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] },
+                                {
+                                  "targets": [{ "what": "Opponent" }],
+                                  "effects": [
+                                    {
+                                      "DealDamage": {
+                                        "to": { "Target": 0 },
+                                        "amount": {
+                                          "Count": [
+                                            { "Type": "Creature" },
+                                            "Token",
+                                            { "ControlledBy": "You" }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

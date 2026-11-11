@@ -65,9 +65,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     // A won flip until a loss runs its `win` list again: the names the last pass bound are freed for this one.
     let bound = if won && *until {
         let held = cx.resolving.bindings();
+        let inside = format!(
+            "{}.",
+            super::may::performed_name(&super::repeat_each::repeat_at(cx))
+        );
         mtg_cards::effect::bound_names(win)
             .into_iter()
             .filter(|name| held.contains_key(name))
+            .chain(
+                held.keys()
+                    .filter(|name| name.starts_with(&inside))
+                    .cloned(),
+            )
             .map(|name| (format!("{CLEAR}{name}"), Vec::new()))
             .collect()
     } else {
@@ -287,6 +296,12 @@ mod tests {
                 ..Resolving::begin(source.id())
             };
             resolving.bindings.insert("copy".into(), Vec::new());
+            // What a step of the last pass did ("if you do") is freed with its names.
+            let step = format!(
+                "{}.0",
+                super::super::may::performed_name(resolving.position())
+            );
+            resolving.bindings.insert(step.clone(), Vec::new());
             let cx = Cx {
                 scope: Scope::announcing(&game, ME, source.reference()),
                 resolving: &resolving,
@@ -299,10 +314,12 @@ mod tests {
             let [Event::CoinFlipped { won, .. }] = events.as_slice() else {
                 panic!("one flip is logged: {events:?}");
             };
-            let cleared = bound
-                .iter()
-                .any(|(name, _)| name == &format!("{CLEAR}copy"));
-            assert_eq!(cleared, *won && repeats, "seed {seed}");
+            for name in ["copy", step.as_str()] {
+                let cleared = bound
+                    .iter()
+                    .any(|(bound, _)| bound == &format!("{CLEAR}{name}"));
+                assert_eq!(cleared, *won && repeats, "seed {seed}: {name}");
+            }
         }
     }
 
