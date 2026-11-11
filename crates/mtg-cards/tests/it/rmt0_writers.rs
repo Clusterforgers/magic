@@ -77,7 +77,7 @@ fn the_card_as_written_is_accepted(#[case] name: &str) {
 #[case::cleaved_count("Lantern Flare", "/0/Keyword/Cleave/spell/Spell/effects/0/DealDamage/amount", json!(2))]
 #[case::another_lacking_subtype("Heliod, the Radiant Dawn // Heliod, the Warped Eclipse", "/0/Triggered/targets/0/what/Object/1/Not/Subtype", json!("Elf"))]
 #[case::having_the_subtype("Heliod, the Radiant Dawn // Heliod, the Warped Eclipse", "/0/Triggered/targets/0/what/Object/1", json!({"Subtype": "God"}))]
-#[case::another_hand("Dread Fugue", "/1/Spell/effects/0/Reveal/what/Each/1/OwnedBy", json!("You"))]
+#[case::another_hand("Dread Fugue", "/1/Spell/effects/0/Reveal/what/Each/0/OwnedBy", json!("You"))]
 fn one_changed_value_is_not_accepted(
     #[case] name: &str,
     #[case] pointer: &str,
