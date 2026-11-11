@@ -1,7 +1,7 @@
 {
   "oracle_id": "1099588c-cc26-4523-8bd2-90e1e1433f53",
   "name": "Overwhelming Splendor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Overwhelming Splendor",
@@ -15,9 +15,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 109, "end": 199 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "AttachedPlayer",
+                "action": { "ActivateKind": { "kind": "AnyButLoyalty" } }
+              }
+            }
           }
         }
       ]

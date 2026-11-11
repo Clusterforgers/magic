@@ -866,6 +866,14 @@ describe('events with more than one shape', () => {
       'Hill Giant loses flying until end of turn',
     ],
     [
+      effect(objects(2), { RemoveKeywordKind: 'Landwalk' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all landwalk abilities until end of turn',
+    ],
+    [
+      effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
+      'Grizzly Bears and Hill Giant lose ward until end of turn',
+    ],
+    [
       effect(objects(2), { LockKeyword: 'Flying' }, 'UntilEndOfTurn'),
       "Hill Giant loses flying and can't have or gain it until end of turn",
     ],

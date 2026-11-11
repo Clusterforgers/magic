@@ -130,6 +130,11 @@ pub enum Modification {
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection or ward.
+    RemoveKeywordKind(
+        #[cfg_attr(feature = "ts", ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\""))]
+        mtg_cards::rmt7_kinds::KeywordKind,
+    ),
     /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
     LockKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
@@ -242,6 +247,7 @@ impl Modification {
             Modification::AddKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
@@ -345,6 +351,7 @@ impl Modification {
             Modification::SetController(_)
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)
             | Modification::LockKeyword(_)
             | Modification::LoseAbility(_)

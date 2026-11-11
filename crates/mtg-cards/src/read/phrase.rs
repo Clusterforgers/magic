@@ -551,6 +551,7 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
         Condition::YourTurn => "it is your turn".to_owned(),
+        Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),
         Condition::IsNight => "it is night".to_owned(),

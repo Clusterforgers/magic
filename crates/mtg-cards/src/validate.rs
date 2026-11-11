@@ -400,6 +400,8 @@ struct Walker<'a> {
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
     names: Vec<(usize, String, String)>,
+    /// The names of the tokens the card defines itself, which its `Named` atoms may name ("a token named Wood").
+    rmt7_token_names: BTreeSet<String>,
     /// The keywords the abilities grant: `AddKeyword`, the abilities of a token, the abilities a backup gives.
     granted: Vec<Keyword>,
 }
@@ -433,6 +435,7 @@ impl<'a> Walker<'a> {
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
             names: Vec::new(),
+            rmt7_token_names: BTreeSet::new(),
             granted: Vec::new(),
         }
     }
@@ -1295,6 +1298,7 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
+            Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
@@ -2043,6 +2047,7 @@ impl<'a> Walker<'a> {
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
             }
+            Modification::BlocksAdditionalPer(per) => self.at("per", |w| w.amount(per)),
             Modification::MinBlockers(count)
             | Modification::MaxBlockers(count)
             | Modification::BlocksAdditional(count) => {
@@ -2077,7 +2082,9 @@ impl<'a> Walker<'a> {
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LoseThisAbility
+            | Modification::LosePrinted(_)
             | Modification::LoseAbilities
+            | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
             | Modification::CantBlock
@@ -2717,6 +2724,7 @@ impl Walker<'_> {
     }
 
     fn token_spec(&mut self, spec: &TokenSpec, sized: bool) {
+        self.rmt7_token_names.insert(spec.name.to_lowercase());
         if spec.name.is_empty() {
             self.problem("a token needs a name");
         }
@@ -5587,6 +5595,7 @@ pub(crate) fn check_printed(
 ) -> Vec<Problem> {
     let checked = walk(card, tokens);
     let (x_uses, names, granted) = (checked.x_uses, checked.names, checked.granted);
+    let own_tokens = checked.rmt7_token_names;
     let mut walker = Walker::new(tokens);
     if card.oracle_id != printed.oracle_id {
         walker.at("oracle_id", |w| {
@@ -5635,7 +5644,8 @@ pub(crate) fn check_printed(
         }
     }
     for (_, path, name) in names {
-        if !known_names.contains(&name.to_lowercase()) {
+        let lower = name.to_lowercase();
+        if !known_names.contains(&lower) && !own_tokens.contains(&lower) {
             walker.path = vec![path];
             walker.problem(format!("no imported card is named `{name}`"));
         }

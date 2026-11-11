@@ -8,9 +8,7 @@
       "oracle_fingerprint": "7c4f55d2322bc401010edccfb88b0c01",
       "abilities": [
         { "Keyword": "Flying" },
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 63 } }
-        },
+        { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Red" } } } },
         {
           "Manual": {
             "reason": "you apply this clause by hand",

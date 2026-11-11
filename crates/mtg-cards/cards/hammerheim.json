@@ -1,7 +1,7 @@
 {
   "oracle_id": "c7476beb-7923-4994-8476-bc69187ecb72",
   "name": "Hammerheim",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hammerheim",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 82 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeywordKind": "Landwalk" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

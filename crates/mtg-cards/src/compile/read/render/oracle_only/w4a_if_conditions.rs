@@ -14,6 +14,9 @@ use crate::value::{Amount, Cmp, Condition, StatKind};
 pub(super) fn w4a_condition_texts(condition: &Condition) -> Vec<String> {
     let mut out = condition_texts(condition);
     out.extend(super::r7c_conditions::r7c_condition_texts(condition));
+    out.extend(crate::compile::read::rmt7_atoms::rmt7_none_controlled(
+        condition,
+    ));
     match condition {
         Condition::Not(inner) if **inner == Condition::Performed => {
             out.push("you can't".to_owned());

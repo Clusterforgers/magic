@@ -1,7 +1,7 @@
 {
   "oracle_id": "549e6de7-56e9-4f5c-8c88-30e446bc53bb",
   "name": "Glittering Lion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glittering Lion",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 57, "end": 197 }
+          "Activated": {
+            "cost": "{3}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "LosePrinted": {
+                        "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

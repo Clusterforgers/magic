@@ -1,7 +1,7 @@
 {
   "oracle_id": "e70bb7f8-8098-49c5-929c-68f63cd821c5",
   "name": "Kiora of Salt and Sand",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kiora of Salt and Sand",
@@ -35,9 +35,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 134, "end": 231 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Minus": 8 },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Leviathan",
+                              "colors": ["Blue"],
+                              "types": ["Creature"],
+                              "subtypes": ["Leviathan"],
+                              "power": 8,
+                              "toughness": 8,
+                              "abilities": [{ "Keyword": "Hexproof" }]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

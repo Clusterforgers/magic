@@ -28,6 +28,7 @@ const SOURCES: &[&str] = &[
     include_str!("../spend.rs"),
     include_str!("../keyword.rs"),
     include_str!("../companion.rs"),
+    include_str!("../rmt7_kinds.rs"),
     include_str!("../../../mtg-core/src/card.rs"),
     include_str!("../../../mtg-core/src/color.rs"),
     include_str!("../../../mtg-core/src/mana.rs"),

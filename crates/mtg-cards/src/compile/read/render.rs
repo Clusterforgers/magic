@@ -1088,6 +1088,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         // "you may exile any number of ..." is written with the reduction it pays for (`ep30_paid`); mana alone stands by
         // itself.
         Ability::AdditionalCost { cost, .. } => super::ep30_paid::ep30_mana_texts(cost),
+        Ability::Activated {
+            by: Activators::Anyone,
+            ..
+        } => super::rmt7_atoms::rmt7_any_player_texts(ability, ability_texts),
         _ => statics::texts(ability),
     }
 }

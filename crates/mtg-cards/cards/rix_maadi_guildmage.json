@@ -1,7 +1,7 @@
 {
   "oracle_id": "cb88ada9-d3bf-4f0a-817a-c41f0ea9cc78",
   "name": "Rix Maadi Guildmage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rix Maadi Guildmage",
@@ -23,9 +23,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 122 }
+          "Activated": {
+            "cost": "{B}{R}",
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }]
           }
         }
       ]

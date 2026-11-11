@@ -194,6 +194,7 @@ mod reveal;
 mod reveal_until;
 mod rmt4_untap_limit;
 mod rmt4_wordings;
+pub(crate) mod rmt7_atoms;
 mod selectors;
 mod shortened;
 mod soulbond;

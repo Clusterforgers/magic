@@ -44,6 +44,7 @@ mod rmt2_readback;
 mod rmt3_writers;
 mod rmt5_wholes;
 mod rmt6_readback;
+mod rmt7_writers;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;
