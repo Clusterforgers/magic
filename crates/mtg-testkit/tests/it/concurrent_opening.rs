@@ -1,6 +1,7 @@
 //! Goal: the opening asks every seat at once, and any mix of keep and mulligan answers in any arrival order reaches the state that answering in turn order reaches; the log keeps the arrival order and replays to the same state, also from the middle of an opening.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, Decision, DecisionKind, MulliganChoice};
 use mtg_engine::state::Stage;
 use mtg_engine::zones::Zone;
@@ -252,6 +253,15 @@ fn answer_of(script: &Script, decision: &Decision) -> Answer {
             hand.rotate_left(turn);
             Answer::BottomCards(hand.into_iter().take(options.count).collect())
         }
+        // An opening-hand card ("you may begin the game with it on the battlefield") asks; the script declines.
+        DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
+            options
+                .from
+                .iter()
+                .take(options.min as usize)
+                .copied()
+                .collect(),
+        )),
         other => panic!("the opening asks {}", other.name()),
     }
 }
