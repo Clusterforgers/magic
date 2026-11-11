@@ -2106,6 +2106,9 @@ pub(super) fn predicate(
     if let Some(lost) = super::lost_abilities::text(mods, plural) {
         return Some(lost);
     }
+    if let Some(blocks) = super::wf25_writers::wf25_predicate(mods, conditional) {
+        return Some(blocks);
+    }
     match mods {
         [Modification::CantAttack, Modification::CantBlock] => {
             return Some("can't attack or block".to_owned());
