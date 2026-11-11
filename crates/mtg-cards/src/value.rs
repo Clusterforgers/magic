@@ -567,6 +567,14 @@ pub enum Amount {
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
     CastLastTurn(Ref),
+    /// `Tallied` of the turn that ended last, whoever's it was ("if you lost life last turn", "if an opponent lost life
+    /// last turn"); 0 before any turn has ended. Only a count of players: not damage to objects, counters or dungeons.
+    TalliedLastTurn {
+        /// The players read.
+        who: Ref,
+        /// What is counted.
+        what: TurnTally,
+    },
     /// The size of the party of the player the reference names (CR 700.8): the most roles among Cleric, Rogue, Warrior and
     /// Wizard their creatures fill, each creature filling one role and each role once, so 0 to 4; the largest when it names several.
     Party(Ref),
@@ -774,6 +782,10 @@ enum Tagged {
     },
     StartingLife(Ref),
     CastLastTurn(Ref),
+    TalliedLastTurn {
+        who: Ref,
+        what: TurnTally,
+    },
     Party(Ref),
     Triggering,
     Tally {
@@ -901,6 +913,10 @@ enum TaggedRef<'a> {
     },
     StartingLife(&'a Ref),
     CastLastTurn(&'a Ref),
+    TalliedLastTurn {
+        who: &'a Ref,
+        what: TurnTally,
+    },
     Party(&'a Ref),
     Triggering,
     Tally {
@@ -998,6 +1014,7 @@ impl From<Tagged> for Amount {
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
+            Tagged::TalliedLastTurn { who, what } => Amount::TalliedLastTurn { who, what },
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
@@ -1092,6 +1109,9 @@ impl Serialize for Amount {
             }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
             Amount::CastLastTurn(who) => TaggedRef::CastLastTurn(who).serialize(serializer),
+            Amount::TalliedLastTurn { who, what } => {
+                TaggedRef::TalliedLastTurn { who, what: *what }.serialize(serializer)
+            }
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),

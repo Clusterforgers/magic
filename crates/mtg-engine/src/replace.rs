@@ -698,6 +698,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::ChooseWord(_)
+        | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
@@ -729,6 +730,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
+                | ReplaceBy::UnderChosenOpponent
         )
     )
 }
@@ -2697,6 +2699,21 @@ impl Pass<'_> {
                     Asked::Got(chosen) => chosen,
                 };
                 self.w2b_remember(at, object, controller, chosen);
+            }
+            ReplaceBy::UnderChosenOpponent => {
+                let chosen = match self.chooses(source, controller, EntersChoice::Opponent)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(chosen) => chosen,
+                };
+                if let Some(Chosen::Player(opponent)) = chosen {
+                    let entered = self.entered_at(at, object, controller);
+                    if let Item::One(Event::Entered {
+                        controller: under, ..
+                    }) = &mut self.slots[entered].item
+                    {
+                        *under = opponent;
+                    }
+                }
             }
             ReplaceBy::AsCopy {
                 of,

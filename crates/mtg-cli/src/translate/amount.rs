@@ -313,6 +313,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             if what == "CardsInHand" {
                 return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
             }
+            // "If an opponent lost life last turn": the count kept as the turn before ended.
+            if what == "LifeLostLastTurn" {
+                return Ok(Some(
+                    json!({"TalliedLastTurn": {"who": who, "what": "LifeLost"}}),
+                ));
+            }
             let tally = match what {
                 "HighestLifeLostThisTurn" => Some("LifeLostMost"),
                 "HighestCardsDrawn" => Some("Drawn"),

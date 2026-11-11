@@ -237,6 +237,10 @@ pub fn player_amount(head: &str, what: &str, who: &Value) -> Option<Tr<Value>> {
         ("TargetedPlayer" | "PlayerCountPropertyYou", "DamageThisTurn") => tallied("DamageTaken"),
         ("PlayerCountPropertyYou", "CardsDiscardedThisTurn") => tallied("Discarded"),
         ("PlayerCountPropertyYou", "LifeLostThisTurn") => tallied("LifeLost"),
+        // "If you lost life last turn": the count kept as the turn before ended.
+        ("PlayerCountPropertyYou", "LifeLostLastTurn") => {
+            Ok(json!({"TalliedLastTurn": {"who": who, "what": "LifeLost"}}))
+        }
         ("PlayerCountPropertyYou", "LandsPlayed") => tallied("LandsPlayed"),
         ("PlayerCountPropertyYou", "SacrificedThisTurn" | "SacrificedThisTurn Permanent") => {
             tallied("Sacrificed")

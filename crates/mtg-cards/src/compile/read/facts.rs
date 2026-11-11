@@ -260,11 +260,32 @@ fn controlled_group(of: &Selector) -> Option<String> {
     phrase_text(&group, Form::All)
 }
 
+/// A fact of the turn that ended last ("if you lost life last turn"): the words of the same fact of this turn, which end
+/// in "this turn", with "last turn" in their place.
+fn ep28_last_turn(this_turn: &Condition) -> Vec<String> {
+    texts(this_turn)
+        .iter()
+        .filter_map(|text| text.strip_suffix(" this turn"))
+        .filter(|head| !head.contains("this turn") && !head.contains("last turn"))
+        .map(|head| format!("{head} last turn"))
+        .collect()
+}
+
 /// What `read` reads, written back after "if" or "as long as", one text for each wording.
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
     let Condition::Compare { left, op, right } = condition else {
         return Vec::new();
     };
+    if let Amount::TalliedLastTurn { who, what } = left {
+        return ep28_last_turn(&Condition::Compare {
+            left: Amount::Tallied {
+                who: who.clone(),
+                what: *what,
+            },
+            op: *op,
+            right: right.clone(),
+        });
+    }
     let Amount::Fixed(number) = right else {
         return more_than_you(left, *op, right);
     };
@@ -412,6 +433,13 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             },
             Cmp::Ge,
         ) if number == 1 => vec!["an opponent lost life this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::LifeLost,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["you lost life this turn".to_owned()],
         (
             Amount::Tallied {
                 who: Ref::You,

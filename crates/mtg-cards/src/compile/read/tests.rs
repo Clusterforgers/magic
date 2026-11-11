@@ -288,6 +288,7 @@ mod ep24_writers;
 mod ep25_life_cost;
 mod ep26_writers;
 mod ep27_writers;
+mod ep28_writers;
 mod evasion;
 mod event_batches;
 mod events;

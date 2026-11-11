@@ -213,6 +213,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             who(ctx, chooser)
         ),
         Targetable::AtRandom(what) => format!("{} chosen at random", targetable(ctx, what, plural)),
+        Targetable::PlayerAmong(among) => noun(&format!("player among {}", who(ctx, among))),
     }
 }
 
