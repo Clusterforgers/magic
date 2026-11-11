@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8ebb6fe0-3ed1-4cc9-bcb1-5317de199efc",
+  "name": "Tale's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tale's End",
+      "oracle_fingerprint": "a76a9398fbf3d6822dca9c04c8ff94c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    {
+                      "Object": [
+                        { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                      ]
+                    },
+                    { "Object": ["Spell", { "Supertype": "Legendary" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

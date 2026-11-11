@@ -377,6 +377,15 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         to: Selector,
     },
+    /// An attachment becomes unattached from a permanent (unattached, moved, or leaving); the permanent it left triggers.
+    Unattached {
+        /// The attachment; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// The permanent it was attached to; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        from: Selector,
+    },
     /// A card is cycled (CR 702.29).
     Cycled {
         /// The card; any card when empty.

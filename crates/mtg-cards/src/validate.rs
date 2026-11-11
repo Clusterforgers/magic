@@ -857,6 +857,7 @@ impl<'a> Walker<'a> {
             | Pred::EnteredThisTurn
             | Pred::SummoningSick
             | Pred::MilledThisTurn
+            | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
@@ -2316,6 +2317,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::BecomesBlocked { what, by, .. } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
+            TriggerPattern::Unattached { what, from } => self.w11b_attached(what, from),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }
             | TriggerPattern::Chapter { .. } => {
@@ -4458,7 +4460,7 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
-            Ability::OpeningHand => {}
+            Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {

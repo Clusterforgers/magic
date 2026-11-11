@@ -124,6 +124,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
+            Pred::DrawnThisTurn => tail.push("drawn this turn".to_owned()),
             Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
             Pred::ArrivedFrom(origin) => tail.push(format!(
                 "that was put there from {} this turn",
@@ -791,6 +792,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
+        TriggerPattern::Unattached { what, from } => {
+            let attachment = if what.is_empty() {
+                "an attachment".to_owned()
+            } else {
+                subject(what)
+            };
+            let host = if from.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(from)
+            };
+            (
+                format!("{attachment} becomes unattached from {host}"),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::TappedForMana { what, by, produced } => {
             let (name, s) = who(by);
             let made = produced.map_or_else(
@@ -1112,6 +1129,9 @@ pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your
 
 /// The question about cards that may begin the game on the battlefield.
 pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
+
+/// The question of the cards exiled from the hand after a card began the game on the battlefield (Gemstone Caverns).
+pub(crate) const DK26_OPENING_EXILE: &str = "Choose the cards to exile from your hand.";
 
 /// What the opening asks when a card of the hand may be revealed from it (CR 103.6).
 pub(crate) const OPENING_REVEAL: &str =

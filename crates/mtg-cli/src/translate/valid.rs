@@ -1157,10 +1157,35 @@ fn ep28_player_among(word: &str) -> Option<Value> {
     let tally = match prop {
         "LostLifeThisTurn" => "LifeLost",
         "attackedWithCreaturesThisTurn" => "Attackers",
+        "wasDealtDamageThisTurn" => "DamageTaken",
         _ => return None,
     };
     let test = json!({"Compare": {"left": {"Tallied": {"who": "You", "what": tally}}, "op": "Ge", "right": 1}});
     Some(json!({"PlayerAmong": {"PlayersWhere": {"who": who, "test": test}}}))
+}
+
+/// "Any target that was dealt damage this turn" (`Any.wasDealtDamageThisTurn`): the creatures, planeswalkers and battles
+/// with the property and the players for whom the same fact of the turn holds; a property no player has is not read.
+fn dk26_any_target_where(ctx: &Ctx, word: &str, zone: Option<&str>) -> Tr<Vec<Value>> {
+    let Some(prop) = word.strip_prefix("Any.") else {
+        return unmapped(format!("valid-target:{word}"));
+    };
+    // A property of cards a player never has ("any other target", "any target that isn't a Dragon"): every player.
+    let negated_card_property = prop.strip_prefix('!').is_some_and(|rest| {
+        matches!(rest, "EnchantedBy" | "IsCommander") || ctx.world.subtypes.contains(rest)
+    });
+    let players = if negated_card_property {
+        json!("Player")
+    } else if let Some(among) = ep28_player_among(&format!("Player.{prop}")) {
+        among
+    } else {
+        return unmapped(format!("valid-target:{word}"));
+    };
+    let objects = format!("Creature.{prop},Planeswalker.{prop},Battle.{prop}");
+    Ok(vec![
+        json!({"Object": selector_in(ctx, &objects, zone)?}),
+        players,
+    ])
 }
 
 /// Whether the card text says "target player" and names no opponent anywhere outside reminder text.
@@ -1181,6 +1206,7 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
     let alternatives: Vec<&str> = valid.split(',').collect();
     let players = |word: &str| {
         matches!(word, "Any" | "Player" | "Opponent" | "Player.Opponent")
+            || word.starts_with("Any.")
             || ep28_player_among(word).is_some()
     };
     if alternatives.iter().all(|word| !players(word)) {
@@ -1199,6 +1225,10 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
             // A script may target an opponent where the card says "target player" (Aggressive Sabotage).
             "Opponent" | "Player.Opponent" if player_printed(ctx.oracle) => json!("Player"),
             "Opponent" | "Player.Opponent" => json!("Opponent"),
+            other if other.starts_with("Any.") => {
+                kinds.extend(dk26_any_target_where(ctx, other, zone)?);
+                continue;
+            }
             other => match ep28_player_among(other) {
                 Some(among) => among,
                 None => json!({"Object": selector_in(ctx, other, zone)?}),

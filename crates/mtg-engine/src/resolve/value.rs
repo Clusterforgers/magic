@@ -1742,6 +1742,7 @@ impl<'a> Scope<'a> {
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::HasAdventure => seen
                 .card
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
