@@ -232,7 +232,11 @@ export function damageSentence(
   defender?: string,
 ): string {
   if (labels.length === 0) return `${source.name} has no blocker to assign its ${power} combat damage to.`
-  const among = source.blocking ? 'the creatures it blocks' : labels.length === 1 ? 'its blocker' : 'its blockers'
+  const among = source.blocking
+    ? 'the creatures it blocks'
+    : labels.length === 1
+      ? 'its blocker'
+      : 'its blockers'
   const verb = labels.length === 1 ? 'Assign' : 'Divide'
   const where = labels.length === 1 ? 'to' : 'among'
   const why = source.banding ? 'Banding: ' : ''

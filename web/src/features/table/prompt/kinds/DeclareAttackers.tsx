@@ -301,7 +301,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       return next
     })
   // A band may form once two attackers are declared and one of them has banding or "bands with other" (CR 702.22c).
-  const mayBand = declaredIds.length > 1 && declaredIds.some((object) => offered.get(object)?.banding === true)
+  const mayBand =
+    declaredIds.length > 1 && declaredIds.some((object) => offered.get(object)?.banding === true)
   const startBand = (): void => {
     setHeld(null)
     setBuilding([])
@@ -346,17 +347,17 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       : building !== null
         ? `Click the attackers that attack together in a band (${building.length} picked), then Done. A band is blocked as a group.`
         : cannotAim !== undefined
-        ? cannotAim
-        : missing.length > 0
-          ? `${missingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must attack if able.`
-          : declared.length > 0
-            ? `${attackSummary(
-                declared.map((entry) => entry.target),
-                names,
-              )}.${several && heldTarget !== undefined ? ` Click a player, planeswalker or battle to send ${heldCreature?.name ?? 'it'} there.` : ''}`
-            : several && aim !== undefined
-              ? `Click a creature, then the player, planeswalker or battle it attacks (${names.short(aim)} until then).`
-              : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
+          ? cannotAim
+          : missing.length > 0
+            ? `${missingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must attack if able.`
+            : declared.length > 0
+              ? `${attackSummary(
+                  declared.map((entry) => entry.target),
+                  names,
+                )}.${several && heldTarget !== undefined ? ` Click a player, planeswalker or battle to send ${heldCreature?.name ?? 'it'} there.` : ''}`
+              : several && aim !== undefined
+                ? `Click a creature, then the player, planeswalker or battle it attacks (${names.short(aim)} until then).`
+                : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
   const cleared = selection.ids.size === required.length && missing.length === 0
 
   return (
