@@ -1,7 +1,7 @@
 {
   "oracle_id": "a3386efe-d6c5-4853-a4db-61460da3364a",
   "name": "Dovin, Architect of Law",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dovin, Architect of Law",
@@ -30,9 +30,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 120, "end": 209 }
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Tap": { "what": { "Each": [{ "ControlledBy": { "Target": 0 } }] } } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "SkipStep": "Untap" } } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
           }
         }
       ]

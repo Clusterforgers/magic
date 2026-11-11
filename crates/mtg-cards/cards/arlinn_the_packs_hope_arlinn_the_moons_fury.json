@@ -1,7 +1,7 @@
 {
   "oracle_id": "f227ce07-7e96-4a36-ab7c-9be6e777d649",
   "name": "Arlinn, the Pack's Hope // Arlinn, the Moon's Fury",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Arlinn, the Pack's Hope",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": "Daybound" },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 90, "end": 247 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         },
         {

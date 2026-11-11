@@ -310,6 +310,20 @@ fn skipped_by(state: &GameState, player: PlayerId, step: Step) -> bool {
         || crate::prohibit::skips_step(state, player, step)
 }
 
+/// The steps the active player's turn skips right after `step`, in order.
+fn skipped_after(state: &GameState, step: Step) -> Vec<Step> {
+    let mut skipped = Vec::new();
+    let Some(player) = state.active_player() else {
+        return skipped;
+    };
+    let mut next = following_step(state, step);
+    while next != Step::Cleanup && skipped_by(state, player, next) {
+        skipped.push(next);
+        next = following_step(state, next);
+    }
+    skipped
+}
+
 /// The step after `step` before any step is skipped.
 fn following_step(state: &GameState, step: Step) -> Step {
     match step {
@@ -333,6 +347,16 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let mut events = pool_emptying(state, through);
     if step == Step::EndCombat {
         events.push(Event::CombatEnded);
+    }
+    if next == natural
+        && let Some(player) = state.active_player()
+    {
+        events.extend(crate::rmt3_skips::rmt3_used(
+            state,
+            player,
+            &skipped_after(state, step),
+            true,
+        ));
     }
     events.push(Event::StepBegan { step: next });
     events
@@ -474,9 +498,12 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
     } else {
         Step::Untap
     };
+    let mut skipped = Vec::new();
     while skipped_by(state, active, first) {
+        skipped.push(first);
         first = first.next().unwrap_or(Step::Cleanup);
     }
+    events.extend(crate::rmt3_skips::rmt3_used(state, active, &skipped, false));
     events.push(Event::StepBegan { step: first });
     events
 }

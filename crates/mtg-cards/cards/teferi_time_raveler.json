@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 71, "end": 150 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         },
         {

@@ -14,9 +14,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 150, "end": 262 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
           }
         },
         {

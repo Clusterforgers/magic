@@ -1,0 +1,31 @@
+{
+  "oracle_id": "169728d6-7820-4a6d-a815-70714ad3e887",
+  "name": "Perilous Predicament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Predicament",
+      "oracle_fingerprint": "aa76235d90f8c92ddf7dc61a702a155d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Artifact" }, { "Type": "Creature" }]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Not": { "Type": "Artifact" } }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

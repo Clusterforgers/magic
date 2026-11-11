@@ -411,7 +411,10 @@ pub(crate) fn lasts(
         // A payment ends it (`e15g_paid.rs`).
         | Duration::UntilPaid(_)
         | Duration::NextUntapStep
-        | Duration::UntilTurnSkipped => true,
+        | Duration::UntilTurnSkipped
+        // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
+        | Duration::UntilSkipped
+        | Duration::UntilSkippedThisTurn => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
@@ -489,7 +492,7 @@ pub(crate) fn ends_with_turn(
 ) -> bool {
     let turn = state.turn();
     match duration {
-        Duration::UntilEndOfTurn => true,
+        Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
         Duration::UntilEndOfYourNextTurn => turn.number() > began && turn.active() == controller,
         _ => false,
     }

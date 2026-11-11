@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ba72d4a9-6f36-4796-bd71-2342fa9b4a30",
+  "name": "Yuna, Grand Summoner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yuna, Grand Summoner",
+      "oracle_fingerprint": "c46b64c02fb547eef17f232bcd988499",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 157, "end": 341 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,9 +9,18 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 112 }
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
           }
         },
         {

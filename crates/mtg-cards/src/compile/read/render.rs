@@ -80,6 +80,8 @@ mod w9b_clash;
 pub(super) use r7d::WHILE_TAPPED;
 
 mod dk1d_gift_target;
+mod rmt3_enters;
+mod rmt3_skips;
 
 use super::activations;
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
@@ -544,15 +546,7 @@ fn ep23_written_anew(ability: &Ability) -> Vec<String> {
 /// [`written_variants`] without the table of abilities written already.
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
-    // Counters moved "onto a second target creature" are also printed "onto another target creature".
-    let another: Vec<String> = texts
-        .iter()
-        .filter(|text| {
-            text.contains("counters from target") && text.contains(" onto a second target ")
-        })
-        .map(|text| text.replacen(" onto a second target ", " onto another target ", 1))
-        .collect();
-    texts.extend(another);
+    rmt3_enters::rmt3_variants(&mut texts);
     super::ep22_everywhere::ep22_variants(ability, &mut texts);
     super::ep24_rules::ep24_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
@@ -2691,7 +2685,8 @@ impl Writer<'_> {
             Effect::DelayedTrigger {
                 this_turn: true, ..
             } => super::w2g_next_cast::w2g_next_cast_text(effect)
-                .or_else(|| self.r11w_leaves_this_turn(effect))?,
+                .or_else(|| self.r11w_leaves_this_turn(effect))
+                .or_else(|| rmt3_enters::rmt3_next_cast_text(effect))?,
             Effect::Scry { who: Ref::You, .. }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
@@ -2893,6 +2888,10 @@ impl Writer<'_> {
             .or_else(|| self.r7d_while_tapped(effect))
             .or_else(|| self.e10b_sealed(effect))
             .or_else(|| r11w_batch::each_player_damage(effect))
+            .or_else(|| rmt3_enters::rmt3_shield_text(effect))
+            .or_else(|| rmt3_enters::rmt3_spell_enters_text(effect))
+            .or_else(|| self.rmt3_skip(effect))
+            .or_else(|| rmt3_enters::rmt3_flash_text(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
@@ -3266,6 +3265,7 @@ impl Writer<'_> {
             .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
+            .or_else(|| rmt3_enters::rmt3_flash_and_shield(effects))
             .or_else(|| self.owner_shuffles(effects))
             .or_else(|| super::w7e_phase::w7e_phased_and_protected_text(effects))
             .or_else(|| super::w7e_phase::w7e_protected_text(effects))

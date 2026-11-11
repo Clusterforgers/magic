@@ -1,7 +1,7 @@
 {
   "oracle_id": "ed77fdf2-59c0-4310-9b12-80d28beeaeef",
   "name": "Chocobo Camp",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chocobo Camp",
@@ -29,9 +29,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 65, "end": 180 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Green"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "Subtype": "Bird" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
           }
         },
         {

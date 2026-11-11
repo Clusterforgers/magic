@@ -65,6 +65,7 @@ mod prepared;
 mod preview;
 mod price;
 mod replace_dry;
+mod rmt3_skips;
 mod saga;
 mod sba;
 mod sneak;
