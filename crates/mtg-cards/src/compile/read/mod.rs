@@ -204,14 +204,11 @@ mod r304b_writers;
 mod r305b_writers;
 mod r305c_copies;
 mod r307c_events;
-<<<<<<< HEAD
+mod r372_suspend;
 mod r373_exiled;
 mod r373_loyalty;
-=======
-mod r372_suspend;
 mod r375_events;
 mod r375_phase;
->>>>>>> origin/main
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

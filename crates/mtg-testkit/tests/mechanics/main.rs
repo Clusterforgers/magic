@@ -124,11 +124,8 @@ mod r306_steps;
 mod r307_cards;
 mod r307c_exiled;
 mod r307c_rooms;
-<<<<<<< HEAD
 mod r373_pieces;
-=======
 mod r375_phasing;
->>>>>>> origin/main
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

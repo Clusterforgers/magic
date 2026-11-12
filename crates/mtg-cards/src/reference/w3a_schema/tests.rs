@@ -9,11 +9,7 @@ use serde_json::Value;
 use super::*;
 
 /// The schema in bytes, compact, may not grow past this without a decision.
-<<<<<<< HEAD
-const W3A_BUDGET: usize = 171_500;
-=======
-const W3A_BUDGET: usize = 172_000;
->>>>>>> origin/main
+const W3A_BUDGET: usize = 173_500;
 
 /// The keywords the schema may use: those the converters of llama.cpp and Ollama turn into a grammar.
 const W3A_KEYWORDS: &[&str] = &[

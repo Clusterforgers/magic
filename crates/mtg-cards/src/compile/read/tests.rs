@@ -394,11 +394,8 @@ mod pump_wordings;
 mod put_back;
 mod r303c_writers;
 mod r304b_writers;
-<<<<<<< HEAD
-mod r373_writers;
-=======
 mod r306c_wordings;
->>>>>>> origin/main
+mod r373_writers;
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;

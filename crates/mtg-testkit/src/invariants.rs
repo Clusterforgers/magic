@@ -1372,17 +1372,14 @@ impl InvariantChecker {
             return Ok(());
         }
         let turn = self.shadow.turn();
-<<<<<<< HEAD
         let any_time = loyalty && mtg_engine::loyalty::any_time(&self.shadow, player);
-        if !any_time
-=======
         // A permanent may let its controller activate a kind of sorcery-speed ability at instant speed (Forge Anew).
         let open = sorcery
             && rules.as_ref().is_some_and(|rules| {
                 mtg_engine::priority::sorcery_activation_open(&self.shadow, player, address, rules)
             });
         if !open
->>>>>>> origin/main
+            && !any_time
             && (!self.shadow.is_active(player)
                 || !turn.step().is_main()
                 || !self.shadow.stack().is_empty())

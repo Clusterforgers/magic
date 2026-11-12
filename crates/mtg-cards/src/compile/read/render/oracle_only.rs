@@ -207,9 +207,6 @@ mod r303_wholes;
 mod r304_sacrifice_all;
 mod r304_skip_draw;
 mod r304c_wordings;
-<<<<<<< HEAD
-mod r373_wholes;
-=======
 mod r305_wordings;
 mod r305c_any_cast;
 mod r305c_random_keyword;
@@ -217,7 +214,7 @@ mod r305c_rules;
 mod r305c_you_and;
 mod r306c_wholes;
 mod r307_wholes;
->>>>>>> origin/main
+mod r373_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -785,12 +782,9 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r282_wholes::r282_add_wholes(ability, texts);
     r302b_wholes::r302b_add_wholes(ability, texts);
     r303_wholes::r303_add_wholes(ability, texts);
-<<<<<<< HEAD
     r373_wholes::r373_add_wholes(ability, texts);
-=======
     r307_wholes::r307_add_wholes(ability, texts);
     r301_wholes::r301_add_wholes(ability, texts);
->>>>>>> origin/main
     r302_wholes::r302_add_wholes(ability, texts);
     r305c_any_cast::r305c_add_any_cast(ability, texts);
     r305c_you_and::r305c_add_you_and(ability, texts);

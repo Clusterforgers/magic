@@ -173,11 +173,8 @@ mod r305c_any_cast;
 mod r305c_combat_ban;
 mod r306b_spend_any;
 mod r307c_exile;
-<<<<<<< HEAD
-mod r373_loyalty;
-=======
 mod r372_suspend;
->>>>>>> origin/main
+mod r373_loyalty;
 mod r3f_mana;
 mod r4f_stack_move;
 mod r4i_may_flash;
