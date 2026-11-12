@@ -717,6 +717,7 @@ const RUNS: &[&str] = &[
     "Amount.TriggeringTargets",
     "Amount.PlayersLost",
     "Amount.CastTargets",
+    "Amount.CastTargetsOf",
     "Amount.When",
     "Amount.ManaSpent",
     "Amount.ManaColors",

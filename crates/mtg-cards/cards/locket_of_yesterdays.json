@@ -1,0 +1,23 @@
+{
+  "oracle_id": "bfbfa8c1-5b03-40bb-8a4c-aedb768cb023",
+  "name": "Locket of Yesterdays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locket of Yesterdays",
+      "oracle_fingerprint": "93212054df2edeaa3bd36f4c0deb8050",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, { "SharesName": "Affected" }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

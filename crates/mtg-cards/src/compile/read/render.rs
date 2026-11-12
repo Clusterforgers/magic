@@ -211,6 +211,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }

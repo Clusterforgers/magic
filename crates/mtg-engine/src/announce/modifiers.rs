@@ -455,6 +455,8 @@ fn changes(
         // What the spell announced is what its own modifiers read ("for each target beyond the first"); another
         // object's modifier reads the game as it is.
         let own = modifier.source.id == spell;
+        // "That spell" and "its controller" of a modifier name the spell being cast (`Ref::Affected`).
+        let read = std::cell::Cell::new(false);
         let scope = Scope {
             casting: Some((spell, player)),
             cast_targets: Some(CastTargets { choices, judging }),
@@ -467,7 +469,8 @@ fn changes(
                 Vec::new()
             },
             ..Scope::announcing(state, modifier.controller, modifier.source)
-        };
+        }
+        .with_affected(target, &read);
         if !scope.selects(applies_to, target).unwrap_or(false)
             || condition
                 .as_ref()

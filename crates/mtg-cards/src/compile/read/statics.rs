@@ -1114,6 +1114,12 @@ pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Am
     if let Some(tallied) = r.attempt(|r| super::c11a_turn_costs::c11a_turn_count(r, x)) {
         return Some(tallied);
     }
+    if !itself
+        && !x
+        && let Some(counted) = r.attempt(super::r402_spell_costs::r402_for_each)
+    {
+        return Some(counted);
+    }
     if x {
         r.punct(',').then_some(())?;
         r.need("where x is")?;
@@ -1266,11 +1272,20 @@ fn cost_modifier_texts(
     subjects.extend(cost_conditions::cast_before_number(&subject));
     subjects.extend(super::e15b_entering::cast_before_chosen(&subject));
     subjects.push(subject);
-    subjects
+    let mut texts: Vec<String> = subjects
         .into_iter()
         .flat_map(|subject| cost_sentences(&subject, applies_to, change, mana, per, condition))
         .flat_map(|sentence| super::w21a_atoms::w21a_colored_only(sentence, change, mana))
-        .collect()
+        .collect();
+    // "Each artifact spell costs ...": the subject of one spell.
+    if condition.is_none() {
+        let each: Vec<String> = texts
+            .iter()
+            .filter_map(|text| super::r402_spell_costs::r402_each_spell(text))
+            .collect();
+        texts.extend(each);
+    }
+    texts
 }
 
 /// The sentences of a cost modifier whose spells are worded as `subject`.
@@ -1302,7 +1317,11 @@ pub(super) fn cost_sentences(
             mana.to_string(),
             " for each target beyond the first".to_owned(),
         )
-    } else if let Some(each) = for_each_text(per) {
+    } else if let Some(each) = (!itself)
+        .then(|| super::r402_spell_costs::r402_for_each_text(per))
+        .flatten()
+        .or_else(|| for_each_text(per))
+    {
         (mana.to_string(), format!(" for each {each}"))
     } else if matches!(per, Amount::Greatest { .. } | Amount::Total { .. })
         && mana.to_string() == "{1}"

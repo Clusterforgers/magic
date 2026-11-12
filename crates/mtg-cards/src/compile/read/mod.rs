@@ -207,6 +207,8 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r402_copy_riders;
+mod r402_spell_costs;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -565,6 +567,24 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if let Some(found) =
         l31d_x_color::l31d_x_color_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            r402_copy_riders::r402_rider_read(text, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(twin) = r402_spell_costs::r402_spells_twin(text)
+        && let Some(found) = clause_with(&twin, kind, x_free, own)
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))

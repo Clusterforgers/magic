@@ -30,6 +30,7 @@ mod r287_above;
 mod r302_sources;
 mod r302b_sources;
 mod r305b_amounts;
+mod r402_cast;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -2143,6 +2144,7 @@ impl<'a> Scope<'a> {
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::PlayersLost => self.r305b_players_lost(),
             Amount::CastTargets => self.r305b_cast_targets()?,
+            Amount::CastTargetsOf(selector) => self.r402_cast_targets_of(selector)?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
             | Amount::ManaColors(_)

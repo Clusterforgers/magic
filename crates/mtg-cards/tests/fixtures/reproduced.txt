@@ -142,6 +142,7 @@ Batterskull
 Battle Frenzy
 Battle Sliver
 Battlefield Forge
+Battlefield Thaumaturge
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -898,6 +899,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hum of the Radix
 Hundred-Talon Strike
 Hungry Graffalon
 Hungry Lynx
@@ -1086,6 +1088,7 @@ Llanowar Behemoth
 Llanowar Elves
 Llanowar Loamspeaker
 Llanowar Reborn
+Locket of Yesterdays
 Loki's Scepter
 Loki, the Deceiver
 Loot, Exuberant Explorer
