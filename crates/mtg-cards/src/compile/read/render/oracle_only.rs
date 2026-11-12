@@ -200,6 +200,7 @@ mod r282_wholes;
 mod r284_wordings;
 mod r286_wordings;
 mod r288_wordings;
+mod r305_wordings;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -504,6 +505,7 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     rmt8_wordings::add(ability, texts);
     r280_wordings::add(ability, texts);
     r284_wordings::add(ability, texts);
+    r305_wordings::add(ability, texts);
     r286_wordings::add(ability, texts);
     r288_wordings::add(ability, texts);
     l291_writers::add(ability, texts);

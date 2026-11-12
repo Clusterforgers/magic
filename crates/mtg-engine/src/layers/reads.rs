@@ -405,6 +405,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::TurnNumber
+        | Amount::LostPlayers
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)

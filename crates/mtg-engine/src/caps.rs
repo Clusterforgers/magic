@@ -674,6 +674,7 @@ const RUNS: &[&str] = &[
     "Amount.CommanderColors",
     "Amount.Remembered",
     "Amount.TurnNumber",
+    "Amount.LostPlayers",
     "Amount.TriggeringTargets",
     "Amount.When",
     "Amount.ManaSpent",
@@ -1149,6 +1150,7 @@ mod tests {
     #[case::a_logged_tally("Amount.Tally", true)]
     #[case::commander_colors("Amount.CommanderColors", true)]
     #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::lost_players("Amount.LostPlayers", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::among_players("Condition.Among", true)]

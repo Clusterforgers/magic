@@ -1,7 +1,7 @@
 {
   "oracle_id": "01635d21-aeda-4754-9d94-68fcd0cd6556",
   "name": "Quilled Greatwurm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quilled Greatwurm",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 152 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "combat": true
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              { "PutCounters": { "on": "Dealer", "counter": "+1/+1", "count": "Triggering" } }
+            ]
           }
         },
         {

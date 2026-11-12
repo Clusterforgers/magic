@@ -2114,6 +2114,7 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::LostPlayers => self.lost_players(),
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
@@ -2653,7 +2654,8 @@ impl<'a> Scope<'a> {
         match kind {
             ZoneKind::Hand => spell.cast_from_hand(),
             ZoneKind::Graveyard => spell.cast_from_graveyard(),
-            _ => false,
+            // Exile, a library and the command zone: the zone kind the spell's cast recorded.
+            _ => spell.cast.is_some_and(|(zone, _)| zone == kind),
         }
     }
 

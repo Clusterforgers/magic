@@ -147,6 +147,7 @@ mod r287_tallies;
 mod r288_delayed_targets;
 mod r288_final_chapter;
 mod r2e_cost_parts;
+mod r305_cards;
 mod r3f_mana;
 mod r4f_stack_move;
 mod r4i_may_flash;

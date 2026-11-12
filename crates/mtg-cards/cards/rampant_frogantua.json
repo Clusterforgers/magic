@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 8, "end": 73 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Times": { "by": 10, "of": "LostPlayers" } },
+                  "toughness": { "Times": { "by": 10, "of": "LostPlayers" } }
+                }
+              }
+            ]
           }
         },
         {
