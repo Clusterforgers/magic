@@ -21,6 +21,7 @@ import type {
   Stop,
   YieldUntil,
 } from '@/protocol/generated'
+import type { DueLine } from './byHand'
 import type { AwayTimes } from './awayClocks'
 import { hostFromWire, hostsBefore } from './hosts'
 import { namesToRemember, revealedViews } from './rememberNames'
@@ -178,6 +179,11 @@ export interface PlayState {
    */
   byHand: string | null
   /**
+   * The by-hand lines of this seat's that came due (`ByHandDue`) since it last passed priority, which the Commands panel
+   * lists under "To do by hand" until the seat passes or presses Done (`byHand.ts` `dueLinesAfter`).
+   */
+  dueLines: readonly DueLine[]
+  /**
    * The seats that are away (`Presence`), by seat: milliseconds left before the game acts for each at the last whole
    * second, or null when it has no clock. Who is away is `PlayerView.connected`; this only adds the time.
    */
@@ -223,6 +229,7 @@ export function initialPlayState(): PlayState {
     autoSkips: [],
     castWhenAsked: null,
     byHand: null,
+    dueLines: [],
     away: {},
     deciding: [],
   }

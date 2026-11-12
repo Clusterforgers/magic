@@ -3,6 +3,7 @@
 mod adding_a_card;
 mod assemble;
 mod blocking_and_rules;
+mod by_hand_event;
 mod chance_tables;
 mod common;
 mod compile;

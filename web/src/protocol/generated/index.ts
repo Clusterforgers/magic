@@ -34,6 +34,7 @@ export type { BulkCard } from "./BulkCard";
 export type { BulkClause } from "./BulkClause";
 export type { BulkReads } from "./BulkReads";
 export type { BulkRule } from "./BulkRule";
+export type { ByHandDue } from "./ByHandDue";
 export type { CardColor } from "./CardColor";
 export type { CardConjured } from "./CardConjured";
 export type { CardCopy } from "./CardCopy";

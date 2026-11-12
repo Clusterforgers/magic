@@ -83,6 +83,13 @@ function stackName(n: EventNames, id: ObjectId, start: boolean): string {
 
 const cards = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
 
+/** The longest clause the log quotes whole. */
+const QUOTE_CHARS = 160
+
+/** A clause of a card's rules in quotes, cut at `QUOTE_CHARS`. */
+export const quoted = (text: string): string =>
+  `“${text.length > QUOTE_CHARS ? `${text.slice(0, QUOTE_CHARS - 1)}…` : text}”`
+
 /** "A", "A and B", "A, B and C". */
 export function joinWords(items: readonly string[]): string {
   const last = items.at(-1)
@@ -674,6 +681,7 @@ const PIPELINE = [
   'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
+  'ByHandDue',
   'ZoneChanged',
   'LifeGained',
   'LifeLost',
@@ -780,6 +788,10 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(
       `${n.card(event.AbilityLeftToTable.source.id)}'s ability could not be run by the game: apply its text by hand`,
     )
+  }
+  if ('ByHandDue' in event) {
+    const { source, text } = event.ByHandDue
+    return line(`${n.card(source.id)} has a line to apply by hand now: ${quoted(text)}`)
   }
   if ('ZoneChanged' in event) {
     const { object, from, to, cause } = event.ZoneChanged

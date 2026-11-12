@@ -9,6 +9,7 @@ mod announce_again;
 mod announce_division;
 mod big_mana_board;
 mod borrowed_mana;
+mod by_hand_due;
 mod c11a_first_spells;
 mod c11b_cast_target;
 mod c6_mr_modes_again;

@@ -213,6 +213,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 | Group | Commands, in order |
 |---|---|
+| To do by hand | read-only: the seat's by-hand lines that came due (`ByHandDue`), each as its card and its quoted words, and Done; only while one is due |
 | You | the Life counter and "More life options"; Poison; Other counters |
 | Library | Draw; Look at the top (scry, surveil, reorder); Search for a card; Mill; Exile from the top; Put on the bottom; Shuffle; Reveal the top card |
 | Make | Tokens (the common list, a custom token); Mana; Roll a die / Flip a coin |

@@ -25,7 +25,7 @@ import { previewKey } from './preview'
 import { canHoldStop } from './stops'
 import { saveAutoChoices, saveAutoYields, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
-import { owesByHand } from './byHand'
+import { dueLinesAfter, owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
@@ -121,6 +121,8 @@ export interface Session {
   resync(): boolean
   /** Clears the notice. */
   dismissNotice(): void
+  /** Forgets the seat's due lines (`dueLines`): the seat says it applied them. Nothing is sent. */
+  clearDueLines(): void
 }
 
 type Of<T extends ServerMessage['type']> = Extract<ServerMessage, { type: T }>
@@ -355,6 +357,13 @@ export function createSession(deps: SessionDeps): Session {
         objectsById,
         // The history is the latest events: a pass or a resolution in it decides, else what was held stays.
         byHand: owesByHand(state.byHand, message.log ?? [], state.seat, state.objectsById, objectsById),
+        dueLines: dueLinesAfter(
+          state.dueLines,
+          message.log ?? [],
+          state.seat,
+          state.objectsById,
+          objectsById,
+        ),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
@@ -396,6 +405,7 @@ export function createSession(deps: SessionDeps): Session {
       objectsById,
       seq: batch.from_seq + batch.events.length,
       byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),
+      dueLines: dueLinesAfter(state.dueLines, batch.events, state.seat, state.objectsById, objectsById),
       log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById, batch.shown),
       logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',
@@ -584,5 +594,6 @@ export function createSession(deps: SessionDeps): Session {
     },
     resync: () => socket.send({ type: 'Resync' }),
     dismissNotice: () => setState({ notice: null }),
+    clearDueLines: () => setState({ dueLines: [] }),
   }
 }

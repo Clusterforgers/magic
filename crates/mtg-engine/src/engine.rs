@@ -643,6 +643,16 @@ impl Engine {
         if !watching {
             return Ok(());
         }
+        // A by-hand line is due as its event happens, before the abilities that trigger on the same events.
+        for line in triggers::due(
+            before.as_ref().unwrap_or(&self.state),
+            &self.events[scanned..],
+            &self.state,
+        ) {
+            let event = Event::ByHandDue(Box::new(line));
+            apply_event(&mut self.state, &event)?;
+            self.events.push(event);
+        }
         // The abilities found are events too, and an ability may trigger on one ("whenever an ability triggers"): the
         // events they add are read again, down a chain that ends when nothing more triggers or at `MAX_TRIGGER_CHAIN`.
         for _ in 0..MAX_TRIGGER_CHAIN {
