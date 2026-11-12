@@ -1,5 +1,6 @@
 //! r30-7c trigger heads no other writer gives: "Whenever ~ attacks a player and isn't blocked", "Whenever you cast a spell
-//! from exile and whenever a permanent you control enters from exile".
+//! from exile and whenever a permanent you control enters from exile", "Whenever one or more cards are put into exile from
+//! graveyards and/or the battlefield during your turn".
 
 use crate::refs::{Pred, Ref, ZoneKind};
 use crate::trigger::TriggerPattern;
@@ -20,6 +21,47 @@ fn r307c_from_exile(pattern: &TriggerPattern) -> Option<&'static str> {
         } if what.0 == [Pred::ControlledBy(Ref::You)] => {
             Some("a permanent you control enters from exile")
         }
+        _ => None,
+    }
+}
+
+/// Whether the pattern is a batch of cards put into exile from graveyards and/or the battlefield: any card from a
+/// graveyard, a nontoken permanent from the battlefield.
+fn r307c_exiled_from_graveyards_or_battlefield(pattern: &TriggerPattern) -> bool {
+    let TriggerPattern::Batch(inner) = pattern else {
+        return false;
+    };
+    let TriggerPattern::AnyOf(members) = &**inner else {
+        return false;
+    };
+    let graveyard = TriggerPattern::ZoneChange {
+        what: crate::refs::Selector::default(),
+        from: Some(ZoneKind::Graveyard),
+        to: Some(ZoneKind::Exile),
+    };
+    let battlefield = TriggerPattern::ZoneChange {
+        what: crate::refs::Selector(vec![Pred::Not(Box::new(Pred::Token))]),
+        from: Some(ZoneKind::Battlefield),
+        to: Some(ZoneKind::Exile),
+    };
+    members.as_slice() == [graveyard, battlefield]
+}
+
+/// The whole head of a trigger with its condition, when this pack words them together: the exile of cards "during your
+/// turn" is the event checked on your turn.
+pub(super) fn r307c_head(
+    when: &TriggerPattern,
+    condition: Option<&crate::value::Condition>,
+) -> Option<String> {
+    let words =
+        "Whenever one or more cards are put into exile from graveyards and/or the battlefield";
+    match condition {
+        Some(crate::value::Condition::YourTurn)
+            if r307c_exiled_from_graveyards_or_battlefield(when) =>
+        {
+            Some(format!("{words} during your turn,"))
+        }
+        None if r307c_exiled_from_graveyards_or_battlefield(when) => Some(format!("{words},")),
         _ => None,
     }
 }

@@ -1622,6 +1622,9 @@ fn spell(sentences: &[String]) -> String {
 
 /// The event and an intervening "if" of a triggered ability, each ending in a comma.
 fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
+    if let Some(head) = super::r307c_events::r307c_head(when, condition) {
+        return Some(vec![head]);
+    }
     if condition == Some(&super::triggers::saddled())
         && matches!(when, TriggerPattern::Attacks { .. })
     {
