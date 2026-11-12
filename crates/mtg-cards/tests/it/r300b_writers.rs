@@ -66,7 +66,7 @@ fn says(json: &str, text: &str) -> bool {
     "When ~ enters, empower Jace 3."
 )]
 #[case::owner_also_draws(
-    r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"Draw":{}},{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}},{"Draw":{"who":{"OwnerOf":"This"}}},{"May":{"who":{"OwnerOf":"This"},"effects":[{"Choose":{"who":{"OwnerOf":"This"},"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"OwnerOf":"This"}},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}}]}}"#,
+    r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"Draw":{}},{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}},{"Draw":{"who":{"OwnerOf":"This"}}},{"May":{"who":{"OwnerOf":"This"},"effects":[{"Choose":{"who":{"OwnerOf":"This"},"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"OwnerOf":"This"}},{"Type":"Land"}]},"as":"owners_land"}},{"Move":{"what":{"Bound":"owners_land"},"to":{"Battlefield":{}}}}]}}]}}"#,
     "{2}, {T}: Draw a card, then you may put a land card from your hand onto the battlefield. ~'s owner draws a card, then that player may put a land card from their hand onto the battlefield."
 )]
 #[case::remove_one_or_more(

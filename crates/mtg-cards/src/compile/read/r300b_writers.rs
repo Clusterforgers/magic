@@ -475,10 +475,11 @@ fn search_become_copy(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec
         .collect()
 }
 
-/// "Draw a card, then you may put a land card from your hand onto the battlefield." for a player: its JSON.
-fn draw_then_land(who: &Value) -> Value {
+/// "Draw a card, then you may put a land card from your hand onto the battlefield." for a player, the land bound as `bind`:
+/// its JSON.
+fn draw_then_land(who: &Value, bind: &str) -> Value {
     let mut draw = json!({"Draw": {}});
-    let mut choose = json!({"Choose": {"from": {"Each": [{"In": "Hand"}, {"OwnedBy": who}, {"Type": "Land"}]}, "as": "card"}});
+    let mut choose = json!({"Choose": {"from": {"Each": [{"In": "Hand"}, {"OwnedBy": who}, {"Type": "Land"}]}, "as": bind}});
     let mut may = json!({"May": {"effects": []}});
     if *who != json!("You") {
         draw["Draw"]["who"] = who.clone();
@@ -486,7 +487,7 @@ fn draw_then_land(who: &Value) -> Value {
         may["May"]["who"] = who.clone();
     }
     may["May"]["effects"] =
-        json!([choose, {"Move": {"what": {"Bound": "card"}, "to": {"Battlefield": {}}}}]);
+        json!([choose, {"Move": {"what": {"Bound": bind}, "to": {"Battlefield": {}}}}]);
     json!([draw, may])
 }
 
@@ -496,8 +497,8 @@ fn owner_also_draws(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec<S
     let Some(steps) = body["effects"].as_array() else {
         return Vec::new();
     };
-    let mine = draw_then_land(&json!("You"));
-    let owners = draw_then_land(&json!({"OwnerOf": "This"}));
+    let mine = draw_then_land(&json!("You"), "card");
+    let owners = draw_then_land(&json!({"OwnerOf": "This"}), "owners_land");
     let (Some(mine), Some(owners)) = (mine.as_array(), owners.as_array()) else {
         return Vec::new();
     };
