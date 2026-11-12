@@ -1523,6 +1523,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::XColor(_)
                     | CostItem::Forage => {}
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
@@ -3381,6 +3382,8 @@ impl Walker<'_> {
                 }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind_kept(name, Kind::Object));
+                    // The number discarded, as for a step that moved its objects (`bind_moved`).
+                    w.scope.numbers.insert(format!("{name}~moved"));
                 }
             }
             Effect::LookAtTop { who, count, bind }

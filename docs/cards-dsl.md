@@ -96,6 +96,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - One reader and one writer turn every object phrase into a `Selector` and back (`selectors::phrase`, `selectors::phrase_text`); every effect, trigger, condition and static reader uses this pair, so a new atom works in all of them.
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.
 - A keyword action that abilities wait for ("whenever you investigate", "discover", "manifest dread", "give a gift") is logged by `Effect::Performed` after its steps: the reader adds it after an investigation's Clue tokens, `effect::discover` and the steps of manifest dread end with it, and gift's steps end with it in the engine. The engine logs `Investigated`, `Discovered` (value and card), `DreadManifested` (the card put into the graveyard) and `GiftGiven` (to whom), read as `TriggerPattern::Did`. The writers word the steps; an investigation's log is dropped before its Clue tokens are worded.
+- "Sacrifice any number of ..." is a `SacrificeUpTo` of every match and "discard any number of ..." an optional `Discard` of the hand, each bound by name; `Bound("<name>~moved")` is how many it took ("that many", "for each permanent sacrificed this way").
+- "Spend only black mana on X." is `CostItem::XColor`: the X of the cost is paid with mana of that color; a spell holds it as a required `AdditionalCost` that pays nothing.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

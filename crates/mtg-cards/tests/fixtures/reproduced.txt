@@ -342,6 +342,7 @@ Consider
 Consign // Oblivion
 Consign to Dust
 Constable of the Realm
+Consume Spirit
 Consuming Aetherborn
 Consuming Vortex
 Contentious Plan
@@ -363,6 +364,7 @@ Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Crimson Hellkite
 Croakid Amphibonaut
 Crocanura
 Crop Rotation
@@ -371,6 +373,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
 Crystal Barricade
@@ -640,6 +643,7 @@ Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
 Feaster of Fools
+Feasting Hobbit
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -893,6 +897,7 @@ Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
+Illuminate History
 Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -1021,9 +1026,11 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Landslide
 Lantern Flare
 Laquatus's Disdain
 Lash Out
+Last-Ditch Effort
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -1335,6 +1342,7 @@ Pinion Feast
 Piper of the Swarm
 Pippin, Warden of Isengard
 Pit Fight
+Pitiless Carnage
 Pixie Guide
 Plague Drone
 Plague Myr
@@ -1359,6 +1367,7 @@ Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
 Prey Upon
+Preyseizer Dragon
 Price of Fame
 Pridemalkin
 Priest of the Crossing
@@ -1445,7 +1454,9 @@ Relic of Sauron
 Remorseful Cleric
 Render Inert
 Renewed Faith
+Renounce
 Replication Technique
+Reprocess
 Rescue Retriever
 Rescue Skiff
 Reset
@@ -1466,6 +1477,7 @@ Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
 Rhythm of the Wild
+Ribtruss Roaster
 Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
@@ -1502,6 +1514,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sacred Rites
 Sadistic Slash
 Safehold Elite
 Sage of Fables
@@ -1828,6 +1841,7 @@ The Birth of Meletis
 The Celestus
 The Cruelty of Gix
 The Dalek Emperor
+The Elder Dragon War
 The Gaffer
 The Locust God
 The Mechanist, Aerial Artisan

@@ -106,6 +106,7 @@ mod l291_nth_counter;
 mod l293_triggers;
 mod l31a_targeted;
 mod l32a_cards;
+mod l31d_x_color;
 mod let_and_modal_who;
 mod loyalty_activations;
 mod madness;

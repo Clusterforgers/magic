@@ -11,7 +11,7 @@
           "Spell": {
             "effects": [
               { "Discard": { "who": "Opponents", "as": "d" } },
-              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "d" } }] } } }
+              { "Draw": { "count": { "Bound": "d~moved" } } }
             ]
           }
         }

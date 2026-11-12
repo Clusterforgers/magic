@@ -155,6 +155,8 @@ mod l31a_events;
 pub(crate) mod l31a_performed;
 mod l31b_any_amount;
 mod l32a_paid;
+mod l31d_any_number;
+mod l31d_x_color;
 mod land_types;
 mod lands;
 mod leave_combat;
@@ -501,6 +503,22 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) = l31d_any_number::l31d_any_number_read(text, kind, |twin, kind, x_free| {
+        clause_with(twin, kind, x_free, own)
+    }) && written_variants(&found)
+        .iter()
+        .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        l31d_x_color::l31d_x_color_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

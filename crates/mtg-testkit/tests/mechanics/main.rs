@@ -86,6 +86,7 @@ mod l292_cards;
 mod l292_haunt;
 mod l31a_keyword_actions;
 mod l31b_any_amount;
+mod l31d_any_number;
 mod lifted_gates;
 mod macro_combat;
 mod macro_keywords;

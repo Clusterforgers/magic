@@ -21,26 +21,7 @@
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
                   "mods": [
-                    {
-                      "ModifyPT": {
-                        "power": 0,
-                        "toughness": {
-                          "Count": [
-                            { "Is": { "Bound": "discarded" } },
-                            {
-                              "AnyOf": [
-                                { "In": "Battlefield" },
-                                { "In": "Hand" },
-                                { "In": "Library" },
-                                { "In": "Graveyard" },
-                                { "In": "Exile" },
-                                { "In": "Stack" }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    }
+                    { "ModifyPT": { "power": 0, "toughness": { "Bound": "discarded~moved" } } }
                   ],
                   "duration": "UntilEndOfTurn"
                 }

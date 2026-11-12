@@ -17,30 +17,12 @@
                   "as": "discarded"
                 }
               },
-              {
-                "Draw": {
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "discarded" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              },
+              { "Draw": { "count": { "Bound": "discarded~moved" } } },
               {
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
                       "op": "Ge",
                       "right": 7
                     }

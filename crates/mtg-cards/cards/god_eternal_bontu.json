@@ -15,7 +15,7 @@
               {
                 "SacrificeUpTo": {
                   "filter": ["Other"],
-                  "count": { "Count": [{ "ControlledBy": "You" }, "Other"] },
+                  "count": { "Count": ["Other", { "ControlledBy": "You" }] },
                   "as": "sacrificed"
                 }
               },

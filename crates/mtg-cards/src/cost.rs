@@ -216,6 +216,9 @@ pub enum CostItem {
     Waterbend(u32),
     /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
     XAtLeast(u32),
+    /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
+    /// nothing itself.
+    XColor(mtg_core::color::Color),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

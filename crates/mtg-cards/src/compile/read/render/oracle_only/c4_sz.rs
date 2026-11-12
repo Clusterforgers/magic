@@ -148,7 +148,7 @@ fn extra_phase(ability: &Ability) -> Option<String> {
 fn syphon(ability: &Ability) -> Option<String> {
     let shape = json!([
         {"Discard": {"who": "Opponents", "as": "d"}},
-        {"Draw": {"count": {"Count": [{"Is": {"Bound": "d"}}]}}}
+        {"Draw": {"count": {"Bound": "d~moved"}}}
     ]);
     (matches!(ability, Ability::Spell { .. }) && effects(ability) == shape).then(|| {
         "each other player discards a card. You draw a card for each card discarded this way"
