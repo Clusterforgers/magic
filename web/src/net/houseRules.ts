@@ -18,7 +18,13 @@ const COUNTS = [
   'commanders_per_seat',
 ] as const
 
-const FLAGS = ['mana_burn', 'open_hands', 'revealed_library_top', 'opening_hand_smoothing'] as const
+const FLAGS = [
+  'mana_burn',
+  'take_backs',
+  'open_hands',
+  'revealed_library_top',
+  'opening_hand_smoothing',
+] as const
 
 const WORDS: Record<string, readonly string[]> = {
   skip_first_draw: ['always', 'never'],

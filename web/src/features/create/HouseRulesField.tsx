@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { Switch } from '@/components/ui/switch'
 import { describeRules, HANDICAP_FIELDS, handicapId, requestRules, ruleGroups } from '@/lib/houseRules'
 import type { GameFormat, RuleSpec } from '@/lib/houseRules'
 import type { Draft } from './form'
@@ -19,6 +20,27 @@ function RuleRow({ spec, format, text, problem, onChange }: RuleRowProps) {
   const id = `rule-${spec.id.replace('.', '-')}`
   const own = spec.fallback(format)
   const describedBy = `${id}-help${problem === null ? '' : ` ${id}-problem`}`
+  if (spec.input.kind === 'switch') {
+    return (
+      <div className="grid content-start gap-1" data-rule={spec.id}>
+        <div className="flex items-center gap-2">
+          <Switch
+            id={id}
+            aria-labelledby={`${id}-label`}
+            aria-describedby={`${id}-help`}
+            checked={text.trim() !== 'off'}
+            onCheckedChange={(on) => onChange(spec.id, on ? '' : 'off')}
+          />
+          <Label id={`${id}-label`} htmlFor={id}>
+            {spec.label}
+          </Label>
+        </div>
+        <p id={`${id}-help`} className="text-xs text-muted-foreground">
+          {spec.help}
+        </p>
+      </div>
+    )
+  }
   return (
     <div className="grid content-start gap-1" data-rule={spec.id}>
       <Label htmlFor={id}>{spec.label}</Label>
