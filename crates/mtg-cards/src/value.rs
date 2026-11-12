@@ -712,6 +712,42 @@ pub enum Amount {
     },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
+    /// The stickers on the objects the reference names (CR 123), only those of the kind when one is given ("for each name
+    /// sticker on it"); a card keeps its stickers in every zone.
+    Stickers {
+        /// The objects.
+        on: Ref,
+        /// Only stickers of this kind.
+        kind: Option<crate::ability::StickerKind>,
+    },
+    /// The spells the players named have cast this game with the same name as the object with the ability, that object
+    /// included when it was cast ("if ... you've cast another spell named ~ this game": 2 or more).
+    CastSameNameThisGame(Ref),
+    /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
+    /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
+    TallyLastTurn {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
+    /// The stat of the objects of this turn's events of the kind, added up ("the total mana value of other spells you've
+    /// cast this turn"); only the kinds kept as objects.
+    TallyTotal {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+        /// The stat added up.
+        stat: StatKind,
+    },
+    /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
+    /// number of unique vowels on that sticker"); 0 when it put none.
+    StickerVowels,
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// How many players have lost the game ("for each player who has lost the game").
@@ -940,6 +976,24 @@ enum Tagged {
     },
     CommanderColors(Ref),
     TurnNumber,
+    Stickers {
+        on: Ref,
+        #[serde(default)]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
+    CastSameNameThisGame(Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1099,6 +1153,24 @@ enum TaggedRef<'a> {
     },
     CommanderColors(&'a Ref),
     TurnNumber,
+    Stickers {
+        on: &'a Ref,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
+    CastSameNameThisGame(&'a Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1142,6 +1214,7 @@ enum TaggedRef<'a> {
 }
 
 impl From<Tagged> for Amount {
+    #[allow(clippy::too_many_lines)] // one arm for each tagged form
     fn from(tagged: Tagged) -> Amount {
         match tagged {
             Tagged::X => Amount::X,
@@ -1204,6 +1277,23 @@ impl From<Tagged> for Amount {
             Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
+            Tagged::StickerVowels => Amount::StickerVowels,
+            Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
+            Tagged::TallyLastTurn { event, who, filter } => {
+                Amount::TallyLastTurn { event, who, filter }
+            }
+            Tagged::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            },
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
@@ -1338,6 +1428,31 @@ impl Serialize for Amount {
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::Stickers { on, kind } => {
+                TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
+            }
+            Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
+            Amount::CastSameNameThisGame(who) => {
+                TaggedRef::CastSameNameThisGame(who).serialize(serializer)
+            }
+            Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
+                event: *event,
+                who,
+                filter,
+            }
+            .serialize(serializer),
+            Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => TaggedRef::TallyTotal {
+                event: *event,
+                who,
+                filter,
+                stat: *stat,
+            }
+            .serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::PlayersLost => TaggedRef::PlayersLost.serialize(serializer),
             Amount::CastTargets => TaggedRef::CastTargets.serialize(serializer),
@@ -1565,6 +1680,9 @@ pub enum Condition {
     SorceryTiming,
     /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
     AfterCombat,
+    /// The sticker whose putting on triggered the ability is of this kind ("If it's an art sticker"), read only in a
+    /// trigger on putting a sticker on.
+    TriggeringSticker(crate::ability::StickerKind),
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

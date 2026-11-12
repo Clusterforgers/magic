@@ -1,0 +1,21 @@
+{
+  "oracle_id": "5c4e9401-537c-4bf6-bd07-d2abc43612c9",
+  "name": "Starlight Spectacular",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starlight Spectacular",
+      "oracle_fingerprint": "d3260aea87a1ead5240c38fc109ea8a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Parade": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

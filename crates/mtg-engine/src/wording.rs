@@ -169,6 +169,11 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
+            Pred::WithSticker(kind) => tail.push(format!(
+                "with {} {} sticker on it",
+                kind.article(),
+                kind.word()
+            )),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
             Pred::CounterCount { kind, op, to } => {
                 tail.push(counter_count(kind.name(), *op, *to));

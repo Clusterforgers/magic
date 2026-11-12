@@ -133,6 +133,8 @@ mod r370_balance;
 mod r370_battles;
 mod r370_copies;
 mod r370_prevented;
+mod r378_history;
+mod r378_teamwork;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

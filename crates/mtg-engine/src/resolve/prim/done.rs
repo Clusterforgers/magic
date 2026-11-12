@@ -88,6 +88,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::OpenAttraction { .. }
         | Effect::RollToVisit { .. }
         | Effect::PutSticker { .. }
+        | Effect::Parade { .. }
         | Effect::ClaimPrize { .. }
         | Effect::UnlockDoor { .. }
         | Effect::LockOrUnlockDoor { .. }

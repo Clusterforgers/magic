@@ -778,6 +778,45 @@ impl<'a> Scope<'a> {
         Ok(count)
     }
 
+    /// Whether the sticker whose putting on triggered the ability is of the kind.
+    fn r378_triggering_sticker(&self, kind: mtg_cards::ability::StickerKind) -> bool {
+        self.cause
+            .is_some_and(|cause| cause.amount == crate::un34_stickers::kind_code(kind))
+    }
+
+    /// How many events of the kind the players had in the snapshot log given, among the objects the filter selects, or
+    /// the stat of those objects added up.
+    fn r378_logged_in(
+        &self,
+        log: &[(TallyEvent, PlayerId, crate::snapshot::Snapshot)],
+        event: TallyEvent,
+        players: &[PlayerId],
+        filter: &Selector,
+        stat: Option<StatKind>,
+    ) -> Result<i64, ResolveError> {
+        let mut scope = self.clone();
+        scope.snapshots.extend(log.iter().map(|(_, _, shot)| shot));
+        scope.as_was = true;
+        let mut total = 0i64;
+        for (kind, player, shot) in log {
+            let reference = ObjectRef {
+                id: shot.id,
+                counter: shot.counter,
+            };
+            if *kind != event || !players.contains(player) || !scope.selects(filter, reference)? {
+                continue;
+            }
+            total += match stat {
+                None => 1,
+                Some(stat) => scope
+                    .seen(reference)
+                    .and_then(|seen| Self::stat(&seen, stat))
+                    .unwrap_or(0),
+            };
+        }
+        Ok(total)
+    }
+
     /// How many permanents the source devoured as it entered (CR 702.82); zero once it is a new object.
     fn w7e_devoured(&self) -> i64 {
         self.state
@@ -1856,9 +1895,9 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
-            Pred::Stickered => {
-                matches!(seen.counters, Counted::Live(_))
-                    && !state.stickers_on(reference.id).is_empty()
+            Pred::Stickered => crate::un34_stickers::has_sticker(state, reference, None),
+            Pred::WithSticker(kind) => {
+                crate::un34_stickers::has_sticker(state, reference, Some(*kind))
             }
             Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
             Pred::FoughtSinceYourLastUpkeep {
@@ -1973,6 +2012,7 @@ impl<'a> Scope<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BlockedThisTurnBy(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -2245,6 +2285,29 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::Stickers { on, kind } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        total += i64::from(crate::un34_stickers::stickers_of_kind(
+                            self.state, object, *kind,
+                        ));
+                    }
+                }
+                total
+            }
+            // Kept by the resolution that put the sticker on, else carried by the reflexive trigger it set off.
+            Amount::StickerVowels => self
+                .own_run()
+                .and_then(|resolving| {
+                    resolving
+                        .lets
+                        .iter()
+                        .find(|(kept, _)| kept == crate::un34_stickers::VOWELS)
+                        .map(|(_, value)| *value)
+                })
+                .or_else(|| self.cause.map(|cause| i64::from(cause.amount)))
+                .unwrap_or(0),
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::PlayersLost => self.r305b_players_lost(),
             Amount::CastTargets => self.r305b_cast_targets()?,
@@ -2258,6 +2321,40 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::CastSameNameThisGame(who) => {
+                let name = self
+                    .state
+                    .source_object(self.source.id)
+                    .map(|source| source.card().name.clone())
+                    .unwrap_or_default();
+                self.players(who)?
+                    .into_iter()
+                    .map(|player| {
+                        i64::from(
+                            self.state
+                                .cast_names
+                                .get(&(player, name.clone()))
+                                .copied()
+                                .unwrap_or(0),
+                        )
+                    })
+                    .sum()
+            }
+            Amount::TallyLastTurn { event, who, filter } => {
+                let players = self.players(who)?;
+                let log = self.state.logged_last_turn();
+                self.r378_logged_in(log, *event, &players, filter, None)?
+            }
+            Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => {
+                let players = self.players(who)?;
+                let log = self.state.tallies.logged.as_slice();
+                self.r378_logged_in(log, *event, &players, filter, Some(*stat))?
+            }
             Amount::Remembered { on, slot, per } => {
                 let slots = match per {
                     Some(per) => self
@@ -2994,6 +3091,7 @@ impl<'a> Scope<'a> {
                 crate::priority::sorcery_timing(self.state, self.controller)
             }
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
+            Condition::TriggeringSticker(kind) => self.r378_triggering_sticker(*kind),
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

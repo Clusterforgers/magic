@@ -1,7 +1,7 @@
 {
   "oracle_id": "2ce375c8-7c37-40b3-95cf-e0aa958bb317",
   "name": "_____ Bird Gets the Worm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "_____ Bird Gets the Worm",
@@ -9,9 +9,12 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 179 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } },
+              { "GainLife": { "amount": "StickerVowels" } }
+            ]
           }
         }
       ]

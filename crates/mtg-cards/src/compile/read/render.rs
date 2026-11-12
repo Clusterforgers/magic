@@ -3426,7 +3426,12 @@ impl Writer<'_> {
             Effect::OpenAttraction { .. }
             | Effect::RollToVisit { .. }
             | Effect::ClaimPrize { .. } => super::un33_attractions::un33_effect_text(effect)?,
-            Effect::PutSticker { who, on } => super::un34_stickers::un34_put_text(who, on)?,
+            Effect::PutSticker {
+                who,
+                on,
+                kind,
+                up_to,
+            } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

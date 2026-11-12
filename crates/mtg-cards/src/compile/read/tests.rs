@@ -397,6 +397,7 @@ mod r304b_writers;
 mod r306c_wordings;
 mod r371_copy_except;
 mod r371_owner;
+mod r378_stickers;
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;
