@@ -352,6 +352,7 @@ pub fn r372_until_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]),
+            total: None,
             bind: FOUND.to_owned(),
             exiled_as: EXILED.to_owned(),
         },
@@ -395,6 +396,7 @@ pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::ExileUntil {
                 who: Ref::You,
                 filter: Selector(preds),
+                total: None,
                 bind,
                 exiled_as,
             },
