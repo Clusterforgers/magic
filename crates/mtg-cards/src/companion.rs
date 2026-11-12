@@ -33,13 +33,13 @@ pub enum DeckCondition {
     },
     /// The deck holds at least this many cards more than the format's minimum deck size.
     ExtraCards(u32),
-    /// The cards that match `of` share a card type.
+    /// The `of` cards share a card type.
     ShareCardType {
         /// The cards; every card when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         of: Selector,
     },
-    /// Every card that matches `of` has an even (or odd) mana value.
+    /// The `of` cards have even (or odd) mana values.
     ManaValueParity {
         /// The cards; every card when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
@@ -47,7 +47,7 @@ pub enum DeckCondition {
         /// Even, else odd.
         even: bool,
     },
-    /// No card repeats a mana symbol in its mana cost.
+    /// No card repeats a mana symbol.
     NoRepeatedSymbol,
 }
 

@@ -252,7 +252,7 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
-    /// While the controller controls the source and it stays tapped ("for as long as you control ~ and ~ remains tapped").
+    /// While you control the source and it stays tapped.
     WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,

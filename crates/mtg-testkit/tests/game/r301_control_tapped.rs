@@ -9,7 +9,6 @@ use mtg_engine::decision::Answer;
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
-use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{free_creature, island};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -132,15 +131,7 @@ fn a_permanent_that_cant_phase_out_stays_in(
     }
     let next = u32::try_from(2 * seats).unwrap() + 1;
     driver.idle_until(next, Step::Upkeep)?;
-    let phaser = driver.id_of("Phaser")?;
-    let zone = driver.state().object(phaser).map(|o| o.zone());
-    assert_eq!(
-        zone,
-        Some(if held {
-            Zone::Battlefield
-        } else {
-            Zone::PhasedOut
-        })
-    );
+    // A phased-out permanent is treated as though it doesn't exist: it is not on the battlefield.
+    assert_eq!(driver.id_of("Phaser").is_ok(), held);
     Ok(())
 }

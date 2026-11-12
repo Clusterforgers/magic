@@ -142,7 +142,7 @@ pub enum CastWay {
     Harmonize,
     /// An alternative cost the card prints in a static line, chosen per card (CR 118.9): cast from where `AltCast` names for the cost it gives.
     Alternative,
-    /// Offering (CR 702.48): from a hand at instant speed, its mana cost less a sacrificed permanent's.
+    /// Offering (CR 702.48).
     Offering,
 }
 

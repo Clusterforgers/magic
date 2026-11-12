@@ -127,7 +127,7 @@ pub enum ActivationKind {
     Cycling,
     /// The unearth ability (CR 702.84).
     Unearth,
-    /// The ninjutsu ability (CR 702.49).
+    /// Ninjutsu (CR 702.49).
     Ninjutsu,
     /// A mana ability (CR 605).
     Mana,

@@ -389,7 +389,7 @@ pub enum Keyword {
     Exploit,
     /// Soulbond (CR 702.95): the creature may be paired with another unpaired creature of its controller as either enters, and the pair lasts while both stay creatures under that controller on the battlefield.
     Soulbond,
-    /// Offering (CR 702.48): "Fox offering", what may be sacrificed to cast it at instant speed for less.
+    /// Offering (CR 702.48): what may be sacrificed.
     Offering(Selector),
     /// Emerge with its cost (CR 702.119): an alternative cost to cast the card from a hand by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.
     Emerge(Cost),
