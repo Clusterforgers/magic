@@ -451,3 +451,68 @@ fn brazen_cannonade_lets_it_be_played_until_combat_on_the_next_turn(
     assert_eq!(options.playable_lands.contains(&id), playable);
     Ok(())
 }
+
+/// A free instant with the one spell ability given as JSON.
+fn r306c_instant(name: &str, rules: &str) -> Arc<CardDefinition> {
+    let ability: mtg_cards::ability::Ability = serde_json::from_str(rules).unwrap();
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(ability),
+    )
+}
+
+#[rstest]
+fn ojer_gives_an_instant_cast_from_hand_rebound(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card("Ojer Pakpatiq, Deepest Epoch").unwrap())])
+        .hand(
+            0,
+            [r306c_instant(
+                "Quick Study",
+                r#"{"Spell":{"effects":[{"Draw":{}}]}}"#,
+            )],
+        )
+        .library(0, (0..4).map(|_| forest()));
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Quick Study")?;
+    r306c_settle(&mut driver, &mut |_, _| None)?;
+    // Rebound exiles it as it resolves.
+    let exiled = names(driver.state(), Zone::Exile);
+    assert_eq!(exiled, vec!["Quick Study".to_owned()]);
+    Ok(())
+}
+
+#[rstest]
+fn ojer_returns_transformed_with_three_time_counters(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(card("Ojer Pakpatiq, Deepest Epoch").unwrap())])
+        .hand(
+            0,
+            [r306c_instant(
+                "Doom",
+                r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
+            )],
+        );
+    let mut driver = Driver::from_scenario(scenario)?;
+    let ojer = driver.target_named("Ojer Pakpatiq, Deepest Epoch")?;
+    driver.cast_at("Doom", &[ojer])?;
+    r306c_settle(&mut driver, &mut |_, _| None)?;
+    let id = driver.id_of("Temple of Cyclical Time")?;
+    let permanent = driver.state().object(id).unwrap().permanent().unwrap();
+    assert!(permanent.tapped());
+    assert_eq!(
+        permanent.counters_of(&CounterKind::Other("time".to_owned())),
+        3
+    );
+    // The instant was cast from hand while Ojer was on the battlefield, so it has rebound too.
+    assert_eq!(names(driver.state(), Zone::Exile), vec!["Doom".to_owned()]);
+    Ok(())
+}

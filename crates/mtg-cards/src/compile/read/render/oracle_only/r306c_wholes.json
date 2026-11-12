@@ -562,5 +562,42 @@
    }
   },
   "Roll a six-sided die. Put a number of luck counters on ~ equal to the result and create a Treasure token. Then if there are six or more luck counters on ~, claim the prize!"
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "Battlefield": {
+         "tapped": true,
+         "transformed": true,
+         "counters": [
+          [
+           {
+            "Other": "time"
+           },
+           3
+          ]
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When ~ dies, return it to the battlefield tapped and transformed under its owner's control with three time counters on it."
  ]
 ]

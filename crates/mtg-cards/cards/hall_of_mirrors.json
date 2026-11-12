@@ -9,51 +9,22 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Visit": {}
-            },
+            "when": { "Visit": {} },
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
             ],
             "effects": [
               {
                 "BecomeCopy": {
                   "what": {
                     "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "ControlledBy": "You"
-                      },
-                      {
-                        "Not": {
-                          "Is": {
-                            "Target": 0
-                          }
-                        }
-                      }
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Target": 0 } } }
                     ]
                   },
-                  "of": {
-                    "Target": 0
-                  },
-                  "except": [
-                    {
-                      "RemoveSupertype": "Legendary"
-                    }
-                  ],
+                  "of": { "Target": 0 },
+                  "except": [{ "RemoveSupertype": "Legendary" }],
                   "duration": "UntilEndOfTurn"
                 }
               }

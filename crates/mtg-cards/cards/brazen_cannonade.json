@@ -11,65 +11,30 @@
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  "Attacking",
-                  {
-                    "ControlledBy": "You"
-                  }
-                ],
+                "what": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
             },
-            "effects": [
-              {
-                "DealDamage": {
-                  "to": "Opponents",
-                  "amount": 2
-                }
-              }
-            ]
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Main2",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
             "if": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "Attackers"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
                 "op": "Ge",
                 "right": 1
               }
             },
             "effects": [
-              {
-                "ExileTop": {
-                  "as": "impulse"
-                }
-              },
+              { "ExileTop": { "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": {
-                      "from": "Exile",
-                      "only": {
-                        "Bound": "impulse"
-                      },
-                      "play": true
-                    }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfCombatOnYourNextTurn"
                 }

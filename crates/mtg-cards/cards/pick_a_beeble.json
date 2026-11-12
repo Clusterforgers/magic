@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Visit": {}
-            },
+            "when": { "Visit": {} },
             "effects": [
               {
                 "RollDice": {
@@ -23,21 +21,11 @@
                         {
                           "PutCounters": {
                             "on": "This",
-                            "counter": {
-                              "Other": "luck"
-                            },
-                            "count": {
-                              "DieResult": "Only"
-                            }
+                            "counter": { "Other": "luck" },
+                            "count": { "DieResult": "Only" }
                           }
                         },
-                        {
-                          "CreateToken": {
-                            "token": {
-                              "Named": "treasure"
-                            }
-                          }
-                        }
+                        { "CreateToken": { "token": { "Named": "treasure" } } }
                       ]
                     }
                   ]
@@ -47,23 +35,12 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "Counters": {
-                          "on": "This",
-                          "counter": {
-                            "Other": "luck"
-                          }
-                        }
-                      },
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "luck" } } },
                       "op": "Ge",
                       "right": 6
                     }
                   },
-                  "then": [
-                    {
-                      "ClaimPrize": {}
-                    }
-                  ]
+                  "then": [{ "ClaimPrize": {} }]
                 }
               }
             ]
@@ -71,28 +48,11 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Prize": {}
-            },
+            "when": { "Prize": {} },
             "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "treasure"
-                  },
-                  "count": 2
-                }
-              },
-              {
-                "Sacrifice": {
-                  "filter": [
-                    "This"
-                  ]
-                }
-              },
-              {
-                "OpenAttraction": {}
-              }
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } },
+              { "Sacrifice": { "filter": ["This"] } },
+              { "OpenAttraction": {} }
             ]
           }
         }

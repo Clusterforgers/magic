@@ -1,23 +1,77 @@
 {
   "oracle_id": "34ef174e-1b3d-43d5-9f72-3d35befbdd7f",
   "name": "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ojer Pakpatiq, Deepest Epoch",
       "oracle_fingerprint": "cbb04e86685d58e14182bdf3b87f4405",
       "abilities": [
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 197 }
+          "Keyword": "Flying"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Type": "Instant"
+                  },
+                  {
+                    "CastFrom": "Hand"
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "AddKeyword": "Rebound"
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 198, "end": 332 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true,
+                      "transformed": true,
+                      "counters": [
+                        [
+                          {
+                            "Other": "time"
+                          },
+                          3
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
@@ -28,25 +82,60 @@
       "abilities": [
         {
           "Activated": {
-            "cost": ["Tap"],
+            "cost": [
+              "Tap"
+            ],
             "effects": [
-              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
-              { "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": [
+                      "Blue"
+                    ]
+                  }
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": {
+                    "Other": "time"
+                  }
+                }
+              }
             ]
           }
         },
         {
           "Activated": {
-            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "cost": [
+              {
+                "Mana": "{2}{U}"
+              },
+              "Tap"
+            ],
             "timing": "Sorcery",
             "condition": {
               "Compare": {
-                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                "left": {
+                  "Counters": {
+                    "on": "This",
+                    "counter": {
+                      "Other": "time"
+                    }
+                  }
+                },
                 "op": "Eq",
                 "right": 0
               }
             },
-            "effects": [{ "Transform": { "what": "This" } }]
+            "effects": [
+              {
+                "Transform": {
+                  "what": "This"
+                }
+              }
+            ]
           }
         }
       ]

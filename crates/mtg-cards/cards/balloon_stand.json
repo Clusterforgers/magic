@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Visit": {}
-            },
+            "when": { "Visit": {} },
             "effects": [
               {
                 "Modal": {
@@ -23,22 +21,12 @@
                             "token": {
                               "Custom": {
                                 "name": "Balloon",
-                                "colors": [
-                                  "Red"
-                                ],
-                                "types": [
-                                  "Creature"
-                                ],
-                                "subtypes": [
-                                  "Balloon"
-                                ],
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Balloon"],
                                 "power": 1,
                                 "toughness": 1,
-                                "abilities": [
-                                  {
-                                    "Keyword": "Flying"
-                                  }
-                                ]
+                                "abilities": [{ "Keyword": "Flying" }]
                               }
                             }
                           }
@@ -46,35 +34,16 @@
                       ]
                     },
                     {
-                      "targets": [
-                        {
-                          "what": {
-                            "Object": [
-                              {
-                                "Type": "Creature"
-                              }
-                            ]
-                          }
-                        }
-                      ],
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
                         {
-                          "Sacrifice": {
-                            "filter": [
-                              {
-                                "Subtype": "Balloon"
-                              }
-                            ],
-                            "as": "sacrificed"
-                          }
+                          "Sacrifice": { "filter": [{ "Subtype": "Balloon" }], "as": "sacrificed" }
                         },
                         {
                           "If": {
                             "condition": {
                               "CountOf": {
-                                "subject": {
-                                  "Bound": "sacrificed"
-                                },
+                                "subject": { "Bound": "sacrificed" },
                                 "selector": [],
                                 "op": "Ge",
                                 "right": 1
@@ -83,14 +52,8 @@
                             "then": [
                               {
                                 "Continuous": {
-                                  "affected": {
-                                    "Target": 0
-                                  },
-                                  "mods": [
-                                    {
-                                      "AddKeyword": "Flying"
-                                    }
-                                  ],
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "AddKeyword": "Flying" }],
                                   "duration": "UntilEndOfTurn"
                                 }
                               }
