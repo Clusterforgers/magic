@@ -7,7 +7,7 @@
 //! least two other creatures attack", "~ can only attack alone"), and an attack
 //! never made twice at one player in a turn ("~ can't attack a player it has already attacked this turn."), the quoted
 //! "bands with other" of a grant, damage prevented from the creatures the card blocks, and an entry with counters
-//! unless the card was cast from its owner's hand.
+//! unless the card was cast from its owner's hand, and life the other players gain in place of the mana cost.
 
 use crate::ability::Ability;
 use crate::compile::read::conditional::condition_texts;
@@ -32,6 +32,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(bands_with_other(ability))
         .chain(by_blocked(ability))
         .chain(not_cast_from_hand(ability))
+        .chain(others_gain_instead(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -336,6 +337,9 @@ fn joins(ability: &Ability) -> Vec<String> {
     };
     let (verb, verbs, others, among) = match quirk {
         CombatQuirk::AttackAlone => return vec!["~ can only attack alone.".to_owned()],
+        CombatQuirk::AttackWithAll => {
+            return vec!["If ~ attacks, all creatures you control attack if able.".to_owned()];
+        }
         CombatQuirk::AttackWithOthers { others, among } => ("attack", "attacks", *others, among),
         CombatQuirk::BlockWithOthers { others, among } => ("block", "blocks", *others, among),
         _ => return Vec::new(),
@@ -478,4 +482,26 @@ fn not_cast_from_hand(ability: &Ability) -> Vec<String> {
             Some(format!("{rest} if you didn't cast it from your hand."))
         })
         .collect()
+}
+
+/// "If you control a Forest, rather than pay this spell's mana cost, you may have each other player gain 6 life."
+fn others_gain_instead(ability: &Ability) -> Vec<String> {
+    let Ability::FreeCast {
+        condition,
+        cost: Some(cost),
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [crate::cost::CostItem::OthersGainLife(amount)] = cost.0.as_slice() else {
+        return Vec::new();
+    };
+    let tail = format!("you may have each other player gain {amount} life.");
+    match condition {
+        None => vec![format!("Rather than pay this spell's mana cost, {tail}")],
+        Some(condition) => said(condition)
+            .into_iter()
+            .map(|words| format!("If {words}, rather than pay this spell's mana cost, {tail}"))
+            .collect(),
+    }
 }

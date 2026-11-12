@@ -1,0 +1,25 @@
+{
+  "oracle_id": "fbd71691-d0fd-4842-913b-fe6096d509a3",
+  "name": "Skyshroud Cutter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyshroud Cutter",
+      "oracle_fingerprint": "d45308c667c4c4454d2676b431093c79",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "OthersGainLife": 5 }]
+          }
+        }
+      ]
+    }
+  ]
+}

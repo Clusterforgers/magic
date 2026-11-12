@@ -655,6 +655,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
             format!("{who} can't block unless at least {others} other chosen creatures block")
         }
         CombatQuirk::AttackAlone => format!("{who} can attack only alone"),
+        CombatQuirk::AttackWithAll => {
+            format!("if {who} attack, all creatures their controller controls attack if able")
+        }
         CombatQuirk::AttackDespiteDefender => {
             format!("{who} can attack as though they didn't have defender")
         }

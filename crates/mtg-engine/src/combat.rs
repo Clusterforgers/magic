@@ -471,7 +471,13 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .iter()
         .map(|option| option.object)
         .collect();
-    options.joins = crate::r286_joins::r286_joins(state, &offered, true);
+    let free: Vec<ObjectId> = options
+        .attackers
+        .iter()
+        .filter(|option| option.free_defender().is_some())
+        .map(|option| option.object)
+        .collect();
+    options.joins = crate::r286_joins::r286_joins(state, &offered, &free, true);
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
     // that can attack only by paying a cost: a requirement never makes a player pay (CR 508.1d).
     options.required = options
@@ -604,7 +610,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
     let (mut must_be_blocked, forced) = name_requirements(state, &mut blockers);
     let cant_alone = cant_block_alone_of(state, &blockers);
     let offered: Vec<ObjectId> = blockers.iter().map(|option| option.object).collect();
-    let joins = crate::r286_joins::r286_joins(state, &offered, false);
+    let joins = crate::r286_joins::r286_joins(state, &offered, &[], false);
     crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()

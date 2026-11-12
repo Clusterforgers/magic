@@ -115,6 +115,8 @@ pub(crate) enum Part {
     },
     /// Damage the source deals to the payer.
     Damage(u32),
+    /// Each other player gains this much life.
+    OthersGainLife(u32),
     /// The source stops being attached.
     Unattach,
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
@@ -228,6 +230,7 @@ fn pick(
 
 /// The parts of the cost items beyond the common picks: damage, unattaching, exiling the top, evidence, blight, behold,
 /// a move into the library and forage.
+#[allow(clippy::too_many_lines)]
 fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
     Ok(Some(match item {
         CostItem::DamageToYou(count) => {
@@ -247,6 +250,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             (Part::DiscardRandom(number), x)
         }
         CostItem::Unattach => (Part::Unattach, false),
+        CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
         CostItem::TapPower { filter, power } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
             let kind = Kind::TapPower;
@@ -450,6 +454,7 @@ impl Part {
                 Part::Draw(_) => Part::Draw(x),
                 Part::DiscardRandom(_) => Part::DiscardRandom(x),
                 Part::Damage(_) => Part::Damage(x),
+                Part::OthersGainLife(amount) => Part::OthersGainLife(*amount),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::DiscardHand => Part::DiscardHand,
@@ -506,7 +511,11 @@ impl Part {
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
-            Part::Exert | Part::Unattach | Part::DiscardHand | Part::X(_) => return None,
+            Part::Exert
+            | Part::Unattach
+            | Part::DiscardHand
+            | Part::OthersGainLife(_)
+            | Part::X(_) => return None,
         };
         Some(number)
     }
@@ -520,6 +529,7 @@ impl Part {
             Part::Draw(_) => "Cost.Draw",
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
+            Part::OthersGainLife(_) => "Cost.OthersGainLife",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
             Part::ExileTop(_) => "Cost.ExileTop",
@@ -562,6 +572,7 @@ impl Part {
                 )
             }
             Part::Damage(amount) => format!("Take {amount} damage"),
+            Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
             Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
@@ -617,7 +628,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
-            Part::DiscardHand => Some(Vec::new()),
+            Part::DiscardHand | Part::OthersGainLife(_) => Some(Vec::new()),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
                 let found = pick.candidates(payer);
@@ -685,6 +696,7 @@ impl Part {
             Part::Draw(amount) => draw::events(state, player, *amount),
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
+            Part::OthersGainLife(amount) => r286_others_gain(state, player, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::DiscardHand => state
                 .zone(crate::zones::Zone::Hand(player))
@@ -1006,4 +1018,18 @@ mod tests;
 fn discards_the_hand(item: &CostItem) -> bool {
     matches!(item, CostItem::Discard { count: Amount::Count(cards), filter: None }
         if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(mtg_cards::refs::Ref::You)])
+}
+
+/// The life each other player still in the game gains as the cost is paid; one who can't gain life gains none.
+fn r286_others_gain(state: &GameState, payer: PlayerId, amount: u32) -> Vec<Event> {
+    if amount == 0 {
+        return Vec::new();
+    }
+    state
+        .turn_order_from(payer)
+        .into_iter()
+        .filter(|player| *player != payer && state.is_alive(*player))
+        .filter(|player| !crate::rules::cant_gain_life(state, *player))
+        .map(|player| Event::LifeGained { player, amount })
+        .collect()
 }

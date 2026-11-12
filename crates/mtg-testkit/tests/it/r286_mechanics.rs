@@ -293,6 +293,10 @@ fn colored(name: &str, power: i32, color: mtg_core::color::Color) -> Arc<CardDef
 #[case::master_alone("Master of Cruelties", &["Master of Cruelties"], true)]
 #[case::master_with_another("Master of Cruelties", &["Master of Cruelties", "Big"], false)]
 #[case::others_without_the_master("Master of Cruelties", &["Big", "Small"], true)]
+#[case::bey_alone("Viashino Bey", &["Viashino Bey"], false)]
+#[case::bey_with_one("Viashino Bey", &["Viashino Bey", "Big"], false)]
+#[case::bey_with_all("Viashino Bey", &["Viashino Bey", "Big", "Small"], true)]
+#[case::others_without_bey("Viashino Bey", &["Big"], true)]
 fn a_creature_attacks_only_beside_the_others_its_rule_names(
     #[values(2, 3, 4)] seats: usize,
     #[case] bound: &str,
@@ -484,6 +488,49 @@ fn dire_wolves_band_while_their_controller_has_a_plains(
     assert_eq!(
         has_keyword(driver.state(), wolves, &Keyword::Banding),
         plains
+    );
+    Ok(())
+}
+
+#[rstest]
+fn reverent_silence_is_cast_for_the_other_players_life_while_its_caster_has_a_forest(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] forest: bool,
+) -> Result<(), ScriptError> {
+    let land = if forest {
+        mtg_testkit::cards::forest()
+    } else {
+        mtg_testkit::cards::plains()
+    };
+    let charm = Arc::new(CardDefinition::new("Charm").with_type(CardType::Enchantment));
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, [ready(land)])
+        .battlefield(1, [ready(charm)])
+        .hand(0, [card("Reverent Silence").unwrap()]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    if !forest {
+        // One land pays no {1}{G}{G}, and the other cost is closed: the spell is not offered.
+        assert!(driver.begin_cast("Reverent Silence").is_err());
+        return Ok(());
+    }
+    driver.begin_cast("Reverent Silence")?;
+    if let DecisionKind::ChooseOption(options) = &driver.decision()?.kind {
+        let at = options
+            .options
+            .iter()
+            .position(|option| format!("{option:?}").contains("gains 6 life"))
+            .expect("the way that gives life");
+        driver.answer(Answer::ChooseOption(OptionChoice(at)))?;
+    }
+    settle(&mut driver)?;
+    for seat in 0..seats {
+        let life = driver.state().player(pid(seat)).unwrap().life();
+        assert_eq!(life, if seat == 0 { 20 } else { 26 });
+    }
+    assert!(
+        driver.id_of("Charm").is_err(),
+        "the enchantment is destroyed"
     );
     Ok(())
 }

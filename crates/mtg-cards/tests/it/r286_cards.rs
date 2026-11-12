@@ -121,6 +121,9 @@ fn compiled() {
 #[case("Cathedral of Serra")]
 #[case("Wall of Shadows")]
 #[case("Epochrasite")]
+#[case("Viashino Bey")]
+#[case("Reverent Silence")]
+#[case("Skyshroud Cutter")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -178,6 +181,12 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 )]
 #[case::white_or_green("Scarred Puma", r#"{"Color":"Black"}"#, r#"{"Color":"White"}"#)]
 #[case::not_alone("Master of Cruelties", r#""AttackAlone""#, r#""CantAttackAlone""#)]
+#[case::other_life(
+    "Skyshroud Cutter",
+    r#"{"OthersGainLife":5}"#,
+    r#"{"OthersGainLife":6}"#
+)]
+#[case::bey_alone("Viashino Bey", r#""AttackWithAll""#, r#""AttackAlone""#)]
 #[case::blocked_not_attacked("Port Razer", r#""event":"Attacked""#, r#""event":"Blocked""#)]
 #[case::blue_legends("Mountain Stronghold", r#"{"Color":"Red"}"#, r#"{"Color":"Blue"}"#)]
 #[case::from_graveyard("Epochrasite", r#""from":"Hand""#, r#""from":"Graveyard""#)]

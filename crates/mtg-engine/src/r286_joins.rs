@@ -26,8 +26,14 @@ pub struct JoinRule {
 }
 
 /// The join rules of the creatures `offered` (the attackers or the blockers of the options), with `attack` choosing the
-/// attack rules or the block rules.
-pub(crate) fn r286_joins(state: &GameState, offered: &[ObjectId], attack: bool) -> Vec<JoinRule> {
+/// attack rules or the block rules; `free` are the attackers that can attack for nothing, which "all creatures you control
+/// attack if able" binds.
+pub(crate) fn r286_joins(
+    state: &GameState,
+    offered: &[ObjectId],
+    free: &[ObjectId],
+    attack: bool,
+) -> Vec<JoinRule> {
     let mut rules = Vec::new();
     for object in offered {
         let Some(held) = state.object(*object) else {
@@ -43,6 +49,20 @@ pub(crate) fn r286_joins(state: &GameState, offered: &[ObjectId], attack: bool) 
                         at_least: 0,
                         among: Vec::new(),
                         alone: true,
+                    });
+                    continue;
+                }
+                CombatQuirk::AttackWithAll if attack => {
+                    let among: Vec<ObjectId> = free
+                        .iter()
+                        .copied()
+                        .filter(|other| other != object)
+                        .collect();
+                    rules.push(JoinRule {
+                        object: *object,
+                        at_least: u32::try_from(among.len()).unwrap_or(u32::MAX),
+                        among,
+                        alone: false,
                     });
                     continue;
                 }

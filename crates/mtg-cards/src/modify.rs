@@ -400,6 +400,10 @@ pub enum CombatQuirk {
     },
     /// They can attack only alone (CR 508.1c).
     AttackAlone,
+    /// If they attack, every other creature their controller controls that can attack for nothing attacks too ("If this
+    /// creature attacks, all creatures you control attack if able."): a declaration with them and without such a creature is
+    /// refused.
+    AttackWithAll,
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
     /// They can block as though they were untapped.
