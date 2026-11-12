@@ -535,6 +535,7 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         house_rules: body.house_rules.clone(),
         format,
         pace: None,
+        accounts: Vec::new(),
     };
     Ok((seats, options))
 }

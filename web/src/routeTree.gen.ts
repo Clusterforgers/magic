@@ -21,6 +21,7 @@ import { Route as ReadRouteImport } from './routes/read'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidated'
 import { Route as DevAccountsRouteImport } from './routes/dev.accounts'
@@ -34,7 +35,9 @@ import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as ReadBulkRouteImport } from './routes/read_.bulk'
+import { Route as TournamentsTournamentIdRouteImport } from './routes/tournaments_.$tournamentId'
 import { Route as DecksDeckIdUnvalidatedRouteImport } from './routes/decks_.$deckId_.unvalidated'
+import { Route as TournamentsJoinCodeRouteImport } from './routes/tournaments_.join.$code'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +97,11 @@ const ReviewRoute = ReviewRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentsRoute = TournamentsRouteImport.update({
+  id: '/tournaments',
+  path: '/tournaments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
@@ -161,9 +169,19 @@ const ReadBulkRoute = ReadBulkRouteImport.update({
   path: '/read/bulk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentsTournamentIdRoute = TournamentsTournamentIdRouteImport.update({
+  id: '/tournaments_/$tournamentId',
+  path: '/tournaments/$tournamentId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DecksDeckIdUnvalidatedRoute = DecksDeckIdUnvalidatedRouteImport.update({
   id: '/decks_/$deckId_/unvalidated',
   path: '/decks/$deckId/unvalidated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentsJoinCodeRoute = TournamentsJoinCodeRouteImport.update({
+  id: '/tournaments_/join/$code',
+  path: '/tournaments/join/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -180,6 +198,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/tournaments': typeof TournamentsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/accounts': typeof DevAccountsRoute
@@ -193,7 +212,9 @@ export interface FileRoutesByFullPath {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read/bulk': typeof ReadBulkRoute
+  '/tournaments/$tournamentId': typeof TournamentsTournamentIdRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
+  '/tournaments/join/$code': typeof TournamentsJoinCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -208,6 +229,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/tournaments': typeof TournamentsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/accounts': typeof DevAccountsRoute
@@ -221,7 +243,9 @@ export interface FileRoutesByTo {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read/bulk': typeof ReadBulkRoute
+  '/tournaments/$tournamentId': typeof TournamentsTournamentIdRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
+  '/tournaments/join/$code': typeof TournamentsJoinCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -237,6 +261,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/tournaments': typeof TournamentsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/decks_/unvalidated': typeof DecksUnvalidatedRoute
   '/dev/accounts': typeof DevAccountsRoute
@@ -250,7 +275,9 @@ export interface FileRoutesById {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read_/bulk': typeof ReadBulkRoute
+  '/tournaments_/$tournamentId': typeof TournamentsTournamentIdRoute
   '/decks_/$deckId_/unvalidated': typeof DecksDeckIdUnvalidatedRoute
+  '/tournaments_/join/$code': typeof TournamentsJoinCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -267,6 +294,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/tournaments'
     | '/decks/$deckId'
     | '/decks/unvalidated'
     | '/dev/accounts'
@@ -280,7 +308,9 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read/bulk'
+    | '/tournaments/$tournamentId'
     | '/decks/$deckId/unvalidated'
+    | '/tournaments/join/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -295,6 +325,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/tournaments'
     | '/decks/$deckId'
     | '/decks/unvalidated'
     | '/dev/accounts'
@@ -308,7 +339,9 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read/bulk'
+    | '/tournaments/$tournamentId'
     | '/decks/$deckId/unvalidated'
+    | '/tournaments/join/$code'
   id:
     | '__root__'
     | '/'
@@ -323,6 +356,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/tournaments'
     | '/decks_/$deckId'
     | '/decks_/unvalidated'
     | '/dev/accounts'
@@ -336,7 +370,9 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read_/bulk'
+    | '/tournaments_/$tournamentId'
     | '/decks_/$deckId_/unvalidated'
+    | '/tournaments_/join/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -352,6 +388,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ReviewRoute: typeof ReviewRoute
   SettingsRoute: typeof SettingsRoute
+  TournamentsRoute: typeof TournamentsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DecksUnvalidatedRoute: typeof DecksUnvalidatedRoute
   DevAccountsRoute: typeof DevAccountsRoute
@@ -365,7 +402,9 @@ export interface RootRouteChildren {
   GameGameIdRoute: typeof GameGameIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
   ReadBulkRoute: typeof ReadBulkRoute
+  TournamentsTournamentIdRoute: typeof TournamentsTournamentIdRoute
   DecksDeckIdUnvalidatedRoute: typeof DecksDeckIdUnvalidatedRoute
+  TournamentsJoinCodeRoute: typeof TournamentsJoinCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -452,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments': {
+      id: '/tournaments'
+      path: '/tournaments'
+      fullPath: '/tournaments'
+      preLoaderRoute: typeof TournamentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/decks_/$deckId': {
@@ -545,11 +591,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadBulkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournaments_/$tournamentId': {
+      id: '/tournaments_/$tournamentId'
+      path: '/tournaments/$tournamentId'
+      fullPath: '/tournaments/$tournamentId'
+      preLoaderRoute: typeof TournamentsTournamentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/decks_/$deckId_/unvalidated': {
       id: '/decks_/$deckId_/unvalidated'
       path: '/decks/$deckId/unvalidated'
       fullPath: '/decks/$deckId/unvalidated'
       preLoaderRoute: typeof DecksDeckIdUnvalidatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments_/join/$code': {
+      id: '/tournaments_/join/$code'
+      path: '/tournaments/join/$code'
+      fullPath: '/tournaments/join/$code'
+      preLoaderRoute: typeof TournamentsJoinCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -568,6 +628,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ReviewRoute: ReviewRoute,
   SettingsRoute: SettingsRoute,
+  TournamentsRoute: TournamentsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DecksUnvalidatedRoute: DecksUnvalidatedRoute,
   DevAccountsRoute: DevAccountsRoute,
@@ -581,7 +642,9 @@ const rootRouteChildren: RootRouteChildren = {
   GameGameIdRoute: GameGameIdRoute,
   JoinCodeRoute: JoinCodeRoute,
   ReadBulkRoute: ReadBulkRoute,
+  TournamentsTournamentIdRoute: TournamentsTournamentIdRoute,
   DecksDeckIdUnvalidatedRoute: DecksDeckIdUnvalidatedRoute,
+  TournamentsJoinCodeRoute: TournamentsJoinCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

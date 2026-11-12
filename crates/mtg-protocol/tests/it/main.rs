@@ -94,6 +94,7 @@ mod rest_lobbies;
 mod rest_precons;
 mod rest_prefs;
 mod rest_reads;
+mod rest_tournaments;
 mod rewound_view;
 mod room_view;
 mod saga_transform_view;
