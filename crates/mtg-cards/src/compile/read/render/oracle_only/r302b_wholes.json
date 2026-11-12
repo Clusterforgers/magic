@@ -1087,5 +1087,173 @@
    }
   },
   "Destroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExileUntil": {
+       "who": "Opponents",
+       "filter": [],
+       "total": 20,
+       "as": "found",
+       "exiled_as": "exiled"
+      }
+     }
+    ]
+   }
+  },
+  "Each opponent exiles cards from the top of their library until that player has exiled cards with total mana value 20 or greater."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExileUntil": {
+       "who": "Opponents",
+       "filter": [],
+       "total": 5,
+       "as": "found",
+       "exiled_as": "exiled"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "MayCast": {
+         "from": "Exile",
+         "only": {
+          "Bound": "exiled"
+         },
+         "free": true
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Each opponent exiles cards from the top of their library until they have exiled cards with total mana value 5 or greater this way. Until end of turn, you may cast cards exiled this way without paying their mana costs."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "when": {
+        "DealsDamage": {
+         "source": [
+          {
+           "Type": "Creature"
+          },
+          "Attacking"
+         ],
+         "to": {
+          "Target": 0
+         }
+        }
+       },
+       "once": false,
+       "this_turn": true,
+       "effects": [
+        {
+         "GainLife": {
+          "amount": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target Wall creature. Whenever that creature is dealt damage by an attacking creature this turn, you gain that much life."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Each": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "amount": 5
+      }
+     },
+     {
+      "Bind": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "DamagedBy": "This"
+         }
+        ]
+       },
+       "as": "dealt"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "ZoneChange": {
+         "what": [
+          {
+           "Is": {
+            "Bound": "dealt"
+           }
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "from": "Battlefield",
+         "to": "Graveyard"
+        }
+       },
+       "once": false,
+       "this_turn": true,
+       "effects": [
+        {
+         "AddMana": {
+          "mana": {
+           "Fixed": [
+            "Red"
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "~ deals 5 damage to each creature. Whenever a creature you control dealt damage this way dies this turn, add {R}."
  ]
 ]

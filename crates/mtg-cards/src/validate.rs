@@ -3549,11 +3549,16 @@ impl Walker<'_> {
             Effect::ExileUntil {
                 who,
                 filter,
+                total,
                 bind,
                 exiled_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
+                if let Some(total) = total {
+                    w.uses("ExileUntil", "Total");
+                    w.at("total", |w| w.amount(total));
+                }
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("exiled_as", |w| w.bind(exiled_as, Kind::Object));
             }

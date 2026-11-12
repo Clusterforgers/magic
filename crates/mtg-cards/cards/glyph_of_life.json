@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ec450179-35e0-4d72-b42f-b507cbce03ad",
+  "name": "Glyph of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glyph of Life",
+      "oracle_fingerprint": "bdd28952af36511388dd451756f612f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Wall" }, { "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, "Attacking"],
+                      "to": { "Target": 0 }
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

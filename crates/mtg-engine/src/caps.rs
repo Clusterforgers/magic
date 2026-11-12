@@ -212,6 +212,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
     "Effect.ExileUntil",
+    "ExileUntil.Total",
     "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
@@ -1261,6 +1262,7 @@ mod tests {
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
+    #[case::exiling_until_a_total_mana_value("ExileUntil.Total", true)]
     #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]

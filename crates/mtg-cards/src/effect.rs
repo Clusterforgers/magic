@@ -1220,6 +1220,11 @@ pub enum Effect {
         who: Ref,
         /// What the card that ends the exiling must be.
         filter: Selector,
+        /// The exiling goes on until the cards the player has exiled this way have this total mana value or more, the last
+        /// one also matching the filter ("until they have exiled cards with total mana value 5 or greater"); the first
+        /// card that matches ends it when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
         /// The name the card found is bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -1930,6 +1935,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
         Effect::ExileUntil {
             who: Ref::You,
             filter,
+            total: None,
             bind: FOUND.to_owned(),
             exiled_as: EXILED.to_owned(),
         },

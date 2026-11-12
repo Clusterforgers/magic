@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "82c686f9-b403-4ab2-af5d-cf586e18ecf5",
+  "oracle_id": "75137acb-dc8e-439b-8d84-c5cf682ff6bc",
+  "multiverse_ids": [],
+  "resource_id": "0DC963D0C4105EE4F77B16DE97CC36C9394D473EF1BF4FF3285750BFB01F06C7",
+  "mtgo_id": 145646,
+  "arena_id": 98269,
+  "tcgplayer_id": 662404,
+  "cardmarket_id": 857943,
+  "name": "Reckless Blaze",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/82c686f9-b403-4ab2-af5d-cf586e18ecf5",
+  "scryfall_uri": "https://scryfall.com/card/tle/124/reckless-blaze?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817",
+    "normal": "https://cards.scryfall.io/normal/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817",
+    "large": "https://cards.scryfall.io/large/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817",
+    "png": "https://cards.scryfall.io/png/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.png?1783904817",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.webp?1783904817",
+    "grid": "https://cards.scryfall.io/grid/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.webp?1783904817",
+    "display": "https://cards.scryfall.io/display/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.webp?1783904817",
+    "art": "https://cards.scryfall.io/art/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.webp?1783904817",
+    "crop": "https://cards.scryfall.io/crop/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.webp?1783904817",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/2/82c686f9-b403-4ab2-af5d-cf586e18ecf5.jpg?1783904817"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery — Lesson",
+  "oracle_text": "Reckless Blaze deals 5 damage to each creature. Whenever a creature you control dealt damage this way dies this turn, add {R}.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/82c686f9-b403-4ab2-af5d-cf586e18ecf5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A75137acb-dc8e-439b-8d84-c5cf682ff6bc&unique=prints",
+  "collector_number": "124",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "firenation",
+  "flavor_text": "Aang learned the hard way not to play with fire.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "NIJIMAARC",
+  "artist_ids": [
+    "9c97a9df-8496-4ed2-acf0-744837261239"
+  ],
+  "illustration_id": "470dfb3e-7ccf-4729-bf0f-a86eca73554c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "lesson"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12172,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "2.00",
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": "0.49",
+    "tix": "0.32"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReckless%2BBlaze",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReckless%2BBlaze",
+    "edhrec": "https://edhrec.com/route/?cc=Reckless+Blaze"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F662404%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857943&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145646?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
