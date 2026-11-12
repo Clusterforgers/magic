@@ -9,8 +9,11 @@ use crate::effect::Destination;
 use crate::refs::Bounds;
 use crate::value::Amount;
 
+/// The steps of manifest dread: the look, the choice, the move to the graveyard, the manifest and the log.
+const STEPS: usize = 5;
+
 /// The player who manifests dread and the name of the manifested creature, when the effects open with the four steps
-/// of manifest dread, all by that one player.
+/// of manifest dread and the log of it with the card put into the graveyard, all by that one player.
 fn dread(effects: &[Effect]) -> Option<(&Ref, Option<&str>)> {
     let [
         Effect::LookAtTop {
@@ -36,13 +39,27 @@ fn dread(effects: &[Effect]) -> Option<(&Ref, Option<&str>)> {
             from: None,
             bind,
         },
+        Effect::Performed {
+            action: crate::did::Action::ManifestedDread,
+            who: logged,
+            times,
+            card: Some(Ref::Bound(put)),
+            value: None,
+            to: None,
+        },
         ..,
     ] = effects
     else {
         return None;
     };
-    let same = chooser == who && manifests == who && from == looked && moved == rest;
-    (same && Bounds::is_one(count) && *manifested == Amount::one()).then_some(())?;
+    let same = chooser == who
+        && manifests == who
+        && logged == who
+        && from == looked
+        && moved == rest
+        && put == rest;
+    (same && Bounds::is_one(count) && *manifested == Amount::one() && *times == Amount::one())
+        .then_some(())?;
     Some((who, bind.as_deref()))
 }
 
@@ -53,10 +70,10 @@ impl Writer<'_> {
         // "Manifest dread twice": the four steps again by the same player, neither creature named.
         if name.is_none()
             && *who == Ref::You
-            && let Some((again, None)) = effects.get(4..).and_then(dread)
+            && let Some((again, None)) = effects.get(STEPS..).and_then(dread)
             && again == who
         {
-            return Some((vec!["manifest dread twice".to_owned()], 8));
+            return Some((vec!["manifest dread twice".to_owned()], 2 * STEPS));
         }
         let head = match who {
             Ref::You => "manifest dread",
@@ -64,11 +81,11 @@ impl Writer<'_> {
             _ => return None,
         };
         let Some(name) = name else {
-            return Some((vec![head.to_owned()], 4));
+            return Some((vec![head.to_owned()], STEPS));
         };
         let it = Ref::Bound(name.to_owned());
         (*who == Ref::You).then_some(())?;
-        let then = match effects.get(4)? {
+        let then = match effects.get(STEPS)? {
             Effect::Attach {
                 what: Ref::This,
                 to,
@@ -79,6 +96,6 @@ impl Writer<'_> {
             }
             _ => return None,
         };
-        Some((vec![format!("{head}, then {then}")], 5))
+        Some((vec![format!("{head}, then {then}")], STEPS + 1))
     }
 }

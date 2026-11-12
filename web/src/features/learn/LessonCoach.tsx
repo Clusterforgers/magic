@@ -3,7 +3,7 @@ import { useStore } from 'zustand'
 import { TourCard } from '@/components/tour/TourCard'
 import { useGame } from '@/features/game/gameContext'
 import { startTour, tourStore } from '@/features/table/tour/tourStore'
-import { advance, lessonFacts, lessonOf } from './lesson'
+import { advance, lessonFacts, lessonOf, stepText } from './lesson'
 import type { LessonId } from './lesson'
 import { markDone } from './tutorials'
 import type { TutorialId } from './tutorials'
@@ -36,10 +36,13 @@ export function LessonCoach({ lesson: id }: { lesson: LessonId }) {
   // Targets are worked out from the facts, but the card follows them only when they change.
   const targets = step?.targets(facts) ?? []
   const key = targets.join('|')
+  // The primary button's words as the dock draws them, so a step names the button exactly at every dock width.
+  const shown = document.querySelector('[data-slot="primary-action"]')?.getAttribute('data-label') ?? null
+  const text = step === undefined ? '' : stepText(step, facts, shown)
   const stop = useMemo(
-    () => (step === undefined ? undefined : { id: step.id, title: step.title, text: step.text, targets }),
+    () => (step === undefined ? undefined : { id: step.id, title: step.title, text, targets }),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `key` stands for the targets' contents
-    [step, key],
+    [step, key, text],
   )
   if (ended || stop === undefined || step === undefined) return null
   const finish = (): void => {

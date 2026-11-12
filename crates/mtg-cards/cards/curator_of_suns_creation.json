@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0e636c98-67c7-4f02-b909-5d43e276fa41",
+  "name": "Curator of Sun's Creation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curator of Sun's Creation",
+      "oracle_fingerprint": "b3b3279d3b71dcbdb90b81ce77a896e1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Discovered", "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Performed": {
+                  "action": "Discovered",
+                  "card": { "Bound": "found" },
+                  "value": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

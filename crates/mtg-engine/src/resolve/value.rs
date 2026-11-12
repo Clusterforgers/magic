@@ -2128,12 +2128,22 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
-            Amount::Remembered { on, slot } => {
+            Amount::Remembered { on, slot, per } => {
+                let slots = match per {
+                    Some(per) => self
+                        .players(per)?
+                        .into_iter()
+                        .map(|player| crate::memory::player_slot(slot, player))
+                        .collect(),
+                    None => vec![slot.clone()],
+                };
                 let mut total = 0_i64;
                 for source in self.objects(on)? {
-                    total += crate::memory::recall_numbers(self.state, source, slot)
-                        .iter()
-                        .sum::<i64>();
+                    for slot in &slots {
+                        total += crate::memory::recall_numbers(self.state, source, slot)
+                            .iter()
+                            .sum::<i64>();
+                    }
                 }
                 total
             }
