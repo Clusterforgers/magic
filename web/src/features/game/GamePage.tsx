@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { PageShell } from '@/components/PageShell'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { loadInvites } from '@/lib/invites'
+import { watchLinkPath } from '@/lib/seatLink'
 import type { SeatLink } from '@/lib/seatLink'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
@@ -23,6 +24,7 @@ import { TableOptionsContext } from '@/features/table/tableOptions'
 import { connectionOf } from './connection'
 import { ConnectionNotice } from './ConnectionNotice'
 import { GameContext } from './gameContext'
+import type { SpectatorCalls } from './gameContext'
 import { GameOver } from './GameOver'
 import { Lobby } from './Lobby'
 import { ReviewBar } from './ReviewBar'
@@ -48,6 +50,8 @@ export interface GamePageProps {
    * cookie (`/ws/{game}`), which the server maps to the account's own seat. Null for a guest.
    */
   account?: string | null
+  /** The token of a watch link: the page watches the game as a spectator, with no seat. */
+  watch?: string
   api?: Api
   /** The signed-in account's deck calls, for the deck chooser of the lobby: the shared client unless a test brings its own. */
   decks?: DecksApi
@@ -62,12 +66,28 @@ export function GamePage({
   gameId,
   link,
   account = null,
+  watch,
   api = sharedApi,
   decks = sharedDecks,
   precons = sharedPrecons,
   deps,
 }: GamePageProps) {
   // A new game, seat, token or account is a new session, so the key makes it a new component rather than a stale one.
+  if (watch !== undefined) {
+    return (
+      <SeatedGame
+        key={`${gameId}/watch/${watch}`}
+        gameId={gameId}
+        token={watch}
+        watch
+        name="Spectator"
+        api={api}
+        decks={decks}
+        precons={precons}
+        deps={deps}
+      />
+    )
+  }
   if (link !== null) {
     return (
       <SeatedGame
@@ -103,6 +123,8 @@ interface SeatedGameProps {
   token: string | undefined
   /** The name sent in `Join`. */
   name: string
+  /** `token` is a watch link's: a spectator's session. */
+  watch?: boolean
   api: Api
   decks: DecksApi
   precons: Pick<PreconsApi, 'list' | 'get'>
@@ -124,6 +146,18 @@ function joinName(gameId: string, seat: number): string {
   return loadInvites(gameId)?.seats.find((invite) => invite.seat === seat)?.name ?? `Seat ${seat + 1}`
 }
 
+/** A player's spectator calls, by the seat token or (without one) the session cookie. */
+function spectatorCalls(api: Api, game: string, token: string | undefined): SpectatorCalls {
+  const as = token === undefined ? {} : { token }
+  return {
+    watchLink: async () => {
+      const link = await api.watchLink(game, as)
+      return `${window.location.origin}${watchLinkPath(link.game, link.token)}`
+    },
+    setAllowed: (allowed) => api.setSpectators(game, allowed, as),
+  }
+}
+
 /** Keeps `session` connected while the page is mounted. */
 function useConnected(session: Session): void {
   useEffect(() => {
@@ -139,8 +173,8 @@ function useConnected(session: Session): void {
   }, [session])
 }
 
-function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGameProps) {
-  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name }))
+function SeatedGame({ gameId, token, watch = false, name, api, decks, precons, deps }: SeatedGameProps) {
+  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name, watch }))
   const [tutorial] = useState(() => tutorialOf(gameId))
   useConnected(session)
   const state = useStore(session.store, useShallow(screenState))
@@ -148,7 +182,14 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
     poll: state.phase === 'lobby',
     timers: deps?.timers ?? browserTimers,
   })
-  const context = useMemo(() => ({ game: gameId, session, lookup }), [gameId, session, lookup])
+  const spectators = useMemo(
+    () => (watch ? undefined : spectatorCalls(api, gameId, token)),
+    [api, gameId, token, watch],
+  )
+  const context = useMemo(
+    () => ({ game: gameId, session, lookup, ...(spectators === undefined ? {} : { spectators }) }),
+    [gameId, session, lookup, spectators],
+  )
 
   const connection = connectionOf(state)
   const [review, setReview] = useState(false)

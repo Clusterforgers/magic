@@ -248,14 +248,16 @@ export function createSession(deps: SessionDeps): Session {
           autoSkips: message.auto_skips,
           castWhenAsked: null,
         })
-        for (const request of welcomeRequests({
-          game: message.game,
-          stops: message.stops,
-          endTurnByHand: message.end_turn_by_hand,
-          autoChoices: message.auto_choices,
-          autoYields: message.auto_yields,
-        }))
-          socket.send(request)
+        // A spectator holds no seat, so it has no settings to bring the server up to date with.
+        if (deps.watch !== true)
+          for (const request of welcomeRequests({
+            game: message.game,
+            stops: message.stops,
+            endTurnByHand: message.end_turn_by_hand,
+            autoChoices: message.auto_choices,
+            autoYields: message.auto_yields,
+          }))
+            socket.send(request)
         return
       case 'Yielding':
         onYielding(message)

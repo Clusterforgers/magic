@@ -57,6 +57,8 @@ export interface GameSocketOptions {
   game: string
   /** The seat token of a seat link. Left out, the socket joins through the session cookie (a signed-in user's seat). */
   token?: string
+  /** `token` is a watch link's: the socket is a spectator's (`/ws/{game}/watch/{token}`), which holds no seat. */
+  watch?: boolean
   /** The display name sent in `Join`. */
   name: string
   onEvent(event: SocketEvent): void
@@ -87,10 +89,11 @@ export function retryDelay(failures: number, random: number): number {
 
 /**
  * The WebSocket address of a seat on `origin`, with ws or wss to match its scheme: `/ws/{game}/{token}` for a seat
- * link, `/ws/{game}` without a token, where the session cookie of the upgrade request picks the signed-in user's seat.
+ * link, `/ws/{game}` without a token, where the session cookie of the upgrade request picks the signed-in user's seat,
+ * and `/ws/{game}/watch/{token}` for a spectator's watch link (`watch`).
  */
-export function socketUrl(game: string, token: string | undefined, origin: string): string {
-  const seat = token === undefined ? '' : `/${encodeURIComponent(token)}`
+export function socketUrl(game: string, token: string | undefined, origin: string, watch = false): string {
+  const seat = token === undefined ? '' : `${watch ? '/watch' : ''}/${encodeURIComponent(token)}`
   const url = new URL(`/ws/${encodeURIComponent(game)}${seat}`, origin)
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
   return url.href
@@ -99,6 +102,8 @@ export function socketUrl(game: string, token: string | undefined, origin: strin
 const REPLACED_TEXT = 'This seat was opened in another window or tab, which took it over.'
 // The seat was given back or the host removed its player: its token opens nothing now, so retrying cannot help.
 const REMOVED_TEXT = 'You were removed from this game.'
+// A spectator's 4001: the host stopped spectators, and the watch link opens nothing now.
+const UNWATCHED_TEXT = 'The host stopped spectators, so this game cannot be watched now.'
 // The host ended the lobby: its links and code open nothing any more, so the game cannot come back either.
 const CLOSED_TEXT = 'The host closed this game.'
 
@@ -182,17 +187,20 @@ export class GameSocket {
     const generation = this.generation
     const live = (): boolean => generation === this.generation
     try {
-      this.raw = this.createSocket(socketUrl(this.options.game, this.options.token, this.pageOrigin()), {
-        open: () => {
-          if (live()) this.onOpen()
+      this.raw = this.createSocket(
+        socketUrl(this.options.game, this.options.token, this.pageOrigin(), this.options.watch),
+        {
+          open: () => {
+            if (live()) this.onOpen()
+          },
+          message: (data) => {
+            if (live()) this.onFrame(data)
+          },
+          close: (code, reason) => {
+            if (live()) this.onClose(code, reason)
+          },
         },
-        message: (data) => {
-          if (live()) this.onFrame(data)
-        },
-        close: (code, reason) => {
-          if (live()) this.onClose(code, reason)
-        },
-      })
+      )
     } catch {
       this.halt('stopped', 'The browser refused to open the connection.')
     }
@@ -243,7 +251,7 @@ export class GameSocket {
       return
     }
     if (code === REMOVED_CODE) {
-      this.halt('stopped', REMOVED_TEXT)
+      this.halt('stopped', this.options.watch === true ? UNWATCHED_TEXT : REMOVED_TEXT)
       return
     }
     if (code === CLOSED_CODE) {

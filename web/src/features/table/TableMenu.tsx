@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { parseChoice, useTheme } from '@/hooks/useTheme'
 import type { ThemeChoice } from '@/hooks/useTheme'
-import { usePlay } from '@/features/game/gameContext'
+import { useGame, usePlay } from '@/features/game/gameContext'
 import { HandOrderMenu } from './HandOrderMenu'
 import type { TableMode } from './layout'
 import { canConcede } from './selectors'
+import { SpectatorMenu } from './SpectatorMenu'
 
 const THEMES: ReadonlyArray<{ value: ThemeChoice; label: string }> = [
   { value: 'light', label: 'Light' },
@@ -133,6 +134,7 @@ export function TableMenu({
         <Section title="Hand order">
           <HandOrderMenu />
         </Section>
+        <SpectatorSection />
         {concede ? (
           <Button
             variant="outline"
@@ -145,5 +147,17 @@ export function TableMenu({
         ) : null}
       </PopoverContent>
     </Popover>
+  )
+}
+
+/** The spectators section, for a player at a table with a server behind it. */
+function SpectatorSection() {
+  const { spectators } = useGame()
+  const spectator = usePlay((state) => state.view?.spectator === true)
+  if (spectators === undefined || spectator) return null
+  return (
+    <Section title="Spectators">
+      <SpectatorMenu />
+    </Section>
   )
 }
