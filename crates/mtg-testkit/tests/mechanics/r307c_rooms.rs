@@ -93,12 +93,8 @@ fn r307c_cistern_counts_the_card_types_milled(
     driver.cast("Free Mill")?;
     r307c_settle(&mut driver)?;
     assert_eq!(r307c_life(&driver, 0), before[0]);
-    for seat in 1..seats {
-        assert_eq!(
-            r307c_life(&driver, seat),
-            before[seat] - lost,
-            "seat {seat}"
-        );
+    for (seat, was) in before.iter().enumerate().skip(1) {
+        assert_eq!(r307c_life(&driver, seat), was - lost, "seat {seat}");
     }
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
