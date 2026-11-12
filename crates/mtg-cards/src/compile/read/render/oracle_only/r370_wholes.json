@@ -795,5 +795,201 @@
    }
   },
   "When ~ enters, airbend up to one other target creature or spell."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Draw": {
+       "count": {
+        "Stat": {
+         "of": "This",
+         "stat": "BasePower"
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "combat": true,
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer"
+     }
+    }
+   }
+  },
+  "Whenever ~ deals combat damage to a player, draw cards equal to its base power."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{1}{U}"
+     },
+     {
+      "ExilePermanents": {
+       "filter": [
+        "Other",
+        {
+         "Not": "Token"
+        },
+        {
+         "Type": "Artifact"
+        },
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "BecomeCopy": {
+       "duration": "Forever",
+       "except": [
+        {
+         "GrantAbility": {
+          "Triggered": {
+           "effects": [
+            {
+             "Draw": {
+              "count": {
+               "Stat": {
+                "of": "This",
+                "stat": "BasePower"
+               }
+              }
+             }
+            }
+           ],
+           "when": {
+            "DealsDamage": {
+             "combat": true,
+             "source": [
+              "This"
+             ],
+             "to": "EachPlayer"
+            }
+           }
+          }
+         }
+        }
+       ],
+       "of": "Paid",
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "{1}{U}, Exile another nontoken artifact creature you control: ~ becomes a copy of the exiled creature, except it has \"Whenever this creature deals combat damage to a player, draw cards equal to its base power.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Bind": {
+       "as": "card",
+       "what": {
+        "Each": [
+         {
+          "In": "Library"
+         },
+         {
+          "OwnedBy": "You"
+         },
+         "TopOfLibrary"
+        ]
+       }
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "Type": "Creature"
+          }
+         ],
+         "subject": {
+          "Bound": "card"
+         }
+        }
+       },
+       "then": [
+        {
+         "May": {
+          "effects": [
+           {
+            "BecomeCopy": {
+             "duration": "UntilEndOfTurn",
+             "of": {
+              "Bound": "card"
+             },
+             "what": {
+              "Each": [
+               {
+                "Type": "Creature"
+               },
+               {
+                "ControlledBy": "You"
+               },
+               "Other"
+              ]
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "May": {
+       "effects": [
+        {
+         "Move": {
+          "to": {
+           "Library": {
+            "place": "Bottom"
+           }
+          },
+          "what": {
+           "Bound": "card"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    }
+   }
+  },
+  "At the beginning of combat on your turn, reveal the top card of your library. If a creature card is revealed this way, you may have creatures you control other than this creature become copies of that card until end of turn. You may put that card on the bottom of your library."
  ]
 ]

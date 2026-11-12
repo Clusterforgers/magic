@@ -1248,6 +1248,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.card(event.DamageRemoved.object)} has all its damage removed`)
   }
   if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
+  if ('DamagePrevented' in event) {
+    const { source, target, amount } = event.DamagePrevented
+    return line(`${amount} damage ${n.card(source)} would deal to ${damageTarget(target, n)} is prevented`)
+  }
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
       LethalDamage: 'from lethal damage',

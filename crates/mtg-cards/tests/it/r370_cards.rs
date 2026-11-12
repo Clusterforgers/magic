@@ -137,6 +137,9 @@ fn check_outside() {
 #[case("Assimilation Aegis")]
 #[case("Blade of Shared Souls")]
 #[case("Black Hole")]
+#[case("Selfless Squire")]
+#[case("Curie, Emergent Intelligence")]
+#[case("Deceiver of Form")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -211,6 +214,9 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#"{"Together":{"effects":[{"BecomeCopy""#
 )]
 #[case::scried("Black Hole", r#""AttractionsVisited""#, r#""Scried""#)]
+#[case::opponents("Selfless Squire", r#"{"DamagePrevented":{"who":"You"}}"#, r#"{"DamagePrevented":{"who":"Opponents"}}"#)]
+#[case::own_creature("Curie, Emergent Intelligence", r#""Other","#, "")]
+#[case::all_creatures("Deceiver of Form", r#","Other""#, "")]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let changed = altered(name, from, to);
     let report = report_of(name, &changed);

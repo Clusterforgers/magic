@@ -211,6 +211,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
+    /// Damage that would be dealt to a player is prevented ("whenever damage that would be dealt to you is prevented");
+    /// the amount of the event is the damage prevented.
+    DamagePrevented {
+        /// The player it would have been dealt to.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player gains life.
     LifeGained {
         /// Who gains it.

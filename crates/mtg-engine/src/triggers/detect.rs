@@ -105,6 +105,8 @@ enum Happened {
         amount: u32,
         nth: u32,
     },
+    /// Damage that would have been dealt to a player was prevented.
+    DamagePrevented { player: PlayerId, amount: u32 },
     /// A player gained life, the `nth` time of their turn.
     LifeGained {
         player: PlayerId,
@@ -337,6 +339,7 @@ impl Happened {
     const fn amount(&self) -> u32 {
         match self {
             Happened::Damaged { amount, .. }
+            | Happened::DamagePrevented { amount, .. }
             | Happened::LifeGained { amount, .. }
             | Happened::LifeLost { amount, .. }
             | Happened::Did { amount, .. } => *amount,
@@ -1112,6 +1115,14 @@ fn about_players_and_permanents(
                 }
             }
         }
+        Event::DamagePrevented {
+            target: DamageTarget::Player(player),
+            amount,
+            ..
+        } => found.push(Happened::DamagePrevented {
+            player: *player,
+            amount: *amount,
+        }),
         Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
             player: *player,
             amount: *amount,
@@ -1800,6 +1811,7 @@ fn matching_event(
             fits.then(|| counted(state, subjects, happened.amount()))
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
+        | (TriggerPattern::DamagePrevented { who }, Happened::DamagePrevented { player, .. })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::TakesInitiative { who }, Happened::TookInitiative { player })

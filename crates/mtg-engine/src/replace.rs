@@ -2398,6 +2398,21 @@ impl Pass<'_> {
         }
         let now = amount - taken;
         self.follow_lifelink(at, source, amount, now);
+        // The prevention is an event of its own after the damage, which nothing replaces (CR 615).
+        if taken > 0 {
+            self.slots.insert(
+                at + 1,
+                Slot {
+                    item: Item::One(Event::DamagePrevented {
+                        source,
+                        target,
+                        amount: taken,
+                    }),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+        }
         if now == 0 {
             self.slots.remove(at);
         } else {

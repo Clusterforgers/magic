@@ -156,3 +156,62 @@ fn r370_lands_of_the_chosen_type_become_copies(
     assert_eq!(gates, 1, "the opponent's Gate stays");
     Ok(())
 }
+
+/// Passes priority until the stack is empty, answering every "may" with `may`.
+fn settle_may(driver: &mut Driver, may: bool) -> Result<(), ScriptError> {
+    for _ in 0..100 {
+        let decision = driver.decision()?.clone();
+        match decision.kind {
+            DecisionKind::Priority(_)
+                if driver.state().stack().is_empty() && driver.state().resolving().is_none() =>
+            {
+                return Ok(());
+            }
+            DecisionKind::Priority(_) => {
+                driver.pass()?;
+            }
+            DecisionKind::YesNo(_) => {
+                driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(may)))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Err(ScriptError::Stuck("the stack".into()))
+}
+
+#[rstest]
+#[case::copies(true, 2)]
+#[case::declines(false, 0)]
+fn r370_creatures_become_copies_of_the_revealed_card(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] may: bool,
+    #[case] giants: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(
+                0,
+                [
+                    ready(card("Deceiver of Form").unwrap()),
+                    ready(free_creature("Ogre", 3, 3)),
+                    ready(free_creature("Bear", 2, 2)),
+                ],
+            )
+            .library(0, [free_creature("Giant", 5, 5), free_creature("Elf", 1, 1)]),
+    )?;
+    driver.pass_until(mtg_engine::turn::Step::BeginCombat)?;
+    settle_may(&mut driver, may)?;
+    let state = driver.state();
+    let named = |name: &str| {
+        state
+            .zone(mtg_engine::zones::Zone::Battlefield)
+            .iter()
+            .filter(|id| state.object(**id).unwrap().card().name == name)
+            .count()
+    };
+    assert_eq!(named("Giant"), giants);
+    assert_eq!(named("Deceiver of Form"), 1, "the Deceiver stays itself");
+    Ok(())
+}

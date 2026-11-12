@@ -638,6 +638,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} gain{s} life"), false)
         }
+        TriggerPattern::DamagePrevented { who: by } => {
+            let (name, _) = who(by);
+            (format!("damage that would be dealt to {name} is prevented"), false)
+        }
         TriggerPattern::LifeLost { who: by } => {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)

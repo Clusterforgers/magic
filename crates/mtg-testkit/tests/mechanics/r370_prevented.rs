@@ -117,3 +117,37 @@ fn r370_the_damage_prevented_is_dealt_to_the_target(
     }
     Ok(())
 }
+
+#[rstest]
+#[case::to_you(true, 3)]
+#[case::to_an_opponent(false, 0)]
+fn r370_damage_prevented_to_you_puts_that_many_counters(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] at_me: bool,
+    #[case] counters: u32,
+) -> Result<(), ScriptError> {
+    let foe = seats - 1;
+    let bolt = Arc::new(burn("Bolt", 3).as_ref().clone().with_mana_cost(cost(0, &[])));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [free("Selfless Squire"), bolt]),
+    )?;
+    // Its own shield: every damage to its controller this turn is prevented.
+    driver.cast("Selfless Squire")?;
+    settle(&mut driver)?;
+    let squire = driver.id_of("Selfless Squire")?;
+    let target = driver.target_player(if at_me { 0 } else { foe });
+    driver.cast_at("Bolt", &[target])?;
+    settle(&mut driver)?;
+    let held = driver
+        .state()
+        .object(squire)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&mtg_cards::value::CounterKind::PlusOnePlusOne);
+    assert_eq!(held, counters);
+    let life = driver.state().player(pid(0)).unwrap().life();
+    assert_eq!(life, 20, "the damage to you is prevented");
+    Ok(())
+}

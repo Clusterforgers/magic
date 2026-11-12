@@ -2405,6 +2405,7 @@ impl<'a> Walker<'a> {
                 }
             }
             TriggerPattern::LifeGained { who }
+            | TriggerPattern::DamagePrevented { who }
             | TriggerPattern::LifeLost { who }
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
