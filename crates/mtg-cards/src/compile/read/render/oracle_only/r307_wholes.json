@@ -1,0 +1,667 @@
+[
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "AnyOf": [
+            {
+             "ArrivedFrom": "Library"
+            },
+            {
+             "WasCast": {
+              "from": "Library"
+             }
+            }
+           ]
+          }
+         ],
+         "subject": "This"
+        }
+       },
+       "otherwise": [
+        {
+         "Draw": {}
+        }
+       ],
+       "then": [
+        {
+         "Draw": {
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, draw a card. If it entered from your library or was cast from your library, draw two cards instead."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "DealDamage": {
+       "amount": "Triggering",
+       "source": "Triggering",
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Either": [
+        "Player",
+        {
+         "Object": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            },
+            {
+             "Type": "Battle"
+            }
+           ]
+          },
+          {
+           "Not": {
+            "Subtype": "Dinosaur"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "source": [],
+      "to": {
+       "Each": [
+        {
+         "Subtype": "Dinosaur"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "Whenever a Dinosaur you control is dealt damage, it deals that much damage to any target that isn't a Dinosaur."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "DealDamage": {
+       "amount": "Triggering",
+       "source": "Triggering",
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Either": [
+        "Player",
+        {
+         "Object": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            },
+            {
+             "Type": "Battle"
+            }
+           ]
+          },
+          {
+           "Not": {
+            "Subtype": "Dragon"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "source": [],
+      "to": {
+       "Each": [
+        {
+         "Subtype": "Dragon"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "Whenever a Dragon you control is dealt damage, it deals that much damage to any target that isn't a Dragon."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "ChangeTargets": {
+       "onto": "Attached",
+       "to": "One",
+       "what": "Triggering"
+      }
+     }
+    ],
+    "if": {
+     "Matches": {
+      "selector": [
+       "SingleTarget"
+      ],
+      "subject": "Triggering"
+     }
+    },
+    "when": {
+     "SpellCast": {
+      "by": "Opponents"
+     }
+    }
+   }
+  },
+  "Whenever an opponent casts a spell, if it has a single target, change the target to enchanted creature if able."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Tap": {
+          "what": "Triggering"
+         }
+        }
+       ],
+       "who": {
+        "ControllerOf": "Triggering"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Not": "Performed"
+       },
+       "then": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "abilities": [
+             {
+              "Keyword": "Lifelink"
+             }
+            ],
+            "colors": [
+             "White"
+            ],
+            "name": "Vampire",
+            "power": 1,
+            "subtypes": [
+             "Vampire"
+            ],
+            "toughness": 1,
+            "types": [
+             "Creature"
+            ]
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Artifact"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       {
+        "ControlledBy": "Opponents"
+       },
+       "Untapped"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever an artifact or creature an opponent controls enters untapped, they may tap that permanent. If they don't, you create a 1/1 white Vampire creature token with lifelink."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Rule": {
+       "duration": "WhileYouControlSource",
+       "rule": {
+        "Cant": {
+         "action": "Untap",
+         "who": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "Opponents"
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, tap target creature an opponent controls. That creature can't become untapped for as long as you control ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Artifact"
+            },
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Enchantment"
+            },
+            {
+             "Type": "Land"
+            },
+            {
+             "Type": "Planeswalker"
+            },
+            {
+             "Type": "Battle"
+            }
+           ]
+          }
+         ],
+         "subject": {
+          "Arrived": {
+           "of": "Triggering",
+           "zone": "Graveyard"
+          }
+         }
+        }
+       },
+       "then": [
+        {
+         "Move": {
+          "as": "back",
+          "to": {
+           "BattlefieldFaceDown": {
+            "under": {
+             "OwnerOf": "Triggering"
+            }
+           }
+          },
+          "what": {
+           "Arrived": {
+            "of": "Triggering",
+            "zone": "Graveyard"
+           }
+          }
+         }
+        },
+        {
+         "TurnFaceUp": {
+          "what": {
+           "Bound": "back"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "from": "Battlefield",
+      "to": "Graveyard",
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       "FaceDown",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a face-down creature you control dies, return it to the battlefield face down under its owner's control if it's a permanent card, then turn it face up."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Discard": {
+       "as": "discarded",
+       "who": "EachPlayer"
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "CardTypes": [
+         {
+          "Is": {
+           "Bound": "discarded"
+          }
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "when": {
+     "AnyOf": [
+      {
+       "ZoneChange": {
+        "to": "Battlefield",
+        "what": [
+         "This"
+        ]
+       }
+      },
+      {
+       "Attacks": {
+        "what": [
+         "This"
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "Whenever ~ enters or attacks, each player discards a card. Then you draw a card for each card type among cards discarded this way."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Draw": {
+       "count": "Triggering"
+      }
+     }
+    ],
+    "if": {
+     "AtTrigger": "YourTurn"
+    },
+    "when": {
+     "LifeLost": {
+      "who": "Opponents"
+     }
+    }
+   }
+  },
+  "Whenever an opponent loses life during your turn, you draw that many cards."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           "This",
+           {
+            "CastWith": "Escape"
+           }
+          ]
+         },
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "then": [
+        {
+         "Sacrifice": {
+          "filter": [
+           "This"
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, sacrifice it unless it escaped."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Discard": {
+       "as": "discarded",
+       "who": "Opponents"
+      }
+     },
+     {
+      "LoseLife": {
+       "amount": 3,
+       "who": {
+        "PlayersWhere": {
+         "test": {
+          "CountOf": {
+           "op": "Eq",
+           "right": 0,
+           "selector": [
+            {
+             "Not": {
+              "Type": "Land"
+             }
+            },
+            {
+             "OwnedBy": "You"
+            }
+           ],
+           "subject": {
+            "Bound": "discarded"
+           }
+          }
+         },
+         "who": "Opponents"
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "AnyOf": [
+      {
+       "ZoneChange": {
+        "to": "Battlefield",
+        "what": [
+         "This"
+        ]
+       }
+      },
+      {
+       "Attacks": {
+        "what": [
+         "This"
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  "Whenever ~ enters or attacks, each opponent discards a card, then each opponent who didn't discard a nonland card this way loses 3 life."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Search": {
+       "as": "found",
+       "count": {
+        "max": 5,
+        "min": 0
+       },
+       "distinct": true,
+       "filter": [
+        {
+         "Subtype": "Dragon"
+        },
+        {
+         "Not": {
+          "Named": "Tiamat"
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ],
+    "if": {
+     "Matches": {
+      "selector": [
+       {
+        "WasCast": {}
+       }
+      ],
+      "subject": "This"
+     }
+    },
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, if you cast it, search your library for up to five Dragon cards not named ~ that each have different names, reveal them, put them into your hand, then shuffle."
+ ]
+]
