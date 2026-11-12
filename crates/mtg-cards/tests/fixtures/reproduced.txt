@@ -46,6 +46,7 @@ Alter Reality
 Amass the Components
 Ambitious Aetherborn
 Amulet of Safekeeping
+Amy Pond
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
@@ -1873,6 +1874,7 @@ The Celestus
 The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
+The Eleventh Doctor
 The Gaffer
 The Locust God
 The Mechanist, Aerial Artisan
@@ -1880,6 +1882,7 @@ The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
 The Mycosynth Gardens
+The Parting of the Ways
 The Scorpion God
 The Seriema
 The Spear of Bashenga

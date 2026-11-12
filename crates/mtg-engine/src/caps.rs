@@ -304,6 +304,7 @@ const RUNS: &[&str] = &[
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.TimeTravel",
+    "Effect.GainSuspend",
     "Effect.Goad",
     "Effect.Fight",
     "Effect.Explore",
@@ -1332,6 +1333,7 @@ mod tests {
     #[case::convoking("Keyword.Convoke", true)]
     #[case::delving("Keyword.Delve", true)]
     #[case::time_travelling("Effect.TimeTravel", true)]
+    #[case::r372_gaining_suspend("Effect.GainSuspend", true)]
     #[case::extra_turns("Effect.ExtraTurn", true)]
     #[case::added_phases("Effect.AddPhase", true)]
     #[case::ending_the_turn("Effect.EndTurn", true)]

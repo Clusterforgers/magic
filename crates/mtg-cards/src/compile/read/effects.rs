@@ -248,6 +248,25 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
         return true;
     }
+    if r.attempt(|r| super::r372_suspend::r372_after(r, effects))
+        .is_some()
+    {
+        return true;
+    }
+    for template in [
+        super::r372_suspend::r372_exile_gains as Template,
+        super::r372_suspend::r372_until_counters,
+        super::r372_suspend::r372_top_suspended,
+        super::r372_suspend::r372_from_hand,
+        super::r372_suspend::r372_delay,
+        super::r372_suspend::r372_copy_then_exile,
+        super::r372_suspend::r372_sped_up,
+    ] {
+        if let Some(found) = r.attempt(|r| template(r).filter(|_| r.sentence_end())) {
+            effects.extend(found);
+            return true;
+        }
+    }
     if r.attempt(|r| super::c11b_cast_target::c11b_exile_instead(r, effects))
         .is_some()
     {

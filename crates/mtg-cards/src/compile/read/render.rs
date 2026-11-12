@@ -211,6 +211,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
@@ -1426,6 +1429,13 @@ fn written(
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // An exile with time counters and the suspend the card gains are one sentence or a run of sentences.
+        if let Some((text, used)) = super::r372_suspend::text(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
@@ -3352,6 +3362,14 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
+            // The card an earlier step exiled and named is "it".
+            Effect::GainSuspend {
+                what: Ref::Bound(_),
+                unless_has,
+            } => super::r372_suspend::gain_text("it", *unless_has),
+            Effect::GainSuspend { what, unless_has } => {
+                super::r372_suspend::gain_text(&self.object(what)?, *unless_has)
+            }
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

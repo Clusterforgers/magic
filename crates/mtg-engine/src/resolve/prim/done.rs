@@ -109,6 +109,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RevealUntil { .. }
         | Effect::ExileTop { .. }
         | Effect::TimeTravel { .. }
+        | Effect::GainSuspend { .. }
         | Effect::ExtraTurn { .. }
         | Effect::AddPhase { .. }
         | Effect::AddStep { .. }
