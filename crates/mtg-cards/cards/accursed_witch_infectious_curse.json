@@ -1,0 +1,53 @@
+{
+  "oracle_id": "80b07882-e144-4815-8b6f-04b3ab343d97",
+  "name": "Accursed Witch // Infectious Curse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Accursed Witch",
+      "oracle_fingerprint": "9b2b3d6da4b1425cdea0a128938e9483",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }, { "Targeting": ["This"] }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 76, "end": 189 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Infectious Curse",
+      "oracle_fingerprint": "0420680ae2bb096513643890f7b8ed93",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "You" },
+              { "TargetsPlayer": "AttachedPlayer" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

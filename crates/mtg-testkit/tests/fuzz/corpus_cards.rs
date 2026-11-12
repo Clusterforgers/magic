@@ -22,7 +22,7 @@ use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
 use rstest::rstest;
 
-use Support::{Manual, Partial, Verified};
+use Support::{Partial, Verified};
 
 /// The corpus cards whose state its file cannot give, each with the state its capabilities give it and the number of
 /// abilities its definition carries (mana abilities and rules together): a card the engine cannot yet play as its file
@@ -31,11 +31,13 @@ use Support::{Manual, Partial, Verified};
 /// carries none (the table resolves it).
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
+    ("Disrupting Shoal", Partial, 1),
+    ("Firecat Blitz", Partial, 1),
+    ("Flash of Insight", Partial, 1),
     ("Kaervek's Spite", Partial, 1),
-    ("Invasion of Amonkhet // Lazotep Convert", Partial, 3),
-    ("Plagiarize", Manual, 0),
+    ("Shining Shoal", Partial, 1),
+    ("Soulblast", Partial, 1),
     ("Vexing Puzzlebox", Partial, 2),
-    ("Yurlok of Scorch Thrash", Partial, 2),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

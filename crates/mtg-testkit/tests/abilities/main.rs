@@ -52,6 +52,8 @@ mod prevent_half;
 mod prevention;
 mod prohibitions;
 mod protection;
+mod r300c_activations;
+mod r302_token_shield;
 mod r379_cast_greatest;
 mod r379_votes;
 mod r4a_enters_with;

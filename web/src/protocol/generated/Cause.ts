@@ -31,4 +31,9 @@ source?: ObjectRef,
  * What the subject went against (`Ref::Against`): the player, planeswalker or battle an attacker attacks, the attacker a
  * creature blocks; none for any other event.
  */
-against?: Target, };
+against?: Target, 
+/**
+ * Every object that dealt the damage of a batch ("those creatures", `Ref::Dealer`), in the order dealt; empty for a
+ * single event, whose dealer is `source`.
+ */
+dealers?: Array<ObjectRef>, };

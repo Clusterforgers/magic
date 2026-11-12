@@ -55,6 +55,7 @@ fn ripple(count: u32) -> Vec<Effect> {
                 bind: OFFERED.to_owned(),
                 effects: vec![Effect::CastFromZone {
                     rather: None,
+                    spend_as: mtg_cards::modify::SpendAs::default(),
                     who: Ref::You,
                     what: Ref::Bound(OFFERED.to_owned()),
                     free: true,

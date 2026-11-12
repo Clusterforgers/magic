@@ -15,9 +15,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 130, "end": 206 }
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackAsThoughHaste" } },
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+            }
           }
         }
       ]

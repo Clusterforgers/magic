@@ -52,6 +52,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|spell| spell.zone() == Zone::Stack && spell.kind() != ObjectKind::Ability)
+        .filter(|spell| !r302_uncopyable(spell.card()))
         .collect();
     if spells.is_empty()
         && let Some(kept) = left_spell(cx, what)?
@@ -158,6 +159,19 @@ fn left_spell<'a>(cx: &'a Cx<'_>, what: &Ref) -> Result<Option<&'a KeptSpell>, R
         .find_map(|named| left.iter().rev().find(|kept| kept.of == named)))
 }
 
+/// Whether the spell says "This spell can't be copied." (CR 707.10): no effect makes a copy of it.
+fn r302_uncopyable(definition: &mtg_cards::CardDefinition) -> bool {
+    crate::ability_reader::printed_rules(definition).any(|rule| {
+        matches!(
+            &**rule,
+            Ability::Rule {
+                rule: mtg_cards::modify::GameRule::CantBeCopied,
+                ..
+            }
+        )
+    })
+}
+
 /// Copies of the spell a delayed ability kept, `copies` of them, made the way copies of a spell on the stack are: with the
 /// exceptions of the effect, and the modes, X and targets of the original, which the controller may change when the effect
 /// lets them. The copy goes on top of the stack (CR 702.50a, 707.10).
@@ -170,6 +184,9 @@ fn copy_kept(
     except: &[Modification],
 ) -> Result<Run, ResolveError> {
     let state = cx.state();
+    if r302_uncopyable(&kept.definition) {
+        return Ok(Run::events(Vec::new()));
+    }
     let mut definition = (*kept.definition).clone();
     for modification in except {
         if !definition.except(modification) {

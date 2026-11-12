@@ -1,7 +1,7 @@
 {
   "oracle_id": "2e3ec514-fc9e-4964-a493-2a6cc9e63630",
   "name": "The Mindskinner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Mindskinner",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 34, "end": 152 }
+          "Replacement": {
+            "when": { "Damage": { "to": "Opponents", "source": [{ "ControlledBy": "You" }] } },
+            "by": { "PreventAnd": [{ "Mill": { "who": "Opponents", "count": "Triggering" } }] }
           }
         }
       ]

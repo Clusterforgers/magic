@@ -19,6 +19,9 @@ pub fn keyword_action(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("recruit") {
         return recruit().map(<[Effect]>::to_vec);
     }
+    if let Some(steps) = super::r300b_writers::r300b_read_empower(r) {
+        return Some(steps);
+    }
     if r.word("earthbend") {
         let amount = r.number().filter(|n| *n > 0)?;
         if !r.targets.is_empty() {
@@ -94,6 +97,9 @@ pub fn text(
         && effects.starts_with(steps)
     {
         return Some(("recruit".to_owned(), steps.len()));
+    }
+    if let Some(found) = super::r300b_writers::r300b_empower_text(effects) {
+        return Some(found);
     }
     if let Some((amount, len)) = found("earthbend", &Ref::Target(0)) {
         return Some((format!("earthbend {amount}"), len));

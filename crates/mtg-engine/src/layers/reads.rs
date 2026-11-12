@@ -63,9 +63,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
-        Modification::LoseAbilities | Modification::LoseAbility(_) => {
-            Traits::KEYWORDS.or(Traits::RULES)
-        }
+        Modification::LoseAbilities
+        | Modification::LoseAbilitiesExceptMana
+        | Modification::LoseAbility(_) => Traits::KEYWORDS.or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -105,7 +105,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) => {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
-        Wanted::SetCreatureTypesChosen(_) | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
+        | Wanted::AddChosenSubtype => Traits::SUBTYPES,
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
@@ -116,9 +118,10 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::RemoveKeyword(_)
         | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities | Wanted::LoseThisAbility | Wanted::LosePrinted(_) => {
-            Traits::KEYWORDS.or(Traits::RULES)
-        }
+        Wanted::LoseAbilities
+        | Wanted::LoseAbilitiesExceptMana
+        | Wanted::LoseThisAbility
+        | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
@@ -173,6 +176,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
@@ -190,6 +194,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LosePrinted(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
+        | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock
@@ -237,7 +242,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
         Ref::OwnerOf(inner) => reads_of_ref(inner),
-        Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
+        Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
             .iter()
@@ -344,9 +349,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Saddled(who)
         | Pred::SharesName(who)
         | Pred::DamagedBy(who)
+        | Pred::DamagedThisTurnBy(who)
         | Pred::AttachedTo(who)
         | Pred::PairedWith(who)
-        | Pred::SameCard(who) => reads_of_ref(who),
+        | Pred::SameCard(who)
+        | Pred::SourceOf(who) => reads_of_ref(who),
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
@@ -363,7 +370,10 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
-        Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
+        Pred::Targeting(inner)
+        | Pred::HasAttached(inner)
+        | Pred::FromSource(inner)
+        | Pred::AbilityFrom(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),
@@ -376,7 +386,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Power | StatKind::BasePower => Traits::POWER,
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
-        StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
+        StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
@@ -414,6 +424,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ManaInPool(_)
         | Amount::Random { .. }
         | Amount::TriggeringTargets
+        | Amount::PlayersLost
+        | Amount::CastTargets
         | Amount::Chosen
         | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,
@@ -422,6 +434,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
+        | Amount::CastsFromCommand(who)
         | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)
@@ -444,7 +457,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
-        Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
+            reads_of_amount(of)
+        }
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))
         }
@@ -518,6 +533,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
+        | Condition::AttackedYouLastTurn(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)

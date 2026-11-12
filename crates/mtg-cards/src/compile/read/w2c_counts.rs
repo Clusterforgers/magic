@@ -59,6 +59,9 @@ pub(super) fn w2c_distinct_text(amount: &Amount, plural: bool) -> Option<String>
     let Amount::Distinct { of, stat } = amount else {
         return None;
     };
+    if let Some(text) = super::r300b_writers::r300b_distinct_colors_text(of, *stat, plural) {
+        return Some(text);
+    }
     if *stat == StatKind::BasicLandTypes {
         let name = if plural { "types" } else { "type" };
         return Some(format!(

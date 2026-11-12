@@ -349,6 +349,10 @@ fn part_texts(mods: &[Modification], plural: bool) -> Option<(Vec<String>, Strin
                 parts.push(format!("{} all creature types", verbs.gains));
             }
             Modification::LoseAbilities => parts.push(format!("{} all abilities", verbs.loses)),
+            Modification::LoseAbilitiesExceptMana => parts.push(format!(
+                "{} all abilities except mana abilities",
+                verbs.loses
+            )),
             Modification::SetCreatureTypes(types) if types.is_empty() => {
                 parts.push(format!("{} all creature types", verbs.loses));
             }

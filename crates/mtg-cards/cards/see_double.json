@@ -1,0 +1,56 @@
+{
+  "oracle_id": "144d0817-348c-4171-aa7e-3468b23cf97d",
+  "name": "See Double",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "See Double",
+      "oracle_fingerprint": "37a381a94bbca53c7cdefb53735a7305",
+      "abilities": [
+        { "Rule": { "rule": "CantBeCopied" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                                "op": "Ge",
+                                "right": 8
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
