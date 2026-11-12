@@ -133,9 +133,6 @@ pub struct Weights {
     pub life: f64,
     /// How much permanents count against the rest of a team's standing.
     pub board: f64,
-    /// What a spell that is not a creature or land counts besides a card while the seat holds it: removal and tricks
-    /// kept for a target worth them.
-    pub held_spell: f64,
 }
 
 impl Weights {
@@ -146,7 +143,6 @@ impl Weights {
         card: CARD,
         life: 1.0,
         board: 1.0,
-        held_spell: 0.0,
     };
 }
 
@@ -211,19 +207,6 @@ pub fn player_standing(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f6
 fn standing_with(seen: &Seen<'_>, player: PlayerId, bodies: &[Body], weights: Weights) -> f64 {
     let hand = seen.hand_size(player).min(8);
     let mut score = weights.card * count(hand);
-    if player == seen.seat() && weights.held_spell != 0.0 {
-        let spells = seen
-            .own_hand()
-            .iter()
-            .filter(|id| {
-                seen.chars(**id).is_some_and(|chars| {
-                    !chars.types.contains(CardType::Creature)
-                        && !chars.types.contains(CardType::Land)
-                })
-            })
-            .count();
-        score += weights.held_spell * count(spells);
-    }
     if seen.library_size(player) == 0 {
         score -= 30.0;
     }

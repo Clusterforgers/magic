@@ -46,15 +46,16 @@ fn winner(levels: &[Level], seed: u64) -> Option<PlayerId> {
     }
 }
 
-/// The share of `games` seeded games that a `strong` seat wins against `weak` ones at a table of `seats`, the strong
-/// seat moving round the table from game to game.
+/// The share of `games` seeded games that a `strong` seat wins against `weak` ones at a table of `seats`: each deal is
+/// played once with the strong seat in each place, so both sides meet the same luck.
 fn win_rate(strong: Level, weak: Level, seats: usize, games: u64) -> f64 {
     let mut wins = 0;
-    for seed in 0..games {
-        let at = usize::try_from(seed).unwrap() % seats;
+    for game in 0..games {
+        let at = usize::try_from(game).unwrap() % seats;
         let mut levels = vec![weak; seats];
         levels[at] = strong;
-        if winner(&levels, 1_000 + seed) == Some(PlayerId::from_index(at)) {
+        let seed = 1_000 + game / seats as u64;
+        if winner(&levels, seed) == Some(PlayerId::from_index(at)) {
             wins += 1;
         }
     }
@@ -68,7 +69,7 @@ fn win_rate(strong: Level, weak: Level, seats: usize, games: u64) -> f64 {
 #[case::three_seats(Level::Normal, Level::Easy, 3, 12, 0.6)]
 #[case::four_seats(Level::Normal, Level::Easy, 4, 12, 0.6)]
 #[case::hard_head_to_head(Level::Hard, Level::Easy, 2, 10, 0.8)]
-#[case::hard_against_normal(Level::Hard, Level::Normal, 2, 40, 0.5)]
+#[case::hard_against_normal(Level::Hard, Level::Normal, 2, 80, 0.5)]
 #[case::very_hard_head_to_head(Level::VeryHard, Level::Easy, 2, 6, 0.8)]
 fn the_stronger_level_wins_its_share(
     #[case] strong: Level,
@@ -188,6 +189,8 @@ fn every_brain(seed: u64, seat: usize) -> Box<dyn SeatBrain> {
         3 => {
             let mut settings = Settings::VERY_HARD.untimed();
             settings.votes = 3;
+            settings.sims = 60;
+            settings.forecasts = 200;
             Box::new(HeuristicBot::new(seed, player, settings))
         }
         _ => {

@@ -309,6 +309,11 @@ impl Default for ServerConfig {
     }
 }
 
+/// `text` as a whole number of at least 1.
+fn at_least_one(text: &str) -> Option<usize> {
+    text.trim().parse::<usize>().ok().filter(|n| *n >= 1)
+}
+
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
@@ -333,16 +338,10 @@ impl ServerConfig {
                 .map_err(|_| ConfigError::BadBind(text.clone()))?;
         }
         if let Some(text) = get("MTG_MAX_GAMES") {
-            config.max_games = match text.trim().parse::<usize>() {
-                Ok(n) if n >= 1 => n,
-                _ => return Err(ConfigError::BadMaxGames(text)),
-            };
+            config.max_games = at_least_one(&text).ok_or(ConfigError::BadMaxGames(text))?;
         }
         if let Some(text) = get("MTG_BOT_THINKERS") {
-            config.bot_thinkers = match text.trim().parse::<usize>() {
-                Ok(n) if n >= 1 => n,
-                _ => return Err(ConfigError::BadBotThinkers(text)),
-            };
+            config.bot_thinkers = at_least_one(&text).ok_or(ConfigError::BadBotThinkers(text))?;
         }
         if let Some(text) = get("MTG_ALLOWED_ORIGINS") {
             for entry in text.split(',').map(str::trim).filter(|e| !e.is_empty()) {

@@ -175,7 +175,6 @@ fn make(level: Option<Level>, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn
             settings.weights.card = number("EXP_CARD", base.weights.card);
             settings.weights.life = number("EXP_LIFE", base.weights.life);
             settings.weights.board = number("EXP_BOARD", base.weights.board);
-            settings.weights.held_spell = number("EXP_HELD", base.weights.held_spell);
             Box::new(HeuristicBot::new(seed, seat, settings))
         }
     }
