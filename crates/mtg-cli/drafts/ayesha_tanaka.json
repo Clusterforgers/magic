@@ -1,0 +1,35 @@
+{
+  "oracle_id": "35e4ed0e-8ce2-4729-a009-0d6be8f47663",
+  "name": "Ayesha Tanaka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayesha Tanaka",
+      "oracle_fingerprint": "0d861eefc6146fdad9eccd8d9bf34002",
+      "abilities": [
+        { "Keyword": "Banding" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Ability": "Activated" }, { "In": "Stack" }, { "Type": "Artifact" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{W}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

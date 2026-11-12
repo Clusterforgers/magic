@@ -917,6 +917,10 @@ describe('events with more than one shape', () => {
       'Hill Giant loses all landwalk abilities until end of turn',
     ],
     [
+      effect(objects(2), { RemoveKeywordKind: 'BandsWithOther' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all "bands with other" abilities until end of turn',
+    ],
+    [
       effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
       'Grizzly Bears and Hill Giant lose ward until end of turn',
     ],
@@ -925,6 +929,10 @@ describe('events with more than one shape', () => {
       "Hill Giant loses flying and can't have or gain it until end of turn",
     ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
+    [
+      effect('AllCreatures', 'LoseAbilitiesExceptMana', 'Forever'),
+      'All creatures lose all abilities except mana abilities',
+    ],
     [
       effect(objects(2), 'SwitchPowerToughness', 'UntilEndOfTurn'),
       'Hill Giant has power and toughness switched until end of turn',
@@ -1014,6 +1022,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { SetController: 1 }, 'WhileSourceTapped', { id: 6, counter: 0 }),
       'Hill Giant changes controller while Jace Beleren stays tapped',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, 'WhileYouControlSourceTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while its controller controls Jace Beleren and it stays tapped',
     ],
     [
       effect(objects(2), { SetController: 1 }, 'UntilCastFromExile', { id: 6, counter: 0 }),
@@ -1130,6 +1142,12 @@ describe('events with more than one shape', () => {
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
+    [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
+    [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
+    [
+      ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
+      'Creatures can attack Bo as though they had haste',
+    ],
     [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
     [
       ruleEffect({ CantLoseGame: { who: [0], winless: [], life_only: true } }, 'Forever'),
@@ -1188,6 +1206,26 @@ describe('events with more than one shape', () => {
         'UntilEndOfYourNextTurn',
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
+    ],
+    [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [
+              { id: 1, counter: 1 },
+              { id: 2, counter: 1 },
+            ],
+            play: false,
+          },
+        },
+        'UntilEndOfCombatOnYourNextTurn',
+      ),
+      "Ana may cast Grizzly Bears and Hill Giant until end of combat on their controller's next turn",
     ],
     [
       ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),

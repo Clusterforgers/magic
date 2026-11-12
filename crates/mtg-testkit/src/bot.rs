@@ -385,7 +385,7 @@ impl Repeats {
 /// leaves it as it was.
 /// The picked targets that fit the total the options set ("with total power 10 or less"), the smallest values first;
 /// all of them when the options set none. The engine offers only sets whose smallest values reach the least count.
-fn rmt1_within_total(
+pub(crate) fn rmt1_within_total(
     options: &mtg_engine::choose::TargetOptions,
     picked: Vec<Target>,
 ) -> Vec<Target> {
@@ -1125,6 +1125,19 @@ impl RandomBot {
         } else {
             self.pick(&offered, wanted)
         };
+        // Modes counted in pawprints: the last ones go until the rest fit within the most.
+        let weight = |index: usize| {
+            options
+                .modes
+                .iter()
+                .find(|mode| mode.index == index)
+                .and_then(|mode| mode.weight)
+                .unwrap_or(1)
+        };
+        let mut chosen = chosen;
+        while chosen.iter().map(|index| weight(*index)).sum::<u32>() > options.max {
+            chosen.pop();
+        }
         Answer::ChooseMode(ModeChoice::Modes(chosen))
     }
 

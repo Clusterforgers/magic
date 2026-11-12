@@ -46,6 +46,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: crate::modify::SpendAs::Normal,
             who: Ref::You,
             what: Ref::Bound(cast),
             free: true,

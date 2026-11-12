@@ -74,6 +74,8 @@ mod mutate_counts;
 mod phasing;
 mod planeswalkers;
 mod proliferate;
+mod r305c_copy_counters;
+mod r306c_attractions;
 mod r378_stickers;
 mod r3f_exiled;
 mod r4b_dig;

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "3c9f3f26-339e-459e-9847-4e33aafb6f9b",
+  "name": "Squee's Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squee's Revenge",
+      "oracle_fingerprint": "ea3c3f282ceb2ecb010d9e8ad0df4373",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, 100] }, "as": "number" } },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "lost" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    {
+                      "FlipCoin": { "lose": [{ "RememberValue": { "value": 1, "slot": "lost" } }] }
+                    }
+                  ],
+                  "most": 100,
+                  "times": { "ChosenAs": "number" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "lost" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": { "count": { "Times": { "by": 2, "of": { "ChosenAs": "number" } } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

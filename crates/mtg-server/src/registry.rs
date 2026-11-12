@@ -120,7 +120,7 @@ pub struct GameOptions {
     /// The pace this game plays at in place of the server's; `None` for the server's.
     pub pace: Option<Pace>,
     /// The held seats a server-side bot plays ([`crate::bots`]); never seat 0, which the creator plays.
-    pub bots: Vec<PlayerId>,
+    pub bots: Vec<crate::bots::BotSeat>,
     /// The account each held seat is bound to, by seat, for a game the server makes for its players
     /// (a tournament match); empty binds only the creator to seat 0.
     pub accounts: Vec<Option<UserId>>,
@@ -836,7 +836,13 @@ impl Registry {
     }
 
     /// Hands `seats` of game `id`, which the registry holds, to bots that stop when it lets the game go.
-    fn spawn_bots(&self, id: GameId, handle: &GameHandle, seats: &[PlayerId], seed: u64) {
+    fn spawn_bots(
+        &self,
+        id: GameId,
+        handle: &GameHandle,
+        seats: &[crate::bots::BotSeat],
+        seed: u64,
+    ) {
         let removed = self.games().get(&id).map(|entry| entry.alive.subscribe());
         if let Some(removed) = removed {
             crate::bots::spawn_bot_seats(handle, seats, seed, self.shared.bot_delay, &removed);

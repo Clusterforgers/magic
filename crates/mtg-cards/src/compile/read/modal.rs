@@ -53,6 +53,7 @@ pub fn modal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             all_if,
             mode_costs: Vec::new(),
             extra_mode_cost: None,
+            pawprints: Vec::new(),
             modes,
         }]
     })

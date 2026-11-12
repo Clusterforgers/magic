@@ -1,0 +1,95 @@
+{
+  "oracle_id": "efc12acf-ffef-40a6-b2ce-fe93e89ad840",
+  "name": "Plague of Vermin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague of Vermin",
+      "oracle_fingerprint": "2a0df9a3676ff9462012372e1030cbab",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "round" } },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    { "Forget": { "slot": "round" } },
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Pay": {
+                              "who": { "Bound": "player" },
+                              "cost": [{ "PayLife": "X" }],
+                              "paid": [
+                                {
+                                  "RememberValue": {
+                                    "value": "X",
+                                    "slot": "paid",
+                                    "per": { "Bound": "player" }
+                                  }
+                                },
+                                { "RememberValue": { "value": "X", "slot": "round" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "creator",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "creator" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Rat",
+                                  "colors": ["Black"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Rat"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              },
+                              "count": {
+                                "Remembered": {
+                                  "on": "This",
+                                  "slot": "paid",
+                                  "per": { "Bound": "creator" }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

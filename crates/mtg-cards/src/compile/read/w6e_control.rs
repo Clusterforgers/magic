@@ -62,16 +62,29 @@ pub(super) fn w6e_taken(r: &mut Reader<'_>) -> Option<(Ref, Option<&'static str>
     Some((what, noun))
 }
 
-/// How long the control lasts: the turn, while the source stays or is controlled, or for good.
+/// How long the control lasts: the turn, while the source stays, is controlled or stays tapped, or for good.
 pub(super) fn w6e_duration(r: &mut Reader<'_>) -> Option<Duration> {
     if r.words("until end of turn") {
         return Some(Duration::UntilEndOfTurn);
     }
     if r.words("for as long as you control") {
-        return r.source().then_some(Duration::WhileYouControlSource);
+        r.source().then_some(())?;
+        let tapped = r.attempt(|r| {
+            r.need("and")?;
+            r.source().then_some(())?;
+            r.need("remains tapped")
+        });
+        return Some(if tapped.is_some() {
+            Duration::WhileYouControlSourceTapped
+        } else {
+            Duration::WhileYouControlSource
+        });
     }
     if r.words("for as long as") {
         r.source().then_some(())?;
+        if r.words("remains tapped") {
+            return Some(Duration::WhileSourceTapped);
+        }
         r.need("remains on the battlefield")?;
         return Some(Duration::WhileSourceOnBattlefield);
     }

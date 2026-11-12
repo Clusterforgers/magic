@@ -90,6 +90,7 @@ const KEYWORDS: &[&str] = &[
     "riot",
     "decayed",
     "exploit",
+    "banding",
 ];
 
 /// How a phrase is introduced, which decides its number, how it joins card types and how it names
@@ -714,6 +715,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     .or_else(|| super::w21a_atoms::w21a_suffix(r))
     .or_else(|| super::w19d_suffixes::w19d_suffix(r))
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
+    .or_else(|| super::r301b_atoms::r301b_suffix(r, form))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -867,7 +869,8 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => {
             return super::w21a_atoms::w21a_suffix_text(pred, form)
-                .or_else(|| super::r283_atoms::r283_suffix_text(pred, form));
+                .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
+                .or_else(|| super::r301b_atoms::r301b_suffix_text(pred, form));
         }
     })
 }
@@ -1959,6 +1962,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             Targetable::AnyTarget => "any target".to_owned(),
             Targetable::Player => "target player".to_owned(),
             Targetable::Opponent => "target opponent".to_owned(),
+            Targetable::Either(kinds) if super::r303b_writers::r303b_three_kinds(kinds) => {
+                "target creature, planeswalker, or player".to_owned()
+            }
             Targetable::Either(kinds) => match kinds.as_slice() {
                 [Targetable::Player, Targetable::Object(planeswalker)]
                     if planeswalker.0 == [Pred::Type(CardType::Planeswalker)] =>

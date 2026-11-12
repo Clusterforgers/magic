@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9937dae8-e639-46ad-849b-7e7be93bbbad",
+  "name": "Shining Shoal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shining Shoal",
+      "oracle_fingerprint": "1b0a3e6d8989f0ff9a535344abc3dacb",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "ExileFromHand": {
+                  "filter": [
+                    { "Color": "White" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": {
+                        "Union": [
+                          "You",
+                          { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        ]
+                      },
+                      "source": [{ "Is": { "Bound": "source" } }]
+                    }
+                  },
+                  "by": { "RedirectCounted": { "most": "X", "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

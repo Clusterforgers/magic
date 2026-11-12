@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3a05904d-5439-446d-a2a1-1475c9c7371d",
+  "name": "Orcish Librarian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Librarian",
+      "oracle_fingerprint": "2cfceb5b75a4854a690e74a0fac4b1fd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "count": 8, "as": "top" } },
+              { "ChooseAtRandom": { "from": { "Bound": "top" }, "count": 4, "as": "exiled" } },
+              { "Exile": { "what": { "Bound": "exiled" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

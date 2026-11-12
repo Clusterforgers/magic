@@ -1,7 +1,7 @@
 {
   "oracle_id": "b269770d-2b48-4314-a1b8-0d79beb879a3",
   "name": "Kitsune Mystic // Autumn-Tail, Kitsune Sage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kitsune Mystic",
@@ -27,7 +27,33 @@
       "oracle_fingerprint": "e6e20c3f17eddcdb85c96fdfacc841b7",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 67 } }
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Aura" },
+                    { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasAttached": [{ "Is": { "Target": 0 } }] } }
+                    ]
+                  },
+                  "as": "creature"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Bound": "creature" } } }
+            ]
+          }
         }
       ]
     }

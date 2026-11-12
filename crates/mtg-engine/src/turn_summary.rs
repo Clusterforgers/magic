@@ -22,6 +22,8 @@ pub struct TurnSummary {
     pub(crate) attackers: Vec<ObjectRef>,
     /// The turn's log of objects (what entered, was cast, died and the like), as they were then.
     pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
+    /// The players attacked during the turn (not their planeswalkers), each once.
+    pub(crate) attacked: Vec<PlayerId>,
 }
 
 impl GameState {
@@ -38,6 +40,15 @@ impl GameState {
             .filter(|record| record.event == TallyEvent::Attacked)
             .filter_map(|record| record.subject)
             .collect();
+        let mut attacked: Vec<PlayerId> = Vec::new();
+        for record in &self.tallies.records {
+            if let (TallyEvent::Attacked, Some(crate::choose::Target::Player(player))) =
+                (record.event, record.other)
+                && !attacked.contains(&player)
+            {
+                attacked.push(player);
+            }
+        }
         self.seat_turns.insert(
             active,
             TurnSummary {
@@ -45,6 +56,7 @@ impl GameState {
                 tallies,
                 attackers,
                 logged: self.tallies.logged.clone(),
+                attacked,
             },
         );
         self.last_turn_of = Some(active);
@@ -63,6 +75,14 @@ impl GameState {
             .map(crate::object::GameObject::controller)
             .and_then(|controller| self.seat_turns.get(&controller))
             .is_some_and(|summary| summary.attackers.contains(&object))
+    }
+
+    /// Whether `attacker` attacked `defender` itself during `attacker`'s latest finished turn
+    /// (`Condition::AttackedYouLastTurn`).
+    pub(crate) fn r305b_attacked_last_turn(&self, attacker: PlayerId, defender: PlayerId) -> bool {
+        self.seat_turns
+            .get(&attacker)
+            .is_some_and(|summary| summary.attacked.contains(&defender))
     }
 
     /// How many events of the kind the player had during the turn that ended last; 0 before any turn has ended.

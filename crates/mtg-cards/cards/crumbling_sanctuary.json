@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f9269fda-e1e6-4e10-9a64-26e8c0f38b0c",
+  "name": "Crumbling Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crumbling Sanctuary",
+      "oracle_fingerprint": "f0742039e76925b090140ea838858754",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "EachPlayer" } },
+            "by": {
+              "Instead": [
+                { "ExileTop": { "who": "Triggering", "count": "Triggering", "as": "exiled" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

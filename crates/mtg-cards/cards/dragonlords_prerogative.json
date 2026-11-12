@@ -1,7 +1,7 @@
 {
   "oracle_id": "46bc0aaf-987f-4c8d-b98b-50b90f97c9a3",
   "name": "Dragonlord's Prerogative",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dragonlord's Prerogative",
@@ -13,17 +13,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 87, "end": 194 }
+          "Rule": {
+            "rule": { "CantBeCountered": "This" },
+            "condition": {
+              "Any": [
+                "AdditionalCostPaid",
+                {
+                  "AsCast": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "from": "Stack"
           }
         },
-        {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 195, "end": 211 }
-          }
-        }
+        { "Spell": { "effects": [{ "Draw": { "count": 4 } }] } }
       ]
     }
   ]

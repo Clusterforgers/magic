@@ -1,17 +1,20 @@
 {
   "oracle_id": "ca597a0d-b510-4b25-9a83-4d4e613546f5",
   "name": "Bound in Gold",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bound in Gold",
       "oracle_fingerprint": "6573db994c006769f3b4da0f0a66951f",
       "abilities": [
         { "Keyword": { "Enchant": [] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        { "Rule": { "rule": { "Cant": { "who": "Attached", "action": "Crew" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 18, "end": 154 }
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
           }
         }
       ]

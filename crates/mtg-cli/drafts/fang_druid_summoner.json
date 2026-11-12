@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1a9bfe76-6c74-4393-b04e-461422a29ddb",
+  "name": "Fang-Druid Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fang-Druid Summoner",
+      "oracle_fingerprint": "3f9978b0dec2c10111d5b73aa38c77f9",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [
+                          { "OwnedBy": "You" },
+                          { "Type": "Creature" },
+                          { "Not": { "HasAbility": "Any" } }
+                        ],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

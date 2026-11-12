@@ -1,0 +1,72 @@
+{
+  "oracle_id": "c3d38129-b955-4fb5-8486-095f918935b9",
+  "name": "Quintorius, Loremaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quintorius, Loremaster",
+      "oracle_fingerprint": "9063bd50742430b675f6899e746fd78e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W}{R}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Spirit" }] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "In": "Exile" }, { "ExiledWith": "This" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Exile",
+                      "free": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

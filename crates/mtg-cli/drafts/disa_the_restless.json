@@ -1,7 +1,7 @@
 {
   "oracle_id": "283bfc53-afd3-4d21-b7d5-5baba4232422",
   "name": "Disa the Restless",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Disa the Restless",
@@ -11,7 +11,20 @@
           "Triggered": {
             "when": {
               "ZoneChangeExcept": {
-                "what": [{ "Subtype": "Lhurgoyf" }, { "OwnedBy": "You" }],
+                "what": [
+                  { "Subtype": "Lhurgoyf" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" },
+                      { "Type": "Battle" }
+                    ]
+                  },
+                  { "OwnedBy": "You" }
+                ],
                 "except": "Battlefield",
                 "to": "Graveyard"
               }
@@ -20,9 +33,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 233 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Card": "Tarmogoyf" } } }]
           }
         }
       ]

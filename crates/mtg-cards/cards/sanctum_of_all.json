@@ -1,16 +1,37 @@
 {
   "oracle_id": "63f60dfc-2bc4-411f-ae53-504156fe0102",
   "name": "Sanctum of All",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sanctum of All",
       "oracle_fingerprint": "73fadf8b8c98722cf94bc8f333d5659f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 174 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Subtype": "Shrine" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

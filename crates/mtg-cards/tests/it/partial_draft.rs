@@ -1,10 +1,10 @@
-//! Goal: a proved partial draft plays in state `Partial` on a read (fail-soft, pinned) only when it is approved, its text and engine fit, and it keeps strictly less by hand than the compiled `Partial` row; a `wrong` verdict or an edit turns the card back to the row.
+//! Goal: a proved partial draft plays in state `Partial` on a read (fail-soft, pinned) only when it is approved, its text and engine fit, and it keeps strictly less by hand than the compiled `Partial` row, and never over a rules file; a `wrong` verdict or an edit turns the card back to the row.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, Face, ImplStatus, Span};
 use mtg_cards::effect::Effect;
-use mtg_cards::load::{GeneratedRules, Library};
+use mtg_cards::load::{GeneratedRules, Library, Source, canonical};
 use mtg_cards::proposal::partial::{ClauseMark, Mark, PartialProof};
 use mtg_cards::refs::{Bounds, Ref, TargetSpec, Targetable};
 use mtg_cards::support::{Caps, PrintedCard, PrintedFace, Support, oracle_fingerprint, read_hash};
@@ -233,4 +233,21 @@ fn a_whole_draft_still_needs_no_proof() {
 
     assert!(left_out.is_empty(), "{left_out:?}");
     assert!(library.draft(ID).is_some_and(|d| d.proof.is_none()));
+}
+
+#[test]
+fn a_partial_draft_never_outranks_a_partial_rules_file_even_with_less_by_hand() {
+    let file = card(&[1, 2]);
+    let source = Source {
+        path: "cards/lightning_bolt.json".into(),
+        text: canonical(&file),
+    };
+    let (library, left_out) = Library::from_sources(&[source])
+        .unwrap()
+        .with_drafts(&[draft(&[1], ReadState::Approved)]);
+    assert!(left_out.is_empty(), "{left_out:?}");
+
+    let (state, by_hand, read) = played(&library, &printed(&text()), &Caps::everything());
+
+    assert_eq!((state, by_hand, read), (Support::Partial, 2, false));
 }

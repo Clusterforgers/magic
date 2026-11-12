@@ -108,6 +108,7 @@ const KEYWORD_KIND_WORDS = {
   Landwalk: 'all landwalk abilities',
   Protection: 'protection',
   Ward: 'ward',
+  BandsWithOther: 'all "bands with other" abilities',
 } as const
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
@@ -135,6 +136,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if (typeof modification === 'string') {
     return {
       LoseAbilities: `${loses} all abilities`,
+      LoseAbilitiesExceptMana: `${loses} all abilities except mana abilities`,
       SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
       CantAttack: "can't attack",
       CantBlock: "can't block",
@@ -256,6 +258,7 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
+    UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     WhileYouControlSource:
@@ -264,6 +267,10 @@ function durationWords(
         : ` while its controller controls ${n.card(source.id)}`,
     WhileSourceTapped:
       source === null ? ' while its source stays tapped' : ` while ${n.card(source.id)} stays tapped`,
+    WhileYouControlSourceTapped:
+      source === null
+        ? ' while its controller controls its source and it stays tapped'
+        : ` while its controller controls ${n.card(source.id)} and it stays tapped`,
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
@@ -294,6 +301,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
   let what: string
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
+  else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
+  else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if ('AttackAsThoughHasteAt' in rule)
+    what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
   else if ('MustAttackPlayers' in rule)
     what = rule.MustAttackPlayers.map(

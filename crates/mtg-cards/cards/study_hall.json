@@ -1,0 +1,35 @@
+{
+  "oracle_id": "eb735501-19e7-4910-aa6a-6667fff6f4e5",
+  "name": "Study Hall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Study Hall",
+      "oracle_fingerprint": "3ea752f5d4e06e5d26df8c43ceff55b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "when_spent": {
+                    "spell": { "facts": ["YourCommander"] },
+                    "effects": [{ "Scry": { "count": { "CastsFromCommand": "Triggering" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

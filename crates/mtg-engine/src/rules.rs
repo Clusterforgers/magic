@@ -304,6 +304,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         when: Option<Box<Condition>>,
+        /// It opens no zone: its free cast or cost is offered for the casts the players may make anyway.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        any_cast: bool,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -395,6 +399,12 @@ pub enum Rule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// All damage is dealt as though its source had wither (CR 702.80).
+    DamageAsWither,
+    /// A player losing unspent mana loses that much life (mana burn).
+    ManaBurn,
+    /// Creatures can attack the players and their planeswalkers as though they had haste (CR 302.6).
+    AttackAsThoughHasteAt(Vec<PlayerId>),
     /// The players can't lose the game, and the other players can't win it (CR 104.3).
     CantLoseGame {
         /// The players who can't lose.
@@ -519,7 +529,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -688,6 +698,12 @@ pub(crate) struct RulesInForce {
     pub(crate) static_spell_costs: Vec<(Rule, PlayerId, ObjectRef)>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
+    /// All damage is dealt as though its source had wither.
+    pub(crate) damage_as_wither: bool,
+    /// Players losing unspent mana lose that much life.
+    pub(crate) mana_burn: bool,
+    /// The players creatures can attack as though they had haste.
+    pub(crate) haste_at: BTreeSet<PlayerId>,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -751,6 +767,8 @@ pub(crate) struct Cast {
     pub(crate) rather: Option<ManaCost>,
     /// What is paid in place of the mana cost of the card, its amounts counted for the card cast.
     pub(crate) instead: Option<Cost>,
+    /// It opens no zone: it covers only a card its player may cast anyway.
+    pub(crate) opens_no_zone: bool,
 }
 
 impl Cast {
@@ -762,7 +780,8 @@ impl Cast {
 
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
-        self.c11b_open(state)
+        (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
+            && self.c11b_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
             && self
@@ -933,6 +952,30 @@ impl RulesInForce {
         let (free, flash) = match benefit {
             SpellBenefit::Free => (true, false),
             SpellBenefit::Flash => (false, true),
+            // "Rather than pay the mana cost of the next spell you cast this turn, you may pay ...": a cast for that cost.
+            SpellBenefit::Rather(cost) => {
+                if let Some(source) = source {
+                    self.casts.push(Cast {
+                        controller,
+                        source,
+                        who: vec![controller],
+                        what: what.clone(),
+                        from: None,
+                        free: false,
+                        flash: false,
+                        only: None,
+                        play: false,
+                        once: false,
+                        additional: None,
+                        spend_as: SpendAs::Normal,
+                        when: None,
+                        rather: None,
+                        instead: Some(cost.clone()),
+                        opens_no_zone: false,
+                    });
+                }
+                return;
+            }
             SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
                 return;
             }
@@ -954,6 +997,7 @@ impl RulesInForce {
                 when: None,
                 rather: None,
                 instead: None,
+                opens_no_zone: false,
             });
         }
     }
@@ -1137,9 +1181,11 @@ impl RulesInForce {
                 rather,
                 spend_as,
                 when,
+                any_cast,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
+                        opens_no_zone: *any_cast,
                         controller,
                         source,
                         who: who.clone(),
@@ -1177,6 +1223,7 @@ impl RulesInForce {
                             when: None,
                             rather: Some(cost.clone()),
                             instead: None,
+                            opens_no_zone: false,
                         });
                     }
                 }
@@ -1195,6 +1242,12 @@ impl RulesInForce {
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
             | Rule::Replaces { .. } => {}
+            Rule::DamageAsWither => self.damage_as_wither = true,
+            Rule::ManaBurn => self.mana_burn = true,
+            Rule::AttackAsThoughHasteAt(players) => {
+                self.haste_at
+                    .extend(crate::r303b_haste_at::r303b_named(players));
+            }
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
@@ -1417,6 +1470,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             rather: permission.rather.clone().map(Box::new),
             spend_as: permission.spend_as,
             when: permission.when.clone().map(Box::new),
+            any_cast: permission.any_cast,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::SpellCost {
@@ -1484,6 +1538,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::UpToInDeck(_) => return Err(ResolveError::Unsupported("Rule.UpToInDeck")),
         // A draft rule works only during a booster draft; nothing changes in a game.
         GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
+        GameRule::DamageAsWither => Rule::DamageAsWither,
+        GameRule::ManaBurn => Rule::ManaBurn,
+        GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
+        // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
+        GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -1583,7 +1642,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
-        | Rule::NoMaxHandSize(players) => players.is_empty(),
+        | Rule::NoMaxHandSize(players)
+        | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::HandSizeChange(changes) => changes.is_empty(),
@@ -1608,7 +1668,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
-        | Rule::AbilitiesAsThoughHaste(_) => false,
+        | Rule::AbilitiesAsThoughHaste(_)
+        | Rule::DamageAsWither
+        | Rule::ManaBurn => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1776,6 +1838,9 @@ static NONE: RulesInForce = RulesInForce {
     cants: Vec::new(),
     static_spell_costs: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
+    damage_as_wither: false,
+    mana_burn: false,
+    haste_at: BTreeSet::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -2339,6 +2404,20 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
     })
 }
 
+/// Whether `player` may cast `card` without a permission that opens no zone: from their hand, as their commander from
+/// their command zone, or from a zone another permission opens for its mana cost.
+fn r305c_cast_anyway(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+    match card.zone() {
+        Zone::Hand(owner) => owner == player,
+        Zone::Command(owner) => owner == player && state.is_commander(card.id()),
+        zone => cast_permissions(state).iter().any(|other| {
+            !other.opens_no_zone
+                && other.adds_to_printed(crate::resolve::zone_kind(zone))
+                && other.covers(state, player, card)
+        }),
+    }
+}
+
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).
 pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
@@ -2784,6 +2863,7 @@ mod tests {
             additional: None,
             spend_as: SpendAs::Normal,
             when: None,
+            any_cast: false,
         }
     }
 

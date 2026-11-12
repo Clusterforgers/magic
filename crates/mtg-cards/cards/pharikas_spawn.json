@@ -1,7 +1,7 @@
 {
   "oracle_id": "a44955e7-f1ad-41b9-b93d-0a980ac341d8",
   "name": "Pharika's Spawn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pharika's Spawn",
@@ -16,9 +16,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 126, "end": 267 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": { "CastWith": "Escape" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Escape" },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Gorgon" } }]
+                }
+              }
+            ]
           }
         }
       ]

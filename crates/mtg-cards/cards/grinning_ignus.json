@@ -1,0 +1,20 @@
+{
+  "oracle_id": "eca27964-accc-46cc-8aff-a06183e61e9c",
+  "name": "Grinning Ignus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grinning Ignus",
+      "oracle_fingerprint": "2ace6e5e8c0e636fe20ccddb5976fab2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, { "ReturnToHand": { "filter": ["This"] } }],
+            "timing": "Sorcery",
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
