@@ -39,27 +39,27 @@
                   "filter": [
                     { "Supertype": "Legendary" },
                     {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    {
                       "Compare": {
                         "stat": "ManaValue",
                         "op": "Lt",
                         "to": { "Stat": { "of": "This", "stat": "Power" } }
                       }
-                    },
-                    {
-                      "AnyOf": [
-                        { "Type": "Artifact" },
-                        { "Type": "Battle" },
-                        { "Type": "Creature" },
-                        { "Type": "Enchantment" },
-                        { "Type": "Land" },
-                        { "Type": "Planeswalker" }
-                      ]
                     }
                   ],
-                  "as": "found"
+                  "as": "card"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]
           }
