@@ -1,7 +1,7 @@
 {
   "oracle_id": "e16f79c1-ffbb-4893-b62a-d4e9d15e2b16",
   "name": "Gonti, Night Minister",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gonti, Night Minister",
@@ -9,16 +9,40 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "SpellCast": { "what": ["Spell", { "Not": { "OwnedBy": "You" } }] } },
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "OwnedBy": { "ControllerOf": "Triggering" } } }] }
+            },
             "effects": [
-              { "CreateToken": { "who": "Triggering", "token": { "Named": "treasure" } } }
+              { "CreateToken": { "who": "TriggeringPlayer", "token": { "Named": "treasure" } } }
             ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 86, "end": 354 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "TriggeringPlayer", "as": "card", "sealed": true } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "ControllerOf": "Triggering" },
+                      "from": "Exile",
+                      "only": { "Bound": "card" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

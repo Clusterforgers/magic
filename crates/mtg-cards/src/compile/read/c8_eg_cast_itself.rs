@@ -53,6 +53,7 @@ fn c8_eg_permission(additional: Option<Cost>, zone: ZoneKind) -> CastPermission 
         additional,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
+        any_cast: false,
     }
 }
 

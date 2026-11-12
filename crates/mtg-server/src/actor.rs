@@ -351,6 +351,14 @@ impl<S: EventStore> GameActor<S> {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.status());
             }
+            Command::Table { reply } => {
+                let table = match &self.phase {
+                    Phase::Running(running) => Some(Box::new(running.engine.clone())),
+                    Phase::Lobby { .. } => None,
+                };
+                // A caller that stopped waiting needs no answer.
+                let _ = reply.send(table);
+            }
         }
         Ok(())
     }

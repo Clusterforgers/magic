@@ -43,7 +43,8 @@ timestamp: number,
  */
 source: ObjectRef | null, 
 /**
- * Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for.
+ * Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for; for
+ * `DuringItsControllersNextTurn`, the controller of the objects as it began, whose next turn it applies in.
  */
 controller: PlayerId, 
 /**

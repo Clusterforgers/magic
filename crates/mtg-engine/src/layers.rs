@@ -572,6 +572,7 @@ pub(crate) fn leaves_alone(event: &Event) -> bool {
         Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
             | Event::ManaAdded { .. }
+            | Event::ManaAbilityActivated { .. }
             | Event::ManaSpent { .. }
             | Event::ManaPoolEmptied { .. }
             | Event::TriggersOrdered { .. }
@@ -707,6 +708,29 @@ struct Started {
     stamp: u64,
     set: BTreeSet<ObjectId>,
     players: BTreeSet<PlayerId>,
+}
+
+/// The players a static ability's `affected` names: a player reference, or the players of a union ("you and permanents
+/// you control"); none for objects alone.
+fn r305c_affected_players(scope: &Scope<'_>, affected: &Ref) -> BTreeSet<PlayerId> {
+    let parts = match affected {
+        Ref::Union(parts) => parts.as_slice(),
+        other => std::slice::from_ref(other),
+    };
+    parts
+        .iter()
+        .filter(|part| is_player_ref(part))
+        .filter_map(|part| scope.players(part).ok())
+        .flatten()
+        .collect()
+}
+
+/// The selectors of a union's object parts ("permanents you control" of "you and permanents you control").
+fn r305c_union_selectors(parts: &[Ref]) -> impl Iterator<Item = &mtg_cards::refs::Selector> {
+    parts.iter().filter_map(|part| match part {
+        Ref::Each(selector) => Some(selector),
+        _ => None,
+    })
 }
 
 /// Whether a static ability's `affected` names players: the keywords it changes are the players'.
@@ -1345,14 +1369,9 @@ impl<'a> Pass<'a> {
                 .controller()
         };
         let scope = Scope::announcing(self.state, controller, cand.holder).with_layered(view);
-        let players = if let Some(started) = started {
-            started.players.clone()
-        } else if is_player_ref(affected) {
-            scope
-                .players(affected)
-                .map_or_else(|_| BTreeSet::new(), |named| named.into_iter().collect())
-        } else {
-            BTreeSet::new()
+        let players = match started {
+            Some(started) => started.players.clone(),
+            None => r305c_affected_players(&scope, affected),
         };
         let set = if let Some(started) = started {
             started.set.clone()
@@ -1369,25 +1388,27 @@ impl<'a> Pass<'a> {
             } else {
                 false
             };
+            let each = |selector: &mtg_cards::refs::Selector| -> BTreeSet<ObjectId> {
+                let zones = ep22_zones_named(selector);
+                view.iter()
+                    .filter(|(id, held)| {
+                        self.state.object(*id).is_some_and(|object| {
+                            zones.contains(&zone_kind(object.zone()))
+                                && scope.selects_with(selector, object, held).unwrap_or(false)
+                        })
+                    })
+                    .map(|(id, _)| id)
+                    .collect()
+            };
             let chosen: BTreeSet<ObjectId> = match affected {
                 Ref::This => BTreeSet::from([cand.holder.id]),
+                Ref::Union(parts) => r305c_union_selectors(parts).flat_map(&each).collect(),
                 Ref::Attached => {
                     let host = self.state.host_of(cand.holder.id)?;
                     view.get(host)?;
                     BTreeSet::from([host])
                 }
-                Ref::Each(selector) => {
-                    let zones = ep22_zones_named(selector);
-                    view.iter()
-                        .filter(|(id, held)| {
-                            self.state.object(*id).is_some_and(|object| {
-                                zones.contains(&zone_kind(object.zone()))
-                                    && scope.selects_with(selector, object, held).unwrap_or(false)
-                            })
-                        })
-                        .map(|(id, _)| id)
-                        .collect()
-                }
+                Ref::Each(selector) => each(selector),
                 // The data check keeps every other reference out of a static ability.
                 _ => BTreeSet::new(),
             };

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1784bbaa-67b1-4bd1-bf77-53da2bfbf7fc",
+  "name": "Cornered Market",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cornered Market",
+      "oracle_fingerprint": "4cae00bcdec060733f9f8616efad4d6d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "SharesName": { "Each": [{ "Not": "Token" }] } }] }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 147 }
+          }
+        }
+      ]
+    }
+  ]
+}

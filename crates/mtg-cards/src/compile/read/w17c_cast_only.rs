@@ -18,6 +18,10 @@ fn w17c_moments() -> [(Condition, &'static str); 6] {
             "before blockers are declared",
         ),
         (
+            Condition::All(vec![Condition::InCombat, Condition::YourTurn]),
+            "during combat on your turn",
+        ),
+        (
             Condition::AfterBlockers,
             "during combat after blockers are declared",
         ),

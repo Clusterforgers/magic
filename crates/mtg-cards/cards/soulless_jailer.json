@@ -1,0 +1,54 @@
+{
+  "oracle_id": "7866ab01-22f3-4d87-bdb0-c0ae0e91ffc9",
+  "name": "Soulless Jailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulless Jailer",
+      "oracle_fingerprint": "a84e504c331d72298b8701edb04d15fb",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Each": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "action": "EnterBattlefield"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "Not": { "Type": "Creature" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

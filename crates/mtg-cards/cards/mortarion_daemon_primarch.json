@@ -1,7 +1,7 @@
 {
   "oracle_id": "588eecbf-dcfc-4b97-b81c-8b9f3d39e08f",
   "name": "Mortarion, Daemon Primarch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mortarion, Daemon Primarch",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 227 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Mana": "{X}" },
+                    { "XAtMost": { "Tallied": { "who": "You", "what": "LifeLost" } } }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Astartes Warrior",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Astartes", "Warrior"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Menace" }]
+                          }
+                        },
+                        "count": "X"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

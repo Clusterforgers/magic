@@ -1,0 +1,41 @@
+{
+  "oracle_id": "49bfecc3-6258-454e-a8fd-fc49098a0898",
+  "name": "Pit Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pit Automaton",
+      "oracle_fingerprint": "ff0f504509bbba600877b3267085ef44",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Ability": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Did": { "action": "ActivatedExhaust", "who": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "CopyAbility": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

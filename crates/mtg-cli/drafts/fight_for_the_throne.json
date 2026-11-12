@@ -1,0 +1,52 @@
+{
+  "oracle_id": "53129de9-4809-4c8c-9d11-37369899e70a",
+  "name": "Fight for the Throne",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fight for the Throne",
+      "oracle_fingerprint": "3421397cc7e2d5477d5c09ec5b4382f8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 1 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Each": ["Commander", { "ControlledBy": "You" }] },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "BecomeMonarch": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

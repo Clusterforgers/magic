@@ -1,7 +1,7 @@
 {
   "oracle_id": "0b12fee3-1ad1-4dc3-bd19-e9ccce5cb829",
   "name": "Visions of Dread",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Visions of Dread",
@@ -30,10 +30,23 @@
             ]
           }
         },
+        { "Keyword": { "Flashback": "{8}{B}{B}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 115, "end": 364 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [
+                  "Commander",
+                  { "OwnedBy": "You" },
+                  { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                ],
+                "stat": "ManaValue"
+              }
+            },
+            "condition": { "CastWith": "Flashback" }
           }
         }
       ]

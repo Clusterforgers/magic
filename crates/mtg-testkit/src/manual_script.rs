@@ -262,8 +262,15 @@ impl ManualScript {
                     .map_or(nothing, |object| ManualAction::Tutor { object })
             }
             4 => {
-                let table = Self::objects(state, player, Scope::Battlefield);
-                self.pick(&table)
+                // Only a summoning-sick permanent of the seat has sickness to remove, so the script names one.
+                let sick: Vec<ObjectId> = Self::objects(state, player, Scope::Battlefield)
+                    .into_iter()
+                    .filter(|id| {
+                        mtg_engine::characteristics::controller_of(state, *id) == Some(player)
+                            && mtg_engine::keywords::summoning_sick(state, *id)
+                    })
+                    .collect();
+                self.pick(&sick)
                     .map_or(nothing, |object| ManualAction::RemoveSickness { object })
             }
             5 => {

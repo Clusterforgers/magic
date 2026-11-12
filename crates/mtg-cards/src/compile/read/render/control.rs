@@ -27,6 +27,7 @@ impl Writer<'_> {
                 " for as long as you control ~ and ~ remains tapped"
             }
             Duration::WhileSourceOnBattlefield => " for as long as ~ remains on the battlefield",
+            Duration::WhileSourceTapped => " for as long as ~ remains tapped",
             _ => return None,
         };
         match (affected, new) {
@@ -62,6 +63,7 @@ impl Writer<'_> {
                 duration @ (Duration::Forever
                 | Duration::WhileYouControlSource
                 | Duration::WhileYouControlSourceTapped
+                | Duration::WhileSourceTapped
                 | Duration::WhileSourceOnBattlefield),
         } = effect
         else {

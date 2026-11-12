@@ -1,7 +1,7 @@
 {
   "oracle_id": "eef50ef8-958b-4f5c-b261-16926d9fe672",
   "name": "Plague Reaver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Plague Reaver",
@@ -13,17 +13,32 @@
             "effects": [
               {
                 "Sacrifice": {
-                  "filter": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
-                  "count": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+                  "filter": [{ "Type": "Creature" }, "Other"],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] }
                 }
               }
             ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 252 }
+          "Activated": {
+            "cost": [{ "Discard": { "count": 2 } }, "SacrificeSelf"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": { "Target": 0 } } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "under": { "Target": 0 } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

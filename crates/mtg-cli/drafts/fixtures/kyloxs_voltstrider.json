@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "86a8a1af-b1cf-47fc-ab42-7efa07a1c95b",
+  "oracle_id": "e7b746c8-1b32-42ed-8328-4e16274209d8",
+  "multiverse_ids": [
+    646770
+  ],
+  "mtgo_id": 121904,
+  "arena_id": 89128,
+  "tcgplayer_id": 534204,
+  "cardmarket_id": 752412,
+  "name": "Kylox's Voltstrider",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b",
+  "scryfall_uri": "https://scryfall.com/card/mkm/215/kyloxs-voltstrider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:20:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844",
+    "normal": "https://cards.scryfall.io/normal/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844",
+    "large": "https://cards.scryfall.io/large/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844",
+    "png": "https://cards.scryfall.io/png/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.png?1783912844",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.webp?1783912844",
+    "grid": "https://cards.scryfall.io/grid/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.webp?1783912844",
+    "display": "https://cards.scryfall.io/display/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.webp?1783912844",
+    "art": "https://cards.scryfall.io/art/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.webp?1783912844",
+    "crop": "https://cards.scryfall.io/crop/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.webp?1783912844",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/6/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b.jpg?1783912844"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Collect evidence 6: This Vehicle becomes an artifact creature until end of turn.\nWhenever this Vehicle attacks, you may cast an instant or sorcery spell from among cards exiled with it. If that spell would be put into a graveyard, put it on the bottom of its owner's library instead.\nCrew 2",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Collect evidence",
+    "Crew"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/86a8a1af-b1cf-47fc-ab42-7efa07a1c95b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae7b746c8-1b32-42ed-8328-4e16274209d8&unique=prints",
+  "collector_number": "215",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "ae4fdab8-cd37-49f8-a68d-a551c871388d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23102,
+  "penny_rank": 5388,
+  "preview": {
+    "source": "Maxim",
+    "source_uri": "https://twitter.com/maximmarkow",
+    "previewed_at": "2024-01-19"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.26",
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": "0.24",
+    "tix": "0.78"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646770&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKylox%2527s%2BVoltstrider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKylox%2527s%2BVoltstrider",
+    "edhrec": "https://edhrec.com/route/?cc=Kylox%27s+Voltstrider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534204%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752412&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121904?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

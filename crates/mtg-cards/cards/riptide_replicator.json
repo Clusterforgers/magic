@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f526ce8a-27f5-4785-aed3-944b080c9c1a",
+  "name": "Riptide Replicator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Riptide Replicator",
+      "oracle_fingerprint": "94ecf354da2aa1edf0fa9521cce98c73",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 60 } }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 112, "end": 239 }
+          }
+        }
+      ]
+    }
+  ]
+}

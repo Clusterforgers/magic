@@ -1,0 +1,44 @@
+{
+  "oracle_id": "0e14f59f-021a-4ad3-a26b-8f79e680c426",
+  "name": "Regna, the Redeemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regna, the Redeemer",
+      "oracle_fingerprint": "5a03b2bb5866669d5f405aba14bb1997",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Krav, the Unredeemed" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

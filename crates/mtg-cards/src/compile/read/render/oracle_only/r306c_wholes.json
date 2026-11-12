@@ -1,0 +1,603 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Attacks": {
+        "what": [
+         "This"
+        ]
+       }
+      },
+      {
+       "Blocks": {
+        "what": [
+         "This"
+        ]
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "EachPlayer",
+       "as": "player",
+       "effects": [
+        {
+         "Pay": {
+          "who": {
+           "Bound": "player"
+          },
+          "cost": "{X}",
+          "paid": [
+           {
+            "RememberValue": {
+             "value": "X",
+             "slot": "paid"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Remembered": {
+            "on": "This",
+            "slot": "paid"
+           }
+          },
+          "toughness": 0
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever this creature attacks or blocks, each player starting with you may pay any amount of mana. This creature gets +X/+0 until end of turn, where X is the total amount of mana paid this way."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       {
+        "Type": "Land"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": {
+        "Other": "quest"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Counters": {
+           "on": "This",
+           "counter": {
+            "Other": "quest"
+           }
+          }
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       },
+       "then": [
+        {
+         "Reflexive": {
+          "targets": [
+           {
+            "what": {
+             "Object": [
+              {
+               "Type": "Creature"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ]
+            }
+           }
+          ],
+          "effects": [
+           {
+            "If": {
+             "condition": {
+              "Compare": {
+               "left": {
+                "Counters": {
+                 "on": "This",
+                 "counter": {
+                  "Other": "quest"
+                 }
+                }
+               },
+               "op": "Ge",
+               "right": 4
+              }
+             },
+             "then": [
+              {
+               "PutCounters": {
+                "on": {
+                 "Target": 0
+                },
+                "counter": "+1/+1"
+               }
+              },
+              {
+               "Continuous": {
+                "affected": {
+                 "Target": 0
+                },
+                "mods": [
+                 {
+                  "AddKeyword": "Trample"
+                 }
+                ],
+                "duration": "UntilEndOfTurn"
+               }
+              }
+             ]
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a land you control enters, put a quest counter on this enchantment. When you do, if it has four or more quest counters on it, put a +1/+1 counter on target creature you control. It gains trample until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "GroupAttacks": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "at_least": 2
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": {
+        "Other": "quest"
+       },
+       "count": 2
+      }
+     },
+     {
+      "Reflexive": {
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           }
+          ]
+         },
+         "bounds": {
+          "min": 0,
+          "max": 1
+         }
+        }
+       ],
+       "effects": [
+        {
+         "Pay": {
+          "who": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          },
+          "cost": [
+           {
+            "DamageToYou": {
+             "Counters": {
+              "on": "This",
+              "counter": {
+               "Other": "quest"
+              }
+             }
+            }
+           }
+          ],
+          "unpaid": [
+           {
+            "DealDamage": {
+             "to": {
+              "Target": 0
+             },
+             "amount": {
+              "Counters": {
+               "on": "This",
+               "counter": {
+                "Other": "quest"
+               }
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you attack with two or more creatures, put two quest counters on ~. When you do, ~ deals damage equal to the number of quest counters on it to up to one target creature unless that creature's controller has ~ deal that much damage to them."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "ZoneChange": {
+        "what": [
+         "This"
+        ],
+        "to": "Battlefield"
+       }
+      },
+      {
+       "SpellCast": {
+        "what": [
+         {
+          "AnyOf": [
+           {
+            "Compare": {
+             "stat": "Power",
+             "op": "Eq",
+             "to": 4
+            }
+           },
+           {
+            "Compare": {
+             "stat": "Toughness",
+             "op": "Eq",
+             "to": 4
+            }
+           },
+           {
+            "Compare": {
+             "stat": "ManaValue",
+             "op": "Eq",
+             "to": 4
+            }
+           }
+          ]
+         }
+        ],
+        "by": "You"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "Modal": {
+       "once_each_turn": true,
+       "modes": [
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "token": {
+             "Custom": {
+              "name": "Wall",
+              "types": [
+               "Creature"
+              ],
+              "subtypes": [
+               "Wall"
+              ],
+              "power": 0,
+              "toughness": 4,
+              "abilities": [
+               {
+                "Keyword": "Defender"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "DealDamage": {
+            "to": "Opponents",
+            "amount": 3
+           }
+          }
+         ]
+        },
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           }
+          }
+         ],
+         "effects": [
+          {
+           "PutCounters": {
+            "on": {
+             "Target": 0
+            },
+            "counter": "+1/+1",
+            "count": 2
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Draw": {}
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enter and whenever you cast a spell with power, toughness, or mana value 4, choose one that hasn't been chosen this turn.\n• Create a 0/4 colorless Wall creature token with defender.\n• ~ deal 3 damage to each opponent.\n• Put two +1/+1 counters on target creature.\n• Draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "Modal": {
+       "modes": [
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "token": {
+             "Custom": {
+              "name": "Balloon",
+              "colors": [
+               "Red"
+              ],
+              "types": [
+               "Creature"
+              ],
+              "subtypes": [
+               "Balloon"
+              ],
+              "power": 1,
+              "toughness": 1,
+              "abilities": [
+               {
+                "Keyword": "Flying"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        },
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           }
+          }
+         ],
+         "effects": [
+          {
+           "Sacrifice": {
+            "filter": [
+             {
+              "Subtype": "Balloon"
+             }
+            ],
+            "as": "sacrificed"
+           }
+          },
+          {
+           "If": {
+            "condition": {
+             "CountOf": {
+              "subject": {
+               "Bound": "sacrificed"
+              },
+              "selector": [],
+              "op": "Ge",
+              "right": 1
+             }
+            },
+            "then": [
+             {
+              "Continuous": {
+               "affected": {
+                "Target": 0
+               },
+               "mods": [
+                {
+                 "AddKeyword": "Flying"
+                }
+               ],
+               "duration": "UntilEndOfTurn"
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose one.\n• Create a 1/1 red Balloon creature token with flying.\n• Sacrifice a Balloon. If you do, target creature gains flying until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 6,
+       "results": [
+        {
+         "from": 1,
+         "effects": [
+          {
+           "PutCounters": {
+            "on": "This",
+            "counter": {
+             "Other": "luck"
+            },
+            "count": {
+             "DieResult": "Only"
+            }
+           }
+          },
+          {
+           "CreateToken": {
+            "token": {
+             "Named": "treasure"
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Counters": {
+           "on": "This",
+           "counter": {
+            "Other": "luck"
+           }
+          }
+         },
+         "op": "Ge",
+         "right": 6
+        }
+       },
+       "then": [
+        {
+         "ClaimPrize": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Roll a six-sided die. Put a number of luck counters on ~ equal to the result and create a Treasure token. Then if there are six or more luck counters on ~, claim the prize!"
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "Battlefield": {
+         "tapped": true,
+         "transformed": true,
+         "counters": [
+          [
+           {
+            "Other": "time"
+           },
+           3
+          ]
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When ~ dies, return it to the battlefield tapped and transformed under its owner's control with three time counters on it."
+ ]
+]

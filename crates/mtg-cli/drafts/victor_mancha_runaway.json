@@ -1,0 +1,30 @@
+{
+  "oracle_id": "606a83ae-c774-4abc-ba30-c113cbd1c05b",
+  "name": "Victor Mancha, Runaway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Victor Mancha, Runaway",
+      "oracle_fingerprint": "04e0229b3dbdd952eb7164f329c07ea0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "card" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                  },
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

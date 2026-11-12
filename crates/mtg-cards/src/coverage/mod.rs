@@ -90,7 +90,7 @@ pub struct CardResult {
     /// What holds it back; empty exactly when it is `Verified` or `Read`.
     pub blockers: BTreeSet<Blocker>,
     /// Whether a draft of the card waits for its first read: it is pending, or stale since the text or the draft changed,
-    /// and no rules file or `Verified` reading outranks it.
+    /// and no `Verified` reading or rules file outranks it.
     pub waiting: bool,
     /// Copies in each deck, by the deck's label.
     pub copies: BTreeMap<String, u32>,
@@ -384,8 +384,8 @@ pub fn analyze_with(cards: &[PreconCard], hand_written: &Library, caps: &Caps) -
     Report { cards: results }
 }
 
-/// One card judged: its rules, then its draft, which counts when no rules file or `Verified` reading outranks it
-/// ([`Library::support`] has the precedence).
+/// One card judged: its rules, then its draft, which counts when no `Verified` reading or rules file outranks it (a
+/// `Partial`, `Manual` or `Stale` file outranks only a partial draft; [`Library::support`] has the precedence).
 fn judge(
     printed: &PrintedCard,
     copies: BTreeMap<String, u32>,
@@ -399,8 +399,12 @@ fn judge(
         .is_some_and(|file| !file.starts_with("card_rules/"));
     let mut waiting = false;
     if state != Support::Verified
-        && !rules_file
         && let Some(draft) = hand_written.draft(id)
+        && (!rules_file
+            || (draft.proof.is_none()
+                && support(hand_written.card(id), printed, context.caps)
+                    .support
+                    .yields_to_whole_draft()))
     {
         if let Some(read) = draft.record(printed, context.caps) {
             (rules, state, blockers) = (RulesSource::Draft, read.support, BTreeSet::new());

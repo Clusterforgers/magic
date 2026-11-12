@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0bd57503-b544-45f8-bcd2-f5b2170010f6",
+  "name": "Undercover Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercover Operative",
+      "oracle_fingerprint": "fab71ee231d215b7e9eef399a70fe90d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "counters": [
+                  { "counter": { "Other": "shield" }, "of": [{ "ControlledBy": "You" }] }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2192,6 +2192,11 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
+            Amount::DamageDealtByTo { by, to } => {
+                let dealers = self.objects(by)?;
+                let named = self.refs(to)?;
+                self.l294_damage_by_to(&dealers, &named)
+            }
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))
@@ -2746,10 +2751,8 @@ impl<'a> Scope<'a> {
         match kind {
             ZoneKind::Hand => spell.cast_from_hand(),
             ZoneKind::Graveyard => spell.cast_from_graveyard(),
-            ZoneKind::Exile => spell
-                .cast_record()
-                .is_some_and(|(zone, _)| zone == ZoneKind::Exile),
-            _ => false,
+            // Exile, a library and the command zone: the zone kind the spell's cast recorded.
+            _ => spell.cast.is_some_and(|(zone, _)| zone == kind),
         }
     }
 
@@ -2896,6 +2899,7 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
+            Condition::FirstStep => !self.state.turn().step_began_again(),
             Condition::AttackedThisCombat(who) => self.r285_attacked_this_combat(who)?,
             Condition::SorceryTiming => {
                 crate::priority::sorcery_timing(self.state, self.controller)

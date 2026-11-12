@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f00e4df1-13fb-4514-8abb-92954068689a",
+  "name": "Tiamat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiamat",
+      "oracle_fingerprint": "1eeada1e578d075e8a454be069907684",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": {} }] } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Dragon" }, { "Not": { "Named": "Tiamat" } }],
+                  "count": { "min": 0, "max": 5 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

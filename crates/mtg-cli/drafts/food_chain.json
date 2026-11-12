@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5c8e5092-962e-49ef-ab82-8434e475e4e7",
+  "name": "Food Chain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Food Chain",
+      "oracle_fingerprint": "9c68c9e8ca9673134422ab5161139abe",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ExilePermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": { "Sum": [1, { "Stat": { "of": "Paid", "stat": "ManaValue" } }] }
+                  },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

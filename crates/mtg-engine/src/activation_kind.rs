@@ -53,6 +53,7 @@ fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKin
         Keyword::Equip(_) | Keyword::EquipTo { .. } => Some(ActivationKind::Equip),
         Keyword::Cycling(_) | Keyword::Typecycling { .. } => Some(ActivationKind::Cycling),
         Keyword::Unearth(_) => Some(ActivationKind::Unearth),
+        Keyword::Ninjutsu(_) => Some(ActivationKind::Ninjutsu),
         _ => None,
     }
 }
@@ -211,4 +212,33 @@ fn modified_as(
         .fold(mana, |cost, symbol| cost.with(*symbol));
     let cut = crate::announce::c11a_reduced(&raised, &less);
     crate::announce::floored(&raised, cut, floor)
+}
+
+#[cfg(test)]
+mod r301_tests {
+    //! Goal: the ability a keyword adds is of that keyword's specific kind (equip, cycling, unearth, ninjutsu), a loyalty ability is a loyalty ability whatever adds it, and any other keyword's ability has no specific kind.
+    use mtg_cards::ability::{Ability, ActivationKind};
+    use mtg_cards::cost::Cost;
+    use mtg_cards::keyword::Keyword;
+    use rstest::rstest;
+
+    use super::of_keyword;
+
+    fn activated() -> Ability {
+        serde_json::from_str(r#"{"Activated":{"cost":"{1}","effects":[{"Draw":{}}]}}"#).unwrap()
+    }
+
+    #[rstest]
+    #[case::equip(Keyword::Equip(Cost::default()), Some(ActivationKind::Equip))]
+    #[case::cycling(Keyword::Cycling(Cost::default()), Some(ActivationKind::Cycling))]
+    #[case::unearth(Keyword::Unearth(Cost::default()), Some(ActivationKind::Unearth))]
+    #[case::r301_ninjutsu(Keyword::Ninjutsu(Cost::default()), Some(ActivationKind::Ninjutsu))]
+    #[case::scavenge_has_none(Keyword::Scavenge(Cost::default()), None)]
+    fn the_kind_of_a_keyword_ability(
+        #[case] keyword: Keyword,
+        #[case] kind: Option<ActivationKind>,
+    ) {
+        assert_eq!(of_keyword(&activated(), Some(keyword)), kind);
+        assert_eq!(of_keyword(&activated(), None), None);
+    }
 }

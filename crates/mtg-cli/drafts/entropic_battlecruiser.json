@@ -1,0 +1,90 @@
+{
+  "oracle_id": "90c5ea2b-d004-4219-b60c-d51bc1a5ee6b",
+  "name": "Entropic Battlecruiser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entropic Battlecruiser",
+      "oracle_fingerprint": "7aac7e57f61657a1b93818a5ba9f3bf5",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "TriggeringPlayer", "amount": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Deathtouch" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opp" } }]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [{ "Discard": { "who": { "Bound": "opp" } } }],
+                        "otherwise": [{ "LoseLife": { "who": { "Bound": "opp" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
