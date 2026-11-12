@@ -69,6 +69,14 @@ fn l294_turn_holders(
 /// whatever happens to the set later (CR 611.2c). The effects take consecutive timestamps in the order of the card's
 /// text (CR 613.7), and their amounts are worked out now. Naming no permanent begins nothing. A modification the engine
 /// does not run refuses by name.
+/// Whether the change takes all abilities away, the mana abilities kept or not.
+const fn loses_abilities(wanted: &Wanted) -> bool {
+    matches!(
+        wanted,
+        Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana
+    )
+}
+
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Continuous {
         affected,
@@ -117,12 +125,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = spells_taken(cx, &named, mods)?;
     // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
     // order of its list (CR 613.1f).
-    let (lost, kept): (Vec<_>, Vec<_>) = mods.iter().partition(|wanted| {
-        matches!(
-            wanted,
-            Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana
-        )
-    });
+    let (lost, kept): (Vec<_>, Vec<_>) = mods.iter().partition(|wanted| loses_abilities(wanted));
     let mut modifications = Vec::new();
     for wanted in lost.into_iter().chain(kept) {
         let modification = match wanted {
