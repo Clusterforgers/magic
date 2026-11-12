@@ -127,11 +127,14 @@ fn r370_damage_prevented_to_you_puts_that_many_counters(
     #[case] counters: u32,
 ) -> Result<(), ScriptError> {
     let foe = seats - 1;
-    let bolt = Arc::new(burn("Bolt", 3).as_ref().clone().with_mana_cost(cost(0, &[])));
-    let mut driver = Driver::from_scenario(
-        Scenario::new(seats)
-            .hand(0, [free("Selfless Squire"), bolt]),
-    )?;
+    let bolt = Arc::new(
+        burn("Bolt", 3)
+            .as_ref()
+            .clone()
+            .with_mana_cost(cost(0, &[])),
+    );
+    let mut driver =
+        Driver::from_scenario(Scenario::new(seats).hand(0, [free("Selfless Squire"), bolt]))?;
     // Its own shield: every damage to its controller this turn is prevented.
     driver.cast("Selfless Squire")?;
     settle(&mut driver)?;

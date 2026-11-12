@@ -1,1 +1,66 @@
-{"oracle_id": "18c58328-518f-4228-bb1b-2433f3fb21f2", "name": "Deceiver of Form", "impl_status": "Full", "faces": [{"name": "Deceiver of Form", "oracle_fingerprint": "", "abilities": [{"Triggered": {"when": {"StepBegins": {"step": "BeginCombat", "whose": "You"}}, "effects": [{"Bind": {"what": {"Each": [{"In": "Library"}, {"OwnedBy": "You"}, "TopOfLibrary"]}, "as": "card"}}, {"Reveal": {"what": {"Bound": "card"}}}, {"If": {"condition": {"Matches": {"subject": {"Bound": "card"}, "selector": [{"Type": "Creature"}]}}, "then": [{"May": {"effects": [{"BecomeCopy": {"what": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}, "Other"]}, "of": {"Bound": "card"}, "duration": "UntilEndOfTurn"}}]}}]}}, {"May": {"effects": [{"Move": {"what": {"Bound": "card"}, "to": {"Library": {"place": "Bottom"}}}}]}}]}}]}]}
+{
+  "oracle_id": "18c58328-518f-4228-bb1b-2433f3fb21f2",
+  "name": "Deceiver of Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deceiver of Form",
+      "oracle_fingerprint": "a1241542a25487f6a428794dcf0523f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "BecomeCopy": {
+                              "what": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                              },
+                              "of": { "Bound": "card" },
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

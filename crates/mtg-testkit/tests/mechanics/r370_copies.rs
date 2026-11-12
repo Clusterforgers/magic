@@ -199,7 +199,10 @@ fn r370_creatures_become_copies_of_the_revealed_card(
                     ready(free_creature("Bear", 2, 2)),
                 ],
             )
-            .library(0, [free_creature("Giant", 5, 5), free_creature("Elf", 1, 1)]),
+            .library(
+                0,
+                [free_creature("Giant", 5, 5), free_creature("Elf", 1, 1)],
+            ),
     )?;
     driver.pass_until(mtg_engine::turn::Step::BeginCombat)?;
     settle_may(&mut driver, may)?;
