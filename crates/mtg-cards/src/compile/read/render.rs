@@ -210,6 +210,7 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = plain_variants(ability);
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     texts
 }
 
@@ -588,6 +589,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
     super::l31a_events::l31a_wordings(ability, &mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

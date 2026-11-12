@@ -36,7 +36,7 @@ fn copy_made(
     seats: usize,
     kind: &str,
     except: &str,
-    copied: Arc<CardDefinition>,
+    copied: &Arc<CardDefinition>,
 ) -> Result<(Driver, mtg_core::ids::ObjectId), ScriptError> {
     let name = copied.name.clone();
     let loyalty = copied.loyalty.unwrap_or(0);
@@ -83,7 +83,7 @@ fn colors_and_types_in_addition_keep_the_originals(
         r#"[{{"RemoveSupertype":"Legendary"}},{{"SetPT":{{"power":2,"toughness":2}}}},{{"AddColors":{colors}}},{{"AddSubtype":"Zombie"}}]"#
     );
     let hero = legend("Hero", 1, &[Color::Blue], 5, 5);
-    let (driver, token) = copy_made(seats, "Creature", &except, hero)?;
+    let (driver, token) = copy_made(seats, "Creature", &except, &hero)?;
     let copy = driver.state().object(token).unwrap().card();
     assert_eq!(copy.name, "Hero");
     assert_eq!((copy.power, copy.toughness), (Some(2), Some(2)));
@@ -114,7 +114,7 @@ fn a_starting_loyalty_sets_the_counters_the_copy_enters_with(
     #[case] loyalty: i32,
 ) -> Result<(), ScriptError> {
     let except = format!(r#"[{{"RemoveSupertype":"Legendary"}},{{"SetLoyalty":{loyalty}}}]"#);
-    let (driver, token) = copy_made(seats, "Planeswalker", &except, dawn_walker().unwrap())?;
+    let (driver, token) = copy_made(seats, "Planeswalker", &except, &dawn_walker().unwrap())?;
     let object = driver.state().object(token).unwrap();
     assert!(object.card().types.contains(&CardType::Planeswalker));
     assert!(!object.card().supertypes.contains(&Supertype::Legendary));
