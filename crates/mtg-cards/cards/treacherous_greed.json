@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5483f787-7aca-4efe-a39a-ea29f8c07f0d",
+  "name": "Treacherous Greed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treacherous Greed",
+      "oracle_fingerprint": "438efffce4ca0333c4543c55d17c88b8",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "DidThisTurn": { "event": "Damaged" } }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

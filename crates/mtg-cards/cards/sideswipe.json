@@ -1,0 +1,19 @@
+{
+  "oracle_id": "07180afc-5c63-42e0-907b-0ed52f777165",
+  "name": "Sideswipe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sideswipe",
+      "oracle_fingerprint": "3eb166b5a6400ba4495f8e40e286d2a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Subtype": "Arcane" }] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

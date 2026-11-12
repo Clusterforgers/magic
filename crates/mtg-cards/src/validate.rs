@@ -1988,7 +1988,8 @@ impl<'a> Walker<'a> {
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Freerunning(cost)
-            | Keyword::Spectacle(cost) => {
+            | Keyword::Spectacle(cost)
+            | Keyword::Splice { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
@@ -2001,7 +2002,6 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
-            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {

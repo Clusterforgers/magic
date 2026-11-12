@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c207aaee-0b67-4520-ad02-2c289228be2a",
+  "name": "Through the Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Through the Breach",
+      "oracle_fingerprint": "6f1c30b541242382a78a27c1892a4405",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "creature" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Sacrifice": { "filter": [{ "Is": { "Bound": "creature" } }] } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{2}{R}{R}" } } }
+      ]
+    }
+  ]
+}

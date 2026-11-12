@@ -156,3 +156,195 @@ fn a_splice_cost_in_words_is_read(#[case] line: &str, #[case] part: Option<CostI
     });
     assert_eq!(read, expected);
 }
+
+#[rstest]
+#[case::spell_mastery_flash(
+    "If there are two or more instant and/or sorcery cards in your graveyard, you may cast this spell as though it had flash.",
+    true
+)]
+#[case::a_conditional_draw(
+    "If there are two or more instant and/or sorcery cards in your graveyard, draw a card.",
+    false
+)]
+fn a_flash_permission_put_after_its_condition_is_a_rule_of_the_spell(
+    #[case] text: &str,
+    #[case] rule: bool,
+) {
+    let kind = mtg_cards::compile::classify_clause(text, true);
+    assert_eq!(
+        kind == mtg_cards::compile::ClauseKind::Static,
+        rule,
+        "{kind:?}"
+    );
+}
+
+const SPELL_MASTERY_FLASH: &str = r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"flash":true}},"condition":{"Compare":{"left":{"Count":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"OwnedBy":"You"},{"In":"Graveyard"}]},"op":"Ge","right":2}},"from":"Hand"}}"#;
+const KNIGHTS_FROM_GRAVEYARD: &str =
+    r#"{"Rule":{"rule":{"MayCast":{"what":[{"Subtype":"Knight"}],"from":"Graveyard"}}}}"#;
+const KNIGHTS_FREE_FROM_GRAVEYARD: &str = r#"{"Rule":{"rule":{"MayCast":{"what":[{"Subtype":"Knight"}],"from":"Graveyard","free":true}}}}"#;
+const DINOSAUR: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"},{"Subtype":"Dinosaur"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":{"Battlefield":{}}}},{"Shuffle":{}},{"Continuous":{"affected":{"Bound":"found"},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilYourNextTurn"}}]}}"#;
+const DINOSAUR_THIS_TURN: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"},{"Subtype":"Dinosaur"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":{"Battlefield":{}}}},{"Shuffle":{}},{"Continuous":{"affected":{"Bound":"found"},"mods":[{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}}]}}"#;
+const TREACHEROUS: &str = r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"},{"DidThisTurn":{"event":"Damaged"}}]}}],"required":true}}"#;
+const PROCESSOR: &str = r#"{"AdditionalCost":{"cost":[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}]}}],"required":true}}"#;
+const PROCESSOR_OWN: &str = r#"{"AdditionalCost":{"cost":[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"You"}]}}],"required":true}}"#;
+
+#[rstest]
+#[case::spell_mastery(
+    SPELL_MASTERY_FLASH,
+    "If there are two or more instant and/or sorcery cards in your graveyard, you may cast this spell as though it had flash.",
+    true
+)]
+#[case::knights(
+    KNIGHTS_FROM_GRAVEYARD,
+    "As long as ~ is on the battlefield, you may cast Knight spells from your graveyard.",
+    true
+)]
+#[case::free_knights(
+    KNIGHTS_FREE_FROM_GRAVEYARD,
+    "As long as ~ is on the battlefield, you may cast Knight spells from your graveyard.",
+    false
+)]
+#[case::dinosaur(
+    DINOSAUR,
+    "Search your library for a Dinosaur creature card, put it onto the battlefield, then shuffle. It gains indestructible until your next turn.",
+    true
+)]
+#[case::dinosaur_this_turn(
+    DINOSAUR_THIS_TURN,
+    "Search your library for a Dinosaur creature card, put it onto the battlefield, then shuffle. It gains indestructible until your next turn.",
+    false
+)]
+#[case::sacrifice_one_that_dealt_damage(
+    TREACHEROUS,
+    "As an additional cost to cast ~, sacrifice a creature that dealt damage this turn.",
+    true
+)]
+#[case::exiled_card_to_its_owner(
+    PROCESSOR,
+    "As an additional cost to cast this spell, put a card an opponent owns from exile into that player's graveyard.",
+    true
+)]
+#[case::own_exiled_card(
+    PROCESSOR_OWN,
+    "As an additional cost to cast this spell, put a card an opponent owns from exile into that player's graveyard.",
+    false
+)]
+fn a_rule_or_cost_reads_back_only_in_its_shape(
+    #[case] ability: &str,
+    #[case] text: &str,
+    #[case] written: bool,
+) {
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}
+
+fn merfolk_anthem(event: &str, at_least: u32) -> String {
+    format!(
+        r#"{{"Static":{{"affected":{{"Each":[{{"Subtype":"Merfolk"}},{{"ControlledBy":"You"}}]}},"mods":[{{"ModifyPT":{{"power":1,"toughness":0}}}}],"condition":{{"Compare":{{"left":{{"Tally":{{"event":"{event}","who":"You","filter":[{{"Subtype":"Merfolk"}}]}}}},"op":"Ge","right":{at_least}}}}}}}}}"#
+    )
+}
+
+#[rstest]
+#[case::three_attacked(merfolk_anthem("Attacked", 3), true)]
+#[case::two_attacked(merfolk_anthem("Attacked", 2), false)]
+#[case::three_blocked(merfolk_anthem("Blocked", 3), false)]
+fn an_anthem_under_attacks_this_turn_reads_back_only_as_printed(
+    #[case] ability: String,
+    #[case] written: bool,
+) {
+    let text = "As long as you attacked with three or more Merfolk this turn, Merfolk you control get +1/+0.";
+    assert_eq!(
+        wordings(&ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(&ability)
+    );
+}
+
+const MELTING: &str =
+    r#"{"Static":{"affected":{"Each":[{"Type":"Land"}]},"mods":[{"RemoveSupertype":"Snow"}]}}"#;
+const MELTING_CREATURES: &str =
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"RemoveSupertype":"Snow"}]}}"#;
+const SIDESWIPE: &str = r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"Subtype":"Arcane"}]}}],"effects":[{"ChangeTargets":{"what":{"Target":0},"to":"Choose"}}]}}"#;
+const SIDESWIPE_ANOTHER: &str = r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"Subtype":"Arcane"}]}}],"effects":[{"ChangeTargets":{"what":{"Target":0},"to":"Another"}}]}}"#;
+const PLAGIARIZE: &str = r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Shield":{"when":{"Draw":{"who":{"Target":0}}},"by":{"Instead":[{"Draw":{}}]},"duration":"UntilEndOfTurn"}}]}}"#;
+const PLAGIARIZE_FOREVER: &str = r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Shield":{"when":{"Draw":{"who":{"Target":0}}},"by":{"Instead":[{"Draw":{}}]},"duration":"Forever"}}]}}"#;
+const IGNITE: &str = r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]},"as":"revealed"}},{"Reveal":{"what":{"Bound":"revealed"}}},{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":{"Bound":"revealed"},"stat":"ManaValue"}}}}]}}"#;
+const IGNITE_POWER: &str = r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]},"as":"revealed"}},{"Reveal":{"what":{"Bound":"revealed"}}},{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":{"Bound":"revealed"},"stat":"Power"}}}}]}}"#;
+const OPERATIVE: &str = r#"{"Static":{"affected":"This","mods":[{"SetCreatureTypes":["Human","Citizen"]},{"SetPT":{"power":1,"toughness":1}},"CantBeBlocked"],"condition":{"Matches":{"subject":"This","selector":["Tapped"]}}}}"#;
+const OPERATIVE_UNTAPPED: &str = r#"{"Static":{"affected":"This","mods":[{"SetCreatureTypes":["Human","Citizen"]},{"SetPT":{"power":1,"toughness":1}},"CantBeBlocked"],"condition":{"Matches":{"subject":"This","selector":["Untapped"]}}}}"#;
+
+#[rstest]
+#[case::melting(MELTING, "All lands are no longer snow.", true)]
+#[case::melting_creatures(MELTING_CREATURES, "All lands are no longer snow.", false)]
+#[case::sideswipe(SIDESWIPE, "You may change any targets of target Arcane spell.", true)]
+#[case::sideswipe_one_target(
+    SIDESWIPE_ANOTHER,
+    "You may change any targets of target Arcane spell.",
+    false
+)]
+#[case::plagiarize(
+    PLAGIARIZE,
+    "Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card.",
+    true
+)]
+#[case::plagiarize_for_good(
+    PLAGIARIZE_FOREVER,
+    "Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card.",
+    false
+)]
+#[case::ignite(
+    IGNITE,
+    "Target player reveals a card at random from their hand. ~ deals damage to that player equal to that card's mana value.",
+    true
+)]
+#[case::ignite_by_power(
+    IGNITE_POWER,
+    "Target player reveals a card at random from their hand. ~ deals damage to that player equal to that card's mana value.",
+    false
+)]
+#[case::operative(
+    OPERATIVE,
+    "As long as ~ is tapped, it's a Human Citizen with base power and toughness 1/1 and can't be blocked.",
+    true
+)]
+#[case::operative_untapped(
+    OPERATIVE_UNTAPPED,
+    "As long as ~ is tapped, it's a Human Citizen with base power and toughness 1/1 and can't be blocked.",
+    false
+)]
+fn an_exact_shape_reads_back_only_as_itself(
+    #[case] ability: &str,
+    #[case] text: &str,
+    #[case] written: bool,
+) {
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}
+
+const BREACH: &str = r#"{"Spell":{"effects":[{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Creature"}]},"as":"creature"}},{"Move":{"what":{"Bound":"creature"},"to":{"Battlefield":{}}}},{"Continuous":{"affected":{"Bound":"creature"},"mods":[{"AddKeyword":"Haste"}],"duration":"Forever"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"creature"}}]}}]}}]}}]}}"#;
+const BREACH_KEPT: &str = r#"{"Spell":{"effects":[{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Creature"}]},"as":"creature"}},{"Move":{"what":{"Bound":"creature"},"to":{"Battlefield":{}}}},{"Continuous":{"affected":{"Bound":"creature"},"mods":[{"AddKeyword":"Haste"}],"duration":"Forever"}}]}}]}}"#;
+
+#[rstest]
+#[case::breach(BREACH, true)]
+#[case::kept(BREACH_KEPT, false)]
+fn a_creature_put_in_for_a_turn_reads_back_only_with_its_sacrifice(
+    #[case] ability: &str,
+    #[case] written: bool,
+) {
+    let text = "You may put a creature card from your hand onto the battlefield. That creature gains haste. Sacrifice that creature at the beginning of the next end step.";
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}

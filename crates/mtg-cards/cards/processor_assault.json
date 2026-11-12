@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e773258a-e59b-4e5f-b4e1-4f95cb11a39f",
+  "name": "Processor Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Processor Assault",
+      "oracle_fingerprint": "d5358ef225349ef9369d01fa885fec8a",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExiledToGraveyard": { "filter": [{ "OwnedBy": "Opponents" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

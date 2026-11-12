@@ -1,0 +1,19 @@
+{
+  "oracle_id": "599247f2-7f88-40ab-be08-e284e5f231d9",
+  "name": "Melting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melting",
+      "oracle_fingerprint": "139a6778b5e67ff8f4f09ecc86bcd412",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": [{ "RemoveSupertype": "Snow" }]
+          }
+        }
+      ]
+    }
+  ]
+}
