@@ -10,6 +10,7 @@ use super::render::capitalize;
 use super::selectors::{Form, phrase_text};
 use super::subtypes::plural_subtype;
 use crate::ability::Ability;
+use crate::cost::CostItem;
 use crate::modify::{Blocking, CombatQuirk, GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -365,6 +366,72 @@ fn article(word: &str) -> &'static str {
     }
 }
 
+/// "sacrifice all permanents you control", "sacrifice half the lands you control, rounded up", "discard your hand": a
+/// part of a cost whose number is all or half of what the payer has.
+fn whole_part(item: &CostItem) -> Option<String> {
+    let yours = |filter: &Selector, counted: &Amount| -> Option<String> {
+        let Amount::Count(counted) = counted else {
+            return None;
+        };
+        let mut expected = filter.0.clone();
+        expected.push(Pred::ControlledBy(Ref::You));
+        if counted.0 != expected {
+            return None;
+        }
+        if filter.0.is_empty() {
+            return Some("permanents".to_owned());
+        }
+        phrase_text(filter, Form::Targets)
+    };
+    match item {
+        CostItem::Sacrifice { filter, count } => match count {
+            Amount::Half { of, up } => {
+                let kind = yours(filter, of)?;
+                let rounded = if *up { "up" } else { "down" };
+                Some(format!(
+                    "sacrifice half the {kind} you control, rounded {rounded}"
+                ))
+            }
+            counted => Some(format!(
+                "sacrifice all {} you control",
+                yours(filter, counted)?
+            )),
+        },
+        CostItem::Discard {
+            count: Amount::Count(counted),
+            filter: None,
+        } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
+            Some("discard your hand".to_owned())
+        }
+        _ => None,
+    }
+}
+
+/// "As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand.": a required
+/// cost of parts that take all or half of what the payer has.
+fn whole_costs(ability: &Ability) -> Vec<String> {
+    let Ability::AdditionalCost {
+        cost,
+        required: true,
+        repeatable: false,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let Some(parts) = cost.0.iter().map(whole_part).collect::<Option<Vec<_>>>() else {
+        return Vec::new();
+    };
+    let listed = match parts.as_slice() {
+        [one] => one.clone(),
+        [one, two] => format!("{one} and {two}"),
+        _ => return Vec::new(),
+    };
+    ["this spell", "~"]
+        .iter()
+        .map(|spell| format!("As an additional cost to cast {spell}, {listed}."))
+        .collect()
+}
+
 /// Adds "As long as C, S" for an ability under a condition C whose twin without it is written S, each wording once.
 pub(super) fn r303c_wordings(
     ability: &Ability,
@@ -372,6 +439,7 @@ pub(super) fn r303c_wordings(
     texts: &mut Vec<String>,
 ) {
     let mut found = plain(ability);
+    found.extend(whole_costs(ability));
     found.extend(joined_statics(ability, written));
     found.extend(attacking_kind(ability, written));
     found.extend(named_tokens(texts));

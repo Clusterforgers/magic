@@ -1,10 +1,13 @@
-//! Goal: the r30-3c corpus cards play as their rules say at tables of two to four seats: Archelos has other permanents enter tapped while it is tapped and untapped while it is untapped, Hundred-Battle Veteran gets +2/+4 only with three kinds of counters among its controller's creatures, Enkira must be blocked only while equipped, and Sanwell is spared damage only while an artifact creature of its controller attacks; each game replays to the state it reached.
+//! Goal: the r30-3c corpus cards play as their rules say at tables of two to four seats: Archelos has other permanents enter tapped while it is tapped and untapped while it is untapped, Hundred-Battle Veteran gets +2/+4 only with three kinds of counters among its controller's creatures, Enkira must be blocked only while equipped, Sanwell is spared damage only while an artifact creature of its controller attacks, Kaervek's Spite costs every permanent and card in hand of its caster; each game replays to the state it reached.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
 use mtg_engine::characteristics::characteristics;
+use mtg_engine::choose::CardsChoice;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
+use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{forest, free_creature};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, attached_to, ready, tapped, with_counters};
@@ -188,4 +191,85 @@ fn sanwell_is_spared_while_an_artifact_creature_attacks(
     assert_eq!(alive, artifact, "artifact attacker: {artifact}");
     replays(&driver);
     Ok(())
+}
+
+/// The corpus card, free to cast.
+fn free(name: &str) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let card = (*card(name).unwrap()).clone();
+    std::sync::Arc::new(card.with_mana_cost(mtg_testkit::cards::cost(0, &[])))
+}
+
+/// Casts the named spell at seat 1 where it asks for a target, picking the first cards a pick asks for.
+fn cast_at_seat_one(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
+    driver.begin_cast(name)?;
+    for _ in 0..20 {
+        let kind = driver.decision()?.kind.clone();
+        match kind {
+            DecisionKind::ChooseTargets(_) => {
+                let seat = driver.target_player(1);
+                driver.choose_targets(&[seat])?;
+            }
+            DecisionKind::ChooseCards(options) => {
+                let picks = options
+                    .from
+                    .iter()
+                    .take(usize::try_from(options.min).unwrap())
+                    .copied()
+                    .collect();
+                driver.answer(Answer::ChooseCards(CardsChoice(picks)))?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto))?;
+            }
+            _ => return Ok(()),
+        }
+    }
+    Ok(())
+}
+
+#[rstest]
+fn kaerveks_spite_takes_every_permanent_and_card_in_hand(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 3)] permanents: usize,
+    #[values(0, 2)] cards: usize,
+) -> Result<(), ScriptError> {
+    let mut hand = vec![free("Kaervek's Spite")];
+    hand.extend((0..cards).map(|_| forest()));
+    let scenario = libraries(Scenario::new(seats), seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            (0..permanents).map(|_| ready(forest())).collect::<Vec<_>>(),
+        )
+        .battlefield(1, vec![ready(forest())])
+        .hand(0, hand);
+    let mut driver = Driver::from_scenario(scenario)?;
+    cast_at_seat_one(&mut driver, "Kaervek's Spite")?;
+    let seat = mtg_core::ids::PlayerId::from_index(0);
+    assert!(driver.state().zone(Zone::Hand(seat)).is_empty());
+    assert_eq!(names_on(&driver, seat), 0);
+    assert_eq!(
+        driver.state().zone(Zone::Graveyard(seat)).len(),
+        permanents + cards
+    );
+    for _ in 0..seats {
+        if driver.state().zone(Zone::Stack).is_empty() {
+            break;
+        }
+        driver.pass()?;
+    }
+    let other = mtg_core::ids::PlayerId::from_index(1);
+    assert_eq!(driver.state().player(other).unwrap().life(), 15);
+    replays(&driver);
+    Ok(())
+}
+
+/// How many permanents the seat controls.
+fn names_on(driver: &Driver, seat: mtg_core::ids::PlayerId) -> usize {
+    driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| driver.state().object(**id).unwrap().controller() == seat)
+        .count()
 }

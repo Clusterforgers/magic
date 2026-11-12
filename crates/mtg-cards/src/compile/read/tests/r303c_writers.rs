@@ -220,3 +220,43 @@ fn two_abilities_under_one_condition(
         "{first}\n{second}"
     );
 }
+
+fn additional(parts: &str) -> String {
+    format!(r#"{{"AdditionalCost":{{"cost":{parts},"required":true}}}}"#)
+}
+
+const ALL: &str = r#"{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}}"#;
+const HAND: &str = r#"{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}"#;
+const KAERVEK: &str = "As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand.";
+const SPLIT: &str =
+    "As an additional cost to cast this spell, sacrifice half the lands you control, rounded up.";
+
+fn half(of: &str, up: bool) -> String {
+    format!(
+        r#"[{{"Sacrifice":{{"filter":[{{"Type":"Land"}}],"count":{{"Half":{{"of":{{"Count":{of}}},"up":{up}}}}}}}}}]"#
+    )
+}
+
+#[rstest]
+#[case::kaervek(additional(&format!("[{ALL},{HAND}]")), KAERVEK, true)]
+#[case::without_the_hand(additional(&format!("[{ALL}]")), KAERVEK, false)]
+#[case::all_lands(
+    additional(r#"[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}}},{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]"#),
+    KAERVEK,
+    false
+)]
+#[case::creatures_counted_for_lands(
+    additional(r#"[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]"#),
+    "As an additional cost to cast this spell, sacrifice all lands you control.",
+    false
+)]
+#[case::split(additional(&half(r#"[{"Type":"Land"},{"ControlledBy":"You"}]"#, true)), SPLIT, true)]
+#[case::split_rounded_down(additional(&half(r#"[{"Type":"Land"},{"ControlledBy":"You"}]"#, false)), SPLIT, false)]
+#[case::split_of_creatures(additional(&half(r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#, true)), SPLIT, false)]
+fn costs_of_all_or_half_read_back(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] expected: bool,
+) {
+    assert_eq!(written(&json, clause), expected, "{json}\n{clause}");
+}
