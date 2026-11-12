@@ -88,6 +88,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r307c_words;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -807,6 +808,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
     super::l293_events::l293_wordings(ability, &mut texts);
+    super::r307c_events::r307c_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }
@@ -1636,6 +1638,9 @@ fn spell(sentences: &[String]) -> String {
 
 /// The event and an intervening "if" of a triggered ability, each ending in a comma.
 fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
+    if let Some(head) = super::r307c_events::r307c_head(when, condition) {
+        return Some(vec![head]);
+    }
     if condition == Some(&super::triggers::saddled())
         && matches!(when, TriggerPattern::Attacks { .. })
     {
@@ -3101,6 +3106,7 @@ impl Writer<'_> {
             .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
             .or_else(|| r287_words::r287_text(effect))
+            .or_else(|| r307c_words::r307c_text(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
@@ -3669,6 +3675,9 @@ impl Writer<'_> {
 
     /// "3 life", "X life", "life equal to its power": what is gained or lost.
     fn life(&self, amount: &Amount) -> Option<String> {
+        if let Some(life) = r307c_words::r307c_life(amount) {
+            return Some(life);
+        }
         Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)

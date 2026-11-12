@@ -110,6 +110,8 @@ mod r2a_doubling;
 mod r2d;
 mod r303_forms;
 mod r304b_cards;
+mod r307c_exiled;
+mod r307c_rooms;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

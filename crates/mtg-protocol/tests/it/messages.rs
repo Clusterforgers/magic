@@ -1640,6 +1640,7 @@ fn pipeline_events() -> Vec<Event> {
             controller: player,
             choices,
             cause: Some(Cause {
+                dealers: Vec::new(),
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
                 amount: 0,

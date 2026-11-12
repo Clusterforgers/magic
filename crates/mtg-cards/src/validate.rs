@@ -805,8 +805,8 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
-                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
-                    self.problem("`CastFrom` names a hand or a graveyard");
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile) {
+                    self.problem("`CastFrom` names a hand, a graveyard or exile");
                 }
             }
             Pred::DidThisTurn { by, to, .. } => {
@@ -2611,7 +2611,28 @@ fn c6_gap_batch_of_moves(members: &[TriggerPattern]) -> bool {
             member,
             TriggerPattern::ZoneChange { from: Some(from), .. } if *from != ZoneKind::Battlefield
         )
-    })
+    }) || r307c_exiled_together(members)
+}
+
+/// Moves into exile from different zones, the battlefield among them ("cards are put into exile from graveyards and/or
+/// the battlefield"): the engine joins what leaves the battlefield and what leaves other zones into one trigger.
+fn r307c_exiled_together(members: &[TriggerPattern]) -> bool {
+    let mut froms = Vec::new();
+    for member in members {
+        let TriggerPattern::ZoneChange {
+            from: Some(from),
+            to: Some(ZoneKind::Exile),
+            ..
+        } = member
+        else {
+            return false;
+        };
+        if froms.contains(from) {
+            return false;
+        }
+        froms.push(*from);
+    }
+    true
 }
 
 impl Walker<'_> {
