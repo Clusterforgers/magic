@@ -27,9 +27,9 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r302_sources;
 mod r302b_sources;
 mod r305b_amounts;
-mod r302_sources;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;

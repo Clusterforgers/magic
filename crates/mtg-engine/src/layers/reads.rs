@@ -372,9 +372,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Targeting(inner)
         | Pred::HasAttached(inner)
         | Pred::FromSource(inner)
-        | Pred::AbilityFrom(inner) => {
-            reads_of_selector(inner)
-        }
+        | Pred::AbilityFrom(inner) => reads_of_selector(inner),
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),
