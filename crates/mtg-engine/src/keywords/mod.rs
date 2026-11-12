@@ -365,6 +365,7 @@ pub trait KeywordRules: Debug + Sync {
     /// Whether `holder`, a player who has the keyword, may not be targeted by a spell or ability that `controller` controls.
     fn restricts_player_targeting(
         &self,
+        _state: &GameState,
         _keyword: &Keyword,
         _holder: PlayerId,
         _controller: PlayerId,
@@ -745,7 +746,7 @@ pub(crate) fn protects(
 /// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
 pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
     player_keywords(state, holder).into_iter().any(|keyword| {
-        rules(keyword).restricts_player_targeting(keyword, holder, controller)
+        rules(keyword).restricts_player_targeting(state, keyword, holder, controller)
             && !crate::combat_quirks::ignores_protection(
                 state,
                 crate::combat_quirks::Holder::Player(holder),
@@ -766,17 +767,56 @@ pub(crate) fn protected_from(state: &GameState, holder: Holder, source: Source<'
         .any(|keyword| rules(keyword).protects_from(state, keyword, holder, source))
 }
 
-/// Whether a keyword of the attacker stops `blocker` from blocking it: menace-like restrictions, and protection from
-/// the blocker.
+/// [`stops_block_between`] for two creatures by id.
+#[cfg(test)]
 pub(crate) fn stops_block(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
-    keywords_of(state, attacker)
-        .into_iter()
-        .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
-        || keywords_of(state, blocker)
-            .into_iter()
-            .any(|keyword| rules(keyword).restricts_blocked(state, keyword, attacker, blocker))
-        || Source::live(state, blocker)
-            .is_some_and(|source| protected_from(state, Holder::Object(attacker), source))
+    stops_block_between(
+        state,
+        &Combatant::of(state, attacker),
+        &Combatant::of(state, blocker),
+    )
+}
+
+/// A creature of a block declaration with its keywords, read once, so each pair of an attacker and a blocker is judged
+/// without reading either again.
+pub(crate) struct Combatant<'a> {
+    id: ObjectId,
+    keywords: Vec<&'a Keyword>,
+    source: Option<Source<'static>>,
+}
+
+impl<'a> Combatant<'a> {
+    /// The creature `id` as it is now.
+    pub(crate) fn of(state: &'a GameState, id: ObjectId) -> Combatant<'a> {
+        Combatant {
+            id,
+            keywords: keywords_of(state, id),
+            source: Source::live(state, id),
+        }
+    }
+}
+
+/// Whether a keyword of the attacker stops the blocker from blocking it: menace-like restrictions, the blocker's own
+/// (reach, landwalk answers), and protection of the attacker from the blocker (the keywords `protected_from` reads).
+pub(crate) fn stops_block_between(
+    state: &GameState,
+    attacker: &Combatant<'_>,
+    blocker: &Combatant<'_>,
+) -> bool {
+    let (a, b) = (attacker.id, blocker.id);
+    attacker
+        .keywords
+        .iter()
+        .any(|keyword| rules(keyword).restricts_blocking(state, keyword, a, b))
+        || blocker
+            .keywords
+            .iter()
+            .any(|keyword| rules(keyword).restricts_blocked(state, keyword, a, b))
+        || blocker.source.is_some_and(|source| {
+            attacker.keywords.iter().any(|keyword| {
+                rules(keyword).protects_from(state, keyword, Holder::Object(a), source)
+            })
+        })
 }
 
 /// Whether a keyword lets the card be cast whenever an instant could be.
@@ -789,7 +829,12 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
 /// Whether a spell on the stack silences the players: none may cast spells or activate abilities that are not mana
 /// abilities until it leaves (split second, CR 702.61). Mana abilities, special actions and triggers go on as usual.
 pub(crate) fn split_second_on_stack(state: &GameState) -> bool {
-    state.stack().iter().any(|&id| {
+    split_second_spell(state).is_some()
+}
+
+/// The first spell on the stack that silences the players ([`split_second_on_stack`]).
+pub(crate) fn split_second_spell(state: &GameState) -> Option<ObjectId> {
+    state.stack().iter().copied().find(|&id| {
         keywords_of(state, id)
             .into_iter()
             .any(|keyword| rules(keyword).silences_players(keyword))
@@ -1254,7 +1299,16 @@ mod tests {
                 ignores_sickness: rules.ignores_summoning_sickness(keyword),
                 attacks_untapped: rules.attacks_untapped(keyword),
                 indestructible: rules.is_indestructible(keyword),
-                shields_player: rules.restricts_player_targeting(keyword, PlayerId(0), PlayerId(1)),
+                shields_player: rules.restricts_player_targeting(
+                    &GameState::from_setup(&crate::fixtures::setup(
+                        vec![Vec::new(); 2],
+                        vec![Vec::new(); 2],
+                    ))
+                    .unwrap(),
+                    keyword,
+                    PlayerId(0),
+                    PlayerId(1),
+                ),
                 damage: rules.modifies_damage(keyword),
                 timing: rules.grants_timing(keyword),
                 silences: rules.silences_players(keyword),

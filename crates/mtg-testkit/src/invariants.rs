@@ -691,7 +691,7 @@ pub struct InvariantChecker {
     /// The mana without a restriction that outlasts the step, by the history of what was added and spent.
     expected_kept: Vec<Vec<(ManaType, ManaLasts)>>,
     expected_damage: BTreeMap<ObjectId, u32>,
-    /// Whether the object the event being checked damages was a creature as the damage was dealt, before the fold.
+    /// Whether the object the current damage event hits was a creature as the damage was dealt (CR 120.3e).
     damaged_creature: bool,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
@@ -993,9 +993,14 @@ impl InvariantChecker {
                 )));
             }
         }
-        // Damage that takes the loyalty a planeswalker is a creature by leaves it marked (CR 120.3e), so look first.
-        self.damaged_creature = matches!(event, Event::DamageDealt { target: DamageTarget::Object(o), .. }
-            if characteristics(&self.shadow, *o).is_some_and(|chars| chars.is_creature()));
+        // The results of damage follow what the permanent was as it was dealt, before the fold takes loyalty away (CR 120.3).
+        self.damaged_creature = match event {
+            Event::DamageDealt {
+                target: DamageTarget::Object(o),
+                ..
+            } => characteristics(&self.shadow, *o).is_some_and(|chars| chars.is_creature()),
+            _ => false,
+        };
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;
@@ -1194,13 +1199,13 @@ impl InvariantChecker {
     /// The player who takes the regular turn after the one of `regular`: the next player in turn order whose turns are
     /// not skipped (CR 614.10), or the next player when every turn is skipped.
     fn next_turn_taker(&self, regular: PlayerId) -> Option<PlayerId> {
-        let first = self.shadow.next_alive_after(regular)?;
+        let first = self.shadow.next_turn_seat(regular)?;
         let mut next = first;
         for _ in 0..self.shadow.players().len() {
             if !mtg_engine::prohibit::skips_turn(&self.shadow, next) {
                 return Some(next);
             }
-            next = self.shadow.next_alive_after(next)?;
+            next = self.shadow.next_turn_seat(next)?;
         }
         Some(first)
     }
@@ -1292,8 +1297,7 @@ impl InvariantChecker {
         let walker = battle || printed.is_some_and(|types| types.contains(CardType::Planeswalker));
         // A planeswalker that an effect made a creature ("becomes a 5/5 creature") has damage marked too (CR 120.3e).
         let creature = printed.is_some_and(|types| types.contains(CardType::Creature))
-            || self.damaged_creature
-            || characteristics(&self.shadow, object).is_some_and(|chars| chars.is_creature());
+            || self.damaged_creature;
         let counter = if battle {
             CounterKind::defense()
         } else {
@@ -1374,7 +1378,7 @@ impl InvariantChecker {
                 mtg_engine::priority::sorcery_activation_open(&self.shadow, player, address, rules)
             });
         if !open
-            && (turn.active() != player
+            && (!self.shadow.is_active(player)
                 || !turn.step().is_main()
                 || !self.shadow.stack().is_empty())
         {
@@ -1491,8 +1495,14 @@ impl InvariantChecker {
         self.change_life(player, -i64::from(amount), cause)
     }
 
-    /// Moves the independent life history of `player` by `delta` and compares it with the shadow state.
+    /// Moves the independent life history of `player` by `delta` and compares it with the shadow state; a Two-Headed
+    /// Giant teammate's history moves with it (CR 810.9).
     fn change_life(&mut self, player: PlayerId, delta: i64, cause: &str) -> Result<(), Violation> {
+        for mate in self.shadow.life_sharers(player) {
+            if let Some(life) = self.expected_life.get_mut(mate.index()) {
+                *life = i32::try_from(i64::from(*life) + delta).unwrap_or(i32::MAX);
+            }
+        }
         let life = self
             .expected_life
             .get_mut(player.index())

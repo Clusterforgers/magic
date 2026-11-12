@@ -46,5 +46,5 @@ pub mod wording;
 pub use assemble::{Assembled, assemble, assemble_by_hand};
 pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause, Shown};
 pub use draft::{Draft, DraftRules, ReadState};
-pub use identity::pairing_keywords;
+pub use identity::{has_activated_ability, pairing_keywords};
 pub use support::{Caps, PrintedCard, PrintedFace};

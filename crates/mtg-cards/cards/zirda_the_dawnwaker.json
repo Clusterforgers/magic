@@ -8,9 +8,24 @@
       "oracle_fingerprint": "44032b97efa8421c270c676c0bf168ea",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 194 }
+          "Keyword": {
+            "Companion": {
+              "Has": {
+                "of": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" },
+                      { "Type": "Battle" }
+                    ]
+                  }
+                ],
+                "fact": "ActivatedAbility"
+              }
+            }
           }
         },
         {
@@ -20,18 +35,9 @@
           }
         },
         {
-          "Activated": {
-            "cost": [{ "Mana": "{1}" }, "Tap"],
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
-            "effects": [
-              {
-                "Continuous": {
-                  "affected": { "Target": 0 },
-                  "mods": ["CantBlock"],
-                  "duration": "UntilEndOfTurn"
-                }
-              }
-            ]
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 342, "end": 390 }
           }
         }
       ]

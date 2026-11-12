@@ -1,4 +1,4 @@
-//! Goal: a table plays with manual cards when a seat somebody holds plays a deck with cards the game does not run whole; for rosters of two to four seats, with and without such decks and with open seats, the game browser and the lookup of a game say so, they follow a seat that changes its deck, is claimed with such a deck or is given back, and the lookup keeps the flag once the game has started.
+//! Goal: a table plays with manual cards when a seat somebody holds plays a deck with cards the game does not run whole; for rosters of two to four seats, with and without such decks and with open seats, the game browser and the lookup of a game say so, they follow a seat that changes its deck, is claimed with such a deck or is given back, and the lookup keep the flag once the game has started (the browser listing it to watch).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -59,7 +59,8 @@ async fn listed(server: &TestServer, game: GameId) -> Option<bool> {
         .find(|row| row["game"] == id.as_str())?
         .clone();
     let flag = row["manual_play"].as_bool().expect("a listed row says");
-    let registry = server.registry.lobbies().await;
+    let mut registry = server.registry.lobbies().await;
+    registry.extend(server.registry.running().await);
     let own = registry.iter().find(|row| row.game == game).unwrap();
     assert_eq!(own.manual_play, flag, "the registry and the wire agree");
     Some(flag)
@@ -177,8 +178,8 @@ async fn a_game_that_has_started_keeps_the_flag_it_started_with(
     lobby::start(&server.registry, &game.to_string(), manual.len()).await;
     assert_eq!(
         listed(&server, game).await,
-        None,
-        "a started game is not listed"
+        Some(expected),
+        "a started game is listed to watch with the flag it started with"
     );
     assert_eq!(looked_up(&server, game).await, expected);
     // Asking again, as the page does, says the same.

@@ -145,6 +145,7 @@ pub(crate) fn pick_token(
     found.into_iter().min_by(|a, b| {
         rank(b)
             .cmp(&rank(a))
+            .then_with(|| b.printings.cmp(&a.printings))
             .then_with(|| a.card.oracle_id.as_str().cmp(b.card.oracle_id.as_str()))
     })
 }
@@ -185,7 +186,7 @@ pub(crate) async fn link_for(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the face and size pick the right stored link, and the token that shares the most facts with a query stands for it in a fixed order.
+    //! Goal: the face and size pick the right stored link, and the token that shares the most facts with a query stands for it, the most printed and then the smallest id first.
     use mtg_db::StoredFace;
     use rstest::rstest;
 
@@ -280,6 +281,7 @@ mod tests {
         type_line: &str,
         colors: &str,
         pt: (&str, &str),
+        printings: u32,
     ) -> TokenPictures {
         let face = StoredFace {
             name: name.into(),
@@ -314,6 +316,7 @@ mod tests {
                 printing_id: PrintingId(format!("printing-{id}")),
                 images: single(),
             },
+            printings,
             card,
         }
     }
@@ -362,6 +365,7 @@ mod tests {
             "Token Creature \u{2014} Goblin",
             "R",
             ("1", "1"),
+            1,
         );
         let fit = Fit::of(&stored.card, 0, &asked);
         assert_eq!(fit.type_line && fit.colors && fit.stats, fits);
@@ -370,13 +374,15 @@ mod tests {
     const THOPTER: &str = "Token Artifact Creature \u{2014} Thopter";
     const ARTIFACT: Option<&str> = Some("Artifact Creature \u{2014} Thopter");
 
-    /// Four Thopter records: `t0` and `t1` alike, a bigger `t3` and a white `w1`.
+    /// Five Thopter records: `t0`, `t1` and `t2` alike (`t1` and `t2` printed most), a bigger
+    /// `t3` and a white `w1`.
     fn thopters() -> Vec<TokenPictures> {
         vec![
-            token("t3", "Thopter", THOPTER, "C", ("3", "3")),
-            token("t1", "Thopter", THOPTER, "C", ("1", "1")),
-            token("w1", "Thopter", THOPTER, "W", ("1", "1")),
-            token("t0", "Thopter", THOPTER, "C", ("1", "1")),
+            token("t3", "Thopter", THOPTER, "C", ("3", "3"), 1),
+            token("t2", "Thopter", THOPTER, "C", ("1", "1"), 4),
+            token("t1", "Thopter", THOPTER, "C", ("1", "1"), 4),
+            token("w1", "Thopter", THOPTER, "W", ("1", "1"), 1),
+            token("t0", "Thopter", THOPTER, "C", ("1", "1"), 2),
         ]
     }
 
@@ -390,14 +396,14 @@ mod tests {
 
     #[rstest]
     #[case::exact_stats(thopter(ARTIFACT, Some("C"), Some(("3", "3"))), Some("t3"))]
-    #[case::exact_stats_tie_goes_to_the_smallest_id(thopter(ARTIFACT, Some("C"), Some(("1", "1"))), Some("t0"))]
+    #[case::exact_stats_tie_goes_to_the_most_printed(thopter(ARTIFACT, Some("C"), Some(("1", "1"))), Some("t1"))]
     #[case::exact_in_another_color(thopter(ARTIFACT, Some("W"), Some(("1", "1"))), Some("w1"))]
-    #[case::buffed_falls_back_to_type_and_colors(thopter(ARTIFACT, Some("C"), Some(("2", "2"))), Some("t0"))]
+    #[case::buffed_falls_back_to_type_and_colors(thopter(ARTIFACT, Some("C"), Some(("2", "2"))), Some("t1"))]
     #[case::buffed_white(thopter(ARTIFACT, Some("W"), Some(("2", "2"))), Some("w1"))]
     #[case::unknown_colors_keep_the_stats(thopter(ARTIFACT, Some("G"), Some(("3", "3"))), Some("t3"))]
-    #[case::unknown_colors_and_stats(thopter(ARTIFACT, Some("G"), Some(("9", "9"))), Some("t0"))]
+    #[case::unknown_colors_and_stats(thopter(ARTIFACT, Some("G"), Some(("9", "9"))), Some("t1"))]
     #[case::unknown_type_keeps_the_colors(thopter(Some("Creature"), Some("W"), Some(("9", "9"))), Some("w1"))]
-    #[case::name_only(thopter(None, None, None), Some("t0"))]
+    #[case::name_only(thopter(None, None, None), Some("t1"))]
     #[case::name_and_stats(thopter(None, None, Some(("3", "3"))), Some("t3"))]
     fn the_token_that_shares_the_most_facts_stands_for_the_query(
         #[case] asked: TokenQuery,

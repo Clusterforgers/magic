@@ -125,7 +125,10 @@ async fn needed_counts_the_seats_that_still_have_to_press_ready() {
         (0, ClientMessage::NotReady),
     ] {
         let received = poke(&handle, &mut clients, who, message).await;
-        let ServerMessage::Lobby { seats, needed: n } = only_roster(&received[3]).clone() else {
+        let ServerMessage::Lobby {
+            seats, needed: n, ..
+        } = only_roster(&received[3]).clone()
+        else {
             unreachable!()
         };
         assert_eq!(

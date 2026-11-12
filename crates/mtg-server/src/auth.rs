@@ -116,6 +116,22 @@ impl Auth {
             })
     }
 
+    /// Counts a mark or an unmark of a card to fix by `user` against `AttemptLimits::fix_mark_writes_per_user`, or
+    /// says to wait with 429 `rate_limited` and `Retry-After`.
+    pub(crate) fn admit_fix_mark_write(&self, user: UserId) -> Result<(), ApiError> {
+        self.throttle
+            .begin_fix_mark_write(Instant::now(), user)
+            .map_err(|blocked| {
+                let seconds = blocked.seconds();
+                ApiError::new(
+                    StatusCode::TOO_MANY_REQUESTS,
+                    DeckErrorCode::RateLimited.as_str(),
+                    format!("too many changes to fix marks; try again in {seconds} seconds"),
+                )
+                .with_header(RETRY_AFTER, HeaderValue::from(seconds))
+            })
+    }
+
     fn accounts(&self) -> Result<&Accounts, ApiError> {
         self.accounts.as_ref().ok_or_else(|| {
             ApiError::new(

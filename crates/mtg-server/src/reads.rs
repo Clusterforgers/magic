@@ -16,7 +16,8 @@ use mtg_cards::read::sheet;
 use mtg_db::{Card, DeckId, DraftKey, IndexVersion, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
-    CardDraft, DeckErrorCode, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict,
+    CardDraft, DeckErrorCode, MAX_FIX_MARKS_PER_USER, MyRead, ReadBody, ReadCard, ReadQueue,
+    ReadQueueCard, ReadVerdict,
 };
 use sqlx::types::uuid::Uuid;
 
@@ -464,9 +465,10 @@ pub(crate) async fn put(
         .await
         .map_err(|error| failed(&error))?
         .ok_or_else(ApiError::not_found)?;
+    // An account at its cap of marks keeps its verdict without a new mark.
     if let Some(note) = note.as_deref() {
         db.fix_marks()
-            .mark(s.user, &id, Some(note))
+            .mark_within(s.user, &id, Some(note), MAX_FIX_MARKS_PER_USER)
             .await
             .map_err(|error| failed(&error))?;
     }

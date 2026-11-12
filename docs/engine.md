@@ -21,8 +21,18 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 - `GameSetup::validate` checks `GameSetup::house_rules` against its seat count (`SetupError::HouseRules`); the rules are copied into `GameState` and hashed beside the format name, so a replay needs the setup it was played under.
 - `RuleSet` (`GameState::ruleset`, `GameSetup::ruleset`) is the format with the house rules over it, the one place the engine reads these values; a seat's values (`starting_life`, `mulligan_rule`, `max_mulligans`, `mulligan_options`) read its handicap first. `FormatRules` supplies what a format may change (`starting_life`, `mulligan_rule`, `skips_first_draw`, `max_hand_size` (`None` unlimited), `poison_threshold`). `max_mulligans` is at most the opening hand size plus the free mulligans.
 - A new rule is one field of `HouseRules` with its range in `validate`, one method of `RuleSet` and its readers, a protocol/web entry ([protocol.md](protocol.md)) and a table test.
-- Rules beyond a number: `turn_limit` ends the game after a round's last turn (`TurnState::round`; highest life wins, a tie draws); `winning_life` makes the others lose (`OpponentReachedLife`; several at once draw); `empty_library` `reshuffle_graveyard` logs `LibraryRefilled`; `deck` (`DeckRules`) and `commanders_per_seat` relax `FormatRules::validate_seat`; `attack_range` limits `AttackOptions` (`RuleSet::defending_seats`); `open_hands`, `revealed_library_top` and `opening_hand_smoothing` change what is revealed or dealt ([protocol.md](protocol.md)); `mulligan_style` is `london`, `paris` or `vancouver` (Paris plus scry 1, `MulliganStatus::Scrying`); `mana_burn` logs `ManaBurned`; `commander_tax` and `commander_damage` feed the cost modifiers and `Commander::loss_condition`.
+- Rules beyond a number: `turn_limit` ends the game after a round's last turn (`TurnState::round`; highest life wins, a tie draws); `winning_life` makes the others lose (`OpponentReachedLife`; several at once draw); `empty_library` `reshuffle_graveyard` logs `LibraryRefilled`; `deck` (`DeckRules`: `singleton`, `color_identity` (older key `colour_identity` still read), `deck_size`, `max_copies`) and `commanders_per_seat` relax `FormatRules::validate_seat`; `attack_range` limits `AttackOptions` (`RuleSet::defending_seats`); `open_hands`, `revealed_library_top` and `opening_hand_smoothing` change what is revealed or dealt ([protocol.md](protocol.md)); `mulligan_style` is `london`, `paris` or `vancouver` (Paris plus scry 1, `MulliganStatus::Scrying`); `mana_burn` logs `ManaBurned`; `commander_tax` and `commander_damage` feed the cost modifiers and `Commander::loss_condition`.
 - Card rules on the same limits: `Rule::NoMaxHandSize` and `Rule::MaxHandSize` (`max_hand_size` in `rules.rs`), `Rule::NoLegendRule` (`legend::groups`), `Rule::UntapDuring` (`untap_during`), `Rule::UntapLimit` (`rmt4_untap_limit.rs`: the untap step asks which permanents untap and keeps the first chosen that every limit allows, CR 502.3) and `Rule::SkipDrawStep` (`next_step`, CR 614.10).
+
+## Teams
+
+Teams (CR 808, CR 810) are `HouseRules::teams` (`mtg-core`, `teams.rs`): a `TeamMode` and the team of every seat, checked by `validate_for(seats)` (every seat assigned, two teams or more, no team number skipped, Two-Headed Giant two teams of two). The engine reads them once, in `teams.rs` on `GameState`.
+
+- `is_opponent(a, b)` is "another team" and every opponent read goes through it: `Ref::Opponents`, `Targetable::Opponent`, `Activators::Opponents`, hexproof, the attack range, defending players, crimes, gifts, enchant opponent, "an opponent lost life" and the win of an effect. A table without teams is a team per seat, so nothing changes there.
+- `RuleSet::game_result` ends the game once every player left plays on one team: `GameResult::Team(n)`, its members who lost earlier included (CR 808.6). The turn limit names the team of the sole leader.
+- `TeamMode::Teams` (N v N): each player takes their own turn, priority and combat as in any multiplayer game.
+- `TeamMode::TwoHeadedGiant` shares turns (CR 805): `is_active` holds for the active player's teammates, so sorcery timing, "your turn" durations, upkeep triggers, foretell and the draw step count read the team; each active player untaps, draws and discards at cleanup, and plays their own lands (`Tally::LandsPlayed`). The turn passes to the next seat of another team (`next_turn_seat`), and the first draw is skipped as in a game of two. The active player declares the attacks of the team's creatures; both players of an attacked team are defending players and block any creature attacking the team.
+- Shared life (CR 810.9): the team starts at `FormatRules::team_life` (30, Commander 60) or the table's starting life; handicaps do not apply. Each player keeps the total and the fold copies any change to the teammate (`share_life`), so damage, loss, gain and payments are the team's while the tallies stay individual. Poison counters count together against 15 (CR 810.10), and a player whose teammate lost loses with them (CR 810.8a), a concession included.
 
 ## Commander
 
@@ -81,6 +91,10 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 
 - A card in state `Read`, `Forge` or `Unverified` runs unproven rules ([cards-dsl.md](cards-dsl.md)). When a resolution step of a source whose definition has `read` returns a `ResolveError`, the engine keeps the steps folded, drops the rest and logs `AbilityLeftToTable {source, controller, text}` (no state change), so the table resolves the ability by hand. For other cards the error stays an `EngineError` for the tests, except `Unsupported`, always left to the table.
 
+### By-hand lines
+
+- A clause the table plays by hand that is one triggered line whose event reads carries that event (`ManualClause.when`, read at assembly by `compile::by_hand_event`, never serialised, so no recipe fingerprint changes). When the event happens to a permanent with such a line, the engine logs `ByHandDue {source, controller, text}` (a note: no state change) once for each time, judged as a trigger is (`triggers::due`, before the abilities that trigger on the same events); a card off the battlefield has no due lines.
+
 ## Mana costs
 
 - `ManaCost` (`mtg-core`) is a canonical list of `ManaSymbol`: sorted, generic merged, `{0}` dropped, colour pairs in printed order. Equal costs are equal values, `Display` then `parse` is the identity, and the list is the wire form (deserializing normalizes).
@@ -108,7 +122,24 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 - `castable` lists cards in hand and, for a way naming another zone, in a graveyard, exile, the library top or the command zone, affordable at their timing; a spell with targets needs enough legal targets for every specification (CR 601.2c). Split second (CR 702.61) empties `castable` and `abilities`; mana abilities, special actions and passing stay.
 - `abilities` lists activated abilities that work from the card's zone, are not taken by the payment planner and could be activated now (`priority::other_abilities`). `Activated.by` names who may activate (controller by default, any player or opponents); the activator controls the ability, and a cost that taps or gives up the permanent is not offered to a non-controller. `Limit::TimesPerTurn(n)` counts uses in `Tallies::limit_uses`.
 - `unplayable` names each hand and command-zone card no list offers, with its first reason (`Unplayable`); `unplayable::judge` judges them once and also fills `castable`. `suspendable` and `foretellable` list the special actions.
+- `inactive` names each activated ability of the holder's permanents that `abilities` leaves out, with its reason; `priority::activation` is the one check and gives the first reason that fails (mana abilities, other zones and costs the engine does not pay are never listed).
 - `can_act` is true with a land, spell, suspend, foretell or ability to use; mana abilities alone never count (`priority::can_act`). The server uses it only to pass for a seat that asked ([server.md](server.md)); clocks and yields never read it, so pace never tells what a hand holds. `PlayOptions::auto_pass` in `mtg-testkit` applies the same rule and is the server tests' reference.
+
+## Refusals
+
+Each reason carries a detail (`Why`, `why.rs`) read off the check that decided it, so the two never disagree.
+
+| `Why` | From |
+|---|---|
+| `Target { needs, zone }` | the first target specification with too few legal targets (`choose::unmet_target`), in the words of `wording::target_need`: "a creature spell you control on the stack" |
+| `Mana { cost, at_hand, missing }` | the total the payment is asked for after increases and reductions, the pool plus one use of each source, and the kinds of mana a one-kind symbol asks that nothing makes |
+| `SorcerySpeed`, `OwnCondition` | the timing of the card or ability, and a `CastOnly` or "Activate only if" that does not hold |
+| `ForbiddenBy { source, name }` | the first prohibition in force (`prohibit::forbidder`, `w17b_cant_cast_by`), named while its source is face up on the battlefield, on the stack or in the command zone |
+| `SplitSecond` | the spell with split second on the stack |
+| `SummoningSick`, `Tapped`, `LimitSpent`, `OtherCost`, `NoWay` | the source that cannot turn, a spent `Limit` or loyalty activation, a cost besides mana, and a card with no way to be cast from its zone |
+
+- A play the offer does not list is refused with `IllegalAnswer::Refused(Refusal)`, which carries the offer's reason and detail for that card or ability; any other play stays `NotOffered`.
+- `AnnouncementRewound.why` names the target that had none when a cast or activation is taken back for its targets.
 
 ## Manual actions
 
@@ -206,7 +237,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 
 | Hook | Keyword | Read by |
 |---|---|---|
-| `restricts_blocking`, `restricts_blocked`, `answers_evasion` | flying, reach, fear, intimidate, skulk, shadow, horsemanship, landwalk | `stops_block` in `block_options` |
+| `restricts_blocking`, `restricts_blocked`, `answers_evasion` | flying, reach, fear, intimidate, skulk, shadow, horsemanship, landwalk | `stops_block_between` in `block_options` |
 | `min_blockers` | menace | `block_options`, `check_blockers` |
 | `forbids_attacking` | defender | `can_attack` |
 | `ignores_summoning_sickness` | haste | `can_attack`, mana and `{T}` abilities, the views |
@@ -215,7 +246,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 | `adds_abilities` (a `defining` static) | changeling, devoid | `layers::outside` and the layers pass |
 | `is_indestructible` | indestructible | state-based actions; the `Destroy` primitive |
 | `restricts_targeting`, `restricts_player_targeting` | hexproof, shroud | `legal_targets` through `protects` and `protects_player`; a player's hexproof from a quality through `hexproof::ep23_player_hexproof_from` |
-| `protects_from` (`Holder`, `Source`) | protection | `keywords::protected_from`: damage in `replace.rs`, `legal_host` in `attach.rs`, `stops_block`, `legal_targets` |
+| `protects_from` (`Holder`, `Source`) | protection | `keywords::protected_from`: damage in `replace.rs`, `legal_host` in `attach.rs`, `stops_block_between`, `legal_targets` |
 | `grants_timing` | flash | `priority_options` through `grants_instant_timing` |
 
 - Keywords that are triggers or activated abilities (prowess, ward, equip, crew, cycling, ...) return DSL abilities from `adds_abilities`, one set per instance, read as printed abilities.

@@ -9,7 +9,7 @@ import type { Question } from './lobbyQuestions'
 /** The REST calls the lobby's controls make; `listDecks` and `chooseDeck` are the deck chooser's. */
 export type LobbyApi = Pick<
   Api,
-  'closeGame' | 'leaveGame' | 'releaseSeat' | 'setVisibility' | 'listDecks' | 'chooseDeck'
+  'closeGame' | 'leaveGame' | 'releaseSeat' | 'setVisibility' | 'setTeams' | 'listDecks' | 'chooseDeck'
 >
 
 /** Where focus goes when a question has closed: back to its button, to the seat list, or to the words that the game began. */

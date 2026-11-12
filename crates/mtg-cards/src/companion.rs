@@ -7,6 +7,9 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use serde::{Deserialize, Serialize};
 
+use mtg_core::mana::ManaSymbol;
+
+use crate::ability::Ability;
 use crate::definition::CardDefinition;
 use crate::refs::{Pred, Selector};
 use crate::value::{Amount, StatKind};
@@ -33,22 +36,64 @@ pub enum DeckCondition {
     },
     /// The deck holds at least this many cards more than the format's minimum deck size.
     ExtraCards(u32),
-    /// The `of` cards share a card type.
-    ShareCardType {
-        /// The cards; every card when empty.
+    /// Every card that matches `of` has the fact: "Your starting deck contains only cards with even mana values." is
+    /// every card with an even mana value.
+    Has {
+        /// The cards the condition speaks of; every card of the deck when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        of: Selector,
+        /// What each of them must have.
+        fact: CardFact,
+    },
+    /// One card type is common to every card that matches `of`: "Each nonland card in your starting deck shares a card
+    /// type."
+    SharedType {
+        /// The cards that must share a type; every card of the deck when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         of: Selector,
     },
-    /// The `of` cards have even (or odd) mana values.
-    ManaValueParity {
-        /// The cards; every card when empty.
-        #[serde(default, skip_serializing_if = "Selector::is_empty")]
-        of: Selector,
-        /// Even, else odd.
-        even: bool,
-    },
-    /// No card repeats a mana symbol.
+}
+
+/// A fact about a card that a companion asks and no selector of an object reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CardFact {
+    /// Its mana value is even ("cards with even mana values").
+    EvenManaValue,
+    /// Its mana value is odd ("cards with odd mana values").
+    OddManaValue,
+    /// It has an activated ability ("has an activated ability").
+    ActivatedAbility,
+    /// No mana symbol appears twice in its mana cost ("more than one of the same mana symbol in its mana cost").
     NoRepeatedSymbol,
+}
+
+impl CardFact {
+    /// Whether the card has the fact.
+    fn holds(self, card: &DeckCard) -> bool {
+        match self {
+            CardFact::EvenManaValue => card.mana_value.is_multiple_of(2),
+            CardFact::OddManaValue => !card.mana_value.is_multiple_of(2),
+            CardFact::ActivatedAbility => card.activated,
+            CardFact::NoRepeatedSymbol => {
+                card.x_symbols < 2
+                    && card
+                        .symbols
+                        .iter()
+                        .enumerate()
+                        .all(|(at, symbol)| !card.symbols[at + 1..].contains(symbol))
+            }
+        }
+    }
+
+    /// The words of the fact in a reason.
+    fn words(self) -> &'static str {
+        match self {
+            CardFact::EvenManaValue => "an even mana value",
+            CardFact::OddManaValue => "an odd mana value",
+            CardFact::ActivatedAbility => "an activated ability",
+            CardFact::NoRepeatedSymbol => "no mana symbol twice in its cost",
+        }
+    }
 }
 
 /// A card of a starting deck as the condition reads it: the characteristics the predicates ask about.
@@ -66,8 +111,12 @@ pub struct DeckCard {
     pub subtypes: Vec<Subtype>,
     /// Its colours.
     pub colors: ColorSet,
-    /// Its mana cost holds one mana symbol more than once (`{1}{1}` does not occur; `{G}{G}` and `{X}{X}` do).
-    pub repeats_a_symbol: bool,
+    /// The symbols of its mana cost, `{X}` aside.
+    pub symbols: Vec<ManaSymbol>,
+    /// How many `{X}` its mana cost holds.
+    pub x_symbols: u8,
+    /// Whether it has an activated ability.
+    pub activated: bool,
 }
 
 impl From<&CardDefinition> for DeckCard {
@@ -79,13 +128,17 @@ impl From<&CardDefinition> for DeckCard {
             supertypes: card.supertypes.clone(),
             subtypes: card.subtypes.clone(),
             colors: card.colors(),
-            repeats_a_symbol: card.mana_cost.as_ref().is_some_and(|cost| {
-                let symbols = cost.symbols();
-                symbols
-                    .iter()
-                    .enumerate()
-                    .any(|(at, symbol)| symbols[at + 1..].contains(symbol))
-            }),
+            symbols: card
+                .mana_cost
+                .as_ref()
+                .map(|cost| cost.symbols().to_vec())
+                .unwrap_or_default(),
+            x_symbols: card.x_in_cost,
+            activated: card.activated
+                || !card.abilities.is_empty()
+                || card.rules.iter().any(|rule| {
+                    matches!(&**rule, Ability::Activated { .. } | Ability::Loyalty { .. })
+                }),
         }
     }
 }
@@ -129,11 +182,10 @@ impl DeckCondition {
     pub fn unreadable(&self) -> Vec<String> {
         let selectors: Vec<&Selector> = match self {
             DeckCondition::Each { of, has } => vec![of, has],
-            DeckCondition::Distinct { of } => vec![of],
-            DeckCondition::ShareCardType { of } | DeckCondition::ManaValueParity { of, .. } => {
-                vec![of]
-            }
-            DeckCondition::ExtraCards(_) | DeckCondition::NoRepeatedSymbol => Vec::new(),
+            DeckCondition::Distinct { of }
+            | DeckCondition::Has { of, .. }
+            | DeckCondition::SharedType { of } => vec![of],
+            DeckCondition::ExtraCards(_) => Vec::new(),
         };
         let probe = DeckCard {
             name: String::new(),
@@ -142,7 +194,9 @@ impl DeckCondition {
             supertypes: BTreeSet::new(),
             subtypes: Vec::new(),
             colors: ColorSet::EMPTY,
-            repeats_a_symbol: false,
+            symbols: Vec::new(),
+            x_symbols: 0,
+            activated: false,
         };
         selectors
             .into_iter()
@@ -180,41 +234,36 @@ impl DeckCondition {
                     None => Ok(()),
                 }
             }
-            DeckCondition::ShareCardType { of } => {
-                let mut shared: Option<BTreeSet<CardType>> = None;
-                for card in deck.iter().filter(|card| selects(of, card)) {
-                    let left: BTreeSet<CardType> = match shared {
-                        None => card.types.clone(),
-                        Some(before) => before.intersection(&card.types).copied().collect(),
-                    };
-                    if left.is_empty() {
+            DeckCondition::Has { of, fact } => {
+                match deck
+                    .iter()
+                    .find(|card| selects(of, card) && !fact.holds(card))
+                {
+                    Some(card) => Err(format!(
+                        "{} does not have {} as the companion wants",
+                        card.name,
+                        fact.words()
+                    )),
+                    None => Ok(()),
+                }
+            }
+            DeckCondition::SharedType { of } => {
+                let mut cards = deck.iter().filter(|card| selects(of, card));
+                let Some(first) = cards.next() else {
+                    return Ok(());
+                };
+                let mut shared = first.types.clone();
+                for card in cards {
+                    shared.retain(|ty| card.types.contains(ty));
+                    if shared.is_empty() {
                         return Err(format!(
-                            "{} shares no card type with the cards before it",
+                            "{} leaves the cards no card type in common, and the companion wants one",
                             card.name
                         ));
                     }
-                    shared = Some(left);
                 }
                 Ok(())
             }
-            DeckCondition::ManaValueParity { of, even } => match deck
-                .iter()
-                .find(|card| selects(of, card) && (card.mana_value % 2 == 0) != *even)
-            {
-                Some(card) => Err(format!(
-                    "{} does not fit the companion's condition",
-                    card.name
-                )),
-                None => Ok(()),
-            },
-            DeckCondition::NoRepeatedSymbol => match deck.iter().find(|card| card.repeats_a_symbol)
-            {
-                Some(card) => Err(format!(
-                    "{} has a mana symbol more than once in its cost",
-                    card.name
-                )),
-                None => Ok(()),
-            },
             DeckCondition::ExtraCards(extra) => {
                 let wanted = minimum + usize::try_from(*extra).unwrap_or(usize::MAX - minimum);
                 if deck.len() >= wanted {

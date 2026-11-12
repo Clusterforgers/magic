@@ -262,10 +262,18 @@ pub fn draw(count: i32) -> Effect {
 /// `card` with the clause `text` left to the table: the engine runs the rest and the players apply `text` by hand.
 pub fn by_hand(card: Arc<CardDefinition>, text: &str) -> Arc<CardDefinition> {
     let mut card = Arc::unwrap_or_clone(card);
-    card.manual.push(ManualClause {
-        text: text.to_owned(),
-        reason: "left to the table".to_owned(),
-    });
+    card.manual
+        .push(ManualClause::new(text, "left to the table"));
+    Arc::new(card)
+}
+
+/// `card` with the triggered line `text` left to the table and its event read, as an assembled card has it: the engine
+/// logs the line as due (`ByHandDue`) when the event happens.
+pub fn by_hand_due(card: Arc<CardDefinition>, text: &str) -> Arc<CardDefinition> {
+    let mut card = Arc::unwrap_or_clone(card);
+    let clause =
+        ManualClause::new(text, "left to the table").reading_when(std::slice::from_ref(&card.name));
+    card.manual.push(clause);
     Arc::new(card)
 }
 

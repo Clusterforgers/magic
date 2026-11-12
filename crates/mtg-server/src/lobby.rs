@@ -3,12 +3,14 @@
 //! Every connected seat is kept told who is at the table ([`ServerMessage::Lobby`]); readiness lives
 //! here only and is never stored, so a lobby resumed after a restart starts with nobody ready.
 
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::{Engine, GameState};
 use mtg_protocol::{ErrorCode, LobbySeat, SeatDeck, ServerMessage};
 
 use crate::actor::{Fatal, GameActor, Phase};
-use crate::handle::DeckRefusal;
+use crate::handle::{DeckRefusal, TeamsRefusal};
 use crate::running::{Halt, Rejection, Running};
 use crate::seat_deck::{ChosenDeck, SeatDecks};
 use crate::store::EventStore;
@@ -176,6 +178,29 @@ impl<S: EventStore> GameActor<S> {
         Ok(note)
     }
 
+    /// Sets the teams of the table and tells it; every seat takes Ready back, since its holder agreed to other teams.
+    pub(crate) fn set_teams(&mut self, teams: Option<Teams>) -> Result<(), TeamsRefusal> {
+        let Phase::Lobby { ready, .. } = &mut self.phase else {
+            return Err(TeamsRefusal::Started);
+        };
+        let rules = HouseRules {
+            teams: teams.clone(),
+            ..self.setup.house_rules.clone()
+        };
+        rules
+            .validate_for(self.setup.players.len())
+            .map_err(TeamsRefusal::Invalid)?;
+        for flag in ready.iter_mut() {
+            *flag = false;
+        }
+        self.setup.house_rules = rules;
+        if let Some(decks) = self.decks.as_mut() {
+            decks.set_teams(teams);
+        }
+        self.push_roster();
+        Ok(())
+    }
+
     /// Stops the lobby from starting (`on`) or lets it start again; nobody at the table is told.
     /// Returns false, with nothing changed, once the game runs.
     pub(crate) fn set_closing(&mut self, on: bool) -> bool {
@@ -218,6 +243,7 @@ impl<S: EventStore> GameActor<S> {
     /// Nobody says so, so it is looked for after every command (any of them may be the one that finds a closed queue
     /// first) and whenever a queue closes while the actor is idle.
     pub(crate) fn announce_departures(&mut self) {
+        self.tell_spectator_count();
         if !self.in_lobby() {
             self.push_presence();
             return;
@@ -246,6 +272,7 @@ impl<S: EventStore> GameActor<S> {
         Some(ServerMessage::Lobby {
             seats,
             needed: u32::try_from(needed).unwrap_or(u32::MAX),
+            teams: self.setup.house_rules.teams.clone(),
         })
     }
 
@@ -458,6 +485,53 @@ mod tests {
         assert_eq!(handle.status().await.unwrap().open, [PlayerId(1)]);
         assert_eq!(handle.occupy(PlayerId(1), "Di".to_owned()).await, Ok(true));
         assert_eq!(handle.status().await.unwrap().open, []);
+    }
+
+    #[tokio::test]
+    async fn teams_set_in_the_lobby_reach_the_table_take_ready_back_and_play() {
+        use crate::handle::TeamsRefusal;
+        use mtg_core::teams::{TeamMode, Teams};
+        let handle = lobby(4);
+        let mut inbox = handle.join(PlayerId(0)).await.unwrap();
+        handle
+            .send(PlayerId(1), ClientMessage::Ready)
+            .await
+            .unwrap();
+        handle.status().await.unwrap();
+        drain(&mut inbox);
+
+        let lonely = Teams {
+            mode: TeamMode::Teams,
+            seats: vec![0, 0, 0, 0],
+        };
+        assert!(matches!(
+            handle.set_teams(Some(lonely)).await,
+            Ok(Err(TeamsRefusal::Invalid(_)))
+        ));
+        assert_eq!(
+            handle.status().await.unwrap().ready,
+            [PlayerId(1)],
+            "a refusal changes nothing"
+        );
+
+        let giant = Teams::even(TeamMode::TwoHeadedGiant, 2, 2);
+        assert_eq!(handle.set_teams(Some(giant.clone())).await, Ok(Ok(())));
+        let messages = drain(&mut inbox);
+        match messages.as_slice() {
+            [ServerMessage::Lobby { seats, teams, .. }] => {
+                assert_eq!(teams.as_ref(), Some(&giant));
+                assert!(seats.iter().all(|seat| !seat.ready));
+            }
+            other => panic!("expected one roster, got {other:?}"),
+        }
+        for seat in 0..4 {
+            handle
+                .send(PlayerId(seat), ClientMessage::Ready)
+                .await
+                .unwrap();
+        }
+        assert!(handle.status().await.unwrap().started);
+        assert_eq!(handle.set_teams(None).await, Ok(Err(TeamsRefusal::Started)));
     }
 
     #[tokio::test]

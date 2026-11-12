@@ -43,6 +43,7 @@ fn roster(flags: [(bool, bool); 2]) -> ServerMessage {
     ServerMessage::Lobby {
         seats,
         needed: u32::try_from(needed).unwrap(),
+        teams: None,
     }
 }
 

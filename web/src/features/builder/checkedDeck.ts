@@ -4,7 +4,12 @@ import type { CardHit, DeckLineView, DeckView, Reason, ReadState, Support } from
 import { BOLT, DURESS, ELVES, GROWTH, MOUNTAIN, SOL_RING } from './renderBuilder'
 
 /** A clause of a card's text the game leaves to the table. */
-export const reason = (text: string, face = 0): Reason => ({ face, span: { start: 0, end: 10 }, text })
+export const reason = (text: string, face = 0, quote = ''): Reason => ({
+  face,
+  span: { start: 0, end: 10 },
+  text,
+  quote,
+})
 
 /** One card of a checked deck. */
 export interface Entry {
@@ -20,7 +25,12 @@ export interface Entry {
 /** Twenty Mountains and a card of each state: Partial, Manual, Stale and Unplayable, and Duress in the sideboard. */
 export const ENTRIES: Entry[] = [
   { card: MOUNTAIN, count: 20, support: 'verified' },
-  { card: BOLT, count: 4, support: 'partial', reasons: [reason('the engine does not run X yet')] },
+  {
+    card: BOLT,
+    count: 4,
+    support: 'partial',
+    reasons: [reason('the engine does not run X yet', 0, 'Lightning')],
+  },
   { card: GROWTH, count: 2, support: 'manual', reasons: [reason('no rules for this card yet')] },
   {
     card: SOL_RING,

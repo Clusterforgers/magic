@@ -10,7 +10,7 @@
         {
           "Keyword": {
             "Companion": {
-              "ManaValueParity": { "of": [{ "Not": { "Type": "Land" } }], "even": false }
+              "Has": { "of": [{ "Not": { "Type": "Land" } }], "fact": "OddManaValue" }
             }
           }
         },

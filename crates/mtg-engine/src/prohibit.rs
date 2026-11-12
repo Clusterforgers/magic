@@ -316,11 +316,19 @@ fn casting_forbidden(
 /// Whether a rule in force forbids `doing`: the one place every prohibition is read.
 #[allow(clippy::needless_pass_by_value)]
 pub(crate) fn forbidden(state: &GameState, doing: Doing) -> bool {
+    forbidder(state, doing).is_some()
+}
+
+/// The first rule in force that forbids `doing`: `Some` with the object that put it in force, if any; `None` when no
+/// rule forbids it. [`forbidden`] reads it, so a reason named from it never disagrees with the check.
+#[allow(clippy::needless_pass_by_value, clippy::option_option)]
+pub(crate) fn forbidder(state: &GameState, doing: Doing) -> Option<Option<ObjectRef>> {
     state
         .rules()
         .cants
         .iter()
-        .any(|ban| applies(state, ban, doing.clone()))
+        .find(|ban| applies(state, ban, doing.clone()))
+        .map(|ban| ban.source)
 }
 
 /// Whether a rule in force keeps `attachment` from being attached to `host` (`Prohibited::BeAttachedBy`): read where an

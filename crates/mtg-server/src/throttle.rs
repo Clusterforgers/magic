@@ -40,6 +40,8 @@ enum Key {
     FavouriteWrite(UserId),
     /// Requests to the read endpoints one account made, answered or not.
     ReadRequest(UserId),
+    /// Marks and unmarks of cards to fix one account made.
+    FixMarkWrite(UserId),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
     /// Requests for the lobby list from one network, answered or not.
@@ -57,7 +59,8 @@ fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
         | Key::LoginName(_)
         | Key::RegisterAddress(_)
         | Key::AdminCreate(_)
-        | Key::FavouriteWrite(_) => limits.window,
+        | Key::FavouriteWrite(_)
+        | Key::FixMarkWrite(_) => limits.window,
     }
 }
 
@@ -268,6 +271,16 @@ impl Throttle {
         self.admit(now, &wanted).map(|_| ())
     }
 
+    /// Counts a mark or an unmark of a card to fix by `user`, or says to wait. It has a budget of its own per account
+    /// and nothing hands it back.
+    pub(crate) fn begin_fix_mark_write(&self, now: Instant, user: UserId) -> Result<(), Blocked> {
+        let wanted = [(
+            Key::FixMarkWrite(user),
+            self.limits.fix_mark_writes_per_user,
+        )];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Counts a request of `user` to the read endpoints, or says to wait. Every request counts and nothing hands it back.
     pub(crate) fn begin_read(&self, now: Instant, user: UserId) -> Result<(), Blocked> {
         let wanted = [(Key::ReadRequest(user), self.limits.read_requests_per_user)];
@@ -365,6 +378,7 @@ mod tests {
             precon_requests_per_ip: 3,
             favourite_writes_per_user: 3,
             read_requests_per_user: 3,
+            fix_mark_writes_per_user: 3,
         }
     }
 
@@ -626,6 +640,21 @@ mod tests {
         assert!(throttle.begin_favourite_write(t0, bob).is_ok());
         assert!(throttle.begin_admin_create(t0, ann).is_ok());
         assert!(throttle.begin_favourite_write(t0 + secs(60), ann).is_ok());
+    }
+
+    #[test]
+    fn fix_mark_writes_are_counted_per_account_in_the_window_apart_from_favourites() {
+        let throttle = Throttle::new(limits());
+        let (ann, bob) = (UserId::random(), UserId::random());
+        let t0 = Instant::now();
+        for n in 0..3 {
+            assert!(throttle.begin_fix_mark_write(t0 + secs(n), ann).is_ok());
+        }
+        let blocked = throttle.begin_fix_mark_write(t0 + secs(10), ann);
+        assert_eq!(blocked.unwrap_err().retry_after, secs(50));
+        assert!(throttle.begin_fix_mark_write(t0, bob).is_ok());
+        assert!(throttle.begin_favourite_write(t0, ann).is_ok());
+        assert!(throttle.begin_fix_mark_write(t0 + secs(60), ann).is_ok());
     }
 
     #[test]

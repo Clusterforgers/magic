@@ -25,11 +25,12 @@ import { previewKey } from './preview'
 import { canHoldStop } from './stops'
 import { saveAutoChoices, saveAutoYields, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
-import { owesByHand } from './byHand'
+import { dueLinesAfter, owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
 import { createAwayClocks } from './awayClocks'
+import { refusalNotice } from '@/features/table/whyWords'
 
 /** The longest chat line the server accepts, in characters (`MAX_CHAT_CHARS` in `crates/mtg-server/src/actor.rs`). */
 export const MAX_CHAT_CHARS = 500
@@ -121,6 +122,8 @@ export interface Session {
   resync(): boolean
   /** Clears the notice. */
   dismissNotice(): void
+  /** Forgets the seat's due lines (`dueLines`): the seat says it applied them. Nothing is sent. */
+  clearDueLines(): void
 }
 
 type Of<T extends ServerMessage['type']> = Extract<ServerMessage, { type: T }>
@@ -239,6 +242,8 @@ export function createSession(deps: SessionDeps): Session {
         setState({
           seat: message.player,
           seatCount: message.seats,
+          // A joining seat is told the count again when some watch.
+          spectators: 0,
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
@@ -248,14 +253,16 @@ export function createSession(deps: SessionDeps): Session {
           autoSkips: message.auto_skips,
           castWhenAsked: null,
         })
-        for (const request of welcomeRequests({
-          game: message.game,
-          stops: message.stops,
-          endTurnByHand: message.end_turn_by_hand,
-          autoChoices: message.auto_choices,
-          autoYields: message.auto_yields,
-        }))
-          socket.send(request)
+        // A spectator holds no seat, so it has no settings to bring the server up to date with.
+        if (deps.watch !== true)
+          for (const request of welcomeRequests({
+            game: message.game,
+            stops: message.stops,
+            endTurnByHand: message.end_turn_by_hand,
+            autoChoices: message.auto_choices,
+            autoYields: message.auto_yields,
+          }))
+            socket.send(request)
         return
       case 'Yielding':
         onYielding(message)
@@ -282,7 +289,13 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
-        setState({ lobby: { seats: message.seats, needed: message.needed } })
+        setState({
+          lobby: {
+            seats: message.seats,
+            needed: message.needed,
+            ...(message.teams === undefined ? {} : { teams: message.teams }),
+          },
+        })
         return
       case 'Snapshot':
         onSnapshot(message)
@@ -330,6 +343,9 @@ export function createSession(deps: SessionDeps): Session {
       case 'Deciding':
         setState({ deciding: message.seats })
         return
+      case 'Spectators':
+        setState({ spectators: message.count })
+        return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
         const unhandled: never = message
@@ -355,6 +371,13 @@ export function createSession(deps: SessionDeps): Session {
         objectsById,
         // The history is the latest events: a pass or a resolution in it decides, else what was held stays.
         byHand: owesByHand(state.byHand, message.log ?? [], state.seat, state.objectsById, objectsById),
+        dueLines: dueLinesAfter(
+          state.dueLines,
+          message.log ?? [],
+          state.seat,
+          state.objectsById,
+          objectsById,
+        ),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
         preview: null,
@@ -396,6 +419,7 @@ export function createSession(deps: SessionDeps): Session {
       objectsById,
       seq: batch.from_seq + batch.events.length,
       byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),
+      dueLines: dueLinesAfter(state.dueLines, batch.events, state.seat, state.objectsById, objectsById),
       log: appendLog(state.log, batch.from_seq, batch.events, state.objectsById, objectsById, batch.shown),
       logNames: rememberDeparted(state.logNames, state.objectsById, batch.gone),
       phase: state.result === null ? 'playing' : 'over',
@@ -466,6 +490,11 @@ export function createSession(deps: SessionDeps): Session {
       case 'IllegalAnswer':
         // A refused manual action changes nothing, so it needs no resync; its sender says why in its own words.
         if (manualRefused(message.message, answeredAt) === 'told') return
+        if (message.refusal !== undefined) {
+          setState({ notice: refusalNotice(message.refusal, getState().objectsById) })
+          resyncUnlessWaiting()
+          return
+        }
         setState({ notice: NOTICES.illegal(message.message) })
         resyncUnlessWaiting()
         return
@@ -584,5 +613,6 @@ export function createSession(deps: SessionDeps): Session {
     },
     resync: () => socket.send({ type: 'Resync' }),
     dismissNotice: () => setState({ notice: null }),
+    clearDueLines: () => setState({ dueLines: [] }),
   }
 }

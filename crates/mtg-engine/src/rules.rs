@@ -803,7 +803,7 @@ impl Cast {
     /// it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
     fn c11b_open(&self, state: &GameState) -> bool {
         !self.once
-            || (state.turn().active() == self.controller
+            || (state.is_active(self.controller)
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
     }
 
@@ -1216,7 +1216,7 @@ impl RulesInForce {
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
-            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
+            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule, source),
         }
     }
 }
@@ -2229,7 +2229,7 @@ pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usi
 /// Whether a spell or ability `by` controls can't make `player` sacrifice permanents: a rule spares `player` from their
 /// opponents' effects.
 pub(crate) fn ep24_spared_sacrifice(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
-    by != player && state.rules().spared_sacrifice.contains(&player)
+    state.is_opponent(by, player) && state.rules().spared_sacrifice.contains(&player)
 }
 
 /// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any

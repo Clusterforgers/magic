@@ -6,7 +6,7 @@ use std::str::FromStr;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
-use crate::companion::DeckCondition;
+use crate::companion::{CardFact, DeckCondition};
 use crate::cost::{Cost, CostItem};
 use crate::keyword::{GiftKind, Keyword, SpliceOnto};
 use crate::mana::ManaCostX;
@@ -663,7 +663,7 @@ fn companion(rest: &str) -> Option<Keyword> {
         == "your starting deck contains at least twenty cards more than the minimum deck size"
     {
         DeckCondition::ExtraCards(20)
-    } else if let Some(condition) = r301_companion(&lower) {
+    } else if let Some(condition) = companion_fact(&lower) {
         condition
     } else {
         creature_types(text)?
@@ -689,31 +689,43 @@ fn r301_offering_quality(word: &str) -> Selector {
     }])
 }
 
-/// The companion conditions about a shared card type, the parity of mana values and repeated mana symbols, read from
-/// the lowercase text.
-fn r301_companion(lower: &str) -> Option<DeckCondition> {
+/// The companion conditions that ask more than a selector of the card: a mana value parity, an activated ability, a
+/// shared card type and a mana symbol at most once.
+fn companion_fact(lower: &str) -> Option<DeckCondition> {
     let nonland = || Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]);
-    match lower {
-        "each nonland card in your starting deck shares a card type" => {
-            Some(DeckCondition::ShareCardType { of: nonland() })
-        }
-        "your starting deck contains only cards with even mana values" => {
-            Some(DeckCondition::ManaValueParity {
-                of: Selector::default(),
-                even: true,
-            })
-        }
+    let permanent = || {
+        Selector(vec![Pred::AnyOf(
+            PERMANENT_CARDS.iter().map(|ty| Pred::Type(*ty)).collect(),
+        )])
+    };
+    Some(match lower {
+        "your starting deck contains only cards with even mana values" => DeckCondition::Has {
+            of: Selector::default(),
+            fact: CardFact::EvenManaValue,
+        },
         "your starting deck contains only cards with odd mana values and land cards" => {
-            Some(DeckCondition::ManaValueParity {
+            DeckCondition::Has {
                 of: nonland(),
-                even: false,
-            })
+                fact: CardFact::OddManaValue,
+            }
+        }
+        "each permanent card in your starting deck has an activated ability" => {
+            DeckCondition::Has {
+                of: permanent(),
+                fact: CardFact::ActivatedAbility,
+            }
         }
         "no card in your starting deck has more than one of the same mana symbol in its mana cost" => {
-            Some(DeckCondition::NoRepeatedSymbol)
+            DeckCondition::Has {
+                of: Selector::default(),
+                fact: CardFact::NoRepeatedSymbol,
+            }
         }
-        _ => None,
-    }
+        "each nonland card in your starting deck shares a card type" => {
+            DeckCondition::SharedType { of: nonland() }
+        }
+        _ => return None,
+    })
 }
 
 /// `Each creature card in your starting deck is a Cat, Elemental, or Beast card`: every creature has one of the types.
@@ -1906,8 +1918,11 @@ mod tests {
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
-    #[case::companion_with_activated_abilities(
-        "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
+    #[case::companion_with_prime_values(
+        "Companion \u{2014} Your starting deck contains only cards with prime mana values."
+    )]
+    #[case::companion_with_triggered_abilities(
+        "Companion \u{2014} Each permanent card in your starting deck has a triggered ability."
     )]
     #[case::companion_without_a_condition("Companion")]
     #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]

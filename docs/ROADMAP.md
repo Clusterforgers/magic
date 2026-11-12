@@ -7,9 +7,9 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Live: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
+- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander, the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
 - Cards: 94.7% of the 32,116 Commander cards play automatically (Verified 22,622, Read 4,863, Unverified 2,935); Partial (973) and Manual (723) cards play through by-hand clauses. Run `mtg-cli compile` and `coverage` before quoting newer numbers.
-- In progress: team Commander (tm1), tournaments (tm2), spectators (v1f), handicaps (w2d), replays, bots and sounds, refusal explanations, tutorial fixes and the card coverage of M3 and M6.
+- In progress: refusal explanations, tutorial fixes and the card coverage of M3 and M6.
 - Open: an off-queen copy of the backups (M7).
 
 ## Order of work
@@ -32,52 +32,40 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, and `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote).
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
-- Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields, trigger auto-skips, a clockless opening, the turn time tally per seat, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
-- Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
+- Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log, spectators (`docs/protocol.md`, `docs/server.md`).
+- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, payment checks that count a hand card once, auto choices (trigger order, damage), smart stops, per-ability yields, trigger auto-skips, a clockless opening, the turn time tally per seat, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
+- Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine with every printed condition, tax, commander damage and any number of seats, clocks and hidden hands tested up to 64 (`docs/server.md`).
 - Unfinity: Attractions (open, roll to visit, visit and prize abilities, the junkyard, the deck warning), tickets and stickers (three random sheets, name, ability and power/toughness stickers), the sheet and sticker chips at the table (`docs/engine.md`).
-- Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
-- Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, counters on players at every seat, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes, the many-seat layout, a shared large card preview with pins, the win celebration on every seat, a 12 px text floor and glyph marks on narrow faces (`docs/web.md`, `docs/ui-design.md`).
+- Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn, under a clock and behind a replacement question, and fix marks with a cap and a budget (`docs/web.md`, `docs/protocol.md`).
+- Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons and plain refusal sentences, counters on players at every seat, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes, the many-seat layout, a shared large card preview with pins, the win celebration on every seat, a 12 px text floor and glyph marks on narrow faces (`docs/web.md`, `docs/ui-design.md`).
+- Tournaments: Swiss and single elimination for 1v1 Commander, sign-up by invite, games made and results read per match, the organiser's corrections, drops, byes and standings with tiebreakers (`docs/server.md`, `docs/web.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list, deck lines the owner plays by hand (also Verified cards) and the precon browser (`docs/web.md`, `docs/server.md`).
 - Reviewing cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/review` (`/read` forwards): one place for a deck's, a precon's or every card's drafts to read and cards played by hand to check, most played first, the card large beside its rules and Oracle text, progress, bulk approval of wording-only drafts, keys C, W, J, K, H and ?, `ReadDialog` from the table's preview and a link from every deck check (`docs/server.md`, `docs/web.md`).
 - Control and text: a player controlled during their next turn with the controller answering and seeing for them (CR 722), control of a spell on the stack, text changes in layer 3 (CR 612), cleave, a restart of the game (CR 727) and the cards an opponent finds exiled for the searcher's controller (`docs/engine.md`).
 - Learn: the Learn page, tutorials at a table with a scripted practice bot, the guided and manual-panel lessons and page tours (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
-- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs (a trace kept for every failed test) including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game, synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 
 ## Live game
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
-
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
-- [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
-- [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
-
-## M4 Commander
-
-- [ ] (m4c) Companion conditions that need more than the card (mana value parity, an activated ability, a shared type, one mana symbol) in rules, engine and deck check; frees about 4 cards (Jegantha, Kaheera, Gyruda)
+- [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
 
 ## M5 Table and prompts
 
 The table and its prompts are live; the items below polish them.
 
-- [ ] (hd1) On a 390x844 phone the commanders in the hand dock leave the hand line about 53 px, narrower than one card; the hand keeps at least one whole card in view (`features/table/HandDock.tsx`)
-- [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
-- [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
-- [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
-- [ ] (dk1b2a) Sieges in the compiler and checker: readers and writers for the Aura/God/Demigod search, "lifelink and indestructible as long as you control three other enchantments" and "this Siege", so Invasion of Theros joins `reproduced.txt` and the other Sieges read
+- [ ] (st1c) Stunning Strike reads whole: writers for "tap enchanted creature and remove it from combat" and "As long as enchanted creature isn't legendary, it doesn't untap during its controller's untap step." (Stasis Field and Stasis Cell are Verified)
+- [ ] (dk1b2b) The other Sieges' unread clauses: the enter triggers of Invasion of Arcavios (search outside the game), Ergamon, Kamigawa, Karsus, Lorwyn (X lands) and Regatha (two targets), and back-face lines of Eldraine, Ergamon, Fiora, Kamigawa and Regatha
+- [ ] (hx29a) Detail for the refusals still told only by their reason: a cast taken back for its cost or mana (`AnnouncementRewound.why`), an Aura, bestow or mutate spell with no host (`attach`, `merged`), the abilities of cards in a graveyard, exile or the command zone (`PriorityOptions.inactive` covers the battlefield), and a `-X` or X ability whose least X has no target
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
-- [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
-- [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
-- [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 
 - [ ] Playwright games with corpus decks that ask every decision kind
 
@@ -86,14 +74,10 @@ The table and its prompts are live; the items below polish them.
 Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Target: every stored card Verified, or as near as the rules allow; after each round `compile` and `coverage` are re-run and the numbers go on the Status line
-- [ ] (rt1ea) The by-hand window after `AbilityLeftToTable`: the server holds the controller of the ability at every priority window until it passes and the Priority prompt reads "Apply the card's text by hand", as for a card with clauses left to the table; frees the table to apply a failed read ability (`mtg-server` stops, `web/src/play/byHand.ts`, `docs/server.md`, `docs/web.md`)
-- [ ] (sa23a) The read sheet pairs a Saga clause of several chapters ("I, II, III —") with each of its chapter abilities, so the rows after it no longer show the abilities of earlier chapters (41 drafts, 24 corpus cards)
 - [ ] (sa23b) `semantic-audit` checks reach 70% precision: they read the DSL forms that hold a clause otherwise (conditions folded into trigger filters, `Shield` and `Rule` replacements, `Sum`/`When` arithmetic), measured on a fresh 40-finding sample
 - [ ] (fg1j) `translate-forge`: the proposals that read back as other text (about 950 cards that are not Verified yet: the creature type with and without "creature", `enchanted` for `equipped`, colours in tokens, "its controller" for "that player") name the DSL or writer wording to settle; the ledger of `check-rules --gaps` over `proposals/forge` ranks them, and the `Unchecked` ones (about 1,050) wait for the missing writers it lists
 - [ ] (fg2) Audit before promoting translated cards: read the review sheets of 100 random translated cards the checker calls Verified and count the wrong ones (an Opus or Sonnet reader, sheet beside the printed text); promote in bulk only when the error rate is low, and show "from Forge" in the review dialog of translated drafts (`meta/<slug>.json` `source`)
 - [ ] (fg3t) `translate-forge` gaps by cards blocked, as `translate-gaps.tsv` ranks them: `duration:Perpetual` (116), `keyword:StickerSheet` (48), `trigger:CrankContraption` (45), `keyword:Banding` and `effect:Draft` (39), `effect:PutSticker` (34), `keyword:Splice` (30), `key:Seek.RememberFound` (28), `key:Trigger.SpellCast.Static` (26) and `effect:StoreSVar` (24); nodes the language lacks are in `engine-needs.tsv`
-- [ ] (fp1f) A by-hand trigger line whose event reads carries `when`: the engine logs a public `ByHandDue` as the event happens, the seat holds its by-hand window and the log says the line is due, with no change to any recipe fingerprint (`compile/read/triggers.rs`, `mtg-engine`, `mtg-protocol`, `mtg-server` stops, `web` log; after fp1c and rt1ea)
-- [ ] (fp1g) The Commands panel opens with a read-only "To do by hand" group of the seat's due lines, cleared by Done or by passing (`features/table/manual/panel/`, after fp1f and the UI session's v96 items)
 - [ ] (fg3c) `translate-forge`: the whole translations the checker reads back as other text (`Mismatch`): separate wording differences from wrong translations and fix the mappers
 - [ ] (r4e2) A static ability that gives replicate or emerge at its card's mana cost (Djinn Illuminatus, Hatchery Sliver, Ian Chesterton, Herigast): the optional costs and ways read the printed card, not the layered keywords
 - [ ] (rt1n) A 4-seat bot game with 16 copies of Exotic Orchard takes 94 s for 2,635 answers (about 40 ms an answer, against 0.1 ms usual), so the smoke gate stops it at its 20 s limit; find the slow step of its mana ability and make it fast (`crates/mtg-engine` mana; no dependency)
@@ -117,17 +101,16 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M7 Product
 
-- [ ] (tm1) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
-- [ ] (tm2) Tournaments: an organiser sets up 1v1 or 2v2 Commander rounds (Swiss or single elimination), pairings, results and standings, each match a normal game
-- [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
-- [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
+- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan, teammates who see each other's hands, priority by team and each player declaring their own attackers
+- [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
+- [ ] (tm2a) 2v2 tournaments start: their matches pass the team mode of Team Commander (tm1) when the server makes their games, and `TEAM_GAMES` turns on (`crates/mtg-server/src/tournaments.rs`; after tm1)
+- [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
-- [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
-- [ ] Spectators in the web
+- [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for
 
 ## M8 Polish and deploy
 
-- [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
+- [ ] Animations beyond the table feedback (`docs/web.md`)
 - [ ] Performance profile on real hardware with real card art
-- [ ] (p1a) Block options test evasion once per attacker and per blocker (0.4 s at 1,500 against 1,500 today), and a death re-derives the layers only when an effect reads it
+- [ ] (p1b) A death re-derives the layers only when an effect reads it, so a sweep of a table full of static abilities costs time in proportion to the table (`layers.rs` `leaves_alone`, `crowded_turn.rs`)

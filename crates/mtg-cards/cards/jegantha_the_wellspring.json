@@ -7,7 +7,7 @@
       "name": "Jegantha, the Wellspring",
       "oracle_fingerprint": "c2f333132afcc0eacb8214253870dfc4",
       "abilities": [
-        { "Keyword": { "Companion": "NoRepeatedSymbol" } },
+        { "Keyword": { "Companion": { "Has": { "fact": "NoRepeatedSymbol" } } } },
         {
           "Manual": {
             "reason": "you apply this activated ability by hand",

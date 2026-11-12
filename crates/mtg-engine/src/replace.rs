@@ -3549,7 +3549,7 @@ impl Pass<'_> {
                 .state
                 .turn_order_from(controller)
                 .into_iter()
-                .filter(|player| *player != controller)
+                .filter(|player| self.state.is_opponent(controller, *player))
                 .map(ChoiceOption::Player)
                 .collect(),
         }

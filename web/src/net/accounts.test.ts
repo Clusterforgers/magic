@@ -172,6 +172,12 @@ describe('answers', () => {
     expect(games[0]?.result).toBeNull()
   })
 
+  it('returns a game a team won with its result', async () => {
+    const team = { ...finished, result: { Team: 1 } }
+    const fake = fakeFetch(() => jsonResponse(200, { games: [team] }))
+    await expect(createAccountsApi({ fetch: fake.fetch }).myGames()).resolves.toEqual([team])
+  })
+
   it('returns a failed game with its reason, and no other game with one', async () => {
     const reason = 'The deck of Bo has changed since this game was made, so it cannot continue.'
     const failed = listed({ game: 'broken', status: 'failed', reason })
@@ -217,6 +223,7 @@ describe('answers', () => {
       'another seat whose user is a number',
       { games: [{ ...listed(), others: [{ seat: 1, name: 'Bo', user: 3 }] }] },
     ],
+    ['a team result that is text', { games: [{ ...listed(), result: { Team: 'one' } }] }],
     ['a result that is neither Draw nor a Winner', { games: [{ ...listed(), result: 'Won' }] }],
     ['a game without a result field', { games: [{ ...listed(), result: undefined }] }],
     ['a game without a reason field', { games: [{ ...listed(), reason: undefined }] }],

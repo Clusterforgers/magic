@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM tournament_entrants e WHERE e.tournament_id = $1 AND e.entrant = $2\n               AND NOT EXISTS (SELECT 1 FROM tournament_players p\n                               WHERE p.tournament_id = $1 AND p.entrant = $2)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c48456d725d115e877c8a25e4800cfbfaf4805e1013c521771a576bbdd9468e0"
+}

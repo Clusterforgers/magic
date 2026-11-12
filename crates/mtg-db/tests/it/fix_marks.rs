@@ -1,8 +1,8 @@
-//! Goal: fix marks are one row per account and card (marking again only replaces the note), each account sees and removes only its own, the ranking counts accounts and ties break the same way every time, the newest note wins, an unknown card cannot be marked, the database refuses a note over 280 characters, and marks go with their card and their account.
+//! Goal: fix marks are one row per account and card (marking again only replaces the note), each account sees and removes only its own, the ranking counts accounts and ties break the same way every time, the newest note wins, an unknown card cannot be marked, an account at its cap marks no new card even when marks race, the database refuses a note over 280 characters, and marks go with their card and their account.
 
 use crate::common;
 
-use mtg_db::{DbError, FixMarkRepo, MAX_NOTE_CHARS, RankedMark};
+use mtg_db::{DbError, FixMarkRepo, MAX_NOTE_CHARS, Marked, RankedMark};
 use mtg_import::ids::OracleId;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -203,4 +203,59 @@ async fn deleting_a_card_removes_its_marks(pool: PgPool) {
         .await
         .unwrap();
     assert_eq!(repo.list(user(1)).await.unwrap(), vec![]);
+}
+
+#[sqlx::test]
+async fn an_account_at_its_cap_marks_no_new_card_but_still_changes_a_note(pool: PgPool) {
+    let repo = seeded(pool).await.fix_marks();
+    let (bolt, ring, mountain) = (
+        oracle_of("Lightning Bolt"),
+        oracle_of("Sol Ring"),
+        oracle_of("Mountain"),
+    );
+    for card in [&bolt, &ring] {
+        let made = repo.mark_within(user(1), card, None, 2).await.unwrap();
+        assert!(matches!(made, Marked::Mark(_)), "{made:?}");
+    }
+    assert_eq!(
+        repo.mark_within(user(1), &mountain, None, 2).await.unwrap(),
+        Marked::LimitReached
+    );
+    let renoted = repo
+        .mark_within(user(1), &bolt, Some("new note"), 2)
+        .await
+        .unwrap();
+    assert!(
+        matches!(&renoted, Marked::Mark(mark) if mark.note.as_deref() == Some("new note")),
+        "{renoted:?}"
+    );
+    assert!(matches!(
+        repo.mark_within(user(2), &mountain, None, 2).await.unwrap(),
+        Marked::Mark(_)
+    ));
+    assert_eq!(
+        repo.mark_within(user(3), &OracleId(Uuid::from_u128(9).to_string()), None, 2)
+            .await
+            .unwrap(),
+        Marked::NoCard
+    );
+    assert_eq!(repo.list(user(1)).await.unwrap().len(), 2);
+}
+
+#[sqlx::test]
+async fn racing_marks_never_pass_the_cap(pool: PgPool) {
+    let repo = seeded(pool).await.fix_marks();
+    let [a, b, c] = ["Lightning Bolt", "Sol Ring", "Mountain"].map(oracle_of);
+    let (x, y, z) = tokio::join!(
+        repo.mark_within(user(1), &a, None, 2),
+        repo.mark_within(user(1), &b, None, 2),
+        repo.mark_within(user(1), &c, None, 2),
+    );
+    let results = [x.unwrap(), y.unwrap(), z.unwrap()];
+    let made = results
+        .iter()
+        .filter(|result| matches!(result, Marked::Mark(_)))
+        .count();
+    assert_eq!(made, 2, "{results:?}");
+    assert_eq!(repo.list(user(1)).await.unwrap().len(), 2);
 }

@@ -90,7 +90,12 @@ export function checked(item: PreconListItem, found: Found = {}, issues = 0): Pr
 }
 
 /** A clause the game cannot run, on the front face. */
-export const reason = (text: string, start = 0, end = 10): Reason => ({ face: 0, span: { start, end }, text })
+export const reason = (text: string, start = 0, end = 10, quote = ''): Reason => ({
+  face: 0,
+  span: { start, end },
+  text,
+  quote,
+})
 
 /** A line of a precon. */
 export const cardLine = (

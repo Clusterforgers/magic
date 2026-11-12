@@ -348,7 +348,6 @@ mod without_counter;
 mod you_create;
 
 // deck-auras
-mod deck_auras;
 
 // t19c
 mod t19c_either;
@@ -484,7 +483,6 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     // dk1b
     dk1b_attached::add(ability, texts);
     // deck-auras
-    deck_auras::add(ability, texts);
     // t19c
     t19c_put_many::add(ability, texts);
     t19c_either::add(ability, texts);

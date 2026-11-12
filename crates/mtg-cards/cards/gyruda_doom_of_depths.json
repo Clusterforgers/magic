@@ -7,7 +7,7 @@
       "name": "Gyruda, Doom of Depths",
       "oracle_fingerprint": "a2176573446b7621d82939c51734072b",
       "abilities": [
-        { "Keyword": { "Companion": { "ManaValueParity": { "even": true } } } },
+        { "Keyword": { "Companion": { "Has": { "fact": "EvenManaValue" } } } },
         {
           "Manual": {
             "reason": "you apply this triggered ability by hand",

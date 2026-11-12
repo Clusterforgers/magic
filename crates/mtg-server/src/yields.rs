@@ -485,6 +485,7 @@ mod tests {
                 endable: Vec::new(),
                 faces: Vec::new(),
                 unplayable: Vec::new(),
+                inactive: Vec::new(),
                 can_act,
                 can_pass: true,
             })),

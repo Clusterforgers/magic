@@ -48,6 +48,7 @@ fn lobby(flags: [(bool, bool); 3]) -> ServerMessage {
     ServerMessage::Lobby {
         seats,
         needed: u32::try_from(needed).unwrap(),
+        teams: None,
     }
 }
 
@@ -153,7 +154,7 @@ async fn the_last_ready_starts_the_game_and_the_opening_events_follow_not_a_rost
         let mut flags = Vec::new();
         let batch = loop {
             match socket.message().await {
-                ServerMessage::Lobby { seats, needed } => {
+                ServerMessage::Lobby { seats, needed, .. } => {
                     assert_eq!(
                         needed as usize,
                         seats.iter().filter(|s| !s.ready).count(),

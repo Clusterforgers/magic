@@ -7,3 +7,4 @@ pub mod house;
 pub mod ids;
 pub mod mana;
 pub mod subtypes;
+pub mod teams;

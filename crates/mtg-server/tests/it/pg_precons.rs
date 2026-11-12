@@ -400,6 +400,12 @@ async fn one_precon_lists_its_cards_by_board_with_each_cards_support(pool: PgPoo
         !partial["reasons"].as_array().unwrap().is_empty(),
         "an unsupported clause comes with its reason"
     );
+    for reason in partial["reasons"].as_array().unwrap() {
+        assert_ne!(
+            reason["quote"], "",
+            "each clause quotes its words: {reason}"
+        );
+    }
 
     // A Commander game takes it: nothing is held against it.
     assert_eq!(view["issues"], json!([]));
@@ -425,6 +431,8 @@ async fn a_card_the_database_lacks_is_shown_unplayable_without_a_card(pool: PgPo
     assert_eq!(missing["support"], "unplayable");
     assert_eq!(missing["count"], 1);
     assert!(missing["reasons"][0]["text"].is_string());
+    assert_eq!(missing["reasons"][0]["quote"], "");
+    assert!(missing.get("whole_text").is_none());
     assert_eq!(view["issues"][0]["code"], "unknown_card");
     assert_eq!(view["issues"][0]["name"], "No Such Card");
 }

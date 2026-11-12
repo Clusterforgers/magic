@@ -642,7 +642,7 @@ async fn plays_by_hand_through_a_restart(
         expected,
         "the start stores it"
     );
-    assert_eq!(flags(&server, &game).await, (expected, None));
+    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
 
     let handle = server.registry.handle(game.parse().unwrap()).unwrap();
     let hash = handle.status().await.unwrap().state_hash;
@@ -660,7 +660,7 @@ async fn plays_by_hand_through_a_restart(
     assert!(status.started);
     assert_eq!(status.state_hash, hash);
     assert_eq!(status.manual_play, expected, "the resumed game keeps it");
-    assert_eq!(flags(&server, &game).await, (expected, None));
+    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
     assert_eq!(stored_flag(&pool, &game).await, expected);
     game
 }

@@ -317,7 +317,7 @@ async fn play_script(server: &TestServer) -> (GameResult, StateView, Vec<Value>)
                 );
                 return (result, view, trace);
             }
-            ServerMessage::Error { code, message } => panic!("refused: {code:?} {message}"),
+            ServerMessage::Error { code, message, .. } => panic!("refused: {code:?} {message}"),
             _ => {}
         }
     }

@@ -85,6 +85,9 @@ function ShellHeader() {
               <Link to="/games" className={TAB}>
                 My games
               </Link>
+              <Link to="/tournaments" className={TAB}>
+                Tournaments
+              </Link>
               <ReviewTab account={account} />
             </>
           ) : null}

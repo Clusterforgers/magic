@@ -38,6 +38,7 @@ mod g12f_memory;
 mod g9c_shadow;
 mod granted_mana;
 mod group_statics;
+mod gy36_ghyrson;
 mod instead_search;
 mod l294_damage_by_to;
 mod l294_mana_activations;

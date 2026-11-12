@@ -203,6 +203,10 @@ pub enum Event {
         object: ObjectId,
         /// Why it could not go on.
         reason: Unplayable,
+        /// The detail of the reason, when the engine can name it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        why: Option<crate::decision::Why>,
     },
     /// A priority round started with this player.
     PriorityGranted {
@@ -592,6 +596,9 @@ pub enum Event {
     /// A step of a spell or ability of a card that runs on a player's read failed, so the rest of it is left to the table: the
     /// steps before it stand and the resolution ends right after (`docs/engine.md`, Fail-soft resolution).
     AbilityLeftToTable(Box<LeftToTable>),
+    /// The event a triggered line the table plays by hand waits for happened, so its controller applies it now
+    /// (`docs/engine.md`, By-hand lines): a note, no state change.
+    ByHandDue(Box<crate::triggers::ByHandDue>),
     /// An object moved from one zone to another.
     ZoneChanged {
         /// The object.
@@ -1421,6 +1428,7 @@ impl Event {
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
             | Event::AbilityLeftToTable(_)
+            | Event::ByHandDue(_)
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }

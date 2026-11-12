@@ -12,6 +12,8 @@ use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
 use mtg_core::ids::PlayerId;
 
+use crate::decision::TargetZone;
+
 /// "a" or "an" ahead of `word`.
 fn article(word: &str) -> &'static str {
     if word.starts_with(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']) {
@@ -125,6 +127,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::Not(inner) if matches!(**inner, Pred::Paired) => {
                 adjectives.push("unpaired".to_owned());
             }
+            Pred::Not(inner) if negated(inner).is_some() => adjectives.extend(negated(inner)),
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
@@ -191,15 +194,35 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
         None if yours => tail.push("you own".to_owned()),
         None => {}
     }
-    let noun = if this {
+    adjectives.push(head_noun(&nouns, zone, this));
+    (adjectives.join(" "), tail.join(" "))
+}
+
+/// "nonblack", "nonland": the adjective of a negated color or card type; `None` for any other predicate.
+fn negated(inner: &Pred) -> Option<String> {
+    match inner {
+        Pred::Color(color) => Some(format!("non{}", lower(color))),
+        Pred::Type(card_type) => Some(format!("non{}", lower(card_type))),
+        _ => None,
+    }
+}
+
+/// The noun of a phrase: "permanent" for the source itself, "card" or "permanent" with no noun, and the nouns, with
+/// "card" after them for a card outside the battlefield and the stack ("creature card in your graveyard").
+fn head_noun(nouns: &[String], zone: Option<ZoneKind>, this: bool) -> String {
+    if this {
         "permanent".to_owned()
     } else if nouns.is_empty() {
         if zone.is_some() { "card" } else { "permanent" }.to_owned()
+    } else if zone.is_some_and(|kind| !matches!(kind, ZoneKind::Battlefield | ZoneKind::Stack))
+        && !nouns
+            .iter()
+            .any(|noun| noun == "spell" || noun.starts_with("card"))
+    {
+        format!("{} card", nouns.join(" "))
     } else {
         nouns.join(" ")
-    };
-    adjectives.push(noun);
-    (adjectives.join(" "), tail.join(" "))
+    }
 }
 
 fn join(head: &str, tail: &str) -> String {
@@ -275,6 +298,81 @@ fn kind_of(what: &Targetable) -> (String, String) {
             String::new(),
         ),
     }
+}
+
+/// Where a target of `what` is looked for: a spell or an ability on the stack, a card in the zone its selector names,
+/// a player, else a permanent.
+pub(crate) fn target_zone(what: &Targetable) -> TargetZone {
+    let of_selector = |selector: &Selector| {
+        for pred in &selector.0 {
+            match pred {
+                Pred::Spell | Pred::Ability(_) => return TargetZone::Stack,
+                Pred::In(kind) => {
+                    return match kind {
+                        ZoneKind::Battlefield => TargetZone::Battlefield,
+                        ZoneKind::Stack => TargetZone::Stack,
+                        ZoneKind::Graveyard => TargetZone::Graveyard,
+                        ZoneKind::Exile => TargetZone::Exile,
+                        ZoneKind::Hand
+                        | ZoneKind::Library
+                        | ZoneKind::Command
+                        | ZoneKind::Outside => TargetZone::Elsewhere,
+                    };
+                }
+                _ => {}
+            }
+        }
+        TargetZone::Battlefield
+    };
+    match what {
+        Targetable::AnyTarget => TargetZone::Battlefield,
+        Targetable::Player | Targetable::Opponent | Targetable::PlayerAmong(_) => {
+            TargetZone::Player
+        }
+        Targetable::Object(selector) | Targetable::PerPlayer { what: selector, .. } => {
+            of_selector(selector)
+        }
+        Targetable::Together { what, .. }
+        | Targetable::Another { what, .. }
+        | Targetable::ChosenBy { what, .. }
+        | Targetable::AtRandom(what) => target_zone(what),
+        Targetable::Either(kinds) => kinds
+            .iter()
+            .map(target_zone)
+            .find(|zone| *zone != TargetZone::Player)
+            .unwrap_or(TargetZone::Player),
+    }
+}
+
+/// What a target of `spec` must be, as a player is told it has none: "a creature spell you control on the stack",
+/// "two creatures on the battlefield", "a creature card in a graveyard", "an opponent"; with where it is looked for.
+pub(crate) fn target_need(target: &TargetSpec) -> (String, TargetZone) {
+    let zone = target_zone(&target.what);
+    let words = spec(target);
+    let bare = if words == "any target" {
+        "a creature, player, planeswalker or battle".to_owned()
+    } else {
+        let bare = words.replacen("target ", "", 1);
+        let counted = [
+            "one ", "two ", "three ", "four ", "five ", "up to ", "X ", "another ",
+        ]
+        .iter()
+        .any(|start| bare.starts_with(start))
+            || bare.starts_with("any ");
+        if counted {
+            bare
+        } else {
+            format!("{} {bare}", article(&bare))
+        }
+    };
+    let place = match zone {
+        TargetZone::Stack if !bare.contains("stack") => " on the stack",
+        TargetZone::Battlefield if !bare.contains("battlefield") && words != "any target" => {
+            " on the battlefield"
+        }
+        _ => "",
+    };
+    (format!("{bare}{place}"), zone)
 }
 
 /// A target specification in the words of a card: "target creature you control", "up to two target players",

@@ -17,7 +17,11 @@ use crate::rest::{
     DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
     ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList, MyGames,
     PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
-    ReadQueue, UserPrefs, UserView, VisibilityBody,
+    ReadQueue, Replay, TeamsBody, UserPrefs, UserView, VisibilityBody,
+};
+use crate::rest::{
+    CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
+    TournamentInvite, TournamentList, TournamentView,
 };
 
 /// Where the committed bindings live, relative to the workspace root.
@@ -59,6 +63,15 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     AccountOptions::export_all(&config)?;
     AuthErrorCode::export_all(&config)?;
     MyGames::export_all(&config)?;
+    Replay::export_all(&config)?;
+    CreateTournament::export_all(&config)?;
+    TournamentCreated::export_all(&config)?;
+    JoinTournament::export_all(&config)?;
+    SetMatchOutcome::export_all(&config)?;
+    TournamentList::export_all(&config)?;
+    TournamentView::export_all(&config)?;
+    TournamentInvite::export_all(&config)?;
+    TournamentErrorCode::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
     DeckBody::export_all(&config)?;
@@ -78,6 +91,7 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     JoinCodeRequest::export_all(&config)?;
     Joined::export_all(&config)?;
     VisibilityBody::export_all(&config)?;
+    TeamsBody::export_all(&config)?;
     LobbyErrorCode::export_all(&config)?;
     ChooseDeck::export_all(&config)?;
     DeckChoiceErrorCode::export_all(&config)?;

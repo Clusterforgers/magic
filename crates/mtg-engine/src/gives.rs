@@ -4,14 +4,20 @@
 //! condition that fails, an ability the attachment lost or an effect that ended leaves nothing, and no card text is
 //! read a second time (`docs/ui-design.md`, Attachments).
 
+use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::modify::{GameRule, Prohibited};
+use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_core::ids::ObjectId;
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::Grant;
+use crate::ability_reader::abilities_of;
+use crate::characteristics::controller_of_object;
 use crate::effects::Modification;
 use crate::keywords::keywords_of;
 use crate::layers::Applied;
+use crate::resolve::Scope;
 use crate::state::GameState;
 
 /// A change an attachment makes to its host beyond power, toughness and keywords, named for a mark.
@@ -58,6 +64,20 @@ pub enum GivenRule {
     Goaded,
     /// The attachment has umbra armor: the host is not destroyed while it can go instead (CR 702.89).
     UmbraArmor,
+    /// The enchanted player can't cast spells.
+    CantCastSpells,
+    /// The enchanted player can cast only so many spells each turn.
+    CastLimit,
+    /// The enchanted player can't activate abilities, or some of them.
+    CantActivate,
+    /// The enchanted player can't do something else a rule names ("can't sacrifice", "can't play lands").
+    PlayerCant,
+    /// The enchanted player skips their draw step.
+    SkipsDrawStep,
+    /// The enchanted player can't draw cards.
+    CantDraw,
+    /// The enchanted player can't gain life.
+    CantGainLife,
 }
 
 /// What an attachment gives its host now; [`Gives::is_empty`] while it gives nothing.
@@ -153,7 +173,8 @@ impl Gives {
 
 /// What the attachment `id` gives the permanent or player it is attached to, or none while it is attached to neither
 /// or gives nothing: the effects of its static abilities and of the effects whose source it is, as the layers applied
-/// them to the host in this state. An Aura on a player gives keywords or takes them (`GivenRule::LoseKeyword`).
+/// them to the host in this state. An Aura on a player gives keywords or takes them (`GivenRule::LoseKeyword`) and names
+/// the rules of the game it gives that player.
 pub fn gives(state: &GameState, id: ObjectId) -> Option<Gives> {
     let layers = state.layers();
     let applied: &[Applied] = if let Some(host) = state.host_of(id) {
@@ -168,10 +189,64 @@ pub fn gives(state: &GameState, id: ObjectId) -> Option<Gives> {
     for applied in applied.iter().filter(|applied| from(state, applied, id)) {
         gives.add(&applied.modification);
     }
+    if state.host_of(id).is_none() {
+        for rule in player_rules(state, id) {
+            gives.rule(rule);
+        }
+    }
     if keywords_of(state, id).contains(&&Keyword::UmbraArmor) {
         gives.rule(GivenRule::UmbraArmor);
     }
     (!gives.is_empty()).then_some(gives)
+}
+
+/// The rules of the game the Aura `id` on a player gives that player now: each rule ability it has whose players are
+/// the enchanted player ("Enchanted player can't cast spells."), while its condition holds.
+fn player_rules(state: &GameState, id: ObjectId) -> Vec<GivenRule> {
+    let Some(object) = state.object(id) else {
+        return Vec::new();
+    };
+    let scope = Scope::announcing(
+        state,
+        controller_of_object(state, object),
+        object.reference(),
+    );
+    abilities_of(state, id)
+        .iter()
+        .filter_map(|(_, ability)| match &**ability {
+            Ability::Rule {
+                rule,
+                condition,
+                from: ZoneKind::Battlefield,
+            } if condition
+                .as_ref()
+                .is_none_or(|condition| scope.holds(condition).unwrap_or(false)) =>
+            {
+                given_to_host(rule)
+            }
+            _ => None,
+        })
+        .collect()
+}
+
+/// The mark of a rule about the enchanted player, or none for a rule about other players.
+fn given_to_host(rule: &GameRule) -> Option<GivenRule> {
+    let host = |who: &Ref| *who == Ref::AttachedPlayer;
+    Some(match rule {
+        GameRule::CantCastSpells { who, .. } if host(who) => GivenRule::CantCastSpells,
+        GameRule::Cant { who, action } if host(who) => match action {
+            Prohibited::Cast {
+                more_than: Some(_), ..
+            } => GivenRule::CastLimit,
+            Prohibited::Cast { filter, .. } if filter.is_empty() => GivenRule::CantCastSpells,
+            Prohibited::Activate(_) | Prohibited::ActivateKind { .. } => GivenRule::CantActivate,
+            _ => GivenRule::PlayerCant,
+        },
+        GameRule::SkipDrawStep(who) if host(who) => GivenRule::SkipsDrawStep,
+        GameRule::CantDraw(who) if host(who) => GivenRule::CantDraw,
+        GameRule::CantGainLife(who) if host(who) => GivenRule::CantGainLife,
+        _ => return None,
+    })
 }
 
 /// Whether `applied` comes from the object `id`: a static ability it has, or an effect whose source it is.

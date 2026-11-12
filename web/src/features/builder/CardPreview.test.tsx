@@ -32,6 +32,7 @@ const clause = (text: string, phrase: string, why: string, faceIndex = 0): Reaso
   face: faceIndex,
   span: spanOf(text, phrase),
   text: why,
+  quote: phrase,
 })
 
 const boltDetail = (over: Partial<CardDetail> = {}): CardDetail =>

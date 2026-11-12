@@ -117,6 +117,8 @@ export function podStateWords(active: boolean, priority: boolean): string {
 export interface TileFacts {
   name: string
   life: number
+  /** The seat's team label ("Team 1") and, in Two-Headed Giant, who its life is shared with; none by default. */
+  team?: { label: string; sharedWith?: string }
   counts: PodCounts
   active: boolean
   priority: boolean
@@ -139,8 +141,12 @@ export interface TileFacts {
 /** The accessible name of a tile: "Show Bo's board. Life 38, 6 cards in hand, ..., active turn". */
 export function tileName(facts: TileFacts): string {
   const { counts } = facts
+  const { team } = facts
   const figures = [
-    `Life ${facts.life}`,
+    team === undefined ? null : team.label,
+    team?.sharedWith === undefined
+      ? `Life ${facts.life}`
+      : `Life ${facts.life}, shared with ${team.sharedWith}`,
     ...(facts.counters ?? []),
     `${cardCount(counts.hand)} in hand`,
     `${counts.library} in library`,
