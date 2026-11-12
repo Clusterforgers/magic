@@ -584,7 +584,10 @@ impl Running {
                 EngineError::NoDecision => {
                     Rejection::new(ErrorCode::StaleDecision, "no decision is pending")
                 }
-                _ => Rejection::engine_failed(),
+                other => {
+                    tracing::warn!(seat = seat.index(), error = %other, "the engine failed on an answer");
+                    Rejection::engine_failed()
+                }
             })
     }
 
