@@ -2195,6 +2195,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddCreatureTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
@@ -2205,6 +2206,7 @@ impl<'a> Walker<'a> {
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana
             | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
@@ -4560,6 +4562,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::AddCreatureTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
             )
         }) {
@@ -4995,7 +4998,11 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
+            GameRule::CanBeCommander
+            | GameRule::AnyNumberInDeck
+            | GameRule::Draft(_)
+            | GameRule::DamageAsWither
+            | GameRule::ManaBurn => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5006,6 +5013,9 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
+            GameRule::AttackAsThoughHasteAt(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
                 w.cant_action(action);
@@ -5368,6 +5378,7 @@ impl Walker<'_> {
             ReplaceBy::PreventNext
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }
@@ -5534,6 +5545,10 @@ impl Walker<'_> {
                 self.w5d_instead(when, effects);
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
+            ReplaceBy::RedirectCounted { most, to } => {
+                self.r6f_redirect(when, u32::MAX, to);
+                self.at("most", |w| w.amount(most));
+            }
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {

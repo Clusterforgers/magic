@@ -189,6 +189,8 @@ mod r303_forms;
 mod r304b_writers;
 mod r307c_events;
 mod r302c_writers;
+mod r303b_statics;
+mod r303b_writers;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

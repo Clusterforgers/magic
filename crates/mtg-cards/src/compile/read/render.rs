@@ -225,6 +225,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::wf25_writers::wf25_whole(ability) {
         return texts;
     }
+    if let Some(texts) = super::r303b_writers::r303b_whole(ability) {
+        return texts;
+    }
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
         return texts;
     }
