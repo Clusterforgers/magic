@@ -660,6 +660,11 @@ impl CardDefinition {
                         .fold(ColorSet::EMPTY, |set, color| set.with(*color)),
                 );
             }
+            // "except it's red in addition to its other colors".
+            Modification::AddColors(colors) => {
+                let had = self.colors();
+                self.color_indicator = Some(colors.iter().fold(had, |set, color| set.with(*color)));
+            }
             Modification::SetPT {
                 power: Amount::Fixed(power),
                 toughness: Amount::Fixed(toughness),
@@ -681,6 +686,17 @@ mod tests {
 
     use crate::effect::Effect;
     use crate::refs::Ref;
+
+    #[test]
+    fn a_copy_may_add_a_color_to_those_it_has() {
+        let mut bear = CardDefinition::new("Bear");
+        bear.color_indicator = Some(ColorSet::EMPTY.with(Color::Green));
+        assert!(bear.except(&Modification::AddColors(vec![Color::Red])));
+        assert_eq!(
+            bear.colors(),
+            ColorSet::EMPTY.with(Color::Green).with(Color::Red)
+        );
+    }
 
     #[test]
     fn the_names_a_card_can_conjure_are_those_of_its_conjure_effects() {
