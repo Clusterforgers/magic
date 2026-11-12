@@ -720,6 +720,7 @@ Gift of Paradise
 Gilded Goose
 Gilded Lotus
 Gilt-Leaf Palace
+Giltspire Avenger
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
@@ -1377,6 +1378,7 @@ Rambling Possum
 Ramos, Dragon Engine
 Rampaging War Mammoth
 Rampant Growth
+Ramses Overdark
 Rancor
 Ransom Note
 Ravenous Leucrocota
@@ -1623,6 +1625,7 @@ Souvenir Snatcher
 Sower of Temptation
 Space Marine Devastator
 Spawn of Mayhem
+Spear of Heliod
 Species Specialist
 Spectral Rider
 Spectral Shift
