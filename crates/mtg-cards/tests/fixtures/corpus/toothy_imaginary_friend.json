@@ -1,0 +1,28 @@
+{
+  "id": "ebdf2f50-f69a-47c4-a75f-ff55781bb0c8",
+  "oracle_id": "41d6cce0-b852-4d0e-aee2-081df13dd9b8",
+  "name": "Toothy, Imaginary Friend",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "12",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Illusion",
+  "oracle_text": "Partner with Pir, Imaginative Rascal (When this creature enters, target player may put Pir into their hand from their library, then shuffle.)\nWhenever you draw a card, put a +1/+1 counter on Toothy.\nWhen Toothy leaves the battlefield, draw a card for each +1/+1 counter on it.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner"
+  ]
+}

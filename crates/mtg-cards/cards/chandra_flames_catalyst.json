@@ -22,8 +22,8 @@
                   "Object": [
                     { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
                     { "Color": "Red" },
-                    { "OwnedBy": "You" },
-                    { "In": "Graveyard" }
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 }
               }
@@ -54,13 +54,7 @@
               { "Draw": { "count": 7 } },
               {
                 "Rule": {
-                  "rule": {
-                    "MayCast": {
-                      "what": [{ "Not": { "Type": "Land" } }],
-                      "from": "Hand",
-                      "free": true
-                    }
-                  },
+                  "rule": { "MayCast": { "from": "Hand", "free": true } },
                   "duration": "UntilEndOfTurn"
                 }
               }

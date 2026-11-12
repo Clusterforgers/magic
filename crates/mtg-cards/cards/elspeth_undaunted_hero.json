@@ -27,7 +27,12 @@
                   "as": "found"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
               {
                 "If": {
                   "condition": { "Searched": { "zone": "Library" } },
@@ -45,13 +50,13 @@
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
                   "mods": [
+                    { "AddKeyword": "Flying" },
                     {
                       "ModifyPT": {
                         "power": { "Devotion": ["White"] },
                         "toughness": { "Devotion": ["White"] }
                       }
-                    },
-                    { "AddKeyword": "Flying" }
+                    }
                   ],
                   "duration": "UntilEndOfTurn"
                 }

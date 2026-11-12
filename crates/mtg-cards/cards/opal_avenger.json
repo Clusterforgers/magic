@@ -14,21 +14,15 @@
                 "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 10 } }
               }
             },
-            "if": {
-              "Compare": {
-                "left": { "Count": ["This", { "Type": "Enchantment" }] },
-                "op": "Ge",
-                "right": 1
-              }
-            },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Enchantment" }] } },
             "effects": [
               {
                 "Continuous": {
                   "affected": "This",
                   "mods": [
-                    { "SetPT": { "power": 3, "toughness": 5 } },
+                    { "SetTypes": ["Creature"] },
                     { "SetCreatureTypes": ["Soldier"] },
-                    { "SetTypes": ["Creature"] }
+                    { "SetPT": { "power": 3, "toughness": 5 } }
                   ],
                   "duration": "Forever"
                 }

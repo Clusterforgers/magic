@@ -578,7 +578,7 @@ fn next_turn(state: &GameState) -> NextTurn {
             player: turn.player,
         });
         if crate::prohibit::skips_turn(state, turn.player) {
-            spent.extend(used_skips(state, turn.player));
+            use_skips(&mut spent, state, turn.player);
         }
     }
     let regular = state.turn().regular();
@@ -589,18 +589,21 @@ fn next_turn(state: &GameState) -> NextTurn {
         if !crate::prohibit::skips_turn(state, next) {
             return (passed, spent, next, None);
         }
-        spent.extend(used_skips(state, next));
+        use_skips(&mut spent, state, next);
         next = state.next_alive_after(next).unwrap_or(next);
     }
     (passed, spent, first, None)
 }
 
-/// The events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows has
-/// begun.
-fn used_skips(state: &GameState, player: PlayerId) -> impl Iterator<Item = Event> {
-    crate::prohibit::skipped_turn_rules(state, player)
-        .into_iter()
-        .map(|id| Event::RuleExpired { id })
+/// Adds the events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows
+/// has begun. A player passed over twice in one search (the seats of players who left are counted) ends it once.
+fn use_skips(spent: &mut Vec<Event>, state: &GameState, player: PlayerId) {
+    for id in crate::prohibit::skipped_turn_rules(state, player) {
+        let event = Event::RuleExpired { id };
+        if !spent.contains(&event) {
+            spent.push(event);
+        }
+    }
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.
