@@ -216,6 +216,7 @@ Brave the Sands
 Breath of Life
 Breezekeeper
 Briarblade Adept
+Bribe Taker
 Bridled Bighorn
 Brightstone Ritual
 Brigid's Command
@@ -353,6 +354,7 @@ Crack in Time
 Cram Session
 Crash
 Crawlspace
+Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
@@ -1689,6 +1691,7 @@ Stonewood Invocation
 Stonybrook Banneret
 Storm Fleet Swashbuckler
 Storm King's Thunder
+Storm of Forms
 Storm-Kiln Artist
 Stormchaser's Talent
 Stormscape Battlemage
