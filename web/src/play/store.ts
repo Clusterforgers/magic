@@ -19,6 +19,9 @@ import type {
   PlayerId,
   StateView,
   Stop,
+  TakeBackOffer,
+  TakeBackOutcome,
+  TakeBackRefusal,
   Teams,
   YieldUntil,
 } from '@/protocol/generated'
@@ -198,7 +201,26 @@ export interface PlayState {
   deciding: DecidingView[]
   /** How many spectators watch the game, as the server last told this seat (`Spectators`); 0 before any word. */
   spectators: number
+  /** What this seat may ask the table to take back (`TakeBackOffer`), or null while nothing. */
+  takeBackOffer: TakeBackOffer | null
+  /** The take-back request the table is asked about, or null while none is open. */
+  takeBackRequest: TakeBackRequest | null
+  /** The last ending or refusal of a take-back, until it is dismissed or a new request opens. */
+  takeBackNotice: TakeBackNotice | null
 }
+
+/** An open take-back request (`TakeBackAsked`): what it undoes, the seats still to answer, and its clock. */
+export interface TakeBackRequest {
+  offer: TakeBackOffer
+  waiting: readonly PlayerId[]
+  /** Milliseconds left at `at` before silence counts as a decline. */
+  deadlineMs: number
+  /** When the request arrived (`Date.now()`). */
+  at: number
+}
+
+/** The last word on a take-back: how a request ended (`TakeBackEnded`) or why the seat's own was refused. */
+export type TakeBackNotice = { offer: TakeBackOffer; outcome: TakeBackOutcome } | { refused: TakeBackRefusal }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
 export type PlayStore = StoreApi<PlayState>
@@ -238,6 +260,9 @@ export function initialPlayState(): PlayState {
     away: {},
     deciding: [],
     spectators: 0,
+    takeBackOffer: null,
+    takeBackRequest: null,
+    takeBackNotice: null,
   }
 }
 

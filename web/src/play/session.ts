@@ -116,6 +116,12 @@ export interface Session {
   yieldUntil(until: YieldUntil): boolean
   /** Asks the server to end this seat's yield; `yielding` becomes null when it confirms. False when the socket is not open. */
   cancelYield(): boolean
+  /** Asks the table to take back this seat's last cast, activation or land play (`takeBackOffer`). False when the socket is not open. */
+  takeBack(): boolean
+  /** Answers the open take-back request; the seat leaves `waiting` at once. False when the socket is not open. */
+  voteTakeBack(approve: boolean): boolean
+  /** Clears the take-back notice. */
+  dismissTakeBackNotice(): void
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -252,6 +258,9 @@ export function createSession(deps: SessionDeps): Session {
           autoYields: message.auto_yields,
           autoSkips: message.auto_skips,
           castWhenAsked: null,
+          // The server tells a joining seat its offer and the open request again.
+          takeBackOffer: null,
+          takeBackRequest: null,
         })
         // A spectator holds no seat, so it has no settings to bring the server up to date with.
         if (deps.watch !== true)
@@ -325,7 +334,32 @@ export function createSession(deps: SessionDeps): Session {
           preview: null,
           yielding: null,
           castWhenAsked: null,
+          takeBackOffer: null,
+          takeBackRequest: null,
         })
+        return
+      case 'TakeBackOffer':
+        setState({ takeBackOffer: message.offer })
+        return
+      case 'TakeBackAsked':
+        setState({
+          takeBackRequest: {
+            offer: message.offer,
+            waiting: message.waiting,
+            deadlineMs: message.deadline_ms,
+            at: Date.now(),
+          },
+          takeBackNotice: null,
+        })
+        return
+      case 'TakeBackEnded':
+        setState({
+          takeBackRequest: null,
+          takeBackNotice: { offer: message.offer, outcome: message.outcome },
+        })
+        return
+      case 'TakeBackRefused':
+        setState({ takeBackNotice: { refused: message.reason } })
         return
       case 'Bank':
         // A spent extension has no event to carry it; an earned one arrives in the table of the batch.
@@ -602,6 +636,18 @@ export function createSession(deps: SessionDeps): Session {
       return true
     },
     cancelYield: () => socket.send({ type: 'CancelYield' }),
+    takeBack: () => socket.send({ type: 'TakeBack' }),
+    voteTakeBack(approve) {
+      if (!socket.send({ type: 'TakeBackVote', approve })) return false
+      // The seat has answered; the server's next word on the request says the same.
+      setState(({ takeBackRequest: request, seat }) =>
+        request === null
+          ? {}
+          : { takeBackRequest: { ...request, waiting: request.waiting.filter((at) => at !== seat) } },
+      )
+      return true
+    },
+    dismissTakeBackNotice: () => setState({ takeBackNotice: null }),
     chat(text) {
       const line = text.trim()
       if (line === '') return false
