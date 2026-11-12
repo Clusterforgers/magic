@@ -33,30 +33,26 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields, trigger auto-skips, a clockless opening, the turn time tally per seat, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
-- Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
+- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, payment checks that count a hand card once, auto choices (trigger order, damage), smart stops, per-ability yields, trigger auto-skips, a clockless opening, the turn time tally per seat, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
+- Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats, clocks and hidden hands tested up to 64 (`docs/server.md`).
 - Unfinity: Attractions (open, roll to visit, visit and prize abilities, the junkyard, the deck warning), tickets and stickers (three random sheets, name, ability and power/toughness stickers), the sheet and sticker chips at the table (`docs/engine.md`).
-- Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
+- Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn, under a clock and behind a replacement question, and fix marks with a cap and a budget (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, counters on players at every seat, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes, the many-seat layout, a shared large card preview with pins, the win celebration on every seat, a 12 px text floor and glyph marks on narrow faces (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list, deck lines the owner plays by hand (also Verified cards) and the precon browser (`docs/web.md`, `docs/server.md`).
 - Reviewing cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/review` (`/read` forwards): one place for a deck's, a precon's or every card's drafts to read and cards played by hand to check, most played first, the card large beside its rules and Oracle text, progress, bulk approval of wording-only drafts, keys C, W, J, K, H and ?, `ReadDialog` from the table's preview and a link from every deck check (`docs/server.md`, `docs/web.md`).
 - Control and text: a player controlled during their next turn with the controller answering and seeing for them (CR 722), control of a spell on the stack, text changes in layer 3 (CR 612), cleave, a restart of the game (CR 727) and the cards an opponent finds exiled for the searcher's controller (`docs/engine.md`).
 - Learn: the Learn page, tutorials at a table with a scripted practice bot, the guided and manual-panel lessons and page tours (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
-- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs (a trace kept for every failed test) including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 
 ## Live game
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
-- [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
-
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
-- [ ] (v91k) The house rule key `colour_identity` is spelled `color_identity` on the wire, in the stored rules and in `mtg-core` `house.rs`, with the stored games migrated
-- [ ] (fx1b) A cap on the fix marks of one account and a rate limit on the fix-mark routes
-- [ ] (pl2l) `join.spec.ts` "a guest follows an invite link" timed out once on the Join button in a full run and never in 50 solo runs: a recurrence needs a Playwright trace (`retain-on-failure`) to name the cause
+- [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
 
 ## M4 Commander
 
@@ -76,8 +72,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (dk1d2a) Orzhov Charm: the reader of "Return target creature you control and all Auras you control attached to it to their owner's hand." (the Auras then the creature) and "Destroy target creature and you lose life equal to its toughness.", so the compiler makes the card without its rules file
-- [ ] (pn1a) Many-seat tests of the actor for response clocks, timer banks and hidden information per viewer at 13 to 64 seats (the actor tests cover 2 to 4)
-- [ ] (pm1a) A server test drives a clocked game and shows that a manual action keeps the deadline of a changed decision of the same seat (`carried_clock`), and that a manual action sent while a replacement question holds a batch is applied once it is answered (`flush_deferred`).
 
 - [ ] Playwright games with corpus decks that ask every decision kind
 

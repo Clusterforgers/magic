@@ -1,4 +1,4 @@
-//! Goal: the server's migrations are tracked in a table of their own, so they and mtg-db's can migrate one database in either order, repeatedly and at the same time, without touching each other's records or data.
+//! Goal: the server's migrations are tracked in a table of their own, so they and mtg-db's can migrate one database in either order, repeatedly and at the same time, without touching each other's records or data, and stored recipes take the `color_identity` spelling of the house rule.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -178,4 +178,59 @@ async fn the_server_checks_its_own_table_for_edited_migrations(pool: PgPool) {
 
     // mtg-db neither notices nor cares: its records are somewhere else.
     Database::from_pool(pool).migrate().await.unwrap();
+}
+
+#[sqlx::test(migrations = false)]
+async fn stored_recipes_take_the_color_identity_spelling(pool: PgPool) {
+    let mut before = migrator();
+    let all = before.migrations.len();
+    let last = before
+        .migrations
+        .iter()
+        .position(|m| m.description.contains("color identity key"))
+        .unwrap();
+    assert_eq!(last + 1, all, "the rename is the newest migration");
+    before.migrations = before.migrations[..last].to_vec().into();
+    before.run(&pool).await.unwrap();
+    let recipes = [
+        (
+            1,
+            serde_json::json!({"format": "commander", "house_rules": {"deck": {"colour_identity": false, "deck_size": 80}}}),
+        ),
+        (
+            2,
+            serde_json::json!({"format": "commander", "house_rules": {"deck": {"singleton": false}}}),
+        ),
+        (3, serde_json::json!({"format": "normal"})),
+    ];
+    for (n, recipe) in &recipes {
+        sqlx::query("INSERT INTO games (id, status, recipe) VALUES ($1, 'running', $2)")
+            .bind(game_id(*n).uuid())
+            .bind(recipe)
+            .execute(&pool)
+            .await
+            .unwrap();
+    }
+
+    migrate(&pool).await.unwrap();
+    let stored = |n: u128| {
+        let pool = pool.clone();
+        async move {
+            sqlx::query_scalar::<_, serde_json::Value>("SELECT recipe FROM games WHERE id = $1")
+                .bind(game_id(n).uuid())
+                .fetch_one(&pool)
+                .await
+                .unwrap()
+        }
+    };
+    assert_eq!(
+        stored(1).await["house_rules"]["deck"],
+        serde_json::json!({"color_identity": false, "deck_size": 80})
+    );
+    assert_eq!(
+        stored(2).await,
+        recipes[1].1,
+        "a recipe without the rule is left as it was"
+    );
+    assert_eq!(stored(3).await, recipes[2].1);
 }

@@ -69,7 +69,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 ### House rules
 
 - `house_rules` (`HouseRules`, [engine.md](engine.md), House rules) is optional per rule; an absent rule keeps the format's. A value out of range, or a handicap beyond `seats`, is 400 `invalid_request` before anything is made, with the rule in `field` (`handicaps[1].starting_life`); an unknown rule or a wrong type is 400 without one.
-- The rules are part of `GameRecipe` (`games.recipe`, `jsonb`, so no migration), left out while none is set, so resume and replay play under them; a stored recipe with rules out of range fails with `RecipeError::Setup`.
+- The rules are part of `GameRecipe` (`games.recipe`, `jsonb`), left out while none is set; a migration renames the older key `deck.colour_identity` to `color_identity`, which still reads. Resume and replay play under them; a stored recipe with rules out of range fails with `RecipeError::Setup`.
 - A game checks its decks with the rules when it starts (`GameSetup::validate`); the server judges a chosen deck and the lobby's deck check with the same rules ([Decks](#decks)). The lobby row and the table view show the rules to every seat.
 
 ## Accounts
@@ -211,7 +211,7 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 `fix_marks.rs` and `mtg-db`'s `FixMarkRepo` (`card_fix_marks`). A player marks a card the game does not run whole, or any card that misbehaves, as important to fix; the owner reads the marks ranked. Every route needs a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`. Bodies are at most 4 KiB.
 
-- One row per account and card (`PRIMARY KEY (user_id, oracle_id)`); a second `PUT` replaces the note and keeps the time. `user_id` has no foreign key (`Accounts::delete_user` deletes the marks); a card deleted from `cards` takes them. An unknown card or a non-uuid id is 404 `not_found`.
+- One row per account and card (`PRIMARY KEY (user_id, oracle_id)`); a second `PUT` replaces the note and keeps the time. An account holds at most `MAX_FIX_MARKS_PER_USER` (500): a new card beyond it is 409 `fix_mark_limit` (a note on a marked card is always taken), checked under an advisory lock of the account (`FixMarkRepo::mark_within`); a `wrong` read past the cap keeps its verdict without a mark. Marks and unmarks count per account (`AttemptLimits::fix_mark_writes_per_user`, 200 per `window`, 429 `rate_limited`). `user_id` has no foreign key (`Accounts::delete_user` deletes the marks); a card deleted from `cards` takes them. An unknown card or a non-uuid id is 404 `not_found`.
 - A note is trimmed; an empty one is none. It holds at most 280 characters (`MAX_FIX_NOTE_CHARS`; the table checks the same limit) and no control character but a line break, else 400 `invalid_request`.
 - No endpoint shows another account's mark. `FixMarkRepo::ranked(limit)` counts accounts per card, most marked first, ties by the newest mark and then name; `mtg-cli fix-marks` adds the support state and prints it ([data-sources.md](data-sources.md)), and `check-rules --gaps --marks` weighs gaps by the marks of the cards they free.
 
@@ -327,6 +327,6 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 ## Testing
 
 - Actor tests drive games through `GameHandle` with bot and manual clients (`tests/it/common`) and compare log, state hash and result with a bare engine (`mtg-testkit`); `tests/it/windows.rs` compares the actor with `mtg-testkit`'s plain `Windows` rule for 2 to 4 seats.
-- Clocks, the dwell and the leak tests run on tokio's paused time. The leak tests (`pace_leak.rs`, `pay_leak.rs`) play two games differing in one fact and require every other seat to get identical messages and batches. `pace.rs` tables the clock and fallback of every kind, seat, setting and options shape.
+- Clocks, the dwell and the leak tests run on tokio's paused time. `many_seat_pace.rs` runs a response clock, the timer bank and hidden hands at 13, 32 and 64 seats; `clocked_manual.rs` holds a manual action to its clock (`carried_clock`) and behind a replacement question (`flush_deferred`). The leak tests (`pace_leak.rs`, `pay_leak.rs`) play two games differing in one fact and require every other seat to get identical messages and batches. `pace.rs` tables the clock and fallback of every kind, seat, setting and options shape.
 - Transport tests (`tests/it/net`) use a real listener on port 0, raw TCP for hostile HTTP and tokio-tungstenite for sockets; `FlakyStore` fails writes on demand.
 - Each HTTP area has a fake-registry test and a Postgres one (`pg_*.rs`), with scans for tokens, codes and card names that must not appear. Postgres tests use the throwaway database of `scripts/check.sh` ([testing.md](testing.md)) and `#[sqlx::test(migrations = false)]` with `migrate`. Pictures use a fake CDN; no test asks Scryfall. The ignored `pg_commander_real.rs` needs a compiled database in `MTG_REAL_DATABASE_URL`.

@@ -260,8 +260,9 @@ fn can_activate(
             return false;
         };
         let mut sources = price.sources(state, player, object.id());
-        // What the other parts of the cost take is not there to tap for mana, and the life they pay is not there to spend.
-        sources.retain(|option| !claimed.contains(&option.source.object));
+        // What the other parts of the cost take is not there to make mana or to be taken by a mana ability's cost (a
+        // Cadaverous Bloom), and the life they pay is not there to spend.
+        crate::mana_takes::leave(&mut sources, &claimed);
         let life = seat
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));

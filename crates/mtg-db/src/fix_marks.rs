@@ -11,6 +11,20 @@ use crate::error::DbError;
 /// The longest note of a mark, in characters.
 pub const MAX_NOTE_CHARS: usize = 280;
 
+/// First half of the advisory-lock key that serialises the new marks of one account ("MTGF").
+const MARKER_LOCK_CLASS: i32 = 0x4d54_4746;
+
+/// What [`FixMarkRepo::mark_within`] did.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Marked {
+    /// The card is marked; the mark as it stands.
+    Mark(FixMark),
+    /// No stored card has the id.
+    NoCard,
+    /// The account holds as many marks as allowed and this card is not one of them.
+    LimitReached,
+}
+
 /// A mark an account made, with the name of its card.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FixMark {
@@ -58,6 +72,37 @@ fn count_of(count: i64) -> u32 {
     u32::try_from(count).unwrap_or(u32::MAX)
 }
 
+/// Writes the mark of `user` on `oracle`, or its new note; `None` if no stored card has the id.
+async fn write(
+    conn: &mut PgConnection,
+    user: Uuid,
+    oracle: Uuid,
+    note: Option<&str>,
+) -> Result<Option<FixMark>, DbError> {
+    let row = sqlx::query!(
+        r#"WITH written AS (
+               INSERT INTO card_fix_marks (user_id, oracle_id, note)
+               SELECT $1, c.oracle_id, $3 FROM cards c WHERE c.oracle_id = $2
+               ON CONFLICT (user_id, oracle_id) DO UPDATE SET note = EXCLUDED.note
+               RETURNING oracle_id, note,
+                   to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS created_at
+           )
+           SELECT w.oracle_id AS "oracle_id!", c.name AS "name!", w.note, w.created_at AS "created_at!"
+           FROM written w JOIN cards c ON c.oracle_id = w.oracle_id"#,
+        user,
+        oracle,
+        clean(note)
+    )
+    .fetch_optional(&mut *conn)
+    .await?;
+    Ok(row.map(|row| FixMark {
+        oracle_id: OracleId(row.oracle_id.to_string()),
+        name: row.name,
+        note: row.note,
+        created_at: row.created_at,
+    }))
+}
+
 impl FixMarkRepo {
     pub(crate) fn new(pool: PgPool) -> Self {
         Self { pool }
@@ -75,28 +120,45 @@ impl FixMarkRepo {
         let Some(oracle) = uuid_of(card) else {
             return Ok(None);
         };
-        let row = sqlx::query!(
-            r#"WITH written AS (
-                   INSERT INTO card_fix_marks (user_id, oracle_id, note)
-                   SELECT $1, c.oracle_id, $3 FROM cards c WHERE c.oracle_id = $2
-                   ON CONFLICT (user_id, oracle_id) DO UPDATE SET note = EXCLUDED.note
-                   RETURNING oracle_id, note,
-                       to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS created_at
-               )
-               SELECT w.oracle_id AS "oracle_id!", c.name AS "name!", w.note, w.created_at AS "created_at!"
-               FROM written w JOIN cards c ON c.oracle_id = w.oracle_id"#,
-            user,
-            oracle,
-            clean(note)
+        let mut conn = self.pool.acquire().await?;
+        write(&mut conn, user, oracle, note).await
+    }
+
+    /// [`Self::mark`] unless the account already holds `max` marks and `card` is not one of them; a new note on a
+    /// card it marked is always taken. The count and the write run under a lock of the account, so racing marks
+    /// cannot pass the cap.
+    pub async fn mark_within(
+        &self,
+        user: Uuid,
+        card: &OracleId,
+        note: Option<&str>,
+        max: u32,
+    ) -> Result<Marked, DbError> {
+        let Some(oracle) = uuid_of(card) else {
+            return Ok(Marked::NoCard);
+        };
+        let mut tx = self.pool.begin().await?;
+        sqlx::query!(
+            "SELECT pg_advisory_xact_lock($1, hashtext($2::text))",
+            MARKER_LOCK_CLASS,
+            user.to_string()
         )
-        .fetch_optional(&self.pool)
+        .execute(&mut *tx)
         .await?;
-        Ok(row.map(|row| FixMark {
-            oracle_id: OracleId(row.oracle_id.to_string()),
-            name: row.name,
-            note: row.note,
-            created_at: row.created_at,
-        }))
+        let held = sqlx::query!(
+            r#"SELECT count(*) AS "held!", COALESCE(bool_or(oracle_id = $2), false) AS "has!"
+               FROM card_fix_marks WHERE user_id = $1"#,
+            user,
+            oracle
+        )
+        .fetch_one(&mut *tx)
+        .await?;
+        if held.held >= i64::from(max) && !held.has {
+            return Ok(Marked::LimitReached);
+        }
+        let mark = write(&mut tx, user, oracle, note).await?;
+        tx.commit().await?;
+        Ok(mark.map_or(Marked::NoCard, Marked::Mark))
     }
 
     /// Removes the mark `user` made on `card`; false if there was none.

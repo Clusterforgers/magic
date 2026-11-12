@@ -53,6 +53,7 @@ const DECK_CODES: Record<DeckErrorCode, true> = {
   internal: true,
   rate_limited: true,
   stale_read: true,
+  fix_mark_limit: true,
 }
 
 /** True for a code the card and deck endpoints send. */

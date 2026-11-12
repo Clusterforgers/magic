@@ -38,7 +38,7 @@ const optional = (value: unknown, check: (item: unknown) => boolean): boolean =>
 const isDeckRules = (value: unknown): boolean =>
   isRecord(value) &&
   optional(value.singleton, isFlag) &&
-  optional(value.colour_identity, isFlag) &&
+  optional(value.color_identity, isFlag) &&
   optional(value.deck_size, isCount) &&
   optional(value.max_copies, isCount)
 
