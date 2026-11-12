@@ -1,7 +1,7 @@
 {
   "oracle_id": "7bf6f13a-3c90-4bda-bc84-e026828bf4d1",
   "name": "\"Lifetime\" Pass Holder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "\"Lifetime\" Pass Holder",
@@ -15,9 +15,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 74, "end": 200 }
+          "Triggered": {
+            "when": { "RolledToVisit": { "who": "You" } },
+            "if": { "Compare": { "left": "Triggering", "op": "Eq", "right": 6 } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
           }
         }
       ]

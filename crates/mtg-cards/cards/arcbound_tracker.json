@@ -1,7 +1,7 @@
 {
   "oracle_id": "ff86f385-dc3e-4bfe-83e7-9229afab4aa9",
   "name": "Arcbound Tracker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Arcbound Tracker",
@@ -10,9 +10,16 @@
         { "Keyword": "Menace" },
         { "Keyword": { "Macro": { "name": "modular", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 145, "end": 247 }
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

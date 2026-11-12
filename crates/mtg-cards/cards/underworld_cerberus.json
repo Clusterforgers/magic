@@ -1,7 +1,7 @@
 {
   "oracle_id": "a36c2b76-d595-42ba-b8c2-bb8f02639981",
   "name": "Underworld Cerberus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Underworld Cerberus",
@@ -10,9 +10,31 @@
         { "Static": { "affected": "This", "mods": [{ "MinBlockers": 3 }] } },
         { "Rule": { "rule": "GraveyardCardsUntargetable" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 131, "end": 243 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

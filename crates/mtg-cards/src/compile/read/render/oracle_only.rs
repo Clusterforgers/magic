@@ -156,6 +156,8 @@ mod joined_steps;
 mod kicked;
 mod kicked_enters;
 mod kicked_trigger;
+mod l291_wholes;
+mod l291_writers;
 mod land_subtypes;
 mod land_types;
 mod leaves_graveyard;
@@ -504,6 +506,7 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     r284_wordings::add(ability, texts);
     r286_wordings::add(ability, texts);
     r288_wordings::add(ability, texts);
+    l291_writers::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's
@@ -518,6 +521,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     rmt5_wholes::rmt5_add_wholes(ability, texts);
     r283_wholes::r283_add_wholes(ability, texts);
     r287_wholes::r287_add_wholes(ability, texts);
+    l291_wholes::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

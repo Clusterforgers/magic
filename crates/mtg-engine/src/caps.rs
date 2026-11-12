@@ -64,6 +64,7 @@ const RUNS: &[&str] = &[
     "Trigger.CountersRemoved",
     "Trigger.PlayerCountersPut",
     "Trigger.Chapter",
+    "Trigger.NthCounterPut",
     "Trigger.Attached",
     "Trigger.Unattached",
     "Trigger.Cycled",

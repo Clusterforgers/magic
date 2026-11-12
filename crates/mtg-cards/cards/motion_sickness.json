@@ -1,7 +1,7 @@
 {
   "oracle_id": "d0bb7a44-f93b-4acb-b69f-81efe0a3ae2d",
   "name": "Motion Sickness",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Motion Sickness",
@@ -16,9 +16,12 @@
         },
         { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 133, "end": 218 }
+          "Triggered": {
+            "when": { "VisitedAttraction": { "who": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }] } }
+            ]
           }
         }
       ]

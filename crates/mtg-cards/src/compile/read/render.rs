@@ -956,6 +956,12 @@ fn written_from(when: &TriggerPattern, effects: &[Effect]) -> ZoneKind {
     {
         // "When the creature ~ haunts dies" works from exile (CR 702.55b).
         ZoneKind::Exile
+    } else if matches!(
+        when,
+        TriggerPattern::Did { action: crate::did::Action::Plotted, what, .. } if what.0 == [Pred::This]
+    ) {
+        // "When this card becomes plotted" works from exile, where plotting puts it (CR 702.170a).
+        ZoneKind::Exile
     } else if cycled_itself(when)
         || graveyard_itself(when)
         || returns_itself(effects)

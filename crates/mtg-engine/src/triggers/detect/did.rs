@@ -58,6 +58,7 @@ const fn moved_action(cause: ZoneCause) -> Option<Action> {
         ZoneCause::Sacrificed => Action::Sacrificed,
         ZoneCause::Milled => Action::Milled,
         ZoneCause::Foretold => Action::Foretold,
+        ZoneCause::Plotted => Action::Plotted,
         _ => return None,
     })
 }

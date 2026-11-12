@@ -2447,7 +2447,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::Unattached { what, from } => self.w11b_attached(what, from),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }
-            | TriggerPattern::Chapter { .. } => {
+            | TriggerPattern::Chapter { .. }
+            | TriggerPattern::NthCounterPut { .. } => {
                 self.w2e_counted(pattern);
             }
             TriggerPattern::State { .. } => {
@@ -2496,6 +2497,9 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::Chapter { number } if *number == 0 => {
                 self.at("number", |w| w.problem("the first chapter is 1"));
+            }
+            TriggerPattern::NthCounterPut { number, .. } if *number == 0 => {
+                self.at("number", |w| w.problem("the first counter is 1"));
             }
             _ => {}
         }
@@ -2567,6 +2571,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::GroupAttacks { .. }
                 | TriggerPattern::GroupAttacksAt { .. }
                 | TriggerPattern::Chapter { .. }
+                | TriggerPattern::NthCounterPut { .. }
         ) {
             self.problem("a batch is of one event that can happen to several things at once");
         }

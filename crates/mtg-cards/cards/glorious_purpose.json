@@ -1,0 +1,58 @@
+{
+  "oracle_id": "182baad0-ec6e-4e93-9dfc-7c80b37005de",
+  "name": "Glorious Purpose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorious Purpose",
+      "oracle_fingerprint": "e5d5ba3df78c653b1fffa846973a0698",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Connived",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": { "Each": [{ "Is": "Triggering" }] }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Each": ["This"] }, "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "NthCounterPut": { "counter": { "Other": "plan" }, "number": 6 } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "ExileTop": { "count": 4, "as": "exiled" } },
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "card",
+                        "effects": [
+                          { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                        ]
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
