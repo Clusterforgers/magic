@@ -370,9 +370,11 @@ async fn stored_decks_make_a_commander_game_at_every_table_size(pool: PgPool) {
         host_socket.close().await;
 
         lobby::start(&server.registry, &game, seats).await;
-        assert!(
-            row(&lobby::lobbies(server.addr, &[]).await.json(), &game).is_none(),
-            "a started game leaves the listing"
+        let listing = lobby::lobbies(server.addr, &[]).await.json();
+        assert_eq!(
+            row(&listing, &game).map(|row| row["running"].clone()),
+            Some(serde_json::json!(true)),
+            "a started game is listed to watch"
         );
 
         // The recipe stores each seat's commander with its library, and the fingerprints.

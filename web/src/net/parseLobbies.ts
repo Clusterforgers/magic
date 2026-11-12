@@ -35,6 +35,8 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (!isText(createdAt) || !STAMP.test(createdAt)) return null
   const rules = readHouseRules(item.house_rules)
   if (rules === null) return null
+  const running = item.running === undefined ? false : item.running
+  if (!isFlag(running)) return null
   return {
     game,
     host,
@@ -45,6 +47,7 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
     total,
     created_at: createdAt,
     age_secs: age,
+    ...(running ? { running } : {}),
   }
 }
 

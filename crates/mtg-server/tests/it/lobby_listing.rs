@@ -273,6 +273,7 @@ async fn a_listing_holds_no_token_no_code_and_no_digest() {
         total: _,
         created_at: _,
         age: _,
+        running: _,
     } = &listed[0];
 }
 

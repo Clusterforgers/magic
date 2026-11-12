@@ -55,6 +55,7 @@ export type ParsedFrame = { ok: true; message: ServerMessage } | { ok: false; er
 
 const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Deciding: true,
+  Spectators: true,
   Welcome: true,
   Lobby: true,
   Decision: true,
@@ -605,6 +606,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Deciding':
       if (!isListOf(v.seats, isDeciding)) return '"seats" must be a list of seats (seat, kind)'
       return { type, seats: v.seats }
+    case 'Spectators':
+      if (!isCount(v.count)) return '"count" must be a whole number'
+      return { type, count: v.count }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

@@ -192,10 +192,14 @@ describe('filterPrecons', () => {
 })
 
 describe('copyList', () => {
-  const texts = new Map([['oracle-kozilek', ['Draw two cards. Discard two cards.']]])
-  const clause = (text: string, start: number, end: number) => ({ face: 0, span: { start, end }, text })
+  const clause = (text: string, start: number, end: number, quote = '') => ({
+    face: 0,
+    span: { start, end },
+    text,
+    quote,
+  })
 
-  it('writes a block for each card that is not Verified, in board order, quoting each clause once the texts are known', () => {
+  it('writes a block for each card that is not Verified, in board order, quoting each clause with the words the report gives', () => {
     const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), undefined, {
       boards: [
         board('commander', [cardLine('Ulalek')]),
@@ -203,28 +207,28 @@ describe('copyList', () => {
           cardLine('Sol Ring'),
           cardLine('Kozilek', 'partial', {
             reasons: [
-              clause('the draw is not implemented', 0, 15),
-              clause('the discard is not implemented', 16, 34),
+              clause('the draw is not implemented', 0, 15, 'Draw two cards.'),
+              clause('the discard is not implemented', 16, 34, 'Discard two cards.'),
             ],
           }),
-          cardLine('Thought-Knot Seer', 'manual'),
+          cardLine('Thought-Knot Seer', 'manual', { whole_text: 'Flash\nExile a card.' }),
         ]),
         board('sideboard', [cardLine('Old Card', 'stale'), cardLine('Digital Card', 'unplayable')]),
       ],
     })
-    expect(copyList(view, texts).split('\n\n')).toEqual([
+    expect(copyList(view).split('\n\n')).toEqual([
       [
         'Kozilek (Partial) - decks: Eldrazi Unbound',
         '  - "Draw two cards.": The draw is not implemented',
         '  - "Discard two cards.": The discard is not implemented',
       ].join('\n'),
-      'Thought-Knot Seer (Manual) - decks: Eldrazi Unbound\n  - Played by hand',
+      'Thought-Knot Seer (Manual) - decks: Eldrazi Unbound\n  - "Flash / Exile a card.": Played by hand',
       'Old Card (Stale) - decks: Eldrazi Unbound\n  - Its text changed since the rules were written, so it is played by hand',
       'Digital Card (Unplayable) - decks: Eldrazi Unbound\n  - The game cannot play it',
     ])
   })
 
-  it('writes the reasons alone while no text is known', () => {
+  it('writes the reasons alone when the report quotes nothing', () => {
     const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), [
       cardLine('Kozilek', 'partial', { reasons: [clause('the draw is not implemented', 0, 14)] }),
     ])
@@ -233,11 +237,11 @@ describe('copyList', () => {
 
   it('names the face when a clause is not on the front', () => {
     const view = preconView(preconItem({ name: 'Eldrazi Unbound' }), [
-      cardLine('Delver', 'partial', { reasons: [{ face: 1, span: { start: 0, end: 4 }, text: 'it flips' }] }),
+      cardLine('Delver', 'partial', {
+        reasons: [{ face: 1, span: { start: 0, end: 4 }, text: 'it flips', quote: 'Flip' }],
+      }),
     ])
-    expect(copyList(view, new Map([['oracle-delver', ['Front', 'Flip it over']]]))).toBe(
-      'Delver (Partial) - decks: Eldrazi Unbound\n  - "Flip": Back face: it flips',
-    )
+    expect(copyList(view)).toBe('Delver (Partial) - decks: Eldrazi Unbound\n  - "Flip": Back face: it flips')
   })
 
   it('is empty when every card is Verified', () => {

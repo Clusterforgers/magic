@@ -585,6 +585,14 @@ pub enum ServerMessage {
         /// The seats asked now, in the order the server asks them, each with the kind of its decision.
         seats: Vec<DecidingView>,
     },
+    /// How many spectators watch the game now.
+    ///
+    /// Sent to every connected seat whenever the number changes, and to a seat that joins while some watch. Never to
+    /// a spectator, never stored.
+    Spectators {
+        /// The spectators connected now.
+        count: u32,
+    },
 }
 
 /// A seat the game waits for and the kind of decision it faces.

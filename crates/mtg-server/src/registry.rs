@@ -17,6 +17,7 @@ mod claims;
 mod departure;
 mod listing;
 mod resume;
+mod watching;
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -184,6 +185,8 @@ pub struct SeatAccess {
     pub seat: PlayerId,
     /// Reports an error, or a change, once the registry drops the game; the value says why.
     pub removed: watch::Receiver<Removal>,
+    /// Whether the socket is a spectator's: the seat is then the spectator viewer, which holds no seat.
+    pub spectator: bool,
 }
 
 /// What the registry knows about one seat.
@@ -283,6 +286,8 @@ struct Entry {
     /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
     /// host says so first.
     alive: watch::Sender<Removal>,
+    /// Never in the game browser, even running: a tutorial, one player against a bot.
+    unlisted: bool,
 }
 
 impl Entry {
@@ -302,6 +307,7 @@ impl Entry {
             finished: None,
             last_connected: Instant::now(),
             alive,
+            unlisted: false,
         }
     }
 
@@ -602,7 +608,11 @@ impl Registry {
             pace: Some(pace),
             ..GameOptions::default()
         };
-        self.admit(setup, names, None, None, options, None).await
+        let (created, handle) = self.admit(setup, names, None, None, options, None).await?;
+        if let Some(entry) = self.games().get_mut(&created.id) {
+            entry.unlisted = true;
+        }
+        Ok((created, handle))
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
@@ -834,6 +844,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(found?),
             removed: entry.alive.subscribe(),
+            spectator: false,
         })
     }
 
@@ -851,6 +862,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(seat),
             removed: entry.alive.subscribe(),
+            spectator: false,
         })
     }
 

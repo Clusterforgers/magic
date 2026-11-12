@@ -108,6 +108,7 @@ async fn tokens_are_found_by_a_normalized_name_with_their_printing(pool: PgPool)
         let found = repo.token_pictures(name).await.unwrap();
         assert_eq!(found.len(), 1, "{name:?}");
         assert_eq!(found[0].card.name, "Goblin");
+        assert_eq!(found[0].printings, 1);
         assert_eq!(found[0].card.type_line, "Token Creature \u{2014} Goblin");
         assert_eq!(found[0].card.faces[0].power.as_deref(), Some("1"));
         assert_eq!(
@@ -129,4 +130,21 @@ async fn deck_cards_unknown_and_blank_names_are_no_tokens(pool: PgPool) {
             "{name:?}"
         );
     }
+}
+
+#[sqlx::test]
+async fn a_token_counts_every_printing_pictured_or_not(pool: PgPool) {
+    let database = seeded(pool.clone()).await;
+    let goblin = record("Goblin");
+    let mut bare = another_printing(&goblin, 2, "tm19", Some("2018-07-13"));
+    bare.images = None;
+    let pictured = another_printing(&goblin, 3, "tm20", Some("2019-07-12"));
+    database
+        .importer()
+        .import_cards([bare, pictured].into_iter().map(Ok))
+        .await
+        .unwrap();
+    let found = repo(&pool).token_pictures("Goblin").await.unwrap();
+    assert_eq!(found.len(), 1);
+    assert_eq!(found[0].printings, 3);
 }

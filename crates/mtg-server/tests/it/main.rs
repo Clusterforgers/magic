@@ -76,6 +76,7 @@ mod pg_relaxed_decks;
 mod pg_resume;
 mod pg_resume_decks;
 mod pg_seat_decks;
+mod pg_spectators;
 mod pg_store;
 mod pg_user_games;
 mod pg_visibility;

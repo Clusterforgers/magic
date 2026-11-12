@@ -1,21 +1,14 @@
-// Goal: the deck pane shows its cards, its stats and its cards played by hand as three tabs with the whole width of the pane, at every window size; the cards played by hand quote the words each reason covers.
+// Goal: the deck pane shows its cards, its stats and its cards played by hand as three tabs with the whole width of the pane, at every window size; the cards played by hand quote the words the check gives for each reason, reading no card.
 import { within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { checked } from './checkedDeck'
-import { cardDetail } from './fakeCards'
-import { BOLT, deckPane, renderBuilder } from './renderBuilder'
+import { checked, ENTRIES } from './checkedDeck'
+import { deckPane, renderBuilder } from './renderBuilder'
 
 const pane = () => within(deckPane())
 
-const base = cardDetail()
-const boltText = cardDetail('Lightning Bolt', {
-  card: { ...BOLT, oracle_id: 'oracle-bolt' },
-  faces: base.faces.map((face) => ({ ...face, oracle_text: 'Lightning Bolt deals 3 damage to any target.' })),
-})
-
 describe('the words of the cards played by hand', () => {
   it('quote the span each reason covers beside the reason', async () => {
-    const { user } = await renderBuilder({ view: checked(), cards: { details: [boltText] } })
+    const { user } = await renderBuilder({ view: checked(), cards: { details: [] } })
     await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     const hand = pane().getByRole('list', { name: 'Cards played by hand' })
     const bolt = hand.querySelector<HTMLElement>('li[data-hand="oracle-bolt"]') as HTMLElement
@@ -24,8 +17,12 @@ describe('the words of the cards played by hand', () => {
     expect(within(bolt).getByText('The engine does not run X yet')).toBeInTheDocument()
   })
 
-  it('show the reason alone for a card whose text cannot be read', async () => {
-    const { user } = await renderBuilder({ view: checked(), cards: { details: [] } })
+  it('show the reason alone for a reason the check quotes nothing for', async () => {
+    const unquoted = ENTRIES.map((entry) => ({
+      ...entry,
+      reasons: entry.reasons?.map((reason) => ({ ...reason, quote: '' })),
+    }))
+    const { user } = await renderBuilder({ view: checked(unquoted), cards: { details: [] } })
     await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     const hand = pane().getByRole('list', { name: 'Cards played by hand' })
     const bolt = hand.querySelector<HTMLElement>('li[data-hand="oracle-bolt"]') as HTMLElement

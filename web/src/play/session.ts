@@ -241,6 +241,8 @@ export function createSession(deps: SessionDeps): Session {
         setState({
           seat: message.player,
           seatCount: message.seats,
+          // A joining seat is told the count again when some watch.
+          spectators: 0,
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
@@ -250,14 +252,16 @@ export function createSession(deps: SessionDeps): Session {
           autoSkips: message.auto_skips,
           castWhenAsked: null,
         })
-        for (const request of welcomeRequests({
-          game: message.game,
-          stops: message.stops,
-          endTurnByHand: message.end_turn_by_hand,
-          autoChoices: message.auto_choices,
-          autoYields: message.auto_yields,
-        }))
-          socket.send(request)
+        // A spectator holds no seat, so it has no settings to bring the server up to date with.
+        if (deps.watch !== true)
+          for (const request of welcomeRequests({
+            game: message.game,
+            stops: message.stops,
+            endTurnByHand: message.end_turn_by_hand,
+            autoChoices: message.auto_choices,
+            autoYields: message.auto_yields,
+          }))
+            socket.send(request)
         return
       case 'Yielding':
         onYielding(message)
@@ -331,6 +335,9 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'Deciding':
         setState({ deciding: message.seats })
+        return
+      case 'Spectators':
+        setState({ spectators: message.count })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.

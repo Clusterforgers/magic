@@ -7,6 +7,7 @@
 import type {
   AttackRange,
   EmptyLibrary,
+  Handicap,
   HouseRules,
   MulliganStyle,
   SkipFirstDraw,
@@ -522,10 +523,49 @@ export function ruleGroups(format: GameFormat): { title: RuleGroup; specs: RuleS
 export const gameFormat = (key: string): GameFormat =>
   key.toLowerCase() === 'commander' ? 'commander' : 'normal'
 
-/** The rules the field texts mean in `format`, and the problem of each field that holds a bad text. */
+/** What one seat's handicap can set, with the range of each value. */
+export const HANDICAP_FIELDS = [
+  { key: 'starting_life', label: 'Life', min: 1, max: 1000 },
+  { key: 'opening_hand_size', label: 'Opening hand', min: 1, max: 20 },
+] as const
+
+/** One value a handicap can set. */
+export type HandicapKey = (typeof HANDICAP_FIELDS)[number]['key']
+
+/** The field text id of seat `seat`'s (from 0) handicap value `key`. */
+export const handicapId = (seat: number, key: HandicapKey): string => `handicap.${seat}.${key}`
+
+/** The handicaps of seats 0 to `seats - 1` the field texts mean, in seat order, and the problem of each bad text. */
+function handicapsFromTexts(
+  texts: RuleTexts,
+  seats: number,
+): { handicaps: Handicap[]; problems: Record<string, string> } {
+  const handicaps: Handicap[] = []
+  const problems: Record<string, string> = {}
+  for (let seat = 0; seat < seats; seat += 1) {
+    const handicap: Handicap = { seat }
+    for (const field of HANDICAP_FIELDS) {
+      const id = handicapId(seat, field.key)
+      const text = (texts[id] ?? '').trim()
+      if (text === '') continue
+      const value = whole(text, field.min, field.max)
+      if (value === null) problems[id] = `Use a whole number from ${field.min} to ${field.max}.`
+      else handicap[field.key] = value
+    }
+    if (handicap.starting_life !== undefined || handicap.opening_hand_size !== undefined)
+      handicaps.push(handicap)
+  }
+  return { handicaps, problems }
+}
+
+/**
+ * The rules the field texts mean in `format` for a table of `seats` (handicaps of seats past it are left out), and
+ * the problem of each field that holds a bad text.
+ */
 export function rulesFromTexts(
   texts: RuleTexts,
   format: GameFormat,
+  seats = 0,
 ): { rules: HouseRules; problems: Readonly<Record<string, string>> } {
   const rules: HouseRules = {}
   const problems: Record<string, string> = {}
@@ -537,12 +577,14 @@ export function rulesFromTexts(
   if (rules.deck?.max_copies !== undefined && rules.deck.singleton !== false) {
     problems['deck.max_copies'] = 'Set “One copy of each card” to Off to allow more copies.'
   }
-  return { rules, problems }
+  const handicaps = handicapsFromTexts(texts, seats)
+  if (handicaps.handicaps.length > 0) rules.handicaps = handicaps.handicaps
+  return { rules, problems: { ...problems, ...handicaps.problems } }
 }
 
-/** The rules as the request carries them: `undefined` when none is set. */
-export function requestRules(texts: RuleTexts, format: GameFormat): HouseRules | undefined {
-  const { rules } = rulesFromTexts(texts, format)
+/** The rules as the request carries them for a table of `seats`: `undefined` when none is set. */
+export function requestRules(texts: RuleTexts, format: GameFormat, seats = 0): HouseRules | undefined {
+  const { rules } = rulesFromTexts(texts, format, seats)
   return Object.keys(rules).length === 0 ? undefined : rules
 }
 

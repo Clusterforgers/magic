@@ -317,6 +317,7 @@ impl<S: EventStore> GameActor<S> {
     async fn handle(&mut self, command: Command) -> Result<(), Fatal> {
         match command {
             Command::Join { seat, reply } => self.join(seat, reply).await,
+            Command::Watch { reply } => self.watch(reply),
             Command::Message { seat, message } => return self.message(seat, message).await,
             Command::Leave { seat } => {
                 let was_here = self.seats.connected().contains(&seat);
@@ -385,6 +386,7 @@ impl<S: EventStore> GameActor<S> {
         self.seats.send(seat, welcome);
         self.sync(seat);
         self.tell_joiner(seat);
+        self.tell_joiner_spectators(seat);
         if takeover {
             self.send_roster(seat);
         } else {
@@ -395,6 +397,40 @@ impl<S: EventStore> GameActor<S> {
         if let Some(recorder) = &mut self.recorder {
             recorder.joined(seat).await;
         }
+    }
+
+    /// Connects a spectator to a running game: its welcome and snapshot go to its own queue first.
+    fn watch(&mut self, reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>) {
+        let Phase::Running(running) = &self.phase else {
+            // A caller that stopped waiting needs no answer.
+            let _ = reply.send(Err(JoinError::NotStarted));
+            return;
+        };
+        let spectator = self.seats.spectator();
+        let connected = self.seats.connected();
+        let mut first = vec![ServerMessage::Welcome {
+            protocol_version: PROTOCOL_VERSION,
+            game: self.id.to_string(),
+            player: spectator,
+            seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
+            // The spectator viewer holds no seat, so every setting reads as its default.
+            auto_pass: self.stops.auto_pass(spectator),
+            yielding: self.yields.get(spectator),
+            stops: self.stops.stops(spectator),
+            full_control: self.stops.full_control(spectator),
+            end_turn_by_hand: self.stops.end_turn_by_hand(spectator),
+            auto_choices: self.stops.auto_choices(spectator),
+            auto_yields: self.stops.auto_yields(spectator),
+            auto_skips: self.stops.auto_skips(spectator),
+        }];
+        for mut message in running.sync_messages(spectator) {
+            if let ServerMessage::Snapshot { state, .. } = &mut message {
+                presence::stamp(&mut state.table, &connected);
+            }
+            first.push(message);
+        }
+        // A caller that stopped waiting needs no answer.
+        let _ = reply.send(Ok(self.seats.watch(first)));
     }
 
     /// Stops the running turn's count while no seat is connected; every change of connection passes the loop first.

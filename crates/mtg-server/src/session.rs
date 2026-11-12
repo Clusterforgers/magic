@@ -128,13 +128,12 @@ async fn handshake(
         let message = "the game does not match the socket address";
         return Err(refuse(socket, &limits, ErrorCode::UnknownGame, message).await);
     }
-    let seat = session.access.seat;
-    session
-        .access
-        .handle
-        .join(seat)
-        .await
-        .map_err(|_| Exit::Say(GAME_ENDED))
+    let joined = if session.access.spectator {
+        session.access.handle.watch().await
+    } else {
+        session.access.handle.join(session.access.seat).await
+    };
+    joined.map_err(|_| Exit::Say(GAME_ENDED))
 }
 
 /// The first text frame (`None` for a binary one), skipping pings and pongs.
@@ -169,6 +168,7 @@ async fn pump(
     pings.set_missed_tick_behavior(MissedTickBehavior::Delay);
     let mut last_pong = Instant::now();
     let mut bad_in_a_row = 0u32;
+    let spectator = access.spectator;
     loop {
         // Unbiased on purpose: a long burst from the game must not starve the client's messages.
         tokio::select! {
@@ -202,6 +202,20 @@ async fn pump(
                     Message::Ping(_) => continue,
                     Message::Close(_) => return Exit::PeerClosed,
                 };
+                // A spectator that lost its place reconnects, which brings a fresh snapshot.
+                if spectator && matches!(parsed, Some(ClientMessage::Resync)) {
+                    return Exit::Say(TOO_SLOW);
+                }
+                if parsed.is_some() && spectator {
+                    let error = ServerMessage::Error {
+                        code: ErrorCode::BadMessage,
+                        message: "a spectator watches and sends nothing".into(),
+                    };
+                    if let Err(exit) = send(socket, &error, limits.send_timeout).await {
+                        return exit;
+                    }
+                    continue;
+                }
                 if let Some(message) = parsed {
                     bad_in_a_row = 0;
                     if access.handle.send(access.seat, message).await.is_err() {
@@ -264,6 +278,13 @@ fn why_removed(removed: &watch::Receiver<Removal>) -> Goodbye {
 /// The actor closed this seat's queue: another socket took the seat, the seat was emptied, the
 /// client was too slow, or the game ended.
 async fn why_queue_closed(access: &SeatAccess) -> Goodbye {
+    if access.spectator {
+        // A spectator's queue closes only when it fell behind or the game ended.
+        return match access.handle.status().await {
+            Ok(_) => TOO_SLOW,
+            Err(_) => GAME_ENDED,
+        };
+    }
     match access.handle.status().await {
         Err(_) => GAME_ENDED,
         Ok(status) if status.connected.contains(&access.seat) => REPLACED,

@@ -205,4 +205,8 @@ deadline_ms?: number, } | { "type": "Deciding",
 /**
  * The seats asked now, in the order the server asks them, each with the kind of its decision.
  */
-seats: Array<DecidingView>, };
+seats: Array<DecidingView>, } | { "type": "Spectators", 
+/**
+ * The spectators connected now.
+ */
+count: number, };

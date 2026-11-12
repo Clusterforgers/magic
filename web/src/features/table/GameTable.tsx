@@ -46,25 +46,44 @@ import { useViewport } from './useViewport'
  * mode if a board column is at least 280 px wide, otherwise in focus mode, and the menu switches either. It reads the
  * game with `usePlay` and acts through `useGame().session`.
  */
+/** In place of the pass controls for a spectator, who has nothing to answer. */
+function Watching() {
+  return (
+    <p
+      data-slot="watching"
+      className="flex h-full items-center justify-center px-3 text-center text-sm text-muted-foreground"
+    >
+      Watching: you hold no seat
+    </p>
+  )
+}
+
 const Table = memo(function Table() {
   const options = useContext(TableOptionsContext)
   const viewport = useViewport(options.viewport)
   useFullBleed()
-  const { seat, seatCount, ready } = usePlay(
-    useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
+  const { seat, seatCount, ready, spectator } = usePlay(
+    useShallow((state) => ({
+      seat: state.seat,
+      seatCount: seatCountOf(state),
+      ready: state.view !== null,
+      spectator: state.view?.spectator === true,
+    })),
   )
+  // A spectator holds no seat, so the table is drawn from the first seat's side, its hand face down.
+  const viewer = spectator ? 0 : (seat ?? 0)
   const followed = usePlay(defaultFocusOf)
   const active = usePlay((state) => (turnLeft(state) ? null : (state.view?.turn.active ?? null)))
   const lowered = usePlay(promptInStrip)
   // The hand of the player the viewer controls this turn, else the viewer's own (CR 722).
-  const handFrom = usePlay((state) => handSeat(state, seat ?? 0))
+  const handFrom = usePlay((state) => handSeat(state, viewer))
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
   const table = useMemo(
-    () => planTable({ viewport, seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed, active }),
-    [viewport, seatCount, seat, mode, chosen, followed, active],
+    () => planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active }),
+    [viewport, seatCount, viewer, mode, chosen, followed, active],
   )
   const { seats: plan } = table
   // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
@@ -136,7 +155,7 @@ const Table = memo(function Table() {
                               openingMost={openingGrowMost(regions)}
                             />
                           }
-                          controls={<ControlsDock stopsRow={table.stopsRow} />}
+                          controls={spectator ? <Watching /> : <ControlsDock stopsRow={table.stopsRow} />}
                           side={<SideTabs />}
                           sidePanel={
                             <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />

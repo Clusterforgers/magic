@@ -60,9 +60,15 @@ pub struct LobbyGame {
     pub created_at: String,
     /// Whole seconds since the game was created, at the moment of the answer.
     pub age_secs: u64,
+    /// Whether the game runs: a signed-in visitor watches it (`GET /ws/{game}/watch`) instead of joining. Left out
+    /// while false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub running: bool,
 }
 
-/// The answer of `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+/// The answer of `GET /api/lobbies`: the public games still in their lobby and the running games, newest first, at
+/// most 50 of each.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct LobbyList {
     /// The games.

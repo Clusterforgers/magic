@@ -149,7 +149,8 @@ fn game_of(path: Result<Path<String>, PathRejection>) -> Result<GameId, ApiError
 
 // --- the listing ---------------------------------------------------------------------------
 
-/// `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+/// `GET /api/lobbies`: the public games still in their lobby, then the running games (to watch), each newest first,
+/// at most 50 of each.
 ///
 /// The `ETag` is a digest of what the rows say apart from their age, so a poll that finds
 /// nothing new gets a `304` however long the games have been waiting.
@@ -174,7 +175,8 @@ pub(crate) async fn list(
                 "requests for the list",
             )
         })?;
-    let listed = app.registry().lobbies().await;
+    let mut listed = app.registry().lobbies().await;
+    listed.extend(app.registry().running().await);
     let tag = listing_tag(&listed);
     let Ok(header) = HeaderValue::from_str(&tag) else {
         return Err(failure(
@@ -203,6 +205,7 @@ fn view(game: ListedGame) -> LobbyGame {
         total: count(game.total),
         created_at: game.created_at,
         age_secs: game.age.as_secs(),
+        running: game.running,
     }
 }
 
@@ -212,6 +215,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
     let mut hash = Sha256::new();
     for game in listed {
         let manual = if game.manual_play { "1" } else { "0" };
+        let running = if game.running { "1" } else { "0" };
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
@@ -226,6 +230,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &filled,
             &total,
             &game.created_at,
+            running,
         ];
         for part in parts {
             hash.update(u64::try_from(part.len()).unwrap_or(u64::MAX).to_be_bytes());
@@ -611,6 +616,7 @@ mod tests {
             total: 4,
             created_at: "2026-10-19T12:30:00Z".to_owned(),
             age: Duration::from_secs(5),
+            running: false,
         }
     }
 

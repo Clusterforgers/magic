@@ -22,7 +22,7 @@ const line = (name: string, support: Support, zone: Line['zone'] = 'main'): Line
   printingId: null,
 })
 const names = (lines: readonly Line[]): string[] => lines.map((item) => item.card.name)
-const reason = (text: string, face = 0): Reason => ({ face, span: { start: 3, end: 9 }, text })
+const reason = (text: string, face = 0): Reason => ({ face, span: { start: 3, end: 9 }, text, quote: '' })
 
 // In name order, as `linesIn` gives them.
 const LINES = [

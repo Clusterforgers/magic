@@ -18,6 +18,9 @@ pub enum JoinError {
     /// The game's task has ended.
     #[error("the game is closed")]
     Closed,
+    /// A spectator came before the game started; there is no table to watch yet.
+    #[error("the game has not started")]
+    NotStarted,
 }
 
 /// Why a lobby did not take a deck for a seat.
@@ -65,6 +68,10 @@ pub struct GameStatus {
 pub(crate) enum Command {
     Join {
         seat: PlayerId,
+        reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>,
+    },
+    /// Connects one more spectator.
+    Watch {
         reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>,
     },
     Message {
@@ -128,6 +135,17 @@ impl GameHandle {
         let (reply, answer) = oneshot::channel();
         self.commands
             .send(Command::Join { seat, reply })
+            .await
+            .map_err(|_| JoinError::Closed)?;
+        answer.await.map_err(|_| JoinError::Closed)?
+    }
+
+    /// Connects a spectator once the game runs and returns its queue: `Welcome` naming the spectator viewer, a
+    /// snapshot of the spectator's view, then the spectators' batches. Bounded like a seat's queue.
+    pub async fn watch(&self) -> Result<mpsc::Receiver<ServerMessage>, JoinError> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Watch { reply })
             .await
             .map_err(|_| JoinError::Closed)?;
         answer.await.map_err(|_| JoinError::Closed)?
