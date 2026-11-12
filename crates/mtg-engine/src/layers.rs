@@ -208,6 +208,9 @@ impl Held {
         if suspected && !keywords.contains(&Keyword::Menace) {
             keywords.push(Keyword::Menace);
         }
+        if crate::r372_suspend::cast_hasty(object) && !keywords.contains(&Keyword::Haste) {
+            keywords.push(Keyword::Haste);
+        }
         let chars = base(object);
         Held {
             id,
@@ -956,7 +959,18 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .iter()
             .filter_map(|id| state.object(*id)?.permanent())
             .any(crate::object::PermanentState::suspected);
-    if registered.is_empty() && !statics_in_play && !counters_in_play && !suspected_in_play {
+    let hasty_in_play = state.possible.elsewhere
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id))
+            .any(crate::r372_suspend::cast_hasty);
+    if registered.is_empty()
+        && !statics_in_play
+        && !counters_in_play
+        && !suspected_in_play
+        && !hasty_in_play
+    {
         return Layers {
             held: BTreeMap::new(),
             players: BTreeMap::new(),
@@ -983,12 +997,13 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
         }
     }
     // A spell an effect names on the stack is changed by it like a permanent ("target spell becomes red"), and the change
-    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`).
+    // stays with the permanent it becomes (CR 400.7a, `effects::follow_spell`); a card an effect names in exile is changed
+    // by it while it stays there (it gains suspend).
     for effect in &registered {
         if let Selector::Objects(named) = &effect.selector {
             for reference in named {
                 if let Some(object) = state.object(reference.id).filter(|object| {
-                    object.zone() == Zone::Stack
+                    matches!(object.zone(), Zone::Stack | Zone::Exile)
                         && object.kind() != ObjectKind::Ability
                         && object.reference() == *reference
                 }) {

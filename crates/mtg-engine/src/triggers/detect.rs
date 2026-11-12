@@ -1355,7 +1355,7 @@ fn about_players_and_permanents(
             object: *object,
             player: *player,
         }),
-        Event::Explored { object, player } => found.push(Happened::Explored {
+        Event::Explored { object, player, .. } => found.push(Happened::Explored {
             object: *object,
             player: *player,
         }),

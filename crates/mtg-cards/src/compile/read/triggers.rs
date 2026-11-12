@@ -249,6 +249,7 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         .attempt(super::l31a_events::l31a_targeted)
         .or_else(|| r.attempt(super::l31a_events::l31a_action))
         .or_else(|| r.attempt(super::un34_stickers::un34_sticker_event))
+        .or_else(|| r.attempt(super::r375_events::r375_event))
     {
         return Some(found);
     }

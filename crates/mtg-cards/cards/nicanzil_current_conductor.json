@@ -1,0 +1,56 @@
+{
+  "oracle_id": "4cb86fb6-3e06-4c67-aee0-d5952178f664",
+  "name": "Nicanzil, Current Conductor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nicanzil, Current Conductor",
+      "oracle_fingerprint": "a7e8def5bdbdf5d4d6ff837be635ce40",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ExploredLand",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ExploredNonland",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

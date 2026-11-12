@@ -3589,9 +3589,17 @@ impl Walker<'_> {
                 }
             }
             Effect::PhaseOut {
-                what, duration, ..
+                what, duration, held, ..
             } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(held) = held {
+                    w.uses("PhaseOut", "Held");
+                    w.uses("Rule", "Cant.PhaseIn");
+                    // The rule ends as a rule of `Effect::Rule` does (`RuleEffect::is_active`).
+                    if matches!(held, Duration::WhileYouControlSource | Duration::WhileSourceTapped) {
+                        w.uses("Rule", &format!("Duration.{}", tag_of(held)));
+                    }
+                }
                 // The engine phases them in when the source leaves the battlefield, and knows no other duration.
                 if let Some(duration) = duration.as_ref().filter(|d| **d != Duration::WhileSourceOnBattlefield) {
                     w.uses("PhaseOut", &format!("Duration.{}", tag_of(duration)));
@@ -3661,6 +3669,7 @@ impl Walker<'_> {
             | Effect::Plot { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
+            | Effect::GainSuspend { what, .. }
             => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Connive { what, count } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

@@ -1,7 +1,7 @@
 {
   "oracle_id": "3e6f51ae-7239-4fcc-919f-aa2437e8ef15",
   "name": "Veteran Motorist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Veteran Motorist",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 35, "end": 117 }
+          "Triggered": {
+            "when": { "BecomesCrewed": { "what": [{ "Subtype": "Vehicle" }] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Crewed": "Triggering" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

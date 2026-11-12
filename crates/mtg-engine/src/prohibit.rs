@@ -90,6 +90,8 @@ pub(crate) enum Doing {
     PhaseOut { object: ObjectId },
     /// `object` untaps.
     Untap { object: ObjectId },
+    /// The phased-out permanent `object` phases in.
+    PhaseIn { object: ObjectId },
     /// `object` moves onto the battlefield from another zone.
     EnterBattlefield { object: ObjectId },
     /// The turn of `player` skips `step`.
@@ -220,6 +222,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::Transform, Doing::Transform { object })
         | (Prohibited::PhaseOut, Doing::PhaseOut { object })
         | (Prohibited::Untap, Doing::Untap { object })
+        | (Prohibited::PhaseIn, Doing::PhaseIn { object })
         | (Prohibited::Crew, Doing::Crew { object })
         | (Prohibited::BecomeSuspected, Doing::BecomeSuspected { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {

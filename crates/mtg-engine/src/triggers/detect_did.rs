@@ -126,7 +126,11 @@ fn unattached(_: &GameState, _: PlayerId, object: ObjectId) -> Vec<Event> {
 }
 
 fn explored(_: &GameState, player: PlayerId, object: ObjectId) -> Vec<Event> {
-    vec![Event::Explored { object, player }]
+    vec![Event::Explored {
+        object,
+        player,
+        land: None,
+    }]
 }
 
 fn connived(_: &GameState, player: PlayerId, object: ObjectId) -> Vec<Event> {
