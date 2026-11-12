@@ -57,6 +57,8 @@ mod c8_kwq_abilities;
 mod c9_fight_double;
 mod card_grants;
 mod cast;
+mod ce29_arrest;
+mod ce29_charm;
 mod champion;
 mod chance;
 mod changes;
@@ -447,6 +449,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     reader.subtypes.clone_from(&own.subtypes);
     let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
+    } else if let Some(found) = ce29_arrest::ce29_arrest(text, x_free, own) {
+        found
     } else {
         let found = static_pairs::read(&mut reader)?;
         if !reader.end() {
@@ -457,9 +461,10 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let [first, second] = found.as_slice() else {
         return None;
     };
+    let said = ce29_arrest::ce29_said(text);
     static_pairs::texts(first, second)
         .iter()
-        .any(|written| same_text(written, text))
+        .any(|written| same_text(written, &said))
         .then_some(found)
 }
 

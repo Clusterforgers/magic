@@ -6,6 +6,7 @@ use crate::card::{Card, Span};
 use crate::compile::{ClauseKind, compile, render_ability, written_variants};
 use crate::proposal::{ClauseReport, ClauseState, pair_card};
 use crate::support::PrintedCard;
+use crate::trigger::TriggerPattern;
 
 /// The ability a clause state names, when it names one.
 const fn named(state: &ClauseState) -> Option<usize> {
@@ -147,6 +148,46 @@ fn extra_row(face: usize, index: usize, ability: &Ability) -> ReadRow {
     }
 }
 
+/// The chapter numbers a Saga line names ("I, II — ..." is 1 and 2), or none for another clause.
+fn chapters_of(printed: &PrintedCard, clause: &ClauseReport) -> Option<Vec<u32>> {
+    let words = printed_words(printed, clause);
+    let head = words.lines().next()?;
+    crate::compile::chapter_numbers(head)
+}
+
+/// The clause a chapter ability stands for: the line of its face that names its number, so each chapter of a line of
+/// several shows there whatever the pairing named.
+fn chapter_owner(
+    printed: &PrintedCard,
+    clauses: &[ClauseReport],
+    face: usize,
+    ability: &Ability,
+) -> Option<usize> {
+    let Ability::Triggered { when, .. } = ability else {
+        return None;
+    };
+    let wanted = chapter_numbers_of(when)?;
+    clauses_of(clauses, face).into_iter().find(|&at| {
+        chapters_of(printed, &clauses[at])
+            .is_some_and(|numbers| wanted.iter().all(|number| numbers.contains(number)))
+    })
+}
+
+/// The chapters a trigger is for: one chapter, or any of several (`AnyOf` of chapters); none for another trigger.
+fn chapter_numbers_of(when: &TriggerPattern) -> Option<Vec<u32>> {
+    match when {
+        TriggerPattern::Chapter { number } => Some(vec![*number]),
+        TriggerPattern::AnyOf(any) => any
+            .iter()
+            .map(|pattern| match pattern {
+                TriggerPattern::Chapter { number } => Some(*number),
+                _ => None,
+            })
+            .collect(),
+        _ => None,
+    }
+}
+
 /// Whether a `Manual` ability of a face leaves a clause to the table.
 fn manual_is_placed(clauses: &[ClauseReport], face: usize, ability: &Ability) -> bool {
     let Ability::Manual { span, .. } = ability else {
@@ -183,7 +224,8 @@ pub(super) fn build(card: &Card, printed: &PrintedCard) -> ReadSheet {
         let places = paired.places.get(face).map_or(&[][..], Vec::as_slice);
         let found = owners(&paired.clauses, face, abilities, places);
         for (index, ability) in abilities.iter().enumerate() {
-            match found.head[index] {
+            let head = chapter_owner(printed, &paired.clauses, face, ability).or(found.head[index]);
+            match head {
                 Some(at) if !ability.is_manual() => shown_at[at].push(index),
                 None if !ability.is_manual()
                     || !manual_is_placed(&paired.clauses, face, ability) =>
@@ -201,7 +243,9 @@ pub(super) fn build(card: &Card, printed: &PrintedCard) -> ReadSheet {
             .get(clause.face)
             .map_or(&[][..], |rules| rules.abilities.as_slice());
         let named_ability = named(&clause.state);
-        let continued = named_ability.is_some_and(|ability| seen.contains(&(clause.face, ability)));
+        // A chapter line shows its own chapters, whichever ability the pairing named for it.
+        let continued = chapters_of(printed, clause).is_none()
+            && named_ability.is_some_and(|ability| seen.contains(&(clause.face, ability)));
         if let Some(ability) = named_ability {
             seen.push((clause.face, ability));
         }

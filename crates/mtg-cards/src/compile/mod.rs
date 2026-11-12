@@ -372,6 +372,11 @@ fn read_clause(
     }
 }
 
+/// The chapter numbers a Saga line opens with ("II, III — ..." is 2 and 3), or none for another line.
+pub fn chapter_numbers(line: &str) -> Option<Vec<u32>> {
+    classify::chapter(line).map(|(numbers, _)| numbers)
+}
+
 /// Whether the clause is a Saga chapter line ("I — ...", "II, III — ...").
 fn is_chapter_line(text: &str) -> bool {
     text.lines()

@@ -15,6 +15,7 @@ mod c6_kw_renown_exploit_hidden;
 mod card_grants_games_hidden;
 mod card_grants_hidden;
 mod cast_hidden;
+mod ce29_player_rules_view;
 mod chosen_view;
 mod cipher_view;
 mod coin_call_wire;
