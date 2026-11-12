@@ -206,7 +206,7 @@ fn way_of_the_mentor_empowers_one_jace_token(
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(seats)
-            .hand(0, (0..copies).map(|_| draft("way_of_the_mentor")))
+            .hand(0, (0..copies).map(|_| mtg_testkit::corpus::card("Way of the Mentor").unwrap()))
             .battlefield(0, (0..3 * copies).map(|_| ready(plains()))),
     )?;
     for _ in 0..copies {
