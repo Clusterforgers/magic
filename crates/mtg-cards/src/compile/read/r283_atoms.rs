@@ -1,5 +1,6 @@
 //! Suffixes of the shared noun-phrase reader and writer for round 28's third pack, consulted after the others: "cast
-//! from a graveyard", "that targets a player" and "that dealt damage to you this turn".
+//! from a graveyard", "that targets a player", "that dealt damage to you this turn" and "that's the second spell cast this
+//! turn".
 
 use super::selectors::Form;
 use super::tokens::Reader;
@@ -7,8 +8,12 @@ use crate::refs::{Pred, Ref, ZoneKind};
 use crate::value::TallyEvent;
 
 /// The fixed suffixes of this module and what they read.
-fn r283_fixed() -> [(&'static str, Pred); 3] {
+fn r283_fixed() -> [(&'static str, Pred); 4] {
     [
+        (
+            "that's the second spell cast this turn",
+            Pred::NthCastThisTurn(2),
+        ),
         ("cast from a graveyard", Pred::CastFrom(ZoneKind::Graveyard)),
         (
             "that targets a player",

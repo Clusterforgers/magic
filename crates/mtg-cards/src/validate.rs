@@ -874,6 +874,7 @@ impl<'a> Walker<'a> {
             | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
+            | Pred::NthCastThisTurn(_)
             | Pred::Attacking
             | Pred::AttackingAlone
             | Pred::AttackingBattle
@@ -1339,6 +1340,8 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::AttackedThisCombat => self.uses("Condition", "AttackedThisCombat"),
+            Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");

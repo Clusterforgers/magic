@@ -27,10 +27,12 @@ const CARDS: &[&str] = &[
     "Calamity of the Titans",
     "Candles' Glow",
     "Catch // Release",
+    "Command of Unsummoning",
     "Command the Stage",
     "Contact Other Plane",
     "Crush of Tentacles",
     "Cut the Earthly Bond",
+    "Deep Wood",
     "Dovin's Dismissal",
     "Enter the Infinite",
     "Errand of Duty",
@@ -43,9 +45,12 @@ const CARDS: &[&str] = &[
     "Gideon, the Oathsworn",
     "Gloomwidow's Feast",
     "Grip of Amnesia",
+    "Heavy Fog",
     "Hezrou // Demonic Stench",
+    "Hinder",
     "Hustle // Bustle",
     "Illuminate",
+    "Jabari's Influence",
     "Jace's Ruse",
     "Jace, Arcane Strategist",
     "Laquatus's Disdain",
@@ -55,6 +60,8 @@ const CARDS: &[&str] = &[
     "March of Souls",
     "Misinformation",
     "Monastery Raid",
+    "Monstrous Emergence",
+    "Not of This World",
     "Outwit",
     "Overwhelming Encounter",
     "Perplex",
@@ -67,6 +74,7 @@ const CARDS: &[&str] = &[
     "Rise from the Wreck",
     "Runic Repetition",
     "Scout for Survivors",
+    "Second Guess",
     "Spider-Sense",
     "Starnheim Unleashed",
     "Temper",
@@ -200,6 +208,16 @@ fn r283_summary(cost: &str, text: &str, abilities: &str) -> String {
 #[case::cast_from_a_hand_is_other_words(
     "Counter target spell cast from a graveyard.",
     r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"CastFrom":"Hand"}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#,
+    "NOT ACCEPTED"
+)]
+#[case::the_second_spell_cast(
+    "Counter target spell that's the second spell cast this turn.",
+    r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"NthCastThisTurn":2}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#,
+    "ACCEPTED Verified"
+)]
+#[case::the_third_spell_is_other_words(
+    "Counter target spell that's the second spell cast this turn.",
+    r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"NthCastThisTurn":3}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#,
     "NOT ACCEPTED"
 )]
 #[case::targets_a_player(

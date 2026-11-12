@@ -1387,6 +1387,11 @@ pub enum Condition {
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
     FirstCombat,
+    /// A creature was declared attacking the controller (the player, not a planeswalker) in the combat phase going on:
+    /// "only if you've been attacked this step", read during the declare attackers step.
+    AttackedThisCombat,
+    /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
+    AfterCombat,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

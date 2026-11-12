@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8930b1ce-80ac-48b6-a368-ccff9fd01d38",
+  "name": "Jabari's Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jabari's Influence",
+      "oracle_fingerprint": "7cafd77650640124bc35b245e1ca6555",
+      "abilities": [
+        { "CastOnly": { "condition": "AfterCombat" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Type": "Artifact" } },
+                    { "Not": { "Color": "Black" } },
+                    { "DidThisTurn": { "event": "Attacked", "to": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "-1/-0" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

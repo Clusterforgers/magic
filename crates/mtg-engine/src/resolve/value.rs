@@ -1764,6 +1764,7 @@ impl<'a> Scope<'a> {
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::NthCastThisTurn(nth) => state.r283_nth_cast_is(*nth, reference),
             Pred::DidThisTurn {
                 event,
                 by,
@@ -2758,6 +2759,10 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
+            Condition::AttackedThisCombat => {
+                self.in_combat() && self.state.r283_attacked_this_combat(self.controller)
+            }
+            Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

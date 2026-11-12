@@ -842,6 +842,8 @@ const RUNS: &[&str] = &[
     "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
+    "Condition.AttackedThisCombat",
+    "Condition.AfterCombat",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
     "Rule.UpToInDeck",

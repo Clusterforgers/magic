@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const R283_WHOLES: [(&str, &str); 43] = [
+const R283_WHOLES: [(&str, &str); 56] = [
     // avacyn_s_judgment#0.1
     (
         r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}},"divide":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
@@ -36,6 +36,16 @@ const R283_WHOLES: [(&str, &str); 43] = [
         r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCountedAnd":{"most":3,"effects":[{"GainLife":{"amount":"Triggering"}}]}},"duration":"UntilEndOfTurn"}}]}}"#,
         r"Prevent the next 3 damage that would be dealt to any target this turn. You gain life equal to the damage prevented this way.",
     ),
+    // command_of_unsummoning#0.0
+    (
+        r#"{"CastOnly":{"condition":{"All":[{"Step":"DeclareAttackers"},"AttackedThisCombat"]}}}"#,
+        r"Cast this spell only during the declare attackers step and only if you've been attacked this step.",
+    ),
+    // command_of_unsummoning#0.1
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking"]},"bounds":{"min":1,"max":2}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}}]}}"#,
+        r"Return one or two target attacking creatures to their owner's hand.",
+    ),
     // command_the_stage#0.0
     (
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Cadet","types":["Creature"],"subtypes":["Wizard","Soldier"],"power":2,"toughness":2}},"as":"token"}},{"PutCounters":{"on":{"Each":[{"Subtype":"Wizard"},{"Not":{"Is":{"Bound":"token"}}},"Token",{"ControlledBy":"You"}]},"counter":"+1/+1"}}]}}"#,
@@ -50,6 +60,16 @@ const R283_WHOLES: [(&str, &str); 43] = [
     (
         r#"{"Spell":{"effects":[{"Move":{"what":{"Each":[{"Not":{"Type":"Land"}}]},"to":"Hand"}},{"If":{"condition":{"CastWith":"Surge"},"then":[{"CreateToken":{"token":{"Custom":{"name":"Octopus","colors":["Blue"],"types":["Creature"],"subtypes":["Octopus"],"power":8,"toughness":8}}}}]}}]}}"#,
         r"Return all nonland permanents to their owners' hands. If this spell's surge cost was paid, create an 8/8 blue Octopus creature token.",
+    ),
+    // deep_wood#0.0
+    (
+        r#"{"CastOnly":{"condition":{"All":[{"Step":"DeclareAttackers"},"AttackedThisCombat"]}}}"#,
+        r"Cast this spell only during the declare attackers step and only if you've been attacked this step.",
+    ),
+    // deep_wood#0.1
+    (
+        r#"{"Spell":{"effects":[{"Shield":{"when":{"Damage":{"to":"You","source":[{"Type":"Creature"},"Attacking"]}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#,
+        r"Prevent all damage that would be dealt to you this turn by attacking creatures.",
     ),
     // enter_the_infinite#0.0
     (
@@ -87,6 +107,16 @@ const R283_WHOLES: [(&str, &str); 43] = [
         r"Counter target spell unless its controller exiles all cards from their graveyard.
 Draw a card.",
     ),
+    // heavy_fog#0.0
+    (
+        r#"{"CastOnly":{"condition":{"All":[{"Step":"DeclareAttackers"},"AttackedThisCombat"]}}}"#,
+        r"Cast this spell only during the declare attackers step and only if you've been attacked this step.",
+    ),
+    // heavy_fog#0.1
+    (
+        r#"{"Spell":{"effects":[{"Shield":{"when":{"Damage":{"to":"You","source":[{"Type":"Creature"},"Attacking"]}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#,
+        r"Prevent all damage that would be dealt to you this turn by attacking creatures.",
+    ),
     // hezrou_demonic_stench#0.0
     (
         r#"{"Triggered":{"when":{"Batch":{"BecomesBlocked":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},"Blocking"]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}],"duration":"UntilEndOfTurn"}}]}}"#,
@@ -96,6 +126,11 @@ Draw a card.",
     (
         r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"DidThisTurn":{"event":"Blocked"}}]},"mods":[{"ModifyPT":{"power":-1,"toughness":-1}}],"duration":"UntilEndOfTurn"}}]}}"#,
         r"Each creature that blocked this turn gets -1/-1 until end of turn.",
+    ),
+    // hinder#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"ChooseValue":{"kind":{"Options":["Top","Bottom"]},"as":"way"}},{"If":{"condition":{"ChosenWord":{"name":"way","word":"Bottom"}},"then":[{"Shield":{"when":{"Countered":{"what":[{"Is":{"Target":0}},"Spell"]}},"by":{"IntoLibrary":{"place":"Bottom"}},"duration":"UntilEndOfTurn"}}],"otherwise":[{"Shield":{"when":{"Countered":{"what":[{"Is":{"Target":0}},"Spell"]}},"by":{"IntoLibrary":{"place":"Top"}},"duration":"UntilEndOfTurn"}}]}},{"Counter":{"what":{"Target":0}}}]}}"#,
+        r"Counter target spell. If that spell is countered this way, put that card on your choice of the top or bottom of its owner's library instead of into that player's graveyard.",
     ),
     // hustle_bustle#0.0
     (
@@ -111,6 +146,16 @@ Draw a card.",
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}},{"If":{"condition":{"KickedWith":"{2}{R}"},"then":[{"DealDamage":{"to":{"ControllerOf":{"Target":0}},"amount":"X"}}]}},{"If":{"condition":{"KickedWith":"{3}{U}"},"then":[{"Draw":{"count":"X"}}]}}]}}"#,
         r"~ deals X damage to target creature. If this spell was kicked with its {2}{R} kicker, it deals X damage to that creature's controller. If this spell was kicked with its {3}{U} kicker, you draw X cards.",
+    ),
+    // jabari_s_influence#0.0
+    (
+        r#"{"CastOnly":{"condition":"AfterCombat"}}"#,
+        r"Cast this spell only after combat.",
+    ),
+    // jabari_s_influence#0.1
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Type":"Artifact"}},{"Not":{"Color":"Black"}},{"DidThisTurn":{"event":"Attacked","to":"You"}}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"}],"duration":"Forever"}},{"PutCounters":{"on":{"Target":0},"counter":{"Other":"-1/-0"}}}]}}"#,
+        r"Gain control of target nonartifact, nonblack creature that attacked you this turn and put a -1/-0 counter on it.",
     ),
     // lava_blister#0.0
     (
@@ -131,6 +176,26 @@ Draw a card.",
     (
         r#"{"Spell":{"effects":[{"ExileTop":{"count":{"When":{"condition":{"CastWith":"Freerunning"},"then":"X","otherwise":2}},"as":"exiled"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"exiled"},"play":true}},"duration":"UntilEndOfYourNextTurn"}}]}}"#,
         r"Exile the top two cards of your library. If this spell's freerunning cost was paid, exile the top X cards of your library instead. You may play the exiled cards until the end of your next turn.",
+    ),
+    // monstrous_emergence#0.0
+    (
+        r#"{"AdditionalCost":{"cost":[{"Behold":{"filter":[{"Type":"Creature"}]}}],"required":true}}"#,
+        r"As an additional cost to cast this spell, choose a creature you control or reveal a creature card from your hand.",
+    ),
+    // monstrous_emergence#0.1
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Stat":{"of":"Paid","stat":"Power"}}}}]}}"#,
+        r"~ deals damage equal to the power of the creature you chose or the card you revealed to target creature.",
+    ),
+    // not_of_this_world#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":["Spell",{"Ability":"Activated"},{"Ability":"Triggered"}]},{"Targeting":[{"ControlledBy":"You"}]}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#,
+        r"Counter target spell or ability that targets a permanent you control.",
+    ),
+    // not_of_this_world#0.1
+    (
+        r#"{"CostModifier":{"applies_to":["This",{"Targeting":[{"AnyOf":["Spell",{"Ability":"Activated"},{"Ability":"Triggered"}]},{"Targeting":[{"Type":"Creature"},{"ControlledBy":"You"},{"Compare":{"stat":"Power","op":"Ge","to":7}}]}]}],"change":"Reduce","mana":"{7}"}}"#,
+        r"This spell costs {7} less to cast if it targets a spell or ability that targets a creature you control with power 7 or greater.",
     ),
     // perplex#0.0
     (

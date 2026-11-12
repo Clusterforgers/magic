@@ -80,6 +80,29 @@ impl GameState {
             .map(crate::object::GameObject::controller)
     }
 
+    /// Whether the object is the spell that was the `nth` spell cast this turn by any player, as it was cast.
+    pub(crate) fn r283_nth_cast_is(&self, nth: u32, object: ObjectRef) -> bool {
+        let Some(at) = usize::try_from(nth).ok().and_then(|nth| nth.checked_sub(1)) else {
+            return false;
+        };
+        self.tallies
+            .logged
+            .iter()
+            .filter(|(event, _, _)| *event == TallyEvent::SpellCast)
+            .nth(at)
+            .is_some_and(|(_, _, shot)| shot.id == object.id && shot.counter == object.counter)
+    }
+
+    /// Whether a creature was declared attacking the player in the combat phase going on ("you've been attacked this
+    /// step").
+    pub(crate) fn r283_attacked_this_combat(&self, player: PlayerId) -> bool {
+        self.tallies.records[self.tallies.combat_from.min(self.tallies.records.len())..]
+            .iter()
+            .any(|record| {
+                record.event == TallyEvent::Attacked && record.other == Some(Target::Player(player))
+            })
+    }
+
     /// The combat phase begins: "this combat" reads the records from here on.
     pub(crate) fn begin_combat_log(&mut self) {
         self.tallies.combat_from = self.tallies.records.len();

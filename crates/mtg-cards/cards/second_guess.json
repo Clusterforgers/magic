@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b036eac6-60db-48ca-b6e1-b42afac959bd",
+  "name": "Second Guess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Second Guess",
+      "oracle_fingerprint": "cfd7456f330181e80f95954f06b7153d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "NthCastThisTurn": 2 }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
