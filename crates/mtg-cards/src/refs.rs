@@ -410,6 +410,9 @@ pub enum Pred {
     Targeting(Selector),
     /// Was dealt damage this turn.
     DamagedThisTurn,
+    /// Was dealt damage this turn by a source one of the players the reference names controlled as it dealt it ("a
+    /// creature dealt damage this turn by a source you controlled").
+    DamagedThisTurnBy(Ref),
     /// Was declared as an attacker this turn ("creatures that attacked this turn").
     AttackedThisTurn,
     /// Attacked during its controller's last turn, as the same object ("creatures that attacked during their controller's

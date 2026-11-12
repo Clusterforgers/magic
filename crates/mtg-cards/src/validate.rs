@@ -762,6 +762,7 @@ impl<'a> Walker<'a> {
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
+            | Pred::DamagedThisTurnBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
             | Pred::AttackingPlayerOrPlaneswalker(r) => {

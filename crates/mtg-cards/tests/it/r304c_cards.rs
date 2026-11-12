@@ -104,6 +104,11 @@ fn file_of(name: &str) -> String {
 #[case::invasion_of_regatha("Invasion of Regatha // Disciples of the Inferno")]
 #[case::laezel("Lae'zel, Vlaakith's Champion")]
 #[case::vizier_of_remedies("Vizier of Remedies")]
+#[case::weeping_angel("Weeping Angel")]
+#[case::obstinate_familiar("Obstinate Familiar")]
+#[case::enduring_renewal("Enduring Renewal")]
+#[case::kumano("Kumano Faces Kakkazan // Etching of Kumano")]
+#[case::harsh_judgment("Harsh Judgment")]
 fn the_pack_cards_read_back_whole(#[case] name: &str) {
     let report = report_of(name, &file_of(name));
     assert_eq!(
@@ -143,6 +148,27 @@ fn the_pack_cards_read_back_whole(#[case] name: &str) {
 )]
 #[case::laezel_plus_two("Lae'zel, Vlaakith's Champion", r#""Add": 1"#, r#""Add": 2"#)]
 #[case::vizier_plus_one_counters("Vizier of Remedies", r#""-1/-1""#, r#""+1/+1""#)]
+#[case::weeping_angel_any_damage("Weeping Angel", r#""combat": true"#, r#""combat": false"#)]
+#[case::enduring_renewal_lands(
+    "Enduring Renewal",
+    r#""selector": [{ "Type": "Creature" }]"#,
+    r#""selector": [{ "Type": "Land" }]"#
+)]
+#[case::obstinate_familiar_opponent_skips(
+    "Obstinate Familiar",
+    r#""May": { "effects""#,
+    r#""May": { "who": "Opponents", "effects""#
+)]
+#[case::kumano_by_opponents(
+    "Kumano Faces Kakkazan // Etching of Kumano",
+    r#"{ "DamagedThisTurnBy": "You" }"#,
+    r#"{ "DamagedThisTurnBy": "Opponents" }"#
+)]
+#[case::harsh_judgment_to_owner(
+    "Harsh Judgment",
+    r#""to": { "ControllerOf": "Dealer" }"#,
+    r#""to": { "OwnerOf": "Dealer" }"#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let text = file_of(name);
     assert!(text.contains(from), "{name} holds {from}");

@@ -47,7 +47,7 @@ pub(super) fn join_attack(
 /// that takes damage never asks the layers.
 fn damage_object(
     state: &mut GameState,
-    id: mtg_core::ids::ObjectId,
+    (source, id): (mtg_core::ids::ObjectId, mtg_core::ids::ObjectId),
     amount: u32,
     deathtouch: bool,
     form: DamageForm,
@@ -109,7 +109,10 @@ fn damage_object(
         )?;
     }
     if amount > 0 {
-        tally(state, id, Tally::Damaged);
+        let by = crate::characteristics::controller_of(state, source);
+        if let Some(reference) = state.object(id).map(GameObject::reference) {
+            state.tally_object(reference, by, Tally::Damaged);
+        }
     }
     Ok(())
 }
@@ -355,7 +358,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     Target::Player(*id)
                 }
                 DamageTarget::Object(id) => {
-                    damage_object(state, *id, *amount, *deathtouch, *form)?;
+                    damage_object(state, (*source, *id), *amount, *deathtouch, *form)?;
                     if *amount > 0 {
                         state.note_damaged_by(*id, *source);
                     }

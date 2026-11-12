@@ -343,6 +343,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Saddled(who)
         | Pred::SharesName(who)
         | Pred::DamagedBy(who)
+        | Pred::DamagedThisTurnBy(who)
         | Pred::AttachedTo(who)
         | Pred::PairedWith(who)
         | Pred::SameCard(who) => reads_of_ref(who),

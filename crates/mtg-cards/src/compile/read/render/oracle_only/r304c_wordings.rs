@@ -7,10 +7,10 @@
 use crate::ability::Ability;
 use crate::compile::read::defining::value_texts;
 use crate::compile::read::triggers::subject_text;
-use crate::effect::Effect;
+use crate::effect::{Destination, Effect, Place};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, CounterKind, StatKind};
+use crate::value::{Amount, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 
 /// Adds the wordings of the shapes this family writes.
@@ -20,6 +20,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(damage_changed(ability))
         .chain(counters_changed(ability))
         .chain(milled_exiled(ability))
+        .chain(draw_replaced(ability))
+        .chain(dies_exiled(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -35,6 +37,7 @@ fn recipient(to: Option<&Ref>) -> Vec<&'static str> {
         Some(Ref::Opponents) => vec!["an opponent"],
         Some(Ref::EachPlayer) => vec!["a player"],
         Some(Ref::Attached) => vec!["equipped creature", "enchanted creature"],
+        Some(Ref::Each(what)) if what.0 == [Pred::Type(CardType::Creature)] => vec!["a creature"],
         Some(Ref::Union(parts)) => match parts.as_slice() {
             [Ref::Opponents, Ref::Each(what)] if what.0 == [Pred::ControlledBy(Ref::Opponents)] => {
                 vec!["an opponent or a permanent an opponent controls"]
@@ -61,6 +64,11 @@ fn dealer(source: &Selector) -> Option<String> {
         [] => Some("a source".to_owned()),
         [Pred::ControlledBy(Ref::You)] => Some("a source you control".to_owned()),
         [Pred::ControlledBy(Ref::Opponents)] => Some("a source an opponent controls".to_owned()),
+        [Pred::Spell, Pred::AnyOf(kinds), Pred::ChosenColor]
+            if *kinds == [Pred::Type(CardType::Instant), Pred::Type(CardType::Sorcery)] =>
+        {
+            Some("an instant or sorcery spell of the chosen color".to_owned())
+        }
         [Pred::Not(kind), Pred::ControlledBy(Ref::You)]
             if **kind == Pred::Type(CardType::Creature) =>
         {
@@ -107,6 +115,17 @@ fn step_texts(step: &Effect) -> Vec<String> {
             ),
             _ => {}
         }
+    }
+    if let Effect::Move {
+        what: Ref::Triggering,
+        to: Destination::Library {
+            place: Place::Shuffled,
+            ..
+        },
+        ..
+    } = step
+    {
+        found.push("that creature's owner shuffles it into their library".to_owned());
     }
     let spell = Ability::Spell {
         targets: Vec::new(),
@@ -166,6 +185,22 @@ fn damage_replaced(ability: &Ability) -> Vec<String> {
             let [step] = steps.as_slice() else {
                 return Vec::new();
             };
+            if let Effect::DealDamage {
+                source: Some(Ref::Dealer),
+                to: Ref::ControllerOf(of),
+                amount: Amount::Triggering,
+                unpreventable: false,
+                ..
+            } = step
+                && **of == Ref::Dealer
+            {
+                for head in &heads {
+                    texts.push(format!(
+                        "If {head}, it deals that damage to its controller instead."
+                    ));
+                }
+                return texts;
+            }
             for words in step_texts(step) {
                 for head in &heads {
                     texts.push(format!("If {head}, instead {words}."));
@@ -382,4 +417,131 @@ fn milled_exiled(ability: &Ability) -> Vec<String> {
         .into_iter()
         .map(|words| format!("{head} and {words}."))
         .collect()
+}
+
+/// "If you would draw a card, you may skip that draw instead." and "If you would draw a card, <first step> instead.
+/// <the other steps>": a draw replaced by the steps a spell would say.
+fn draw_replaced(ability: &Ability) -> Vec<String> {
+    let Ability::Replacement {
+        when:
+            ReplaceWhen::Draw {
+                who: Ref::You,
+                except_draw_step: 0,
+            },
+        by: ReplaceBy::Instead(steps),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    if let [
+        Effect::May {
+            who: Ref::You,
+            effects,
+        },
+    ] = steps.as_slice()
+        && effects.is_empty()
+    {
+        return vec!["If you would draw a card, you may skip that draw instead.".to_owned()];
+    }
+    let mut texts = revealed_instead(steps).into_iter().collect::<Vec<_>>();
+    let spell = Ability::Spell {
+        targets: Vec::new(),
+        effects: steps.clone(),
+    };
+    for text in crate::compile::read::render::variants(&spell) {
+        let mut chars = text.chars();
+        let Some(first) = chars.next() else {
+            continue;
+        };
+        let lower: String = first.to_lowercase().chain(chars).collect();
+        if let Some((head, rest)) = lower.split_once(". ") {
+            texts.push(format!("If you would draw a card, {head} instead. {rest}"));
+        }
+        if let Some(whole) = lower.strip_suffix('.') {
+            texts.push(format!("If you would draw a card, {whole} instead."));
+        }
+    }
+    texts
+}
+
+/// "reveal the top card of your library instead. If it's a creature card, put it into your graveyard. Otherwise, draw a
+/// card." after "If you would draw a card, ".
+fn revealed_instead(steps: &[Effect]) -> Option<String> {
+    let [
+        Effect::LookAtTop {
+            who: Ref::You,
+            count: Amount::Fixed(1),
+            bind: top,
+            ..
+        },
+        Effect::Reveal { what: shown, .. },
+        Effect::If {
+            condition: Condition::Matches { subject, selector },
+            then,
+            otherwise,
+        },
+    ] = steps
+    else {
+        return None;
+    };
+    let named = Ref::Bound(top.clone());
+    let ([Pred::Type(kind)], true, true) =
+        (selector.0.as_slice(), *shown == named, *subject == named)
+    else {
+        return None;
+    };
+    let (
+        [
+            Effect::Move {
+                what,
+                to: Destination::Graveyard,
+                bind: None,
+            },
+        ],
+        [draw],
+    ) = (then.as_slice(), otherwise.as_slice())
+    else {
+        return None;
+    };
+    (*what == named
+        && *draw
+            == (Effect::Draw {
+                who: Ref::You,
+                count: Amount::Fixed(1),
+                bind: None,
+            }))
+    .then(|| {
+        let kind = format!("{kind:?}").to_lowercase();
+        format!(
+            "If you would draw a card, reveal the top card of your library instead. If it's a {kind} card, put it \
+             into your graveyard. Otherwise, draw a card."
+        )
+    })
+}
+
+/// "If a creature dealt damage this turn by a source you controlled would die, exile it instead."
+fn dies_exiled(ability: &Ability) -> Vec<String> {
+    let Ability::Replacement {
+        when:
+            ReplaceWhen::ZoneChange {
+                what,
+                from: Some(ZoneKind::Battlefield),
+                to: Some(ZoneKind::Graveyard),
+            },
+        by: ReplaceBy::MoveTo(ZoneKind::Exile),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [Pred::Type(kind), Pred::DamagedThisTurnBy(Ref::You)] = what.0.as_slice() else {
+        return Vec::new();
+    };
+    let kind = format!("{kind:?}").to_lowercase();
+    vec![format!(
+        "If a {kind} dealt damage this turn by a source you controlled would die, exile it instead."
+    )]
 }
