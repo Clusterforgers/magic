@@ -8,6 +8,7 @@ import { ConcedeDialog } from './ConcedeDialog'
 import { canConcede } from './selectors'
 import { HelpMenu } from './HelpMenu'
 import { SideSheetButton } from './SideTabs'
+import { SpectatorCount } from './SpectatorCount'
 import { TableMenu } from './TableMenu'
 import { TableRules } from './TableRules'
 import type { TableMode } from './layout'
@@ -75,6 +76,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
       <TurnBanner />
       <HelpMenu compact={compact} />
       <TableRules />
+      <SpectatorCount />
       <SideSheetButton compact={compact} />
       <TableMenu
         compact={compact}

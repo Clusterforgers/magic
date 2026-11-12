@@ -52,7 +52,7 @@ pub(crate) fn stamp(table: &mut TableView, connected: &[PlayerId]) {
 }
 
 impl<S: EventStore> GameActor<S> {
-    /// Tells the seats of a running game whose client came or went since they last heard; nothing in the lobby, whose
+    /// Tells the seats (and the spectators) of a running game whose client came or went since they last heard; nothing in the lobby, whose
     /// roster carries the same news.
     ///
     /// A seat is never told of itself: while it can hear, it is connected. A client that cannot take the message is
@@ -73,6 +73,8 @@ impl<S: EventStore> GameActor<S> {
                 for other in connected.iter().filter(|other| **other != seat) {
                     self.seats.send(*other, message.clone());
                 }
+                let spectator = self.seats.spectator();
+                self.seats.send(spectator, message);
             }
             if !self.seats.take_gone() {
                 return;
@@ -80,7 +82,29 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Tells the other seats the time `seat` now has, when it is away: it was issued a decision or its clock grew.
+    /// Tells the connected seats how many spectators watch, when the number changed since they were last told.
+    pub(crate) fn tell_spectator_count(&mut self) {
+        let Some(count) = self.seats.spectator_news() else {
+            return;
+        };
+        let message = ServerMessage::Spectators {
+            count: u32::try_from(count).unwrap_or(u32::MAX),
+        };
+        for seat in self.seats.connected() {
+            self.seats.send(seat, message.clone());
+        }
+    }
+
+    /// Tells a seat that just joined how many spectators watch, when some do.
+    pub(crate) fn tell_joiner_spectators(&mut self, joiner: PlayerId) {
+        let count = self.seats.watcher_count();
+        if count > 0 {
+            let count = u32::try_from(count).unwrap_or(u32::MAX);
+            self.seats.send(joiner, ServerMessage::Spectators { count });
+        }
+    }
+
+    /// Tells the other seats and the spectators the time `seat` now has, when it is away: it was issued a decision or its clock grew.
     pub(crate) fn tell_away(&mut self, seat: PlayerId, deadline_ms: Option<u64>) {
         let connected = self.seats.connected();
         if connected.contains(&seat) {
@@ -94,6 +118,8 @@ impl<S: EventStore> GameActor<S> {
         for other in connected {
             self.seats.send(other, message.clone());
         }
+        let spectator = self.seats.spectator();
+        self.seats.send(spectator, message);
     }
 
     /// Tells a client that just joined how long each seat that is away on a clock has; its snapshot says who is away.

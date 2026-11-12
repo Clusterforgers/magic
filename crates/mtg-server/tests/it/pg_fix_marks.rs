@@ -1,11 +1,11 @@
-//! Goal: fix marks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, marking is idempotent and replaces the note, a note is trimmed and bounded, an unknown card is a plain 404, taking a mark back answers 204 once and 404 after, the ranking the owner reads counts accounts, deleting an account removes its marks, and a server without a database says so.
+//! Goal: fix marks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, marking is idempotent and replaces the note, a note is trimmed and bounded, an unknown card is a plain 404, marks and unmarks count against a budget per account (reading the list does not), taking a mark back answers 204 once and 404 after, the ranking the owner reads counts accounts, deleting an account removes its marks, and a server without a database says so.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
 
 use mtg_db::Database;
 use mtg_import::scryfall::cards;
-use mtg_server::{CardSource, migrate};
+use mtg_server::{CardSource, ServerConfig, migrate};
 use net::{Browser, PASSWORD, TestServer, bot_config, register, request};
 use serde_json::{Value, json};
 use sqlx::PgPool;
@@ -25,6 +25,11 @@ fn oracle(name: &str) -> String {
 
 /// Both schemas migrated and the corpus imported, behind a server.
 async fn start(pool: &PgPool) -> TestServer {
+    start_with(pool, bot_config()).await
+}
+
+/// [`start`] with `config`.
+async fn start_with(pool: &PgPool, config: ServerConfig) -> TestServer {
     migrate(pool).await.unwrap();
     let db = Database::from_pool(pool.clone());
     db.migrate().await.unwrap();
@@ -34,7 +39,7 @@ async fn start(pool: &PgPool) -> TestServer {
         ))
         .await
         .unwrap();
-    TestServer::start_with_cards(pool.clone(), bot_config(), CardSource::new(pool.clone())).await
+    TestServer::start_with_cards(pool.clone(), config, CardSource::new(pool.clone())).await
 }
 
 async fn put(server: &TestServer, who: &Browser, id: &str, body: Value) -> net::Reply {
@@ -226,4 +231,37 @@ async fn the_ranking_the_owner_reads_counts_accounts_and_deleting_an_account_rem
     assert_eq!(ranked.len(), 1, "{ranked:?}");
     assert_eq!((ranked[0].name.as_str(), ranked[0].marks), ("Sol Ring", 1));
     assert_eq!(ranked[0].newest_note.as_deref(), Some("bo's"));
+}
+
+#[sqlx::test(migrations = false)]
+async fn marks_and_unmarks_share_a_budget_per_account_and_the_list_is_free(pool: PgPool) {
+    let mut config = bot_config();
+    config.auth.limits.fix_mark_writes_per_user = 3;
+    let server = start_with(&pool, config).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let (bolt, ring) = (oracle("Lightning Bolt"), oracle("Sol Ring"));
+    assert_eq!(put(&server, &ann, &bolt, json!({})).await.status, 200);
+    let gone = ann
+        .delete(server.addr, &format!("/api/fix-marks/{bolt}"))
+        .await;
+    assert_eq!(gone.status, 204);
+    assert_eq!(put(&server, &ann, &ring, json!({})).await.status, 200);
+    for _ in 0..5 {
+        marks(&server, &ann).await;
+    }
+    let over = put(&server, &ann, &bolt, json!({})).await;
+    assert_eq!(over.status, 429, "{}", over.text());
+    assert_eq!(over.error_code(), "rate_limited");
+    assert!(over.header("retry-after").is_some());
+    let unmark = ann
+        .delete(server.addr, &format!("/api/fix-marks/{ring}"))
+        .await;
+    assert_eq!(unmark.status, 429, "an unmark counts as well");
+    assert_eq!(marks(&server, &ann).await.len(), 1, "nothing changed");
+    let bo = register(server.addr, "bob", PASSWORD).await;
+    assert_eq!(
+        put(&server, &bo, &bolt, json!({})).await.status,
+        200,
+        "a budget per account"
+    );
 }

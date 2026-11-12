@@ -368,6 +368,12 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 0, text: 'Draw a card.' } },
     "Jace Beleren's ability could not be run by the game: apply its text by hand",
   ],
+  ByHandDue: [
+    {
+      ByHandDue: { source: { id: 6, counter: 0 }, controller: 0, text: 'Whenever a creature dies, juggle.' },
+    },
+    'Jace Beleren has a line to apply by hand now: “Whenever a creature dies, juggle.”',
+  ],
   ZoneChanged: [
     { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Destroyed' } },
     'Grizzly Bears is destroyed',
@@ -853,6 +859,10 @@ describe('events with more than one shape', () => {
 
   it('says a draw', () => {
     expect(say({ GameEnded: { result: 'Draw' } })).toBe('The game ends in a draw')
+  })
+
+  it("says a team's win by its label", () => {
+    expect(say({ GameEnded: { result: { Team: 1 } } })).toBe('Team 2 wins the game')
   })
 
   it.each([

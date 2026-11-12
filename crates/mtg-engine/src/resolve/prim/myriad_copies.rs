@@ -18,7 +18,9 @@ fn others(cx: &Cx<'_>, defending: Option<PlayerId>) -> Vec<PlayerId> {
     state
         .turn_order_from(state.turn().active())
         .into_iter()
-        .filter(|player| *player != cx.scope.controller && Some(*player) != defending)
+        .filter(|player| {
+            state.is_opponent(cx.scope.controller, *player) && Some(*player) != defending
+        })
         .collect()
 }
 

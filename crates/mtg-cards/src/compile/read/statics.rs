@@ -475,6 +475,9 @@ pub(super) fn control(r: &mut Reader<'_>) -> Option<Condition> {
         (Cmp::Ge, 1, your_commander())
     } else if r.word("a") || r.word("an") {
         (Cmp::Ge, 1, one_kind(r)?)
+    } else if r.words("at least") {
+        let number = number_word(r.take_word()?)?;
+        (Cmp::Ge, number, phrase(r, Form::All)?)
     } else {
         let number = number_word(r.take_word()?)?;
         let op = if r.words("or more") {
@@ -1688,7 +1691,12 @@ pub(super) fn control_texts(condition: &Condition) -> Vec<String> {
                 return Vec::new();
             };
             let more = if *op == Cmp::Ge { "more" } else { "fewer" };
-            vec![format!("{verb} {words} or {more} {group}")]
+            let mut texts = vec![format!("{verb} {words} or {more} {group}")];
+            // "you control at least three other enchantments" (Invasion of Theros).
+            if *op == Cmp::Ge {
+                texts.push(format!("{verb} at least {words} {group}"));
+            }
+            texts
         }
         _ => Vec::new(),
     }

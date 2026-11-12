@@ -52,6 +52,13 @@ const RULES: Record<GivenRule, RuleWords> = {
   SetColors: give('New color', 'Color', 'changes its color', 'plain'),
   Goaded: give('Goaded', 'Goaded', 'is goaded', 'restrict'),
   UmbraArmor: give('Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'),
+  CantCastSpells: give("Can't cast", 'No spells', "can't cast spells", 'restrict'),
+  CastLimit: give('Cast limit', 'Limit', 'can cast only so many spells each turn', 'restrict'),
+  CantActivate: give("Can't activate", 'No abil.', "can't activate abilities", 'restrict'),
+  PlayerCant: give('Restricted', 'Restr.', 'is restricted by a rule', 'restrict'),
+  SkipsDrawStep: give('Skips draw', 'No draw', 'skips their draw step', 'restrict'),
+  CantDraw: give("Can't draw", 'No draw', "can't draw cards", 'restrict'),
+  CantGainLife: give("Can't gain life", 'No life', "can't gain life", 'restrict'),
 }
 
 const BOTH = give("Can't attack or block", 'Pacified', "can't attack or block", 'restrict')

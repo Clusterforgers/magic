@@ -13,7 +13,7 @@ import { renderInRouter } from './router'
 export async function openCreateForm(script: ServerScript = {}, format: GameFormat | 'default' = 'normal') {
   const server = startServer(script)
   const user = userEvent.setup()
-  const view = await renderInRouter(<CreateGamePage api={server.api} />)
+  const view = await renderInRouter(<CreateGamePage api={server.api} precons={server.precons} />)
   await screen.findByRole('form', { name: 'Create a game' })
   if (format !== 'default') {
     await user.click(

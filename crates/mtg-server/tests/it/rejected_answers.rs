@@ -1,4 +1,4 @@
-//! Goal: stale, wrong-seat, illegal and premature client messages are refused with the right error to the sender alone, leave the game exactly as it was and broadcast nothing; the pending decision stays answerable.
+//! Goal: stale, wrong-seat, illegal and premature client messages are refused with the right error to the sender alone (a card the offer explains with its reason and detail), leave the game exactly as it was and broadcast nothing; the pending decision stays answerable.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -10,7 +10,7 @@ use common::{
 use mtg_core::ids::ObjectId;
 use mtg_engine::Answer;
 use mtg_engine::Event;
-use mtg_engine::decision::{MulliganChoice, PriorityAction};
+use mtg_engine::decision::{DecisionKind, MulliganChoice, PriorityAction};
 use mtg_engine::manual::ManualAction;
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, EventView, ServerMessage};
 use mtg_server::{EventStore, GameHandle, MemoryStore, spawn_game_with};
@@ -137,6 +137,49 @@ async fn an_option_that_was_not_offered_is_illegal() {
     };
     poke(&handle, &mut clients, holder, pass).await;
     assert!(handle.status().await.unwrap().events > before.events);
+}
+
+#[rstest]
+#[tokio::test]
+async fn a_card_the_offer_explains_is_refused_with_its_reason_to_its_seat_alone(
+    #[values(2, 3, 4)] players: usize,
+) {
+    let (handle, _) = new_game(players);
+    let (mut clients, _) = start_table(&handle, players).await;
+    let (holder, id, decision) = passive_until_priority(&handle, &mut clients).await;
+    let DecisionKind::Priority(options) = &decision.kind else {
+        panic!("a priority decision");
+    };
+    let explained = options
+        .unplayable
+        .first()
+        .cloned()
+        .expect("an opening hand holds a card that cannot be played at the first priority");
+    let message = ClientMessage::Answer {
+        decision: id,
+        answer: Answer::Priority(PriorityAction::CastSpell(explained.card)),
+    };
+    let received = poke(&handle, &mut clients, holder, message).await;
+    match received[holder].as_slice() {
+        [
+            ServerMessage::Error {
+                code: ErrorCode::IllegalAnswer,
+                refusal: Some(refusal),
+                ..
+            },
+        ] => {
+            assert_eq!(
+                (refusal.object, refusal.reason, &refusal.why),
+                (explained.card, explained.reason, &explained.why)
+            );
+        }
+        other => panic!("expected one refusal, got {other:?}"),
+    }
+    for (seat, messages) in received.iter().enumerate() {
+        if seat != holder {
+            silent(messages);
+        }
+    }
 }
 
 #[tokio::test]

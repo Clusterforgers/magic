@@ -3,7 +3,7 @@
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::house::EmptyLibrary;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::Target;
@@ -30,11 +30,41 @@ fn loss_reason(state: &GameState, player: &Player) -> Option<LossReason> {
         Some(LossReason::ZeroLife)
     } else if player.failed_draws > 0 && !refills(state, player) {
         Some(LossReason::EmptyLibrary)
-    } else if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
+    } else if team_poison(state, player) >= state.ruleset().poison_threshold() {
         Some(LossReason::Poison)
+    } else if let Some(reason) = mate_lost(state, player) {
+        Some(reason)
     } else {
         state.format().loss_condition(state, player.id())
     }
+}
+
+/// Why a teammate who shares `player`'s life total lost, if one did: a Two-Headed Giant team loses as one (CR 810.8a).
+fn mate_lost(state: &GameState, player: &Player) -> Option<LossReason> {
+    state
+        .life_sharers(player.id())
+        .into_iter()
+        .filter_map(|mate| state.player(mate))
+        .find_map(|mate| {
+            if let crate::player::PlayerStatus::Lost(reason) = mate.status() {
+                Some(reason.clone())
+            } else {
+                None
+            }
+        })
+}
+
+/// The poison counters of `player`, with those of the teammates who share their life total (CR 810.10).
+fn team_poison(state: &GameState, player: &Player) -> u32 {
+    state
+        .life_sharers(player.id())
+        .into_iter()
+        .filter_map(|mate| state.player(mate))
+        .map(|mate| mate.counters_of(&CounterKind::Poison))
+        .fold(
+            player.counters_of(&CounterKind::Poison),
+            u32::saturating_add,
+        )
 }
 
 /// The players who lose in this pass and why. A player at the life total that wins the game, a house rule, wins by
@@ -48,15 +78,24 @@ fn losses(state: &GameState) -> Vec<Event> {
         .collect();
     let goal = state.ruleset().winning_life();
     let at_goal = |p: &Player| goal.is_some_and(|goal| p.life() >= goal);
-    let reached = own.iter().any(|(p, reason)| {
-        reason.is_none() && at_goal(p) && !crate::w17b_statics::w17b_cant_win(state, p.id())
-    });
+    let reached: Vec<PlayerId> = own
+        .iter()
+        .filter(|(p, reason)| {
+            reason.is_none() && at_goal(p) && !crate::w17b_statics::w17b_cant_win(state, p.id())
+        })
+        .map(|(p, _)| p.id())
+        .collect();
+    let beaten = |p: &Player| {
+        !at_goal(p)
+            && reached
+                .iter()
+                .any(|winner| state.is_opponent(*winner, p.id()))
+    };
     own.into_iter()
         // A player who can't lose stays in the game whatever they would lose for (CR 104.3).
         .filter(|(p, _)| !crate::w17b_statics::w17b_cant_lose(state, p.id()))
         .filter_map(|(p, reason)| {
-            let reason = reason
-                .or_else(|| (reached && !at_goal(p)).then_some(LossReason::OpponentReachedLife))?;
+            let reason = reason.or_else(|| beaten(p).then_some(LossReason::OpponentReachedLife))?;
             Some(Event::PlayerLost {
                 player: p.id(),
                 reason,
@@ -266,7 +305,7 @@ pub(crate) fn departures_first(state: &GameState) -> Vec<Event> {
 /// The end of the game once one player is left or none (CR 104.2a). The control loop checks it before the state-based
 /// actions go on, so a pass after the last loss asks nothing while the board still holds what the losers left.
 pub(crate) fn game_over(state: &GameState) -> Option<Event> {
-    if state.alive_players().nth(1).is_some() {
+    if state.last_team().is_none() && state.alive_players().nth(1).is_some() {
         return None;
     }
     let result = state.ruleset().game_result(state)?;

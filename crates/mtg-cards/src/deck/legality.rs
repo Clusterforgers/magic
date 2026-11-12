@@ -135,7 +135,7 @@ impl IssueCode {
         match self {
             IssueCode::DeckSize => deck.deck_size.is_some(),
             IssueCode::Copies => deck.singleton == Some(false),
-            IssueCode::ColorIdentity => deck.colour_identity == Some(false),
+            IssueCode::ColorIdentity => deck.color_identity == Some(false),
             IssueCode::CommanderPair => house.commanders_per_seat == Some(2),
             _ => false,
         }

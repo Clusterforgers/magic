@@ -7,7 +7,6 @@ import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
 import { readPath, TO_READ_TITLE } from '@/lib/toRead'
@@ -16,7 +15,6 @@ import { SUPPORT_LABEL } from '../format'
 import { copyText, filterCards, groupByDeck, mergeDecks, stateCounts, waitsForRead } from './model'
 import type { FlaggedCard, StateFilter } from './model'
 import { UnvalidatedCard } from './UnvalidatedCard'
-import { useCardTexts } from './useCardTexts'
 import { useUnvalidated } from './useUnvalidated'
 import type { Scope } from './useUnvalidated'
 
@@ -68,7 +66,6 @@ function Choice<T extends string>({
 
 interface UnvalidatedViewProps {
   api: Pick<DecksApi, 'list' | 'get' | 'check'>
-  cards: Pick<CardsApi, 'get'>
   scope: Scope
   fixMarks?: FixMarksApi
   /** The endpoints that mark a card "play by hand" in a deck; with them each card offers it for its decks. */
@@ -80,7 +77,7 @@ interface UnvalidatedViewProps {
  * quoted from its text, merged with the decks that hold it (the most used first) or grouped by deck, narrowed to a
  * state, and copyable as plain text.
  */
-export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: UnvalidatedViewProps) {
+export function UnvalidatedView({ api, scope, fixMarks, byHand }: UnvalidatedViewProps) {
   const { state, reload } = useUnvalidated(api, scope)
   const [arrangement, setArrangement] = useState<Arrangement>('cards')
   const [chosen, setChosen] = useState<StateFilter>('all')
@@ -94,11 +91,6 @@ export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: Unvalid
       ? chosen
       : 'all'
   const shown = filterCards(merged, filter)
-  const { faces, pending } = useCardTexts(
-    cards,
-    merged.map((card) => card.oracleId),
-  )
-  const unread = pending ? 0 : merged.filter((card) => !faces.has(card.oracleId)).length
   const single = scope.kind === 'deck'
 
   const listOf = (items: readonly FlaggedCard[], showDecks: boolean, label: string) => (
@@ -107,8 +99,6 @@ export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: Unvalid
         <UnvalidatedCard
           key={card.oracleId}
           card={card}
-          faces={faces.get(card.oracleId)}
-          pending={pending}
           showDecks={showDecks}
           fixMarks={fixMarks}
           byHand={byHand}
@@ -273,24 +263,13 @@ export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: Unvalid
                 onChange={setChosen}
               />
             </div>
-            {pending ? (
-              <Button type="button" variant="outline" size="sm" disabled loading>
-                Reading card text…
-              </Button>
-            ) : (
-              <CopyButton text={copyText(shown, faces)} label="Copy as text">
-                Copy as text
-              </CopyButton>
-            )}
+            <CopyButton text={copyText(shown)} label="Copy as text">
+              Copy as text
+            </CopyButton>
           </div>
           <p className="text-sm text-muted-foreground" data-slot="summary">
             {`${shown.length} ${shown.length === 1 ? 'card' : 'cards'} in ${single ? 'this deck' : `${groups.length} of ${state.saved} ${state.saved === 1 ? 'deck' : 'decks'}`}`}
           </p>
-          {unread > 0 ? (
-            <p className="text-sm text-muted-foreground" role="status">
-              {`The text of ${unread} ${unread === 1 ? 'card' : 'cards'} could not be read, so ${unread === 1 ? 'its' : 'their'} clauses show without the quote.`}
-            </p>
-          ) : null}
 
           {arrangement === 'cards' || single ? (
             listOf(shown, !single, 'Cards not validated')

@@ -19,7 +19,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
-    LobbyGame, LobbyList, VisibilityBody,
+    LobbyGame, LobbyList, TeamsBody, VisibilityBody,
 };
 use sha2::{Digest, Sha256};
 
@@ -125,6 +125,7 @@ impl From<TableError> for ApiError {
                 DeckChoiceErrorCode::SeatReady.as_str(),
                 "the seat is ready; take Ready back to change its deck",
             ),
+            TableError::Teams(teams) => ApiError::from(teams),
             TableError::Record(_) => {
                 tracing::error!(%error, "a change to a table could not be saved");
                 failure(
@@ -149,7 +150,8 @@ fn game_of(path: Result<Path<String>, PathRejection>) -> Result<GameId, ApiError
 
 // --- the listing ---------------------------------------------------------------------------
 
-/// `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+/// `GET /api/lobbies`: the public games still in their lobby, then the running games (to watch), each newest first,
+/// at most 50 of each.
 ///
 /// The `ETag` is a digest of what the rows say apart from their age, so a poll that finds
 /// nothing new gets a `304` however long the games have been waiting.
@@ -174,7 +176,8 @@ pub(crate) async fn list(
                 "requests for the list",
             )
         })?;
-    let listed = app.registry().lobbies().await;
+    let mut listed = app.registry().lobbies().await;
+    listed.extend(app.registry().running().await);
     let tag = listing_tag(&listed);
     let Ok(header) = HeaderValue::from_str(&tag) else {
         return Err(failure(
@@ -203,6 +206,7 @@ fn view(game: ListedGame) -> LobbyGame {
         total: count(game.total),
         created_at: game.created_at,
         age_secs: game.age.as_secs(),
+        running: game.running,
     }
 }
 
@@ -212,6 +216,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
     let mut hash = Sha256::new();
     for game in listed {
         let manual = if game.manual_play { "1" } else { "0" };
+        let running = if game.running { "1" } else { "0" };
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
@@ -226,6 +231,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &filled,
             &total,
             &game.created_at,
+            running,
         ];
         for part in parts {
             hash.update(u64::try_from(part.len()).unwrap_or(u64::MAX).to_be_bytes());
@@ -479,6 +485,25 @@ pub(crate) async fn set_visibility(
     Ok(Json(body))
 }
 
+/// `PUT /api/games/{id}/teams`: the host sets the teams before the start; every seat takes Ready back.
+pub(crate) async fn set_teams(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    request: Request,
+) -> Result<Json<TeamsBody>, ApiError> {
+    let game = game_of(path)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let headers = request.headers().clone();
+    let body = read_json::<TeamsBody>(request).await?;
+    let by = holder(&app, &headers, game).await?;
+    app.registry()
+        .set_teams(game, by, body.teams.clone())
+        .await?;
+    Ok(Json(body))
+}
+
 /// `DELETE /api/games/{id}`: the host closes a game that is still in its lobby. Its sockets are
 /// closed with 4002 and it leaves the listing at once.
 pub(crate) async fn close(
@@ -611,6 +636,7 @@ mod tests {
             total: 4,
             created_at: "2026-10-19T12:30:00Z".to_owned(),
             age: Duration::from_secs(5),
+            running: false,
         }
     }
 

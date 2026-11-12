@@ -1,4 +1,4 @@
-// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games" and "Review cards" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
+// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games", "Tournaments" and "Review cards" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -55,7 +55,7 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
-  it('adds Decks, My games and Review cards, between Precons and Create, for an account', async () => {
+  it('adds Decks, My games, Tournaments and Review cards, between Precons and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual([
@@ -63,6 +63,7 @@ describe('the main navigation', () => {
       'Precons',
       'Decks',
       'My games',
+      'Tournaments',
       'Review cards',
       'Create',
     ])
@@ -71,6 +72,7 @@ describe('the main navigation', () => {
       '/precons',
       '/decks',
       '/games',
+      '/tournaments',
       '/review?mine=true',
       '/new',
     ])

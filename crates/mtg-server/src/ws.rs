@@ -1,5 +1,6 @@
-//! The game sockets: `GET /ws/{game}/{token}` for a seat's link and `GET /ws/{game}` for a signed-in
-//! user's bound seat. Both authenticate before the upgrade and hand the socket to a session.
+//! The game sockets: `GET /ws/{game}/{token}` for a seat's link, `GET /ws/{game}` for a signed-in
+//! user's bound seat and `GET /ws/{game}/watch` for a signed-in spectator. Each
+//! authenticates before the upgrade and hands the socket to a session.
 
 use axum::extract::rejection::PathRejection;
 use axum::extract::ws::rejection::WebSocketUpgradeRejection;
@@ -66,6 +67,36 @@ pub(crate) async fn upgrade_as_user(
         Err(error) => return error.into_response(),
     };
     let Some(access) = app.registry().authenticate_user(id, user.id) else {
+        return ApiError::not_found().into_response();
+    };
+    if app.stopping() {
+        return ApiError::unavailable().into_response();
+    }
+    match upgrade {
+        Ok(upgrade) => start(&app, access, upgrade),
+        Err(rejection) => rejection.into_response(),
+    }
+}
+
+/// The spectator's upgrade handler: any signed-in user watches any game, holding no seat. A
+/// malformed address is 404 whoever asks; then no session is 401; then an unknown game is 404. A
+/// game that has not started takes the socket and closes it, as a seat's socket to an ended game.
+pub(crate) async fn upgrade_watcher(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    headers: HeaderMap,
+    upgrade: Result<WebSocketUpgrade, WebSocketUpgradeRejection>,
+) -> Response {
+    if !origin_allowed(&headers, &app.config().allowed_origins) {
+        return ApiError::forbidden_origin().into_response();
+    }
+    let Some(id) = path.ok().and_then(|Path(game)| game.parse::<GameId>().ok()) else {
+        return ApiError::not_found().into_response();
+    };
+    if let Err(error) = app.auth().require_user(&headers).await {
+        return error.into_response();
+    }
+    let Some(access) = app.registry().authenticate_spectator(id) else {
         return ApiError::not_found().into_response();
     };
     if app.stopping() {

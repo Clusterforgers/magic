@@ -360,9 +360,9 @@ fn a_card_may_be_played_in_the_copies_the_table_allows(
 
 #[rstest]
 #[case::the_formats_identity(HouseRules::default(), false)]
-#[case::identity_on(deck_rules(|d| d.colour_identity = Some(true)), false)]
-#[case::identity_off(deck_rules(|d| d.colour_identity = Some(false)), true)]
-fn a_card_outside_the_colour_identity_is_accepted_only_where_the_table_lifts_the_rule(
+#[case::identity_on(deck_rules(|d| d.color_identity = Some(true)), false)]
+#[case::identity_off(deck_rules(|d| d.color_identity = Some(false)), true)]
+fn a_card_outside_the_color_identity_is_accepted_only_where_the_table_lifts_the_rule(
     #[values(2, 3, 4, 6)] seats: usize,
     #[case] house: HouseRules,
     #[case] accepted: bool,
@@ -413,7 +413,7 @@ fn a_seat_starts_with_the_commanders_the_table_allows(
 #[test]
 fn the_relaxations_do_not_lift_the_other_rules_of_the_deck() {
     let house = deck_rules(|d| {
-        d.colour_identity = Some(false);
+        d.color_identity = Some(false);
         d.singleton = Some(false);
         d.deck_size = Some(60);
     });
@@ -494,7 +494,7 @@ fn a_rule_out_of_range_refuses_the_setup_and_names_itself(
 #[case::damage_off(rules(|r| r.commander_damage = Some(CommanderDamageLimit::Off)))]
 #[case::singleton(deck_rules(|d| d.singleton = Some(false)))]
 #[case::copies(relaxed_singleton(Some(4)))]
-#[case::identity(deck_rules(|d| d.colour_identity = Some(false)))]
+#[case::identity(deck_rules(|d| d.color_identity = Some(false)))]
 #[case::size(deck_rules(|d| d.deck_size = Some(100)))]
 #[case::commanders(rules(|r| r.commanders_per_seat = Some(1)))]
 fn each_rule_makes_another_game(
@@ -562,7 +562,7 @@ fn game_under(players: usize, seed: u64, house: &HouseRules) -> GameSetup {
         let size = house.deck.deck_size.map_or(100, |n| n as usize);
         let library = size - player.commanders.len();
         player.library.truncate(library);
-        if house.deck.colour_identity == Some(false) {
+        if house.deck.color_identity == Some(false) {
             for slot in player.library.iter_mut().take(3) {
                 *slot = forest();
             }
@@ -597,7 +597,7 @@ fn the_fuzz_decks_use_the_relaxations_they_are_built_for(#[values(2, 3, 6)] play
     let house = rules(|r| {
         r.deck = DeckRules {
             singleton: Some(false),
-            colour_identity: Some(false),
+            color_identity: Some(false),
             deck_size: Some(80),
             max_copies: Some(2),
         };
@@ -639,12 +639,12 @@ fn games() -> u64 {
 #[case::forty_cards(deck_rules(|d| d.deck_size = Some(40)))]
 #[case::copies(relaxed_singleton(Some(3)))]
 #[case::any_copies(relaxed_singleton(None))]
-#[case::any_colour(deck_rules(|d| d.colour_identity = Some(false)))]
+#[case::any_colour(deck_rules(|d| d.color_identity = Some(false)))]
 #[case::two_commanders(rules(|r| r.commanders_per_seat = Some(2)))]
 #[case::all_at_once(rules(|r| {
     r.commander_tax = Some(1);
     r.commander_damage = lethal(10);
-    r.deck = DeckRules { singleton: Some(false), colour_identity: Some(false), deck_size: Some(80), max_copies: Some(2) };
+    r.deck = DeckRules { singleton: Some(false), color_identity: Some(false), deck_size: Some(80), max_copies: Some(2) };
     r.commanders_per_seat = Some(2);
 }))]
 fn bot_games_under_each_rule_end_with_the_invariants_kept(
@@ -678,7 +678,7 @@ fn any_commander_rules() -> impl Strategy<Value = HouseRules> {
                 commander_damage: damage,
                 deck: DeckRules {
                     singleton,
-                    colour_identity: identity,
+                    color_identity: identity,
                     deck_size: size,
                     max_copies: copies.filter(|_| singleton == Some(false)),
                 },
@@ -710,7 +710,7 @@ fn five_seats_of_long_non_singleton_decks_in_any_colour_play_to_their_end() {
     let house = HouseRules {
         deck: DeckRules {
             singleton: Some(false),
-            colour_identity: Some(false),
+            color_identity: Some(false),
             deck_size: Some(126),
             max_copies: None,
         },

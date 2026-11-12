@@ -24,7 +24,7 @@ fn seeded_bot_games_finish_with_a_winner_or_a_draw(#[case] players: usize) {
         let outcome = play_game(fuzz_setup(players, seed), seed)
             .unwrap_or_else(|failure| panic!("{failure}"));
         match outcome.result {
-            GameResult::Winner(_) => winners.fetch_add(1, Ordering::Relaxed),
+            GameResult::Winner(_) | GameResult::Team(_) => winners.fetch_add(1, Ordering::Relaxed),
             GameResult::Draw => draws.fetch_add(1, Ordering::Relaxed),
         };
     });

@@ -1,4 +1,4 @@
-// Goal: the My games page sends a visitor who is not signed in to the sign-in form and back, and every state of the signed-in page is designed in the Play page's wide column: a skeleton only after 300 ms, an empty state with two ways on, an error with Retry that keeps old rows dimmed, and a table (stacked rows on a narrow screen) of state badges, results and a Continue link only where a game can be continued, and a failed game shows its reason beside a Remove button that takes it off the list and no link into it.
+// Goal: the My games page sends a visitor who is not signed in to the sign-in form and back, and every state of the signed-in page is designed in the Play page's wide column: a skeleton only after 300 ms, an empty state with two ways on, an error with Retry that keeps old rows dimmed, and a table (stacked rows on a narrow screen) of state badges, results and a Continue link only where a game can be continued, a Replay link for a finished game, and a failed game shows its reason beside a Remove button that takes it off the list and no link into it.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { scaled } from '@/test-utils/loadFactor'
@@ -401,14 +401,18 @@ describe('each game', () => {
     ['lost to a guest', { Winner: 1 } as const, 'Bo won'],
     ['drawn', 'Draw' as const, 'Draw'],
     ['finished with no result on record', null, 'Ended without a result'],
-  ])('shows a game that was %s as “%s” and offers no way back in', async (_how, result, words) => {
-    await openRows([listed({ status: 'finished', result, others: [bo] })])
-    const row = within(rows()[0] as HTMLElement)
-    expect(row.getByText('Finished')).toBeInTheDocument()
-    expect(row.getByText(words)).toBeInTheDocument()
-    expect(row.queryByRole('link')).toBeNull()
-    expect(row.queryByRole('button')).toBeNull()
-  })
+  ])(
+    'shows a game that was %s as “%s” and offers its replay, no way back in',
+    async (_how, result, words) => {
+      await openRows([listed({ game: 'done', status: 'finished', result, others: [bo] })])
+      const row = within(rows()[0] as HTMLElement)
+      expect(row.getByText('Finished')).toBeInTheDocument()
+      expect(row.getByText(words)).toBeInTheDocument()
+      expect(row.getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['/replay/done'])
+      expect(row.getByRole('link', { name: 'Replay your game with Bo' })).toHaveTextContent('Replay')
+      expect(row.queryByRole('button')).toBeNull()
+    },
+  )
 
   it('writes an old game as a date', async () => {
     await openRows([listed({ status: 'finished', result: 'Draw', created_at: '2026-08-02T09:30:00Z' })])
@@ -569,7 +573,7 @@ describe('on a narrow screen', () => {
     expect(row.getByText('You won')).toBeInTheDocument()
     expect(row.getByText('Bo')).toBeInTheDocument()
     expect(row.getByText('You play Ada in seat 1.')).toBeInTheDocument()
-    expect(row.queryByRole('link')).toBeNull()
+    expect(row.getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['/replay/won'])
   })
 
   it('stacks a failed game with its state, its reason and a Remove button, and no link', async () => {

@@ -1,4 +1,4 @@
-// Goal: the socket joins first and once, builds the address from the page origin, survives garbage frames and fatal errors, and stays idle after disconnect.
+// Goal: the socket joins first and once, builds the address (a seat's or a spectator's) from the page origin, survives garbage frames and fatal errors, and stays idle after disconnect.
 import { describe, expect, it } from 'vitest'
 import { GAME, TOKEN, join, nextWait, open, setup, welcome } from '@/test-utils/socketSetup'
 import type { Setup } from '@/test-utils/socketSetup'
@@ -27,6 +27,13 @@ describe('socketUrl', () => {
     ['http://localhost:5173', 'a/b', 'ws://localhost:5173/ws/a%2Fb'],
   ])('%s with game %s and no token is the session address %s', (origin, game, expected) => {
     expect(socketUrl(game, undefined, origin)).toBe(expected)
+  })
+
+  it.each([
+    ['http://localhost:5173', 'g', undefined, 'ws://localhost:5173/ws/g/watch'],
+    ['https://play.example', 'a/b', 'ignored', 'wss://play.example/ws/a%2Fb/watch'],
+  ])('%s with game %s (token %s) is the spectator address %s', (origin, game, token, expected) => {
+    expect(socketUrl(game, token, origin, true)).toBe(expected)
   })
 
   it('joins by the session address when no token is given, and keeps it for every retry', () => {

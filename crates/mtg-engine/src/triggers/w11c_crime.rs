@@ -13,14 +13,14 @@ use crate::zones::Zone;
 /// Whether the spell or ability `player` announced with `choices` is a crime against an opponent.
 pub(super) fn w11c_is_crime(state: &GameState, player: PlayerId, choices: &Choices) -> bool {
     choices.targets.iter().flatten().any(|target| match target {
-        Target::Player(other) => *other != player,
+        Target::Player(other) => state.is_opponent(player, *other),
         Target::Object(object) => state.object(object.id).is_some_and(|found| {
             let whose = match found.zone() {
                 Zone::Graveyard(_) => found.owner(),
                 Zone::Battlefield | Zone::Stack => controller_of_object(state, found),
                 _ => return false,
             };
-            whose != player
+            state.is_opponent(player, whose)
         }),
     })
 }

@@ -8,17 +8,25 @@ import { useAuth, useAuthStore } from '@/features/auth/context'
 import { saveInvites } from '@/lib/invites'
 import { fragmentOf, seatLinkPath } from '@/lib/seatLink'
 import type { Api, CreatedGame, CreateGameRequest, DeckInfo } from '@/net/api'
+import { preconsApi } from '@/net/precons'
+import type { PreconsApi } from '@/net/precons'
 import { AdvancedOptions } from './AdvancedOptions'
+import { BotsField } from './BotsField'
 import { describeApiError } from './apiErrors'
 import {
   addSeat,
+  botsOf,
+  chooseBots,
   chooseFormat,
   chooseLinks,
+  chooseMode,
   chooseVisibility,
   defaultDraft,
   editRule,
   editSeat,
+  modeProblem,
   nameFieldId,
+  pickBotPrecons,
   problemCount,
   problemsOf,
   removeSeat,
@@ -29,6 +37,7 @@ import {
 import type { Draft } from './form'
 import { GameCreated } from './GameCreated'
 import { FormatField } from './FormatField'
+import { GameModeField } from './GameModeField'
 import { HostFields } from './HostFields'
 import { HouseRulesField } from './HouseRulesField'
 import { SeatList } from './SeatList'
@@ -37,6 +46,8 @@ import { VisibilityField } from './VisibilityField'
 interface CreateFormProps {
   api: Api
   decks: DeckInfo[]
+  /** Where the precons of Commander bots come from; the server's by default. */
+  precons?: PreconsApi
 }
 
 interface Made {
@@ -45,7 +56,7 @@ interface Made {
 }
 
 /** The form for a new game; once the server has made it, the game's lobby, or the links to every seat. */
-export function CreateForm({ api, decks }: CreateFormProps) {
+export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps) {
   const navigate = useNavigate()
   const auth = useAuthStore()
   const account = useAuth((state) => state.user?.username ?? null)
@@ -63,7 +74,8 @@ export function CreateForm({ api, decks }: CreateFormProps) {
 
   const problems = problemsOf(draft, decks)
   const rules = ruleProblems(draft)
-  const troubled = problemCount(problems) + Object.keys(rules).length
+  const seatsWrong = modeProblem(draft)
+  const troubled = problemCount(problems) + Object.keys(rules).length + (seatsWrong === null ? 0 : 1)
 
   useEffect(() => {
     const id = focusAfterRender.current
@@ -115,20 +127,30 @@ export function CreateForm({ api, decks }: CreateFormProps) {
       setFocusProblem((n) => n + 1)
       return
     }
-    const request = toRequest(draft)
     setPending(true)
     setFailure(null)
     try {
+      const bots = botsOf(draft)
+      const botDecks =
+        draft.format === 'commander' && bots > 0 ? pickBotPrecons((await precons.list()).precons, bots) : []
+      if (draft.format === 'commander' && bots > 0 && botDecks.length === 0) {
+        setFailure('No Commander precon is available for the bots. Make the game without bots.')
+        return
+      }
+      const request = toRequest(draft, botDecks)
       const created = await api.createGame(request)
       // The server shows the code once. A game with a link per seat has no open seat to take by it, so none is kept.
+      // A bot's seat is the server's to play, so its link is never handed out.
       saveInvites({
         game: created.game,
         ...(draft.links || created.code === undefined ? {} : { code: created.code }),
-        seats: created.seats.map((seat) => ({
-          seat: seat.seat,
-          name: request.seats[seat.seat]?.name ?? `Seat ${seat.seat + 1}`,
-          token: seat.token,
-        })),
+        seats: created.seats
+          .filter((seat) => request.seats[seat.seat]?.bot !== true)
+          .map((seat) => ({
+            seat: seat.seat,
+            name: request.seats[seat.seat]?.name ?? `Seat ${seat.seat + 1}`,
+            token: seat.token,
+          })),
       })
       // The new game is on the account's list now; asking also finds out if the session ended, which would have
       // made this a guest's game.
@@ -201,6 +223,11 @@ export function CreateForm({ api, decks }: CreateFormProps) {
             value={draft.format}
             onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
           />
+          <GameModeField
+            value={draft.mode}
+            problem={seatsWrong}
+            onChange={(mode) => setDraft((current) => chooseMode(current, decks, mode))}
+          />
           {draft.links ? (
             <SeatList
               draft={draft}
@@ -217,6 +244,13 @@ export function CreateForm({ api, decks }: CreateFormProps) {
               problems={shown?.get(draft.seats[0]?.id ?? -1) ?? null}
               onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
               onCount={(count) => setDraft((current) => resizeSeats(current, decks, count))}
+            />
+          )}
+          {draft.links ? null : (
+            <BotsField
+              value={botsOf(draft)}
+              most={draft.seats.length - 1}
+              onChange={(count) => setDraft((current) => chooseBots(current, count))}
             />
           )}
         </div>
@@ -244,11 +278,13 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         <Alert variant="destructive">
           <CircleAlertIcon aria-hidden="true" />
           <AlertDescription className="text-foreground">
-            {draft.links
-              ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
-              : Object.keys(rules).length > 0 && problemCount(problems) === 0
-                ? 'Fix the house rules marked below before the game can be created.'
-                : 'Fix your name, deck or house rules before the game can be created.'}
+            {seatsWrong !== null && troubled === 1
+              ? `${seatsWrong} Change the seats or the game mode before the game can be created.`
+              : draft.links
+                ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
+                : Object.keys(rules).length > 0 && problemCount(problems) === 0
+                  ? 'Fix the house rules marked below before the game can be created.'
+                  : 'Fix your name, deck or house rules before the game can be created.'}
           </AlertDescription>
         </Alert>
       ) : null}

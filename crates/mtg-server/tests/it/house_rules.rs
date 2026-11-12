@@ -174,7 +174,7 @@ async fn a_game_without_rules_lists_none(#[case] rules: Option<Value>) {
 #[case::the_formats_range_and_style(json!({ "attack_range": "any", "mulligan_style": "london", "open_hands": false }))]
 #[case::the_rules_of_the_table(json!({ "attack_range": "left", "open_hands": true, "revealed_library_top": true, "opening_hand_smoothing": true, "mulligan_style": "vancouver" }))]
 #[case::the_rules_for_commander(json!({ "commander_tax": 2, "commander_damage": { "lethal": 21 }, "commanders_per_seat": 2 }))]
-#[case::the_deck_check(json!({ "deck": { "singleton": false, "colour_identity": false, "deck_size": 100, "max_copies": 3 } }))]
+#[case::the_deck_check(json!({ "deck": { "singleton": false, "color_identity": false, "deck_size": 100, "max_copies": 3 } }))]
 #[case::no_commander_damage(json!({ "commander_damage": "off", "commander_tax": 0 }))]
 #[tokio::test]
 async fn a_value_equal_to_the_formats_is_kept_as_given(#[case] rules: Value) {

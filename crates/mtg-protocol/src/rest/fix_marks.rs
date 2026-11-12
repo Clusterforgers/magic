@@ -8,6 +8,9 @@ use ts_rs::TS;
 /// The longest note of a mark, in characters.
 pub const MAX_FIX_NOTE_CHARS: usize = 280;
 
+/// The most cards one account may hold marked to fix.
+pub const MAX_FIX_MARKS_PER_USER: u32 = 500;
+
 /// The body of `PUT /api/fix-marks/{oracle_id}`.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]

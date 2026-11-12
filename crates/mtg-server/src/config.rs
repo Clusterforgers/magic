@@ -131,6 +131,8 @@ pub struct AttemptLimits {
     pub favourite_writes_per_user: u32,
     /// Requests to the read endpoints one account may make inside `lobby_window`, lists, cards and verdicts alike.
     pub read_requests_per_user: u32,
+    /// Marks and unmarks of cards to fix one account may make inside `window`; both count.
+    pub fix_mark_writes_per_user: u32,
 }
 
 impl Default for AttemptLimits {
@@ -148,6 +150,7 @@ impl Default for AttemptLimits {
             precon_requests_per_ip: 60,
             favourite_writes_per_user: 200,
             read_requests_per_user: 120,
+            fix_mark_writes_per_user: 200,
         }
     }
 }
@@ -278,6 +281,8 @@ pub struct ServerConfig {
     pub auth: AuthConfig,
     /// The picture cache and its upstream.
     pub images: ImageConfig,
+    /// How long a bot seat waits before each answer ([`crate::bots::BOT_DELAY`]).
+    pub bot_delay: Duration,
 }
 
 impl Default for ServerConfig {
@@ -293,6 +298,7 @@ impl Default for ServerConfig {
             shutdown_grace: Duration::from_secs(5),
             auth: AuthConfig::default(),
             images: ImageConfig::default(),
+            bot_delay: crate::bots::BOT_DELAY,
         }
     }
 }

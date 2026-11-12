@@ -170,7 +170,7 @@ pub(crate) fn legal_player_host(state: &GameState, attachment: ObjectId, player:
         return false;
     };
     characteristics(state, attachment).is_some_and(|chars| !chars.is_creature())
-        && (!opponent || player != controller_of_object(state, object))
+        && (!opponent || state.is_opponent(player, controller_of_object(state, object)))
         && !keywords::Source::live(state, attachment)
             .is_some_and(|source| keywords::protected_from(state, Holder::Player(player), source))
 }

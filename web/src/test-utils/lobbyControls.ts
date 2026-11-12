@@ -1,4 +1,4 @@
-import type { Visibility } from '@/protocol/generated'
+import type { Teams, Visibility } from '@/protocol/generated'
 import { jsonResponse } from './fakeFetch'
 import { tokenOf } from './fakeServer'
 import type { FakeServer, ServerScript } from './fakeServer'
@@ -21,6 +21,8 @@ export interface LobbyScene {
   change?: ServerScript['change']
   /** A signed-in visitor with no seat link, who acts through the session. */
   account?: string
+  /** The teams of the table, in the roster and the lookup's house rules; none by default. */
+  teams?: Teams
 }
 
 const NAMES = ['Ana', 'Bo', '']
@@ -39,6 +41,7 @@ export async function openLobby(scene: LobbyScene = {}): Promise<GameHarness> {
       ready: [],
       result: null,
       visibility: typeof visibility === 'function' ? visibility() : visibility,
+      ...(scene.teams === undefined ? {} : { house_rules: { teams: scene.teams } }),
     })
   const h = await renderGame({
     routed: true,
@@ -47,7 +50,8 @@ export async function openLobby(scene: LobbyScene = {}): Promise<GameHarness> {
     script: { game: info, change: scene.change },
   })
   h.join(seat, names.length)
-  h.deliver(lobbyMessage(names.map((name): SeatFlags => [name, name !== '', false])))
+  const roster = lobbyMessage(names.map((name): SeatFlags => [name, name !== '', false]))
+  h.deliver(scene.teams === undefined ? roster : { ...roster, teams: scene.teams })
   await h.settle()
   return h
 }
@@ -94,6 +98,8 @@ export const FAILURES = {
   started: () => jsonResponse(409, { error: 'started', message: 'already started' }),
   notClaimed: () => jsonResponse(409, { error: 'not_claimed', message: 'issued seat' }),
   server: () => jsonResponse(500, { error: 'internal', message: 'boom' }),
+  teams: () =>
+    jsonResponse(400, { error: 'invalid_request', message: 'house_rules.teams: uneven', field: 'teams' }),
   busy: () => jsonResponse(503, { error: 'unavailable', message: 'restarting' }),
   proxy: () => new Response('<html>Bad gateway</html>', { status: 502 }),
   offline: () => Promise.reject(new TypeError('Failed to fetch')),

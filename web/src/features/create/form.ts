@@ -2,8 +2,10 @@
 import { requestRules, rulesFromTexts } from '@/lib/houseRules'
 import type { GameFormat, RuleTexts } from '@/lib/houseRules'
 import { COMMANDER_POD, MAX_FORM_SEATS, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
+import { defaultTeams, GIANT_SEATS, MIN_TEAM_SEATS, seatsProblem } from '@/lib/teams'
+import type { GameMode } from '@/lib/teams'
 import type { CreateGameRequest, DeckInfo } from '@/net/api'
-import type { Visibility } from '@/protocol/generated'
+import type { PreconListItem, Visibility } from '@/protocol/generated'
 
 /** One seat in the form; `id` is a stable key that is never reused, so edits stay with their seat when another goes. */
 export interface SeatDraft {
@@ -24,6 +26,10 @@ export interface Draft {
   format: GameFormat
   /** The house rules being edited, as field text by rule id; an empty text keeps the format's value. */
   rules: RuleTexts
+  /** How many seats after the creator's a bot plays; never more than the other seats (`botsOf`). */
+  bots: number
+  /** Free-for-all, or one of the team modes with the engine's default teams. */
+  mode: GameMode
 }
 
 /** What is wrong with one seat, in words for the person filling in the form; null for fine. */
@@ -78,7 +84,16 @@ export function defaultDraft(
   host?: string,
   format: GameFormat = 'commander',
 ): Draft {
-  let draft: Draft = { seats: [], nextId: 0, visibility: 'public', links: false, format, rules: {} }
+  let draft: Draft = {
+    seats: [],
+    nextId: 0,
+    visibility: 'public',
+    links: false,
+    format,
+    rules: {},
+    bots: 0,
+    mode: 'free_for_all',
+  }
   for (let i = 0; i < startSeats(format); i += 1) draft = withSeat(draft, decks)
   const first = draft.seats[0]
   return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
@@ -130,14 +145,64 @@ export function chooseVisibility(draft: Draft, visibility: Visibility): Draft {
  */
 export function chooseFormat(draft: Draft, decks: readonly DeckInfo[], format: GameFormat): Draft {
   if (format === draft.format) return draft
-  const wanted = draft.seats.length === startSeats(draft.format) ? startSeats(format) : draft.seats.length
+  // A team mode keeps its seats: they were chosen for the teams.
+  const kept = draft.mode !== 'free_for_all' || draft.seats.length !== startSeats(draft.format)
+  const wanted = kept ? draft.seats.length : startSeats(format)
   const next: Draft = { ...draft, format, links: format === 'commander' ? false : draft.links }
   return resizeSeats(next, decks, wanted)
 }
 
+/**
+ * The form in another mode. Two-Headed Giant takes 4 seats; Teams takes an even count of 4 or more, so an odd count
+ * gains a seat and a smaller one grows to 4. Free-for-all keeps the seats.
+ */
+export function chooseMode(draft: Draft, decks: readonly DeckInfo[], mode: GameMode): Draft {
+  if (mode === draft.mode) return draft
+  const next: Draft = { ...draft, mode }
+  const count = draft.seats.length
+  if (mode === 'two_headed_giant') return resizeSeats(next, decks, GIANT_SEATS)
+  if (mode === 'teams') return resizeSeats(next, decks, Math.max(MIN_TEAM_SEATS, count + (count % 2)))
+  return next
+}
+
+/** Why the seats do not fit the mode, in words; null when they do. */
+export const modeProblem = (draft: Draft): string | null => seatsProblem(draft.mode, draft.seats.length)
+
 /** The form with the text of one house rule changed. */
 export function editRule(draft: Draft, id: string, text: string): Draft {
   return { ...draft, rules: { ...draft.rules, [id]: text } }
+}
+
+/** The bots the game is made with: those asked for, at most every seat but the creator's, none with a link per seat. */
+export const botsOf = (draft: Draft): number =>
+  draft.links ? 0 : Math.max(0, Math.min(draft.bots, draft.seats.length - 1))
+
+/** The form with `count` bots. */
+export function chooseBots(draft: Draft, count: number): Draft {
+  return Number.isInteger(count) && count >= 0 ? { ...draft, bots: count } : draft
+}
+
+/**
+ * The precons `count` Commander bots play, as deck ids (`precon:<code>`): Commander precons a game takes, the Verified
+ * ones first, each group shuffled by `random`, and used again from the start when there are fewer than bots.
+ */
+export function pickBotPrecons(
+  precons: readonly PreconListItem[],
+  count: number,
+  random: () => number = Math.random,
+): string[] {
+  const usable = precons.filter((precon) => precon.playable && precon.format === 'commander')
+  const shuffled = (list: PreconListItem[]): PreconListItem[] =>
+    list
+      .map((precon) => ({ precon, key: random() }))
+      .sort((a, b) => a.key - b.key)
+      .map((entry) => entry.precon)
+  const ordered = [
+    ...shuffled(usable.filter((precon) => precon.verified)),
+    ...shuffled(usable.filter((precon) => !precon.verified)),
+  ]
+  if (ordered.length === 0) return []
+  return Array.from({ length: count }, (_, at) => `precon:${ordered[at % ordered.length]?.code ?? ''}`)
 }
 
 /** The form with a link for every seat turned on or off; what was typed stays. */
@@ -180,19 +245,24 @@ export function problemCount(problems: ReadonlyMap<number, SeatProblems>): numbe
 
 /** What is wrong with each house rule's text, by rule id; empty when every text is fine. */
 export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
-  return rulesFromTexts(draft.rules, draft.format).problems
+  return rulesFromTexts(draft.rules, draft.format, draft.seats.length).problems
 }
 
 /**
- * The body for `POST /api/games`: the format, names trimmed and the house rules that differ from the format's. A link
+ * The body for `POST /api/games`: the format, names trimmed and the house rules that differ from the format's, with
+ * the default teams of a team mode. A link
  * per seat holds every seat, each with the deck the form gave it, and is invite only. Otherwise only the creator's seat
  * is held, with its deck in a Normal game and none in Commander (the lobby's chooser judges decks against the table),
  * and the others, which the server never reads a name for, go out as `Player N` with no deck: whoever takes a seat
- * chooses its deck in the lobby.
+ * chooses its deck in the lobby. The seats right after the creator's are the bots (`botsOf`), held, each with a deck:
+ * `botDecks` in order (the precons of a Commander game), else the deck the form gave the seat.
  */
-export function toRequest(draft: Draft): CreateGameRequest {
-  const house = requestRules(draft.rules, draft.format)
+export function toRequest(draft: Draft, botDecks: readonly string[] = []): CreateGameRequest {
+  const typed = requestRules(draft.rules, draft.format, draft.seats.length)
+  const house =
+    draft.mode === 'free_for_all' ? typed : { ...typed, teams: defaultTeams(draft.mode, draft.seats.length) }
   const rules = house === undefined ? {} : { house_rules: house }
+  const bots = botsOf(draft)
   if (draft.links) {
     return {
       format: draft.format,
@@ -204,13 +274,15 @@ export function toRequest(draft: Draft): CreateGameRequest {
   return {
     format: draft.format,
     seats: draft.seats.map((seat, index) => {
+      if (index !== 0 && index <= bots)
+        return { name: 'Bot', deck: botDecks[index - 1] ?? seat.deck, bot: true }
       if (index !== 0) return { name: `Player ${index + 1}` }
       return draft.format === 'normal'
         ? { name: seat.name.trim(), deck: seat.deck }
         : { name: seat.name.trim() }
     }),
     visibility: draft.visibility,
-    held: 1,
+    held: 1 + bots,
     ...rules,
   }
 }

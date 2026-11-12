@@ -57,6 +57,8 @@ mod c8_kwq_abilities;
 mod c9_fight_double;
 mod card_grants;
 mod cast;
+mod ce29_arrest;
+mod ce29_charm;
 mod champion;
 mod chance;
 mod changes;
@@ -347,6 +349,26 @@ pub fn counts_targets(per: &crate::value::Amount) -> bool {
     statics::counts_targets(per)
 }
 
+/// The event of a triggered clause the table plays by hand ("Whenever a creature dies, ..."), when the words before its
+/// first comma read as one; `names` are the face's own names, which the clause reads as `~`. A clause of several lines
+/// waits for no one event.
+pub fn by_hand_event(text: &str, names: &[String]) -> Option<crate::trigger::TriggerPattern> {
+    let normalized = super::normalize::normalize(text, names);
+    let lines = normalized.lines();
+    let [line] = lines.as_slice() else {
+        return None;
+    };
+    let line = normalized.slice(line.clone());
+    if classify::classify(&line, false) != ClauseKind::Triggered {
+        return None;
+    }
+    let line = line.get(classify::ability_word_len(&line).unwrap_or(0)..)?;
+    let tokens = tokenize(line);
+    let mut reader = Reader::new(&tokens, false);
+    let when = triggers::pattern(&mut reader)?;
+    reader.punct(',').then_some(when)
+}
+
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
 /// reads as the parts of one cost.
 pub fn cost_in_words(text: &str) -> Option<Cost> {
@@ -428,6 +450,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     reader.subtypes.clone_from(&own.subtypes);
     let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
+    } else if let Some(found) = ce29_arrest::ce29_arrest(text, x_free, own) {
+        found
     } else {
         let found = static_pairs::read(&mut reader)?;
         if !reader.end() {
@@ -438,9 +462,10 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let [first, second] = found.as_slice() else {
         return None;
     };
+    let said = ce29_arrest::ce29_said(text);
     static_pairs::texts(first, second)
         .iter()
-        .any(|written| same_text(written, text))
+        .any(|written| same_text(written, &said))
         .then_some(found)
 }
 

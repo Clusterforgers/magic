@@ -124,7 +124,7 @@ fn relaxed(set: impl FnOnce(&mut DeckRules)) -> HouseRules {
 #[case::inside_the_identity(big_companion(), HouseRules::default(), vec![])]
 #[case::the_condition_is_over_all_hundred_cards(small_companion(), HouseRules::default(), vec![IN_ZONE])]
 #[case::outside_the_identity(red_companion(), HouseRules::default(), vec![(IssueCode::ColorIdentity, Some(DeckZone::Companion))])]
-#[case::outside_but_the_table_relaxed_the_identity(red_companion(), relaxed(|d| d.colour_identity = Some(false)), vec![])]
+#[case::outside_but_the_table_relaxed_the_identity(red_companion(), relaxed(|d| d.color_identity = Some(false)), vec![])]
 #[case::another_relaxation_leaves_the_identity(red_companion(), relaxed(|d| d.singleton = Some(false)), vec![(IssueCode::ColorIdentity, Some(DeckZone::Companion))])]
 #[case::no_companion_ability(no_ability(), HouseRules::default(), vec![IN_ZONE])]
 fn a_commander_game_judges_the_condition_over_the_commanders_deck_and_the_identity(
