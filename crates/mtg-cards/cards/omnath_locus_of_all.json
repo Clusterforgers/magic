@@ -1,0 +1,20 @@
+{
+  "oracle_id": "26445dc7-8363-4205-aee8-1cafeb4ba4c0",
+  "name": "Omnath, Locus of All",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Omnath, Locus of All",
+      "oracle_fingerprint": "03904dfaacc69e8954412756b7438afd",
+      "abilities": [
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Black" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 65, "end": 366 }
+          }
+        }
+      ]
+    }
+  ]
+}

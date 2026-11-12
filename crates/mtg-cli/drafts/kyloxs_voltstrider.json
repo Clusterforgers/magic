@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e7b746c8-1b32-42ed-8328-4e16274209d8",
+  "name": "Kylox's Voltstrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kylox's Voltstrider",
+      "oracle_fingerprint": "e2a8b69dabcf77a1b308bab5219255dd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "CollectEvidence": 6 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

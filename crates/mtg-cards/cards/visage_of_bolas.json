@@ -1,0 +1,47 @@
+{
+  "oracle_id": "21bb3c03-c1c0-40ec-8df4-8d0054c3742b",
+  "name": "Visage of Bolas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visage of Bolas",
+      "oracle_fingerprint": "91a807fa9dff8ac8fd602820d60f814d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Nicol Bolas, the Deceiver" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

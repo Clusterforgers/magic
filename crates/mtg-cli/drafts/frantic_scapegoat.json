@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d181310f-404b-4f26-8024-b7b537d1fd90",
+  "name": "Frantic Scapegoat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frantic Scapegoat",
+      "oracle_fingerprint": "13e2073d480c24e21be8ef915857f65f",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Suspect": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "if": { "Matches": { "subject": "This", "selector": ["Suspected"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": "Triggering", "as": "scapegoat" } },
+                    { "Suspect": { "what": { "Bound": "scapegoat" } } },
+                    { "Unsuspect": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

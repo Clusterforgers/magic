@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0",
+  "oracle_id": "aa7d3e99-fc14-4f62-bf00-c0428c11e4f2",
+  "multiverse_ids": [
+    634770
+  ],
+  "tcgplayer_id": 518913,
+  "cardmarket_id": 738619,
+  "name": "Amy Pond",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0",
+  "scryfall_uri": "https://scryfall.com/card/who/75/amy-pond?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655",
+    "normal": "https://cards.scryfall.io/normal/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655",
+    "large": "https://cards.scryfall.io/large/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655",
+    "png": "https://cards.scryfall.io/png/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.png?1783914655",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.webp?1783914655",
+    "grid": "https://cards.scryfall.io/grid/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.webp?1783914655",
+    "display": "https://cards.scryfall.io/display/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.webp?1783914655",
+    "art": "https://cards.scryfall.io/art/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.webp?1783914655",
+    "crop": "https://cards.scryfall.io/crop/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.webp?1783914655",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/5/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0.jpg?1783914655"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "Partner with Rory Williams (When this creature enters, target player may put Rory into their hand from their library, then shuffle.)\nWhenever Amy Pond deals combat damage to a player, choose a suspended card you own and remove that many time counters from it.\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner",
+    "Doctor's companion"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "48dc2162-3350-4fd4-995a-b2080f8fb94e",
+      "component": "combo_piece",
+      "name": "Rory Williams",
+      "type_line": "Legendary Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/48dc2162-3350-4fd4-995a-b2080f8fb94e"
+    },
+    {
+      "object": "related_card",
+      "id": "dafb9f82-bccd-4444-8439-b6c872a17589",
+      "component": "combo_piece",
+      "name": "Amy Pond",
+      "type_line": "Legendary Creature — Human",
+      "uri": "https://api.scryfall.com/cards/dafb9f82-bccd-4444-8439-b6c872a17589"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e50a2faa-91e3-4e89-ba8d-2cbf7ac005c0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaa7d3e99-fc14-4f62-bf00-c0428c11e4f2&unique=prints",
+  "collector_number": "75",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Staples",
+  "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+  ],
+  "illustration_id": "80aa9b37-49c1-4c67-8002-270a7e4383a0",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13914,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.40",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "0.69",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634770&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAmy%2BPond",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAmy%2BPond",
+    "edhrec": "https://edhrec.com/route/?cc=Amy+Pond"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F518913%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738619&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Amy+Pond&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

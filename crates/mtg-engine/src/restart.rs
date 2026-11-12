@@ -89,6 +89,9 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
         extra: false,
         combats: 0,
         ahead: Vec::new(),
+        r306_steps: Vec::new(),
+        r306_seen: 0,
+        r306_again: 0,
         ending: false,
     };
     state.extra_turns.clear();

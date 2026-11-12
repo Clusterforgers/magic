@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f432eb6a-f1bf-4ce7-b915-1488dccb4bb9",
+  "name": "Oscorp Industries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oscorp Industries",
+      "oracle_fingerprint": "f33dcb8eea0fcb666699f2dadda98062",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Graveyard", "to": "Battlefield" } },
+            "effects": [{ "LoseLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black", "Red"] } } }]
+          }
+        },
+        { "Keyword": { "Mayhem": [] } }
+      ]
+    }
+  ]
+}

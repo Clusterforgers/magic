@@ -899,6 +899,10 @@ pub enum Effect {
         /// "Tap that creature as it phases in this way": each phases in tapped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         tapped: bool,
+        /// How long the permanents phased out this way can't phase in ("Until the end of your next turn, they can't phase
+        /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        held: Option<Duration>,
     },
     /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
     Attach {
@@ -1174,6 +1178,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The source creature enlists the creatures `what` names (CR 702.154a): each untapped one becomes tapped, and the
+    /// source has enlisted it.
+    Enlist {
+        /// The creatures enlisted.
+        what: Ref,
+    },
     /// Two creatures become paired (CR 702.95): `what` and the creature `with` names; nothing happens unless both are
     /// unpaired creatures on the battlefield under one controller who is the player that resolves it.
     Pair {
@@ -1356,6 +1366,16 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The cards in exile `what` names gain suspend (CR 702.62): at each of its owner's upkeeps a time counter is removed,
+    /// and when the last is, they may cast it without paying its mana cost; a creature cast so has haste. The suspend lasts
+    /// while the card stays in exile.
+    GainSuspend {
+        /// The exiled cards.
+        what: Ref,
+        /// Only a card that does not have suspend gains it ("If it doesn't have suspend, it gains suspend.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        unless_has: bool,
+    },
     /// The player takes extra turns after this one (CR 500.7): the latest added is taken first.
     ExtraTurn {
         /// Who takes them.
@@ -1376,6 +1396,12 @@ pub enum Effect {
     AddPhase {
         /// The phases added.
         phases: Vec<PhaseKind>,
+    },
+    /// A step is added right after the current step, before any step added earlier ("you get an additional upkeep step
+    /// after this step", "there is an additional end step after this step"); nothing is added before the first turn.
+    AddStep {
+        /// The step added.
+        step: crate::trigger::Step,
     },
     /// The player wins the game.
     WinGame {
@@ -1407,6 +1433,16 @@ pub enum Effect {
         who: Ref,
         /// The other player.
         with: Ref,
+    },
+    /// A player's life total and a creature's toughness are exchanged (CR 701.12c): the player gains or loses life to the
+    /// creature's toughness, and the creature's toughness becomes the player's former life total (layer 7b, for good).
+    /// Nothing happens when the creature is not on the battlefield or the life total can't change.
+    ExchangeLifeWithToughness {
+        /// The player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The creature.
+        what: Ref,
     },
     /// All damage marked on each creature is removed (CR 120.6).
     RemoveDamage {
@@ -2103,6 +2139,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,
+                any_cast: false,
             }),
             duration,
         },
@@ -2255,6 +2292,7 @@ mod tests {
     #[case::draw_game(Effect::DrawGame {}, r#"{"DrawGame":{}}"#)]
     #[case::set_life(Effect::SetLife { who: Ref::You, amount: Amount::Fixed(1) }, r#"{"SetLife":{"amount":1}}"#)]
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
+    #[case::exchange_life_with_toughness(Effect::ExchangeLifeWithToughness { who: Ref::You, what: Ref::This }, r#"{"ExchangeLifeWithToughness":{"what":"This"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
         Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false, ask: None },

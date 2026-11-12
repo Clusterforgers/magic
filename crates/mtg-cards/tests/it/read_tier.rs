@@ -1,4 +1,4 @@
-//! Goal: a draft counts as `Read` only when a player approved the exact rules and text and as `Unverified` while it waits for that read, by the precedence of the Read tier (a rules file, a Verified compiled row, a running draft, any other compiled row, nothing), the hash of a read moves with the text and the draft, `Read` and `Unverified` are counted apart in a deck and on the wire, and no Verified number of the corpus changes.
+//! Goal: a draft counts as `Read` only when a player approved the exact rules and text and as `Unverified` while it waits for that read, by the precedence of the Read tier (a Verified rules file or compiled row, a running whole draft, a Partial, Manual or Stale rules file, any other compiled row, nothing), the hash of a read moves with the text and the draft, `Read` and `Unverified` are counted apart in a deck and on the wire, and no Verified number of the corpus changes.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -174,22 +174,41 @@ fn with_draft(library: &Library, draft: Draft, shown: &PrintedCard) -> Library {
     Draft::ApprovedBeforeAnEdit,
     Support::Unverified
 )]
-#[case::a_whole_file_outranks_a_draft(
+#[case::a_verified_file_outranks_an_approved_draft(
     Rules::File(Shape::Whole),
     Draft::Approved,
     Support::Verified
 )]
-#[case::a_partial_file_outranks_a_draft(
+#[case::an_approved_draft_outranks_a_partial_file(
     Rules::File(Shape::Partial),
     Draft::Approved,
+    Support::Read
+)]
+#[case::a_pending_draft_outranks_a_partial_file(
+    Rules::File(Shape::Partial),
+    Draft::Pending,
+    Support::Unverified
+)]
+#[case::a_wrong_draft_leaves_a_partial_file(
+    Rules::File(Shape::Partial),
+    Draft::Wrong,
     Support::Partial
 )]
-#[case::a_manual_file_outranks_a_draft(
+#[case::an_approved_draft_outranks_a_manual_file(
     Rules::File(Shape::Manual),
     Draft::Approved,
-    Support::Manual
+    Support::Read
 )]
-#[case::a_stale_file_outranks_a_draft(Rules::File(Shape::Stale), Draft::Approved, Support::Stale)]
+#[case::a_pending_draft_outranks_a_manual_file(
+    Rules::File(Shape::Manual),
+    Draft::Pending,
+    Support::Unverified
+)]
+#[case::an_approved_draft_outranks_a_stale_file(
+    Rules::File(Shape::Stale),
+    Draft::Approved,
+    Support::Read
+)]
 #[case::a_verified_row_outranks_a_draft(
     Rules::Compiled(Shape::Whole),
     Draft::Approved,
@@ -289,7 +308,16 @@ fn an_approved_draft_gives_a_read_record_that_differs_from_a_verified_one_of_the
     Some(ReadState::Pending)
 )]
 #[case::a_whole_file_outranks(Rules::File(Shape::Whole), Draft::Approved, None)]
-#[case::a_partial_file_outranks(Rules::File(Shape::Partial), Draft::Pending, None)]
+#[case::a_partial_file_gives_way(
+    Rules::File(Shape::Partial),
+    Draft::Pending,
+    Some(ReadState::Pending)
+)]
+#[case::a_manual_file_gives_way(
+    Rules::File(Shape::Manual),
+    Draft::Approved,
+    Some(ReadState::Approved)
+)]
 #[case::a_verified_row_outranks(Rules::Compiled(Shape::Whole), Draft::Pending, None)]
 #[case::a_partial_row_gives_way(
     Rules::Compiled(Shape::Partial),

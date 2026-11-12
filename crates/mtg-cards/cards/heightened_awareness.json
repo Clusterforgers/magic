@@ -1,14 +1,21 @@
 {
   "oracle_id": "a69a0720-35fb-450d-8d48-8e51a14ffa49",
   "name": "Heightened Awareness",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heightened Awareness",
       "oracle_fingerprint": "182fe2fcd17d645487c9a68223a27d0e",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 46 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+              ]
+            }
+          }
         },
         {
           "Triggered": {

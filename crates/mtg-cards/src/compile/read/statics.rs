@@ -1552,6 +1552,15 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
         (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
+        (ReplaceBy::AsEnters(effects), None) => super::r304_as_enters::texts(effects),
+        (
+            ReplaceBy::AsEntersWith {
+                effects,
+                counter,
+                count,
+            },
+            None,
+        ) => super::r304_as_enters::with_texts(effects, counter, count),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }
@@ -1561,9 +1570,26 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except,
                 tapped,
                 until_end_of_turn,
+                counters,
             },
             None,
-        ) => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
+        ) if counters.is_empty() => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
+        (
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                tapped,
+                until_end_of_turn,
+                counters,
+            },
+            None,
+        ) => super::r305c_copies::r305c_counter_copy_texts(
+            of,
+            except,
+            *tapped,
+            *until_end_of_turn,
+            counters,
+        ),
         _ => Vec::new(),
     }
 }

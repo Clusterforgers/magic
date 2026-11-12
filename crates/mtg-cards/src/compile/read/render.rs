@@ -37,6 +37,7 @@ mod group_becomes;
 mod hand_returns;
 mod has_counter;
 mod instead;
+mod l294_turn_window;
 mod library_steps;
 mod loyalty;
 mod may_flicker;
@@ -88,6 +89,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r301_phasing;
 mod r307c_words;
 mod rmt3_enters;
 mod rmt3_skips;
@@ -209,6 +211,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
@@ -569,6 +574,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
     super::r373_exiled::r373_exiled_wordings(ability, &mut texts);
     super::r373_exiled::r373_attached_wordings(ability, &mut texts);
@@ -581,6 +587,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
     super::l31a_events::l31a_wordings(ability, &mut texts);
+    super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
+    super::r301b_writers::r301b_flip_wordings(&mut texts);
+    super::us38_quotes::us38_nested_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -600,6 +609,7 @@ fn ep23_written_anew(ability: &Ability) -> Vec<String> {
 }
 
 /// [`written_variants`] without the table of abilities written already.
+#[allow(clippy::too_many_lines)]
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
     rmt3_enters::rmt3_variants(&mut texts);
@@ -697,6 +707,8 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_still_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
+    super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
+    super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -761,6 +773,9 @@ fn written_ordered(ability: &Ability) -> Vec<String> {
 
 /// Every wording of an ability, its selectors in the order given.
 fn written_as_given(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = oracle_only::r300_whole(ability) {
+        return texts;
+    }
     if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
         return texts;
     }
@@ -1069,7 +1084,8 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
+            limit:
+                limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone | Limit::OncePerGame)),
             from,
             targets,
             effects,
@@ -1417,6 +1433,13 @@ fn written(
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // An exile with time counters and the suspend the card gains are one sentence or a run of sentences.
+        if let Some((text, used)) = super::r372_suspend::text(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
@@ -1637,6 +1660,7 @@ fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
     tail.extend(limit.map(|limit| match limit {
         Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        Limit::OncePerGame => "This ability triggers only once.".to_owned(),
         _ => "This ability triggers only once each turn.".to_owned(),
     }));
     tail
@@ -3089,6 +3113,9 @@ impl Writer<'_> {
         {
             return self.r5c_held_down(affected);
         }
+        if let Some(text) = self.l294_turn_window(effect) {
+            return Some(text);
+        }
         self.graveyard_exile(effect)
             .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
@@ -3293,6 +3320,10 @@ impl Writer<'_> {
                 self.player(who)?,
                 if *who == Ref::You { "win" } else { "wins" }
             ),
+            // "you lose the game" is left to the writers of its own sentences (a pact's upkeep payment).
+            Effect::LoseGame { who } if *who != Ref::You => {
+                format!("{} loses the game", self.player(who)?)
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -3326,6 +3357,7 @@ impl Writer<'_> {
                 what,
                 duration,
                 tapped,
+                held: None,
             } => self.w7e_phase_out_text(what, duration.clone(), *tapped)?,
             Effect::Attach {
                 what: Ref::This,
@@ -3339,6 +3371,14 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
+            // The card an earlier step exiled and named is "it".
+            Effect::GainSuspend {
+                what: Ref::Bound(_),
+                unless_has,
+            } => super::r372_suspend::gain_text("it", *unless_has),
+            Effect::GainSuspend { what, unless_has } => {
+                super::r372_suspend::gain_text(&self.object(what)?, *unless_has)
+            }
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),
@@ -3626,6 +3666,7 @@ impl Writer<'_> {
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
             .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

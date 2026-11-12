@@ -8,16 +8,16 @@
       "oracle_fingerprint": "ccfaac00c066726ac5916fbb6a186911",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 67 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsEnters": [{ "LoseLife": { "amount": { "Life": "You" } } }] }
           }
         },
         { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 119, "end": 172 }
+          "Replacement": {
+            "when": { "LifeGain": {} },
+            "by": { "Instead": [{ "Draw": { "count": "Triggering" } }] }
           }
         },
         {

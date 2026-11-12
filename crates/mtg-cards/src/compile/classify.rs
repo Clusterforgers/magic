@@ -104,13 +104,21 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     }
     let head = text.lines().next().unwrap_or_default();
     // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
-    if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
+    if ((head.starts_with("Equip ")
+        || head.starts_with("Cycling ")
+        || head.starts_with("Ninjutsu "))
         && head.contains(" abilities you activate "))
         || head.starts_with("Equip costs you pay ")
+        || head.starts_with("Dash costs you pay ")
     {
         return ClauseKind::Static;
     }
-    if !text.contains('\n') && keywords::is_keyword_line(head) {
+    // An ability word that opens with a keyword's name ("Protection Fighting Style — When ~ enters, ...") names a
+    // triggered or activated ability, not the keyword.
+    let r301_worded = ability_word_len(head)
+        .and_then(|at| head.get(at..))
+        .is_some_and(|body| is_triggered(body) || is_activated(body));
+    if !text.contains('\n') && !r301_worded && keywords::is_keyword_line(head) {
         return ClauseKind::Keyword;
     }
     // A Case's "To solve — <condition>" is a triggered ability at its controller's end step (CR 719.2).
@@ -182,6 +190,20 @@ fn t16a_flavour_name(word: &str) -> bool {
         })
         && word.chars().all(|c| {
             c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!' | '~' | ',' | '?')
+        })
+        || r372_stopped_name(word)
+}
+
+/// Whether the text is a flavour name of capitalised words each ended by a stop ("I. AM. TALKING!").
+fn r372_stopped_name(word: &str) -> bool {
+    word.split(' ').count() <= 5
+        && word.split(' ').all(|part| {
+            part.chars().next().is_some_and(char::is_uppercase)
+                && part.ends_with(['.', '!'])
+                && part
+                    .trim_end_matches(['.', '!'])
+                    .chars()
+                    .all(char::is_uppercase)
         })
 }
 
@@ -341,6 +363,12 @@ mod tests {
         Static
     )]
     #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
+    #[case::r301_dash_costs("Dash costs you pay cost {2} less.", false, Static)]
+    #[case::r301_ninjutsu_costs(
+        "Ninjutsu abilities you activate cost {1} less to activate.",
+        false,
+        Static
+    )]
     #[case::cycling_cost_change(
         "Cycling abilities you activate cost {2} less to activate.",
         false,
@@ -375,6 +403,14 @@ mod tests {
     #[case::ability_word(
         "Landfall \u{2014} Whenever a land you control enters, investigate.",
         Triggered
+    )]
+    #[case::r301_ability_word_named_like_a_keyword(
+        "Protection Fighting Style \u{2014} When ~ enters, exile up to one target creature you control.",
+        Triggered
+    )]
+    #[case::r301_keyword_after_an_ability_word(
+        "Void Shields \u{2014} Protection from green and from red",
+        Keyword
     )]
     #[case::two_word_ability_word("Spell mastery \u{2014} When ~ enters, draw a card.", Triggered)]
     #[case::chapter("I \u{2014} Create a 1/1 token.", Triggered)]
@@ -532,5 +568,14 @@ mod tests {
     #[case::spell_text_with_a_trigger("When you cast this spell, draw a card.", true, Triggered)]
     fn spells_and_statics(#[case] text: &str, #[case] spell: bool, #[case] expected: ClauseKind) {
         assert_eq!(classify(text, spell), expected);
+    }
+
+    #[rstest]
+    #[case::stopped_words("I. AM. TALKING! \u{2014} Whenever ~ attacks, draw a card.", Some(20))]
+    #[case::a_lower_case_word("I. am. TALKING! \u{2014} Whenever ~ attacks, draw a card.", None)]
+    #[case::a_word_without_a_stop("I AM. TALKING! \u{2014} Whenever ~ attacks, draw a card.", None)]
+    #[case::a_sentence_before_the_dash("Flying. Haste \u{2014} draw a card.", None)]
+    fn r372_a_flavour_name_of_stopped_words(#[case] line: &str, #[case] expected: Option<usize>) {
+        assert_eq!(ability_word_len(line), expected);
     }
 }

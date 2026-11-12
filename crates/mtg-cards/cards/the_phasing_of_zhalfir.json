@@ -1,7 +1,7 @@
 {
   "oracle_id": "6b92a5f4-a241-48c8-9aec-c8e9d5b01fa5",
   "name": "The Phasing of Zhalfir",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Phasing of Zhalfir",
@@ -9,9 +9,21 @@
       "abilities": [
         { "Keyword": "ReadAhead" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 153, "end": 261 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] } }],
+            "effects": [
+              { "PhaseOut": { "what": { "Target": 0 }, "held": "WhileYouControlSource" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] } }],
+            "effects": [
+              { "PhaseOut": { "what": { "Target": 0 }, "held": "WhileYouControlSource" } }
+            ]
           }
         },
         {

@@ -7,8 +7,12 @@ use crate::trigger::Step;
 use crate::value::Condition;
 
 /// The moments a spell may be cast in, each with its wording after "only".
-fn w17c_moments() -> [(Condition, &'static str); 5] {
+fn w17c_moments() -> [(Condition, &'static str); 6] {
     [
+        (
+            Condition::All(vec![Condition::InCombat, Condition::YourTurn]),
+            "during combat on your turn",
+        ),
         (
             Condition::AfterBlockers,
             "during combat after blockers are declared",

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "beef71f4-f607-4718-9fde-98e8d7871ce9",
+  "name": "Equal Treatment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Equal Treatment",
+      "oracle_fingerprint": "bf52464515e7193e57605ca6895f0e91",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": {} },
+                  "by": {
+                    "Instead": [
+                      { "DealDamage": { "source": "Dealer", "to": "Triggering", "amount": 2 } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

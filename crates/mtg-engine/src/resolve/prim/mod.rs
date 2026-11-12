@@ -34,6 +34,7 @@ mod join_attack;
 mod l31a_performed;
 mod let_amount;
 mod r282_plot;
+mod r306_add_step;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -83,6 +84,7 @@ mod goad;
 mod if_then;
 mod l292_flips_won;
 mod l292_put_or_remove;
+mod l294_enlist;
 mod l32a_pay_times;
 mod l32a_reattack;
 mod learn;
@@ -98,6 +100,8 @@ mod move_counters;
 mod moved_as;
 mod one_of;
 mod pair;
+mod r301b_exchange_toughness;
+mod r372_gain_suspend;
 mod reflexive;
 mod remember;
 mod restart_game;
@@ -189,6 +193,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::DrawGame {} => fe1n_game::draw(cx, effect),
         Effect::SetLife { .. } => fe1n_life::set(cx, effect),
         Effect::ExchangeLife { .. } => fe1n_life::exchange(cx, effect),
+        Effect::ExchangeLifeWithToughness { .. } => r301b_exchange_toughness::run(cx, effect),
         Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
@@ -289,6 +294,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
         Effect::Renown { .. } => c6_kw_renown::run(cx, effect),
         Effect::Exploit { .. } => c6_kw_exploit::run(cx, effect),
+        Effect::Enlist { .. } => l294_enlist::run(cx, effect),
         Effect::Pair { .. } => pair::run(cx, effect),
         Effect::BecomeLevel { .. } => become_level::run(cx, effect),
         Effect::Adapt { .. } => adapt::run(cx, effect),
@@ -304,9 +310,11 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::ExileTop { .. } => exile_top::run(cx, effect),
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
+        Effect::GainSuspend { .. } => r372_gain_suspend::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
+        Effect::AddStep { .. } => r306_add_step::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
@@ -380,13 +388,13 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"SpellEntersWith":{"spell":"This"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"ExchangeLifeWithToughness":{"what":"This"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}}, {"AddStep":{"step":"Upkeep"}},
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
-        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
+        {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
         {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
@@ -426,7 +434,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 129, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 133, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -505,10 +513,12 @@ mod tests {
         "Effect.DrawGame",
         "Effect.SetLife",
         "Effect.ExchangeLife",
+        "Effect.ExchangeLifeWithToughness",
         "Effect.RemoveDamage",
         "Effect.RepeatWhile",
         "Effect.SeparatePiles",
         "Effect.AddPhase",
+        "Effect.AddStep",
         "Effect.TurnFaceDown",
         "Effect.Harness",
         "Effect.Plot",
@@ -535,6 +545,7 @@ mod tests {
         "Effect.Monstrosity",
         "Effect.Renown",
         "Effect.Exploit",
+        "Effect.Enlist",
         "Effect.BecomeLevel",
         "Effect.Adapt",
         "Effect.Bolster",
@@ -554,6 +565,7 @@ mod tests {
         "Effect.Cloak",
         "Effect.CastFromZone",
         "Effect.TimeTravel",
+        "Effect.GainSuspend",
         "Effect.ExtraTurn",
         "Effect.EndTurn",
         "Effect.ChangeTargets",

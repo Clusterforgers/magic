@@ -1,0 +1,20 @@
+{
+  "oracle_id": "44e0ffa3-8915-4c1f-8f1a-4aeea1365f07",
+  "name": "Simian Spirit Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simian Spirit Guide",
+      "oracle_fingerprint": "1bb0e6e3053815c62efc7fbe7246dcaa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "from": "Hand",
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

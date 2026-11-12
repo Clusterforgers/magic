@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e05efd01-0202-4bd6-bac6-c6210819d463",
+  "name": "Abby, Merciless Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abby, Merciless Soldier",
+      "oracle_fingerprint": "a9853979c4e3e10e2449bd5342215115",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cordyceps Infected",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fungus", "Zombie"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "ManaSpent": { "of": null } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+        },
+        { "Keyword": { "PartnerGroup": "Survivors" } }
+      ]
+    }
+  ]
+}

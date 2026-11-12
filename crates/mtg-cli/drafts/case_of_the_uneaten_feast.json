@@ -1,7 +1,7 @@
 {
   "oracle_id": "0d8730b5-f7ba-48b0-928d-d8b7685347d3",
   "name": "Case of the Uneaten Feast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Case of the Uneaten Feast",
@@ -23,13 +23,7 @@
             "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "if": {
               "All": [
-                {
-                  "Compare": {
-                    "left": { "Count": ["This", { "Not": "Solved" }] },
-                    "op": "Ge",
-                    "right": 1
-                  }
-                },
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
                 {
                   "Compare": {
                     "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
@@ -43,9 +37,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 164, "end": 295 }
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "from": "Graveyard" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

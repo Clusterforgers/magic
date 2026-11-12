@@ -1,7 +1,7 @@
 {
   "oracle_id": "8869df0c-fe84-4964-8d38-a8ecefa9c252",
   "name": "Experimental Lab // Staff Room",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Experimental Lab",
@@ -17,15 +17,11 @@
               { "Manifest": { "as": "manifested4" } },
               { "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest3" } } },
               {
-                "PutCounters": {
-                  "on": { "Each": [{ "Is": { "Bound": "manifested4" } }] },
-                  "counter": "+1/+1",
-                  "count": 2
-                }
+                "PutCounters": { "on": { "Bound": "manifested4" }, "counter": "+1/+1", "count": 2 }
               },
               {
                 "PutCounters": {
-                  "on": { "Each": [{ "Is": { "Bound": "manifested4" } }] },
+                  "on": { "Bound": "manifested4" },
                   "counter": { "Other": "trample" }
                 }
               }
@@ -39,9 +35,22 @@
       "oracle_fingerprint": "8b02d374d3b3ccea69ecb49878de6c42",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 121 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "TurnFaceUp": { "what": "Dealer" } }],
+                  "second": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+                }
+              }
+            ]
           }
         }
       ]

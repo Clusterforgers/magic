@@ -1,0 +1,27 @@
+{
+  "id": "703b874d-6739-4063-9891-e9c040dd9618",
+  "oracle_id": "9be5a350-c38e-425f-9d6a-8eb111132a89",
+  "name": "Surveillance Monitor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkm",
+  "collector_number": "73",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Vedalken Detective",
+  "oracle_text": "When this creature enters, you may collect evidence 4. (Exile cards with total mana value 4 or greater from your graveyard.)\nWhenever you collect evidence, create a 1/1 colorless Thopter artifact creature token with flying.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Collect evidence"
+  ]
+}

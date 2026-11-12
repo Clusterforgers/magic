@@ -578,7 +578,14 @@ fn exploring_triggers_for_the_creatures_the_pattern_names_and_names_the_creature
         .find(|o| o.card().name == creature)
         .map(crate::object::GameObject::id)
         .unwrap();
-    let found = fires(&pre, &[Event::Explored { object, player }]);
+    let found = fires(
+        &pre,
+        &[Event::Explored {
+            object,
+            player,
+            land: None,
+        }],
+    );
     assert_eq!(found.len(), expected);
     if expected == 1 {
         assert_eq!(

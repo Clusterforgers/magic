@@ -1,7 +1,7 @@
 {
   "oracle_id": "482f5fc8-ca3b-4280-8cf7-a1c55f8b9f12",
   "name": "Sarkhan's Whelp",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sarkhan's Whelp",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 82, "end": 185 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ActivatedAny",
+                "who": "You",
+                "what": [
+                  { "Type": "Planeswalker" },
+                  { "Subtype": "Sarkhan" },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
           }
         }
       ]

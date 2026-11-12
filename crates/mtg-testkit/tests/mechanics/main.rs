@@ -84,6 +84,7 @@ mod it_that_betrays;
 mod kt28_krarks_thumb;
 mod l292_cards;
 mod l292_haunt;
+mod l294_enlists;
 mod l31a_keyword_actions;
 mod l31b_any_amount;
 mod l31d_any_number;
@@ -111,12 +112,23 @@ mod r2d;
 mod r302b_spells;
 mod r303_forms;
 mod r303b_pieces;
+mod r303c_cards;
 mod r304b_cards;
 mod r304c_replaced;
 mod r305b_cards;
+mod r305c_random_keyword;
+mod r305c_you_and;
+mod r306_cards;
+mod r306_forage;
+mod r306_steps;
+mod r307_cards;
 mod r307c_exiled;
 mod r307c_rooms;
+<<<<<<< HEAD
 mod r373_pieces;
+=======
+mod r375_phasing;
+>>>>>>> origin/main
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;
@@ -170,3 +182,4 @@ mod w7d_selector_scenarios;
 mod w8a_declaration_limits;
 mod w9a_expend;
 mod wave_goodbye;
+mod wr38_reads;

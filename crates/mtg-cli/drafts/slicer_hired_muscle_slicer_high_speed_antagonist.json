@@ -1,0 +1,75 @@
+{
+  "oracle_id": "fa716557-8e75-4617-8310-ab23a9ca1af1",
+  "name": "Slicer, Hired Muscle // Slicer, High-Speed Antagonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slicer, Hired Muscle",
+      "oracle_fingerprint": "d374d92be9bcfc824b6178308a2edfa2",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{2}{R}" } },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": "ActivePlayer" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Untap": { "what": "This" } },
+                    { "Goad": { "what": "This" } },
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": "This", "action": "Sacrifice" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slicer, High-Speed Antagonist",
+      "oracle_fingerprint": "14ca969ac1ce0b50ae9a12a50d70a664",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

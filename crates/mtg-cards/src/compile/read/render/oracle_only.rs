@@ -200,11 +200,24 @@ mod r282_wholes;
 mod r284_wordings;
 mod r286_wordings;
 mod r288_wordings;
+mod r301_wholes;
 mod r302_wholes;
 mod r302b_wholes;
 mod r303_wholes;
+mod r304_sacrifice_all;
+mod r304_skip_draw;
 mod r304c_wordings;
+<<<<<<< HEAD
 mod r373_wholes;
+=======
+mod r305_wordings;
+mod r305c_any_cast;
+mod r305c_random_keyword;
+mod r305c_rules;
+mod r305c_you_and;
+mod r306c_wholes;
+mod r307_wholes;
+>>>>>>> origin/main
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -379,8 +392,15 @@ mod r7c_searches;
 // rmt5
 mod r283_wholes;
 mod r287_wholes;
+mod r301b_wholes;
+mod r306_wholes;
 mod r306b_wholes;
 mod rmt5_wholes;
+// r30-0
+mod r300_wholes;
+pub(super) use r300_wholes::r300_whole;
+// r28-9
+mod r289_wholes;
 
 use crate::ability::Ability;
 
@@ -508,6 +528,7 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     rmt8_wordings::add(ability, texts);
     r280_wordings::add(ability, texts);
     r284_wordings::add(ability, texts);
+    r305_wordings::add(ability, texts);
     r286_wordings::add(ability, texts);
     r288_wordings::add(ability, texts);
     l291_writers::add(ability, texts);
@@ -528,6 +549,10 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r287_wholes::r287_add_wholes(ability, texts);
     r306b_wholes::r306b_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
+    r306_wholes::add(ability, texts);
+    // r28-9
+    r289_wholes::r289_add_wholes(ability, texts);
+    r301b_wholes::r301b_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
@@ -760,8 +785,18 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r282_wholes::r282_add_wholes(ability, texts);
     r302b_wholes::r302b_add_wholes(ability, texts);
     r303_wholes::r303_add_wholes(ability, texts);
+<<<<<<< HEAD
     r373_wholes::r373_add_wholes(ability, texts);
+=======
+    r307_wholes::r307_add_wholes(ability, texts);
+    r301_wholes::r301_add_wholes(ability, texts);
+>>>>>>> origin/main
     r302_wholes::r302_add_wholes(ability, texts);
+    r305c_any_cast::r305c_add_any_cast(ability, texts);
+    r305c_you_and::r305c_add_you_and(ability, texts);
+    r305c_rules::r305c_add_rules(ability, texts);
+    r305c_random_keyword::r305c_add_random_keyword(ability, texts);
+    r306c_wholes::r306c_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.
@@ -1002,6 +1037,8 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     rmt6_writers::add(ability, texts);
     each_draw_sz2::add(ability, texts);
     each_sacrifice::add(ability, texts);
+    r304_sacrifice_all::add(ability, texts);
+    r304_skip_draw::add(ability, texts);
     you_create::add(ability, texts);
     and_create::add(ability, texts);
     damage_instead::add(ability, texts);

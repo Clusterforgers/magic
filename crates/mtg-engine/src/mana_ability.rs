@@ -595,6 +595,23 @@ fn r6e_after(state: &GameState, events: &[Event]) -> Option<GameState> {
     Some(after)
 }
 
+/// The events of `player` activating the mana ability `option` stands for: the activation logged for the abilities that
+/// trigger on it (CR 605.3b), after [`activation`].
+pub(crate) fn logged_activation(
+    state: &GameState,
+    player: PlayerId,
+    option: &ManaOption,
+    taken: &[Vec<ObjectId>],
+) -> Result<Vec<Event>, EngineError> {
+    let source = state
+        .object(option.source.object)
+        .ok_or_else(|| EngineError::InvalidEvent("a mana ability of nothing".into()))?
+        .reference();
+    let mut events = activation(state, player, option, taken)?;
+    events.push(Event::ManaAbilityActivated { player, source });
+    Ok(events)
+}
+
 /// The events of `player` using the mana ability `option` stands for: the payment of its cost (life, energy, counters,
 /// the tap and the sacrifice), the mana added to their pool, and what it does besides (a painland's damage, an egg's
 /// draw), all at once (CR 605.3b).
@@ -860,7 +877,14 @@ mod tests {
         else {
             panic!("a mana ability is not a cast");
         };
-        events
+        // The activation is logged last (CR 605.3b); the rest is what it does.
+        let (first, rest) = events.split_last().unwrap();
+        let used = source.object;
+        assert!(
+            matches!(first, Event::ManaAbilityActivated { player, source } if *player == ME && source.id == used),
+            "{first:?}"
+        );
+        rest.to_vec()
     }
 
     fn added(events: &[Event]) -> Vec<ManaType> {

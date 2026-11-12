@@ -178,7 +178,7 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
 )]
 #[case::a_flashback_that_counts_x_is_named(
     r#"{"Keyword":{"Flashback":[{"Mana":"{R}{R}"},{"Sacrifice":{"filter":[{"Type":"Land"}],"count":"X"}}]}}"#,
-    &["Amount.X.Elsewhere", "Cost.Mana", "Cost.Sacrifice", "Keyword.Cost.Sacrifice.X", "Keyword.Flashback"]
+    &["Cost.Mana", "Cost.Sacrifice", "Keyword.Flashback", "Keyword.Flashback.Cost.Sacrifice.X"]
 )]
 #[case::a_kicker_that_removes_counters_is_named(
     r#"{"Keyword":{"Kicker":[{"RemoveCounters":{"counter":"charge"}}]}}"#,

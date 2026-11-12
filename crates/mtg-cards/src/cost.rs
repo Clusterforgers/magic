@@ -219,6 +219,9 @@ pub enum CostItem {
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
     /// nothing itself.
     XColor(mtg_core::color::Color),
+    /// The X announced for the cost is at most this amount, read as the payment is asked ("X can't be greater than the
+    /// amount of life you gained this turn"); pays nothing itself. Only a payment an effect asks for (`Effect::Pay`) reads it.
+    XAtMost(crate::value::Amount),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

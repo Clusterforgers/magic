@@ -1,16 +1,38 @@
 {
   "oracle_id": "721e8249-ff1b-4c15-964b-4ba2a96beb75",
   "name": "The Eleventh Doctor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Eleventh Doctor",
       "oracle_fingerprint": "c5b5a524380fb308ba0d4c397ded4a76",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 223 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "exiled" },
+                        "counter": { "Other": "time" },
+                        "count": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "GainSuspend": { "what": { "Bound": "exiled" }, "unless_has": true } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

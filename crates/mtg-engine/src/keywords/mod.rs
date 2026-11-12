@@ -122,6 +122,7 @@ mod prowl;
 pub(crate) mod r282_compleated;
 mod r282_cumulative_acts;
 pub(crate) mod r282_more_than_meets;
+mod r301_offering;
 mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
@@ -574,6 +575,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Exploit => &c6_kw_exploit::Exploit,
         Keyword::Soulbond => &soulbond::Soulbond,
         Keyword::Emerge(_) => &c9_emerge_emerge::Emerge,
+        Keyword::Offering(_) => &r301_offering::Offering,
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
@@ -1047,6 +1049,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Soulbond,
             Keyword::Emerge(cost()),
+            Keyword::Offering(Selector::default()),
             Keyword::Harmonize(cost()),
             Keyword::ReadAhead,
             Keyword::Exert {
@@ -1247,6 +1250,7 @@ mod tests {
         "Keyword.Exploit",
         "Keyword.Soulbond",
         "Keyword.Emerge",
+        "Keyword.Offering",
         "Keyword.Harmonize",
         "Keyword.ReadAhead",
         "Keyword.SplitSecond",
@@ -1415,6 +1419,7 @@ mod tests {
     #[case::exploit(Keyword::Exploit, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::soulbond(Keyword::Soulbond, Hooks { abilities: 2, ..Hooks::none() })]
     #[case::emerge(Keyword::Emerge(Cost::mana("{5}{U}{U}".parse().unwrap())), Hooks::none())]
+    #[case::r301_offering(Keyword::Offering(Selector::default()), Hooks::none())]
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
     #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(2), Hooks { abilities: 1, ..Hooks::none() })]

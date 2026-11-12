@@ -169,7 +169,11 @@ kept: Array<ObjectId>, } } | { "PhasesAdded": {
 /**
  * The first step of each added phase.
  */
-steps: Array<Step>, } } | { "StepBegan": { 
+steps: Array<Step>, } } | { "StepAdded": { 
+/**
+ * The step added.
+ */
+step: Step, } } | { "StepBegan": { 
 /**
  * The step.
  */
@@ -511,7 +515,15 @@ ability: number,
 /**
  * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
-origin?: AbilitySource, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+origin?: AbilitySource, } } | { "ManaAbilityActivated": { 
+/**
+ * Who activated it.
+ */
+player: PlayerId, 
+/**
+ * The object it comes from.
+ */
+source: ObjectRef, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */
@@ -856,7 +868,11 @@ player: PlayerId,
 /**
  * The player it was given to.
  */
-to: PlayerId, } } | { "DieRolled": { 
+to: PlayerId, } } | { "Foraged": { 
+/**
+ * Who foraged.
+ */
+player: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.
  */
@@ -953,7 +969,11 @@ object: ObjectId,
 /**
  * Its controller, who revealed the card.
  */
-player: PlayerId, } } | { "Amassed": { 
+player: PlayerId, 
+/**
+ * Whether the card revealed was a land card; none when the library was empty and nothing was revealed.
+ */
+land?: boolean, } } | { "Amassed": { 
 /**
  * The Army that got the counters.
  */
@@ -988,6 +1008,18 @@ x?: number, } } | { "Renowned": {
 object: ObjectId, 
 /**
  * Its controller.
+ */
+player: PlayerId, } } | { "Enlisted": { 
+/**
+ * The creature that enlisted.
+ */
+object: ObjectId, 
+/**
+ * The creature tapped for it.
+ */
+enlisted: ObjectId, 
+/**
+ * The controller of the enlisting creature.
  */
 player: PlayerId, } } | { "Exploited": { 
 /**

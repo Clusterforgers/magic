@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b628a39b-c923-473d-900a-1617f47ecb76",
+  "name": "Selvala, Explorer Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selvala, Explorer Returned",
+      "oracle_fingerprint": "cd985f6b14ac98f5cd4b2ceae18f59cb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "In": "Library" }, "TopOfLibrary"] } } },
+              {
+                "Let": {
+                  "as": "nonland",
+                  "amount": {
+                    "Count": [{ "In": "Library" }, "TopOfLibrary", { "Not": { "Type": "Land" } }]
+                  }
+                }
+              },
+              { "AddMana": { "mana": { "Fixed": ["Green"] }, "times": { "Bound": "nonland" } } },
+              { "GainLife": { "amount": { "Bound": "nonland" } } },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -590,6 +590,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     additional: None,
                     spend_as: mtg_cards::modify::SpendAs::Normal,
                     when: None,
+                    any_cast: false,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
@@ -699,7 +700,10 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
                 }
             }
         ),
-        selector().prop_map(|what| TriggerPattern::Untapped { what }),
+        selector().prop_map(|what| TriggerPattern::Untapped {
+            what,
+            untap_step: false
+        }),
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
         (1u32..=10).prop_map(|number| TriggerPattern::Chapter { number }),
@@ -1420,6 +1424,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             except,
                             tapped,
                             until_end_of_turn,
+                            counters: Vec::new(),
                         }
                     }),
             ],

@@ -78,10 +78,6 @@ fn explorations(cx: &Cx<'_>, explorers: &[Actor]) -> Result<Vec<Event>, Stop> {
     let mut taken: Vec<ObjectId> = Vec::new();
     for explorer in explorers {
         let player = explorer.player;
-        events.push(Event::Explored {
-            object: explorer.object,
-            player,
-        });
         let top = top_cards(state, player, taken.len() + 1)
             .into_iter()
             .find(|card| !taken.contains(card));
@@ -89,6 +85,11 @@ fn explorations(cx: &Cx<'_>, explorers: &[Actor]) -> Result<Vec<Event>, Stop> {
             state
                 .object(card)
                 .is_some_and(|object| object.base_types().contains(CardType::Land))
+        });
+        events.push(Event::Explored {
+            object: explorer.object,
+            player,
+            land: top.map(|_| land),
         });
         if let Some(card) = top {
             events.push(Event::Revealed(Revealed {
@@ -214,7 +215,7 @@ mod tests {
         events
             .into_iter()
             .map(|event| match event {
-                Event::Explored { object, player } => {
+                Event::Explored { object, player, .. } => {
                     format!("{} explores for seat {}", name(object), player.index())
                 }
                 Event::Revealed(Revealed { cards, .. }) => format!("reveals {}", name(cards[0])),

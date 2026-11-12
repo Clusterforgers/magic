@@ -95,6 +95,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Monstrosity { .. }
         | Effect::Renown { .. }
         | Effect::Exploit { .. }
+        | Effect::Enlist { .. }
         | Effect::Pair { .. }
         | Effect::BecomeLevel { .. }
         | Effect::Adapt { .. }
@@ -108,8 +109,10 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RevealUntil { .. }
         | Effect::ExileTop { .. }
         | Effect::TimeTravel { .. }
+        | Effect::GainSuspend { .. }
         | Effect::ExtraTurn { .. }
         | Effect::AddPhase { .. }
+        | Effect::AddStep { .. }
         | Effect::WinGame { .. }
         | Effect::ChangeTargets { .. }
         | Effect::CopySpell { .. }
@@ -131,6 +134,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::DrawGame {}
         | Effect::SetLife { .. }
         | Effect::ExchangeLife { .. }
+        | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. } => Reports::Events,

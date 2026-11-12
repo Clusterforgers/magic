@@ -38,6 +38,7 @@ const CAST_WAYS: Record<CastWay, string> = {
   Prototype: 'Prototype',
   Impending: 'Impending',
   Free: 'Without paying its mana cost',
+  Offering: 'Offering',
   Emerge: 'Emerge',
   Harmonize: 'Harmonize',
   Cleave: 'Cleave',

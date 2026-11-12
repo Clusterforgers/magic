@@ -1,7 +1,7 @@
 {
   "oracle_id": "3017ac79-37f1-4cc1-8efd-4add027618a2",
   "name": "Ezio Auditore da Firenze",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ezio Auditore da Firenze",
@@ -22,9 +22,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 185, "end": 336 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Life": "TriggeringPlayer" }, "op": "Le", "right": 10 }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": "{W}{U}{B}{R}{G}",
+                        "paid": [
+                          {
+                            "Reflexive": {
+                              "effects": [{ "LoseGame": { "who": "TriggeringPlayer" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

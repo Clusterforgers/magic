@@ -1,7 +1,7 @@
 {
   "oracle_id": "f8966fd5-2926-4ba0-b7d6-cfea40cd4e05",
   "name": "Earthbender Ascension",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Earthbender Ascension",
@@ -68,9 +68,65 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 141, "end": 374 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Counters": { "on": "This", "counter": { "Other": "quest" } }
+                                  },
+                                  "op": "Ge",
+                                  "right": 4
+                                }
+                              },
+                              "then": [
+                                { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                                {
+                                  "Continuous": {
+                                    "affected": { "Target": 0 },
+                                    "mods": [{ "AddKeyword": "Trample" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

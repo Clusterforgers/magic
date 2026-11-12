@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9ed6aa5b-4369-42f7-9853-aae1ac9b17e2",
+  "name": "Hundred-Battle Veteran",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hundred-Battle Veteran",
+      "oracle_fingerprint": "2a31d9681fb03c77201a36c67f01c488",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 4 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "CounterKinds"
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

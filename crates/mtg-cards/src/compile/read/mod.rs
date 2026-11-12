@@ -153,6 +153,8 @@ mod l292_hand_reads;
 mod l292_haunt;
 mod l292_twins;
 mod l293_events;
+mod l294_activations;
+mod l294_damage_facts;
 mod l31a_events;
 pub(crate) mod l31a_performed;
 mod l31b_any_amount;
@@ -185,18 +187,31 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r289_writers;
 mod r300b_writers;
 mod r300c_cost_pairs;
 mod r300c_writers;
+mod r301b_atoms;
+mod r301b_writers;
 mod r302c_writers;
 mod r303_forms;
 mod r303b_statics;
 mod r303b_writers;
+mod r303c_writers;
+mod r304_as_enters;
+mod r304_damage;
 mod r304b_writers;
 mod r305b_writers;
+mod r305c_copies;
 mod r307c_events;
+<<<<<<< HEAD
 mod r373_exiled;
 mod r373_loyalty;
+=======
+mod r372_suspend;
+mod r375_events;
+mod r375_phase;
+>>>>>>> origin/main
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -267,6 +282,7 @@ mod turns;
 mod un33_attractions;
 mod un34_stickers;
 mod untap_rules;
+mod us38_quotes;
 mod vote;
 mod vp20_atoms;
 mod w11a_joins;
@@ -560,6 +576,28 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     {
         return Some(found);
     }
+    if kind == ClauseKind::Static
+        && let Some(found) = r375_phase::r375_no_phase_in_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        r375_phase::r375_held_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            r375_events::r375_crew_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
     if kind == ClauseKind::Triggered
         && let Some(found) =
             l32a_paid::l32a_times_read(text, |twin| clause_with(twin, kind, x_free, own))
@@ -575,6 +613,13 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r372_suspend::r372_not_from_exile_read(text, |twin| {
+            clause_with(twin, kind, x_free, own)
+        })
     {
         return Some(found);
     }

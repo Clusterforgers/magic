@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3cae0e4b-1827-4ed2-832f-98f8e79941a5",
+  "name": "Thrull Wizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrull Wizard",
+      "oracle_fingerprint": "cbeef1a7ed7f3c78f669bf3566f61d77",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "targets": [{ "what": { "Object": ["Spell", { "Color": "Black" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "OneOf": ["{B}", "{3}"] }],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

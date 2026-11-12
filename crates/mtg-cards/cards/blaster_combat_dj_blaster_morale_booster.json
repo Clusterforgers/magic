@@ -1,0 +1,82 @@
+{
+  "oracle_id": "59c2af34-a2e5-4c67-af2d-a782e41a8e1e",
+  "name": "Blaster, Combat DJ // Blaster, Morale Booster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blaster, Combat DJ",
+      "oracle_fingerprint": "173f4116885ee65164ee7a5a74a26850",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{1}{R}{G}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                { "Not": "Token" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "modular", "amount": 1 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+                "by": "You"
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blaster, Morale Booster",
+      "oracle_fingerprint": "93d1edcf981ef8fef6a4605f7461937e",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "modular", "amount": 3 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }, "Other"] } }],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": "This",
+                  "to": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": "X"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ae0f65b4-3814-45fe-a869-8585f6869278",
+  "name": "Nature's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nature's Blessing",
+      "oracle_fingerprint": "3318d3bf9a6f73522ddab55f1de4cd99",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{G}" }, { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "AddKeyword": "Banding" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "AddKeyword": "FirstStrike" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "AddKeyword": "Trample" }],
+                          "duration": "Forever"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

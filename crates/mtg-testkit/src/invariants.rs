@@ -213,7 +213,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
     for effect in state.effects() {
         let from_an_earlier_turn =
             effect.duration == Duration::UntilEndOfTurn && effect.turn != state.turn().number();
-        if from_an_earlier_turn || !effect.is_active(state) {
+        if from_an_earlier_turn || effect.ended(state) {
             return Err(Violation::Bookkeeping(format!(
                 "{:?} is over but still listed",
                 effect.id
@@ -1330,8 +1330,8 @@ impl InvariantChecker {
     }
 
     /// A loyalty ability and an ability that may be activated only as a sorcery (Equip, Reconfigure) are activated by the
-    /// active player in a main step with an empty stack (CR 606.3, 307.1), and a loyalty ability once for each planeswalker
-    /// each turn.
+    /// active player in a main step with an empty stack (CR 606.3, 307.1), unless a permanent lets its controller activate
+    /// that kind at instant speed, and a loyalty ability once for each planeswalker each turn.
     fn check_loyalty_activation(
         &mut self,
         player: PlayerId,
@@ -1360,25 +1360,29 @@ impl InvariantChecker {
         if !loyalty && !sorcery {
             return Ok(());
         }
-        // A permanent of the player's may open such abilities at instant speed ("You may activate equip abilities any
-        // time you could cast an instant"); the engine judges its kind and condition.
-        let instant = sorcery
+        // A permanent its controller controls may let them activate the ability any time they could cast an instant.
+        let instant_too = sorcery
             && self.shadow.zone(Zone::Battlefield).iter().any(|id| {
-                self.shadow.object(*id).is_some_and(|holder| {
-                    holder.controller() == player
-                        && holder
-                            .card()
-                            .rules
-                            .iter()
-                            .any(|rule| matches!(**rule, Ability::InstantActivation { .. }))
-                })
+                controller_of(&self.shadow, *id) == Some(player)
+                    && ability_reader::abilities_of(&self.shadow, *id)
+                        .iter()
+                        .any(|(_, rules)| matches!(**rules, Ability::InstantActivation { .. }))
             });
-        if instant {
+        if instant_too {
             return Ok(());
         }
         let turn = self.shadow.turn();
+<<<<<<< HEAD
         let any_time = loyalty && mtg_engine::loyalty::any_time(&self.shadow, player);
         if !any_time
+=======
+        // A permanent may let its controller activate a kind of sorcery-speed ability at instant speed (Forge Anew).
+        let open = sorcery
+            && rules.as_ref().is_some_and(|rules| {
+                mtg_engine::priority::sorcery_activation_open(&self.shadow, player, address, rules)
+            });
+        if !open
+>>>>>>> origin/main
             && (!self.shadow.is_active(player)
                 || !turn.step().is_main()
                 || !self.shadow.stack().is_empty())

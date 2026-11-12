@@ -1,4 +1,4 @@
-//! Goal: a table plays with manual cards when a seat somebody holds plays a deck with cards the game does not run whole; for rosters of two to four seats, with and without such decks and with open seats, the game browser and the lookup of a game say so, they follow a seat that changes its deck, is claimed with such a deck or is given back, and the lookup keep the flag once the game has started (the browser listing it to watch).
+//! Goal: a table plays with manual cards when a seat somebody holds plays a deck with cards the game does not run whole; for rosters of two to four seats, with and without such decks and with open seats, the game browser and the lookup of a game say so, they follow a seat that changes its deck, is claimed with such a deck or is given back, and the lookup keep the flag once the game has started (the browser listing it to watch for the signed-in).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -178,8 +178,17 @@ async fn a_game_that_has_started_keeps_the_flag_it_started_with(
     lobby::start(&server.registry, &game.to_string(), manual.len()).await;
     assert_eq!(
         listed(&server, game).await,
+        None,
+        "a guest is not shown running games"
+    );
+    let running = server.registry.running().await;
+    assert_eq!(
+        running
+            .iter()
+            .find(|row| row.game == game)
+            .map(|row| row.manual_play),
         Some(expected),
-        "a started game is listed to watch with the flag it started with"
+        "a started game is listed to watch, to the signed-in, with the flag it started with"
     );
     assert_eq!(looked_up(&server, game).await, expected);
     // Asking again, as the page does, says the same.

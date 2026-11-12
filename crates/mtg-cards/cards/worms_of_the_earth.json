@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9638ec0c-c8bf-4aa5-a7ca-8677e4b9f241",
+  "name": "Worms of the Earth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Worms of the Earth",
+      "oracle_fingerprint": "4b1285a23a10266e413a0e923779d2b9",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": "PlayLand" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 26, "end": 60 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 61, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

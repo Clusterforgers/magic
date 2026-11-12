@@ -55,6 +55,8 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
     let leading = r.attempt(|r| {
         let duration = if r.words("until end of turn") {
             Duration::UntilEndOfTurn
+        } else if r.words("until end of combat on your next turn") {
+            Duration::UntilEndOfCombatOnYourNextTurn
         } else {
             r.need("until the end of your next turn")?;
             Duration::UntilEndOfYourNextTurn
@@ -187,6 +189,9 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
         Duration::UntilEndOfTurn => format!("You may play {cards} this turn"),
         Duration::UntilEndOfYourNextTurn => {
             format!("Until the end of your next turn, you may play {cards}")
+        }
+        Duration::UntilEndOfCombatOnYourNextTurn => {
+            format!("Until end of combat on your next turn, you may play {cards}")
         }
         Duration::WhileYouControlSource => {
             format!("You may play {cards} for as long as you control ~")

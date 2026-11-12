@@ -10,7 +10,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Subtype": "Wall" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Wall" }, { "ControlledBy": "You" }]
             },
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Banding" }]
           }

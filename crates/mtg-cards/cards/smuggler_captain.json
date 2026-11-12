@@ -1,0 +1,21 @@
+{
+  "oracle_id": "dc90b4aa-ba5e-4188-939d-b3920bd9ab0d",
+  "name": "Smuggler Captain",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Smuggler Captain",
+      "oracle_fingerprint": "efefe5581670ae92dbfda156ad514bfa",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "NoteName" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

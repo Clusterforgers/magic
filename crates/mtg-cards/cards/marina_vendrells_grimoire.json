@@ -1,0 +1,42 @@
+{
+  "oracle_id": "096eac52-00c2-4439-b2f3-ff555d15ec88",
+  "name": "Marina Vendrell's Grimoire",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Marina Vendrell's Grimoire",
+      "oracle_fingerprint": "72fe3e068adc4fdf77a9fd5d588ae027",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": { "count": 5 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 73, "end": 153 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 200, "end": 302 }
+          }
+        }
+      ]
+    }
+  ]
+}

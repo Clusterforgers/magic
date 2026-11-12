@@ -346,6 +346,9 @@ mod l291_dice;
 mod l291_nth_counter;
 mod l292_reads;
 mod l293_triggers;
+mod l294_activations;
+mod l294_damage_facts;
+mod l294_turn_window;
 mod l31a_events;
 mod l31d_any_number;
 mod l31d_x_color;
@@ -389,8 +392,13 @@ mod prepare;
 mod prevention;
 mod pump_wordings;
 mod put_back;
+mod r303c_writers;
 mod r304b_writers;
+<<<<<<< HEAD
 mod r373_writers;
+=======
+mod r306c_wordings;
+>>>>>>> origin/main
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;

@@ -177,6 +177,11 @@ pub enum Event {
         /// The first step of each added phase.
         steps: Vec<Step>,
     },
+    /// A step was added right after the current one, before any step added earlier (`Effect::AddStep`).
+    StepAdded {
+        /// The step added.
+        step: Step,
+    },
     /// A step began.
     StepBegan {
         /// The step.
@@ -516,6 +521,14 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
         #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
         origin: AbilitySource,
+    },
+    /// A player activated a mana ability (CR 605.3b); it uses no stack, so the log alone keeps the activation for the
+    /// abilities that trigger on it.
+    ManaAbilityActivated {
+        /// Who activated it.
+        player: PlayerId,
+        /// The object it comes from.
+        source: ObjectRef,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
@@ -898,6 +911,11 @@ pub enum Event {
         /// The player it was given to.
         to: PlayerId,
     },
+    /// A player foraged (CR 701.61): the Food sacrificed or the cards exiled are the moves that come before it.
+    Foraged {
+        /// Who foraged.
+        player: PlayerId,
+    },
     /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
     DieRolled {
         /// Who rolled.
@@ -981,6 +999,10 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who revealed the card.
         player: PlayerId,
+        /// Whether the card revealed was a land card; none when the library was empty and nothing was revealed.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        land: Option<bool>,
     },
     /// A player amassed (CR 701.47): the counters and the Army token are the events around it.
     Amassed {
@@ -1014,6 +1036,15 @@ pub enum Event {
         /// The creature that became renowned.
         object: ObjectId,
         /// Its controller.
+        player: PlayerId,
+    },
+    /// A creature enlisted a creature (CR 702.154a): its enlist tapped the creature, the event before it.
+    Enlisted {
+        /// The creature that enlisted.
+        object: ObjectId,
+        /// The creature tapped for it.
+        enlisted: ObjectId,
+        /// The controller of the enlisting creature.
         player: PlayerId,
     },
     /// A creature exploited a creature (CR 702.110b): its exploit ability resolved and the sacrifice is the event
@@ -1353,6 +1384,7 @@ impl Event {
             | Event::ExtraTurnSkipped { .. }
             | Event::PlayerControlGained { .. }
             | Event::PhasesAdded { .. }
+            | Event::StepAdded { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
             | Event::AnnouncementRewound { .. }
@@ -1370,6 +1402,7 @@ impl Event {
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
+            | Event::Foraged { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
@@ -1388,6 +1421,7 @@ impl Event {
             | Event::PlayerLost { .. }
             | Event::GameEnded { .. }
             | Event::AbilityActivated { .. }
+            | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)
             | Event::TriggersOrdered { .. }
             | Event::TriggerRemoved { .. }
@@ -1483,6 +1517,7 @@ impl Event {
             | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }
             | Event::Exploited { object, .. }
+            | Event::Enlisted { object, .. }
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }

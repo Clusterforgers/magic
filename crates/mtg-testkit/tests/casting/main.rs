@@ -154,6 +154,12 @@ mod r288_delayed_targets;
 mod r288_final_chapter;
 mod r2e_cost_parts;
 mod r300b_pieces;
+mod r301_alt_x;
+mod r301_dash_costs;
+mod r301_flashback_x;
+mod r301_offering;
+mod r301_shoals;
+mod r301_visions;
 mod r302_ability_sources;
 mod r302_pawprints;
 mod r302_uncopyable;
@@ -162,9 +168,16 @@ mod r302b_ability_sources;
 mod r302b_named_searches;
 mod r302b_stack_answers;
 mod r302c_cards;
+mod r305_cards;
+mod r305c_any_cast;
+mod r305c_combat_ban;
 mod r306b_spend_any;
 mod r307c_exile;
+<<<<<<< HEAD
 mod r373_loyalty;
+=======
+mod r372_suspend;
+>>>>>>> origin/main
 mod r3f_mana;
 mod r4f_stack_move;
 mod r4i_may_flash;

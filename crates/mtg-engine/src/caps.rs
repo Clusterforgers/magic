@@ -147,6 +147,8 @@ const RUNS: &[&str] = &[
     "Cost.OwnManaCost",
     "Cost.OwnManaValue",
     "Cost.RemoveCountersAmong",
+    "Cost.Discard.Hand",
+    "Cost.Sacrifice.All",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
     "Cost.PayLife.Counted.Rather",
@@ -168,6 +170,7 @@ const RUNS: &[&str] = &[
     "Cost.ReturnToHand",
     "Cost.ExilePermanents",
     "Cost.ExileFromHand",
+    "Cost.Pick.FilterX",
     "Cost.RevealFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
@@ -186,6 +189,7 @@ const RUNS: &[&str] = &[
     "Cost.Waterbend",
     "Cost.XAtLeast",
     "Cost.XColor",
+    "Cost.XAtMost",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",
@@ -273,6 +277,7 @@ const RUNS: &[&str] = &[
     "Effect.Untap",
     "Effect.TapOrUntap",
     "Effect.PhaseOut",
+    "PhaseOut.Held",
     "Effect.Attach",
     "Effect.Unattach",
     "Effect.Pair",
@@ -292,15 +297,18 @@ const RUNS: &[&str] = &[
     "Effect.DrawGame",
     "Effect.SetLife",
     "Effect.ExchangeLife",
+    "Effect.ExchangeLifeWithToughness",
     "Effect.RemoveDamage",
     "Effect.RepeatWhile",
     "Effect.SeparatePiles",
     "Effect.ExtraTurn",
     "Effect.EndTurn",
     "Effect.AddPhase",
+    "Effect.AddStep",
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.TimeTravel",
+    "Effect.GainSuspend",
     "Effect.Goad",
     "Effect.Fight",
     "Effect.Explore",
@@ -312,6 +320,7 @@ const RUNS: &[&str] = &[
     "Effect.Monstrosity",
     "Effect.Renown",
     "Effect.Exploit",
+    "Effect.Enlist",
     "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
@@ -378,6 +387,7 @@ const RUNS: &[&str] = &[
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
+    "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
@@ -476,9 +486,11 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Discard",
     "Rule.Cant.Exile",
     "Rule.Cant.Transform",
+    "Rule.Cant.PhaseOut",
     "Rule.Cant.Untap",
     "Rule.Cant.Crew",
     "Rule.Cant.BecomeSuspected",
+    "Rule.Cant.PhaseIn",
     "Rule.Cant.EnterBattlefield",
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
@@ -625,9 +637,11 @@ const RUNS: &[&str] = &[
     "Ability.FreeActivation",
     "Ability.InstantActivation",
     "Ability.AltCast",
+    "Ability.AltCast.X",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
+    "Keyword.Flashback.Cost.Discard.X",
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
@@ -708,6 +722,7 @@ const RUNS: &[&str] = &[
     "Amount.Tally",
     "Amount.CommanderColors",
     "Amount.Remembered",
+    "Amount.DamageDealtByTo",
     "Amount.TurnNumber",
     "Amount.TriggeringTargets",
     "Amount.PlayersLost",
@@ -819,6 +834,8 @@ const RUNS: &[&str] = &[
     "Keyword.Hideaway",
     "Keyword.Gift",
     "ReplaceBy.Devour",
+    "ReplaceBy.AsEnters",
+    "ReplaceBy.AsEntersWith",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -881,6 +898,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exploit",
     "Keyword.Soulbond",
     "Keyword.Emerge",
+    "Keyword.Offering",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
     "Keyword.Recover",
@@ -900,6 +918,7 @@ const RUNS: &[&str] = &[
     "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
+    "Condition.FirstStep",
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
@@ -1018,6 +1037,8 @@ mod tests {
     #[case::x_in_a_mana_cost("Cost.Mana.X", true)]
     #[case::paying_life("Cost.PayLife", true)]
     #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
+    #[case::r303c_discarding_the_hand_to_cast("Cost.Discard.Hand", true)]
+    #[case::r303c_sacrificing_all_of_a_kind_to_cast("Cost.Sacrifice.All", true)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_activators("Ability.By", true)]
     #[case::other_zones("Ability.From", true)]
@@ -1096,6 +1117,14 @@ mod tests {
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
+    #[case::continuous_while_you_control_the_tapped_source(
+        "Duration.WhileYouControlSourceTapped",
+        true
+    )]
+    #[case::a_rule_while_you_control_the_tapped_source(
+        "Rule.Duration.WhileYouControlSourceTapped",
+        false
+    )]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
         true
@@ -1191,6 +1220,7 @@ mod tests {
     #[case::a_logged_tally("Amount.Tally", true)]
     #[case::commander_colors("Amount.CommanderColors", true)]
     #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::damage_dealt_by_to("Amount.DamageDealtByTo", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::among_players("Condition.Among", true)]
@@ -1315,6 +1345,7 @@ mod tests {
     #[case::convoking("Keyword.Convoke", true)]
     #[case::delving("Keyword.Delve", true)]
     #[case::time_travelling("Effect.TimeTravel", true)]
+    #[case::r372_gaining_suspend("Effect.GainSuspend", true)]
     #[case::extra_turns("Effect.ExtraTurn", true)]
     #[case::added_phases("Effect.AddPhase", true)]
     #[case::ending_the_turn("Effect.EndTurn", true)]
@@ -1330,6 +1361,7 @@ mod tests {
     #[case::cant_discard("Rule.Cant.Discard", true)]
     #[case::cant_exile("Rule.Cant.Exile", true)]
     #[case::cant_transform("Rule.Cant.Transform", true)]
+    #[case::r301_cant_phase_out("Rule.Cant.PhaseOut", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
     #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]
