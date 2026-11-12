@@ -1,16 +1,25 @@
 {
   "oracle_id": "942f6260-055e-4cc7-bec6-3a46fd4b048e",
   "name": "Revenant Patriarch",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Revenant Patriarch",
       "oracle_fingerprint": "807f799378a8f18748a868d4cca2111c",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 100 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "ManaSpent": "White" },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipCombat" } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
           }
         },
         { "Static": { "affected": "This", "mods": ["CantBlock"] } }

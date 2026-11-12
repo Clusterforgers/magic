@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1b4a07bd-5345-4520-bd05-b5173e08135c",
+  "name": "Eivor, Battle-Ready",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eivor, Battle-Ready",
+      "oracle_fingerprint": "b475e8a1da860d5096e38d2afacd4c26",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

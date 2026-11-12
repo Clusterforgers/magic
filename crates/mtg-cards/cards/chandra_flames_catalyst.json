@@ -1,0 +1,58 @@
+{
+  "oracle_id": "7721e800-fba6-4ae7-855e-631b2ecc8d6b",
+  "name": "Chandra, Flame's Catalyst",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chandra, Flame's Catalyst",
+      "oracle_fingerprint": "ad2b2fb48eae8688925b94d89bbfb187",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 3 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "Color": "Red" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 184, "end": 316 }
+          }
+        }
+      ]
+    }
+  ]
+}

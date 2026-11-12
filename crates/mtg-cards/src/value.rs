@@ -39,6 +39,8 @@ pub enum StatKind {
     Name,
     /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
     CreatureType,
+    /// The kinds of counters on it: no number, so only `Amount::Distinct` reads it (each kind once among the objects).
+    CounterKinds,
 }
 
 /// A comparison between two numbers.
