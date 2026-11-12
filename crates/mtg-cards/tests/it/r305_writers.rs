@@ -230,22 +230,52 @@ fn r305_wordings_read_back_their_shape(
 }
 
 #[rstest]
-#[case::creature_tokens(r#"[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]"#, "The \"legend rule\" doesn't apply to creature tokens you control.", true)]
-#[case::spiders(r#"[{"Subtype":"Spider"},{"ControlledBy":"You"}]"#, "The \"legend rule\" doesn't apply to Spiders you control.", true)]
-#[case::every_token_is_not_creature_tokens(r#"["Token",{"ControlledBy":"You"}]"#, "The \"legend rule\" doesn't apply to creature tokens you control.", false)]
-fn r305_legend_rule_reads_back_its_group(#[case] group: &str, #[case] text: &str, #[case] reads: bool) {
-    let said = wordings(&format!(r#"{{"Rule":{{"rule":{{"NoLegendRuleFor":{group}}}}}}}"#));
+#[case::creature_tokens(
+    r#"[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]"#,
+    "The \"legend rule\" doesn't apply to creature tokens you control.",
+    true
+)]
+#[case::spiders(
+    r#"[{"Subtype":"Spider"},{"ControlledBy":"You"}]"#,
+    "The \"legend rule\" doesn't apply to Spiders you control.",
+    true
+)]
+#[case::every_token_is_not_creature_tokens(
+    r#"["Token",{"ControlledBy":"You"}]"#,
+    "The \"legend rule\" doesn't apply to creature tokens you control.",
+    false
+)]
+fn r305_legend_rule_reads_back_its_group(
+    #[case] group: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let said = wordings(&format!(
+        r#"{{"Rule":{{"rule":{{"NoLegendRuleFor":{group}}}}}}}"#
+    ));
     assert_eq!(said.iter().any(|w| w == text), reads, "{group}\n{said:#?}");
 }
 
 #[rstest]
-#[case::double(r#"{"Replacement":{"when":{"Damage":{"source":["This"]}},"by":{"Multiply":2}}}"#, "Double all damage ~ would deal.", true)]
-#[case::triple_is_not_double(r#"{"Replacement":{"when":{"Damage":{"source":["This"]}},"by":{"Multiply":3}}}"#, "Double all damage ~ would deal.", false)]
+#[case::double(
+    r#"{"Replacement":{"when":{"Damage":{"source":["This"]}},"by":{"Multiply":2}}}"#,
+    "Double all damage ~ would deal.",
+    true
+)]
+#[case::triple_is_not_double(
+    r#"{"Replacement":{"when":{"Damage":{"source":["This"]}},"by":{"Multiply":3}}}"#,
+    "Double all damage ~ would deal.",
+    false
+)]
 #[case::megasloth(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"Sum":[{"AnyCounters":"EachPlayer"},{"AnyCounters":{"Each":[]}}]}}}"#, "This spell costs {1} less to cast for each counter among players and permanents.", true)]
 #[case::permanents_alone(r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":{"AnyCounters":{"Each":[]}}}}"#, "This spell costs {1} less to cast for each counter among players and permanents.", false)]
 #[case::market(r#"{"Rule":{"rule":{"Cant":{"who":"EachPlayer","action":{"Cast":{"filter":[{"SharesName":{"Each":[{"Not":"Token"}]}}]}}}}}}"#, "Players can't cast spells with the same name as a nontoken permanent.", true)]
 #[case::market_any_permanent(r#"{"Rule":{"rule":{"Cant":{"who":"EachPlayer","action":{"Cast":{"filter":[{"SharesName":{"Each":[]}}]}}}}}}"#, "Players can't cast spells with the same name as a nontoken permanent.", false)]
-fn r305_fixed_wordings_read_back_their_shape(#[case] json: &str, #[case] text: &str, #[case] reads: bool) {
+fn r305_fixed_wordings_read_back_their_shape(
+    #[case] json: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
     let said = wordings(json);
     assert_eq!(said.iter().any(|w| w == text), reads, "{json}\n{said:#?}");
 }

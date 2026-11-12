@@ -2,14 +2,16 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::modify::SpendAs;
-use mtg_cards::refs::{Selector, ZoneKind};
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::DecisionKind;
+use mtg_engine::effects::Duration;
 use mtg_engine::manual::{ManualAction, ManualZone};
-use mtg_engine::rules::{Duration, Rule};
+use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
+use mtg_testkit::cards::mountain;
 use mtg_testkit::corpus;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
@@ -23,7 +25,12 @@ fn find(driver: &Driver, zone: Zone, name: &str) -> ObjectId {
         .zone(zone)
         .iter()
         .copied()
-        .find(|id| driver.state().object(*id).is_some_and(|o| o.name() == name))
+        .find(|id| {
+            driver
+                .state()
+                .object(*id)
+                .is_some_and(|o| o.card().name == name)
+        })
         .unwrap()
 }
 
@@ -43,12 +50,18 @@ fn bolt_from(
     mountains: usize,
     interrupter: usize,
 ) -> Result<(Driver, ObjectId), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(seats)
-            .hand_named(0, ["Lightning Bolt"])
-            .battlefield_named(0, vec!["Mountain"; mountains])
-            .battlefield_named(interrupter, ["Aven Interrupter"]),
-    )?;
+    let mut mine: Vec<_> = (0..mountains).map(|_| ready(mountain())).collect();
+    let aven = ready(corpus::card("Aven Interrupter").unwrap());
+    let scenario = Scenario::new(seats).hand_named(0, ["Lightning Bolt"]);
+    let scenario = if interrupter == 0 {
+        mine.push(aven);
+        scenario.battlefield(0, mine)
+    } else {
+        scenario
+            .battlefield(0, mine)
+            .battlefield(interrupter, [aven])
+    };
+    let mut driver = Driver::from_scenario(scenario)?;
     let bolt = find(&driver, Zone::Hand(pid(0)), "Lightning Bolt");
     let to = if zone == ZoneKind::Exile {
         ManualZone::Exile
@@ -56,10 +69,13 @@ fn bolt_from(
         ManualZone::Graveyard
     };
     driver.manual(ManualAction::Move { object: bolt, to })?;
-    driver.add_rule(
+    // A permission needs a source; the first Mountain stands in for the card that grants it.
+    let granter = find(&driver, Zone::Battlefield, "Mountain");
+    driver.add_rule_from(
+        granter,
         Rule::MayCast {
             who: vec![pid(0)],
-            what: Selector::default(),
+            what: Selector(vec![Pred::In(zone)]),
             from: Some(zone),
             free: false,
             flash: false,
@@ -145,7 +161,7 @@ fn bolt_in(seats: usize, step: Step) -> Result<(Driver, ObjectId), ScriptError> 
             .at(1, 0, step)
             .battlefield_named(0, ["Megatron, Tyrant"])
             .hand_named(1, ["Lightning Bolt"])
-            .battlefield_named(1, ["Mountain"]),
+            .battlefield(1, [ready(mountain())]),
     )?;
     let bolt = find(&driver, Zone::Hand(pid(1)), "Lightning Bolt");
     driver.pass()?;
