@@ -9,43 +9,14 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    "Unblocked"
-                  ]
-                }
-              }
-            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Unblocked"] } }],
             "effects": [
               {
                 "Shield": {
                   "when": {
-                    "Damage": {
-                      "to": "You",
-                      "source": [
-                        {
-                          "Is": {
-                            "Target": 0
-                          }
-                        }
-                      ],
-                      "combat": true
-                    }
+                    "Damage": { "to": "You", "source": [{ "Is": { "Target": 0 } }], "combat": true }
                   },
-                  "by": {
-                    "Redirect": {
-                      "to": {
-                        "ControllerOf": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  },
+                  "by": { "Redirect": { "to": { "ControllerOf": { "Target": 0 } } } },
                   "duration": "UntilEndOfTurn"
                 }
               }

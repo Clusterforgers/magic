@@ -112,6 +112,7 @@ const WHOLE: &[&str] = &[
     "flash_foliage",
     "monk_of_the_open_hand",
     "dragonlords_prerogative",
+    "mirror_strike",
 ];
 
 #[test]
