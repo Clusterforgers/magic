@@ -11,6 +11,7 @@
           "Spell": {
             "effects": [
               { "CreateToken": { "token": { "Named": "clue" }, "count": "X" } },
+              { "Performed": { "action": "Investigated", "times": "X" } },
               {
                 "CreateToken": {
                   "token": {
