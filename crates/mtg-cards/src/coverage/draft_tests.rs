@@ -1,4 +1,4 @@
-//! Goal: a draft counts by its read when no rules file or `Verified` reading outranks it (`Read` once approved, `Unverified` while a draft the engine runs is pending, waiting while one that does not run is pending or stale, by hand when wrong or when the engine lacks a primitive), and the tally counts `Read`, `Unverified` and the waiting cards apart from `Partial` and `Manual`.
+//! Goal: a draft counts by its read when no `Verified` reading or rules file outranks it (a `Partial`, `Manual` or `Stale` file gives way to a whole draft; `Read` once approved, `Unverified` while a draft the engine runs is pending, waiting while one that does not run is pending or stale, by hand when wrong or when the engine lacks a primitive), and the tally counts `Read`, `Unverified` and the waiting cards apart from `Partial` and `Manual`.
 use super::*;
 use crate::ability::Ability;
 use crate::card::{Face, Span};
@@ -152,21 +152,60 @@ fn a_draft_counts_by_its_read_when_nothing_outranks_it(
 }
 
 #[rstest]
-#[case::pending(ReadState::Pending)]
-#[case::approved(ReadState::Approved)]
-fn a_rules_file_outranks_a_draft(#[case] read: ReadState) {
-    let shown = sorcery("Wish for a card.");
+#[case::a_verified_file_outranks_a_pending_draft(
+    "Draw a card.",
+    ImplStatus::Full,
+    ReadState::Pending,
+    Support::Verified,
+    RulesSource::HandWritten
+)]
+#[case::a_verified_file_outranks_an_approved_draft(
+    "Draw a card.",
+    ImplStatus::Full,
+    ReadState::Approved,
+    Support::Verified,
+    RulesSource::HandWritten
+)]
+#[case::a_pending_draft_outranks_a_manual_file(
+    "Wish for a card.",
+    ImplStatus::Manual,
+    ReadState::Pending,
+    Support::Unverified,
+    RulesSource::Draft
+)]
+#[case::an_approved_draft_outranks_a_manual_file(
+    "Wish for a card.",
+    ImplStatus::Manual,
+    ReadState::Approved,
+    Support::Read,
+    RulesSource::Draft
+)]
+#[case::a_wrong_draft_leaves_a_manual_file(
+    "Wish for a card.",
+    ImplStatus::Manual,
+    ReadState::Wrong,
+    Support::Manual,
+    RulesSource::HandWritten
+)]
+fn a_rules_file_outranks_a_whole_draft_only_when_verified(
+    #[case] text: &str,
+    #[case] status: ImplStatus,
+    #[case] read: ReadState,
+    #[case] support: Support,
+    #[case] rules: RulesSource,
+) {
+    let shown = sorcery(text);
     let file = Library::from_sources(&[Source {
         path: "cards/test_card.json".into(),
-        text: canonical(&filed(&shown, ImplStatus::Manual)),
+        text: canonical(&filed(&shown, status)),
     }])
     .unwrap_or_else(|errors| panic!("{errors}"));
     let library = with_draft(&file, draft_of(&shown, read, None));
 
     let result = judged(&shown, &library, &caps());
 
-    assert_eq!((result.support, result.waiting), (Support::Manual, false));
-    assert_eq!(result.rules, RulesSource::HandWritten);
+    assert_eq!((result.support, result.waiting), (support, false));
+    assert_eq!(result.rules, rules);
 }
 
 #[rstest]
