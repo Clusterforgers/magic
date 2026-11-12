@@ -217,7 +217,7 @@ function Picker({
                         />
                       ) : null}
                     </span>
-                    <span className="truncate text-xs font-medium tabular-nums">{printingCaption(printing)}</span>
+                    <span className="text-xs font-medium break-words tabular-nums">{printingCaption(printing)}</span>
                     {traits.length === 0 ? null : (
                       <span className="truncate text-xs text-muted-foreground">{traits.join(' · ')}</span>
                     )}

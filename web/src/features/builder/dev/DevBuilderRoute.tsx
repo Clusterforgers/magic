@@ -9,6 +9,7 @@ import { Builder } from '../Builder'
 import { startCards } from '../fakeCards'
 import { reportFor, withCheck } from '../fakeCheck'
 import { memoryFixMarks } from './memoryFixMarks'
+import { printingView, startPrintings } from '@/features/cards/fakePrintings'
 import { BUILDER_FIXTURE_MARKER, fixtureCards, fixtureCheck, fixtureDetails, fixtureView } from './fixture'
 
 /**
@@ -60,6 +61,24 @@ export function DevBuilderRoute() {
       api: createDecksApi({ fetch: checks.fetch }),
       cards: startCards({ cards: pool, details: fixtureDetails() }),
       fixMarks: memoryFixMarks(pool),
+      // Five printings of every card, a year apart; their pictures are the card's own while the server lacks them.
+      printings: startPrintings(
+        Object.fromEntries(
+          pool.map((card) => [
+            card.oracle_id,
+            ['sld', 'mh3', 'm21', 'a25', 'lea'].map((set, at) =>
+              printingView(`${card.oracle_id}-${set}`, set, {
+                set_name: set.toUpperCase(),
+                collector_number: String(at * 37 + 1),
+                released_at: `${2024 - at * 6}-01-01`,
+                full_art: at === 0,
+                finishes: at < 2 ? ['nonfoil', 'foil'] : ['nonfoil'],
+                frame: at === 4 ? '1993' : '2015',
+              }),
+            ),
+          ]),
+        ),
+      ).api,
     }
   }, [deck])
   return (
@@ -73,6 +92,7 @@ export function DevBuilderRoute() {
         api={world.api}
         cards={cards === 'real' ? cardsApi : world.cards.api}
         fixMarks={world.fixMarks}
+        printings={world.printings}
       />
     </>
   )

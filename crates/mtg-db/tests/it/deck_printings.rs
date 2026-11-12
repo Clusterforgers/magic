@@ -1,4 +1,5 @@
 //! Goal: a deck line's art is set and cleared only by its owner and only to a printing of its own card, the art an account prefers is kept per card and owner, and a card's printings list newest first with the set name, frame, finishes and full-art mark an import stores.
+#![allow(clippy::unwrap_used)]
 
 use crate::common;
 
