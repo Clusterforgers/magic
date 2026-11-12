@@ -393,11 +393,11 @@ fn activated(
         .chain(kinds)
         .chain(loyalty.then_some(Action::ActivatedLoyalty))
         .map(|action| Happened::Did {
-        action,
-        player: Some(player),
-        object: Some(source),
-        ability: on_stack,
-        amount: 0,
-    })
-    .collect()
+            action,
+            player: Some(player),
+            object: Some(source),
+            ability: on_stack,
+            amount: 0,
+        })
+        .collect()
 }

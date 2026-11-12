@@ -75,6 +75,17 @@ fn priority_mana(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     mana_ability::options(state, player)
 }
 
+/// Whether `player` may now activate the ability `rules` at `address`, which is activated only as a sorcery: they could
+/// cast a sorcery, or a permanent of theirs lets them activate its kind at instant speed (Leonin Shikari).
+pub fn sorcery_activation_open(
+    state: &GameState,
+    player: PlayerId,
+    address: crate::abilities::AbilityRef,
+    rules: &mtg_cards::ability::Ability,
+) -> bool {
+    crate::free_activation::timing_open(state, player, (address, rules))
+}
+
 /// Whether `player` could cast a sorcery now: their own turn, a main step and an empty stack (CR 307.1).
 pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()

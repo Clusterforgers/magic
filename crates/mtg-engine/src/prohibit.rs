@@ -467,12 +467,31 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
+    // A card that may not enter stays where it is, so how it would have entered (tapped, under whom, transformed) goes too.
+    let mut stays = Vec::new();
     events
         .into_iter()
-        .filter(|event| {
-            !doings(state, event)
-                .into_iter()
-                .any(|doing| forbidden(state, doing))
+        .filter(|event| match event {
+            Event::Entered { object, .. } | Event::Transformed { object, .. }
+                if stays.contains(object) =>
+            {
+                false
+            }
+            _ => {
+                let banned = doings(state, event)
+                    .into_iter()
+                    .any(|doing| forbidden(state, doing));
+                if banned
+                    && let Event::ZoneChanged {
+                        object,
+                        to: Zone::Battlefield,
+                        ..
+                    } = event
+                {
+                    stays.push(*object);
+                }
+                !banned
+            }
         })
         .collect()
 }
@@ -659,6 +678,33 @@ mod tests {
             vec![other.clone(), wanted, other]
         };
         assert_eq!(kept, expected);
+    }
+
+    #[test]
+    fn a_card_that_may_not_enter_does_not_enter_tapped_either() {
+        let game =
+            game(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":"EnterBattlefield"}}"#);
+        let bear = id(&game, "Bear");
+        let other = Event::LifeGained {
+            player: ME,
+            amount: 1,
+        };
+        let events = vec![
+            Event::ZoneChanged {
+                object: bear,
+                from: Zone::Graveyard(FOE),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+            Event::Entered {
+                object: bear,
+                tapped: true,
+                controller: FOE,
+                chosen: None,
+            },
+            other.clone(),
+        ];
+        assert_eq!(filter(&game, events), vec![other]);
     }
 
     #[rstest]
