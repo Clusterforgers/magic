@@ -32,10 +32,9 @@
                 "Continuous": {
                   "affected": "This",
                   "mods": [
-                    { "SetPT": { "power": 5, "toughness": 5 } },
-                    { "AddSubtype": "Human" },
-                    { "AddSubtype": "Soldier" },
                     { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Human", "Soldier"] },
+                    { "SetPT": { "power": 5, "toughness": 5 } },
                     { "AddKeyword": "Indestructible" }
                   ],
                   "duration": "UntilEndOfTurn"

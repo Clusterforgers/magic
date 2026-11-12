@@ -1,7 +1,7 @@
 {
   "oracle_id": "dbedd45e-f76c-4be7-ad89-ff57bed6626f",
   "name": "Absolving Lammasu",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Absolving Lammasu",
@@ -17,9 +17,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 83, "end": 234 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Suspect": { "what": { "Target": 0 } } }]
           }
         }
       ]

@@ -1,0 +1,23 @@
+{
+  "id": "f29bbfe2-d59f-4361-8ea4-6a8d1b909769",
+  "oracle_id": "21bb3c03-c1c0-40ec-8df4-8d0054c3742b",
+  "name": "Visage of Bolas",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hou",
+  "collector_number": "208",
+  "rarity": "rare",
+  "released_at": "2017-07-14",
+  "digital": false,
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Artifact",
+  "oracle_text": "When this artifact enters, you may search your library and/or graveyard for a card named Nicol Bolas, the Deceiver, reveal it, and put it into your hand. If you search your library this way, shuffle.\n{T}: Add {U}, {B}, or {R}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": []
+}

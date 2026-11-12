@@ -1,13 +1,15 @@
 //! "Whenever you roll a 1" and "Whenever you roll a 1 or 2": a die that rolls one of the numbers (`DiceRolled` with
-//! `results`).
+//! `results`); "a natural 20" words the results as natural (`natural`).
 
 use super::tokens::Reader;
 use crate::refs::Ref;
 use crate::trigger::TriggerPattern;
 
-/// "a 1", "a 1 or 2", "a 2, 4, or 6" after "roll": the results, at least one, each from 1 and none twice.
+/// "a 1", "a 1 or 2", "a 2, 4, or 6", "a natural 20" after "roll": the results, at least one, each from 1 and none
+/// twice.
 pub(super) fn results(r: &mut Reader<'_>, who: Ref) -> Option<TriggerPattern> {
     r.word("a").then_some(())?;
+    let natural = r.word("natural");
     let mut results = vec![r.number().filter(|n| *n > 0)?];
     // "a 1 or 2", "a 2, 4, or 6": a list of more than two has commas, and its last number follows "or".
     let mut last = false;
@@ -40,16 +42,18 @@ pub(super) fn results(r: &mut Reader<'_>, who: Ref) -> Option<TriggerPattern> {
         who,
         highest: false,
         results,
+        natural,
     })
 }
 
-/// The words of [`results`]: "a 1", "a 1 or 2", "a 2, 4, or 6".
-pub(super) fn results_text(results: &[u32]) -> Option<String> {
+/// The words of [`results`]: "a 1", "a 1 or 2", "a 2, 4, or 6", "a natural 20".
+pub(super) fn results_text(results: &[u32], natural: bool) -> Option<String> {
     let words: Vec<String> = results.iter().map(u32::to_string).collect();
+    let a = if natural { "a natural" } else { "a" };
     Some(match words.as_slice() {
         [] => return None,
-        [one] => format!("a {one}"),
-        [one, two] => format!("a {one} or {two}"),
-        [rest @ .., last] => format!("a {}, or {last}", rest.join(", ")),
+        [one] => format!("{a} {one}"),
+        [one, two] => format!("{a} {one} or {two}"),
+        [rest @ .., last] => format!("{a} {}, or {last}", rest.join(", ")),
     })
 }

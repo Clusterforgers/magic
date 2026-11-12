@@ -740,6 +740,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             who: by,
             highest,
             results: Vec::new(),
+            natural: false,
         })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
@@ -1697,15 +1698,17 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             who,
             highest: false,
             results,
+            natural,
         } if !results.is_empty() => Some(format!(
             "Whenever {} {}",
             player_verb(who, "roll")?,
-            super::l291_dice::results_text(results)?
+            super::l291_dice::results_text(results, *natural)?
         )),
         TriggerPattern::DiceRolled {
             who,
             highest,
             results,
+            natural: false,
         } if results.is_empty() => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }

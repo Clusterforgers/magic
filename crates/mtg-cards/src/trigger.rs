@@ -571,6 +571,9 @@ pub enum TriggerPattern {
         /// Only a die whose result is one of these.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         results: Vec<u32>,
+        /// The results are worded as natural results ("a natural 20"); no effect modifies a roll, so it only words them.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        natural: bool,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {

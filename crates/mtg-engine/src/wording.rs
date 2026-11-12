@@ -644,11 +644,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             who: by,
             highest,
             results,
+            natural,
         } => {
             let (name, s) = who(by);
             let what = if !results.is_empty() {
                 let numbers: Vec<String> = results.iter().map(u32::to_string).collect();
-                format!("a {}", numbers.join(" or "))
+                let natural = if *natural { "natural " } else { "" };
+                format!("a {natural}{}", numbers.join(" or "))
             } else if *highest {
                 "a die's highest natural result".to_owned()
             } else {
