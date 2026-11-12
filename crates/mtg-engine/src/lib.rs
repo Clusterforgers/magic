@@ -140,6 +140,8 @@ pub mod prohibit;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
 pub mod r286_joins;
+#[cfg(test)]
+mod r301b_spend_facts;
 pub mod replace;
 pub mod resolve;
 mod restart;

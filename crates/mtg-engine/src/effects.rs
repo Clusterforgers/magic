@@ -132,9 +132,13 @@ pub enum Modification {
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
-    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection or ward.
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection, ward or
+    /// "bands with other".
     RemoveKeywordKind(
-        #[cfg_attr(feature = "ts", ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\""))]
+        #[cfg_attr(
+            feature = "ts",
+            ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\" | \"BandsWithOther\"")
+        )]
         mtg_cards::rmt7_kinds::KeywordKind,
     ),
     /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
@@ -481,6 +485,21 @@ pub(crate) fn lasts(
         // The control of the source is derived by the layers. The pass that decides which effects apply asks only that the
         // source is there (`lasts_before_control`) and checks the control itself after the control layer, so this full
         // check is for everything outside that pass.
+        Duration::WhileYouControlSourceTapped => {
+            lasts(
+                state,
+                &Duration::WhileSourceTapped,
+                began,
+                controller,
+                source,
+            ) && lasts(
+                state,
+                &Duration::WhileYouControlSource,
+                began,
+                controller,
+                source,
+            )
+        }
         Duration::WhileYouControlSource => {
             lasts(
                 state,
@@ -608,6 +627,7 @@ impl ContinuousEffect {
     pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
         let duration = match &self.duration {
             Duration::WhileYouControlSource => &Duration::WhileSourceOnBattlefield,
+            Duration::WhileYouControlSourceTapped => &Duration::WhileSourceTapped,
             other => other,
         };
         self.lasts_by(state, duration)

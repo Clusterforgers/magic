@@ -36,7 +36,6 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Invasion of Amonkhet // Lazotep Convert", Partial, 3),
     ("Nourishing Shoal", Partial, 1),
     ("Sickening Shoal", Partial, 1),
-    ("Vexing Puzzlebox", Partial, 2),
     ("Yurlok of Scorch Thrash", Partial, 2),
 ];
 

@@ -252,6 +252,9 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
+    /// For as long as the controller of the effect controls the source and the source stays tapped ("for as long as you
+    /// control ~ and ~ remains tapped", CR 611.2b): it ends as soon as either stops holding. Only a continuous effect lasts this long.
+    WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -1230,6 +1233,10 @@ mod tests {
     #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
     #[case(Duration::WhileSourceTapped, r#""WhileSourceTapped""#)]
+    #[case(
+        Duration::WhileYouControlSourceTapped,
+        r#""WhileYouControlSourceTapped""#
+    )]
     #[case(
         Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#

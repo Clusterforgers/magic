@@ -364,6 +364,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
+    "Duration.WhileYouControlSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
@@ -1056,6 +1057,14 @@ mod tests {
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
+    #[case::continuous_while_you_control_the_tapped_source(
+        "Duration.WhileYouControlSourceTapped",
+        true
+    )]
+    #[case::a_rule_while_you_control_the_tapped_source(
+        "Rule.Duration.WhileYouControlSourceTapped",
+        false
+    )]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
         true

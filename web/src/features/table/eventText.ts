@@ -100,6 +100,7 @@ const KEYWORD_KIND_WORDS = {
   Landwalk: 'all landwalk abilities',
   Protection: 'protection',
   Ward: 'ward',
+  BandsWithOther: 'all "bands with other" abilities',
 } as const
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
@@ -256,6 +257,10 @@ function durationWords(
         : ` while its controller controls ${n.card(source.id)}`,
     WhileSourceTapped:
       source === null ? ' while its source stays tapped' : ` while ${n.card(source.id)} stays tapped`,
+    WhileYouControlSourceTapped:
+      source === null
+        ? ' while its controller controls its source and it stays tapped'
+        : ` while its controller controls ${n.card(source.id)} and it stays tapped`,
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',

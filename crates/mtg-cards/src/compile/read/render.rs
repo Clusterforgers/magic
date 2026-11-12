@@ -551,6 +551,23 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
+    super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
+    // A card that exiles itself and returns as a step of a larger sentence joins the two with a comma, as the
+    // sentence alone does, the card named by "it" once the sentence has named it ("If ~ has dealt 3 or more damage this
+    // turn, exile her, then return her ...").
+    let returned: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("exile ~. Then return it to the battlefield"))
+        .flat_map(|text| {
+            ["exile ~, then", "exile it, then"].map(|joined| {
+                text.replace(
+                    "exile ~. Then return it to the battlefield",
+                    &format!("{joined} return it to the battlefield"),
+                )
+            })
+        })
+        .collect();
+    texts.extend(returned);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
