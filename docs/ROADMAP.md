@@ -45,7 +45,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Learn: the Learn page, tutorials at a table with a scripted practice bot, the guided and manual-panel lessons and page tours (`docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs (a trace kept for every failed test) including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
-- Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game, synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`).
+- Polish: replays of finished games from any seat's side with only what the viewer may know, block options that read each attacker and blocker once, solo play with bot seats that never stall a game at three levels (Easy random, Normal and Hard searching engine copies, team-aware), synthesized sound cues with a mute (`docs/server.md`, `docs/web.md`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 
 ## Live game
@@ -107,6 +107,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
+- [ ] (ai37) Very Hard bots: a determinized Monte Carlo tree search brain behind `SeatBrain`, sampling the hidden cards from what a seat has seen (`crates/mtg-testkit/src/brain`; `docs/server.md`, Bot seats)
+- [ ] (ai36a) Hard beats Normal clearly: today about even in mirror matches (21 of 40), since both search with one evaluation; candidates are opponent tricks read from open mana and cards in hand, and a race-aware attack plan (`crates/mtg-testkit/src/brain`)
 - [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for
 
 ## M8 Polish and deploy
