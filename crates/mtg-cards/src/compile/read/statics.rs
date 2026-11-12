@@ -1833,9 +1833,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
-        (GameRule::DamageAsWither | GameRule::AttackAsThoughHasteAt(_), ZoneKind::Battlefield) => {
-            super::r303b_statics::r303b_rule_texts(rule)
-        }
+        (
+            GameRule::DamageAsWither | GameRule::ManaBurn | GameRule::AttackAsThoughHasteAt(_),
+            ZoneKind::Battlefield,
+        ) => super::r303b_statics::r303b_rule_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
         (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
             super::rmt4_untap_limit::untap_rule_texts(rule)

@@ -4937,7 +4937,7 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
-            GameRule::DamageAsWither => {}
+            GameRule::DamageAsWither | GameRule::ManaBurn => {}
             GameRule::AttackAsThoughHasteAt(who) => {
                 self.at(tag, |w| w.reference(who, Kind::Player))
             }

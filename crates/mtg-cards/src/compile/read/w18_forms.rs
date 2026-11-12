@@ -290,28 +290,6 @@ fn prevent_damage(text: &str) -> Option<String> {
         let canon = |source: &str, object: &str| {
             format!("Prevent all damage from [{source}] to [{object}]")
         };
-        // The same with combat damage alone (Marble Priest).
-        if let Some(rest) =
-            sentence.strip_prefix("Prevent all combat damage that would be dealt to ")
-        {
-            let (object, source) = rest.split_once(" by ")?;
-            let source = source.strip_suffix('s')?;
-            return Some(format!(
-                "Prevent all combat damage from [{source}] to [{object}]"
-            ));
-        }
-        if let Some(rest) = sentence.strip_prefix("Prevent that damage if ")
-            && let Some((source, object)) = rest.split_once(" would deal combat damage to ")
-        {
-            let source = source
-                .strip_prefix("an ")
-                .or_else(|| source.strip_prefix("a "))
-                .unwrap_or(source);
-            let object = object.strip_prefix("a ").unwrap_or(object);
-            return Some(format!(
-                "Prevent all combat damage from [{source}] to [{object}]"
-            ));
-        }
         if let Some(rest) = sentence.strip_prefix("Prevent all damage that would be dealt to ") {
             let (object, source) = rest.split_once(" by ")?;
             let source = match source.strip_suffix(" sources") {

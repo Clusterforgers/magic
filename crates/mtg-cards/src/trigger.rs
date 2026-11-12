@@ -1203,6 +1203,7 @@ impl ShieldShape {
                 | ReplaceBy::Instead(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. },
             ) => Some(Self::Damage),
             (

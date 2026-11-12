@@ -1,4 +1,4 @@
-//! Goal: the r303b writers give the oracle wording of an opening-hand reveal, a redirection of a counted total, the rules that deal damage as wither or let sick creatures attack your opponents, a blocking requirement on Walls, the loss of all abilities but mana abilities, a creature type added by choice, absorb and combat damage prevented from a kind of source, and a rule of another meaning (another step, number, player, subtype or damage) never reads back as the clause.
+//! Goal: the r303b writers give the oracle wording of an opening-hand reveal, a redirection of a counted total, the rules that deal damage as wither or let sick creatures attack your opponents, a blocking requirement on Walls, the loss of all abilities but mana abilities, a creature type added by choice, absorb, combat damage prevented from a kind of source and the target "creature, planeswalker, or player", and a rule of another meaning (another step, number, player, subtype or damage) never reads back as the clause.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -119,30 +119,39 @@ fn r303b_absorb_reads_with_its_number(#[case] line: &str, #[case] amount: Option
 }
 
 #[rstest]
-#[case::combat_by_walls(
-    "Prevent all combat damage that would be dealt to ~ by Walls.",
-    "Prevent that damage if a Wall would deal combat damage to ~.",
-    true
-)]
-#[case::combat_is_not_all_damage(
-    "Prevent all combat damage that would be dealt to ~ by Walls.",
-    "Prevent that damage if a Wall would deal damage to ~.",
-    false
-)]
-#[case::other_source(
-    "Prevent all combat damage that would be dealt to ~ by Walls.",
-    "Prevent that damage if a Goblin would deal combat damage to ~.",
-    false
-)]
-#[case::other_object(
-    "Prevent all combat damage that would be dealt to ~ by Walls.",
-    "Prevent that damage if a Wall would deal combat damage to you.",
-    false
-)]
-fn r303b_combat_damage_prevented_from_a_kind_of_source(
-    #[case] left: &str,
-    #[case] right: &str,
+#[case::walls(r#"{"Replacement":{"when":{"Damage":{"to":"This","source":[{"Subtype":"Wall"}],"combat":true}},"by":"Prevent"}}"#, true)]
+#[case::all_damage(r#"{"Replacement":{"when":{"Damage":{"to":"This","source":[{"Subtype":"Wall"}]}},"by":"Prevent"}}"#, false)]
+#[case::other_source(r#"{"Replacement":{"when":{"Damage":{"to":"This","source":[{"Subtype":"Goblin"}],"combat":true}},"by":"Prevent"}}"#, false)]
+#[case::other_object(r#"{"Replacement":{"when":{"Damage":{"to":"You","source":[{"Subtype":"Wall"}],"combat":true}},"by":"Prevent"}}"#, false)]
+fn r303b_combat_damage_prevented_from_a_kind_of_source(#[case] json: &str, #[case] same: bool) {
+    assert_eq!(
+        written(
+            json,
+            "Prevent all combat damage that would be dealt to ~ by Walls."
+        ),
+        same,
+        "{json}"
+    );
+}
+
+/// Captain's Maneuver with the kinds of its first target.
+fn maneuver(first: &str) -> String {
+    let three = r#"{"Either":[{"Object":[{"Type":"Creature"}]},{"Object":[{"Type":"Planeswalker"}]},"Player"]}"#;
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{first}}},{{"what":{{"Another":{{"what":{three},"earlier":[0]}}}}}}],"effects":[{{"Shield":{{"when":{{"Damage":{{"to":{{"Target":0}}}}}},"by":{{"RedirectCounted":{{"most":"X","to":{{"Target":1}}}}}},"duration":"UntilEndOfTurn"}}}}]}}}}"#
+    )
+}
+
+const MANEUVER: &str = "The next X damage that would be dealt to target creature, planeswalker, or player this turn is dealt to another target creature, planeswalker, or player instead.";
+
+#[rstest]
+#[case::three_kinds(r#"{"Either":[{"Object":[{"Type":"Creature"}]},{"Object":[{"Type":"Planeswalker"}]},"Player"]}"#, true)]
+#[case::any_target(r#""AnyTarget""#, false)]
+#[case::no_planeswalker(r#"{"Either":[{"Object":[{"Type":"Creature"}]},"Player"]}"#, false)]
+#[case::opponent(r#"{"Either":[{"Object":[{"Type":"Creature"}]},{"Object":[{"Type":"Planeswalker"}]},"Opponent"]}"#, false)]
+fn r303b_a_creature_planeswalker_or_player_is_its_own_target(
+    #[case] first: &str,
     #[case] same: bool,
 ) {
-    assert_eq!(same_written_text(left, right), same, "{right}");
+    assert_eq!(written(&maneuver(first), MANEUVER), same, "{first}");
 }

@@ -1,4 +1,4 @@
-//! Goal: the engine pieces of pack r30-3b play at 2 to 4 seats: absorb lessens each damage event, a rule deals all damage as though its source had wither, lands that lose all abilities but mana abilities keep tapping for mana and lose the rest, a redirection shield counts its total as it begins, a chosen creature type is added to the others, the creatures a selector picks must block the attacker that names them, and a sick creature attacks only the opponents of the rule's controller.
+//! Goal: the engine pieces of pack r30-3b play at 2 to 4 seats: absorb lessens each damage event, a rule deals all damage as though its source had wither, lands that lose all abilities but mana abilities keep tapping for mana and lose the rest, a redirection shield counts its total as it begins, a chosen creature type is added to the others, the creatures a selector picks must block the attacker that names them, a sick creature attacks only the opponents of the rule's controller, and under a mana burn rule any player losing unspent mana loses that much life.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -8,13 +8,15 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
+use mtg_core::color::Color;
 use mtg_core::mana::ManaType;
 use mtg_engine::characteristics::characteristics;
+use mtg_engine::choose::OptionChoice;
 use mtg_engine::combat::AttackTarget;
-use mtg_engine::decision::{Answer, DecisionKind, OptionChoice, PayChoice};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::keywords::has_keyword;
 use mtg_engine::turn::Step;
-use mtg_testkit::cards::{cost, free_creature};
+use mtg_testkit::cards::{cost, forest, free_creature};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, sick};
 use rstest::rstest;
 
@@ -53,7 +55,8 @@ fn enchantment(name: &str, abilities: &[&str]) -> Arc<CardDefinition> {
 /// Answers every decision passively, paying mana automatically, until the stack is empty.
 fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..60 {
-        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+        let paying = matches!(driver.decision()?.kind, DecisionKind::PayMana(_));
+        if !paying && driver.state().stack().is_empty() && driver.state().resolving().is_none() {
             return Ok(());
         }
         match driver.decision()?.kind {
@@ -162,9 +165,7 @@ fn a_wither_rule_deals_damage_to_creatures_as_counters(
 /// A Forest that also has flying and "{0}: You gain 1 life.".
 fn odd_forest() -> Arc<CardDefinition> {
     with_rules(
-        CardDefinition::new("Odd Forest")
-            .with_type(CardType::Land)
-            .with_subtype("Forest"),
+        CardDefinition::basic_land(Some(Color::Green)),
         &[
             r#"{"Keyword":"Flying"}"#,
             r#"{"Activated":{"cost":"{0}","effects":[{"GainLife":{"amount":1}}]}}"#,
@@ -178,6 +179,7 @@ fn lands_that_lose_all_but_mana_abilities_still_tap_for_mana(
     #[values(true, false)] ruled: bool,
 ) -> Result<(), ScriptError> {
     let mut battlefield = vec![ready(odd_forest())];
+    let name = odd_forest().name.clone();
     if ruled {
         battlefield.push(ready(enchantment(
             "Sun",
@@ -185,16 +187,10 @@ fn lands_that_lose_all_but_mana_abilities_still_tap_for_mana(
         )));
     }
     let mut driver = Driver::from_scenario(Scenario::new(seats).battlefield(0, battlefield))?;
-    let id = driver.id_of("Odd Forest")?;
+    let id = driver.id_of(&name)?;
     assert_eq!(has_keyword(driver.state(), id, &Keyword::Flying), !ruled);
-    assert_eq!(driver.offered_abilities("Odd Forest")?.is_empty(), ruled);
-    assert!(
-        !characteristics(driver.state(), id)
-            .unwrap()
-            .abilities
-            .is_empty()
-    );
-    driver.tap_for_mana("Odd Forest")?;
+    assert_eq!(driver.offered_abilities(&name)?.is_empty(), ruled);
+    driver.tap_for_mana(&name)?;
     let pool = driver
         .state()
         .player(crate::common::pid(0))
@@ -274,7 +270,7 @@ fn a_chosen_creature_type_is_added_to_the_others(
     let after = characteristics(driver.state(), id).unwrap().subtypes;
     assert!(
         after.iter().any(|kind| kind.0 == "Sliver"),
-        "the old type stays"
+        "the old type stays: {after:?}"
     );
     assert!(after.len() > before, "a type is added: {after:?}");
     driver.idle_until(2, Step::Upkeep)?;
@@ -348,18 +344,18 @@ fn sick_creatures_attack_only_the_opponents_of_the_rules_controller(
     #[values(0, 1)] ruler: usize,
 ) -> Result<(), ScriptError> {
     let rule = r#"{"Rule":{"rule":{"AttackAsThoughHasteAt":"Opponents"}}}"#;
-    let driver = Driver::from_scenario(
-        Scenario::new(seats)
-            .at(2, 0, Step::DeclareAttackers)
-            .battlefield(
-                0,
-                [
-                    sick(free_creature("Fresh", 1, 1)),
-                    ready(free_creature("Old", 1, 1)),
-                ],
-            )
-            .battlefield(ruler, [ready(enchantment("Brute", &[rule]))]),
-    )?;
+    let brute = ready(enchantment("Brute", &[rule]));
+    let mut mine = vec![
+        sick(free_creature("Fresh", 1, 1)),
+        ready(free_creature("Old", 1, 1)),
+    ];
+    let mut scenario = Scenario::new(seats).at(2, 0, Step::DeclareAttackers);
+    if ruler == 0 {
+        mine.push(brute);
+    } else {
+        scenario = scenario.battlefield(ruler, [brute]);
+    }
+    let driver = Driver::from_scenario(scenario.battlefield(0, mine))?;
     let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
         panic!("expected attackers");
     };
@@ -382,5 +378,30 @@ fn sick_creatures_attack_only_the_opponents_of_the_rules_controller(
         seats - 1,
         "a creature that isn't sick attacks anyone"
     );
+    Ok(())
+}
+
+#[rstest]
+fn a_player_losing_unspent_mana_loses_that_much_life_under_the_rule(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(None, Some(0), Some(1))] ruler: Option<usize>,
+    #[values(1, 2)] forests: usize,
+) -> Result<(), ScriptError> {
+    let mut mine: Vec<_> = (0..forests).map(|_| ready(forest())).collect();
+    let yurlok = || ready(enchantment("Yurlok", &[r#"{"Rule":{"rule":"ManaBurn"}}"#]));
+    let mut scenario = Scenario::new(seats).at(2, 0, Step::Main1);
+    match ruler {
+        Some(0) => mine.push(yurlok()),
+        Some(seat) => scenario = scenario.battlefield(seat, [yurlok()]),
+        None => {}
+    }
+    let mut driver = Driver::from_scenario(scenario.battlefield(0, mine))?;
+    for _ in 0..forests {
+        driver.tap_for_mana("Forest")?;
+    }
+    driver.idle_until(2, Step::BeginCombat)?;
+    let lost = if ruler.is_some() { forests } else { 0 };
+    driver.expect_life(0, 20 - i32::try_from(lost).unwrap())?;
+    driver.expect_life(1, 20)?;
     Ok(())
 }

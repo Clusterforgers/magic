@@ -683,6 +683,7 @@ Founding of Omashu
 Foundry Inspector
 Four Knocks
 Franklin Richards, Ascendant
+Frenzied Saddlebrute
 Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Frost Titan
@@ -2086,6 +2087,7 @@ Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
 Young Wolf
+Yurlok of Scorch Thrash
 Zanikev Locust
 Zealous Conscripts
 Zellix, Sanity Flayer

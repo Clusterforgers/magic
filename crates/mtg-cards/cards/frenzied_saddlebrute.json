@@ -7,16 +7,8 @@
       "name": "Frenzied Saddlebrute",
       "oracle_fingerprint": "38c7953ab1bd797af945836cb5136091",
       "abilities": [
-        {
-          "Keyword": "Haste"
-        },
-        {
-          "Rule": {
-            "rule": {
-              "AttackAsThoughHasteAt": "Opponents"
-            }
-          }
-        }
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "AttackAsThoughHasteAt": "Opponents" } } }
       ]
     }
   ]

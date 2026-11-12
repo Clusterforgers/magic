@@ -440,6 +440,7 @@ const RUNS: &[&str] = &[
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
     "Rule.DamageAsWither",
+    "Rule.ManaBurn",
     "Rule.AttackAsThoughHasteAt",
     "Rule.CountersRemain",
     "Rule.Cant",

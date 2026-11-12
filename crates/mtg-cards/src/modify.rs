@@ -848,6 +848,9 @@ pub enum GameRule {
     /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
     /// counters.
     DamageAsWither,
+    /// A player losing unspent mana loses that much life (mana burn): "A player losing unspent mana causes that player to
+    /// lose that much life."
+    ManaBurn,
     /// Every creature can attack the players and the planeswalkers they control as though it had haste (CR 302.6): "All
     /// creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste."
     AttackAsThoughHasteAt(Ref),
