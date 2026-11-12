@@ -345,6 +345,7 @@ mod l291_dice;
 mod l291_nth_counter;
 mod l292_reads;
 mod l293_triggers;
+mod l31d_any_number;
 mod l31d_x_color;
 mod land_types;
 mod lands;

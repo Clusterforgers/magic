@@ -28,25 +28,7 @@
                   "as": "discarded"
                 }
               },
-              {
-                "Draw": {
-                  "count": {
-                    "Count": [
-                      { "Is": { "Bound": "discarded" } },
-                      {
-                        "AnyOf": [
-                          { "In": "Battlefield" },
-                          { "In": "Hand" },
-                          { "In": "Library" },
-                          { "In": "Graveyard" },
-                          { "In": "Exile" },
-                          { "In": "Stack" }
-                        ]
-                      }
-                    ]
-                  }
-                }
-              }
+              { "Draw": { "count": { "Bound": "discarded~moved" } } }
             ]
           }
         },

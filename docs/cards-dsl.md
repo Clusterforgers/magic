@@ -95,6 +95,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - Values (`Ref`, `Selector`, `Amount`, `Condition`) are evaluated when an effect runs or a pattern is matched and produce no events.
 - One reader and one writer turn every object phrase into a `Selector` and back (`selectors::phrase`, `selectors::phrase_text`); every effect, trigger, condition and static reader uses this pair, so a new atom works in all of them.
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.
+- "Sacrifice any number of ..." is a `SacrificeUpTo` of every match and "discard any number of ..." an optional `Discard` of the hand, each bound by name; `Bound("<name>~moved")` is how many it took ("that many", "for each permanent sacrificed this way").
 - "Spend only black mana on X." is `CostItem::XColor`: the X of the cost is paid with mana of that color; a spell holds it as a required `AdditionalCost` that pays nothing.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 

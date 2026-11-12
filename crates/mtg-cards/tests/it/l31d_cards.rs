@@ -95,6 +95,19 @@ fn written() {
 #[case("Crypt Rats")]
 #[case("Crimson Hellkite")]
 #[case("Consume Spirit")]
+#[case("Feasting Hobbit")]
+#[case("God-Eternal Bontu")]
+#[case("Illuminate History")]
+#[case("Landslide")]
+#[case("Last-Ditch Effort")]
+#[case("Mana Seism")]
+#[case("Pitiless Carnage")]
+#[case("Preyseizer Dragon")]
+#[case("Renounce")]
+#[case("Reprocess")]
+#[case("Ribtruss Roaster")]
+#[case("Sacred Rites")]
+#[case("The Elder Dragon War")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -122,6 +135,29 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::any_mana_hellkite("Crimson Hellkite", r#",{"XColor":"Red"}"#, "")]
 #[case::white_spirit("Consume Spirit", r#"{"XColor":"Black"}"#, r#"{"XColor":"White"}"#)]
 #[case::optional_spirit("Consume Spirit", r#","required":true"#, "")]
+#[case::lands_for_mountains(
+    "Landslide",
+    r#"{"Subtype":"Mountain"},{"ControlledBy"#,
+    r#"{"Type":"Land"},{"ControlledBy"#
+)]
+#[case::up_to_two(
+    "Last-Ditch Effort",
+    r#""count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#,
+    r#""count":2"#
+)]
+#[case::thrice("Renounce", r#""by":2"#, r#""by":3"#)]
+#[case::bontu_any("God-Eternal Bontu", r#""filter":["Other"]"#, r#""filter":[]"#)]
+#[case::must_discard("Illuminate History", r#","optional":true"#, "")]
+#[case::seism_another_count(
+    "Mana Seism",
+    r#""times":{"Bound":"sacrificed~moved"}"#,
+    r#""times":2"#
+)]
+#[case::carnage_opponents(
+    "Pitiless Carnage",
+    r#"{"SacrificeUpTo":{"#,
+    r#"{"SacrificeUpTo":{"who":"Opponents","#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
