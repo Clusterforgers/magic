@@ -39,6 +39,7 @@ mod r280_cards;
 mod r280_writers;
 mod r282_cards;
 mod r283_cards;
+mod r284_writers;
 mod r6e;
 mod read_sheet;
 mod read_tier;

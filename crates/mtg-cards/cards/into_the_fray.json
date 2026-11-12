@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3d165dec-1821-4d3f-8407-8ce8bb347f8b",
+  "name": "Into the Fray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Fray",
+      "oracle_fingerprint": "53d0cfcce124bf4d7de239a7f8cb43da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{R}" } } }
+      ]
+    }
+  ]
+}

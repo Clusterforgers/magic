@@ -1,16 +1,29 @@
 {
   "oracle_id": "8c220dbd-6572-4715-aae6-dd09a4252d68",
   "name": "Banner of Kinship",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Banner of Kinship",
       "oracle_fingerprint": "4c6e6e51e3f8dcd1a8232500f89abe90",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 151 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": { "Other": "fellowship" },
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+                }
+              }
+            }
           }
         },
         {

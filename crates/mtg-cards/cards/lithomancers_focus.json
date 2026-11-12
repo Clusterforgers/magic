@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a8a27a87-fc4c-44b5-9ba8-505bbf42164e",
+  "name": "Lithomancer's Focus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lithomancer's Focus",
+      "oracle_fingerprint": "f222eb929cb55e459e277169e5511a60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 }, "source": ["Colorless"] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

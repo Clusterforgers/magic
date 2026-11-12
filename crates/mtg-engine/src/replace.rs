@@ -3228,7 +3228,21 @@ impl Pass<'_> {
         count: &mtg_cards::value::Amount,
         applied: &[Origin],
     ) -> Result<(), EngineError> {
-        let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+        // The card's own choice as it enters, made by a replacement applied before this one, counts already.
+        let chosen = (candidate.object.id == object)
+            .then(|| {
+                self.slots.iter().find_map(|slot| match &slot.item {
+                    Item::One(Event::Entered {
+                        object: entering,
+                        chosen: Some(chosen),
+                        ..
+                    }) if *entering == object => Some(chosen.clone()),
+                    _ => None,
+                })
+            })
+            .flatten();
+        let scope = Scope::announcing(self.state, candidate.controller, candidate.object)
+            .with_entering(chosen.as_ref());
         let number = scope.amount(count)?.max(0);
         if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
             && delta > 0

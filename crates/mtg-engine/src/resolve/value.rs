@@ -130,6 +130,9 @@ pub struct Scope<'a> {
     /// The run of effects in the middle of an event (a replacement's steps), whose names, numbers and values the scope reads
     /// in place of the state's resolution.
     pub(crate) inline: Option<&'a super::Resolving>,
+    /// The choice the source made as it enters, kept with its enter event until the event folds: what the replacements
+    /// of the same entering read as the source's choice ("enters with a counter for each creature that player controls").
+    pub(crate) entering: Option<&'a Chosen>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -375,6 +378,7 @@ impl<'a> Scope<'a> {
             granter: None,
             as_was: false,
             inline: None,
+            entering: None,
         }
     }
 
@@ -387,6 +391,14 @@ impl<'a> Scope<'a> {
     pub(crate) fn with_affected(self, object: ObjectRef, read: &'a std::cell::Cell<bool>) -> Self {
         Scope {
             affected: Some((object, read)),
+            ..self
+        }
+    }
+
+    /// The same scope reading `chosen` as the choice its source made as it enters, before the enter event folds.
+    pub(crate) fn with_entering(self, chosen: Option<&'a Chosen>) -> Self {
+        Scope {
+            entering: chosen,
             ..self
         }
     }
@@ -1878,6 +1890,9 @@ impl<'a> Scope<'a> {
 
     /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
     pub(crate) fn entered_choice(&self) -> Option<&'a Chosen> {
+        if let Some(chosen) = self.entering {
+            return Some(chosen);
+        }
         self.state
             .object(self.source.id)
             .and_then(|object| object.permanent())

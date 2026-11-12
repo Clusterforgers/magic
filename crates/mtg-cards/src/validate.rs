@@ -2036,7 +2036,8 @@ impl<'a> Walker<'a> {
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Freerunning(cost)
-            | Keyword::Spectacle(cost) => {
+            | Keyword::Spectacle(cost)
+            | Keyword::Splice { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
@@ -2058,7 +2059,6 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
-            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
@@ -4898,6 +4898,7 @@ impl Walker<'_> {
             | GameRule::SpendManaAs {
                 spells: Some(_), ..
             }
+            | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
@@ -4947,7 +4948,8 @@ impl Walker<'_> {
                 who,
                 spells: Some(spells),
                 ..
-            } => self.at(tag, |w| {
+            }
+            | GameRule::PayLifeForOneSymbol { who, spells, .. } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("spells", |w| w.selector(spells));
             }),

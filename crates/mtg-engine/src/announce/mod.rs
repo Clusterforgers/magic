@@ -258,6 +258,7 @@ impl Needs {
             .map(|way| way.parts.clone())
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));
+        parts.extend(splice::parts_paid(&self.splice, choices));
         if let Some(costs) = &self.modes {
             parts.extend(costs.parts(&choices.modes));
         }

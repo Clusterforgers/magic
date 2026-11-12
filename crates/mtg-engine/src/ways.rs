@@ -401,6 +401,7 @@ fn ep24_rule_costs(
             SpendAs::Normal => cost,
         });
         let cost = cost.map(|cost| crate::rules::ep24_life_for_mana(state, player, cost));
+        let cost = cost.map(|cost| crate::rules::r284_life_for_one(state, player, Some(id), cost));
         if cost != way.cost(printed) {
             way.mana = cost;
         }

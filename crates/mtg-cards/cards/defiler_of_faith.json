@@ -1,7 +1,7 @@
 {
   "oracle_id": "88ac2d09-7993-4bce-8aae-b2683c5c25a5",
   "name": "Defiler of Faith",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Defiler of Faith",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 204 }
+          "Rule": {
+            "rule": {
+              "PayLifeForOneSymbol": {
+                "who": "You",
+                "color": "White",
+                "spells": [
+                  { "Color": "White" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ]
+              }
+            }
           }
         },
         {

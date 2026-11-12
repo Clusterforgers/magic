@@ -14,9 +14,8 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 72, "end": 160 }
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Subtype": "Knight" }], "from": "Graveyard" } }
           }
         },
         {

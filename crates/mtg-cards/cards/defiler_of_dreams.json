@@ -1,7 +1,7 @@
 {
   "oracle_id": "9d4ec5e5-5520-45c3-8071-53191811117d",
   "name": "Defiler of Dreams",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Defiler of Dreams",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 199 }
+          "Rule": {
+            "rule": {
+              "PayLifeForOneSymbol": {
+                "who": "You",
+                "color": "Blue",
+                "spells": [
+                  { "Color": "Blue" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ]
+              }
+            }
           }
         },
         {

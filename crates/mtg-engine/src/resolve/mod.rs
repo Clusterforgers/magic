@@ -359,6 +359,7 @@ fn scope_of<'a>(
         granter: ability.and_then(|a| a.origin().granter()),
         as_was: false,
         inline: None,
+        entering: None,
     }
 }
 

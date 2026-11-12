@@ -863,6 +863,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hundred-Talon Strike
 Hungry Graffalon
 Hungry Lynx
 Hunt the Weak
@@ -1864,6 +1865,7 @@ Tivit, Seller of Secrets
 Toll of the Invasion
 Tomb Tyrant
 Topiary Lecturer
+Torrent of Stone
 Torrential Gearhulk
 Totentanz, Swarm Piper
 Towering Titan

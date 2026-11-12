@@ -339,6 +339,7 @@ mod tests {
                 granter: None,
                 as_was: false,
                 inline: None,
+                entering: None,
             };
             (
                 scope.all_targets_illegal(),

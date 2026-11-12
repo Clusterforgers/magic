@@ -10,9 +10,10 @@
         { "Keyword": "Flying" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 14, "end": 185 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": { "by": "You" } }] } },
+            "effects": [{ "Learn": {} }]
           }
         },
         {

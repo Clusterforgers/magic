@@ -182,6 +182,6 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
             "If you would lose unspent mana, that mana becomes {} instead",
             type_word(*into)
         )],
-        _ => Vec::new(),
+        _ => super::r284_rules::r284_rule_texts(rule),
     }
 }

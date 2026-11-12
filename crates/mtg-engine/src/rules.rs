@@ -174,6 +174,17 @@ pub enum Rule {
         Vec<PlayerId>,
         #[cfg_attr(feature = "ts", ts(type = "unknown"))] mtg_core::color::Color,
     ),
+    /// The players may pay 2 life as they cast a spell the selector picks to have it cost one symbol of the color less.
+    PayLifeForOneSymbol {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The color of the symbol.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        color: mtg_core::color::Color,
+        /// The spells it is for.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: Selector,
+    },
     /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
     OpponentsCantMakeSacrifice(Vec<PlayerId>),
     /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
@@ -627,6 +638,8 @@ pub(crate) struct RulesInForce {
     draw_limit: Vec<(PlayerId, u32)>,
     /// The players who may pay 2 life rather than mana of a color.
     life_for_mana: Vec<(PlayerId, mtg_core::color::Color)>,
+    /// The players who may pay 2 life for one symbol of a color of the spells a selector picks, once for each rule.
+    life_for_one: Vec<(PlayerId, mtg_core::color::Color, Selector)>,
     /// The players whose opponents' spells and abilities can't make them sacrifice.
     spared_sacrifice: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
@@ -1014,6 +1027,14 @@ impl RulesInForce {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
             }
             Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::PayLifeForOneSymbol {
+                players,
+                color,
+                spells,
+            } => {
+                self.life_for_one
+                    .extend(players.iter().map(|p| (*p, *color, spells.clone())));
+            }
             Rule::PayLifeForMana(players, color) => {
                 self.life_for_mana
                     .extend(players.iter().map(|p| (*p, *color)));
@@ -1344,6 +1365,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::PayLifeForMana { who, color } => {
             Rule::PayLifeForMana(scope.players(who)?, *color)
         }
+        GameRule::PayLifeForOneSymbol { who, color, spells } => Rule::PayLifeForOneSymbol {
+            players: scope.players(who)?,
+            color: *color,
+            spells: spells.clone(),
+        },
         GameRule::OpponentsCantMakeSacrifice(who) => {
             Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
         }
@@ -1523,6 +1549,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
         | Rule::PayLifeForMana(players, _)
+        | Rule::PayLifeForOneSymbol { players, .. }
         | Rule::OpponentsCantMakeSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
@@ -1692,6 +1719,7 @@ static NONE: RulesInForce = RulesInForce {
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
     life_for_mana: Vec::new(),
+    life_for_one: Vec::new(),
     spared_sacrifice: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
@@ -2105,6 +2133,31 @@ pub(crate) fn ep24_life_for_mana(state: &GameState, player: PlayerId, mana: Mana
         .iter()
         .filter(|(who, _)| *who == player)
         .fold(mana, |mana, (_, color)| mana.with_phyrexian(*color))
+}
+
+/// `mana` as `player` may pay it for the spell `spell`: one symbol of the color made Phyrexian for each rule that lets
+/// them pay 2 life to cast a spell like it for that much less (an ability's cost is left as it is).
+pub(crate) fn r284_life_for_one(
+    state: &GameState,
+    player: PlayerId,
+    spell: Option<ObjectId>,
+    mana: ManaCost,
+) -> ManaCost {
+    let Some(object) = spell.and_then(|id| state.object(id)) else {
+        return mana;
+    };
+    let reference = object.reference();
+    state
+        .rules()
+        .life_for_one
+        .iter()
+        .filter(|(who, _, spells)| {
+            *who == player
+                && Scope::announcing(state, player, reference)
+                    .selects(spells, reference)
+                    .unwrap_or(false)
+        })
+        .fold(mana, |mana, (_, color, _)| mana.with_one_phyrexian(*color))
 }
 
 /// How many more cards `player` may draw this turn under the draw limits in force; `None` when no limit holds.

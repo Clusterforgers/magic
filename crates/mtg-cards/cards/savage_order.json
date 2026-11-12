@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8dd5b7d5-3d92-40e2-9572-bf70ae591bed",
+  "name": "Savage Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Order",
+      "oracle_fingerprint": "13c0fc98b098784549f88b9f5eea7ede",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Dinosaur" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -797,6 +797,7 @@ mod r281_cards;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
 mod r281_pay_one_of;
+mod r284_engine;
 mod r285_pieces;
 mod r2a_adventure;
 mod r2a_doubling;

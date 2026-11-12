@@ -1,7 +1,7 @@
 {
   "oracle_id": "812df594-75af-494f-be09-5f9633aca46a",
   "name": "Deepway Navigator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Deepway Navigator",
@@ -9,15 +9,34 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 6, "end": 70 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Untap": {
+                  "what": { "Each": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }, "Other"] }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 71, "end": 163 }
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Attacked",
+                    "who": "You",
+                    "filter": [{ "Subtype": "Merfolk" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            }
           }
         }
       ]
