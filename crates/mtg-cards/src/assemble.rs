@@ -136,6 +136,7 @@ pub(crate) fn assemble_record(
         (None, _) => face_of(0),
     };
     definition.pairing = crate::identity::pairing_keywords(printed);
+    definition.activated = crate::identity::has_activated_ability(printed);
     Assembled {
         definition,
         support: record,
@@ -156,6 +157,11 @@ fn manual_clauses(
         .get(index)
         .map_or("", |face| face.oracle_text.as_str());
     let named = || record.clauses.iter().filter(|clause| clause.face == index);
+    let own_names = printed
+        .faces
+        .get(index)
+        .map(crate::compile::own_names)
+        .unwrap_or_default();
     if record.support.runs_whole() {
         return Vec::new();
     }
@@ -165,18 +171,14 @@ fn manual_clauses(
             |clause| clause.reason.clone(),
         );
         return crate::support::has_rules_text(text)
-            .then(|| ManualClause {
-                text: text.to_owned(),
-                reason,
-            })
+            .then(|| ManualClause::new(text, reason).reading_when(&own_names))
             .into_iter()
             .collect();
     }
     named()
         .filter_map(|clause| {
-            clause.span.slice(text).map(|clause_text| ManualClause {
-                text: clause_text.to_owned(),
-                reason: clause.reason.clone(),
+            clause.span.slice(text).map(|clause_text| {
+                ManualClause::new(clause_text, clause.reason.clone()).reading_when(&own_names)
             })
         })
         .collect()
@@ -1280,6 +1282,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         faces: Vec::new(),
         identity: None,
         pairing: Vec::new(),
+        activated: false,
     }
 }
 
@@ -2265,10 +2268,7 @@ mod tests {
         );
         assert_eq!(
             assembled.definition.manual,
-            [ManualClause {
-                text: text.into(),
-                reason: reason.into()
-            }]
+            [ManualClause::new(text, reason)]
         );
         let ran = usize::from(status == ImplStatus::Partial);
         assert_eq!(assembled.definition.abilities.len(), ran);

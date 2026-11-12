@@ -6,7 +6,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import { timeSince } from '@/lib/timeSince'
 import type { MyGame } from '@/protocol/generated'
-import { continueLabel, othersText, removeLabel, resultText, STATUS_LABEL } from './format'
+import { continueLabel, othersText, removeLabel, replayLabel, resultText, STATUS_LABEL } from './format'
 
 // The Play page's breakpoint: a table from here up, stacked rows under it.
 const TABLE_FROM = '(min-width: 64rem)'
@@ -48,7 +48,7 @@ function Age({ game, now }: { game: MyGame; now: number }) {
 
 /**
  * The one action of a row: Continue opens the game page with no seat link, which connects through the session.
- * A finished game has none, since the server forgets it soon after it ends: its row is the record. A failed game cannot
+ * A finished game cannot be continued, since the server forgets it soon after it ends: its row offers its replay. A failed game cannot
  * be played, so it has no link, only Remove, which takes it off the list.
  */
 function Action({
@@ -56,7 +56,18 @@ function Action({
   removing,
   onRemove,
 }: { game: MyGame } & Pick<GameRowsProps, 'removing' | 'onRemove'>) {
-  if (game.status === 'finished') return null
+  if (game.status === 'finished') {
+    return (
+      <Link
+        to="/replay/$gameId"
+        params={{ gameId: game.game }}
+        aria-label={replayLabel(game)}
+        className={buttonVariants({ variant: 'outline' })}
+      >
+        Replay
+      </Link>
+    )
+  }
   if (game.status === 'failed') {
     return (
       <Button

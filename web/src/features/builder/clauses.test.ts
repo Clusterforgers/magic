@@ -8,6 +8,7 @@ const clause = (start: number, end: number, face = 0): Reason => ({
   face,
   span: { start, end },
   text: `clause ${start}-${end}`,
+  quote: '',
 })
 const plain = (text: string): Segment => ({ text, covers: [], ends: [] })
 const seg = (text: string, covers: number[], ends: number[]): Segment => ({ text, covers, ends })

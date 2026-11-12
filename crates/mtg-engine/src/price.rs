@@ -3,6 +3,7 @@
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::value::Amount;
+use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -39,6 +40,8 @@ pub(crate) struct Price {
     pub(crate) mana: Option<ManaCost>,
     /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
     pub(crate) x: u32,
+    /// "Spend only black mana on X": the mana each `{X}` costs is of this color instead of generic.
+    pub(crate) x_color: Option<Color>,
     /// How much of the mana is a waterbend cost: artifacts and creatures tapped may pay for it, each {1} (Avatar).
     pub(crate) waterbend: u32,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
@@ -96,6 +99,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::OneOf(_) => "Cost.OneOf",
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
+        CostItem::XColor(_) => "Cost.XColor",
     }
 }
 
@@ -187,6 +191,7 @@ impl Price {
         let mut x = 0u32;
         let mut waterbend = 0u32;
         let mut parts = Vec::new();
+        let mut x_color = None;
         let mut changes = Vec::new();
         for item in &cost.0 {
             let moves = match item {
@@ -208,6 +213,7 @@ impl Price {
                 CostItem::Changed { .. } => changes.push(item.clone()),
                 // The least X is read where X is announced (`announce/x.rs`).
                 CostItem::XAtLeast(_) => {}
+                CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
                     mana = true;
@@ -231,6 +237,7 @@ impl Price {
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,
+            x_color,
             waterbend,
             parts,
             casting: false,
@@ -364,6 +371,35 @@ impl Price {
     }
 }
 
+/// `mana` with `amount` more mana paid for X (CR 107.3): generic, or of `color` for "Spend only black mana on X".
+pub(crate) fn with_x(mana: ManaCost, amount: u32, color: Option<Color>) -> ManaCost {
+    match color {
+        None => mana.with(ManaSymbol::Generic(amount)),
+        Some(color) => (0..amount).fold(mana, |mana, _| mana.with(ManaSymbol::Colored(color))),
+    }
+}
+
+/// The color "Spend only black mana on X" asks of the mana paid for X in `cost`, if any.
+pub(crate) fn x_color_of(cost: &Cost) -> Option<Color> {
+    cost.0.iter().find_map(|item| match item {
+        CostItem::XColor(color) => Some(*color),
+        _ => None,
+    })
+}
+
+/// The color a spell's "Spend only black mana on X" asks of the mana paid for its X: a part of its required additional
+/// costs, which pays nothing itself.
+pub(crate) fn spell_x_color(card: &mtg_cards::CardDefinition) -> Option<Color> {
+    crate::ability_reader::printed_rules(card).find_map(|rule| match &**rule {
+        mtg_cards::ability::Ability::AdditionalCost {
+            cost,
+            required: true,
+            ..
+        } => x_color_of(cost),
+        _ => None,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: a cost is a price when every part of it is a `{T}` or mana (several mana parts add up), and any other part, or an `{X}`, is refused by the name `Caps` gives it; the mana sources of an ability that taps its source never include the source.
@@ -429,6 +465,7 @@ mod tests {
                 },
                 mana: mana(expected),
                 x: 0,
+                x_color: None,
                 waterbend: 0,
                 parts: Vec::new(),
                 casting: false,

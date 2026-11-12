@@ -335,7 +335,7 @@ fn gifts(ctx: &Ctx<'_>, choices: &Choices, cost: &Optional) -> Vec<OptionalCost>
     ctx.state
         .turn_order_from(ctx.player)
         .into_iter()
-        .filter(|opponent| *opponent != ctx.player)
+        .filter(|opponent| ctx.state.is_opponent(ctx.player, *opponent))
         .filter(|opponent| {
             let mut trial = choices.clone();
             trial.optional_costs.push(gift::promise(*opponent));

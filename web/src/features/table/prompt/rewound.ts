@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayState } from '@/play/store'
 import { REASON_WORDS } from '../handReason'
+import { whyLine } from '../whyWords'
 import { useUntilAnswered } from './nothingToDo'
 
 /** The newest `AnnouncementRewound` of the viewer, in words, and where it sits in the log. */
@@ -21,11 +22,15 @@ export function latestRewound(state: PlayState): RewoundNote | null {
     if (typeof event === 'string') continue
     if ('TurnBegan' in event || 'SpellCast' in event || 'AbilityActivated' in event) return null
     if ('AnnouncementRewound' in event && event.AnnouncementRewound.player === state.seat) {
-      const { object, reason } = event.AnnouncementRewound
-      const name = state.objectsById[object]?.name || 'That card'
+      const { object, reason, why } = event.AnnouncementRewound
+      const card = state.objectsById[object]
+      const name = card?.name || 'That card'
       return {
         seq: entry.seq,
-        text: `${name} could not be played: ${REASON_WORDS[reason].line.toLowerCase()}`,
+        text:
+          why === undefined
+            ? `${name} could not be played: ${REASON_WORDS[reason].line.toLowerCase()}`
+            : `${name} could not be played. ${whyLine({ name, rulesText: card?.rules_text, doing: 'cast' }, reason, why)}`,
       }
     }
   }

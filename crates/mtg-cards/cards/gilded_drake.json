@@ -1,7 +1,7 @@
 {
   "oracle_id": "7f06c098-6482-4bf3-a9a1-110d6d5b5703",
   "name": "Gilded Drake",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gilded Drake",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 243 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "ExchangeControl": { "what": ["This", { "Target": 0 }], "duration": "Forever" } },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              "StillResolves"
+            ]
           }
         }
       ]

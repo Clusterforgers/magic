@@ -22,7 +22,7 @@
                 "Sacrifice": {
                   "who": "Opponents",
                   "filter": [{ "Type": "Creature" }],
-                  "count": { "Count": [{ "Is": { "Bound": "discarded" } }] }
+                  "count": { "Bound": "discarded~moved" }
                 }
               }
             ]

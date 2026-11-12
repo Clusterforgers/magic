@@ -25,6 +25,9 @@ import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
 import { TurnTimeMark } from './TurnTimeMark'
+import { TeamBadge } from '@/components/TeamBadge'
+import { memberNames, teamLabel } from '@/lib/teams'
+import { useSeatTeam } from './teamLife'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -55,6 +58,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
+  const team = useSeatTeam(seat)
   const effects = usePlay(
     useStable((state) => (player === undefined ? [] : seatEffects(player, state.objectsById, name))),
   )
@@ -69,6 +73,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       type="button"
       data-variant="tile"
       data-tile-seat={seat}
+      data-team={team?.team}
       data-away={away || undefined}
       data-state={podState(flags.active, flags.priority)}
       aria-current={focused || undefined}
@@ -76,6 +81,14 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         tileName({
           name,
           life: player.life,
+          ...(team === null
+            ? {}
+            : {
+                team: {
+                  label: teamLabel(team.team),
+                  ...(team.life === 'own' ? {} : { sharedWith: memberNames(team.mates) }),
+                },
+              }),
           counts,
           active: flags.active,
           priority: flags.priority,
@@ -112,6 +125,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         <span className="flex min-w-0 items-center gap-1.5">
           <SeatDot seat={seat} />
           <span className="min-w-10 truncate text-sm font-semibold">{name}</span>
+          {team === null ? null : <TeamBadge team={team.team} size="chip" />}
           {showsPriorityDot(flags.active, flags.priority) ? (
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
@@ -125,9 +139,12 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             seat={seat}
             className={cn(
               'text-xl leading-6 font-semibold tabular-nums',
+              // The teammate's tile shows the shared total quieter: the team's first seat carries it.
+              team?.life === 'teammate' && 'text-base text-muted-foreground',
               player.life <= 5 && 'text-destructive',
             )}
           >
+            {team?.life === 'teammate' ? <span className="mr-1 text-xs font-medium">shared</span> : null}
             {player.life}
           </LifeFx>
         </span>

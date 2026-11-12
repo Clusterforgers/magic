@@ -23,6 +23,8 @@ export interface GameOptions {
   /** How the fake REST server answers. */
   script?: ServerScript
   strict?: boolean
+  /** The page watches as a signed-in spectator. */
+  watch?: boolean
   /** Mount the page at its own address with a stand-in for Play at `/`, so `router` shows where it sends the visitor. */
   routed?: boolean
 }
@@ -69,6 +71,7 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
       gameId={GAME_ID}
       link={link}
       account={options.account ?? null}
+      watch={options.watch === true}
       api={server.api}
       decks={server.decks}
       precons={server.precons}

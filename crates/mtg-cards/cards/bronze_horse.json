@@ -14,7 +14,7 @@
             "by": "Prevent",
             "condition": {
               "Compare": {
-                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "left": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
                 "op": "Ge",
                 "right": 1
               }

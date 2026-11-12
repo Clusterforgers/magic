@@ -29,7 +29,7 @@
         },
         {
           "Manual": {
-            "reason": "you apply this clause by hand",
+            "reason": "you apply this triggered ability by hand",
             "span": { "start": 109, "end": 316 }
           }
         }

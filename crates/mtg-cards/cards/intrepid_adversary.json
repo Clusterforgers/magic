@@ -1,7 +1,7 @@
 {
   "oracle_id": "b72fde5e-862a-45e8-9880-f2c16975a9ac",
   "name": "Intrepid Adversary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Intrepid Adversary",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 9, "end": 164 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PayAnyTimes": { "cost": "{1}{W}" } },
+              {
+                "Reflexive": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": { "Other": "valor" },
+                        "count": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

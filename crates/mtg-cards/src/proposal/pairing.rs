@@ -114,9 +114,10 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
         | Ability::OpeningHandWith { .. }
-        | Ability::OpeningReveal { .. }
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
+        // On an instant or sorcery the reveal is a sentence of the spell's text (Providence).
+        Ability::OpeningReveal { .. } => &[ClauseKind::Static, ClauseKind::Spell],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.

@@ -509,7 +509,16 @@ fn run_step(
     // CR 608.2b: a spell or ability whose targets have all become illegal does nothing at all.
     // A first step that was answered already began the resolution: a card it cast left its zone, and the spell or ability
     // goes on (CR 608.2g).
-    if resolving.position == START && resolving.journal.is_empty() && scope.all_targets_illegal() {
+    // "This ability still resolves if its target becomes illegal": the steps run and find the target gone.
+    let still = rules
+        .effects()
+        .iter()
+        .any(|effect| matches!(effect, Effect::StillResolves));
+    if resolving.position == START
+        && resolving.journal.is_empty()
+        && !still
+        && scope.all_targets_illegal()
+    {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {
             object: object.id(),
             outcome: ResolutionOutcome::Fizzled,

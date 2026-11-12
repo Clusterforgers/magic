@@ -643,6 +643,16 @@ impl Engine {
         if !watching {
             return Ok(());
         }
+        // A by-hand line is due as its event happens, before the abilities that trigger on the same events.
+        for line in triggers::due(
+            before.as_ref().unwrap_or(&self.state),
+            &self.events[scanned..],
+            &self.state,
+        ) {
+            let event = Event::ByHandDue(Box::new(line));
+            apply_event(&mut self.state, &event)?;
+            self.events.push(event);
+        }
         // The abilities found are events too, and an ability may trigger on one ("whenever an ability triggers"): the
         // events they add are read again, down a chain that ends when nothing more triggers or at `MAX_TRIGGER_CHAIN`.
         for _ in 0..MAX_TRIGGER_CHAIN {
@@ -762,10 +772,24 @@ impl Engine {
             (What::Trigger(_) | What::Attack(..) | What::Block(_), None) => return Ok(()),
         };
         let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
+        // The target that had no legal choice, read as the announcement read it.
+        let why = (reason == Unplayable::Targets)
+            .then(|| {
+                let rules = match &pending.what {
+                    What::Spell(card) => {
+                        crate::resolve::spell_ability(&self.state, *card).map(|(_, rules)| rules)
+                    }
+                    What::Ability(address) => crate::ability_reader::ability(&self.state, *address),
+                    _ => None,
+                }?;
+                crate::why::target(&self.state, player, object, &rules)
+            })
+            .flatten();
         self.commit(vec![Event::AnnouncementRewound {
             player,
             object,
             reason,
+            why,
         }])
     }
 

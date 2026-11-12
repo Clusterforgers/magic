@@ -1,0 +1,33 @@
+{
+  "oracle_id": "540c5225-845e-4498-baae-0fbb836c1f38",
+  "name": "Primal Plasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Plasma",
+      "oracle_fingerprint": "8c5e5c7e44418271548435f68904fc5a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "BecomesChoice": [
+                [{ "SetPT": { "power": 3, "toughness": 3 } }, { "AddType": "Creature" }],
+                [
+                  { "SetPT": { "power": 2, "toughness": 2 } },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Flying" }
+                ],
+                [
+                  { "SetPT": { "power": 1, "toughness": 6 } },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Defender" }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

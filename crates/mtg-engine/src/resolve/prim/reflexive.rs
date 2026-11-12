@@ -54,12 +54,31 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             // What the earlier steps took away (a sacrificed creature) stays readable as it was (CR 608.2h).
             cause: Cause {
                 snapshots: cx.resolving.snapshots().to_vec(),
+                amount: times_before(cx),
                 ..Cause::default()
             },
             snapshot,
             delayed: Some(id),
         })),
     ]))
+}
+
+/// How many times the step before paid its cost when it is a payment any number of times ("When you pay this cost one
+/// or more times ... that many"); 0 otherwise.
+fn times_before(cx: &Cx<'_>) -> u32 {
+    let position = cx.resolving.position();
+    let Some((last, holder)) = position.split_last() else {
+        return 0;
+    };
+    let Some(before) = last.checked_sub(1) else {
+        return 0;
+    };
+    let name = super::l32a_pay_times::times_name(&[holder, &[before]].concat());
+    cx.resolving
+        .lets
+        .iter()
+        .find(|(kept, _)| *kept == name)
+        .map_or(0, |(_, value)| u32::try_from(*value).unwrap_or(0))
 }
 
 /// Whether the step before this one did what it says: a `May` that was accepted and whose own steps took something,

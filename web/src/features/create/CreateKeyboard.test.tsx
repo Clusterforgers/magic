@@ -5,8 +5,10 @@ import { chooseSeatLinks, openCreateForm } from '@/test-utils/createForm'
 import { MADE_GAME, tokenOf } from '@/test-utils/fakeServer'
 
 describe('reading order', () => {
-  it('visits the seat count, the creator’s name and deck, then the visibility choice', async () => {
+  it('visits the game mode, the seat count, the creator’s name and deck, then the bots and the visibility choice', async () => {
     const { user } = await openCreateForm()
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByRole('radio', { name: /^Free-for-all/ }))
     await user.tab()
     expect(document.activeElement).toBe(screen.getByLabelText('Seats'))
     await user.tab()
@@ -15,6 +17,8 @@ describe('reading order', () => {
     expect(document.activeElement).toBe(screen.getByLabelText('Your deck'))
     await user.tab()
     expect(document.activeElement).toHaveTextContent('Full list of Mono Green Stompers')
+    await user.tab()
+    expect(document.activeElement).toBe(screen.getByLabelText('Bots'))
     await user.tab()
     expect(document.activeElement).toBe(screen.getByRole('radio', { name: 'Listed' }))
   })

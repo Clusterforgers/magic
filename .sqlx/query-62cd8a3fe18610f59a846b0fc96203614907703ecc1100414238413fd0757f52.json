@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT p.entrant, p.user_id, u.username FROM tournament_players p\n             JOIN users u ON u.id = p.user_id\n             WHERE p.tournament_id = $1 ORDER BY p.joined_at, p.user_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "entrant",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_players",
+            "name": "entrant"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "tournament_players",
+            "name": "user_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "username",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "62cd8a3fe18610f59a846b0fc96203614907703ecc1100414238413fd0757f52"
+}

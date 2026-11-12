@@ -68,7 +68,7 @@ const C9_WR_WHOLES: [(&str, &str); 65] = [
         "When this creature enters, if you cast it from your hand and there are five or more other creatures on the battlefield, destroy all other creatures.",
     ),
     (
-        r#"{"Spell":{"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}}"#,
+        r#"{"Spell":{"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Draw":{"count":{"Bound":"discarded~moved"}}}]}}"#,
         "Discard all the cards in your hand, then draw that many cards.",
     ),
     (
@@ -208,7 +208,7 @@ const C9_WR_WHOLES: [(&str, &str); 65] = [
         "Gain control of target creature until end of turn. Untap that creature. It gets +2/+0 and gains haste until end of turn.",
     ),
     (
-        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Sacrifice":{"who":"Opponents","filter":[{"Type":"Creature"}],"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}}"#,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Sacrifice":{"who":"Opponents","filter":[{"Type":"Creature"}],"count":{"Bound":"discarded~moved"}}}]}}"#,
         "When ~ enters, discard your hand. Each opponent sacrifices a creature of their choice for each card discarded this way.",
     ),
     (

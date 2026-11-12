@@ -757,6 +757,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
+        | ReplaceBy::BecomesChoice(_)
+        | ReplaceBy::Mill(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -793,6 +795,8 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
+                | ReplaceBy::BecomesChoice(_)
+                | ReplaceBy::Mill(_)
         )
     )
 }
@@ -2822,7 +2826,7 @@ impl Pass<'_> {
         by: &ReplaceBy,
         object: ObjectId,
         controller: PlayerId,
-        applied: Vec<Origin>,
+        mut applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
         let source = candidate.object.id;
         let set_tapped = |step: &mut Pass<'_>, at: usize, to: bool| {
@@ -2902,6 +2906,14 @@ impl Pass<'_> {
             ReplaceBy::UnderChosenOpponent => {
                 if let Asked::Ask(decision) = self.ep28_under(at, source, object, controller)? {
                     return Ok(Applied::Ask(decision));
+                }
+            }
+            ReplaceBy::Mill(count) => self.r303_mills(at, candidate, controller, count)?,
+            ReplaceBy::BecomesChoice(forms) => {
+                match self.r303_becomes_form(at, source, object, controller, forms, &applied)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    // The choice among the copied rules is this one, already made.
+                    Asked::Got(rule) => applied.extend(rule.map(Origin::Copied)),
                 }
             }
             ReplaceBy::AsCopy {
@@ -3517,7 +3529,7 @@ impl Pass<'_> {
                 .state
                 .turn_order_from(controller)
                 .into_iter()
-                .filter(|player| *player != controller)
+                .filter(|player| self.state.is_opponent(controller, *player))
                 .map(ChoiceOption::Player)
                 .collect(),
         }
@@ -3555,6 +3567,8 @@ mod amplify;
 mod changes;
 mod e15b_counter_of;
 mod e15f_word;
+mod r303_forms;
+mod r303_mills;
 mod riot;
 mod tribute;
 

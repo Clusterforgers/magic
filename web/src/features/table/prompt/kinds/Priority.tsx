@@ -5,10 +5,10 @@ import type { ManaOption, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import type { MenuTarget } from '../../manual/menuStore'
 import { ManaChoice } from '../ManaChoice'
-import { handNotes } from '../../handReason'
+import { handNotes, inactiveNotes } from '../../handReason'
 import { BringCompanion } from '../BringCompanion'
 import { AbilityChooser } from '../AbilityChooser'
-import { abilityPlays, activationNotes, mergeNotes, playsOf } from '../activations'
+import { abilityPlays, activationNotes, blockedPlays, mergeNotes, playsOf } from '../activations'
 import type { Play } from '../activations'
 import { markCards, NO_NOTES, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
@@ -93,7 +93,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   useCardMarks(marks, act)
   const notes = useMemo<CardNotes>(() => {
     const hand = view === null ? NO_NOTES : handNotes(view, objectsById, options)
-    return mergeNotes(hand, activationNotes(abilities))
+    return mergeNotes(new Map([...inactiveNotes(objectsById, options), ...hand]), activationNotes(abilities))
   }, [view, objectsById, options, abilities])
   useCardNotes(notes)
 
@@ -118,6 +118,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
         <AbilityChooser
           target={asking}
           plays={playsFor(asking.id)}
+          blocked={blockedPlays(asking.id, options, objectsById)}
           onPick={choose}
           onClose={() => setAsking(null)}
         />

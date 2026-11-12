@@ -187,15 +187,21 @@ pub(crate) async fn get_one(
             let record = line
                 .as_ref()
                 .and_then(|line| reported.get(&(zone, line.oracle_id.as_str())));
-            let (support, reasons) = match record {
-                Some(record) => (record.support, record.reasons.clone()),
+            let (support, reasons, whole_text) = match record {
+                Some(record) => (
+                    record.support,
+                    record.reasons.clone(),
+                    record.whole_text.clone(),
+                ),
                 None => (
                     Support::Unplayable,
                     vec![Reason {
                         face: 0,
                         span: Span { start: 0, end: 0 },
                         text: UNKNOWN_CARD.to_owned(),
+                        quote: String::new(),
                     }],
+                    None,
                 ),
             };
             board.cards.push(PreconCardView {
@@ -208,6 +214,7 @@ pub(crate) async fn get_one(
                 card: hit,
                 support,
                 reasons,
+                whole_text,
             });
         }
         if !board.cards.is_empty() {

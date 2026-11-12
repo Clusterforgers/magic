@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cca68900-2093-4cae-b757-efc7dd807e18",
+  "name": "Glyph of Destruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glyph of Destruction",
+      "oracle_fingerprint": "fd44c289e61e2d67d7ebb501700b9359",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Wall" }, "Blocking", { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 10, "toughness": 0 } }],
+                  "duration": "UntilEndOfCombat"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

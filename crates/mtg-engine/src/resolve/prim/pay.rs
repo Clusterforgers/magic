@@ -159,7 +159,7 @@ pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveErr
 /// The cost paid `times` times at once: the mana repeated so that it adds up, and the number of life, energy, counters
 /// and objects every other part takes multiplied, so that the whole of it is asked, checked and paid as one part (two
 /// parts of 1 life would each look payable with 1 life).
-fn repeated(cost: &Cost, times: usize) -> Cost {
+pub(super) fn repeated(cost: &Cost, times: usize) -> Cost {
     let factor = i32::try_from(times).unwrap_or(i32::MAX);
     let times_over = |amount: &Amount| match amount {
         Amount::Fixed(number) => Amount::Fixed(number.saturating_mul(factor)),
@@ -892,6 +892,50 @@ mod tests {
             only_no && !unseen,
             "declined without asking"
         );
+    }
+
+    /// [`guided`] with a Cadaverous Bloom (exile a card from your hand: add {B}{B} or {G}{G}) in play beside no land.
+    fn bloomed(guides: usize, others: usize) -> GameState {
+        let guide: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"from":"Hand","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+        )
+        .unwrap();
+        let bloom: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[]}}],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Black","Black"],["Green","Green"]]}}}]}}"#,
+        )
+        .unwrap();
+        let guide = Arc::new(CardDefinition::new("Guide").with_rules(guide));
+        let bloom = Arc::new(CardDefinition::new("Bloom").with_rules(bloom));
+        let mut hand = vec![guide; guides];
+        hand.extend((0..others).map(|_| forest()));
+        state(
+            vec![hand, Vec::new()],
+            vec![vec![bloom, creature("Source", 1, 1)], Vec::new()],
+        )
+    }
+
+    #[rstest]
+    #[case::the_guide_exiled_for_black(1, 0, r#""{B}{B}""#, false)]
+    #[case::the_guide_cannot_also_add_red(1, 0, r#""{B}{B}{R}""#, true)]
+    #[case::another_card_to_exile(1, 1, r#""{B}{B}{R}""#, false)]
+    #[case::a_second_guide_to_exile(2, 0, r#""{B}{B}{R}""#, false)]
+    #[case::two_uses_and_a_guide_need_three_cards(1, 1, r#""{B}{B}{B}{B}{R}""#, true)]
+    #[case::two_guides_cannot_pay_two_uses_and_red(2, 0, r#""{B}{B}{B}{B}{R}""#, true)]
+    fn a_hand_card_is_a_guide_or_the_card_a_bloom_exiles_never_both(
+        #[case] guides: usize,
+        #[case] others: usize,
+        #[case] cost: &str,
+        #[case] only_no: bool,
+    ) {
+        let game = bloomed(guides, others);
+        let Ok(Run::Ask(Decision {
+            kind: DecisionKind::YesNo(options),
+            ..
+        })) = run_with(&game, &[], &pay(r#""You""#, cost))
+        else {
+            panic!("the player is asked");
+        };
+        assert_eq!(options.only_no, only_no);
     }
 
     #[test]

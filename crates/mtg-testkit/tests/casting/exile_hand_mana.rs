@@ -1,4 +1,4 @@
-//! Goal: a mana ability whose cost exiles a card from the hand (Cadaverous Bloom: BB or GG) is a source of every payment only while the payer holds a card besides the spell being cast, the engine exiles a spell before a land and never the spell it pays for, one activation adds one list of mana, two such sources exile two cards, and whole bot games with these sources finish and keep every invariant at tables of two, three and four seats.
+//! Goal: a mana ability whose cost exiles a card from the hand (Cadaverous Bloom: BB or GG) is a source of every payment only while the payer holds a card besides the spell being cast, the engine exiles a spell before a land and never the spell it pays for, one activation adds one list of mana, two such sources exile two cards, a card a Spirit Guide makes mana with or another cost takes is never also the card it exiles, and whole bot games with these sources finish and keep every invariant at tables of two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -28,8 +28,23 @@ fn definition(name: &str) -> Arc<CardDefinition> {
         "Mountain" => mountain(),
         "Plains" => plains(),
         "Swamp" => swamp(),
+        GUIDE => guide(),
         other => card(other).unwrap(),
     }
+}
+
+/// A Spirit Guide: exile it from the hand to add {R}.
+fn guide() -> Arc<CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_str(
+        r#"{"Activated":{"from":"Hand","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new(GUIDE)
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse("{2}{R}").unwrap())
+            .with_rules(rules),
+    )
 }
 
 fn spell(cost: &str) -> Arc<CardDefinition> {
@@ -89,6 +104,7 @@ fn exiled(driver: &Driver) -> Vec<String> {
 /// A card that no mana of these tests can cast, so it is only ever exiled.
 const FILLER: &str = "Serra Angel";
 const BLOOM: &str = "Cadaverous Bloom";
+const GUIDE: &str = "Guide";
 
 #[rstest]
 #[case::a_card_besides_the_spell("{B}{B}", 1, &[FILLER], &[BLOOM], 1)]
@@ -111,6 +127,12 @@ const BLOOM: &str = "Cadaverous Bloom";
 #[case::two_blooms_make_both_lists("{B}{B}{G}{G}", 1, &[FILLER, FILLER], &[BLOOM, BLOOM], 1)]
 #[case::two_blooms_need_two_cards("{B}{B}{G}{G}", 1, &[FILLER], &[BLOOM, BLOOM], 0)]
 #[case::the_bloom_beside_a_land("{B}", 2, &[FILLER], &[BLOOM, "Swamp"], 2)]
+#[case::a_guide_pays_its_red("{R}", 1, &[GUIDE], &[], 1)]
+#[case::a_guide_and_a_card_to_exile("{B}{B}{R}", 1, &[GUIDE, FILLER], &[BLOOM], 1)]
+#[case::the_guide_is_the_only_card_to_exile("{B}{B}{R}", 1, &[GUIDE], &[BLOOM], 0)]
+#[case::the_guide_exiled_for_black("{B}{B}", 1, &[GUIDE], &[BLOOM], 1)]
+#[case::two_guides_one_exiled("{B}{B}{R}", 1, &[GUIDE, GUIDE], &[BLOOM], 1)]
+#[case::two_uses_and_a_guide_need_three_cards("{B}{B}{B}{B}{R}", 1, &[GUIDE, FILLER], &[BLOOM], 0)]
 fn a_source_that_exiles_a_card_pays_only_with_a_card_to_exile(
     #[case] cost: &str,
     #[case] spells: usize,
@@ -121,6 +143,41 @@ fn a_source_that_exiles_a_card_pays_only_with_a_card_to_exile(
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats, cost, spells, others, mine)?;
     assert_eq!(casts(&mut driver), expected);
+    Ok(())
+}
+
+/// An artifact whose ability costs {B}{B} and a card exiled from the hand, and gains 1 life.
+fn pinger() -> Arc<CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":[{"Mana":"{B}{B}"},{"ExileFromHand":{"filter":[]}}],"effects":[{"GainLife":{"who":"You","amount":1}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Pinger")
+            .with_type(CardType::Artifact)
+            .with_rules(rules),
+    )
+}
+
+#[rstest]
+#[case::one_card_cannot_be_both(&[FILLER], false)]
+#[case::a_guide_cannot_be_both(&[GUIDE], false)]
+#[case::two_cards(&[FILLER, FILLER], true)]
+#[case::a_guide_and_a_card(&[GUIDE, FILLER], true)]
+fn a_card_an_ability_exiles_is_not_also_the_card_the_bloom_exiles(
+    #[case] others: &[&str],
+    #[case] offered: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let hand: Vec<Arc<CardDefinition>> = others.iter().map(|name| definition(name)).collect();
+    let mut scenario = Scenario::new(seats)
+        .hand(0, hand)
+        .battlefield(0, [ready(definition(BLOOM)), ready(pinger())]);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..12).map(|_| plains()));
+    }
+    let driver = Driver::from_scenario(scenario)?;
+    assert_eq!(!driver.offered_abilities("Pinger")?.is_empty(), offered);
     Ok(())
 }
 

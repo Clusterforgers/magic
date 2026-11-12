@@ -183,7 +183,7 @@ impl WsBot {
                 self.clocked += usize::from(deadline_ms.is_some());
                 return self.respond(id, decision).await;
             }
-            ServerMessage::Error { code, message } => self.errors.push((code, message)),
+            ServerMessage::Error { code, message, .. } => self.errors.push((code, message)),
             // The roster of a lobby is for people; a bot only waits for its first decision.
             ServerMessage::Chat { .. }
             | ServerMessage::Lobby { .. }
@@ -196,7 +196,8 @@ impl WsBot {
             | ServerMessage::AutoSkips { .. }
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. }
-            | ServerMessage::Deciding { .. } => {}
+            | ServerMessage::Deciding { .. }
+            | ServerMessage::Spectators { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

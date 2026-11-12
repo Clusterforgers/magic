@@ -18,9 +18,9 @@
             "kind": "Cycling",
             "condition": {
               "Compare": {
-                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
-                "op": "Gt",
-                "right": 6
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
               }
             }
           }
