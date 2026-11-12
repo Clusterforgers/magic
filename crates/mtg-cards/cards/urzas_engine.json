@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 378 }
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

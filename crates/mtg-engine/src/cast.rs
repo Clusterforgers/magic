@@ -81,6 +81,7 @@ pub(crate) fn activation_events(
             .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
             shots.extend(parts::rmt5_top_shots(state, player, &price.parts));
+            shots.extend(parts::r300_random_shots(state, player, &price.parts));
             events.extend(turns(&price, ability.object));
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
@@ -497,6 +498,7 @@ pub(crate) fn spell_events(
     )?;
     let mut shots = parts::photographed(state, parts, choices.cost_picks());
     shots.extend(parts::rmt5_top_shots(state, player, parts));
+    shots.extend(parts::r300_random_shots(state, player, parts));
     events.extend(spell_cast(
         player,
         spell,

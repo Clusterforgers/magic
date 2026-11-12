@@ -376,6 +376,8 @@ mod r7c_searches;
 mod r283_wholes;
 mod r287_wholes;
 mod rmt5_wholes;
+// r30-0
+mod r300_wholes;
 
 use crate::ability::Ability;
 
@@ -522,6 +524,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r283_wholes::r283_add_wholes(ability, texts);
     r287_wholes::r287_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
+    r300_wholes::r300_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
