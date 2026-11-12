@@ -114,7 +114,7 @@ fn rule(rule: GameRule) -> Ability {
 }
 
 /// The sentence `r371_attacks_unsacrificed` reads, written back; empty for any other three abilities.
-pub fn r371_three_texts(first: &Ability, second: &Ability, third: &Ability) -> Vec<String> {
+pub(super) fn r371_three_texts(first: &Ability, second: &Ability, third: &Ability) -> Vec<String> {
     let unsacrificed = rule(GameRule::Cant {
         who: Ref::This,
         action: Prohibited::Sacrifice,

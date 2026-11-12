@@ -1,7 +1,7 @@
 {
   "oracle_id": "8e68eba1-65ac-4c03-956f-45e7b5695e2a",
   "name": "Lukka, Bound to Ruin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lukka, Bound to Ruin",
@@ -47,9 +47,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 300, "end": 493 }
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                },
+                "divide": {
+                  "Greatest": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
           }
         }
       ]

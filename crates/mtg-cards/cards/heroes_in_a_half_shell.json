@@ -1,7 +1,7 @@
 {
   "oracle_id": "9f2f12cc-0adb-482d-bbce-05e4ce8850c4",
   "name": "Heroes in a Half Shell",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heroes in a Half Shell",
@@ -12,9 +12,26 @@
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 34, "end": 194 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Mutant" },
+                        { "Subtype": "Ninja" },
+                        { "Subtype": "Turtle" }
+                      ]
+                    },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }, { "Draw": {} }]
           }
         }
       ]

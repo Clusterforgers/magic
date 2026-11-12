@@ -11,6 +11,9 @@ pub(super) fn another_text(what: &Targetable) -> Option<String> {
         Targetable::AnyTarget => "another target".to_owned(),
         Targetable::Player => "another target player".to_owned(),
         Targetable::Opponent => "another target opponent".to_owned(),
+        Targetable::Either(kinds) if super::r303b_writers::r303b_three_kinds(kinds) => {
+            "another target creature, planeswalker, or player".to_owned()
+        }
         Targetable::Object(selector) => {
             format!("another target {}", phrase_text(selector, Form::Target)?)
         }

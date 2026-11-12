@@ -1,7 +1,7 @@
 {
   "oracle_id": "ada3247e-ec5e-499d-bc15-1d9dd80a59ae",
   "name": "Goblin Rock Sled",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Goblin Rock Sled",
@@ -9,7 +9,11 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 8, "end": 96 } }
+          "Static": {
+            "affected": "This",
+            "mods": ["DoesntUntap"],
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedLastTurn"] } }
+          }
         },
         {
           "Rule": {

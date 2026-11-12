@@ -24,12 +24,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             all_if: None,
             mode_costs,
             extra_mode_cost: None,
+            pawprints,
             modes,
         },
     ] = ability.effects()
     else {
         return;
     };
+    if !pawprints.is_empty() {
+        return;
+    }
     let [first, second] = modes.as_slice() else {
         return;
     };

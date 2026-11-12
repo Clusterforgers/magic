@@ -1,0 +1,28 @@
+{
+  "oracle_id": "41d6cce0-b852-4d0e-aee2-081df13dd9b8",
+  "name": "Toothy, Imaginary Friend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toothy, Imaginary Friend",
+      "oracle_fingerprint": "84389735354a28319496d4635017c783",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Pir, Imaginative Rascal" } },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

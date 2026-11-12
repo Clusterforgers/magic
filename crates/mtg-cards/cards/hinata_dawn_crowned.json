@@ -1,7 +1,7 @@
 {
   "oracle_id": "aee473c7-c659-421c-96b5-05f57ca2ed97",
   "name": "Hinata, Dawn-Crowned",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hinata, Dawn-Crowned",
@@ -10,15 +10,19 @@
         { "Keyword": "Flying" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 16, "end": 70 }
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": "CastTargets"
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 136 }
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "Opponents" }],
+            "change": "Increase",
+            "mana": "{1}",
+            "per": "CastTargets"
           }
         }
       ]

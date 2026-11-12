@@ -7,8 +7,8 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    ep23_three_texts, own_names, read_keyword, read_keywords, same_written_text, static_pair_texts,
-    static_three_texts, written_variants,
+    ep23_three_texts, own_names, r304b_triple_texts, read_keyword, read_keywords,
+    same_written_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -673,26 +673,7 @@ impl<'a> Pairer<'a> {
     /// Two statics under one condition are one sentence of the card.
     fn static_pairs(&mut self) {
         let abilities = self.abilities;
-        // Three rules of the card in one sentence ("~ attacks each combat if able, can't be sacrificed, and can't attack
-        // its owner.").
-        for at in 2..abilities.len() {
-            if self.taken[at - 2] || self.taken[at - 1] || self.taken[at] {
-                continue;
-            }
-            let written =
-                static_three_texts(&abilities[at - 2], &abilities[at - 1], &abilities[at]);
-            if written.is_empty() {
-                continue;
-            }
-            if let Some(slot) = self.find_text(&[ClauseKind::Static], &written, false) {
-                self.settle(at - 2, slot, ClauseState::Reads { ability: at - 2 });
-                for later in [at - 1, at] {
-                    self.taken[later] = true;
-                    self.slot_of[later] = Some(slot);
-                    self.places[later] = self.places[at - 2];
-                }
-            }
-        }
+        self.r304b_static_triples();
         for at in 1..abilities.len() {
             if self.taken[at - 1] || self.taken[at] {
                 continue;
@@ -731,6 +712,29 @@ impl<'a> Pairer<'a> {
                     self.slot_of[second] = Some(slot);
                     self.places[second] = self.places[first];
                     break;
+                }
+            }
+        }
+    }
+
+    /// Three adjacent rules of the attached permanent are one sentence of the card (Bound in Gold).
+    fn r304b_static_triples(&mut self) {
+        let abilities = self.abilities;
+        for at in 2..abilities.len() {
+            if self.taken[at - 2] || self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written =
+                r304b_triple_texts(&abilities[at - 2], &abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(&[ClauseKind::Static], &written, false) {
+                self.settle(at - 2, slot, ClauseState::Reads { ability: at - 2 });
+                for later in [at - 1, at] {
+                    self.taken[later] = true;
+                    self.slot_of[later] = Some(slot);
+                    self.places[later] = self.places[at - 2];
                 }
             }
         }

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0ee9a743-c678-4a76-b106-53f57a84848d",
+  "name": "Shifting Loyalties",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shifting Loyalties",
+      "oracle_fingerprint": "ba0dc3cd70886f9a95f4ba2292820cc0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [] } },
+              {
+                "what": {
+                  "Another": {
+                    "what": { "Object": [{ "SharesType": { "Target": 0 } }] },
+                    "earlier": [0]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "04e2afbe-0c08-42bc-93e6-662066a958bf",
+  "name": "Deadly Cover-Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Cover-Up",
+      "oracle_fingerprint": "5a7f48c1219340ee41e3c3965bcfacfb",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "Bind": { "what": { "OwnerOf": { "Bound": "card" } }, "as": "owner" } },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "named" } },
+                    {
+                      "Search": {
+                        "of": { "Bound": "owner" },
+                        "zone": "Graveyard",
+                        "also": ["Hand", "Library"],
+                        "filter": [{ "SharesName": { "Bound": "named" } }],
+                        "count": { "min": 0, "max": null },
+                        "as": "found"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found" }, "as": "exiled" } },
+                    { "Shuffle": { "who": { "Bound": "owner" } } },
+                    {
+                      "Draw": {
+                        "who": { "Bound": "owner" },
+                        "count": {
+                          "Count": [
+                            { "Is": { "Bound": "exiled" } },
+                            { "In": "Exile" },
+                            { "ArrivedFrom": "Hand" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

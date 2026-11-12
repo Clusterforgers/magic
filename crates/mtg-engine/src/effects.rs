@@ -148,6 +148,8 @@ pub enum Modification {
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
+    /// Takes away every ability but mana abilities (layer 6, CR 605): the plain mana abilities stay.
+    LoseAbilitiesExceptMana,
     /// Takes away the one ability at this address (layer 6): "~ loses this ability". The object of the address is the one
     /// the ability was activated from; the others of its abilities stay.
     LoseAbility(crate::abilities::AbilityRef),
@@ -272,7 +274,8 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
             | Modification::GainAbilities(_)
-            | Modification::LoseAbilities => Layer::Ability,
+            | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana => Layer::Ability,
             Modification::SetPowerToughness { .. }
             | Modification::SetPower(_)
             | Modification::SetToughness(_) => Layer::PtSet,
@@ -396,7 +399,9 @@ impl Modification {
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
             | Modification::BlocksAdditional(_)
-            | Modification::Goaded { .. } => {}
+            | Modification::Goaded { .. }
+            // The plain mana abilities in `abilities` are all mana abilities, so they stay.
+            | Modification::LoseAbilitiesExceptMana => {}
         }
     }
 }
@@ -505,6 +510,15 @@ pub(crate) fn lasts(
             ) && source.is_some_and(|source| {
                 crate::characteristics::controller_of(state, source.id) == Some(controller)
             })
+        }
+        Duration::WhileYouControlSourceTapped => {
+            lasts(
+                state,
+                &Duration::WhileYouControlSource,
+                began,
+                controller,
+                source,
+            ) && lasts(state, &Duration::WhileSourceTapped, began, controller, source)
         }
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
@@ -622,6 +636,7 @@ impl ContinuousEffect {
     pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
         let duration = match &self.duration {
             Duration::WhileYouControlSource => &Duration::WhileSourceOnBattlefield,
+            Duration::WhileYouControlSourceTapped => &Duration::WhileSourceTapped,
             other => other,
         };
         self.lasts_by(state, duration)

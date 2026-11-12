@@ -1,0 +1,86 @@
+{
+  "oracle_id": "35c416c6-f522-4b4c-93db-75c4e01843d1",
+  "name": "King Narfi's Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "King Narfi's Betrayal",
+      "oracle_fingerprint": "7f1957d9a13bdb205f762035cf25fce0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 4 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": { "Bound": "player" } },
+                                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                                ]
+                              },
+                              "as": "card"
+                            }
+                          },
+                          { "Exile": { "what": { "Bound": "card" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

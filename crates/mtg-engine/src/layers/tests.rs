@@ -279,6 +279,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetColorsChosen(_)
             | mtg_cards::modify::Modification::SetLandTypesChosen(_)
             | mtg_cards::modify::Modification::SetCreatureTypesChosen(_)
+            | mtg_cards::modify::Modification::AddCreatureTypeChosen(_)
             | mtg_cards::modify::Modification::ChangeTextChosen { .. }
             // Only a static ability has these, and they read what its source chose as it entered (`g9b_chosen`).
             | mtg_cards::modify::Modification::AddChosenSubtype
@@ -293,6 +294,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             // Like `LoseThisAbility`, it finds its ability only as a resolution begins.
             | mtg_cards::modify::Modification::LosePrinted(_)
             | mtg_cards::modify::Modification::LoseAbilities
+            | mtg_cards::modify::Modification::LoseAbilitiesExceptMana
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
             | mtg_cards::modify::Modification::CantAttackYou(_)

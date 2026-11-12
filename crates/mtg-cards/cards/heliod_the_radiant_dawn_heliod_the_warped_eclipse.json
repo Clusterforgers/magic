@@ -1,7 +1,7 @@
 {
   "oracle_id": "c27c6ba9-8d72-4101-b3a5-1e8d81755568",
   "name": "Heliod, the Radiant Dawn // Heliod, the Warped Eclipse",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heliod, the Radiant Dawn",
@@ -40,9 +40,11 @@
       "abilities": [
         { "Rule": { "rule": { "MayCast": { "flash": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 46, "end": 134 }
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "Opponents", "what": "CardsDrawnTotal" } }
           }
         }
       ]

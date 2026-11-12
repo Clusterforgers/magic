@@ -1,7 +1,7 @@
 {
   "oracle_id": "de41081e-713c-4005-90f7-65d9426208f1",
   "name": "Everlasting Torment",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Everlasting Torment",
@@ -9,12 +9,7 @@
       "abilities": [
         { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
         { "Rule": { "rule": { "DamageCantBePrevented": {} } } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 184 }
-          }
-        }
+        { "Rule": { "rule": "DamageAsWither" } }
       ]
     }
   ]

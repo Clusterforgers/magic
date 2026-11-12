@@ -37,12 +37,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             all_if: None,
             mode_costs,
             extra_mode_cost: None,
+            pawprints,
             modes,
         },
     ] = ability.effects()
     else {
         return;
     };
+    if !pawprints.is_empty() {
+        return;
+    }
     if !choose.is_one() || !mode_costs.is_empty() || modes.len() < 2 {
         return;
     }
