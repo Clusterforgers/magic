@@ -93,6 +93,7 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
             targeted(sources)?
         )),
         Prohibited::Transform => Some(format!("{} can't transform", group(who)?)),
+        Prohibited::PhaseOut => Some(format!("{} can't phase out", group(who)?)),
         // Mana abilities stay open: "unless they're mana abilities".
         Prohibited::Activate(sources) if sources.0.is_empty() => {
             let Ref::Each(of) = who else {
@@ -105,6 +106,16 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
         }
         Prohibited::PutCounterOf(CounterKind::Poison) if *who == Ref::You => {
             Some("You can't get poison counters".to_owned())
+        }
+        Prohibited::RemoveCounterOf(kind) => {
+            let Ref::Each(of) = who else {
+                return None;
+            };
+            Some(format!(
+                "{} counters can't be removed from {}",
+                capitalize(counters::kind_text(kind)?),
+                super::selectors::phrase_text(of, super::selectors::Form::All)?
+            ))
         }
         Prohibited::PutCounterOf(kind) => {
             let group = group(who)?;

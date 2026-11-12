@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8f351961-69e3-4637-b010-d13f19daca39",
+  "name": "Bigger on the Inside",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bigger on the Inside",
+      "oracle_fingerprint": "fcf5c07b9b30b259b20e1778625e7207",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": "Player" }],
+                    "effects": [
+                      { "AddMana": { "who": { "Target": 0 }, "mana": { "AnyColor": 2 } } },
+                      {
+                        "Rule": {
+                          "rule": {
+                            "NextSpell": {
+                              "what": [{ "ControlledBy": { "Target": 0 } }],
+                              "benefit": { "Keyword": "Cascade" }
+                            }
+                          },
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5049da27-f38b-4fe6-a387-51510bd1f44e",
   "name": "Nine-Lives Familiar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nine-Lives Familiar",
@@ -9,17 +9,59 @@
       "abilities": [
         {
           "Replacement": {
-            "when": { "Enters": { "what": ["This"] } },
-            "by": { "WithCounters": { "counter": { "Other": "revival" }, "count": 8 } },
-            "condition": {
-              "Matches": { "subject": "This", "selector": ["This", { "WasCast": { "by": "You" } }] }
-            }
+            "when": { "Enters": { "what": ["This", { "WasCast": {} }] } },
+            "by": { "WithCounters": { "counter": { "Other": "revival" }, "count": 8 } }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 235 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "HasCounter": { "Other": "revival" } }]
+              }
+            },
+            "effects": [
+              {
+                "Let": {
+                  "as": "n",
+                  "amount": {
+                    "Sum": [
+                      { "Counters": { "on": "Triggering", "counter": { "Other": "revival" } } },
+                      -1
+                    ]
+                  }
+                }
+              },
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "card"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": {} },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "returned" },
+                        "counter": { "Other": "revival" },
+                        "count": { "Bound": "n" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "cb666ea8-55e3-4e27-ae6d-806677dfc17a",
   "name": "Airtight Alibi",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Airtight Alibi",
@@ -26,11 +26,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 154, "end": 211 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
           }
-        }
+        },
+        { "Rule": { "rule": { "Cant": { "who": "Attached", "action": "BecomeSuspected" } } } }
       ]
     }
   ]

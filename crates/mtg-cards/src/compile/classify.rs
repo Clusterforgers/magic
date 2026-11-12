@@ -58,16 +58,30 @@ const SPELL_RULES: [&str; 7] = [
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
 /// may cast this spell without paying its mana cost.", or an alternative cost "..., you may pay 4 life rather than pay
-/// this spell's mana cost.", or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
-/// "If there are two or more ..., you may cast this spell as though it had flash.").
+/// this spell's mana cost.", or a cost change in some turns ("During turns other than yours, this spell costs {3} more to
+/// cast."), or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
+/// "If there are two or more ..., you may cast this spell as though it had flash."), or a condition under
+/// which the spell can't be countered ("If you controlled a Dragon as you cast this spell, this spell can't be countered.").
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell without paying its mana cost"))
         || body.contains(" rather than pay this spell's mana cost")
+        || body.starts_with("You may reveal this card from your opening hand.")
+        || (body.starts_with("During ") && body.contains(", this spell costs "))
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))
+        || r302c_conditional_rule(body)
+}
+
+/// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be
+/// countered.", "If this spell was kicked, it has split second."
+fn r302c_conditional_rule(body: &str) -> bool {
+    body.starts_with("If ")
+        && (body.ends_with(", this spell can't be countered.")
+            || body.ends_with(", this spell can't be countered and the damage can't be prevented.")
+            || body.ends_with(", it has split second."))
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -90,13 +104,21 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     }
     let head = text.lines().next().unwrap_or_default();
     // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
-    if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
+    if ((head.starts_with("Equip ")
+        || head.starts_with("Cycling ")
+        || head.starts_with("Ninjutsu "))
         && head.contains(" abilities you activate "))
         || head.starts_with("Equip costs you pay ")
+        || head.starts_with("Dash costs you pay ")
     {
         return ClauseKind::Static;
     }
-    if !text.contains('\n') && keywords::is_keyword_line(head) {
+    // An ability word that opens with a keyword's name ("Protection Fighting Style — When ~ enters, ...") names a
+    // triggered or activated ability, not the keyword.
+    let r301_worded = ability_word_len(head)
+        .and_then(|at| head.get(at..))
+        .is_some_and(|body| is_triggered(body) || is_activated(body));
+    if !text.contains('\n') && !r301_worded && keywords::is_keyword_line(head) {
         return ClauseKind::Keyword;
     }
     // A Case's "To solve — <condition>" is a triggered ability at its controller's end step (CR 719.2).
@@ -298,6 +320,17 @@ mod tests {
 
     #[rstest]
     #[case::flying("Flying", false, Keyword)]
+    #[case::r302_uncounterable_under_a_condition(
+        "If you controlled a Dragon as you cast this spell, this spell can't be countered.",
+        true,
+        Static
+    )]
+    #[case::r302_uncounterable_and_more(
+        "If X is 5 or more, this spell can't be countered and the damage can't be prevented.",
+        true,
+        Static
+    )]
+    #[case::r302_a_condition_on_an_effect("If X is 5 or more, draw a card.", true, Spell)]
     #[case::next_cast_on_a_spell(
         "When you next cast an instant spell this turn, copy it.",
         true,
@@ -316,6 +349,12 @@ mod tests {
         Static
     )]
     #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
+    #[case::r301_dash_costs("Dash costs you pay cost {2} less.", false, Static)]
+    #[case::r301_ninjutsu_costs(
+        "Ninjutsu abilities you activate cost {1} less to activate.",
+        false,
+        Static
+    )]
     #[case::cycling_cost_change(
         "Cycling abilities you activate cost {2} less to activate.",
         false,
@@ -350,6 +389,14 @@ mod tests {
     #[case::ability_word(
         "Landfall \u{2014} Whenever a land you control enters, investigate.",
         Triggered
+    )]
+    #[case::r301_ability_word_named_like_a_keyword(
+        "Protection Fighting Style \u{2014} When ~ enters, exile up to one target creature you control.",
+        Triggered
+    )]
+    #[case::r301_keyword_after_an_ability_word(
+        "Void Shields \u{2014} Protection from green and from red",
+        Keyword
     )]
     #[case::two_word_ability_word("Spell mastery \u{2014} When ~ enters, draw a card.", Triggered)]
     #[case::chapter("I \u{2014} Create a 1/1 token.", Triggered)]
@@ -457,6 +504,17 @@ mod tests {
     )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
+    #[case::r302c_uncounterable_if(
+        "If you revealed a Dragon card or controlled a Dragon as you cast this spell, this spell can't be countered.",
+        true,
+        Static
+    )]
+    #[case::r302c_split_second_if("If this spell was kicked, it has split second.", true, Static)]
+    #[case::r302c_an_effect_after_if(
+        "If you control a Swamp, destroy target nonblack creature.",
+        true,
+        Spell
+    )]
     #[case::ep29_flash_for_more(
         "You may cast this spell as though it had flash if you pay {2} more to cast it.",
         true,

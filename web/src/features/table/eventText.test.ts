@@ -117,6 +117,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
+  Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -163,6 +164,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
   Devoured: [{ Devoured: { object: 3, count: 2 } }, 'Forest devours 2'],
   Renowned: [{ Renowned: { object: 3, player: 1 } }, 'Forest becomes renowned'],
+  Enlisted: [{ Enlisted: { object: 3, enlisted: 1, player: 1 } }, 'Forest enlists Grizzly Bears'],
   Exploited: [{ Exploited: { object: 3, sacrificed: 1, player: 1 } }, 'Forest exploits Grizzly Bears'],
   Crewed: [
     { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
@@ -197,6 +199,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
     '2 additional phase(s) follow this phase',
   ],
+  StepAdded: [{ StepAdded: { step: 'Upkeep' } }, 'An additional upkeep follows this step'],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
   NothingToDo: [{ NothingToDo: { player: 0, kind: 'Attack' } }, 'Ana has no possible attackers'],
   AnnouncementRewound: [
@@ -212,6 +215,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PermanentUntapped: [{ PermanentUntapped: { object: 3 } }, 'Forest becomes untapped'],
   PermanentPhasedOut: [{ PermanentPhasedOut: { object: 3, controller: 0 } }, 'Forest phases out'],
   PermanentPhasedIn: [{ PermanentPhasedIn: { object: 3 } }, 'Forest phases in'],
+  ManaAbilityActivated: [
+    { ManaAbilityActivated: { player: 0, source: { id: 3, counter: 0 } } },
+    'Ana activates a mana ability of Forest',
+  ],
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],
@@ -917,6 +924,10 @@ describe('events with more than one shape', () => {
       'Hill Giant loses all landwalk abilities until end of turn',
     ],
     [
+      effect(objects(2), { RemoveKeywordKind: 'BandsWithOther' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all "bands with other" abilities until end of turn',
+    ],
+    [
       effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
       'Grizzly Bears and Hill Giant lose ward until end of turn',
     ],
@@ -925,6 +936,10 @@ describe('events with more than one shape', () => {
       "Hill Giant loses flying and can't have or gain it until end of turn",
     ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
+    [
+      effect('AllCreatures', 'LoseAbilitiesExceptMana', 'Forever'),
+      'All creatures lose all abilities except mana abilities',
+    ],
     [
       effect(objects(2), 'SwitchPowerToughness', 'UntilEndOfTurn'),
       'Hill Giant has power and toughness switched until end of turn',
@@ -1014,6 +1029,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { SetController: 1 }, 'WhileSourceTapped', { id: 6, counter: 0 }),
       'Hill Giant changes controller while Jace Beleren stays tapped',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, 'WhileYouControlSourceTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while its controller controls Jace Beleren and it stays tapped',
     ],
     [
       effect(objects(2), { SetController: 1 }, 'UntilCastFromExile', { id: 6, counter: 0 }),
@@ -1130,6 +1149,12 @@ describe('events with more than one shape', () => {
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
+    [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
+    [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
+    [
+      ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
+      'Creatures can attack Bo as though they had haste',
+    ],
     [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
     [
       ruleEffect({ CantLoseGame: { who: [0], winless: [], life_only: true } }, 'Forever'),
@@ -1188,6 +1213,26 @@ describe('events with more than one shape', () => {
         'UntilEndOfYourNextTurn',
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
+    ],
+    [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [
+              { id: 1, counter: 1 },
+              { id: 2, counter: 1 },
+            ],
+            play: false,
+          },
+        },
+        'UntilEndOfCombatOnYourNextTurn',
+      ),
+      "Ana may cast Grizzly Bears and Hill Giant until end of combat on their controller's next turn",
     ],
     [
       ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),

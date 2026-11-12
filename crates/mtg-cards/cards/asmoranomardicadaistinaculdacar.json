@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1f74e26f-5cf3-4b0e-bcc6-f858599474fc",
+  "name": "Asmoranomardicadaistinaculdacar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Asmoranomardicadaistinaculdacar",
+      "oracle_fingerprint": "aa6a4b2ae6d4f294d70b02844f487ab8",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{B/R}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "The Underworld Cookbook" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }], "count": 2 } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "source": { "Target": 0 }, "to": { "Target": 0 }, "amount": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

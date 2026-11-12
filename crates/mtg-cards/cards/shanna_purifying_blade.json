@@ -1,7 +1,7 @@
 {
   "oracle_id": "7677c7ce-1db3-41f5-8f86-e68718ea2d11",
   "name": "Shanna, Purifying Blade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shanna, Purifying Blade",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 9, "end": 150 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Mana": "{X}" },
+                    { "XAtMost": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } } }
+                  ],
+                  "paid": [{ "Draw": { "count": "X" } }]
+                }
+              }
+            ]
           }
         }
       ]

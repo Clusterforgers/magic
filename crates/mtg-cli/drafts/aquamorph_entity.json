@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ed47dd31-f7cd-4ecb-960f-470cb8f4ed3c",
+  "name": "Aquamorph Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aquamorph Entity",
+      "oracle_fingerprint": "3aff0a36a26d07bb2c5e9fb43ede5cdd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "BecomesChoice": [
+                [{ "SetPT": { "power": 5, "toughness": 1 } }],
+                [{ "SetPT": { "power": 1, "toughness": 5 } }]
+              ]
+            }
+          }
+        },
+        { "Keyword": { "Morph": "{2}{U}" } }
+      ]
+    }
+  ]
+}

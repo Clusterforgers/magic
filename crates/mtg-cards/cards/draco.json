@@ -1,7 +1,7 @@
 {
   "oracle_id": "6157ade6-9037-4339-869b-493fdee71dcf",
   "name": "Draco",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Draco",
@@ -22,9 +22,27 @@
         },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 100, "end": 264 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "times": {
+                    "Difference": [
+                      5,
+                      {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "BasicLandTypes"
+                        }
+                      }
+                    ]
+                  },
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
           }
         }
       ]

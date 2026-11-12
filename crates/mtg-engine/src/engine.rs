@@ -586,6 +586,7 @@ impl Engine {
         match replace::process(&self.state, events, &journal)? {
             Processed::Events(events) => {
                 self.held = None;
+                let events = crate::r304b_lost_priority::r304b_passed_on(&self.state, events);
                 self.fold_and_log(crate::tokens::without_departed_tokens(events))
             }
             Processed::Ask { decision, proposed } => {

@@ -13,6 +13,7 @@ impl Writer<'_> {
             Effect::ExileUntil {
                 who: Ref::Target(0),
                 filter,
+                total: None,
                 bind,
                 exiled_as,
             },
@@ -26,6 +27,7 @@ impl Writer<'_> {
         let found = Ref::Bound(FOUND.to_owned());
         let cast_it = Effect::CastFromZone {
             rather: None,
+            spend_as: crate::modify::SpendAs::default(),
             who: Ref::You,
             what: found,
             free: true,

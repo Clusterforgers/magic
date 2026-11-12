@@ -242,8 +242,9 @@ struct Waiting {
 }
 
 /// Plays the seat of `bot` in `handle` at its level until the game ends or leaves the registry (`removed` changes or
-/// closes): joins the seat (again whenever its connection is dropped), says it is ready, and answers each decision after
-/// the pace's delay with [`BotBrain`], thinking in the pace's slots. A refused answer is followed by the table's fallback answer, and when that is refused too, or there is
+/// closes): joins the seat (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is
+/// not), and answers each decision after the pace's delay with [`BotBrain`], thinking in the pace's slots. A refused
+/// answer is followed by the table's fallback answer, and when that is refused too, or there is
 /// none, the bot concedes, so a bot never stalls a game, and never keeps alive a game the registry let go.
 pub fn spawn_bot_seat(
     handle: GameHandle,
@@ -362,6 +363,14 @@ async fn play(
             }
             ServerMessage::Events(batch) => brain.turn_is(batch.table.turn.number),
             ServerMessage::Snapshot { state, .. } => brain.turn_is(state.table.turn.number),
+            // A change of teams takes every Ready back; the bot says it again so the lobby can still start.
+            ServerMessage::Lobby { seats, .. }
+                if seats.iter().any(|lobby| lobby.seat == seat && !lobby.ready) =>
+            {
+                if handle.send(seat, ClientMessage::Ready).await.is_err() {
+                    return Ended::Over;
+                }
+            }
             ServerMessage::Error {
                 code: ErrorCode::IllegalAnswer,
                 ..

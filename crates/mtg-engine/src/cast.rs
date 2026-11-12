@@ -81,6 +81,7 @@ pub(crate) fn activation_events(
             .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
             shots.extend(parts::rmt5_top_shots(state, player, &price.parts));
+            shots.extend(parts::r300_random_shots(state, player, &price.parts));
             events.extend(turns(&price, ability.object));
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
@@ -409,7 +410,7 @@ pub(crate) fn pay_answer(
             &unusable(state, player, options),
             choice,
             Vec::new(),
-            &|option, taken| mana_ability::activation(state, player, option, taken),
+            &|option, taken| mana_ability::logged_activation(state, player, option, taken),
             &|id| state.object(id).map(crate::object::GameObject::reference),
         )?;
         return Ok(match outcome {
@@ -430,7 +431,7 @@ pub(crate) fn pay_answer(
         &unusable(state, player, options),
         choice,
         announced,
-        &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|option, taken| mana_ability::logged_activation(state, player, option, taken),
         &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     Ok(match outcome {
@@ -438,6 +439,7 @@ pub(crate) fn pay_answer(
             mana_ability::r5g_distinct(state, &mut events);
             let mut events = parts::mill::in_turn(state, player, events);
             record_sources(state, &mut events);
+            crate::r300c_activation_spent::r300c_keep_spent(&mut events);
             // The mana a cast spends can set off an ability as the spell is cast.
             events.extend(crate::spend_rider::created(state, player, options, &events));
             crate::r281_mana_at_priority::r281_resolve_at_once(state, &mut events);
@@ -497,6 +499,7 @@ pub(crate) fn spell_events(
     )?;
     let mut shots = parts::photographed(state, parts, choices.cost_picks());
     shots.extend(parts::rmt5_top_shots(state, player, parts));
+    shots.extend(parts::r300_random_shots(state, player, parts));
     events.extend(spell_cast(
         player,
         spell,
@@ -712,13 +715,17 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
         return;
     }
     for event in events.iter_mut() {
-        if let Event::SpellCast { choices, .. } = event {
-            choices
-                .cost_taken
-                .get_or_insert_with(Box::default)
-                .sources
-                .clone_from(&from);
-        }
+        // An activation keeps its sources as a spell does ("mana from a Treasure was spent to activate this ability").
+        let choices = match event {
+            Event::SpellCast { choices, .. } => choices,
+            Event::AbilityPutOnStack(put) => &mut put.choices,
+            _ => continue,
+        };
+        choices
+            .cost_taken
+            .get_or_insert_with(Box::default)
+            .sources
+            .clone_from(&from);
     }
 }
 
@@ -795,7 +802,7 @@ pub(crate) fn auto_pay_events(
         &unusable(state, player, options),
         PayChoice::Auto,
         Vec::new(),
-        &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|option, taken| mana_ability::logged_activation(state, player, option, taken),
         &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     match outcome {

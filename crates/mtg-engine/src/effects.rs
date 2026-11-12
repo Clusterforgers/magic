@@ -132,9 +132,13 @@ pub enum Modification {
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
-    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection or ward.
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection, ward or
+    /// "bands with other".
     RemoveKeywordKind(
-        #[cfg_attr(feature = "ts", ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\""))]
+        #[cfg_attr(
+            feature = "ts",
+            ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\" | \"BandsWithOther\"")
+        )]
         mtg_cards::rmt7_kinds::KeywordKind,
     ),
     /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
@@ -148,6 +152,8 @@ pub enum Modification {
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
+    /// Takes away every ability but mana abilities (layer 6, CR 605): the plain mana abilities stay.
+    LoseAbilitiesExceptMana,
     /// Takes away the one ability at this address (layer 6): "~ loses this ability". The object of the address is the one
     /// the ability was activated from; the others of its abilities stay.
     LoseAbility(crate::abilities::AbilityRef),
@@ -262,7 +268,8 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
             | Modification::GainAbilities(_)
-            | Modification::LoseAbilities => Layer::Ability,
+            | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana => Layer::Ability,
             Modification::SetPowerToughness { .. }
             | Modification::SetPower(_)
             | Modification::SetToughness(_) => Layer::PtSet,
@@ -382,7 +389,9 @@ impl Modification {
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
             | Modification::BlocksAdditional(_)
-            | Modification::Goaded { .. } => {}
+            | Modification::Goaded { .. }
+            // The plain mana abilities in `abilities` are all mana abilities, so they stay.
+            | Modification::LoseAbilitiesExceptMana => {}
         }
     }
 }
@@ -445,7 +454,10 @@ pub(crate) fn lasts(
         // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
         | Duration::UntilSkipped
         | Duration::UntilSkippedThisTurn => true,
-        Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
+        // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
+        Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
+            state.is_alive(controller)
+        }
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
             state.is_alive(controller)
@@ -454,6 +466,12 @@ pub(crate) fn lasts(
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
+        Duration::UntilEndOfCombatOnYourNextTurn => {
+            state.is_alive(controller)
+                && !(turn.number() > began
+                    && turn.active() == controller
+                    && turn.step() > Step::EndCombat)
+        }
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
@@ -481,6 +499,21 @@ pub(crate) fn lasts(
         // The control of the source is derived by the layers. The pass that decides which effects apply asks only that the
         // source is there (`lasts_before_control`) and checks the control itself after the control layer, so this full
         // check is for everything outside that pass.
+        Duration::WhileYouControlSourceTapped => {
+            lasts(
+                state,
+                &Duration::WhileSourceTapped,
+                began,
+                controller,
+                source,
+            ) && lasts(
+                state,
+                &Duration::WhileYouControlSource,
+                began,
+                controller,
+                source,
+            )
+        }
         Duration::WhileYouControlSource => {
             lasts(
                 state,
@@ -523,7 +556,9 @@ pub(crate) fn ends_with_turn(
     let turn = state.turn();
     match duration {
         Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
-        Duration::UntilEndOfYourNextTurn => turn.number() > began && state.is_active(controller),
+        Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
+            turn.number() > began && state.is_active(controller)
+        }
         _ => false,
     }
 }
@@ -551,7 +586,8 @@ pub struct ContinuousEffect {
     pub timestamp: u64,
     /// The object whose spell or ability created it, as it was then; `WhileSourceOnBattlefield` follows this object.
     pub source: Option<ObjectRef>,
-    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for.
+    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for; for
+    /// `DuringItsControllersNextTurn`, the controller of the objects as it began, whose next turn it applies in.
     pub controller: PlayerId,
     /// The number of the turn it began in, which `UntilEndOfCombat` and `UntilYourNextTurn` measure from.
     pub turn: u32,
@@ -598,9 +634,22 @@ impl ContinuousEffect {
     /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
     /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        self.lasts_by(state, &self.duration)
+        !self.ended(state) && self.in_its_turn(state)
+    }
+
+    /// Whether the effect has ended for good, so housekeeping removes it: its duration has run out or an object it names
+    /// is gone. An effect that waits for its turn has not ended.
+    pub fn ended(&self, state: &GameState) -> bool {
+        !(self.lasts_by(state, &self.duration)
             && !self.spent(state)
-            && !self.gives_control_to_a_player_who_left(state)
+            && !self.gives_control_to_a_player_who_left(state))
+    }
+
+    /// Whether it is the turn the effect applies in: for `DuringItsControllersNextTurn`, the next turn of the player it
+    /// was begun for; any turn for the other durations.
+    fn in_its_turn(&self, state: &GameState) -> bool {
+        self.duration != Duration::DuringItsControllersNextTurn
+            || (state.turn().active() == self.controller && state.turn().number() > self.turn)
     }
 
     /// [`is_active`](Self::is_active) without asking who controls the source of a "for as long as you control ~" effect:
@@ -608,11 +657,13 @@ impl ContinuousEffect {
     pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
         let duration = match &self.duration {
             Duration::WhileYouControlSource => &Duration::WhileSourceOnBattlefield,
+            Duration::WhileYouControlSourceTapped => &Duration::WhileSourceTapped,
             other => other,
         };
         self.lasts_by(state, duration)
             && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state)
+            && self.in_its_turn(state)
     }
 
     /// Whether `duration` has not run out for this effect: the one rule for every duration, and for a counter the
@@ -761,6 +812,10 @@ mod tests {
     #[case::the_end_of_your_next_turn_in_the_turn_it_began(Duration::UntilEndOfYourNextTurn, (3, ME, Step::End), true)]
     #[case::the_end_of_your_next_turn_in_another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE, Step::Main1), true)]
     #[case::the_end_of_your_next_turn_in_that_turn(Duration::UntilEndOfYourNextTurn, (5, ME, Step::Main2), true)]
+    #[case::r306c_next_combat_in_the_turn_it_began(Duration::UntilEndOfCombatOnYourNextTurn, (3, ME, Step::End), true)]
+    #[case::r306c_next_combat_in_another_seats_turn(Duration::UntilEndOfCombatOnYourNextTurn, (4, FOE, Step::Main2), true)]
+    #[case::r306c_next_combat_through_its_last_step(Duration::UntilEndOfCombatOnYourNextTurn, (5, ME, Step::EndCombat), true)]
+    #[case::r306c_next_combat_after_it(Duration::UntilEndOfCombatOnYourNextTurn, (5, ME, Step::Main2), false)]
     fn each_duration_lasts_as_long_as_its_rule_says(
         #[case] duration: Duration,
         #[case] now: (u32, PlayerId, Step),

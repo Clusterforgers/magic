@@ -66,6 +66,8 @@ pub(crate) enum Doing {
     },
     /// `object` is tapped to pay a crew cost.
     Crew { object: ObjectId },
+    /// `object` becomes suspected.
+    BecomeSuspected { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -74,6 +76,8 @@ pub(crate) enum Doing {
     Sacrifice { player: PlayerId, object: ObjectId },
     /// Counters are put on `on`.
     PutCounter { on: Target, counter: CounterKind },
+    /// Counters of `counter` are removed from `on`.
+    RemoveCounter { on: Target, counter: CounterKind },
     /// `object` becomes attached to `to`.
     Attach { object: ObjectId, to: Target },
     /// `player` discards `object`.
@@ -82,6 +86,8 @@ pub(crate) enum Doing {
     Exile { object: ObjectId },
     /// `object` transforms.
     Transform { object: ObjectId },
+    /// `object` phases out on its own, not with the permanent it is attached to.
+    PhaseOut { object: ObjectId },
     /// `object` untaps.
     Untap { object: ObjectId },
     /// `object` moves onto the battlefield from another zone.
@@ -186,7 +192,8 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             covers(who, Some(player), Some(object))
         }
         (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(state, who, on),
-        (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
+        (Prohibited::RemoveCounterOf(kind), Doing::RemoveCounter { on, counter })
+        | (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
             *kind == counter && counters_on(state, who, on)
         }
         (Prohibited::Attach, Doing::Attach { object, to }) => {
@@ -211,8 +218,10 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             Some(object),
         ),
         (Prohibited::Transform, Doing::Transform { object })
+        | (Prohibited::PhaseOut, Doing::PhaseOut { object })
         | (Prohibited::Untap, Doing::Untap { object })
         | (Prohibited::Crew, Doing::Crew { object })
+        | (Prohibited::BecomeSuspected, Doing::BecomeSuspected { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
             covers(who, holder(state, object), Some(object))
         }
@@ -449,6 +458,12 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
                 counter: changed.counter.clone(),
             });
         }
+        Event::CountersChanged(changed) if changed.delta < 0 => {
+            found.push(Doing::RemoveCounter {
+                on: changed.on,
+                counter: changed.counter.clone(),
+            });
+        }
         Event::Attached { object, to } => {
             if let Some(host) = state.object(*to) {
                 found.push(Doing::Attach {
@@ -464,7 +479,13 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             });
         }
         Event::Transformed { object, .. } => found.push(Doing::Transform { object: *object }),
+        Event::PermanentPhasedOut {
+            object,
+            indirect: false,
+            ..
+        } => found.push(Doing::PhaseOut { object: *object }),
         Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
+        Event::Suspected { object } => found.push(Doing::BecomeSuspected { object: *object }),
         _ => {}
     }
     found
@@ -475,12 +496,66 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
+    // A card that may not enter stays where it is, so how it would have entered (tapped, under whom, transformed) goes too.
+    let mut stays = Vec::new();
+    let mut stayed: Vec<ObjectId> = Vec::new();
+    let kept: Vec<Event> = events
+        .into_iter()
+        .filter(|event| match event {
+            Event::Entered { object, .. } | Event::Transformed { object, .. }
+                if stays.contains(object) =>
+            {
+                false
+            }
+            _ => {
+                let doings = doings(state, event);
+                let banned = doings.iter().any(|doing| forbidden(state, doing.clone()));
+                if banned {
+                    stays.extend(doings.iter().filter_map(|doing| match doing {
+                        Doing::EnterBattlefield { object } => Some(*object),
+                        _ => None,
+                    }));
+                    if let Event::PermanentPhasedOut { object, .. } = event {
+                        stayed.push(*object);
+                    }
+                }
+                !banned
+            }
+        })
+        .collect();
+    r301_attached_stay(state, kept, stayed)
+}
+
+/// `events` without the phasing out of what is attached, directly or through others, to a permanent in `stayed`: a
+/// permanent that can't phase out keeps what would have phased out with it (CR 702.26g).
+fn r301_attached_stay(
+    state: &GameState,
+    events: Vec<Event>,
+    mut stayed: Vec<ObjectId>,
+) -> Vec<Event> {
+    if stayed.is_empty() {
+        return events;
+    }
+    let host = |id: ObjectId| {
+        state
+            .object(id)
+            .and_then(GameObject::permanent)
+            .and_then(crate::object::PermanentState::attached_to)
+            .map(|host| host.id)
+    };
+    // The indirect events follow their host in the batch, so one pass in order finds every link of a chain.
     events
         .into_iter()
-        .filter(|event| {
-            !doings(state, event)
-                .into_iter()
-                .any(|doing| forbidden(state, doing))
+        .filter(|event| match event {
+            Event::PermanentPhasedOut {
+                object,
+                indirect: true,
+                ..
+            } if host(*object).is_some_and(|h| stayed.contains(&h)) => {
+                stayed.push(*object);
+                false
+            }
+            _ => true,
         })
         .collect()
 }
@@ -665,6 +740,64 @@ mod tests {
             vec![other.clone(), other]
         } else {
             vec![other.clone(), wanted, other]
+        };
+        assert_eq!(kept, expected);
+    }
+
+    #[test]
+    fn a_card_that_may_not_enter_does_not_enter_tapped_either() {
+        let game =
+            game(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":"EnterBattlefield"}}"#);
+        let bear = id(&game, "Bear");
+        let other = Event::LifeGained {
+            player: ME,
+            amount: 1,
+        };
+        let events = vec![
+            Event::ZoneChanged {
+                object: bear,
+                from: Zone::Graveyard(FOE),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+            Event::Entered {
+                object: bear,
+                tapped: true,
+                controller: FOE,
+                chosen: None,
+            },
+            other.clone(),
+        ];
+        assert_eq!(filter(&game, events), vec![other]);
+    }
+
+    #[rstest]
+    #[case::the_bear_is_kept_out(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"action":"EnterBattlefield"}}"#, true)]
+    #[case::only_my_creatures_are_kept_out(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"action":"EnterBattlefield"}}"#, false)]
+    fn a_permanent_kept_from_entering_loses_its_entry_and_no_other(
+        #[case] rule: &str,
+        #[case] kept_out: bool,
+    ) {
+        let game = game(rule);
+        let (bear, wolf) = (id(&game, "Bear"), id(&game, "Wolf"));
+        let entered = |object, controller| Event::Entered {
+            object,
+            tapped: true,
+            controller,
+            chosen: None,
+        };
+        let moved = Event::ZoneChanged {
+            object: bear,
+            from: Zone::Graveyard(FOE),
+            to: Zone::Battlefield,
+            cause: ZoneCause::Moved,
+        };
+        let batch = vec![moved, entered(bear, FOE), entered(wolf, ME)];
+        let kept = filter(&game, batch.clone());
+        let expected = if kept_out {
+            vec![entered(wolf, ME)]
+        } else {
+            batch
         };
         assert_eq!(kept, expected);
     }

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b4faba1a-23db-4678-9ce6-a7816105f22a",
+  "name": "Infinite Authority",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infinite Authority",
+      "oracle_fingerprint": "1fad6e4846f276c25490da9bb9de03cb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Blocks": {
+                    "what": [{ "Is": "Attached" }],
+                    "blocking": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": 3 } }
+                    ]
+                  }
+                },
+                {
+                  "BecomesBlocked": {
+                    "what": [{ "Is": "Attached" }],
+                    "by": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Toughness", "op": "Le", "to": 3 } }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Bind": { "what": "Against", "as": "other" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "other" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

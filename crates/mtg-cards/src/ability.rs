@@ -42,6 +42,8 @@ pub enum Activators {
     Anyone,
     /// The opponents of its controller.
     Opponents,
+    /// Its owner, whoever controls it ("Only this creature's owner may activate this ability").
+    Owner,
 }
 
 impl Activators {
@@ -127,6 +129,8 @@ pub enum ActivationKind {
     Cycling,
     /// The unearth ability (CR 702.84).
     Unearth,
+    /// Ninjutsu (CR 702.49).
+    Ninjutsu,
     /// A mana ability (CR 605).
     Mana,
     /// Every activated ability, mana abilities included (CR 605.1a).

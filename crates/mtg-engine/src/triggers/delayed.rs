@@ -155,6 +155,11 @@ impl Delayed {
             Duration::UntilYourNextTurn | Duration::UntilEndOfYourNextTurn => {
                 turn.number() != self.turn && state.is_active(self.controller)
             }
+            Duration::UntilEndOfCombatOnYourNextTurn => {
+                turn.number() != self.turn
+                    && turn.active() == self.controller
+                    && turn.step() > Step::EndCombat
+            }
             Duration::UntilYourNextEndStep => {
                 turn.number() != self.turn
                     && state.is_active(self.controller)
@@ -172,8 +177,10 @@ impl Delayed {
             // controls the source, and only a permanent that doesn't untap waits for an untap step; a delayed trigger never
             // does.
             Duration::UntilOpponentBecomesMonarch
+            | Duration::DuringItsControllersNextTurn
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
+            | Duration::WhileYouControlSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)

@@ -1,14 +1,28 @@
 {
   "oracle_id": "6afe9cc7-80e4-4607-8633-6013d96bd19c",
   "name": "Lumbering Laundry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lumbering Laundry",
       "oracle_fingerprint": "f3a6b40a8bb764b95e322396b07e14e9",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 87 } }
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtFaceDown": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
         },
         { "Keyword": { "Disguise": "{5}" } }
       ]

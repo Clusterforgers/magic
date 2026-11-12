@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::TokenSpec;
 use crate::cost::Cost;
-use crate::modify::{CastPermission, Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification, SpendAs};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -1167,6 +1167,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The source creature enlists the creatures `what` names (CR 702.154a): each untapped one becomes tapped, and the
+    /// source has enlisted it.
+    Enlist {
+        /// The creatures enlisted.
+        what: Ref,
+    },
     /// Two creatures become paired (CR 702.95): `what` and the creature `with` names; nothing happens unless both are
     /// unpaired creatures on the battlefield under one controller who is the player that resolves it.
     Pair {
@@ -1224,6 +1230,11 @@ pub enum Effect {
         who: Ref,
         /// What the card that ends the exiling must be.
         filter: Selector,
+        /// The exiling goes on until the cards the player has exiled this way have this total mana value or more, the last
+        /// one also matching the filter ("until they have exiled cards with total mana value 5 or greater"); the first
+        /// card that matches ends it when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
         /// The name the card found is bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -1288,6 +1299,9 @@ pub enum Effect {
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
+        /// Which mana may pay for the spell: "mana of any type can be spent to cast that spell" (CR 609.4b).
+        #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+        spend_as: SpendAs,
         /// The name the spell cast is bound to, as the object it is on the stack ("that spell"); nothing is bound when the
         /// card is not cast or is played as a land.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
@@ -1362,6 +1376,12 @@ pub enum Effect {
         /// The phases added.
         phases: Vec<PhaseKind>,
     },
+    /// A step is added right after the current step, before any step added earlier ("you get an additional upkeep step
+    /// after this step", "there is an additional end step after this step"); nothing is added before the first turn.
+    AddStep {
+        /// The step added.
+        step: crate::trigger::Step,
+    },
     /// The player wins the game.
     WinGame {
         /// Who wins.
@@ -1392,6 +1412,16 @@ pub enum Effect {
         who: Ref,
         /// The other player.
         with: Ref,
+    },
+    /// A player's life total and a creature's toughness are exchanged (CR 701.12c): the player gains or loses life to the
+    /// creature's toughness, and the creature's toughness becomes the player's former life total (layer 7b, for good).
+    /// Nothing happens when the creature is not on the battlefield or the life total can't change.
+    ExchangeLifeWithToughness {
+        /// The player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The creature.
+        what: Ref,
     },
     /// All damage marked on each creature is removed (CR 120.6).
     RemoveDamage {
@@ -1885,6 +1915,10 @@ pub enum Effect {
         /// The cost added for each mode chosen beyond the first (Escalate).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         extra_mode_cost: Option<Cost>,
+        /// The pawprints ({P}) each mode takes, parallel to `modes` ("Choose up to five {P} worth of modes"): the modes
+        /// chosen take at most the most of `choose` in all; empty when each mode counts one.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pawprints: Vec<u32>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
@@ -1979,11 +2013,13 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
         Effect::ExileUntil {
             who: Ref::You,
             filter,
+            total: None,
             bind: FOUND.to_owned(),
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
@@ -2082,6 +2118,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,
+                any_cast: false,
             }),
             duration,
         },
@@ -2234,6 +2271,7 @@ mod tests {
     #[case::draw_game(Effect::DrawGame {}, r#"{"DrawGame":{}}"#)]
     #[case::set_life(Effect::SetLife { who: Ref::You, amount: Amount::Fixed(1) }, r#"{"SetLife":{"amount":1}}"#)]
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
+    #[case::exchange_life_with_toughness(Effect::ExchangeLifeWithToughness { who: Ref::You, what: Ref::This }, r#"{"ExchangeLifeWithToughness":{"what":"This"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
         Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false, ask: None },

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5ecf35b1-0bfd-4c60-a791-5a3b918dd630",
   "name": "Marshland Bloodcaster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Marshland Bloodcaster",
@@ -9,9 +9,22 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 138 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "benefit": {
+                        "Rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

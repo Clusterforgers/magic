@@ -1,0 +1,47 @@
+{
+  "oracle_id": "53032819-917e-4777-b37f-7cc1ac196940",
+  "name": "Storybook Ride",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storybook Ride",
+      "oracle_fingerprint": "71319b010f8a4a3238650bf0ac81bd82",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": { "Tallied": { "who": "You", "what": "AttractionsVisited" } },
+                  "as": "ride"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "ride" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "ride" } }, { "In": "Exile" }] },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

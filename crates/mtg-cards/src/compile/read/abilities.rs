@@ -21,8 +21,7 @@ fn at_restriction(r: &mut Reader<'_>) -> bool {
         })
         .is_some()
         || super::c11a_ability_less::c11a_at_less(r)
-        || r.lookahead(|r| r.words(ONCE_EACH_TURN).then_some(()))
-            .is_some()
+        || r.lookahead(|r| r.words(ONCE_EVER).then_some(())).is_some()
         || r.lookahead(|r| {
             r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE)
                 .then_some(())
@@ -36,6 +35,8 @@ fn once_each_turn(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Limit> {
     r.attempt(|r| {
         let limit = if r.words(ONCE_EACH_TURN) {
             Limit::OncePerTurn
+        } else if r.words(ONCE_EVER) {
+            Limit::OncePerGame
         } else if r.words(super::w13b_mill_rad::W13B_DO_THIS_ONCE) {
             Limit::done_once(effects)
         } else {
@@ -46,6 +47,9 @@ fn once_each_turn(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Limit> {
 }
 
 const ONCE_EACH_TURN: &str = "this ability triggers only once each turn";
+
+/// "This ability triggers only once.": once for as long as the object exists (`Limit::OncePerGame`).
+const ONCE_EVER: &str = "this ability triggers only once";
 
 /// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
 /// is not the only effect (the modes keep their own targets, so the ability has none). With

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f9701c1f-66c7-4ac7-8106-074d6f557ad6",
+  "name": "Quicksilver Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver Dragon",
+      "oracle_fingerprint": "5f663f49449e8dfcb5972f545d80b2ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": ["SingleTarget", { "Targeting": ["This"] }]
+                    }
+                  },
+                  "then": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{4}{U}" } }
+      ]
+    }
+  ]
+}

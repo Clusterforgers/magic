@@ -1,7 +1,7 @@
 {
   "oracle_id": "30fd6171-3e57-4c05-a86b-e1c0479ba236",
   "name": "Yarus, Roar of the Old Gods",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Yarus, Roar of the Old Gods",
@@ -28,9 +28,47 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 138, "end": 298 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                        "to": { "BattlefieldFaceDown": { "under": { "OwnerOf": "Triggering" } } },
+                        "as": "back"
+                      }
+                    },
+                    { "TurnFaceUp": { "what": { "Bound": "back" } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

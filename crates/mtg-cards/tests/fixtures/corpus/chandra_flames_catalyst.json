@@ -1,0 +1,24 @@
+{
+  "id": "1e49ce44-5286-4310-88c2-f8a1402b113b",
+  "oracle_id": "7721e800-fba6-4ae7-855e-631b2ecc8d6b",
+  "name": "Chandra, Flame's Catalyst",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m21",
+  "collector_number": "332",
+  "rarity": "mythic",
+  "released_at": "2020-07-03",
+  "digital": false,
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Planeswalker — Chandra",
+  "oracle_text": "+1: Chandra deals 3 damage to each opponent.\n−2: You may cast target red instant or sorcery card from your graveyard. If that spell would be put into your graveyard, exile it instead.\n−8: Discard your hand, then draw seven cards. Until end of turn, you may cast spells from your hand without paying their mana costs.",
+  "loyalty": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

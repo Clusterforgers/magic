@@ -110,8 +110,12 @@ pub const KEYWORDS: &[Entry] = &[
         name: "enlist",
         template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"May":{"effects":[
              {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped",{"Not":"Attacking"},{"Not":{"HasKeyword":{"Macro":{"name":"enlist","amount":0}}}},{"Not":"SummoningSick"}]},"as":"enlisted"}},
-             {"Tap":{"what":{"Bound":"enlisted"}}},
+             {"Enlist":{"what":{"Bound":"enlisted"}}},
              {"Reflexive":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Bound":"enlisted"},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}}]}}]"#,
+    },
+    Entry {
+        name: "absorb",
+        template: r#"[{"Replacement":{"when":{"Damage":{"to":"This"}},"by":{"PreventUpTo":$N}}}]"#,
     },
 ];
 

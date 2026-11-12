@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f89d093d-c815-4df7-a348-2005aa227586",
+  "name": "Planetarium of Wan Shi Tong",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planetarium of Wan Shi Tong",
+      "oracle_fingerprint": "17e6534811362d72965ee48470d88b49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Scried", "who": "You" } },
+                { "Surveilled": { "who": "You" } }
+              ]
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "CastFromZone": { "what": { "Bound": "top" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

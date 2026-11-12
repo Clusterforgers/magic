@@ -1,0 +1,45 @@
+{
+  "oracle_id": "99deac41-584b-43f2-804e-c56ae0fef047",
+  "name": "Communal Brewing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Communal Brewing",
+      "oracle_fingerprint": "62e2263c4c9776b4b2cc01605df44644",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": "Opponent", "bounds": { "min": 0, "max": { "Players": "Opponents" } } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "ingredient" } } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "ingredient" },
+                  "count": { "TargetCount": 0 }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "SpellEntersWith": {
+                  "spell": "Triggering",
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "ingredient" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

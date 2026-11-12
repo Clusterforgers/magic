@@ -1,7 +1,7 @@
 {
   "oracle_id": "30bb01c1-9253-4251-80e7-fb8236b3d858",
   "name": "Chandra, Spark Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chandra, Spark Hunter",
@@ -32,9 +32,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 154, "end": 230 }
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "OneOf": [
+                        [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                        [{ "Discard": {} }]
+                      ]
+                    }
+                  ],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
           }
         },
         {

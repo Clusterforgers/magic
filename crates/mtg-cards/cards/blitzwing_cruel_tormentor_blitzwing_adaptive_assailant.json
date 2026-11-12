@@ -1,7 +1,7 @@
 {
   "oracle_id": "9a10668a-df42-40c2-88d1-ad3b2aba5b03",
   "name": "Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blitzwing, Cruel Tormentor",
@@ -36,9 +36,39 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 197 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "905a6d6c-5ef8-4afa-89bb-9d85a854743f",
+  "name": "Revealing Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revealing Wind",
+      "oracle_fingerprint": "dc1a042c6da13195d26e8cd542c8933b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "LookAtFaceDown": {
+                      "what": [
+                        "FaceDown",
+                        { "Type": "Creature" },
+                        { "AnyOf": ["Attacking", "Blocking"] }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

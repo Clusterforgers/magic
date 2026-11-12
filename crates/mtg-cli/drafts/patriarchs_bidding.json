@@ -1,0 +1,48 @@
+{
+  "oracle_id": "25fc3bc2-d852-4f52-9adb-c7e35c06f3af",
+  "name": "Patriarch's Bidding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patriarch's Bidding",
+      "oracle_fingerprint": "77489e03b1e817dd6c7ce027fa13abfc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "player" },
+                        "kind": "CreatureType",
+                        "as": "type"
+                      }
+                    },
+                    {
+                      "Bind": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "ChosenAs": "type" }
+                          ]
+                        },
+                        "as": "returned",
+                        "adds": true
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -155,6 +155,10 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
             filter.facts.push(SpendFact::Devoid);
         } else if r.words("with flashback") {
             filter.facts.push(SpendFact::Flashback);
+        } else if r.words("that has freerunning") || r.words("with freerunning") {
+            filter.facts.push(SpendFact::Freerunning);
+        } else if r.words("with no abilities") {
+            filter.facts.push(SpendFact::NoAbilities);
         } else {
             return;
         }
@@ -442,6 +446,8 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
             SpendFact::Flashback => text.push_str(" with flashback"),
+            SpendFact::Freerunning => text.push_str(" with freerunning"),
+            SpendFact::NoAbilities => text.push_str(" with no abilities"),
         }
     }
     text
@@ -459,10 +465,11 @@ fn spells_text(filter: &SpendFilter) -> Option<String> {
 /// The same with one spell and its article: "a creature spell of the chosen type".
 fn one_spell_text(filter: &SpendFilter) -> Option<String> {
     let kind = kind_text(filter)?;
+    // One spell "has" freerunning: "a spell that has freerunning".
+    let qualifier = qualifier_text(filter).replace(" with freerunning", " that has freerunning");
     Some(format!(
-        "{} {kind}spell{}",
+        "{} {kind}spell{qualifier}",
         super::triggers::article(&kind),
-        qualifier_text(filter)
     ))
 }
 
@@ -524,6 +531,21 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
                 "Spend this mana only to cast {} or activate abilities of {}",
                 spells_text(spell)?,
                 plural_sources(spell)?
+            )
+        }
+        // "Spend this mana only to cast an Assassin spell or a spell that has freerunning, or to activate an ability of an
+        // Assassin source."
+        [
+            SpendOn::Spell(first),
+            SpendOn::Spell(second),
+            SpendOn::Ability(source),
+        ] if *source != SpendFilter::default() && source.facts.is_empty() => {
+            let kind = kind_text(source)?;
+            format!(
+                "Spend this mana only to cast {} or {}, or to activate an ability of {} {kind}source",
+                one_spell_text(first)?,
+                one_spell_text(second)?,
+                super::triggers::article(&kind)
             )
         }
         [SpendOn::Spell(first), SpendOn::Spell(second)] => format!(

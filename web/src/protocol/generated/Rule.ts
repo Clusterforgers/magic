@@ -217,7 +217,11 @@ spend_as?: unknown,
 /**
  * The permission is open only while this holds for the controller of the rule; always when absent.
  */
-when?: unknown, } } | { "MayCastRather": { 
+when?: unknown, 
+/**
+ * It opens no zone: its free cast or cost is offered for the casts the players may make anyway.
+ */
+any_cast?: boolean, } } | { "MayCastRather": { 
 /**
  * The owner of each card and the card, as it was named when the rule began.
  */
@@ -293,7 +297,7 @@ when: unknown,
 /**
  * What happens instead.
  */
-by: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+by: unknown, } } | "GraveyardCardsUntargetable" | "DamageAsWither" | "ManaBurn" | { "AttackAsThoughHasteAt": Array<PlayerId> } | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */

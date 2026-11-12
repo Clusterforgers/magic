@@ -1,0 +1,1545 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 1
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": 2
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 1
+       },
+       "amount": 3
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 2
+       },
+       "amount": 4
+      }
+     },
+     {
+      "Shield": {
+       "when": {
+        "ZoneChange": {
+         "what": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "DamagedBy": "This"
+          }
+         ],
+         "from": "Battlefield",
+         "to": "Graveyard"
+        }
+       },
+       "by": {
+        "MoveTo": "Exile"
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "~ deals 2 damage to target creature, 3 damage to another target creature, and 4 damage to a third target creature. If a creature dealt damage this way would die this turn, exile it instead."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "AttackingPlayer": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Saproling",
+         "colors": [
+          "Green"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Saproling"
+         ],
+         "power": 1,
+         "toughness": 1
+        }
+       },
+       "blocking": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Create a 1/1 green Saproling creature token that's blocking target creature attacking you.\nDraw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Elemental Cat",
+         "colors": [
+          "Red"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Elemental",
+          "Cat"
+         ],
+         "power": 1,
+         "toughness": 1,
+         "abilities": [
+          {
+           "Keyword": "Haste"
+          }
+         ]
+        }
+       },
+       "count": "X",
+       "as": "cats"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "cats"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Create X 1/1 red Elemental Cat creature tokens with haste. Exile them at the beginning of the next end step."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Increase",
+    "mana": "{3}",
+    "condition": {
+     "Not": "YourTurn"
+    }
+   }
+  },
+  "During turns other than yours, this spell costs {3} more to cast."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       },
+       "to": "Hand"
+      }
+     },
+     "EndTurn"
+    ]
+   }
+  },
+  "Return all nonland permanents to their owners' hands. End the turn."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "filter": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "count": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, sacrifice all creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": {
+        "Stat": {
+         "of": "Paid",
+         "stat": "Power"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~ deals damage to any target equal to the total power of the sacrificed creatures."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Ability": "Activated"
+        },
+        {
+         "FromSource": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Artifact"
+            },
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Enchantment"
+            },
+            {
+             "Type": "Land"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "Cant": {
+         "who": "EachPlayer",
+         "action": {
+          "ActivateKind": {
+           "kind": "Every",
+           "sources": [
+            {
+             "Is": {
+              "Bound": "source"
+             }
+            }
+           ]
+          }
+         }
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Counter target activated ability from an artifact, creature, enchantment, or land. That permanent's activated abilities can't be activated this turn.\nDraw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "source"
+         },
+         "selector": [
+          {
+           "In": "Battlefield"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": "EachPlayer",
+            "action": {
+             "ActivateKind": {
+              "kind": "Every",
+              "sources": [
+               {
+                "Is": {
+                 "Bound": "source"
+                }
+               }
+              ]
+             }
+            }
+           }
+          },
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target activated or triggered ability. If a permanent's ability is countered this way, activated abilities of that permanent can't be activated this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          "Spell",
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        },
+        {
+         "ControlledBy": "Opponents"
+        },
+        {
+         "Targeting": [
+          {
+           "Type": "Land"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "source"
+         },
+         "selector": [
+          {
+           "In": "Battlefield"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Destroy": {
+          "what": {
+           "Bound": "source"
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Draw": {
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "Counter target spell or ability an opponent controls that targets a land you control. If a permanent's ability is countered this way, destroy that permanent.\nDraw two cards."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Ability": "Activated"
+        },
+        {
+         "FromSource": [
+          {
+           "Type": "Artifact"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target activated ability from an artifact source."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Each": [
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         },
+         {
+          "SharesName": {
+           "Target": 0
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Search": {
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "zone": "Hand",
+       "also": [
+        "Library"
+       ],
+       "filter": [
+        {
+         "SharesName": {
+          "Target": 0
+         }
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": null
+       },
+       "as": "found"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for all cards with the same name as that spell and exile them. Then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Search": {
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "zone": "Graveyard",
+       "also": [
+        "Hand",
+        "Library"
+       ],
+       "filter": [
+        {
+         "SharesName": {
+          "Target": 0
+         }
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": null
+       },
+       "as": "found"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "found"
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "count": {
+        "Count": [
+         {
+          "Is": {
+           "Bound": "exiled"
+          }
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "ArrivedFrom": "Hand"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for any number of cards with the same name as that spell and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "Type": "Sorcery"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CardTypes": [
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       },
+       "then": [
+        {
+         "Search": {
+          "of": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          },
+          "zone": "Graveyard",
+          "also": [
+           "Hand",
+           "Library"
+          ],
+          "filter": [
+           {
+            "SharesName": {
+             "Target": 0
+            }
+           }
+          ],
+          "count": {
+           "min": 0,
+           "max": null
+          },
+          "as": "found"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "found"
+          }
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target sorcery spell.\nIf there are four or more card types among cards in your graveyard, search the graveyard, hand, and library of that spell's controller for any number of cards with the same name as that spell, exile those cards, then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "RevealUntil": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "filter": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ],
+       "as": "found",
+       "revealed_as": "revealed"
+      }
+     },
+     {
+      "CastFromZone": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "what": {
+        "Bound": "found"
+       },
+       "free": true
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Its controller reveals cards from the top of their library until they reveal an instant or sorcery card. That player may cast that card without paying its mana cost. Then the player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": "Opponents"
+            }
+           ]
+          },
+          "as": "card"
+         }
+        },
+        {
+         "Bind": {
+          "what": {
+           "OwnerOf": {
+            "Bound": "card"
+           }
+          },
+          "as": "owner"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "card"
+          },
+          "as": "named"
+         }
+        },
+        {
+         "Search": {
+          "of": {
+           "Bound": "owner"
+          },
+          "zone": "Graveyard",
+          "also": [
+           "Hand",
+           "Library"
+          ],
+          "filter": [
+           {
+            "SharesName": {
+             "Bound": "named"
+            }
+           }
+          ],
+          "count": {
+           "min": 0,
+           "max": null
+          },
+          "as": "found"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "found"
+          },
+          "as": "exiled"
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "Bound": "owner"
+          }
+         }
+        },
+        {
+         "Draw": {
+          "who": {
+           "Bound": "owner"
+          },
+          "count": {
+           "Count": [
+            {
+             "Is": {
+              "Bound": "exiled"
+             }
+            },
+            {
+             "In": "Exile"
+            },
+            {
+             "ArrivedFrom": "Hand"
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Destroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExileUntil": {
+       "who": "Opponents",
+       "filter": [],
+       "total": 20,
+       "as": "found",
+       "exiled_as": "exiled"
+      }
+     }
+    ]
+   }
+  },
+  "Each opponent exiles cards from the top of their library until that player has exiled cards with total mana value 20 or greater."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExileUntil": {
+       "who": "Opponents",
+       "filter": [],
+       "total": 5,
+       "as": "found",
+       "exiled_as": "exiled"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "MayCast": {
+         "from": "Exile",
+         "only": {
+          "Bound": "exiled"
+         },
+         "free": true
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Each opponent exiles cards from the top of their library until they have exiled cards with total mana value 5 or greater this way. Until end of turn, you may cast cards exiled this way without paying their mana costs."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "when": {
+        "DealsDamage": {
+         "source": [
+          {
+           "Type": "Creature"
+          },
+          "Attacking"
+         ],
+         "to": {
+          "Target": 0
+         }
+        }
+       },
+       "once": false,
+       "this_turn": true,
+       "effects": [
+        {
+         "GainLife": {
+          "amount": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target Wall creature. Whenever that creature is dealt damage by an attacking creature this turn, you gain that much life."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Each": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "amount": 5
+      }
+     },
+     {
+      "Bind": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "DamagedBy": "This"
+         }
+        ]
+       },
+       "as": "dealt"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "ZoneChange": {
+         "what": [
+          {
+           "Is": {
+            "Bound": "dealt"
+           }
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "from": "Battlefield",
+         "to": "Graveyard"
+        }
+       },
+       "once": false,
+       "this_turn": true,
+       "effects": [
+        {
+         "AddMana": {
+          "mana": {
+           "Fixed": [
+            "Red"
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "~ deals 5 damage to each creature. Whenever a creature you control dealt damage this way dies this turn, add {R}."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Continuous": {
+          "affected": {
+           "Target": 0
+          },
+          "mods": [
+           {
+            "SetController": "You"
+           }
+          ],
+          "duration": "Forever"
+         }
+        },
+        {
+         "ChangeTargets": {
+          "what": {
+           "Target": 0
+          },
+          "to": "Choose"
+         }
+        }
+       ],
+       "lose": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell, then flip a coin. If you win the flip, gain control of that spell and you may choose new targets for it. If you lose the flip, counter that spell."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Stat": {
+           "of": {
+            "Target": 0
+           },
+           "stat": "ManaValue"
+          }
+         },
+         "op": "Eq",
+         "right": "X"
+        }
+       },
+       "then": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target spell if its mana value is X."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          "Spell",
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        },
+        {
+         "AnyOf": [
+          {
+           "Targeting": []
+          },
+          {
+           "TargetsPlayer": "EachPlayer"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 20,
+       "plus": {
+        "Greatest": {
+         "of": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "stat": "Power"
+        }
+       },
+       "results": [
+        {
+         "from": 1,
+         "to": 14,
+         "effects": [
+          {
+           "ChangeTargets": {
+            "what": {
+             "Target": 0
+            },
+            "to": "Choose"
+           }
+          }
+         ]
+        },
+        {
+         "from": 15,
+         "effects": [
+          {
+           "ChangeTargets": {
+            "what": {
+             "Target": 0
+            },
+            "to": "Choose"
+           }
+          },
+          {
+           "If": {
+            "condition": {
+             "Matches": {
+              "subject": {
+               "Target": 0
+              },
+              "selector": [
+               "Spell"
+              ]
+             }
+            },
+            "then": [
+             {
+              "CopySpell": {
+               "what": {
+                "Target": 0
+               },
+               "new_targets": true
+              }
+             }
+            ],
+            "otherwise": [
+             {
+              "CopyAbility": {
+               "what": {
+                "Target": 0
+               },
+               "new_targets": true
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell or ability with one or more targets. Roll a d20 and add the greatest power among creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Choose"
+      }
+     }
+    ]
+   }
+  },
+  "You may choose new targets for that spell or ability."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Choose"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Target": 0
+         },
+         "selector": [
+          "Spell"
+         ]
+        }
+       },
+       "then": [
+        {
+         "CopySpell": {
+          "what": {
+           "Target": 0
+          },
+          "new_targets": true
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "CopyAbility": {
+          "what": {
+           "Target": 0
+          },
+          "new_targets": true
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "You may choose new targets for that spell or ability. Then copy it. You may choose new targets for the copy."
+ ]
+]

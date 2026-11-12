@@ -577,6 +577,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         (r.words("cards named") && r.source()).then_some(most)
     }) {
         GameRule::UpToInDeck(most)
+    } else if let Some(rule) = r.attempt(super::r303b_statics::r303b_rule_read) {
+        rule
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
@@ -1547,6 +1549,15 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
         (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
+        (ReplaceBy::AsEnters(effects), None) => super::r304_as_enters::texts(effects),
+        (
+            ReplaceBy::AsEntersWith {
+                effects,
+                counter,
+                count,
+            },
+            None,
+        ) => super::r304_as_enters::with_texts(effects, counter, count),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }
@@ -1556,9 +1567,26 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except,
                 tapped,
                 until_end_of_turn,
+                counters,
             },
             None,
-        ) => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
+        ) if counters.is_empty() => copies::enters_texts(of, except, *tapped, *until_end_of_turn),
+        (
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                tapped,
+                until_end_of_turn,
+                counters,
+            },
+            None,
+        ) => super::r305c_copies::r305c_counter_copy_texts(
+            of,
+            except,
+            *tapped,
+            *until_end_of_turn,
+            counters,
+        ),
         _ => Vec::new(),
     }
 }
@@ -1770,6 +1798,7 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     }])
 }
 
+#[allow(clippy::too_many_lines)]
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     if let Some(texts) = ep27_rule_texts(rule, condition, from) {
         return texts;
@@ -1839,6 +1868,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (
+            GameRule::DamageAsWither | GameRule::ManaBurn | GameRule::AttackAsThoughHasteAt(_),
+            ZoneKind::Battlefield,
+        ) => super::r303b_statics::r303b_rule_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
         (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
             super::rmt4_untap_limit::untap_rule_texts(rule)

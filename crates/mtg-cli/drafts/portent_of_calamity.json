@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0d49187a-1c37-4c3a-afc2-fac2bbc6b29a",
+  "name": "Portent of Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Portent of Calamity",
+      "oracle_fingerprint": "b37df45d6cd5caacef2ae9f7c5d8042e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

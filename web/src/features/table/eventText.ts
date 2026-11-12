@@ -108,6 +108,7 @@ const KEYWORD_KIND_WORDS = {
   Landwalk: 'all landwalk abilities',
   Protection: 'protection',
   Ward: 'ward',
+  BandsWithOther: 'all "bands with other" abilities',
 } as const
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
@@ -135,6 +136,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if (typeof modification === 'string') {
     return {
       LoseAbilities: `${loses} all abilities`,
+      LoseAbilitiesExceptMana: `${loses} all abilities except mana abilities`,
       SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
       CantAttack: "can't attack",
       CantBlock: "can't block",
@@ -256,6 +258,8 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
+    DuringItsControllersNextTurn: " during its controller's next turn",
+    UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     WhileYouControlSource:
@@ -264,6 +268,10 @@ function durationWords(
         : ` while its controller controls ${n.card(source.id)}`,
     WhileSourceTapped:
       source === null ? ' while its source stays tapped' : ` while ${n.card(source.id)} stays tapped`,
+    WhileYouControlSourceTapped:
+      source === null
+        ? ' while its controller controls its source and it stays tapped'
+        : ` while its controller controls ${n.card(source.id)} and it stays tapped`,
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
@@ -294,6 +302,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
   let what: string
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
+  else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
+  else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if ('AttackAsThoughHasteAt' in rule)
+    what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
   else if ('MustAttackPlayers' in rule)
     what = rule.MustAttackPlayers.map(
@@ -992,6 +1004,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('GiftGiven' in event) {
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
+  if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
@@ -1068,6 +1081,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('Devoured' in event) return line(`${n.card(event.Devoured.object)} devours ${event.Devoured.count}`)
   if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)
+  if ('Enlisted' in event)
+    return line(`${n.card(event.Enlisted.object)} enlists ${n.card(event.Enlisted.enlisted)}`)
   if ('Exploited' in event)
     return line(`${n.card(event.Exploited.object)} exploits ${n.card(event.Exploited.sacrificed)}`)
   if ('Crewed' in event) {
@@ -1157,6 +1172,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
   }
+  if ('StepAdded' in event)
+    return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
   if ('AnnouncementRewound' in event) {
     const { player, object, reason } = event.AnnouncementRewound
@@ -1184,6 +1201,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.card(object)} phases out${held}`)
   }
   if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
+  if ('ManaAbilityActivated' in event) {
+    const { player, source } = event.ManaAbilityActivated
+    return quiet(`${n.seat(player)} activates a mana ability of ${n.card(source.id)}`)
+  }
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded
     const from = source === null ? '' : ` from ${n.card(source)}`

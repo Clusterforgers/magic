@@ -1,0 +1,21 @@
+{
+  "oracle_id": "70ff487d-96b3-4322-9975-59bf3c6b517f",
+  "name": "Animus of Predation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Animus of Predation",
+      "oracle_fingerprint": "1e9028c66a13ecda34b7d9371c0f5796",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": { "RemoveDrafted": { "face_up": true } } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 374 }
+          }
+        }
+      ]
+    }
+  ]
+}

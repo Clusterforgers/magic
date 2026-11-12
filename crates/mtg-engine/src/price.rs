@@ -100,6 +100,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
         CostItem::XColor(_) => "Cost.XColor",
+        CostItem::XAtMost(_) => "Cost.XAtMost",
     }
 }
 
@@ -108,9 +109,10 @@ fn builds_on_x(amount: &Amount) -> bool {
     match amount {
         Amount::X => true,
         Amount::Sum(parts) | Amount::Product(parts) => parts.iter().any(builds_on_x),
-        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
-            builds_on_x(of)
-        }
+        Amount::Times { of, .. }
+        | Amount::Half { of, .. }
+        | Amount::AtMost { of, .. }
+        | Amount::EvenShare(of) => builds_on_x(of),
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             builds_on_x(of) || builds_on_x(by)
         }
@@ -211,8 +213,9 @@ impl Price {
                 CostItem::Tap => tap = true,
                 CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
-                // The least X is read where X is announced (`announce/x.rs`).
-                CostItem::XAtLeast(_) => {}
+                // The least X is read where X is announced (`announce/x.rs`), the most where an effect asks the payment
+                // (`resolve/prim/w6c_pay_x.rs`).
+                CostItem::XAtLeast(_) | CostItem::XAtMost(_) => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
@@ -259,6 +262,25 @@ impl Price {
     pub(crate) fn at(&self, x: u32) -> Price {
         Price {
             parts: self.parts.iter().map(|part| part.at(x)).collect(),
+            ..self.clone()
+        }
+    }
+
+    /// [`Self::at`] with a part that picks by X ("a red card with mana value X") kept as it is: what the mana sources
+    /// leave out is judged for some X, and which values of X can be announced is the announcement's business (`x.rs`).
+    pub(crate) fn r301_at_keeping_x_picks(&self, x: u32) -> Price {
+        Price {
+            parts: self
+                .parts
+                .iter()
+                .map(|part| {
+                    if part.r301_picks_by_x() {
+                        part.clone()
+                    } else {
+                        part.at(x)
+                    }
+                })
+                .collect(),
             ..self.clone()
         }
     }

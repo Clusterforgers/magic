@@ -58,6 +58,20 @@ fn zone_of(driver: &Driver, id: ObjectId) -> Zone {
     driver.state().object(id).unwrap().zone()
 }
 
+/// Whether the ability is a spell whose every target specification names a spell on the stack ("counter target spell").
+fn r302b_targets_a_spell(rule: &mtg_cards::ability::Ability) -> bool {
+    use mtg_cards::refs::{Pred, Targetable};
+    match rule {
+        mtg_cards::ability::Ability::Spell { targets, .. } => {
+            !targets.is_empty()
+                && targets.iter().all(|spec| {
+                    matches!(&spec.what, Targetable::Object(selector) if selector.0.contains(&Pred::Spell))
+                })
+        }
+        _ => false,
+    }
+}
+
 /// Starts casting the named spell, answers each choice before the payment (the face of a card with two faces, its
 /// targets) with a seeded random legal choice and pays automatically.
 fn cast_choosing_first(driver: &mut Driver, name: &str) -> Result<Vec<Event>, ScriptError> {
@@ -218,6 +232,10 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
             .iter()
             .any(|rule| matches!(**rule, mtg_cards::ability::Ability::CastOnly { .. }))
         {
+            continue;
+        }
+        // A spell that must target a spell has nothing to target at this table: its own tests cast it at one.
+        if card.rules.iter().any(|rule| r302b_targets_a_spell(rule)) {
             continue;
         }
         let mut driver = table(vec![card]);

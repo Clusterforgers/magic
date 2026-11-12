@@ -258,8 +258,8 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
                 phrase::selector(ctx, what)
             )
         }
-        TriggerPattern::Untapped { what } => {
-            format!("{} becomes untapped", phrase::selector(ctx, what))
+        TriggerPattern::Untapped { what, untap_step } => {
+            crate::trigger::untapped_words(&phrase::selector(ctx, what), *untap_step)
         }
         TriggerPattern::Chapter { number } => format!("chapter {number}"),
         TriggerPattern::StepBegins { step, whose } => {
@@ -523,6 +523,9 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
         }
         Modification::AddSubtype(kind) => format!("is also a {}", kind.0),
         Modification::LoseAbilities => "loses all abilities".to_owned(),
+        Modification::LoseAbilitiesExceptMana => {
+            "loses all abilities except mana abilities".to_owned()
+        }
         Modification::CantAttack => "can't attack".to_owned(),
         Modification::CantBlock => "can't block".to_owned(),
         Modification::CantBeBlocked => "can't be blocked".to_owned(),
@@ -626,6 +629,26 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::AsEntersWith {
+            effects: list,
+            counter,
+            count,
+        } => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+            out.push(Step::new(
+                depth,
+                format!(
+                    "then it enters with {} {} counters",
+                    generic::node(ctx, count),
+                    generic::node(ctx, counter)
+                ),
+            ));
+        }
+        ReplaceBy::AsEnters(list) => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+        }
         ReplaceBy::Plus(list) => {
             out.push(Step::new(depth, "it happens, and with it:"));
             effects::list(ctx, list, depth + 1, out);
@@ -691,6 +714,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         }
         CombatQuirk::MustBeBlocked(Blocking::Every) => {
             format!("all creatures able to block {who} do so")
+        }
+        CombatQuirk::MustBeBlockedBy(_) => {
+            format!("the creatures it names that are able to block {who} do so")
         }
         CombatQuirk::IgnoreLandwalk(_) | CombatQuirk::IgnoreAllLandwalk => {
             format!("{who} can be blocked as though they didn't have landwalk")

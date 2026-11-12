@@ -9,7 +9,7 @@ use mtg_cards::refs::{Pred, Selector as PickSelector};
 use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
-use mtg_core::ids::{EffectId, ObjectId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
@@ -42,10 +42,41 @@ const CARD_TYPES: [CardType; 9] = [
     CardType::Sorcery,
 ];
 
+/// The players the effects are begun for, each with the objects of theirs: the controller of the resolving spell or
+/// ability for every object, or for `DuringItsControllersNextTurn` the controller of each object as the effect begins,
+/// whose next turn it waits for.
+fn l294_turn_holders(
+    cx: &Cx<'_>,
+    duration: &mtg_cards::modify::Duration,
+    named: &[ObjectRef],
+) -> Vec<(PlayerId, Vec<ObjectRef>)> {
+    if *duration != mtg_cards::modify::Duration::DuringItsControllersNextTurn {
+        return vec![(cx.controller(), named.to_vec())];
+    }
+    let mut holders: Vec<(PlayerId, Vec<ObjectRef>)> = Vec::new();
+    for object in named {
+        let player = crate::characteristics::controller_of(cx.state(), object.id)
+            .unwrap_or_else(|| cx.controller());
+        match holders.iter_mut().find(|(held, _)| *held == player) {
+            Some((_, objects)) => objects.push(*object),
+            None => holders.push((player, vec![*object])),
+        }
+    }
+    holders
+}
+
 /// Each modification becomes one effect that applies to the permanents the reference names now and to no other object,
 /// whatever happens to the set later (CR 611.2c). The effects take consecutive timestamps in the order of the card's
 /// text (CR 613.7), and their amounts are worked out now. Naming no permanent begins nothing. A modification the engine
 /// does not run refuses by name.
+/// Whether the change takes all abilities away, the mana abilities kept or not.
+const fn loses_abilities(wanted: &Wanted) -> bool {
+    matches!(
+        wanted,
+        Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana
+    )
+}
+
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Continuous {
         affected,
@@ -94,10 +125,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = spells_taken(cx, &named, mods)?;
     // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
     // order of its list (CR 613.1f).
-    let (lost, kept): (Vec<_>, Vec<_>) = mods
-        .iter()
-        .partition(|wanted| matches!(wanted, Wanted::LoseAbilities));
-    for (made, wanted) in (0u64..).zip(lost.into_iter().chain(kept)) {
+    let (lost, kept): (Vec<_>, Vec<_>) = mods.iter().partition(|wanted| loses_abilities(wanted));
+    let mut modifications = Vec::new();
+    for wanted in lost.into_iter().chain(kept) {
         let modification = match wanted {
             Wanted::AddProtectionFromChosenColor => {
                 let color = chosen
@@ -129,22 +159,26 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             },
             other => lower(&cx.scope, other)?,
         };
-        events.push(Event::EffectCreated {
-            effect: Box::new(
-                ContinuousEffect::new(
-                    EffectId(state.next_effect + made),
-                    Selector::Objects(named.clone()),
-                    modification,
-                    duration.clone(),
-                    state.next_timestamp + made,
-                )
-                .from_source(cx.scope.source)
-                .begun(
-                    cx.controller(),
-                    crate::effects::began_turn(state, duration, cx.controller()),
+        modifications.push(modification);
+    }
+    let mut made = 0u64;
+    for (player, objects) in l294_turn_holders(cx, duration, &named) {
+        for modification in &modifications {
+            events.push(Event::EffectCreated {
+                effect: Box::new(
+                    ContinuousEffect::new(
+                        EffectId(state.next_effect + made),
+                        Selector::Objects(objects.clone()),
+                        modification.clone(),
+                        duration.clone(),
+                        state.next_timestamp + made,
+                    )
+                    .from_source(cx.scope.source)
+                    .begun(player, crate::effects::began_turn(state, duration, player)),
                 ),
-            ),
-        });
+            });
+            made += 1;
+        }
     }
     Ok(Run::events(events))
 }
@@ -274,6 +308,10 @@ fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, Reso
             }
             _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddCreatureTypeChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::CreatureType(kind)) => Ok(Modification::AddSubtype(kind.clone())),
+            _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
+        },
         _ => Err(ResolveError::Invalid("no chosen type".into())),
     }
 }
@@ -334,9 +372,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             }
             _ => return Err(ResolveError::Invalid("no color was chosen".into())),
         },
-        Wanted::SetLandTypesChosen(_) | Wanted::SetCreatureTypesChosen(_) => {
-            chosen_types(scope, wanted)?
-        }
+        Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_) => chosen_types(scope, wanted)?,
         Wanted::ChangeTextChosen { from, to } => Modification::ChangeText {
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,
@@ -350,6 +388,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
+        Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.

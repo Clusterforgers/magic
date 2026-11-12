@@ -1,0 +1,24 @@
+{
+  "id": "2c057ca8-9811-4dc3-9b0e-f9f69f752d1d",
+  "oracle_id": "4cbce730-7b70-41bd-b463-bfec46afe3b0",
+  "name": "Gideon, Martial Paragon",
+  "lang": "en",
+  "layout": "normal",
+  "set": "akh",
+  "collector_number": "270",
+  "rarity": "mythic",
+  "released_at": "2017-04-28",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Gideon",
+  "oracle_text": "+2: Untap all creatures you control. Those creatures get +1/+1 until end of turn.\n0: Until end of turn, Gideon becomes a 5/5 Human Soldier creature with indestructible that's still a planeswalker. Prevent all damage that would be dealt to him this turn.\n−10: Creatures you control get +2/+2 until end of turn. Tap all creatures your opponents control.",
+  "loyalty": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "69d6b906-5461-4eba-8667-dbb8c0ce3fcb",
+  "name": "Killing Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Killing Wave",
+      "oracle_fingerprint": "6913173e705d02aae6a1c1a4b237f395",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "creature" } },
+                        "cost": [{ "PayLife": "X" }],
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "creature" } },
+                              "filter": [{ "Is": { "Bound": "creature" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

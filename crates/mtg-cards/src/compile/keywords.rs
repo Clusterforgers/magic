@@ -57,6 +57,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("battle cry", Params::None),
     ("fuse", Params::None),
     ("landwalk", Params::None),
+    // "Fox offering" names its quality first (`find`).
+    ("offering", Params::Text),
     ("partner", Params::Dash),
     ("companion", Params::Dash),
     ("ward", Params::Cost),
@@ -266,6 +268,16 @@ fn find(item: &str) -> Option<Found<'_>> {
     if let Some(&(name, params)) = best {
         let rest = item.get(name.len()..)?.trim_start();
         return Some(Found { name, params, rest });
+    }
+    // "Fox offering": the quality comes first (CR 702.48a).
+    if let Some((quality, "offering")) = item.split_once(' ')
+        && quality.chars().all(|c| c.is_ascii_alphabetic())
+    {
+        return Some(Found {
+            name: "offering",
+            params: Params::Text,
+            rest: quality,
+        });
     }
     let word = item.split([' ', '\u{2014}']).next()?.to_ascii_lowercase();
     let spelled = |suffix: &str| {
@@ -492,6 +504,14 @@ pub fn read(item: &str) -> Option<Keyword> {
         "toxic" => positive(rest).map(Keyword::Toxic),
         "annihilator" => positive(rest).map(Keyword::Annihilator),
         "landwalk" => landwalk(item),
+        "offering" => Some(Keyword::Offering(r301_offering_quality(rest))),
+        // "Affinity for snow lands": the snow supertype before the land type.
+        "affinity for" if rest.eq_ignore_ascii_case("snow lands") => {
+            Some(Keyword::Affinity(Selector(vec![
+                Pred::Supertype(Supertype::Snow),
+                Pred::Type(CardType::Land),
+            ])))
+        }
         "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
         "typecycling" => typecycling(item, rest),
         "basic landcycling" => cost(rest).map(|cost| Keyword::Typecycling {
@@ -517,6 +537,16 @@ fn backup(count: u32) -> Keyword {
 
 /// A keyword of the macro table: its number, or nothing after the name for one that prints none.
 fn macro_keyword(name: &str, rest: &str) -> Option<Keyword> {
+    // "Bloodthirst X": X is the damage dealt to your opponents this turn (CR 702.54c).
+    if name == "bloodthirst" && rest == "X" {
+        return Some(Keyword::MacroX {
+            name: name.to_owned(),
+            x: crate::value::Amount::Tallied {
+                who: crate::refs::Ref::Opponents,
+                what: crate::value::TurnTally::DamageTaken,
+            },
+        });
+    }
     let amount = if crate::macros::takes_number(name) {
         positive(rest)?
     } else {
@@ -639,6 +669,24 @@ fn companion(rest: &str) -> Option<Keyword> {
         creature_types(text)?
     };
     Some(Keyword::companion(condition))
+}
+
+/// The permanents an offering sacrifices: those of a card type ("Artifact offering") or of a subtype ("Fox offering").
+fn r301_offering_quality(word: &str) -> Selector {
+    let kind = [
+        CardType::Artifact,
+        CardType::Creature,
+        CardType::Enchantment,
+        CardType::Land,
+        CardType::Planeswalker,
+        CardType::Battle,
+    ]
+    .into_iter()
+    .find(|kind| format!("{kind:?}").eq_ignore_ascii_case(word));
+    Selector(vec![match kind {
+        Some(kind) => Pred::Type(kind),
+        None => Pred::Subtype(Subtype(word.to_owned())),
+    }])
 }
 
 /// The companion conditions that ask more than a selector of the card: a mana value parity, an activated ability, a
@@ -1279,6 +1327,23 @@ mod tests {
     }
 
     #[rstest]
+    #[case::x("Bloodthirst X", true)]
+    #[case::number("Bloodthirst 2", false)]
+    #[case::other_letter("Bloodthirst Y", false)]
+    fn r301_bloodthirst_x_reads_as_the_damage_to_opponents(
+        #[case] item: &str,
+        #[case] counted: bool,
+    ) {
+        let x = crate::value::Amount::Tallied {
+            who: crate::refs::Ref::Opponents,
+            what: crate::value::TurnTally::DamageTaken,
+        };
+        let found = read(item);
+        let read_x = matches!(&found, Some(Keyword::MacroX { name, x: got }) if name == "bloodthirst" && *got == x);
+        assert_eq!(read_x, counted, "{found:?}");
+    }
+
+    #[rstest]
     #[case::bushido("Bushido 1", "bushido", 1)]
     #[case::bushido_capitals("bushido 3", "bushido", 3)]
     #[case::modular("Modular 2", "modular", 2)]
@@ -1624,6 +1689,18 @@ mod tests {
     #[case::mayhem_hybrid("Mayhem {B/R}", Keyword::Mayhem(mana("{B/R}")))]
     #[case::disturb("Disturb {2}{W}", Keyword::Disturb(mana("{2}{W}")))]
     #[case::emerge("Emerge {5}{U}{U}", Keyword::Emerge(mana("{5}{U}{U}")))]
+    #[case::r301_affinity_for_snow_lands(
+        "Affinity for snow lands",
+        Keyword::Affinity(Selector(vec![Pred::Supertype(Supertype::Snow), Pred::Type(CardType::Land)]))
+    )]
+    #[case::r301_fox_offering(
+        "Fox offering",
+        Keyword::Offering(Selector(vec![Pred::Subtype(Subtype("Fox".into()))]))
+    )]
+    #[case::r301_artifact_offering(
+        "Artifact offering",
+        Keyword::Offering(Selector(vec![Pred::Type(CardType::Artifact)]))
+    )]
     #[case::harmonize("Harmonize {4}{R}", Keyword::Harmonize(mana("{4}{R}")))]
     #[case::harmonize_with_x(
         "Harmonize {X}{G}{G}{G}{G}",
@@ -1762,6 +1839,27 @@ mod tests {
     #[case::companion_extra_cards(
         "Companion \u{2014} Your starting deck contains at least twenty cards more than the minimum deck size.",
         Keyword::companion(DeckCondition::ExtraCards(20))
+    )]
+    #[case::r301_companion_shares_a_card_type(
+        "Companion \u{2014} Each nonland card in your starting deck shares a card type.",
+        Keyword::companion(DeckCondition::SharedType {
+            of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
+        })
+    )]
+    #[case::r301_companion_even(
+        "Companion \u{2014} Your starting deck contains only cards with even mana values.",
+        Keyword::companion(DeckCondition::Has { of: Selector::default(), fact: CardFact::EvenManaValue })
+    )]
+    #[case::r301_companion_odd_and_lands(
+        "Companion \u{2014} Your starting deck contains only cards with odd mana values and land cards.",
+        Keyword::companion(DeckCondition::Has {
+            of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]),
+            fact: CardFact::OddManaValue
+        })
+    )]
+    #[case::r301_companion_no_repeated_symbol(
+        "Companion \u{2014} No card in your starting deck has more than one of the same mana symbol in its mana cost.",
+        Keyword::companion(DeckCondition::Has { of: Selector::default(), fact: CardFact::NoRepeatedSymbol })
     )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
@@ -2107,15 +2205,18 @@ mod tests {
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
+            "Fox offering",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                matches!(keyword.name(), "Landwalk" | "Typecycling" | "Equip to")
-                    || sample
-                        .to_ascii_lowercase()
-                        .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
+                matches!(
+                    keyword.name(),
+                    "Landwalk" | "Typecycling" | "Equip to" | "Offering"
+                ) || sample
+                    .to_ascii_lowercase()
+                    .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );

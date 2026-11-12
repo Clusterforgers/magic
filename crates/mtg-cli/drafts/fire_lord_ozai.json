@@ -1,7 +1,7 @@
 {
   "oracle_id": "5945306d-e792-4eae-999b-dfb44b10f062",
   "name": "Fire Lord Ozai",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fire Lord Ozai",
@@ -19,27 +19,19 @@
                         "filter": [{ "Type": "Creature" }, "Other"],
                         "as": "sacrificed"
                       }
-                    },
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
                     {
-                      "If": {
-                        "condition": {
-                          "Compare": {
-                            "left": { "Bound": "sacrificed~moved" },
-                            "op": "Ge",
-                            "right": 1
-                          }
-                        },
-                        "then": [
-                          {
-                            "AddMana": {
-                              "mana": { "Fixed": ["Red"] },
-                              "times": {
-                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
-                              },
-                              "lasts": "Combat"
-                            }
-                          }
-                        ]
+                      "AddMana": {
+                        "mana": { "Fixed": ["Red"] },
+                        "times": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } },
+                        "lasts": "Combat"
                       }
                     }
                   ]
@@ -49,9 +41,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 203, "end": 335 }
+          "Activated": {
+            "cost": "{6}",
+            "effects": [
+              { "ExileTop": { "who": "Opponents", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -74,6 +74,10 @@ pub(crate) fn c9_emerge_ways(
             .flatten()
             .collect()
         }
+        // Offering sacrifices a permanent for less as emerge does, at instant speed (`r301_offering.rs`).
+        Keyword::Offering(_) => crate::r301_offering::r301_offering_way(state, id, keyword)
+            .into_iter()
+            .collect(),
         _ => Vec::new(),
     }
 }
@@ -172,6 +176,11 @@ pub(crate) fn c9_emerge_offered(
     way: &Way,
     cost: ManaCost,
 ) -> ManaCost {
+    if way.alternative == Some(CastWay::Offering) {
+        return crate::r301_offering::r301_offering_cost(
+            state, player, id, &way.parts, None, &cost,
+        );
+    }
     match c9_emerge_measure(way.alternative, way.variant) {
         Some(measure) => c9_emerge_reduced(
             &cost,

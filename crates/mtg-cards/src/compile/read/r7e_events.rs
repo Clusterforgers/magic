@@ -176,6 +176,11 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
             Ref::Opponents => "an opponent collects evidence".to_owned(),
             _ => return None,
         },
+        Action::Foraged => match who {
+            Ref::You => "you forage".to_owned(),
+            Ref::Opponents => "an opponent forages".to_owned(),
+            _ => return None,
+        },
         Action::Shuffled => match who {
             Ref::You => "you shuffle your library".to_owned(),
             _ => format!("{} their library", player_verb(who, "shuffle")?),
@@ -253,6 +258,9 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     if *action == Action::Activated {
         return wf24_activated_text(who, what);
     }
+    if *action == Action::ActivatedAny {
+        return super::l294_activations::text(who, what);
+    }
     if what.is_empty() {
         return Some(format!("Whenever {}", player_action(*action, who)?));
     }
@@ -271,6 +279,13 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     // "When this card becomes plotted" (CR 702.170): the card in exile.
     if *action == Action::Plotted && what.0 == [Pred::This] {
         return Some("When ~ becomes plotted".to_owned());
+    }
+    // "Whenever this creature enlists a creature" (CR 702.154a).
+    if *action == Action::Enlisted {
+        return Some(format!(
+            "Whenever {} enlists a creature",
+            subject_text(what)?
+        ));
     }
     // "Whenever this creature evolves" (CR 702.100d): no pattern of its own stands for it.
     if *action == Action::Evolved {
