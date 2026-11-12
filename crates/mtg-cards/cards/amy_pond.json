@@ -1,0 +1,21 @@
+{
+  "oracle_id": "aa7d3e99-fc14-4f62-bf00-c0428c11e4f2",
+  "name": "Amy Pond",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Amy Pond",
+      "oracle_fingerprint": "563ad241efc058e0f5afd5051987b63b",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Rory Williams" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 133, "end": 259 }
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

@@ -186,6 +186,7 @@ mod r284_rules;
 mod r285_writers;
 mod r287_facts;
 mod r303_forms;
+mod r372_suspend;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -563,6 +564,13 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r372_suspend::r372_not_from_exile_read(text, |twin| {
+            clause_with(twin, kind, x_free, own)
+        })
     {
         return Some(found);
     }

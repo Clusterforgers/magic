@@ -169,6 +169,20 @@ fn t16a_flavour_name(word: &str) -> bool {
         && word.chars().all(|c| {
             c.is_alphabetic() || matches!(c, ' ' | '\'' | '\u{2019}' | '-' | '!' | '~' | ',' | '?')
         })
+        || r372_stopped_name(word)
+}
+
+/// Whether the text is a flavour name of capitalised words each ended by a stop ("I. AM. TALKING!").
+fn r372_stopped_name(word: &str) -> bool {
+    word.split(' ').count() <= 5
+        && word.split(' ').all(|part| {
+            part.chars().next().is_some_and(char::is_uppercase)
+                && part.ends_with(['.', '!'])
+                && part
+                    .trim_end_matches(['.', '!'])
+                    .chars()
+                    .all(char::is_uppercase)
+        })
 }
 
 /// Whether the text is a flavour name that opens with a number written with thousands commas ("10,000 Needles"): the
@@ -496,5 +510,14 @@ mod tests {
     #[case::spell_text_with_a_trigger("When you cast this spell, draw a card.", true, Triggered)]
     fn spells_and_statics(#[case] text: &str, #[case] spell: bool, #[case] expected: ClauseKind) {
         assert_eq!(classify(text, spell), expected);
+    }
+
+    #[rstest]
+    #[case::stopped_words("I. AM. TALKING! \u{2014} Whenever ~ attacks, draw a card.", Some(20))]
+    #[case::a_lower_case_word("I. am. TALKING! \u{2014} Whenever ~ attacks, draw a card.", None)]
+    #[case::a_word_without_a_stop("I AM. TALKING! \u{2014} Whenever ~ attacks, draw a card.", None)]
+    #[case::a_sentence_before_the_dash("Flying. Haste \u{2014} draw a card.", None)]
+    fn r372_a_flavour_name_of_stopped_words(#[case] line: &str, #[case] expected: Option<usize>) {
+        assert_eq!(ability_word_len(line), expected);
     }
 }

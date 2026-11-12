@@ -1341,6 +1341,16 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The cards in exile `what` names gain suspend (CR 702.62): at each of its owner's upkeeps a time counter is removed,
+    /// and when the last is, they may cast it without paying its mana cost; a creature cast so has haste. The suspend lasts
+    /// while the card stays in exile.
+    GainSuspend {
+        /// The exiled cards.
+        what: Ref,
+        /// Only a card that does not have suspend gains it ("If it doesn't have suspend, it gains suspend.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        unless_has: bool,
+    },
     /// The player takes extra turns after this one (CR 500.7): the latest added is taken first.
     ExtraTurn {
         /// Who takes them.

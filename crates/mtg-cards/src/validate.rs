@@ -3488,6 +3488,7 @@ impl Walker<'_> {
             | Effect::Plot { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
+            | Effect::GainSuspend { what, .. }
             => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Connive { what, count } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

@@ -1,16 +1,40 @@
 {
   "oracle_id": "58d5b285-eb0c-4478-b137-26a897075f70",
   "name": "The Parting of the Ways",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Parting of the Ways",
       "oracle_fingerprint": "14eb78d1817cd1ce9357f97f332d2441",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 287 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "as": "card",
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "card" },
+                        "counter": { "Other": "time" },
+                        "count": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "GainSuspend": { "what": { "Bound": "card" }, "unless_has": true } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

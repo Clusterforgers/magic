@@ -624,6 +624,15 @@ fn create_effect(
     ) {
         state.possible.protection = true;
     }
+    // A card that gains suspend in exile triggers from there (CR 702.62a).
+    if matches!(
+        &effect.modification,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Suspend { .. })
+    ) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
+    }
     // A spell that gains rebound on the stack is exiled by a replacement effect as it resolves (CR 702.88a).
     if matches!(
         &effect.modification,

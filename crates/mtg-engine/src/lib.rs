@@ -65,6 +65,7 @@ mod pf23_hand_mana_tests;
 mod prepared;
 mod preview;
 mod price;
+mod r372_suspend;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;
