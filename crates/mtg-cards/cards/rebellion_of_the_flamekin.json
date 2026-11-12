@@ -1,0 +1,56 @@
+{
+  "oracle_id": "0e2a283b-c06a-4b54-a627-5b4959318b1a",
+  "name": "Rebellion of the Flamekin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebellion of the Flamekin",
+      "oracle_fingerprint": "ced989c4d169ca46dca2f16b86b1203e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Clashed", "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental Shaman",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental", "Shaman"],
+                            "power": 3,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "tokens"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 1 } },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "tokens" },
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

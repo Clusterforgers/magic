@@ -105,12 +105,11 @@ fn dealt_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
     ]
 }
 
-/// "Whenever you discard one or more cards" of the batch of a player's first discards in a turn, for any card: the
-/// engine counts no first time among the cards of a kind.
+/// "Whenever you discard one or more cards" (or "nonland cards") of the batch of a player's first discards of that kind
+/// in a turn.
 pub(super) fn first_discards(inner: &TriggerPattern) -> Option<String> {
-    let TriggerPattern::Discarded { what, .. } = inner else {
+    let TriggerPattern::Discarded { .. } = inner else {
         return None;
     };
-    what.is_empty().then_some(())?;
     super::r7e_events::r7e_player_batch(inner)
 }

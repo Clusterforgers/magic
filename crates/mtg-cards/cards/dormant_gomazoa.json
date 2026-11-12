@@ -1,7 +1,7 @@
 {
   "oracle_id": "bc5a7015-c13b-4d92-8afe-50b7956c14dd",
   "name": "Dormant Gomazoa",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dormant Gomazoa",
@@ -11,9 +11,9 @@
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 88, "end": 159 }
+          "Triggered": {
+            "when": { "PlayerBecomesTarget": { "who": "You", "by": ["Spell"] } },
+            "effects": [{ "May": { "effects": [{ "Untap": { "what": "This" } }] } }]
           }
         }
       ]

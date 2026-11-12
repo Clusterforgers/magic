@@ -8,6 +8,9 @@ use crate::value::Amount;
 
 /// The verb phrase of the payment, or `None` for a payment it does not word.
 pub(super) fn phrase(cost: &Cost) -> Option<String> {
+    if let Some(phrase) = super::l290_writers::l290_pay_phrase(cost) {
+        return Some(phrase);
+    }
     match cost.0.as_slice() {
         [
             CostItem::Mana(mana),

@@ -1,7 +1,7 @@
 {
   "oracle_id": "6f981e70-5828-49ac-8a72-cf1cc09be991",
   "name": "Rielle, the Everwise",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rielle, the Everwise",
@@ -27,9 +27,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 161 }
+          "Triggered": {
+            "when": { "Nth": { "event": { "Batch": { "Discarded": { "by": "You" } } }, "nth": 1 } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
           }
         }
       ]

@@ -25,6 +25,8 @@ mod fixture_real;
 mod forge_tier;
 mod generated;
 mod hand_written;
+mod l290_writers;
+mod l293_cards;
 mod linked_exile;
 mod partial;
 mod partial_draft;

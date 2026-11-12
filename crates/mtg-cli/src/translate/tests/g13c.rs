@@ -54,6 +54,10 @@ const DRAW: &str = "SVar:Trig:DB$ Draw | NumCards$ 1";
     &format!("T:Mode$ Clashed | ValidPlayer$ You | Won$ True | TriggerZones$ Battlefield | Execute$ Trig | TriggerDescription$ Whenever you clash and win, draw a card.\n{DRAW}"),
     r#""W15cClashWon":{"who":"You"}"#
 )]
+#[case::l293_any_clash(
+    &format!("T:Mode$ Clashed | ValidPlayer$ You | TriggerZones$ Battlefield | Execute$ Trig | TriggerDescription$ Whenever you clash, draw a card.\n{DRAW}"),
+    r#""Did":{"action":"Clashed","who":"You"}"#
+)]
 #[case::own_library(
     &format!("T:Mode$ SearchedLibrary | ValidPlayer$ Player.Opponent | SearchOwnLibrary$ True | TriggerZones$ Battlefield | Execute$ Trig | TriggerDescription$ x\n{DRAW}"),
     r#""Did":{"action":"SearchedOwnLibrary","who":"Opponents"}"#

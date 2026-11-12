@@ -1,7 +1,7 @@
 {
   "oracle_id": "482889f4-6cf5-457f-9f52-a3f841e038b5",
   "name": "Bribe Taker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bribe Taker",
@@ -9,9 +9,18 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 173 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": "This",
+                  "of": { "Each": [{ "ControlledBy": "You" }] },
+                  "each": 1,
+                  "per_kind": "MayPlusOneInstead"
+                }
+              }
+            ]
           }
         }
       ]

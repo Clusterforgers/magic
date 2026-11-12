@@ -214,6 +214,9 @@ const NEWER_STEPS: [(Step, &str); 2] = [
 /// "At the beginning of your upkeep", and two events of one ability: "When ~ enters and whenever one or more creature
 /// tokens you control deal combat damage to a player".
 pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    if let Some(found) = r.attempt(super::l292_haunt::l292_haunt_head) {
+        return Some(found);
+    }
     let first = single_event(r)?;
     let second = r.attempt(|r| {
         r.word("and").then_some(())?;
@@ -661,7 +664,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         draw_event(r, by, whose)
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {
-            return super::dk27_batches::dk27_discarded_batch(r, by);
+            let batch = super::dk27_batches::dk27_discarded_batch(r, by)?;
+            return Some(l293_first(r, batch));
         }
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
@@ -701,6 +705,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "clashes" } else { "clash" } {
+        Some(super::l293_events::l293_clashed(r, by))
     } else if verb == if third { "wins" } else { "win" } {
         if r.words("a clash") {
             return Some(TriggerPattern::W15cClashWon { who: by });
@@ -1634,6 +1640,13 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 #[allow(clippy::too_many_lines)] // one arm for each pattern
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
+        TriggerPattern::PlayerBecomesTarget { .. } => {
+            super::l290_writers::l290_player_targeted_text(pattern)
+        }
+        TriggerPattern::PlayerAttacks {
+            at: Ref::PlayersWhere { .. },
+            ..
+        } => super::l290_writers::l290_attacks_initiative_text(pattern),
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
         TriggerPattern::NthCounterPut { .. } => super::l291_nth_counter::text(pattern),
         TriggerPattern::BecomesBlocked {
@@ -1736,7 +1749,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
                 .or_else(|| group_attacks_text(what, *at_least))
         }
-        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::l292_haunt::l292_haunt_text(patterns)
+            .or_else(|| super::g9c_blocks::g9c_shared_text(patterns))
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
@@ -1989,4 +2003,12 @@ fn spell_cast_text(pattern: &TriggerPattern, what: &Selector, by: &Ref) -> Optio
     super::r7e_events::r7e_cast_text(pattern)
         .or_else(|| super::c4_cast_hand::cast_text(what, by))
         .or_else(|| super::r9w_players::r9w_cast_text(what, by))
+}
+
+/// A batch of discards, or the first of the turn when "for the first time each turn" follows (only the first is counted).
+fn l293_first(r: &mut Reader<'_>, batch: TriggerPattern) -> TriggerPattern {
+    match first_time(r, batch.clone()) {
+        counted @ TriggerPattern::Nth { nth: 1, .. } => counted,
+        _ => batch,
+    }
 }

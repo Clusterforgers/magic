@@ -4,6 +4,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::value::CounterKind;
 
+use super::l292_put_or_remove::Pick;
 use super::put_counters::{holders, whole};
 use super::wrong_effect;
 use crate::choose::Target;
@@ -13,12 +14,14 @@ use crate::resolve::{Cx, ResolveError, Run};
 
 /// The kinds `of` names hold, read before any counter moves: for each kind, its number added up over what `of` names.
 /// Each holder `on` names then gets `each` of every kind, or as many as were read. Nothing is put for a kind of none.
+/// With `per_kind` the controller chooses for each kind, in turn, what is done instead (`l292_put_or_remove`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::PutCountersOf {
         on,
         of,
         each,
         one_kind,
+        per_kind,
     } = effect
     else {
         return Err(wrong_effect("PutCountersOf"));
@@ -55,9 +58,29 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(amount) => Some(whole(cx.scope.amount(amount)?)),
         None => None,
     };
+    let picks = match per_kind {
+        Some(choice) => match super::l292_put_or_remove::l292_picks(cx, &kinds, *choice)? {
+            Ok(picks) => picks,
+            Err(asked) => return Ok(asked),
+        },
+        None => vec![Pick::Same; kinds.len()],
+    };
     let mut events = Vec::new();
     for holder in holders(cx, on)? {
-        for (kind, n) in &kinds {
+        for ((kind, n), pick) in kinds.iter().zip(&picks) {
+            let kind = match pick {
+                Pick::Same => kind,
+                Pick::Nothing => continue,
+                Pick::PlusOne => &CounterKind::PlusOnePlusOne,
+                Pick::Remove => {
+                    events.push(Event::CountersChanged(CountersChanged {
+                        on: holder,
+                        counter: kind.clone(),
+                        delta: -1,
+                    }));
+                    continue;
+                }
+            };
             let delta = each.unwrap_or_else(|| i32::try_from(*n).unwrap_or(i32::MAX));
             if delta > 0 {
                 events.push(Event::CountersChanged(CountersChanged {
