@@ -115,16 +115,8 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#""action":"PaidLife""#,
     r#""action":"Sacrificed""#
 )]
-#[case::the_crew(
-    "Veteran Motorist",
-    r#""affected":"Against""#,
-    r#""affected":"Triggering""#
-)]
-#[case::another_crews(
-    "Veteran Motorist",
-    r#""what":["This"]"#,
-    r#""what":[{"Type":"Creature"}]"#
-)]
+#[case::more_power("Veteran Motorist", r#""power":1"#, r#""power":2"#)]
+#[case::any_crew("Veteran Motorist", r#"{"Crewed":"Triggering"}"#, r#""Tapped""#)]
 #[case::any_exploit("Skull Skaab", r#""ExploitedNontoken""#, r#""Exploited""#)]
 #[case::opponents_exploit(
     "Skull Skaab",

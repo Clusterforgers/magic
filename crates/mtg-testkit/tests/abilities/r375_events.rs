@@ -86,7 +86,7 @@ fn r375_font_counts_the_life_its_controller_pays(
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] mine: bool,
 ) -> Result<(), ScriptError> {
-    let font_seat = if mine { 0 } else { 1 };
+    let font_seat = usize::from(!mine);
     let scenario = r375_table(seats)
         .battlefield(font_seat, [ready(card("Font of Agonies").unwrap())])
         .hand(0, [card("Gitaxian Probe").unwrap()]);

@@ -9,60 +9,23 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "Scry": {
-                  "count": 2
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "BecomesCrewed": {
-                "what": [
-                  {
-                    "Subtype": "Vehicle"
-                  }
-                ]
-              }
-            },
+            "when": { "BecomesCrewed": { "what": [{ "Subtype": "Vehicle" }] } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Crewed": "Triggering" }] } },
             "effects": [
               {
                 "Continuous": {
                   "affected": "Triggering",
-                  "mods": [
-                    {
-                      "ModifyPT": {
-                        "power": 1,
-                        "toughness": 1
-                      }
-                    }
-                  ],
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
                   "duration": "UntilEndOfTurn"
                 }
               }
-            ],
-            "if": {
-              "Matches": {
-                "subject": "This",
-                "selector": [
-                  {
-                    "Crewed": "Triggering"
-                  }
-                ]
-              }
-            }
+            ]
           }
         }
       ]
