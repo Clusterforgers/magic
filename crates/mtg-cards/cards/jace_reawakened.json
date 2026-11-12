@@ -1,0 +1,53 @@
+{
+  "oracle_id": "cbd483b5-5554-43ed-a729-535d01b0d5d3",
+  "name": "Jace Reawakened",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jace Reawakened",
+      "oracle_fingerprint": "66f0b0c2b5bc202fcf0a43ff087e3df6",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 85 }
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "Type": "Land" } },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Plot": { "what": { "Bound": "card" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 230, "end": 329 }
+          }
+        }
+      ]
+    }
+  ]
+}

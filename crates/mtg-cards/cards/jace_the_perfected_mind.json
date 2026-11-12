@@ -1,0 +1,75 @@
+{
+  "oracle_id": "03dafab4-841f-41cb-8f2e-8188f5177837",
+  "name": "Jace, the Perfected Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, the Perfected Mind",
+      "oracle_fingerprint": "a29597667e282b2f365b0538458334f3",
+      "abilities": [
+        { "Keyword": "Compleated" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": {
+                              "Compare": {
+                                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                                "op": "Ge",
+                                "right": 20
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": { "Times": { "by": 3, "of": "X" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

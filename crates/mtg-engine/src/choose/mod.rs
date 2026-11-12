@@ -207,6 +207,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub spliced: Vec<ObjectId>,
+    /// The life paid in place of Phyrexian symbols to cast the spell (CR 107.4f), 2 for each: a planeswalker with
+    /// compleated enters with that many fewer loyalty counters (CR 702.150a).
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub phyrexian_life: u32,
 }
 
 /// Whether a number of counters is 0, so serialization can leave it out.

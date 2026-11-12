@@ -730,7 +730,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         && let What::Spell(card) = what
     {
         return match special {
-            Special::Suspend => suspend::next(state, *player, *card),
+            Special::Suspend => suspend::next(state, *player, *card, choices, done),
             Special::Foretell => foretell::next(state, *player, *card),
             Special::Plot => plot::next(state, *player, *card),
             Special::TurnFaceUp => turn_up::next(state, *player, *card, choices, done),

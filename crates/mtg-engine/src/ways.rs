@@ -322,6 +322,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             ways.push(way);
         }
     }
+    r282_ways(state, player, id, instant, &mut ways);
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
     ways.extend(alt_cast_ways(state, player, card, instant));
@@ -770,6 +771,25 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
     })
 }
 
+/// The ways of the r28-2 pieces: a card an effect plotted is cast as a plotted card is, with or without plot
+/// (CR 702.170d), and the back face of a card with More Than Meets the Eye is cast from its owner's hand (CR 702.162a).
+fn r282_ways(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    instant: bool,
+    ways: &mut Vec<Way>,
+) {
+    if !ways
+        .iter()
+        .any(|way| way.alternative == Some(CastWay::Plotted))
+        && let Some(way) = plot_way(state, player, id)
+    {
+        ways.push(way);
+    }
+    ways.extend(keywords::r282_more_than_meets::way(state, id, instant));
+}
+
 /// The free cast of a plotted card as a sorcery (CR 702.170a), open on a later turn than the plot.
 fn plot_way(state: &GameState, player: PlayerId, id: ObjectId) -> Option<Way> {
     plotted_before_now(state, player, id).then(|| Way {
@@ -879,11 +899,45 @@ fn granted_before_required(
 
 /// The time counters and the mana of the suspend cost of the card `id` (CR 702.62), when the cost is paid with mana alone.
 pub(crate) fn suspend_of(state: &GameState, id: ObjectId) -> Option<(u32, ManaCost)> {
+    keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| {
+            let Keyword::Suspend { time, cost } = keyword else {
+                return None;
+            };
+            Some((*time, mana_only(cost)?))
+        })
+        // Suspend X is judged at the least X it allows.
+        .or_else(|| {
+            suspend_x_of(state, id).map(|(mana, symbols, least)| {
+                (
+                    0,
+                    mana.with(mtg_core::mana::ManaSymbol::Generic(symbols * least)),
+                )
+            })
+        })
+}
+
+/// Suspend X (CR 702.62a, "Suspend X—{X}{3}{U}. X can't be 0."): a suspend keyword with no fixed number of time counters
+/// and an `{X}` in its cost. The mana without the X, how many `{X}` it holds and the least X; `None` for another suspend.
+pub(crate) fn suspend_x_of(state: &GameState, id: ObjectId) -> Option<(ManaCost, u32, u32)> {
     keywords_of(state, id).into_iter().find_map(|keyword| {
-        let Keyword::Suspend { time, cost } = keyword else {
+        let Keyword::Suspend { time: 0, cost } = keyword else {
             return None;
         };
-        Some((*time, mana_only(cost)?))
+        let price = Price::announced(cost).ok()?;
+        if price.x == 0 || price.tap || price.moves_source() || !price.parts.is_empty() {
+            return None;
+        }
+        let least = cost
+            .0
+            .iter()
+            .find_map(|item| match item {
+                CostItem::XAtLeast(least) => Some(*least),
+                _ => None,
+            })
+            .unwrap_or(0);
+        Some((price.mana.unwrap_or_default(), price.x, least))
     })
 }
 

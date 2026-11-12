@@ -3270,6 +3270,7 @@ impl Writer<'_> {
             Effect::TurnFaceDown { what } | Effect::Harness { what } => {
                 self.rmt8_action(effect, what)?
             }
+            Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

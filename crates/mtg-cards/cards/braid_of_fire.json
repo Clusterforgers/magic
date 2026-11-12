@@ -1,0 +1,18 @@
+{
+  "oracle_id": "796009b3-73b5-42c0-a490-66f12be5a42e",
+  "name": "Braid of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Braid of Fire",
+      "oracle_fingerprint": "9cfa7e5dc9edfb7ab1f8b93381f4fced",
+      "abilities": [
+        {
+          "Keyword": {
+            "CumulativeUpkeepActs": { "acts": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

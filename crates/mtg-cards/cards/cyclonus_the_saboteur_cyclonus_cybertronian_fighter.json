@@ -7,17 +7,26 @@
       "name": "Cyclonus, the Saboteur",
       "oracle_fingerprint": "24cea345ac69f17e75aa34918fe3fc76",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 83 }
-          }
-        },
+        { "Keyword": { "MoreThanMeetsTheEye": "{5}{U}{B}" } },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 91, "end": 343 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Connive": { "what": "This" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

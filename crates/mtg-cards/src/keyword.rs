@@ -120,7 +120,8 @@ pub enum Keyword {
     Disguise(Cost),
     /// Suspend: the number of time counters and the cost.
     Suspend {
-        /// Time counters put on the card in exile.
+        /// Time counters put on the card in exile; 0 with an `{X}` in the cost is suspend X, X counters for the X announced
+        /// as the card is suspended (an `XAtLeast` part of the cost: "X can't be 0").
         time: u32,
         /// The suspend cost.
         cost: Cost,
@@ -203,12 +204,28 @@ pub enum Keyword {
     Mayhem(Cost),
     /// Disturb with its cost: an alternative cost to cast the back face of a transforming double-faced card from its owner's graveyard, which then lies on the stack and the battlefield as that face (CR 702.146).
     Disturb(Cost),
+    /// More Than Meets the Eye with its cost: an alternative cost to cast the back face of a transforming double-faced card
+    /// from its owner's hand, so that it enters converted (CR 702.162).
+    MoreThanMeetsTheEye(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
     Echo(Cost),
     /// Cumulative upkeep with its cost (CR 702.24): at the beginning of its controller's upkeep an age counter is put on it, then it is sacrificed unless they pay the cost once for each age counter.
     CumulativeUpkeep(Cost),
+    /// Cumulative upkeep whose cost is an action (CR 702.24): "Cumulative upkeep—An opponent gains 1 life." Each upkeep an
+    /// age counter is put on it, then its controller does `acts` once for each age counter or sacrifices it; they may do
+    /// them only while `payable` holds.
+    CumulativeUpkeepActs {
+        /// What the controller does once for each age counter.
+        acts: Vec<crate::effect::Effect>,
+        /// What must hold for the actions to be possible (CR 118.3); always when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        payable: Option<crate::value::Condition>,
+    },
+    /// Compleated (CR 702.150): a planeswalker cast with life paid for its Phyrexian symbols enters with two fewer loyalty
+    /// counters for each symbol paid that way.
+    Compleated,
     /// Undying (CR 702.93): when it dies, if it had no +1/+1 counter on it, it returns with a +1/+1 counter.
     Undying,
     /// Persist (CR 702.79): when it dies, if it had no -1/-1 counter on it, it returns with a -1/-1 counter.
@@ -541,9 +558,12 @@ impl Keyword {
         "Prowl",
         "Mayhem",
         "Disturb",
+        "More Than Meets the Eye",
         "Ninjutsu",
         "Echo",
         "Cumulative upkeep",
+        "Cumulative upkeep action",
+        "Compleated",
         "Undying",
         "Persist",
         "Exalted",
@@ -628,6 +648,7 @@ impl Keyword {
     pub fn shown_name(&self) -> String {
         match self {
             Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
+            Keyword::CumulativeUpkeepActs { .. } => "Cumulative upkeep".to_owned(),
             Keyword::Macro { name, .. } => {
                 let mut chars = name.chars();
                 chars
@@ -724,6 +745,8 @@ impl Keyword {
             Keyword::Ninjutsu(_) => "Ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
+            Keyword::CumulativeUpkeepActs { .. } => "Cumulative upkeep action",
+            Keyword::Compleated => "Compleated",
             Keyword::Undying => "Undying",
             Keyword::Persist => "Persist",
             other => other.name_of_later(),
@@ -794,6 +817,7 @@ impl Keyword {
             Keyword::Prowl(_) => "Prowl",
             Keyword::Mayhem(_) => "Mayhem",
             Keyword::Disturb(_) => "Disturb",
+            Keyword::MoreThanMeetsTheEye(_) => "More Than Meets the Eye",
             Keyword::Afterlife(_) => "Afterlife",
             Keyword::Horsemanship => "Horsemanship",
             Keyword::Phasing => "Phasing",
@@ -977,9 +1001,15 @@ mod tests {
             Keyword::Prowl(cost.clone()),
             Keyword::Mayhem(cost.clone()),
             Keyword::Disturb(cost.clone()),
+            Keyword::MoreThanMeetsTheEye(cost.clone()),
             Keyword::Ninjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
+            Keyword::CumulativeUpkeepActs {
+                acts: Vec::new(),
+                payable: None,
+            },
+            Keyword::Compleated,
             Keyword::Undying,
             Keyword::Persist,
             Keyword::Exalted,

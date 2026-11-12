@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0b12fee3-1ad1-4dc3-bd19-e9ccce5cb829",
+  "name": "Visions of Dread",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Visions of Dread",
+      "oracle_fingerprint": "7e4080101af43451355596fd59055b5e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "under": "You" } } }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 115, "end": 364 }
+          }
+        }
+      ]
+    }
+  ]
+}

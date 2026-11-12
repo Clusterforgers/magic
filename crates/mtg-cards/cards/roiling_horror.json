@@ -1,0 +1,53 @@
+{
+  "oracle_id": "52be9dd0-72f4-408b-ae3b-17a0362c2681",
+  "name": "Roiling Horror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Horror",
+      "oracle_fingerprint": "427bb8eef2830f63807a80d2a8bd1a30",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      { "Life": "You" },
+                      { "Times": { "by": -1, "of": { "HighestLife": "Opponents" } } }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      { "Life": "You" },
+                      { "Times": { "by": -1, "of": { "HighestLife": "Opponents" } } }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Keyword": {
+            "Suspend": { "time": 0, "cost": [{ "Mana": "{X}{B}{B}{B}" }, { "XAtLeast": 1 }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

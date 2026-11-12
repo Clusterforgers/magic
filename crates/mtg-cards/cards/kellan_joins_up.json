@@ -1,0 +1,62 @@
+{
+  "oracle_id": "9b3ddd31-c058-4846-8784-25c7a9bbcb31",
+  "name": "Kellan Joins Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kellan Joins Up",
+      "oracle_fingerprint": "d5afa0b2216f26443acfc7853faaac14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "Type": "Land" } },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Plot": { "what": { "Bound": "card" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ use crate::mana::{
 };
 use crate::mana_ability;
 use crate::mana_takes::{assignment, without_taken};
-use crate::object::PermanentState;
+use crate::object::{ObjectRef, PermanentState};
 use crate::parts::{self, Part};
 use crate::price::Price;
 use crate::snapshot::snapshot;
@@ -325,9 +325,7 @@ fn payment_events(
                 .iter()
                 .filter_map(|convoked| refer(convoked.creature))
                 .collect();
-            if !convoked.is_empty() {
-                choices.cost_taken.get_or_insert_with(Box::default).convoked = convoked;
-            }
+            r282_keep_paid(choices, convoked, payment.life);
         }
     }
     events.extend(announced);
@@ -520,6 +518,26 @@ fn unpreparing(state: &GameState, spell: ObjectId, mut events: Vec<Event>) -> Ve
     events
 }
 
+/// What the spell keeps of its payment: the creatures that convoked it (CR 702.51) and the life paid for Phyrexian
+/// symbols, which compleated reads as the planeswalker enters (CR 702.150a).
+fn r282_keep_paid(choices: &mut Choices, convoked: Vec<ObjectRef>, life: u32) {
+    if !convoked.is_empty() {
+        choices.cost_taken.get_or_insert_with(Box::default).convoked = convoked;
+    }
+    if life > 0 {
+        choices
+            .cost_taken
+            .get_or_insert_with(Box::default)
+            .phyrexian_life = life;
+    }
+}
+
+/// The suspend events of a payment: suspend X takes the X announced in time counters.
+fn r282_suspended(state: &GameState, card: ObjectId, choices: &Choices) -> Option<Vec<Event>> {
+    let x = crate::ways::suspend_x_of(state, card).and(choices.x);
+    suspend::events(state, card, x)
+}
+
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
 fn announcement(
@@ -532,8 +550,9 @@ fn announcement(
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::Suspend),
+            choices,
             ..
-        }) => suspend::events(state, *card).ok_or_else(unexpected),
+        }) => r282_suspended(state, *card, choices).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::Foretell),

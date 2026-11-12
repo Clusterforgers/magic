@@ -1,7 +1,7 @@
 {
   "oracle_id": "9df2e909-ed13-456a-9636-7398732009a9",
   "name": "Professor Onyx",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Professor Onyx",
@@ -44,15 +44,153 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 246, "end": 347 }
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "opponent" },
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "Compare": {
+                              "stat": "Power",
+                              "op": "Ge",
+                              "to": {
+                                "Greatest": {
+                                  "of": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Bound": "opponent" } }
+                                  ],
+                                  "stat": "Power"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 348, "end": 454 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "opponent" },
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "opponent" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

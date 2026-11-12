@@ -1872,8 +1872,12 @@ mod tests {
     }
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
-    /// attacks.").
-    const W9D_SENTENCES: [&str; 5] = [
+    /// attacks."), and the keywords whose lines only hand-written rules hold (More Than Meets the Eye, a cumulative upkeep
+    /// whose cost is an action, compleated).
+    const W9D_SENTENCES: [&str; 8] = [
+        "More Than Meets the Eye",
+        "Compleated",
+        "Cumulative upkeep action",
         "Exert",
         "Macro",
         "Hexproof from",

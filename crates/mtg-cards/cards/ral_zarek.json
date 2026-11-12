@@ -1,7 +1,7 @@
 {
   "oracle_id": "75ed6946-e7b1-4bf8-a05c-62a2ba5a6c79",
   "name": "Ral Zarek",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ral Zarek",
@@ -28,9 +28,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 107, "end": 196 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "FlipCoin": { "win": [{ "ExtraTurn": {} }] } },
+              { "FlipCoin": { "win": [{ "ExtraTurn": {} }] } },
+              { "FlipCoin": { "win": [{ "ExtraTurn": {} }] } },
+              { "FlipCoin": { "win": [{ "ExtraTurn": {} }] } },
+              { "FlipCoin": { "win": [{ "ExtraTurn": {} }] } }
+            ]
           }
         }
       ]

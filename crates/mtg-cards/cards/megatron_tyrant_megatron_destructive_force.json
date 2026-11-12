@@ -1,0 +1,39 @@
+{
+  "oracle_id": "33e88072-3840-4090-8d0b-7fb38279e150",
+  "name": "Megatron, Tyrant // Megatron, Destructive Force",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Megatron, Tyrant",
+      "oracle_fingerprint": "47a69db5e075efa0be1bcac4bb6c026f",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{1}{W}{B}{R}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 137 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 138, "end": 291 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Megatron, Destructive Force",
+      "oracle_fingerprint": "5cc86f715bd1973e00a4440a55c4ce78",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 373 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,16 +1,32 @@
 {
   "oracle_id": "80c26f58-04b0-4db0-b84e-9b136609abe0",
   "name": "Sarkhan, the Dragonspeaker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sarkhan, the Dragonspeaker",
       "oracle_fingerprint": "37ff0100a4081e112fa555c524b0f802",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 0, "end": 171 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetTypes": ["Creature"] },
+                    { "SetCreatureTypes": ["Dragon"] },
+                    { "SetColors": ["Red"] },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {
@@ -21,9 +37,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 219, "end": 369 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+                        "effects": [{ "Draw": { "count": 2 } }]
+                      }
+                    },
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                        "effects": [
+                          {
+                            "Discard": {
+                              "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

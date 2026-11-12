@@ -16,9 +16,19 @@
         },
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Scry": { "count": 2 } }] } },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 156, "end": 264 }
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "Draw": { "as": "drawn" } },
+              { "Reveal": { "what": { "Bound": "drawn" } } },
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": "loyalty",
+                  "count": { "Stat": { "of": { "Bound": "drawn" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
           }
         }
       ]

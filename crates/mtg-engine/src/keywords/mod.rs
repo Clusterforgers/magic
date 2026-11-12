@@ -119,6 +119,9 @@ mod protection;
 mod provided;
 mod prowess;
 mod prowl;
+pub(crate) mod r282_compleated;
+mod r282_cumulative_acts;
+pub(crate) mod r282_more_than_meets;
 mod r6f_flash_sacrifice;
 mod ravenous;
 mod reach;
@@ -487,6 +490,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Paradigm => &paradigm::Paradigm,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Disturb(_) => &disturb::Disturb,
+        Keyword::MoreThanMeetsTheEye(_) => &r282_more_than_meets::MoreThanMeetsTheEye,
         Keyword::Bestow(_) => &bestow::Bestow,
         Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) | Keyword::Mayhem(_) => {
             cost_rules(keyword)
@@ -494,6 +498,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
+        Keyword::CumulativeUpkeepActs { .. } => &r282_cumulative_acts::CumulativeUpkeepActs,
+        Keyword::Compleated => &r282_compleated::Compleated,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
         other => rules_of_later(other),
@@ -901,9 +907,15 @@ mod tests {
             Keyword::Prowl(cost()),
             Keyword::Mayhem(cost()),
             Keyword::Disturb(cost()),
+            Keyword::MoreThanMeetsTheEye(cost()),
             Keyword::Ninjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
+            Keyword::CumulativeUpkeepActs {
+                acts: Vec::new(),
+                payable: None,
+            },
+            Keyword::Compleated,
             Keyword::Undying,
             Keyword::Persist,
             Keyword::Exalted,
@@ -1098,9 +1110,12 @@ mod tests {
         "Keyword.Prowl",
         "Keyword.Mayhem",
         "Keyword.Disturb",
+        "Keyword.MoreThanMeetsTheEye",
         "Keyword.Ninjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
+        "Keyword.CumulativeUpkeepActs",
+        "Keyword.Compleated",
         "Keyword.Undying",
         "Keyword.Persist",
         "Keyword.Exalted",

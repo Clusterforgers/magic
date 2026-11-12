@@ -7,9 +7,7 @@
       "name": "Goldbug, Humanity's Ally",
       "oracle_fingerprint": "e9204a8e2cbee7ab50b88d246676b619",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 77 } }
-        },
+        { "Keyword": { "MoreThanMeetsTheEye": "{W}{U}" } },
         {
           "Replacement": {
             "when": {
@@ -22,9 +20,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 157, "end": 220 }
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

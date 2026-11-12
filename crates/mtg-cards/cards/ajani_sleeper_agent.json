@@ -1,18 +1,13 @@
 {
   "oracle_id": "37714eb9-a39d-4534-a2d3-27908c418f8a",
   "name": "Ajani, Sleeper Agent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ajani, Sleeper Agent",
       "oracle_fingerprint": "7cd4f2bb4d25837516e8e8ee7306b2cc",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 134 }
-          }
-        },
+        { "Keyword": "Compleated" },
         {
           "Loyalty": {
             "cost": { "Plus": 1 },

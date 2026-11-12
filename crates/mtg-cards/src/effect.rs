@@ -950,6 +950,12 @@ pub enum Effect {
         /// What becomes harnessed.
         what: Ref,
     },
+    /// Exiles cards face up and makes them plotted (CR 702.170): each one's owner may cast it without paying its mana cost
+    /// as a sorcery on a later turn ("Exile target spell. It becomes plotted.").
+    Plot {
+        /// What becomes plotted.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.

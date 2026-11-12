@@ -1,0 +1,22 @@
+{
+  "oracle_id": "997f5a5a-9ee1-4b66-9ffc-d1a2e996e615",
+  "name": "Reroute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reroute",
+      "oracle_fingerprint": "78c381d6a1e2efd85d9a301f00ccaaca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Ability": "Activated" }, "SingleTarget"] } }],
+            "effects": [
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

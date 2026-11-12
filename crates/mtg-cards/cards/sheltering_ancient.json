@@ -1,7 +1,7 @@
 {
   "oracle_id": "4554ce06-4992-4689-8a40-558a1545b968",
   "name": "Sheltering Ancient",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sheltering Ancient",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 231 }
+          "Keyword": {
+            "CumulativeUpkeepActs": {
+              "acts": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    "as": "creature"
+                  }
+                },
+                { "PutCounters": { "on": { "Bound": "creature" }, "counter": "+1/+1" } }
+              ],
+              "payable": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
           }
         }
       ]

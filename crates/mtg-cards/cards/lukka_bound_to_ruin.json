@@ -7,12 +7,7 @@
       "name": "Lukka, Bound to Ruin",
       "oracle_fingerprint": "41cc34be3d8f0dafb8384b9a5716d297",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 134 }
-          }
-        },
+        { "Keyword": "Compleated" },
         {
           "Loyalty": {
             "cost": { "Plus": 1 },

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ba5fa5ca-f72d-49dd-9f86-e6e1292f5bf0",
   "name": "Detritivore",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Detritivore",
@@ -36,15 +36,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 117, "end": 401 }
+          "Keyword": {
+            "Suspend": { "time": 0, "cost": [{ "Mana": "{X}{3}{R}" }, { "XAtLeast": 1 }] }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 402, "end": 500 }
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

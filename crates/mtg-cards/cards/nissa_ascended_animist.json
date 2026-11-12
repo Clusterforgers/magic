@@ -1,18 +1,13 @@
 {
   "oracle_id": "9c8845d6-fa65-4731-b348-dc724fc2d285",
   "name": "Nissa, Ascended Animist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nissa, Ascended Animist",
       "oracle_fingerprint": "cfc11d520c2a32e96d079fcaab3fcbf7",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 139 }
-          }
-        },
+        { "Keyword": "Compleated" },
         {
           "Loyalty": {
             "cost": { "Plus": 1 },

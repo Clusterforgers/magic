@@ -31,7 +31,11 @@ fn report(rules: &Path, fixture: &Path) -> (Vec<String>, bool) {
         &Caps::everything(),
     );
     let mut whole = report.problems.is_empty() && report.strays.is_empty();
-    let mut lines: Vec<String> = report.problems.iter().map(|p| format!("PROBLEM {p:?}")).collect();
+    let mut lines: Vec<String> = report
+        .problems
+        .iter()
+        .map(|p| format!("PROBLEM {p:?}"))
+        .collect();
     lines.extend(report.strays.iter().map(|s| format!("STRAY {s:?}")));
     let card: mtg_cards::card::Card = serde_json::from_str(&text).unwrap();
     let pending: Vec<(serde_json::Value, String)> = std::env::var("R282_WHOLES")
@@ -43,12 +47,19 @@ fn report(rules: &Path, fixture: &Path) -> (Vec<String>, bool) {
         let state = match &clause.state {
             ClauseState::Reads { .. } => "Reads".to_owned(),
             ClauseState::Unwritten { ability, .. } | ClauseState::Differs { ability, .. } => {
-                let json = serde_json::to_value(&card.faces[clause.face].abilities[*ability]).unwrap();
-                if pending.iter().any(|(shape, words)| *shape == json && words.split('\n').any(|w| w == clause.text)) {
+                let json =
+                    serde_json::to_value(&card.faces[clause.face].abilities[*ability]).unwrap();
+                if pending.iter().any(|(shape, words)| {
+                    *shape == json && words.split('\n').any(|w| w == clause.text)
+                }) {
                     "Reads (pending whole)".to_owned()
                 } else {
                     whole = false;
-                    format!("{:?}\n    JSON {}", clause.state, serde_json::to_string(&json).unwrap())
+                    format!(
+                        "{:?}\n    JSON {}",
+                        clause.state,
+                        serde_json::to_string(&json).unwrap()
+                    )
                 }
             }
             other => {
@@ -74,13 +85,20 @@ fn dev_report() {
         let pick = |sub: &str| {
             let base = scratch.as_ref().map_or(repo.clone(), Clone::clone);
             let path = base.join(format!("{sub}/{slug}.json"));
-            if path.exists() { path } else { repo.join(format!("{sub}/{slug}.json")) }
+            if path.exists() {
+                path
+            } else {
+                repo.join(format!("{sub}/{slug}.json"))
+            }
         };
         let rules = pick("cards");
         let fixture = pick("tests/fixtures/corpus");
         if std::env::var("R282_COMPILE").is_ok() {
             let compiled = compile(&printed_at(&fixture));
-            println!("== {slug} compiled\n{}", serde_json::to_string(&compiled.card).unwrap());
+            println!(
+                "== {slug} compiled\n{}",
+                serde_json::to_string(&compiled.card).unwrap()
+            );
         }
         if rules.exists() {
             let (lines, whole) = report(&rules, &fixture);
