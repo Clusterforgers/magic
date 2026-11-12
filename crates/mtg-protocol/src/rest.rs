@@ -40,7 +40,9 @@ pub use decks::{
     UnresolvedLine, UnresolvedReason,
 };
 pub use favourites::FavouritePrecons;
-pub use fix_marks::{FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS};
+pub use fix_marks::{
+    FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_MARKS_PER_USER, MAX_FIX_NOTE_CHARS,
+};
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
     JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility, VisibilityBody,
