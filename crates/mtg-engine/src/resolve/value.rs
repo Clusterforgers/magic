@@ -1214,11 +1214,13 @@ impl<'a> Scope<'a> {
 
     /// The object that dealt the damage or blocked, when the cause names one.
     fn dealer(&self) -> Vec<Target> {
-        self.cause
-            .and_then(|cause| cause.source)
-            .map(Target::Object)
-            .into_iter()
-            .collect()
+        let Some(cause) = self.cause else {
+            return Vec::new();
+        };
+        match cause.source {
+            Some(source) => vec![Target::Object(source)],
+            None => cause.dealers.iter().copied().map(Target::Object).collect(),
+        }
     }
 
     /// What the attacker attacks or the blocker blocks, when the cause names it.
@@ -2656,7 +2658,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
-    /// stack remembers a hand or a graveyard.
+    /// stack remembers a hand, a graveyard or exile.
     fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
         let Some(spell) = seen
             .card
@@ -2670,6 +2672,7 @@ impl<'a> Scope<'a> {
         match kind {
             ZoneKind::Hand => spell.cast_from_hand(),
             ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            ZoneKind::Exile => spell.cast.is_some_and(|(zone, _)| zone == ZoneKind::Exile),
             _ => false,
         }
     }
@@ -3477,6 +3480,7 @@ mod tests {
     fn the_cause_of_a_trigger_is_what_triggering_names() {
         let game = game();
         let cause = crate::abilities::Cause {
+            dealers: Vec::new(),
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),
             amount: 0,

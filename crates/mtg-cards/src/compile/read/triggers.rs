@@ -1633,6 +1633,9 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 /// The event as the card words it, from "When" to the end of the event.
 #[allow(clippy::too_many_lines)] // one arm for each pattern
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
+    if let Some(head) = super::r307c_events::r307c_pattern_text(pattern) {
+        return Some(head);
+    }
     match pattern {
         TriggerPattern::PlayerBecomesTarget { .. } => {
             super::l290_writers::l290_player_targeted_text(pattern)

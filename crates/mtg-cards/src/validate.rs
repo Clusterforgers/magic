@@ -805,8 +805,8 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
-                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
-                    self.problem("`CastFrom` names a hand or a graveyard");
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile) {
+                    self.problem("`CastFrom` names a hand, a graveyard or exile");
                 }
             }
             Pred::DidThisTurn { by, to, .. } => {

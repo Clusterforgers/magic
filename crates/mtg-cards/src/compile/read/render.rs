@@ -87,6 +87,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r307c_words;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -783,6 +784,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
     super::l293_events::l293_wordings(ability, &mut texts);
+    super::r307c_events::r307c_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }
@@ -3074,6 +3076,7 @@ impl Writer<'_> {
             .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
             .or_else(|| r287_words::r287_text(effect))
+            .or_else(|| r307c_words::r307c_text(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
