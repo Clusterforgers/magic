@@ -106,7 +106,7 @@ fn r372_replays(driver: &Driver, scenario: Scenario) {
 fn r372_table(
     seats: usize,
     battlefield: &[&str],
-    top: Vec<std::sync::Arc<mtg_cards::CardDefinition>>,
+    top: &[std::sync::Arc<mtg_cards::CardDefinition>],
 ) -> Scenario {
     let mut scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
@@ -136,7 +136,7 @@ fn r372_table(
 fn r372_epochrasite_dies_into_suspend_and_returns_with_haste(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = r372_table(seats, &["Epochrasite"], Vec::new());
+    let scenario = r372_table(seats, &["Epochrasite"], &[]);
     let mut driver = Driver::from_scenario(scenario.clone())?;
     let target = driver.target_named("Epochrasite")?;
     driver.cast_at("Shock", &[target])?;
@@ -187,7 +187,7 @@ fn r372_tenth_doctor_suspends_the_nonland_card_it_finds(
     let scenario = r372_table(
         seats,
         &["The Tenth Doctor"],
-        vec![mountain(), mountain(), found_card],
+        &[mountain(), mountain(), found_card],
     );
     let mut driver = Driver::from_scenario(scenario.clone())?;
     driver.idle_until(1, Step::DeclareAttackers)?;
@@ -250,7 +250,7 @@ fn r372_parting_of_the_ways_suspends_each_nonland_card_by_its_mana_value(
         mountain(),
         giant(),
     ];
-    let scenario = r372_table(seats, &[], top)
+    let scenario = r372_table(seats, &[], &top)
         .hand(0, [card("The Parting of the Ways").unwrap()])
         .battlefield(0, (0..6).map(|_| ready(mountain())));
     let mut driver = Driver::from_scenario(scenario.clone())?;
@@ -279,7 +279,7 @@ fn r372_eleventh_doctor_suspends_the_card_picked_from_hand(
     #[case] pick: &str,
     #[case] expected: &[(&str, u32, usize)],
 ) -> Result<(), ScriptError> {
-    let scenario = r372_table(seats, &["The Eleventh Doctor"], Vec::new())
+    let scenario = r372_table(seats, &["The Eleventh Doctor"], &[])
         .hand(0, [bear(), card("Rift Bolt").unwrap()]);
     let mut driver = Driver::from_scenario(scenario.clone())?;
     driver.idle_until(1, Step::DeclareAttackers)?;
@@ -309,7 +309,7 @@ fn r372_life(driver: &Driver, seat: usize) -> i32 {
 fn r372_rory_williams_suspends_itself_and_returns_with_haste(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = r372_table(seats, &[], Vec::new())
+    let scenario = r372_table(seats, &[], &[])
         .hand(0, [card("Rory Williams").unwrap()])
         .battlefield(0, [ready(plains()), ready(island())]);
     let mut driver = Driver::from_scenario(scenario.clone())?;
@@ -358,7 +358,7 @@ fn r372_delay_suspends_the_spell_it_counters(
     } else {
         card(countered).unwrap()
     };
-    let scenario = r372_table(seats, &[], Vec::new())
+    let scenario = r372_table(seats, &[], &[])
         .hand(0, [spell, card("Delay").unwrap()])
         .battlefield(
             0,
@@ -392,7 +392,7 @@ fn r372_delay_suspends_the_spell_it_counters(
 fn r372_taigam_copies_the_second_spell_and_suspends_it(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = r372_table(seats, &["Taigam, Master Opportunist"], Vec::new())
+    let scenario = r372_table(seats, &["Taigam, Master Opportunist"], &[])
         .hand(0, [burn("Shock", 2), burn("Spark", 1)])
         .battlefield(
             0,

@@ -137,6 +137,40 @@ pub fn r372_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(from_hand_suspended())
 }
 
+/// The words of a trigger on damage that takes time counters off a suspended card.
+const SPED_UP: &str = "choose a suspended card you own and remove that many time counters from it";
+
+/// The steps of "choose a suspended card you own and remove that many time counters from it".
+fn sped_up() -> Vec<Effect> {
+    vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(Selector(vec![
+                Pred::Suspended,
+                Pred::OwnedBy(Ref::You),
+                Pred::In(ZoneKind::Exile),
+            ])),
+            count: Bounds::default(),
+            bind: EACH.to_owned(),
+            rest_as: None,
+        },
+        Effect::RemoveCounters {
+            from: Ref::Bound(EACH.to_owned()),
+            counter: Some(CounterKind::Other("time".to_owned())),
+            count: Amount::Triggering,
+            up_to: false,
+        },
+    ]
+}
+
+/// "Choose a suspended card you own and remove that many time counters from it." in a trigger whose event has an
+/// amount.
+pub fn r372_sped_up(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.triggered.then_some(())?;
+    words_of(r, SPED_UP)?;
+    Some(sped_up())
+}
+
 /// The name of the countered spell as the card it becomes.
 const COUNTERED: &str = "countered";
 /// The words of Delay between the counter and its counters.
@@ -386,6 +420,11 @@ pub fn text(effects: &[Effect]) -> Option<(String, usize)> {
                 format!("exile {} of your library. {EACH_NONLAND}", top_text(count)?),
                 2,
             ))
+        }
+        [Effect::Choose { .. }, Effect::RemoveCounters { .. }, ..]
+            if effects.get(..2) == Some(sped_up().as_slice()) =>
+        {
+            Some((SPED_UP.to_owned(), 2))
         }
         [first @ Effect::May { .. }, ..] if [first.clone()] == *from_hand_suspended() => {
             Some((format!("you may {FROM_HAND}"), 1))

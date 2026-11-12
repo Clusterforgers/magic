@@ -260,6 +260,7 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         super::r372_suspend::r372_from_hand,
         super::r372_suspend::r372_delay,
         super::r372_suspend::r372_copy_then_exile,
+        super::r372_suspend::r372_sped_up,
     ] {
         if let Some(found) = r.attempt(|r| template(r).filter(|_| r.sentence_end())) {
             effects.extend(found);

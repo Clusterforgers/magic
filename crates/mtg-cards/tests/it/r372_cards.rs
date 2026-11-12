@@ -90,6 +90,7 @@ fn r372_probe() {
 #[case("Rory Williams")]
 #[case("Delay")]
 #[case("Taigam, Master Opportunist")]
+#[case("Amy Pond")]
 fn r372_reads_back_whole(#[case] name: &str) {
     let report = r372_report(name, &r372_file(name));
     assert_eq!(
@@ -140,6 +141,8 @@ fn r372_reads_back_whole(#[case] name: &str) {
 #[case::suspend_regardless("Delay", r#", "unless_has": true"#, "")]
 #[case::third_spell("Taigam, Master Opportunist", r#""nth": 2"#, r#""nth": 3"#)]
 #[case::five_counters("Taigam, Master Opportunist", r#""count": 4"#, r#""count": 5"#)]
+#[case::any_suspended_card("Amy Pond", r#"{ "OwnedBy": "You" }, "#, "")]
+#[case::one_counter("Amy Pond", r#""count": "Triggering""#, r#""count": 1"#)]
 fn r372_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r372_file(name);
     assert!(file.contains(from), "{name} has {from}");
