@@ -1,16 +1,24 @@
 {
   "oracle_id": "6e638332-fba1-4e91-9237-fdff23826640",
   "name": "March of Wretched Sorrow",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "March of Wretched Sorrow",
       "oracle_fingerprint": "c4bb97a9d77d8f804cfb26e5aaf9d787",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 162 }
+          "AdditionalCost": {
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Black" }] } }],
+            "repeatable": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "per": "AdditionalPaid"
           }
         },
         {

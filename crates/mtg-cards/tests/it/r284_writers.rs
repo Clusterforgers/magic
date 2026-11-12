@@ -348,3 +348,22 @@ fn a_creature_put_in_for_a_turn_reads_back_only_with_its_sacrifice(
         wordings(ability)
     );
 }
+
+const MOMO: &str = r#"{"Spell":{"effects":[{"Search":{"also":["Graveyard"],"filter":[{"Type":"Creature"},{"Subtype":"Ally"},{"OwnedBy":"You"}],"reveal":true,"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#;
+const MOMO_LIBRARY_ONLY: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"},{"Subtype":"Ally"},{"OwnedBy":"You"}],"reveal":true,"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#;
+
+#[rstest]
+#[case::library_and_graveyard(MOMO, true)]
+#[case::library_only(MOMO_LIBRARY_ONLY, false)]
+fn a_search_of_library_and_graveyard_reads_back_as_a_spell(
+    #[case] ability: &str,
+    #[case] written: bool,
+) {
+    let text = "Search your library and/or graveyard for an Ally creature card, reveal it, and put it into your hand. If you search your library this way, shuffle.";
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}

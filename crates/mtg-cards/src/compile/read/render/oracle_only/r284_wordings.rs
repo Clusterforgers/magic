@@ -34,7 +34,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(flash_if(&value))
         .chain(sacrifice_one_that_dealt_damage(&value))
         .chain(exiled_card_to_graveyard(&value))
-        .chain(found_gains_indestructible(&value));
+        .chain(found_gains_indestructible(&value))
+        .chain(search_library_and_graveyard(&value));
     for text in more {
         if !texts.contains(&text) {
             texts.push(text);
@@ -162,6 +163,42 @@ fn found_gains_indestructible(value: &Value) -> Vec<String> {
     written_variants(&head)
         .into_iter()
         .map(|text| format!("{text} It gains indestructible until your next turn."))
+        .collect()
+}
+
+/// "Search your library and/or graveyard for an Ally creature card, reveal it, and put it into your hand. If you search
+/// your library this way, shuffle.": a spell whose steps search the library and the graveyard, worded as the same steps
+/// of an enters trigger without "When ~ enters, ".
+fn search_library_and_graveyard(value: &Value) -> Vec<String> {
+    let Some(spell) = value.get("Spell").and_then(Value::as_object) else {
+        return Vec::new();
+    };
+    let Some(effects) = spell.get("effects").and_then(Value::as_array) else {
+        return Vec::new();
+    };
+    let searches_graveyard = effects
+        .first()
+        .and_then(|first| first.get("Search"))
+        .and_then(|search| search.get("also"))
+        == Some(&json!(["Graveyard"]));
+    if spell.len() != 1 || !searches_graveyard {
+        return Vec::new();
+    }
+    let twin = json!({ "Triggered": {
+        "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+        "effects": effects
+    } });
+    let Ok(twin) = serde_json::from_value::<Ability>(twin) else {
+        return Vec::new();
+    };
+    written_variants(&twin)
+        .into_iter()
+        .filter_map(|text| {
+            let rest = text.strip_prefix("When ~ enters, ")?;
+            let mut letters = rest.chars();
+            let first = letters.next()?.to_uppercase().to_string();
+            Some(format!("{first}{}", letters.as_str()))
+        })
         .collect()
 }
 

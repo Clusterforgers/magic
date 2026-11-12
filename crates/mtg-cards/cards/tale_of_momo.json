@@ -1,7 +1,7 @@
 {
   "oracle_id": "728157a3-fcd4-4295-85ff-1162dbb64f8a",
   "name": "Tale of Momo",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tale of Momo",
@@ -22,9 +22,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 99, "end": 246 }
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "Type": "Creature" }, { "Subtype": "Ally" }, { "OwnedBy": "You" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
           }
         }
       ]
