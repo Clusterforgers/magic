@@ -333,7 +333,7 @@ function Standings({ tournament }: { tournament: TournamentView }) {
         {tournament.status === 'finished' ? 'Final standings' : 'Standings'}
       </h2>
       <div className="surface overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full whitespace-nowrap text-sm">
           <thead className="text-left text-muted-foreground">
             <tr className="border-b">
               <th scope="col" className="px-3 py-2 font-medium">

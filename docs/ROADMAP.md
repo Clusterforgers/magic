@@ -148,6 +148,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (tm1) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
 - [ ] (tm2a) 2v2 tournaments start: their matches pass the team mode of Team Commander (tm1) when the server makes their games, and `TEAM_GAMES` turns on (`crates/mtg-server/src/tournaments.rs`; after tm1)
+- [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
