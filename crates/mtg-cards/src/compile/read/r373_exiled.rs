@@ -6,6 +6,41 @@ use crate::ability::Ability;
 use crate::modify::Modification;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 
+/// Adds the wordings of a static ability of an attachment: a Fortification's "fortified land" where an Equipment says
+/// "equipped creature", and "Enchanted creature is a Flagbearer." for a creature type an Aura adds.
+pub(super) fn r373_attached_wordings(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Static {
+        affected: Ref::Attached,
+        mods,
+        condition: None,
+        from: ZoneKind::Battlefield,
+        ..
+    } = ability
+    else {
+        return;
+    };
+    let fortified: Vec<String> = texts
+        .iter()
+        .filter_map(|text| text.strip_prefix("Equipped creature "))
+        .map(|rest| format!("Fortified land {rest}"))
+        .collect();
+    for text in fortified {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+    if let [Modification::AddSubtype(subtype)] = mods.as_slice()
+        && subtype.is_creature_type()
+    {
+        let article = if subtype.0.starts_with(['A', 'E', 'I', 'O', 'U']) {
+            "an"
+        } else {
+            "a"
+        };
+        texts.push(format!("Enchanted creature is {article} {}.", subtype.0));
+    }
+}
+
 /// Adds the wording of a static ability that gives the keywords of the cards exiled with its source.
 pub(super) fn r373_exiled_wordings(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Static {

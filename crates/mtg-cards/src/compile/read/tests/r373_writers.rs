@@ -151,3 +151,13 @@ fn r373_keywords_of_exiled_cards_write_as_printed(
     let found = written_variants(&ability);
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
+
+#[rstest]
+#[case::flagbearer(r#"{"Static":{"affected":"Attached","mods":[{"AddSubtype":"Flagbearer"}]}}"#, "Enchanted creature is a Flagbearer.", true)]
+#[case::flagbearer_of_this(r#"{"Static":{"affected":"This","mods":[{"AddSubtype":"Flagbearer"}]}}"#, "Enchanted creature is a Flagbearer.", false)]
+#[case::fortified(r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Indestructible"}]}}"#, "Fortified land has indestructible.", true)]
+#[case::fortified_of_this(r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Indestructible"}]}}"#, "Fortified land has indestructible.", false)]
+fn r373_attachments_write_as_printed(#[case] json: &str, #[case] text: &str, #[case] reads: bool) {
+    let found = written_variants(&ability(json));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
