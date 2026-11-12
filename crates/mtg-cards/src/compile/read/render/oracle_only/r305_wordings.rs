@@ -21,6 +21,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(cant_cast_in_combat(&value))
         .chain(cast_from_elsewhere(&value))
         .chain(per_lost_player(&value))
+        .chain(no_legend_rule(&value))
         .chain(fixed(&value).map(str::to_owned))
         .chain(all_colors(&value));
     for text in found {
@@ -167,6 +168,15 @@ fn all_colors(value: &Value) -> Option<String> {
         "defining": true
     } });
     (value == &shape).then(|| "~ is all colors.".to_owned())
+}
+
+/// "The \"legend rule\" doesn't apply to creature tokens you control.": the legend rule lifted for a group.
+fn no_legend_rule(value: &Value) -> Option<String> {
+    let rule = value.get("Rule")?.as_object()?;
+    let group: Selector =
+        serde_json::from_value(rule.get("rule")?.get("NoLegendRuleFor")?.clone()).ok()?;
+    let group = phrase_text(&group, Form::All).filter(|_| rule.len() == 1)?;
+    Some(format!("The \"legend rule\" doesn't apply to {group}."))
 }
 
 /// The wording of an ability of one exact shape.
