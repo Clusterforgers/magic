@@ -90,3 +90,35 @@ export function owesByHand(
   }
   return held
 }
+
+/** A by-hand line of the seat's that came due (`ByHandDue`): its card's name and the line's words. */
+export interface DueLine {
+  card: string
+  text: string
+}
+
+/**
+ * The seat's due lines after `events`, given `lines` before them: a by-hand line of its own that came due joins them, in
+ * the order of the log, and a pass of the seat's priority clears them, as it ends the by-hand window. Pure.
+ */
+export function dueLinesAfter(
+  lines: readonly DueLine[],
+  events: readonly EventView[],
+  seat: PlayerId | null,
+  before: Objects,
+  after: Objects,
+): readonly DueLine[] {
+  if (seat === null) return lines.length === 0 ? lines : []
+  let held = lines
+  for (const view of events) {
+    if (!('Public' in view) || typeof view.Public === 'string') continue
+    const event = view.Public
+    if ('PriorityPassed' in event && event.PriorityPassed.player === seat && held.length > 0) held = []
+    if ('ByHandDue' in event && event.ByHandDue.controller === seat) {
+      const { source, text } = event.ByHandDue
+      const card = (before[source.id] ?? after[source.id])?.name ?? UNSEEN_SOURCE
+      held = [...held, { card, text }]
+    }
+  }
+  return held
+}
