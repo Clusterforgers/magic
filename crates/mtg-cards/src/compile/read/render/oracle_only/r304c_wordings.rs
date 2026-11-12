@@ -182,6 +182,7 @@ fn damage_replaced(ability: &Ability) -> Vec<String> {
                     texts.push(format!("If {head}, prevent that damage and {words}."));
                 }
             }
+            texts.extend(per_prevented(step, to.as_ref(), &heads));
         }
         ReplaceBy::Instead(steps) => {
             let [step] = steps.as_slice() else {
@@ -460,9 +461,16 @@ fn draw_replaced(ability: &Ability) -> Vec<String> {
         let lower: String = first.to_lowercase().chain(chars).collect();
         if let Some((head, rest)) = lower.split_once(". ") {
             texts.push(format!("If you would draw a card, {head} instead. {rest}"));
+            texts.push(format!("If you would draw a card, instead {head}. {rest}"));
         }
         if let Some(whole) = lower.strip_suffix('.') {
             texts.push(format!("If you would draw a card, {whole} instead."));
+            texts.push(format!("If you would draw a card, instead {whole}."));
+            // "put one into your hand and the rest into your graveyard" (Underrealm Lich).
+            if whole.contains(" put one of them into ") {
+                let short = whole.replace(" put one of them into ", " put one into ");
+                texts.push(format!("If you would draw a card, instead {short}."));
+            }
         }
     }
     texts
@@ -675,4 +683,63 @@ fn exiled_then(ability: &Ability) -> Vec<String> {
             ))
         })
         .collect()
+}
+
+/// The prevention's step said once for each 1 damage prevented, as its own sentence: "prevent that damage. Put a -1/-1
+/// counter on this creature for each 1 damage prevented this way.", "prevent that damage. You gain life equal to the
+/// damage prevented this way."
+fn per_prevented(step: &Effect, to: Option<&Ref>, heads: &[String]) -> Vec<String> {
+    let mut texts = Vec::new();
+    if let Effect::GainLife {
+        who: Ref::You,
+        amount: Amount::Triggering,
+    } = step
+    {
+        for head in heads {
+            texts.push(format!(
+                "If {head}, prevent that damage. You gain life equal to the damage prevented this way."
+            ));
+        }
+        return texts;
+    }
+    let one = match step {
+        Effect::PutCounters {
+            on,
+            counter,
+            count: Amount::Triggering,
+        } => Effect::PutCounters {
+            // Damage to the card itself puts the counters on the card the event names: on ~.
+            on: if *on == Ref::Triggering && to == Some(&Ref::This) {
+                Ref::This
+            } else {
+                on.clone()
+            },
+            counter: counter.clone(),
+            count: Amount::Fixed(1),
+        },
+        Effect::CreateToken {
+            count: Amount::Triggering,
+            ..
+        } => {
+            let mut one = step.clone();
+            if let Effect::CreateToken { count, .. } = &mut one {
+                *count = Amount::Fixed(1);
+            }
+            one
+        }
+        _ => return texts,
+    };
+    for words in step_texts(&one) {
+        let mut chars = words.chars();
+        let Some(first) = chars.next() else {
+            continue;
+        };
+        let words: String = first.to_uppercase().chain(chars).collect();
+        for head in heads {
+            texts.push(format!(
+                "If {head}, prevent that damage. {words} for each 1 damage prevented this way."
+            ));
+        }
+    }
+    texts
 }
