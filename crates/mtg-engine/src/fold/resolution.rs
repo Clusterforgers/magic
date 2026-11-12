@@ -342,6 +342,7 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
     if resolving_it {
         state.resolving = None;
     }
+    let keeps = crate::r281_mana_at_priority::r281_keeps_priority(state, id);
     match (kind, outcome) {
         (ObjectKind::Ability, _) => {
             state.objects.remove(&id);
@@ -357,6 +358,15 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
             }
         }
     }
-    priority_to_active(state);
+    match keeps {
+        // The player who activated a mana ability receives priority again (CR 117.3c).
+        Some(holder) if !state.turn.ending => {
+            state.priority = Some(crate::priority::PriorityState {
+                holder,
+                passed: std::collections::BTreeSet::default(),
+            });
+        }
+        _ => priority_to_active(state),
+    }
     Ok(())
 }

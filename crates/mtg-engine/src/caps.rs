@@ -248,6 +248,9 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.AnyColor",
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
+    "Cost.OneOf.Pay",
+    "Ability.ManaAbility.Other",
+    "Ability.ManaAbility.From",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
@@ -322,6 +325,7 @@ const RUNS: &[&str] = &[
     "Trigger.OpenedAttraction",
     "Trigger.DoorUnlocked",
     "Effect.UnlockDoor",
+    "Effect.LockOrUnlockDoor",
     "Condition.CompletedDungeon",
     "Effect.TakeInitiative",
     "Trigger.TakesInitiative",
@@ -1016,7 +1020,7 @@ mod tests {
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
-    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
+    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", true)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]
     #[case::discarding_the_source("Cost.DiscardSelf", true)]
@@ -1193,9 +1197,9 @@ mod tests {
         "Ability.ManaAbility.Complex",
         true
     )]
-    #[case::mana_abilities_the_engine_does_not_activate_at_priority(
+    #[case::mana_abilities_the_engine_activates_at_priority_and_resolves_at_once(
         "Ability.ManaAbility.Other",
-        false
+        true
     )]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::c6_eg_paying_counted_life_in_an_effect("Effect.Pay.Counted", true)]
@@ -1275,6 +1279,8 @@ mod tests {
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
+    #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
+    #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]

@@ -113,6 +113,8 @@ mod phase_out;
 mod prepare;
 mod proliferate;
 mod put_counters;
+mod r281_lock_door;
+mod r281_pay_one_of;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -275,6 +277,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Effect::PutSticker { .. } | Effect::ClaimPrize { .. } => un34_stickers::run(cx, effect),
         Effect::UnlockDoor { .. } => dk1c5_unlock::run(cx, effect),
+        Effect::LockOrUnlockDoor { .. } => r281_lock_door::run(cx, effect),
         Effect::TakeInitiative { .. } => w15a_take_initiative::run(cx, effect),
         Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
         Effect::Renown { .. } => c6_kw_renown::run(cx, effect),

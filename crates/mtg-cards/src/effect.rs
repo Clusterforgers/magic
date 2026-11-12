@@ -1029,6 +1029,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The controller of the effect locks an unlocked door or unlocks a locked door of the Room `what` names, the door
+    /// they choose (CR 709.5): "Lock or unlock a door of target Room you control".
+    LockOrUnlockDoor {
+        /// The Room.
+        what: Ref,
+    },
     /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
     /// player during that player's next turn."
     ControlPlayer {

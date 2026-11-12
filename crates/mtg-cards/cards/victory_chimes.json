@@ -1,0 +1,23 @@
+{
+  "oracle_id": "be8b36ce-52c1-4ca0-9141-4c9a80dca3ea",
+  "name": "Victory Chimes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Victory Chimes",
+      "oracle_fingerprint": "7018d5c00718c5e2a0e51690a7b142b0",
+      "abilities": [
+        { "Rule": { "rule": { "UntapDuring": { "what": ["This"], "whose": "Opponents" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Choose": { "from": "EachPlayer", "as": "player" } },
+              { "AddMana": { "who": { "Bound": "player" }, "mana": { "Fixed": ["Colorless"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

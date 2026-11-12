@@ -442,6 +442,7 @@ pub(crate) fn pay_answer(
             record_sources(state, &mut events);
             // The mana a cast spends can set off an ability as the spell is cast.
             events.extend(crate::spend_rider::created(state, player, options, &events));
+            crate::r281_mana_at_priority::r281_resolve_at_once(state, &mut events);
             Outcome::Events(events)
         }
         other => other,

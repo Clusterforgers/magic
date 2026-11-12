@@ -386,6 +386,9 @@ struct Walker<'a> {
     x_now: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
+    /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
+    /// pay 3 life"), which the engine asks of the payer.
+    r281_paying: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -426,6 +429,7 @@ impl<'a> Walker<'a> {
             x_free: false,
             x_now: false,
             choosing: false,
+            r281_paying: false,
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
@@ -1508,6 +1512,8 @@ impl<'a> Walker<'a> {
     fn alternatives(&mut self, costs: &[Cost]) {
         let tag = if self.choosing {
             "OneOf"
+        } else if self.r281_paying {
+            "OneOf.Pay"
         } else {
             "OneOf.Elsewhere"
         };
@@ -3396,6 +3402,7 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::TurnFaceDown { what }
+            | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
@@ -4147,7 +4154,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 let saved = w.x_free;
                 w.x_free |= announces_x(cost);
+                w.r281_paying = *times == Amount::one()
+                    && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r281_paying = false;
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
@@ -4351,7 +4361,7 @@ impl Walker<'_> {
         }
         if from {
             self.uses("Ability", "From");
-            // A mana ability is activated at priority from the battlefield alone.
+            // A mana ability from another zone is activated at priority.
             if ability.is_mana_ability() {
                 self.uses("Ability", "ManaAbility.From");
             }
@@ -6279,6 +6289,9 @@ mod tests {
     #[case::a_condition_on_a_search_of_the_library(r#"{"Spell":{"effects":[{"Search":{"filter":[],"as":"card"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#, &["Ability.Spell", "Condition.Searched", "Effect.If", "Effect.Search", "Effect.Shuffle"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
     #[case::mana_spent_to_cast(r#"{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ManaSpent", "Effect.Draw", "Effect.If"])]
+    #[case::r281_a_payment_of_one_of_two_costs(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"OneOf":[[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.OneOf.Pay", "Cost.PayLife", "Cost.Sacrifice", "Effect.Draw", "Effect.Pay"])]
+    #[case::r281_one_of_two_costs_paid_twice_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","times":2,"cost":[{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
+    #[case::r281_one_of_two_costs_beside_another_part_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Mana":"{1}"},{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.Mana", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
     #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]
     #[case::an_x_in_a_triggered_ability(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::an_x_in_a_delayed_trigger_the_spell_leaves_behind(r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Spell", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]

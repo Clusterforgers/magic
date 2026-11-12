@@ -161,7 +161,7 @@ fn after_pay(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 /// The one part of a payment, as the verb phrase of the player who pays it: "pay {1}", "pay 2 life", "discard a card".
-fn phrase(cost: &Cost) -> Option<String> {
+pub(super) fn phrase(cost: &Cost) -> Option<String> {
     let [item] = cost.0.as_slice() else {
         return super::pay_phrases::phrase(cost);
     };

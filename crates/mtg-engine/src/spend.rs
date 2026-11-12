@@ -101,6 +101,13 @@ impl Spend {
                 Zone::Stack => !object.cast_from_hand(),
                 _ => true,
             };
+            // A spell on the stack remembers its kicker; one being announced learns it from its choices.
+            traits.kicked = object.zone() == Zone::Stack
+                && crate::announce::payments(
+                    object.card(),
+                    object.paid_costs(),
+                    crate::keywords::OptionalKind::Kicker,
+                ) > 0;
         }
         Spend {
             kind: SpendKind::Spell,

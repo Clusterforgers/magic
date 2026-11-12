@@ -1011,6 +1011,18 @@ door: number,
 /**
  * Who unlocked it.
  */
+player: PlayerId, } } | { "DoorLocked": { 
+/**
+ * The Room.
+ */
+object: ObjectId, 
+/**
+ * The door, as an index into the card's faces.
+ */
+door: number, 
+/**
+ * Who locked it.
+ */
 player: PlayerId, } } | { "Mutated": { 
 /**
  * The merged permanent.

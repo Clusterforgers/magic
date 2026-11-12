@@ -89,6 +89,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::PutSticker { .. }
         | Effect::ClaimPrize { .. }
         | Effect::UnlockDoor { .. }
+        | Effect::LockOrUnlockDoor { .. }
         | Effect::TakeInitiative { .. }
         | Effect::Monstrosity { .. }
         | Effect::Renown { .. }

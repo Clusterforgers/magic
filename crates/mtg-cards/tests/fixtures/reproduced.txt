@@ -188,6 +188,7 @@ Bloodline Pretender
 Bloom Hulk
 Body Count
 Body Double
+Bog Witch
 Bog Wraith
 Boggart Ram-Gang
 Boiling Earth
@@ -543,6 +544,7 @@ Electro's Bolt
 Electrodominance
 Elegant Edgecrafters
 Elenda and Azor
+Elfhame Druid
 Eliminate the Competition
 Elspeth's Nightmare
 Elven Ambush
@@ -577,6 +579,7 @@ Etched Oracle
 Eternal Dragon
 Eternal Witness
 Eternal of Harsh Truths
+Ether
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
@@ -1249,6 +1252,7 @@ Otherworldly Gaze
 Oubliette
 Out of Time
 Overcharged Amalgam
+Overeager Apprentice
 Overgrown Arch
 Overgrowth
 Overwhelming Stampede
@@ -1819,6 +1823,7 @@ Thriving Isle
 Thriving Moor
 Throatseeker
 Throes of Chaos
+Throne of Makindi
 Throne of the High City
 Thrull Champion
 Thunder-Thrash Elder
@@ -1953,6 +1958,7 @@ Vivid Meadow
 Voice of All
 Voice of the Blessed
 Voidmage Husher
+Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
 Vorel of the Hull Clade

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e4ecfccd-b8b4-4b18-b989-30de79b4971e",
   "name": "Detective's Satchel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Detective's Satchel",
@@ -14,9 +14,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 149, "end": 279 }
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Sacrificed",
+                    "who": "You",
+                    "filter": [{ "Type": "Artifact" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

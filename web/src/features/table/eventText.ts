@@ -1054,6 +1054,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('DoorLocked' in event) {
+    const { player, object, door } = event.DoorLocked
+    return line(`${n.seat(player)} locks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)
+  }
   if ('DoorUnlocked' in event) {
     const { player, object, door } = event.DoorUnlocked
     return line(`${n.seat(player)} unlocks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)

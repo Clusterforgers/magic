@@ -266,6 +266,7 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
+mod r281_wordings;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -612,6 +613,7 @@ fn add_w5c(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
 fn add_w4c(ability: &Ability, texts: &mut Vec<String>) {
     w4c_may_pay::add(ability, texts);
+    r281_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants (r3w2): conditions, grants, pumps, durations, a land

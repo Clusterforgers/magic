@@ -1,0 +1,28 @@
+{
+  "oracle_id": "948e3bb7-8265-4e95-acd1-a0c4f22441df",
+  "name": "Helm of Chatzuk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helm of Chatzuk",
+      "oracle_fingerprint": "4c31cde462c894c14222d1e6cdc2531d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

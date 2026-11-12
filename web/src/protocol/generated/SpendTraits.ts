@@ -75,4 +75,8 @@ your_commander?: boolean,
 /**
  * It is cast face down.
  */
-face_down?: boolean, };
+face_down?: boolean, 
+/**
+ * Its kicker is paid.
+ */
+kicked?: boolean, };

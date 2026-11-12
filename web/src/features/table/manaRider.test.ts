@@ -88,6 +88,7 @@ describe('spendFilterWords', () => {
     ['a mana value', { min_value: 5 }, 'a spell with mana value 5 or greater'],
     ['{X} in the cost', { facts: ['XInCost'] }, 'a spell with {X} in its cost'],
     ['a graveyard', { facts: ['FromGraveyard'] }, 'a spell cast from a graveyard'],
+    ['a kicker', { facts: ['Kicked'] }, 'a spell that is kicked'],
   ])('words %s', (_case, filter, expected) => {
     expect(spendFilterWords(filter)).toBe(expected)
   })

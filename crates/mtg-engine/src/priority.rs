@@ -225,7 +225,7 @@ fn can_activate(
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
     let foreign = controller_of_object(state, object) != player;
-    if rules.is_mana_ability()
+    if (rules.is_mana_ability() && !crate::r281_mana_at_priority::r281_at_priority(rules))
         || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
     {
         return false;

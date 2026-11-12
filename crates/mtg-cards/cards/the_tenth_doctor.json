@@ -1,0 +1,26 @@
+{
+  "oracle_id": "23af0a0a-1d12-47c7-b191-2bd3f84eea93",
+  "name": "The Tenth Doctor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Tenth Doctor",
+      "oracle_fingerprint": "abb89135cf1dd12b7cf9bfd676ac9a24",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 182 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{7}",
+            "timing": "Sorcery",
+            "effects": [{ "TimeTravel": {} }, { "TimeTravel": {} }, { "TimeTravel": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
