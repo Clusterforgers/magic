@@ -195,6 +195,7 @@ mod r303b_writers;
 mod r304b_writers;
 mod r305b_writers;
 mod r307c_events;
+mod r374_champion;
 mod r374_counts;
 mod r5a_order;
 mod r5a_wordings;

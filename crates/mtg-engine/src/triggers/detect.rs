@@ -2739,27 +2739,30 @@ fn delayed(
         // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
         let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         scope.bindings = &waiting.bindings;
-        let Some(cause) = matching(pattern, happened, &scope) else {
-            continue;
-        };
         let live = snapshot(state, source.id)
             .filter(|shot| shot.counter == source.counter)
             .map(|shot| Snapshot {
                 x: waiting.snapshot.x,
                 ..shot
             });
-        if waiting.once {
-            used.delayed.insert(waiting.id());
+        // A batch pattern finds one cause for each group of the events together ("whenever that creature deals damage").
+        for cause in causes(pattern, happened, &scope) {
+            if waiting.once {
+                if used.delayed.contains(&waiting.id()) {
+                    break;
+                }
+                used.delayed.insert(waiting.id());
+            }
+            found.push(Triggered {
+                source,
+                ability: waiting.ability,
+                origin: AbilitySource::Printed,
+                controller,
+                cause,
+                snapshot: live.clone().unwrap_or_else(|| waiting.snapshot.clone()),
+                delayed: Some(waiting.id()),
+            });
         }
-        found.push(Triggered {
-            source,
-            ability: waiting.ability,
-            origin: AbilitySource::Printed,
-            controller,
-            cause,
-            snapshot: live.unwrap_or_else(|| waiting.snapshot.clone()),
-            delayed: Some(waiting.id()),
-        });
     }
 }
 
@@ -2833,6 +2836,8 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
             let first = found.len();
             permanents(state, watching, &together, &mut found, &mut used);
             elsewhere(state, &together, &mut found, &mut used);
+            // A delayed trigger waits for a batch as a printed one does ("whenever that creature deals damage this turn").
+            delayed(state, post, &together, &mut found, &mut used);
             forbid_triggers(state, &together, &mut found, first);
         }
     }

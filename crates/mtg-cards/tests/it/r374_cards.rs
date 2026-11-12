@@ -44,6 +44,10 @@ fn file(name: &str) -> String {
 #[case("Goliath Hatchery")]
 #[case("Niv-Mizzet, Guildpact")]
 #[case("Takeno, Samurai General")]
+#[case("Rapid Fire")]
+#[case("Kodama of the Center Tree")]
+#[case("Mistbind Clique")]
+#[case("Paladin of Prahv")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &file(name));
     assert_eq!(
@@ -65,6 +69,23 @@ fn reads_back_whole(#[case] name: &str) {
     r#"{"Compare":{"op":"Eq","stat":"Colors","to":3}}"#
 )]
 #[case::takeno_toxic("Takeno, Samurai General", r#""R374Bushido""#, r#""R374Toxic""#)]
+#[case::rapid_fire_after_combat("Rapid Fire", r#"{"Not":"AfterCombat"}"#, r#""InCombat""#)]
+#[case::rapid_fire_other_keyword(
+    "Rapid Fire",
+    r#"{"HasKeywordNamed":"Rampage"}"#,
+    r#"{"HasKeywordNamed":"Flanking"}"#
+)]
+#[case::kodama_lands(
+    "Kodama of the Center Tree",
+    r#"{"MacroX":{"name":"soulshift","x":{"Count":[{"Subtype":"Spirit"}"#,
+    r#"{"MacroX":{"name":"soulshift","x":{"Count":[{"Subtype":"Forest"}"#
+)]
+#[case::mistbind_goblin(
+    "Mistbind Clique",
+    r#""to":"Exile","what":[{"Subtype":"Faerie"}]"#,
+    r#""to":"Exile","what":[{"Subtype":"Goblin"}]"#
+)]
+#[case::paladin_every_turn("Paladin of Prahv", r#""this_turn":true"#, r#""this_turn":false"#)]
 fn a_changed_piece_reads_otherwise(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let text = file(name);
     assert!(text.contains(from), "{name} holds {from}");

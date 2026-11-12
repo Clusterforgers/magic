@@ -1985,8 +1985,8 @@ impl<'a> Scope<'a> {
             | StatKind::R374Bushido
             | StatKind::R374Toxic
             | StatKind::R374ManaCost
-            | StatKind::R374ColorSet => None,
-            StatKind::Subtypes => None,
+            | StatKind::R374ColorSet
+            | StatKind::Subtypes => None,
         }
     }
 

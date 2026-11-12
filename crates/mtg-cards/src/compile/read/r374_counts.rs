@@ -7,6 +7,7 @@ use super::tokens::Reader;
 use crate::ability::Ability;
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector};
+use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 /// The words after "for each" of each count of the object's own, with "it" or "its" in them.
@@ -307,9 +308,138 @@ pub(super) fn r374_wordings(
     if let Some(drawn) = choose_then_draw(ability, written) {
         found.extend(drawn);
     }
+    if let Some(unless) = unless_it_has(ability, written) {
+        found.extend(unless);
+    }
+    if let Some(championed) = super::r374_champion::r374_championed(ability, written) {
+        found.extend(championed);
+    }
+    if let Some(dealt) = target_deals_damage(ability, written) {
+        found.extend(dealt);
+    }
     for text in found {
         if !texts.contains(&text) {
             texts.push(text);
         }
     }
+}
+
+/// "If it doesn't have rampage, that creature gains rampage 2 until end of turn.": a last step a spell does unless its
+/// target has a keyword, written from the twin that does it always.
+fn unless_it_has(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Option<Vec<String>> {
+    let Ability::Spell { targets, effects } = ability else {
+        return None;
+    };
+    let (
+        Effect::If {
+            condition,
+            then,
+            otherwise,
+        },
+        before,
+    ) = effects.split_last()?
+    else {
+        return None;
+    };
+    otherwise.is_empty().then_some(())?;
+    let Condition::Not(inner) = condition else {
+        return None;
+    };
+    let Condition::Matches {
+        subject: Ref::Target(0),
+        selector,
+    } = inner.as_ref()
+    else {
+        return None;
+    };
+    let [Pred::HasKeywordNamed(name)] = selector.0.as_slice() else {
+        return None;
+    };
+    let mut steps = before.to_vec();
+    steps.extend(then.iter().cloned());
+    let twin = Ability::Spell {
+        targets: targets.clone(),
+        effects: steps,
+    };
+    let said = format!(
+        ". If it doesn't have {}, that creature ",
+        name.to_lowercase()
+    );
+    Some(
+        written(&twin)
+            .iter()
+            .filter(|text| text.contains(". That creature "))
+            .map(|text| text.replacen(". That creature ", &said, 1))
+            .collect(),
+    )
+}
+
+/// "Whenever target creature deals damage this turn, you gain that much life.": an activated ability whose one step sets
+/// up a trigger on its target for the turn, written from the twin that taps the target and the trigger of the card itself.
+fn target_deals_damage(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+) -> Option<Vec<String>> {
+    let Ability::Activated { effects, .. } = ability else {
+        return None;
+    };
+    let [
+        Effect::DelayedTrigger {
+            when: TriggerPattern::Batch(inner),
+            once: false,
+            this_turn: true,
+            until: None,
+            targets,
+            effects: steps,
+        },
+    ] = effects.as_slice()
+    else {
+        return None;
+    };
+    targets.is_empty().then_some(())?;
+    let TriggerPattern::DealsDamage { source, .. } = inner.as_ref() else {
+        return None;
+    };
+    (source.0 == [Pred::Is(Ref::Target(0))]).then_some(())?;
+    let mut own = inner.as_ref().clone();
+    if let TriggerPattern::DealsDamage { source, .. } = &mut own {
+        *source = Selector::this();
+    }
+    let trigger = Ability::Triggered {
+        when: TriggerPattern::Batch(Box::new(own)),
+        intervening_if: None,
+        limit: None,
+        from: crate::refs::ZoneKind::Battlefield,
+        targets: Vec::new(),
+        effects: steps.clone(),
+    };
+    let tails: Vec<String> = written(&trigger)
+        .iter()
+        .filter_map(|text| {
+            text.strip_prefix("Whenever ~ deals damage, ")
+                .map(str::to_owned)
+        })
+        .collect();
+    let mut twin = ability.clone();
+    if let Ability::Activated { effects, .. } = &mut twin {
+        *effects = vec![Effect::Tap {
+            what: Ref::Target(0),
+            bind: None,
+        }];
+    }
+    let mut found = Vec::new();
+    for text in written(&twin) {
+        let Some((cost, rest)) = text.split_once(": Tap ") else {
+            continue;
+        };
+        let Some(target) = rest.strip_suffix('.') else {
+            continue;
+        };
+        for tail in &tails {
+            found.push(format!(
+                "{cost}: Whenever {target} deals damage this turn, {tail}"
+            ));
+        }
+    }
+    Some(found)
 }
