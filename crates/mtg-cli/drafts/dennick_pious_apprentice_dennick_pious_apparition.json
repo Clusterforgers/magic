@@ -23,7 +23,10 @@
               "Batch": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Graveyard" } }
             },
             "limit": "OncePerTurn",
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

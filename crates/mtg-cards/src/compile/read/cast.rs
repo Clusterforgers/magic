@@ -159,7 +159,8 @@ pub fn discover_text(effects: &[Effect]) -> Option<(String, usize)> {
         return None;
     };
     let text = format!("discover {}", points_text(count)?);
-    (effects.get(..3)? == discover(count.clone())).then_some((text, 3))
+    let steps = discover(count.clone());
+    (effects.get(..steps.len())? == steps.as_slice()).then_some((text, steps.len()))
 }
 
 /// The two sentences the effects at the front of the list are when they are an impulse draw, and how many effects they take.
