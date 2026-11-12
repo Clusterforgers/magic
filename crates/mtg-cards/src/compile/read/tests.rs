@@ -151,6 +151,7 @@ mod dk1d_spells;
 mod dk25_identity_protection;
 mod fix8_writers;
 mod fix9_writers;
+mod r303b;
 mod r7c_writers;
 mod r7d;
 
@@ -388,6 +389,7 @@ mod prepare;
 mod prevention;
 mod pump_wordings;
 mod put_back;
+mod r304b_writers;
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;

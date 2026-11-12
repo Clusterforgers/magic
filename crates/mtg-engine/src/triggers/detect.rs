@@ -1373,6 +1373,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         .filter_map(|object| snapshot(state, object.id))
         .collect();
     Cause {
+        dealers: Vec::new(),
         subjects,
         snapshots,
         amount,
@@ -2437,6 +2438,11 @@ fn batch_causes<'a>(
             groups.len() - 1
         });
         let group = &mut groups[at].1;
+        if let Some(dealer) = found.source.filter(|_| damage.is_some())
+            && !group.dealers.contains(&dealer)
+        {
+            group.dealers.push(dealer);
+        }
         for subject in found.subjects {
             if !group.subjects.contains(&subject) {
                 group.subjects.push(subject);

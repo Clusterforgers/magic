@@ -1,16 +1,31 @@
 {
   "oracle_id": "c066f921-e349-45d1-8ec3-0955d10bbf19",
   "name": "Lae'zel, Vlaakith's Champion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lae'zel, Vlaakith's Champion",
       "oracle_fingerprint": "a7cfbe1008bd8f089a7017cbc2c1dfc5",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 190 }
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": {
+                  "Union": [
+                    "You",
+                    {
+                      "Each": [
+                        { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  ]
+                },
+                "by": "You"
+              }
+            },
+            "by": { "Add": 1 }
           }
         },
         { "Keyword": "ChooseABackground" }

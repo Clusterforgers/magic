@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d3beb624-f589-4ed5-97a0-11ad61481250",
+  "name": "Vanish into Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vanish into Memory",
+      "oracle_fingerprint": "9a51f92adf1f3cf00fc3efe4fd30f0e2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Draw": { "count": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": {} },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "returned" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Discard": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "returned" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

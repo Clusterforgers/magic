@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ee79b00d-9b2a-454d-a20c-edb073ef69cf",
+  "name": "Flash Foliage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flash Foliage",
+      "oracle_fingerprint": "5865460b7b4b28d01a35b6bb4de4e23f",
+      "abilities": [
+        { "CastOnly": { "condition": "AfterBlockers" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "blocking": { "Target": 0 }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

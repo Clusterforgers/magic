@@ -1,7 +1,7 @@
 {
   "oracle_id": "a3a1f149-febe-4ff6-9e34-8b82ef21c2ee",
   "name": "Fear of Sleep Paralysis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fear of Sleep Paralysis",
@@ -32,9 +32,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 178, "end": 295 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "ControlledBy": "Opponents" }] },
+                "action": { "RemoveCounterOf": { "Other": "stun" } }
+              }
+            }
           }
         }
       ]

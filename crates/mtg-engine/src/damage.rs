@@ -441,6 +441,9 @@ fn deal(
         return Vec::new();
     }
     let mut form = dealer.keywords.form();
+    if form == DamageForm::Normal && state.rules().damage_as_wither {
+        form = DamageForm::Wither;
+    }
     if let DamageTarget::Player(player) = target
         && form != DamageForm::Infect
         && damage_causes_no_life_loss(state, player)

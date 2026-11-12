@@ -1,0 +1,75 @@
+{
+  "oracle_id": "f04a7763-5fba-42e5-a45a-b3dc2daba902",
+  "name": "Earth Rumble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earth Rumble",
+      "oracle_fingerprint": "a2911501ec5c1722d9c45a01083f6fc7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "bounds": { "min": 0, "max": 1 }
+                    },
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                      }
+                    }
+                  ],
+                  "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -60,6 +60,8 @@ fn w5d_redirect(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("all damage that would be dealt to you is dealt to")?;
     let to = if r.source() {
         Ref::This
+    } else if r.words("equipped creature") {
+        Ref::Attached
     } else {
         r.need("enchanted creature")?;
         Ref::Attached
@@ -297,12 +299,14 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
                 unpreventable: false,
              .. }],
         ) if source.is_empty() => {
-            let to = match to {
-                Ref::This => "~",
-                Ref::Attached => "enchanted creature",
+            let to: &[&str] = match to {
+                Ref::This => &["~"],
+                Ref::Attached => &["enchanted creature", "equipped creature"],
                 _ => return None,
             };
-            vec![format!("all damage that would be dealt to you is dealt to {to} instead")]
+            to.iter()
+                .map(|to| format!("all damage that would be dealt to you is dealt to {to} instead"))
+                .collect()
         }
         (
             ReplaceWhen::ZoneChange {

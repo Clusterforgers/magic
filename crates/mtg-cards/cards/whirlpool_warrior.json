@@ -1,0 +1,63 @@
+{
+  "oracle_id": "b7a1c54b-bb2f-4423-865a-ad114cd18c76",
+  "name": "Whirlpool Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlpool Warrior",
+      "oracle_fingerprint": "c7a568a4f1a62eaa194d213ebb577333",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "n",
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": { "Bound": "n" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Let": {
+                        "as": "n",
+                        "amount": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                        }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "player" }, "count": { "Bound": "n" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

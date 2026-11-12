@@ -1,7 +1,7 @@
 {
   "oracle_id": "95c3976c-33f3-490b-bfd3-7f1af2fe0416",
   "name": "Chromatic Orrery",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chromatic Orrery",
@@ -23,9 +23,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 148 }
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } }
+                }
+              }
+            ]
           }
         }
       ]
