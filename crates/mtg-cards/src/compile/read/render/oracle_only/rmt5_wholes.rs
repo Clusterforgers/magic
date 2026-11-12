@@ -220,7 +220,7 @@ If you had a land enter the battlefield under your control this turn, ~ deals 3 
     ),
     // joshua_phoenixs_dominant_phoenix_warden_of_fire
     (
-        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"count":2,"optional":true,"as":"discarded"}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}}"#,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"count":2,"optional":true,"as":"discarded"}},{"Draw":{"count":{"Bound":"discarded~moved"}}}]}}"#,
         r"When ~ enters, discard up to two cards, then draw that many cards.",
     ),
     // joshua_phoenixs_dominant_phoenix_warden_of_fire
@@ -300,7 +300,7 @@ If you had a land enter the battlefield under your control this turn, ~ deals 3 
     ),
     // disciple_of_deceit
     (
-        r#"{"Triggered":{"when":{"Untapped":{"what":["This"]}},"effects":[{"Discard":{"filter":[{"Not":{"Type":"Land"}}],"optional":true,"as":"discarded"}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Is":{"Bound":"discarded"}}]},"op":"Ge","right":1}},"then":[{"Search":{"filter":[{"Compare":{"stat":"ManaValue","op":"Eq","to":{"Stat":{"of":{"Bound":"discarded"},"stat":"ManaValue"}}}}],"as":"found"}},{"Reveal":{"what":{"Bound":"found"}}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}},{"Shuffle":{}}]}}]}}"#,
+        r#"{"Triggered":{"when":{"Untapped":{"what":["This"]}},"effects":[{"Discard":{"filter":[{"Not":{"Type":"Land"}}],"optional":true,"as":"discarded"}},{"If":{"condition":{"Compare":{"left":{"Bound":"discarded~moved"},"op":"Ge","right":1}},"then":[{"Search":{"filter":[{"Compare":{"stat":"ManaValue","op":"Eq","to":{"Stat":{"of":{"Bound":"discarded"},"stat":"ManaValue"}}}}],"as":"found"}},{"Reveal":{"what":{"Bound":"found"}}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}},{"Shuffle":{}}]}}]}}"#,
         r"Inspired — Whenever this creature becomes untapped, you may discard a nonland card. If you do, search your library for a card with the same mana value as that card, reveal it, put it into your hand, then shuffle.",
     ),
     // dovin_baan

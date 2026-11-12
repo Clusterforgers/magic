@@ -1,4 +1,4 @@
-//! Goal: "sacrifice any number of ..." and "discard any number of ..." take as many matching objects as the player picks, none included, and the steps after them count what was taken ("that many", "that much", "for each ... this way"), for Last-Ditch Effort, Renounce, Pitiless Carnage and Illuminate History at 2 to 4 seats.
+//! Goal: "sacrifice any number of ..." and "discard any number of ..." take as many matching objects as the player picks, none included, and the steps after them count what was taken ("that many", "that much", "for each ... this way"), for Last-Ditch Effort, Renounce, Pitiless Carnage, Illuminate History and Sacred Rites, and a discard counted after it draws as many cards as were discarded (Decaying Time Loop, Syphon Mind), at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -168,5 +168,36 @@ fn sacred_rites_gives_toughness_for_each_card_discarded_and_keeps_it(
         Some(1),
         "only your creatures"
     );
+    Ok(())
+}
+
+#[rstest]
+fn decaying_time_loop_draws_as_many_cards_as_its_hand_held(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1, 3)] held: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(seats, "Decaying Time Loop", held))?;
+    driver.cast("Decaying Time Loop")?;
+    settle(&mut driver, 0)?;
+    let hand = names(driver.state(), Zone::Hand(pid(0)));
+    assert_eq!(hand.len(), held, "{hand:?}");
+    assert!(hand.iter().all(|name| name == "Forest"), "{hand:?}");
+    Ok(())
+}
+
+#[rstest]
+fn syphon_mind_draws_a_card_for_each_card_its_opponents_discarded(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = (1..seats).fold(table(seats, "Syphon Mind", 0), |scenario, seat| {
+        scenario.hand(seat, creatures(&format!("Theirs {seat}"), 2))
+    });
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Syphon Mind")?;
+    settle(&mut driver, 1)?;
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), seats - 1);
+    for seat in 1..seats {
+        assert_eq!(driver.state().zone(Zone::Hand(pid(seat))).len(), 1);
+    }
     Ok(())
 }

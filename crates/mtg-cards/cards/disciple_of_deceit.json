@@ -21,11 +21,7 @@
               {
                 "If": {
                   "condition": {
-                    "Compare": {
-                      "left": { "Count": [{ "Is": { "Bound": "discarded" } }] },
-                      "op": "Ge",
-                      "right": 1
-                    }
+                    "Compare": { "left": { "Bound": "discarded~moved" }, "op": "Ge", "right": 1 }
                   },
                   "then": [
                     {
