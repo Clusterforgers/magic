@@ -37,10 +37,10 @@ pub struct Deep {
 }
 
 impl Deep {
-    /// A full budget: up to 600 iterations through the next turn's combat, about 2.5 s at most.
+    /// A full budget: up to 600 iterations through the combat of the turn after next, about 2.5 s at most.
     pub const FULL: Deep = Deep {
         iterations: 600,
-        turns: 1,
+        turns: 2,
         scale: 25.0,
         explore: 0.4,
         forecasts: 40,
@@ -256,12 +256,13 @@ pub fn ismcts(
                 if !available.is_empty() {
                     let mut open = Vec::with_capacity(available.len());
                     for offered in available {
-                        let index = match tree[at].iter().position(|c| c.answer == offered) {
-                            Some(index) => index,
-                            None => {
-                                tree[at].push(Child::new(offered));
-                                tree[at].len() - 1
-                            }
+                        let index = if let Some(index) =
+                            tree[at].iter().position(|c| c.answer == offered)
+                        {
+                            index
+                        } else {
+                            tree[at].push(Child::new(offered));
+                            tree[at].len() - 1
                         };
                         tree[at][index].available += 1;
                         open.push(index);
