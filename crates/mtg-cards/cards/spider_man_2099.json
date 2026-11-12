@@ -8,9 +8,15 @@
       "oracle_fingerprint": "db3fe80aecaadb33c45a8a9bfaccd2d3",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 103 }
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "All": [
+                  "YourTurn",
+                  { "Compare": { "left": { "TurnsTaken": "You" }, "op": "Le", "right": 3 } }
+                ]
+              }
+            }
           }
         },
         { "Keyword": "DoubleStrike" },

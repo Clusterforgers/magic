@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3a105959-dfce-4202-b37f-ae635dfcb30b",
+  "name": "Empyrial Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empyrial Archangel",
+      "oracle_fingerprint": "a1be3db211df2b962c7a5048cdc7dbb3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Shroud" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

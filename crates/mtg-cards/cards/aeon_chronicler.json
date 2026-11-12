@@ -1,7 +1,7 @@
 {
   "oracle_id": "a1399cb8-f22a-487e-b539-2db47b09a790",
   "name": "Aeon Chronicler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aeon Chronicler",
@@ -22,15 +22,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 90, "end": 124 }
+          "Keyword": {
+            "Suspend": { "time": 0, "cost": [{ "Mana": "{X}{3}{U}" }, { "XAtLeast": 1 }] }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 125, "end": 206 }
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "effects": [{ "Draw": {} }]
           }
         }
       ]

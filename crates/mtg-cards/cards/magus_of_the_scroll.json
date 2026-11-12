@@ -1,0 +1,40 @@
+{
+  "oracle_id": "992df446-75a1-4174-9fde-9a912d332172",
+  "name": "Magus of the Scroll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Scroll",
+      "oracle_fingerprint": "25bf7fc0dc479ebf796b2019d59c2486",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "revealed" },
+                      "selector": [{ "ChosenAs": "name" }]
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

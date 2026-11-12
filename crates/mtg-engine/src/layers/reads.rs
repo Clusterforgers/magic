@@ -271,6 +271,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Prepared
         | Pred::Suspected
         | Pred::Solved
+        | Pred::Stickered
         | Pred::Harnessed
         | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
@@ -283,6 +284,10 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasAdventure
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
+        | Pred::AttackedLastTurn
+        | Pred::DealtDamageYet
+        | Pred::DealtCombatDamageYet
+        | Pred::NthCastThisTurn(_)
         | Pred::Attacking
         | Pred::AttackingAlone
         | Pred::AttackingBattle
@@ -445,6 +450,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Distinct { of, stat }
         | Amount::MostCommon { of, stat } => reads_of_selector(of).or(reads_of_stat(*stat)),
         Amount::Doors(of) => reads_of_selector(of),
+        Amount::CardsAbove { filter, .. } => reads_of_selector(filter),
         Amount::When {
             condition,
             then,
@@ -498,6 +504,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AfterBlockers
         | Condition::InCombat
         | Condition::FirstCombat
+        | Condition::SorceryTiming
+        | Condition::AfterCombat
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)
@@ -512,7 +520,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::MaxSpeed(who)
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
-        | Condition::Searched { who, .. } => reads_of_ref(who),
+        | Condition::Searched { who, .. }
+        | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }
 }

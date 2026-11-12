@@ -1,0 +1,22 @@
+{
+  "oracle_id": "92380c57-0a92-48eb-b562-2be149b5792a",
+  "name": "Angel of Suffering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Suffering",
+      "oracle_fingerprint": "be257963a2d9e2bea6e87a9350d1d0b2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "PreventAnd": [{ "Mill": { "count": { "Times": { "by": 2, "of": "Triggering" } } } }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

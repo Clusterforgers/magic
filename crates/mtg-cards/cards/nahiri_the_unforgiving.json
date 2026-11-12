@@ -7,12 +7,7 @@
       "name": "Nahiri, the Unforgiving",
       "oracle_fingerprint": "0357c45e7cc6a9caf8694759d59f1005",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 134 }
-          }
-        },
+        { "Keyword": "Compleated" },
         {
           "Manual": {
             "reason": "you apply this loyalty ability by hand",
@@ -21,9 +16,48 @@
         },
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Discard": {} }, { "Draw": {} }] } },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 263, "end": 477 }
+          "Loyalty": {
+            "cost": "Zero",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Equipment" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Counters": { "on": "This", "counter": "loyalty" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Bound": "exiled" } } },
+                  "as": "copy"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
           }
         }
       ]

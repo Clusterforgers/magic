@@ -1,0 +1,96 @@
+{
+  "oracle_id": "021b4745-4a15-462c-a6b0-2dee1dc9d196",
+  "name": "Tamiyo, Compleated Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo, Compleated Sage",
+      "oracle_fingerprint": "88da4d484547ea02c451e6ce42cddd90",
+      "abilities": [
+        { "Keyword": "Compleated" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "exiled" } } } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tamiyo's Notebook",
+                      "supertypes": ["Legendary"],
+                      "types": ["Artifact"],
+                      "subtypes": ["Book"],
+                      "abilities": [
+                        {
+                          "CostModifier": {
+                            "applies_to": ["Spell", { "ControlledBy": "You" }],
+                            "change": "Reduce",
+                            "mana": "{2}"
+                          }
+                        },
+                        { "Activated": { "cost": ["Tap"], "effects": [{ "Draw": {} }] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

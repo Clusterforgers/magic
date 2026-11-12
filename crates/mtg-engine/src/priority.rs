@@ -181,14 +181,7 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
-    if crate::prohibit::forbidden(
-        state,
-        crate::prohibit::Doing::Activate {
-            player,
-            source: object.id(),
-            kind: crate::activation_kind::specific(state, address, rules),
-        },
-    ) {
+    if activation_forbidden(state, player, object, (address, rules)) {
         return false;
     }
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
@@ -232,7 +225,7 @@ fn can_activate(
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
     let foreign = controller_of_object(state, object) != player;
-    if rules.is_mana_ability()
+    if (rules.is_mana_ability() && !crate::r281_mana_at_priority::r281_at_priority(rules))
         || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
     {
         return false;
@@ -291,6 +284,25 @@ fn can_activate(
         && some_x_has_targets(state, player, object.id(), rules, affords)
 }
 
+/// Whether a prohibition keeps `player` from activating the ability `rules` of `object`.
+fn activation_forbidden(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    (address, rules): (AbilityRef, &Ability),
+) -> bool {
+    crate::prohibit::forbidden(
+        state,
+        crate::prohibit::Doing::Activate {
+            player,
+            source: object.id(),
+            kind: crate::activation_kind::specific(state, address, rules),
+            taps: matches!(rules, Ability::Activated { cost, .. }
+                if cost.0.contains(&mtg_cards::cost::CostItem::Tap)),
+        },
+    )
+}
+
 /// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a
 /// creature free of summoning sickness (CR 302.6); a price with neither asks nothing of it.
 fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
@@ -303,7 +315,15 @@ fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
     let sick = keywords::sick_for_abilities(state, object.id())
         && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
     let ready = if price.untap {
-        permanent.tapped() && !price.tap
+        // A permanent that can't become untapped can't pay {Q}.
+        permanent.tapped()
+            && !price.tap
+            && !crate::prohibit::forbidden(
+                state,
+                crate::prohibit::Doing::Untap {
+                    object: object.id(),
+                },
+            )
     } else {
         !permanent.tapped()
     };

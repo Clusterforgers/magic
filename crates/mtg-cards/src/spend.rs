@@ -81,6 +81,8 @@ pub enum SpendFact {
     YourCommander,
     /// It is cast face down ("face-down spells", CR 708.4).
     FaceDown,
+    /// Its kicker was paid as it was cast ("kicked spells", CR 702.33d).
+    Kicked,
 }
 
 /// A special action (CR 116.2) whose cost restricted mana may pay.
@@ -191,6 +193,10 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub face_down: bool,
+    /// Its kicker is paid.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub kicked: bool,
 }
 
 impl SpendFilter {
@@ -244,6 +250,7 @@ impl SpendFilter {
                 SpendFact::Flashback => traits.flashback,
                 SpendFact::YourCommander => traits.your_commander,
                 SpendFact::FaceDown => traits.face_down,
+                SpendFact::Kicked => traits.kicked,
             })
     }
 }

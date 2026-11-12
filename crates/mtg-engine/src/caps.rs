@@ -82,6 +82,7 @@ const RUNS: &[&str] = &[
     "Trigger.Exploits",
     "Trigger.BecomesCrewed",
     "Trigger.BecomesSaddled",
+    "Trigger.FinalChapter",
     "Trigger.BecomesLevel",
     "Trigger.TurnedFaceUp",
     "Trigger.Mutates",
@@ -106,6 +107,7 @@ const RUNS: &[&str] = &[
     "Amount.Total",
     "Amount.CardTypes",
     "Amount.Devotion",
+    "Amount.CardsAbove",
     "Amount.LowestLife",
     "Amount.HighestLife",
     "Amount.LowestHand",
@@ -140,6 +142,7 @@ const RUNS: &[&str] = &[
     "Cost.PutCounters",
     "Cost.Exert",
     "Cost.OwnManaCost",
+    "Cost.OwnManaValue",
     "Cost.RemoveCountersAmong",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",
@@ -167,6 +170,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPower",
     "Cost.Changed",
     "Cost.DamageToYou",
+    "Cost.OthersGainLife",
     "Cost.Unattach",
     "Cost.ExileTop",
     "Cost.Draw",
@@ -247,6 +251,9 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.AnyColor",
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
+    "Cost.OneOf.Pay",
+    "Ability.ManaAbility.Other",
+    "Ability.ManaAbility.From",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
@@ -271,6 +278,7 @@ const RUNS: &[&str] = &[
     "Effect.Unsuspect",
     "Effect.Solve",
     "Effect.Harness",
+    "Effect.Plot",
     "Effect.WinGame",
     "Effect.LoseGame",
     "Effect.DrawGame",
@@ -321,6 +329,7 @@ const RUNS: &[&str] = &[
     "Trigger.OpenedAttraction",
     "Trigger.DoorUnlocked",
     "Effect.UnlockDoor",
+    "Effect.LockOrUnlockDoor",
     "Condition.CompletedDungeon",
     "Effect.TakeInitiative",
     "Trigger.TakesInitiative",
@@ -400,6 +409,7 @@ const RUNS: &[&str] = &[
     "Rule.DrawLimit",
     "Rule.AbilitiesAsThoughHaste",
     "Rule.PayLifeForMana",
+    "Rule.PayLifeForOneSymbol",
     "Rule.OpponentsCantMakeSacrifice",
     "Rule.SpendManaAs",
     "Rule.UnspentManaBecomes",
@@ -417,6 +427,7 @@ const RUNS: &[&str] = &[
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
+    "Rule.LookAtFaceDown",
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",
@@ -440,6 +451,9 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Discard",
     "Rule.Cant.Exile",
     "Rule.Cant.Transform",
+    "Rule.Cant.Untap",
+    "Rule.Cant.Crew",
+    "Rule.Cant.EnterBattlefield",
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
     "Rule.Cant.SkipCombat",
@@ -591,6 +605,7 @@ const RUNS: &[&str] = &[
     "Keyword.Dredge",
     "ReplaceBy.Dredge",
     "Keyword.Suspend",
+    "Keyword.Suspend.X",
     "Keyword.Foretell",
     "Keyword.Plot",
     "Keyword.Morph",
@@ -694,6 +709,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
     "ReplaceBy.PreventCounted",
+    "ReplaceBy.PreventCountedAnd",
     "ReplaceBy.PreventHalf",
     "ReplaceBy.PreventRemovingCounter",
     "ReplaceBy.MoveTo",
@@ -736,9 +752,12 @@ const RUNS: &[&str] = &[
     "Keyword.Prowl",
     "Keyword.Mayhem",
     "Keyword.Disturb",
+    "Keyword.MoreThanMeetsTheEye",
     "Keyword.Ninjutsu",
     "Keyword.Echo",
     "Keyword.CumulativeUpkeep",
+    "Keyword.CumulativeUpkeepActs",
+    "Keyword.Compleated",
     "Keyword.Undying",
     "Keyword.Persist",
     "Keyword.Exalted",
@@ -768,6 +787,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exert",
     "Keyword.FlashSacrifice",
     "Keyword.Macro",
+    "Keyword.MacroX",
     "Keyword.Station",
     "Keyword.Myriad",
     "Keyword.Squad",
@@ -841,6 +861,9 @@ const RUNS: &[&str] = &[
     "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
+    "Condition.AttackedThisCombat",
+    "Condition.SorceryTiming",
+    "Condition.AfterCombat",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
     "Rule.UpToInDeck",
@@ -1009,7 +1032,7 @@ mod tests {
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
-    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
+    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", true)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]
     #[case::discarding_the_source("Cost.DiscardSelf", true)]
@@ -1186,9 +1209,9 @@ mod tests {
         "Ability.ManaAbility.Complex",
         true
     )]
-    #[case::mana_abilities_the_engine_does_not_activate_at_priority(
+    #[case::mana_abilities_the_engine_activates_at_priority_and_resolves_at_once(
         "Ability.ManaAbility.Other",
-        false
+        true
     )]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::c6_eg_paying_counted_life_in_an_effect("Effect.Pay.Counted", true)]
@@ -1268,6 +1291,8 @@ mod tests {
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
+    #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
+    #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
@@ -1327,6 +1352,7 @@ mod tests {
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
     #[case::becoming_crewed_triggers("Trigger.BecomesCrewed", true)]
     #[case::becoming_saddled_triggers("Trigger.BecomesSaddled", true)]
+    #[case::r288_final_chapter_triggers("Trigger.FinalChapter", true)]
     #[case::becoming_a_level_triggers("Trigger.BecomesLevel", true)]
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]

@@ -97,12 +97,13 @@ impl Scope<'_> {
             }),
             Pred::GreatestAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, false)?,
             // Like `HasKeyword`, an object that changed zones has the keywords its snapshot holds.
+            // A macro keyword ("with modular") is named by its own table name, as players read it.
             Pred::HasKeywordNamed(name) => match seen.keywords {
-                Some(held) => held.iter().any(|keyword| keyword.name() == name),
+                Some(held) => held.iter().any(|keyword| named_keyword(keyword, name)),
                 None => seen.card.is_some_and(|card| {
                     keywords_of(self.state, card.id())
-                        .into_iter()
-                        .any(|keyword| keyword.name() == name)
+                        .iter()
+                        .any(|keyword| named_keyword(keyword, name))
                 }),
             },
             Pred::LeastAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, true)?,
@@ -271,4 +272,10 @@ impl Scope<'_> {
         }
         Ok(true)
     }
+}
+
+/// Whether the keyword goes by the name: Scryfall's spelling, or a macro keyword's own name (`Modular`).
+fn named_keyword(keyword: &Keyword, name: &str) -> bool {
+    keyword.name() == name
+        || matches!(keyword, Keyword::Macro { .. }) && keyword.shown_name() == name
 }

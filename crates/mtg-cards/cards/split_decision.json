@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5f725d51-e133-488c-9ca9-1c7b0523b5bd",
+  "name": "Split Decision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Split Decision",
+      "oracle_fingerprint": "c04098f5aadbcb3cf6aedc54cd362fb2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Vote": { "options": { "Named": ["denial", "duplication"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "denial" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "duplication" } }
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }],
+                  "otherwise": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

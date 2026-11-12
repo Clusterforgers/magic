@@ -127,7 +127,7 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 19520,
+  "edhrec_rank": 19591,
   "preview": {
     "source": "Wizards of the Coast",
     "source_uri": "https://www.facebook.com/MagicTheGathering.jp/posts/pfbid0k6XcNNwNje114YoBCdrBMNzeGRtET8QKiYTjXSCtsP6oVdu8uM6qt7BYmRJ5PjV9l",
@@ -135,10 +135,10 @@
   },
   "prices": {
     "usd": "0.15",
-    "usd_foil": "0.32",
+    "usd_foil": "0.29",
     "usd_etched": null,
-    "eur": "0.09",
-    "eur_foil": "0.23",
+    "eur": "0.06",
+    "eur_foil": "0.19",
     "tix": "0.03"
   },
   "related_uris": {

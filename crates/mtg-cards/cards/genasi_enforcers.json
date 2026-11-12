@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b3601821-a0f5-4aac-b24e-25498a82d821",
+  "name": "Genasi Enforcers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genasi Enforcers",
+      "oracle_fingerprint": "34fc39549a8159dc6293ee11dba6cda7",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Named": "Genasi Enforcers" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,7 @@ fn steps() -> [Effect; 2] {
             },
             once: false,
             this_turn: false,
+            targets: Vec::new(),
             until: Some(Duration::Forever),
             effects: vec![Effect::CopySpell {
                 what: Ref::This,

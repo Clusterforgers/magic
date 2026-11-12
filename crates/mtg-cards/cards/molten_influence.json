@@ -1,0 +1,33 @@
+{
+  "oracle_id": "d955a26a-d474-4dff-9eba-69fcfe92d8ae",
+  "name": "Molten Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Influence",
+      "oracle_fingerprint": "7cf8d609947c620539fbbe5304f634c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": 4 }],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

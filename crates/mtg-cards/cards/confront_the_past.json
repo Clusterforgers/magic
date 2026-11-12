@@ -1,0 +1,60 @@
+{
+  "oracle_id": "a92c1ffe-88b0-467c-883c-6ca3564a39e3",
+  "name": "Confront the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confront the Past",
+      "oracle_fingerprint": "5dfe81c8144034545332e7030df8d5ed",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Planeswalker" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": "loyalty",
+                            "count": { "Times": { "by": 2, "of": "X" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

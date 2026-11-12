@@ -62,6 +62,7 @@ impl KeywordRules for Encore {
                     },
                     once: true,
                     this_turn: false,
+                    targets: Vec::new(),
                     effects: vec![sacrifice_them()],
                 },
             ],

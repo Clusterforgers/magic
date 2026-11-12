@@ -65,6 +65,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::TurnFaceUp { .. }
         | Effect::TurnFaceDown { .. }
         | Effect::Harness { .. }
+        | Effect::Plot { .. }
         | Effect::Prepare { .. }
         | Effect::Suspect { .. }
         | Effect::Unsuspect { .. }
@@ -89,6 +90,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::PutSticker { .. }
         | Effect::ClaimPrize { .. }
         | Effect::UnlockDoor { .. }
+        | Effect::LockOrUnlockDoor { .. }
         | Effect::TakeInitiative { .. }
         | Effect::Monstrosity { .. }
         | Effect::Renown { .. }

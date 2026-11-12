@@ -18,8 +18,9 @@ const PATIENCE: Duration = Duration::from_mins(1);
 
 pub type Socket = WebSocketStream<MaybeTlsStream<TcpStream>>;
 
-/// What the next thing on the socket was.
+/// What the next thing on the socket was; a test reads a few frames, so the message stays unboxed.
 #[derive(Debug)]
+#[allow(clippy::large_enum_variant)]
 pub enum Frame {
     /// A text frame that parsed as a server message.
     Message(ServerMessage),

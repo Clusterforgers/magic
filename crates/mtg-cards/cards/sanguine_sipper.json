@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ea787e29-5e24-4136-bdf6-bee338899e34",
+  "name": "Sanguine Sipper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanguine Sipper",
+      "oracle_fingerprint": "553441745981daf0c970d7dcb74d2751",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Lifelink" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Stickered", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

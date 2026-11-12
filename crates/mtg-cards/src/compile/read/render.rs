@@ -85,6 +85,8 @@ mod w9b_clash;
 pub(super) use r7d::WHILE_TAPPED;
 
 mod dk1d_gift_target;
+mod r280_steps;
+mod r287_words;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -547,6 +549,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
+    super::r285_writers::r285_wordings(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -1408,6 +1411,7 @@ fn written(
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.rmt0_hand_pick(&effects[start..]))
+            .or_else(|| writer.r280_random_reveal(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -1479,11 +1483,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
         },
         Effect::Move {
             what: Ref::Bound(name),
-            to:
-                Destination::Library {
-                    place: Place::Top,
-                    order,
-                },
+            to: Destination::Library { place, order },
             ..
         },
     ) = (choose, moved)
@@ -1509,8 +1509,13 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
     } else {
         format!("{} cards", count_word(number)?)
     };
+    let place = match place {
+        Place::Top => "top of",
+        Place::Bottom => "the bottom of",
+        _ => return None,
+    };
     Some(format!(
-        "put {cards} from your hand on top of your library{tail}"
+        "put {cards} from your hand on {place} your library{tail}"
     ))
 }
 
@@ -3053,7 +3058,9 @@ impl Writer<'_> {
             .or_else(|| rmt3_enters::rmt3_shield_text(effect))
             .or_else(|| rmt3_enters::rmt3_spell_enters_text(effect))
             .or_else(|| self.rmt3_skip(effect))
+            .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
+            .or_else(|| r287_words::r287_text(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
@@ -3270,6 +3277,7 @@ impl Writer<'_> {
             Effect::TurnFaceDown { what } | Effect::Harness { what } => {
                 self.rmt8_action(effect, what)?
             }
+            Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

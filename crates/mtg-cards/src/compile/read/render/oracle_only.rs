@@ -193,6 +193,11 @@ mod put_into;
 mod put_into_graveyard;
 mod put_that_card;
 mod quote_commas;
+mod r280_wordings;
+mod r282_wholes;
+mod r284_wordings;
+mod r286_wordings;
+mod r288_wordings;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -265,6 +270,7 @@ mod w16a_entry_if;
 mod w16a_named_yours;
 // dk1b
 mod dk1b_attached;
+mod r281_wordings;
 mod r9w_countered_value;
 mod w16a_owner;
 mod w16a_return_cost;
@@ -365,6 +371,8 @@ mod r7c_conditions;
 mod r7c_searches;
 
 // rmt5
+mod r283_wholes;
+mod r287_wholes;
 mod rmt5_wholes;
 
 use crate::ability::Ability;
@@ -492,6 +500,10 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     add_e17a(ability, texts);
     f29_wordings::add(ability, texts);
     rmt8_wordings::add(ability, texts);
+    r280_wordings::add(ability, texts);
+    r284_wordings::add(ability, texts);
+    r286_wordings::add(ability, texts);
+    r288_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's
@@ -504,6 +516,8 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     f26_wordings::add(ability, texts);
     // rmt5
     rmt5_wholes::rmt5_add_wholes(ability, texts);
+    r283_wholes::r283_add_wholes(ability, texts);
+    r287_wholes::r287_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
@@ -610,6 +624,7 @@ fn add_w5c(ability: &Ability, texts: &mut Vec<String>) {
 /// Adds the wordings of the choices and payments around steps (r3w3): "you may", "you may pay", "When you do", "unless".
 fn add_w4c(ability: &Ability, texts: &mut Vec<String>) {
     w4c_may_pay::add(ability, texts);
+    r281_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants (r3w2): conditions, grants, pumps, durations, a land
@@ -732,6 +747,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
 fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     c11g_wholes::c11g_add_wholes(ability, texts);
     rmt1_wholes::rmt1_add_wholes(ability, texts);
+    r282_wholes::r282_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.

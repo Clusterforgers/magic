@@ -1,7 +1,7 @@
 {
   "oracle_id": "b3998d9c-56b1-486c-818c-a6882e999d54",
   "name": "Relic Amulet",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Relic Amulet",
@@ -23,9 +23,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 197 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              {
+                "RemoveCounters": {
+                  "counter": "charge",
+                  "count": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": { "RemovedThisWay": "charge" } } }
+            ]
           }
         }
       ]

@@ -1,16 +1,27 @@
 {
   "oracle_id": "2faa8dc1-0370-458c-9aef-44f81a9b5cd5",
   "name": "Summoning Trap",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Summoning Trap",
       "oracle_fingerprint": "ea1c1ebb445bfe2a31c3f4e2247c9d11",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 154 }
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Countered",
+                    "who": "Opponents",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         },
         {

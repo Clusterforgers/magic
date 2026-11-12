@@ -7,16 +7,15 @@ use serde_json::{Value, json};
 use super::w4d_parts::{capitalized, wordings};
 use crate::ability::Ability;
 
-/// Adds the wordings of a spell with one target creature and a step under a condition that it is one of two colors.
+/// Adds the wordings of a spell with one target creature (of any quality) and a step under a condition that it is one of two colors.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ok(mut value) = serde_json::to_value(ability) else {
         return;
     };
-    let creature = json!([{"what": {"Object": [{"Type": "Creature"}]}}]);
     let Some(inner) = value.get_mut("Spell") else {
         return;
     };
-    if inner.get("targets") != Some(&creature) {
+    if !one_target_creature(inner.get("targets")) {
         return;
     }
     let Some(effects) = inner.get_mut("effects").and_then(Value::as_array_mut) else {
@@ -49,6 +48,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             texts.push(swapped);
         }
     }
+}
+
+/// Whether the targets are one target creature, of any further quality ("target creature with flying").
+fn one_target_creature(targets: Option<&Value>) -> bool {
+    let Some([spec]) = targets.and_then(Value::as_array).map(Vec::as_slice) else {
+        return false;
+    };
+    spec.as_object().is_some_and(|spec| spec.len() == 1)
+        && spec
+            .pointer("/what/Object/0")
+            .is_some_and(|first| *first == json!({"Type": "Creature"}))
 }
 
 /// For a condition that the first target is one of two colors: the condition on the first color alone and the words

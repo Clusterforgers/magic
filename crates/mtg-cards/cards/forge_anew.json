@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4df579df-fdbb-418a-af2d-709e140ee569",
+  "name": "Forge Anew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forge Anew",
+      "oracle_fingerprint": "561f1916e95dc37b7555e8af06558d22",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Equipment" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        { "InstantActivation": { "kind": "Equip", "condition": "YourTurn" } },
+        {
+          "FreeActivation": {
+            "kind": "Equip",
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": { "event": { "KindActivated": "Equip" }, "who": "You", "filter": [] }
+                    },
+                    "op": "Lt",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

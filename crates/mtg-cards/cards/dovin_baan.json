@@ -1,7 +1,7 @@
 {
   "oracle_id": "5b33bfbf-e4e1-43de-9c96-ccdc2916510a",
   "name": "Dovin Baan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dovin Baan",
@@ -37,9 +37,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 148, "end": 254 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Rule": {
+                        "rule": { "UntapLimit": { "who": "Opponents", "what": [], "count": 2 } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

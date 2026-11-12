@@ -1,16 +1,30 @@
 {
   "oracle_id": "f74c4d96-bc4a-4d32-9519-a753d192144e",
   "name": "Search for Azcanta // Azcanta, the Sunken Ruin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Search for Azcanta",
       "oracle_fingerprint": "7bc79fd3e3f677701fd594f42fdb2571",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 220 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Surveil": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,16 +1,22 @@
 {
   "oracle_id": "e670d1c9-5e28-4df8-aad9-d08d19dc74e9",
   "name": "Reverent Silence",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Reverent Silence",
       "oracle_fingerprint": "a07a1776943433aa230ba04488d61dbe",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 108 }
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": [{ "OthersGainLife": 6 }]
           }
         },
         {

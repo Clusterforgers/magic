@@ -52,9 +52,9 @@ const EVIDENCE: &str = "As an additional cost to cast this spell, you may collec
     json!({"Not": "AdditionalCostPaid"}),
     Verdict::Mismatch
 )]
-// The collect-evidence and behold costs themselves have no writer: such a card reads on trust, and its condition clause
-// decides the rest.
-#[case::evidence(EVIDENCE, json!([{"CollectEvidence": 6}]), json!("AdditionalCostPaid"), Verdict::Unchecked)]
+// The collect-evidence cost has a writer, so its card reads back whole; the behold cost has none: such a card reads on
+// trust, and its condition clause decides the rest.
+#[case::evidence(EVIDENCE, json!([{"CollectEvidence": 6}]), json!("AdditionalCostPaid"), Verdict::Accepted)]
 #[case::evidence_not_collected(
     EVIDENCE,
     json!([{"CollectEvidence": 6}]),

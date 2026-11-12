@@ -128,6 +128,10 @@ export const PERMANENTS: readonly Entry[] = [
     'At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter.',
   ],
   [
+    'Cumulative upkeep action',
+    'Cumulative upkeep paid with an action instead of mana: at your upkeep put an age counter on this permanent, then sacrifice it unless you take the action once for each age counter.',
+  ],
+  [
     'Vanishing',
     'This permanent enters with N time counters. At your upkeep remove one; when the last is removed, sacrifice it.',
   ],

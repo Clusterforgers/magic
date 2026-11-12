@@ -710,6 +710,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     })
     .or_else(|| super::w21a_atoms::w21a_suffix(r))
     .or_else(|| super::w19d_suffixes::w19d_suffix(r))
+    .or_else(|| super::r283_atoms::r283_suffix(r, form))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -775,6 +776,9 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         Pred::DrawnThisTurn => "drawn this turn".to_owned(),
         Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
+        Pred::AttackedLastTurn => "that attacked during their controller's last turn".to_owned(),
+        Pred::DealtDamageYet => "that has dealt damage".to_owned(),
+        Pred::DealtCombatDamageYet => "that has dealt combat damage".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),
@@ -796,6 +800,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        Pred::HasKeywordNamed(name) => format!("with {}", name.to_lowercase()),
         Pred::HasCounter(kind) if form.plural() => {
             format!("with {} counters on them", counters::kind_text(kind)?)
         }
@@ -853,7 +858,10 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
             };
             format!("with {} {number}{tail}", stat_name(*stat)?)
         }
-        _ => return super::w21a_atoms::w21a_suffix_text(pred, form),
+        _ => {
+            return super::w21a_atoms::w21a_suffix_text(pred, form)
+                .or_else(|| super::r283_atoms::r283_suffix_text(pred, form));
+        }
     })
 }
 

@@ -462,7 +462,7 @@ pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOp
         return Vec::new();
     };
     let player = controller_of_object(state, object);
-    if mana_forbidden(state, player, id) {
+    if mana_forbidden(state, player, id, false) {
         return Vec::new();
     }
     rule_mana(state, player, id, chars.abilities.len(), false)
@@ -471,14 +471,15 @@ pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOp
         .collect()
 }
 
-/// Whether a rule keeps `player` from using the mana abilities of `id` (CR 605).
-fn mana_forbidden(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+/// Whether a rule keeps `player` from using the mana abilities of `id` (CR 605), those with {T} in their costs when `taps`.
+fn mana_forbidden(state: &GameState, player: PlayerId, id: ObjectId, taps: bool) -> bool {
     crate::prohibit::forbidden(
         state,
         crate::prohibit::Doing::Activate {
             player,
             source: id,
             kind: Some(mtg_cards::ability::ActivationKind::Mana),
+            taps,
         },
     )
 }
@@ -497,14 +498,14 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         if controller_of_object(state, object) != player {
             continue;
         }
-        if mana_forbidden(state, player, id) {
+        if mana_forbidden(state, player, id, false) {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {
             continue;
         };
         let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
-        let can_tap = !perm.tapped() && !sick;
+        let can_tap = !perm.tapped() && !sick && !mana_forbidden(state, player, id, true);
         // Only a permanent with a mana ability reads the tax; a walk of the battlefield for every permanent is quadratic.
         if can_tap && !chars.abilities.is_empty() {
             let tax =
@@ -544,7 +545,7 @@ fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         let works = state
             .object(id)
             .is_some_and(|object| crate::ability_reader::definition_works_elsewhere(object.card()));
-        if !works || mana_forbidden(state, player, id) {
+        if !works || mana_forbidden(state, player, id, false) {
             continue;
         }
         let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());

@@ -85,6 +85,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::PreventNext
         | ReplaceBy::PreventUpTo(_)
         | ReplaceBy::PreventCounted(_)
+        | ReplaceBy::PreventCountedAnd { .. }
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
@@ -138,6 +139,10 @@ pub(super) fn damage_shield(
         ReplaceBy::PreventCounted(amount) => {
             let most = u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX);
             (Some(most), Vec::new())
+        }
+        ReplaceBy::PreventCountedAnd { most, effects } => {
+            let most = u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX);
+            (Some(most), effects.clone())
         }
         ReplaceBy::PreventAnd(then) => (None, then.clone()),
         _ => (None, Vec::new()),

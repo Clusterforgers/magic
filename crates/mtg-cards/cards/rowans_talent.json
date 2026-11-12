@@ -1,0 +1,53 @@
+{
+  "oracle_id": "0af6f3ce-59e8-4797-aa1b-dbdb5288fe3d",
+  "name": "Rowan's Talent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rowan's Talent",
+      "oracle_fingerprint": "af71e17f6cb4630f9307cc5ebcd44a1b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Plus": 1 },
+                    "targets": [
+                      {
+                        "what": { "Object": [{ "Type": "Creature" }] },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [
+                            { "ModifyPT": { "power": 2, "toughness": 0 } },
+                            { "AddKeyword": "FirstStrike" },
+                            { "AddKeyword": "Trample" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 147, "end": 273 }
+          }
+        }
+      ]
+    }
+  ]
+}

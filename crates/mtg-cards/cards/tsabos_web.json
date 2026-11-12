@@ -1,7 +1,7 @@
 {
   "oracle_id": "96a4e515-2b4e-4c2d-aa1a-963597484723",
   "name": "Tsabo's Web",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tsabo's Web",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 40, "end": 151 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "HasAbility": "NonManaActivated" }] },
+            "mods": ["DoesntUntap"]
           }
         }
       ]

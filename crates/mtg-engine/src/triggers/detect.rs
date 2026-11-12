@@ -11,12 +11,13 @@ use std::sync::Arc;
 use mtg_cards::ability::{Ability, Limit};
 use mtg_cards::did::Action;
 use mtg_cards::mana_trigger::mana_trigger;
-use mtg_cards::refs::{Ref, Selector, ZoneKind};
+use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 mod did;
+mod r288_final_chapter;
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
@@ -267,6 +268,8 @@ enum Happened {
     Renowned { object: ObjectId, player: PlayerId },
     /// A creature exploited a creature; judged against the battlefield before the sacrifice.
     Exploited { object: ObjectId, player: PlayerId },
+    /// The final chapter ability of a Saga triggered or resolved.
+    FinalChapter { saga: ObjectId, resolved: bool },
     /// A Vehicle became crewed, the `nth` time of the turn.
     Crewed {
         object: ObjectId,
@@ -316,6 +319,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::FinalChapter { resolved: true, .. }
                 | Happened::PhasedOut { .. }
                 | Happened::Unattached { left: true, .. }
         ) || matches!(self, Happened::Did { action, .. } if action.looks_back())
@@ -553,6 +557,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         found.extend(moved(pre, event, post));
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
         found.extend(dk26_unattached(pre, event));
+        found.extend(r288_final_chapter::r288_happened(pre, event, post));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -1795,7 +1800,8 @@ fn matching_event(
         ) => (from != to && wanted.is_none_or(|wanted| wanted == *to))
             .then(|| cause(state, Vec::new())),
         _ => matching_player_action(pattern, happened, scope)
-            .or_else(|| matching_permanents(pattern, happened, scope)),
+            .or_else(|| matching_permanents(pattern, happened, scope))
+            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope)),
     }
 }
 
@@ -2554,6 +2560,7 @@ fn repeats(
     triggers_again(state)
         .iter()
         .filter(|again| again.controller == controller)
+        .filter(|again| again_watches(state, again.from.as_ref(), watcher))
         .filter(|again| {
             again.from.as_ref().is_none_or(|from| {
                 Scope::announcing(state, again.controller, again.source)
@@ -2569,6 +2576,23 @@ fn repeats(
                 .is_none_or(|cause| matching(cause, happened, &scope).is_some())
         })
         .count()
+}
+
+/// Whether a rule that makes triggered abilities trigger again covers the abilities of `watcher` by where it is: a
+/// permanent, or a spell or card elsewhere when the rule's selector names spells or a zone ("of a colorless spell you
+/// control or another colorless permanent you control").
+fn again_watches(state: &GameState, from: Option<&Selector>, watcher: ObjectRef) -> bool {
+    fn names_elsewhere(preds: &[Pred]) -> bool {
+        preds.iter().any(|pred| match pred {
+            Pred::Spell | Pred::In(_) => true,
+            Pred::AnyOf(inner) => names_elsewhere(inner),
+            _ => false,
+        })
+    }
+    state
+        .object(watcher.id)
+        .is_some_and(|object| object.zone() == Zone::Battlefield)
+        || from.is_some_and(|from| names_elsewhere(&from.0))
 }
 
 /// Drops the abilities from `first` on that a prohibition keeps from triggering on `happened` (`GameRule::Cant` with a

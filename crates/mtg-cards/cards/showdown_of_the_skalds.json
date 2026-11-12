@@ -1,7 +1,7 @@
 {
   "oracle_id": "6107f9aa-3373-4166-b4b8-a26fd6d69c72",
   "name": "Showdown of the Skalds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Showdown of the Skalds",
@@ -24,9 +24,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 194, "end": 292 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "once": false,
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "once": false,
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
           }
         }
       ]

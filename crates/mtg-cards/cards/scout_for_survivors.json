@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5a367c9c-9a7f-4587-aa05-c0fba46ed838",
+  "name": "Scout for Survivors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scout for Survivors",
+      "oracle_fingerprint": "35ed6615a54123d31ad745d99e67d2c2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "rule": { "TotalManaValueAtMost": 3 }
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "returned" } },
+              { "PutCounters": { "on": { "Bound": "returned" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

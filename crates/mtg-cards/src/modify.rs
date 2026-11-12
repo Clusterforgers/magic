@@ -381,8 +381,33 @@ pub enum CombatQuirk {
     CantAttackAlone,
     /// They can't block unless another creature blocks too.
     CantBlockAlone,
+    /// They can't attack unless at least `others` other creatures the selector picks attack too (CR 508.1c): "can't
+    /// attack unless at least two other creatures attack"; the selector reads the creature itself as `This`.
+    AttackWithOthers {
+        /// How many other attackers at least.
+        others: u32,
+        /// The others that count; any creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        among: Selector,
+    },
+    /// They can't block unless at least `others` other creatures the selector picks block too (CR 509.1b).
+    BlockWithOthers {
+        /// How many other blockers at least.
+        others: u32,
+        /// The others that count; any creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        among: Selector,
+    },
+    /// They can attack only alone (CR 508.1c).
+    AttackAlone,
+    /// If they attack, every other creature their controller controls that can attack for nothing attacks too ("If this
+    /// creature attacks, all creatures you control attack if able."): a declaration with them and without such a creature is
+    /// refused.
+    AttackWithAll,
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
+    /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."
+    AttackAsThoughHaste,
     /// They can block as though they were untapped.
     BlockWhileTapped,
     /// Their controller may choose not to untap them during their untap step (CR 502.3): asked for each one that is tapped.
@@ -451,6 +476,12 @@ pub enum Prohibited {
     Exile,
     /// Transform (CR 701.28).
     Transform,
+    /// Become untapped, by an untap step, an effect or a {Q} cost.
+    Untap,
+    /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
+    Crew,
+    /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
+    EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
     SkipStep(Step),
     /// Skip their turns (CR 614.10).
@@ -694,6 +725,16 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         only: Option<Ref>,
     },
+    /// The players may look at the face-down permanents the selector picks any time (CR 708.5): "You may look at face-down
+    /// creatures you don't control any time."
+    LookAtFaceDown {
+        /// The players who may look; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The permanents they may look at; every face-down permanent when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.
@@ -862,6 +903,17 @@ pub enum GameRule {
         who: Ref,
         /// The color of the symbols.
         color: Color,
+    },
+    /// The players may pay 2 life as they cast a spell the selector picks to have it cost one mana symbol of the color
+    /// less, and only that color: "As an additional cost to cast green permanent spells, you may pay 2 life. Those spells
+    /// cost {G} less to cast if you paid life this way. This effect reduces only the amount of green mana you pay."
+    PayLifeForOneSymbol {
+        /// The players.
+        who: Ref,
+        /// The color of the symbol.
+        color: Color,
+        /// The spells, judged as they are cast.
+        spells: Selector,
     },
     /// The players draw no more than `most` cards each turn; the draws past it don't happen: "Each opponent can't draw more
     /// than one card each turn."

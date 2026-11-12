@@ -1,7 +1,7 @@
 {
   "oracle_id": "ee8e6ef3-eb96-48bd-8619-8a9112b3d4f0",
   "name": "Iroh, Grand Lotus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Iroh, Grand Lotus",
@@ -9,15 +9,26 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 14, "end": 240 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "Not": { "Subtype": "Lesson" } },
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+            "condition": "YourTurn"
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 241, "end": 312 }
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Lesson" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": { "Flashback": "{1}" } }],
+            "condition": "YourTurn"
           }
         }
       ]

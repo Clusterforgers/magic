@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a08189f2-1643-496a-8a91-74864528b4db",
+  "name": "Spreading Algae",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spreading Algae",
+      "oracle_fingerprint": "55658394c48ea7b63ff3f671d447ee4b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Swamp" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -89,6 +89,7 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
         Pred::Solved => "solved",
+        Pred::Stickered => "stickered",
         Pred::Harnessed => "harnessed",
         Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
@@ -801,6 +802,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Chapter { number } => {
             (format!("its lore counters reach chapter {number}"), true)
         }
+        TriggerPattern::FinalChapter { what, resolves } => (
+            format!(
+                "the final chapter ability of {} {}",
+                subject(what),
+                if *resolves { "resolves" } else { "triggers" }
+            ),
+            false,
+        ),
         TriggerPattern::Attached { what, to } => {
             let attachment = if what.is_empty() {
                 "an attachment".to_owned()

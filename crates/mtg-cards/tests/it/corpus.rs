@@ -320,6 +320,13 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no enchant opponent",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::FlashSacrifice) = ability {
+                    // The flash permission whose permanent is sacrificed at cleanup is a sentence of the card.
+                    assert!(
+                        text.contains("as though it had flash"),
+                        "{}: the text has no flash permission",
+                        card.name
+                    );
                 } else if let Ability::Keyword(Keyword::EquipTo { .. }) = ability {
                     // An equip with a restriction is printed as `Equip legendary creature`.
                     assert!(
@@ -475,8 +482,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             "If an opponent would search a library, that player searches the top four cards of that library instead.",
         ),
         (
-            "Bebop, Skull & Crossbones",
-            "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
+            "Yotia Declares War",
+            "II \u{2014} Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.",
         ),
     ];
     for (name, clause) in expected {

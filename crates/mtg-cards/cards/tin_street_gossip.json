@@ -1,7 +1,7 @@
 {
   "oracle_id": "19dc29a7-8ccc-4e54-829b-86cc102b082d",
   "name": "Tin Street Gossip",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tin Street Gossip",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 102 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Green"] },
+                  "only": [{ "Spell": { "facts": ["FaceDown"] } }, { "Special": "TurnFaceUp" }]
+                }
+              }
+            ]
           }
         }
       ]

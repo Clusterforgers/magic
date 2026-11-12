@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7c3171da-7a95-4f8e-ba30-c31af21c1828",
+  "name": "Goblin Flectomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Flectomancer",
+      "oracle_fingerprint": "0b302c2ae62cc86e4d0741ef3ba354f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

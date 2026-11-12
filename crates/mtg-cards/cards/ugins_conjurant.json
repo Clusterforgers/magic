@@ -1,0 +1,36 @@
+{
+  "oracle_id": "787055e6-5d65-458e-a56e-66ef0574d2ca",
+  "name": "Ugin's Conjurant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Conjurant",
+      "oracle_fingerprint": "f345f95be772d9114a6102adb57e5f1c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "RemoveCounters": { "from": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

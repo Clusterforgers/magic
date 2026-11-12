@@ -1,7 +1,7 @@
 {
   "oracle_id": "836609f7-48b8-47b0-9af6-94150b048251",
   "name": "Voltstorm Angel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Voltstorm Angel",
@@ -17,9 +17,60 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 77, "end": 286 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Modal": {
+                              "modes": [
+                                {
+                                  "effects": [
+                                    {
+                                      "Continuous": {
+                                        "affected": "This",
+                                        "mods": [
+                                          { "AddKeyword": "Vigilance" },
+                                          { "AddKeyword": "Lifelink" }
+                                        ],
+                                        "duration": "UntilEndOfTurn"
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "effects": [
+                                    {
+                                      "Continuous": {
+                                        "affected": {
+                                          "Each": [
+                                            { "Type": "Creature" },
+                                            { "ControlledBy": "You" },
+                                            "Other"
+                                          ]
+                                        },
+                                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                                        "duration": "UntilEndOfTurn"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

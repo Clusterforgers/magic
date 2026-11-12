@@ -26,6 +26,7 @@ use super::W7D_LEGAL;
 use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
+mod r287_above;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -130,6 +131,9 @@ pub struct Scope<'a> {
     /// The run of effects in the middle of an event (a replacement's steps), whose names, numbers and values the scope reads
     /// in place of the state's resolution.
     pub(crate) inline: Option<&'a super::Resolving>,
+    /// The choice the source made as it enters, kept with its enter event until the event folds: what the replacements
+    /// of the same entering read as the source's choice ("enters with a counter for each creature that player controls").
+    pub(crate) entering: Option<&'a Chosen>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -375,6 +379,7 @@ impl<'a> Scope<'a> {
             granter: None,
             as_was: false,
             inline: None,
+            entering: None,
         }
     }
 
@@ -387,6 +392,14 @@ impl<'a> Scope<'a> {
     pub(crate) fn with_affected(self, object: ObjectRef, read: &'a std::cell::Cell<bool>) -> Self {
         Scope {
             affected: Some((object, read)),
+            ..self
+        }
+    }
+
+    /// The same scope reading `chosen` as the choice its source made as it enters, before the enter event folds.
+    pub(crate) fn with_entering(self, chosen: Option<&'a Chosen>) -> Self {
+        Scope {
+            entering: chosen,
             ..self
         }
     }
@@ -505,8 +518,16 @@ impl<'a> Scope<'a> {
             | TurnTally::NonlandPermanentsLeft
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
+            | TurnTally::CardsExiled
+            | TurnTally::PermanentsToHand
+            | TurnTally::CardsGravedNotFromBattlefield
+            | TurnTally::PlayedFromExile
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
+                    TurnTally::CardsExiled => Tally::R287Exiled,
+                    TurnTally::PermanentsToHand => Tally::R287ToHand,
+                    TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
+                    TurnTally::PlayedFromExile => Tally::R287PlayedFromExile,
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
@@ -922,13 +943,16 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The bound names that record, for each specification, its targets that are legal now; none unless `starting`.
+    /// The bound names that record, for each specification, its targets that are legal now; none unless `starting`,
+    /// and none already recorded: a first step that runs again (an amass that made its Army) keeps the first record.
     pub(crate) fn w7d_legal_at_start(&self, starting: bool) -> Vec<(String, Vec<Target>)> {
         if !starting {
             return Vec::new();
         }
         (0..self.choices.targets.len())
-            .map(|index| (format!("{W7D_LEGAL}{index}"), self.w7d_legal_now(index)))
+            .map(|index| (index, format!("{W7D_LEGAL}{index}")))
+            .filter(|(_, name)| !self.bindings.contains_key(name))
+            .map(|(index, name)| (name, self.w7d_legal_now(index)))
             .collect()
     }
 
@@ -1740,6 +1764,10 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::Stickered => {
+                matches!(seen.counters, Counted::Live(_))
+                    && !state.stickers_on(reference.id).is_empty()
+            }
             Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
             Pred::FoughtSinceYourLastUpkeep {
                 attacked,
@@ -1764,6 +1792,15 @@ impl<'a> Scope<'a> {
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::AttackedLastTurn => state.attacked_last_turn(reference),
+            Pred::DealtDamageYet | Pred::DealtCombatDamageYet => state
+                .object(reference.id)
+                .filter(|object| object.reference() == reference)
+                .and_then(GameObject::permanent)
+                .is_some_and(|permanent| {
+                    permanent.designations.dealt[usize::from(*pred == Pred::DealtCombatDamageYet)]
+                }),
+            Pred::NthCastThisTurn(nth) => state.r283_nth_cast_is(*nth, reference),
             Pred::DidThisTurn {
                 event,
                 by,
@@ -1866,6 +1903,9 @@ impl<'a> Scope<'a> {
 
     /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
     pub(crate) fn entered_choice(&self) -> Option<&'a Chosen> {
+        if let Some(chosen) = self.entering {
+            return Some(chosen);
+        }
         self.state
             .object(self.source.id)
             .and_then(|object| object.permanent())
@@ -2021,6 +2061,7 @@ impl<'a> Scope<'a> {
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
             Amount::Devotion(colors) => self.devotion(colors)?,
+            Amount::CardsAbove { filter, directly } => self.r287_cards_above(filter, *directly)?,
             Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
@@ -2758,6 +2799,11 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
+            Condition::AttackedThisCombat(who) => self.r285_attacked_this_combat(who)?,
+            Condition::SorceryTiming => {
+                crate::priority::sorcery_timing(self.state, self.controller)
+            }
+            Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

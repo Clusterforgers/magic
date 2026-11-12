@@ -68,6 +68,11 @@ impl QuirkRules {
         }
     }
 
+    /// The combat rules on the creature.
+    pub(crate) fn of(&self, id: ObjectId) -> &[CombatQuirk] {
+        self.quirks.get(&id).map_or(&[], Vec::as_slice)
+    }
+
     pub(crate) fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
         self.quirks
             .get(&id)
@@ -179,6 +184,14 @@ pub(crate) fn attacks_despite_defender(state: &GameState, id: ObjectId) -> bool 
         .rules()
         .quirks
         .has(id, |q| matches!(q, CombatQuirk::AttackDespiteDefender))
+}
+
+/// Whether the creature may attack as though it had haste.
+pub(crate) fn attacks_as_though_haste(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AttackAsThoughHaste))
 }
 
 /// Whether the creature may block as though it were untapped.

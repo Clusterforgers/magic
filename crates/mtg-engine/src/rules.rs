@@ -174,6 +174,17 @@ pub enum Rule {
         Vec<PlayerId>,
         #[cfg_attr(feature = "ts", ts(type = "unknown"))] mtg_core::color::Color,
     ),
+    /// The players may pay 2 life as they cast a spell the selector picks to have it cost one symbol of the color less.
+    PayLifeForOneSymbol {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The color of the symbol.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        color: mtg_core::color::Color,
+        /// The spells it is for.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: Selector,
+    },
     /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
     OpponentsCantMakeSacrifice(Vec<PlayerId>),
     /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
@@ -243,6 +254,14 @@ pub enum Rule {
         what: Selector,
         /// Only these objects, as they were named when the rule began; every card `what` selects when absent.
         only: Option<Vec<ObjectRef>>,
+    },
+    /// The players may look at the face-down permanents the selector picks any time (CR 708.5).
+    LookAtFaceDown {
+        /// The players who may look.
+        who: Vec<PlayerId>,
+        /// The permanents, judged when a seat looks; every face-down permanent when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
     },
     /// Each player may play this many lands more on each of their turns (CR 305.2).
     AdditionalLandPlays(Vec<(PlayerId, u32)>),
@@ -627,6 +646,8 @@ pub(crate) struct RulesInForce {
     draw_limit: Vec<(PlayerId, u32)>,
     /// The players who may pay 2 life rather than mana of a color.
     life_for_mana: Vec<(PlayerId, mtg_core::color::Color)>,
+    /// The players who may pay 2 life for one symbol of a color of the spells a selector picks, once for each rule.
+    life_for_one: Vec<(PlayerId, mtg_core::color::Color, Selector)>,
     /// The players whose opponents' spells and abilities can't make them sacrifice.
     spared_sacrifice: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
@@ -655,12 +676,16 @@ pub(crate) struct RulesInForce {
     taxes: Vec<Taxing>,
     block_taxes: Vec<crate::block_tax::BlockTaxing>,
     looks: Vec<Look>,
+    face_down_looks: Vec<Look>,
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
     block_limit_each: BTreeMap<PlayerId, u32>,
     /// The prohibitions (`prohibit.rs`).
     pub(crate) cants: Vec<crate::prohibit::Banned>,
+    /// The spell cost rules of static abilities, with their controllers and sources; those of resolved effects are read
+    /// from the effects (`announce/modifiers.rs`).
+    pub(crate) static_spell_costs: Vec<(Rule, PlayerId, ObjectRef)>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
@@ -1011,6 +1036,14 @@ impl RulesInForce {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
             }
             Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::PayLifeForOneSymbol {
+                players,
+                color,
+                spells,
+            } => {
+                self.life_for_one
+                    .extend(players.iter().map(|p| (*p, *color, spells.clone())));
+            }
             Rule::PayLifeForMana(players, color) => {
                 self.life_for_mana
                     .extend(players.iter().map(|p| (*p, *color)));
@@ -1057,6 +1090,17 @@ impl RulesInForce {
                         who: who.clone(),
                         what: what.clone(),
                         only: only.clone(),
+                    });
+                }
+            }
+            Rule::LookAtFaceDown { who, what } => {
+                if let Some(source) = source {
+                    self.face_down_looks.push(Look {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        only: None,
                     });
                 }
             }
@@ -1341,6 +1385,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::PayLifeForMana { who, color } => {
             Rule::PayLifeForMana(scope.players(who)?, *color)
         }
+        GameRule::PayLifeForOneSymbol { who, color, spells } => Rule::PayLifeForOneSymbol {
+            players: scope.players(who)?,
+            color: *color,
+            spells: spells.clone(),
+        },
         GameRule::OpponentsCantMakeSacrifice(who) => {
             Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
         }
@@ -1403,6 +1452,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .as_ref()
                 .map(|named| scope.objects(named))
                 .transpose()?,
+        },
+        GameRule::LookAtFaceDown { who, what } => Rule::LookAtFaceDown {
+            who: scope.players(who)?,
+            what: what.clone(),
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
@@ -1520,6 +1573,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
         | Rule::PayLifeForMana(players, _)
+        | Rule::PayLifeForOneSymbol { players, .. }
         | Rule::OpponentsCantMakeSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
@@ -1540,6 +1594,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
+        | Rule::LookAtFaceDown { who, .. }
         | Rule::UntapLimit { who, .. }
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
@@ -1603,10 +1658,13 @@ fn gather(state: &GameState) -> RulesInForce {
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
     // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
     // it had flash if ...", CR 601.2a, 113.6) from there.
+    // A rule that works from the command zone ("as long as ~ is in the command zone or on the battlefield") works
+    // from its owner's command zone.
     let graveyards = state.players().iter().flat_map(|player| {
         [
             (Zone::Graveyard(player.id()), ZoneKind::Graveyard),
             (Zone::Hand(player.id()), ZoneKind::Hand),
+            (Zone::Command(player.id()), ZoneKind::Command),
         ]
     });
     for (zone, from) in [
@@ -1647,6 +1705,11 @@ fn gather(state: &GameState) -> RulesInForce {
                 }
                 if let Ok(lowered) = lower_rule(&scope, rule) {
                     found.put(&lowered, controller, Some(object.reference()));
+                    if matches!(lowered, Rule::SpellCost { .. }) {
+                        found
+                            .static_spell_costs
+                            .push((lowered, controller, object.reference()));
+                    }
                 }
             }
         }
@@ -1681,6 +1744,7 @@ static NONE: RulesInForce = RulesInForce {
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
     life_for_mana: Vec::new(),
+    life_for_one: Vec::new(),
     spared_sacrifice: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
@@ -1704,11 +1768,13 @@ static NONE: RulesInForce = RulesInForce {
     taxes: Vec::new(),
     block_taxes: Vec::new(),
     looks: Vec::new(),
+    face_down_looks: Vec::new(),
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
     block_limit_each: BTreeMap::new(),
     cants: Vec::new(),
+    static_spell_costs: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
 };
 
@@ -2095,6 +2161,31 @@ pub(crate) fn ep24_life_for_mana(state: &GameState, player: PlayerId, mana: Mana
         .fold(mana, |mana, (_, color)| mana.with_phyrexian(*color))
 }
 
+/// `mana` as `player` may pay it for the spell `spell`: one symbol of the color made Phyrexian for each rule that lets
+/// them pay 2 life to cast a spell like it for that much less (an ability's cost is left as it is).
+pub(crate) fn r284_life_for_one(
+    state: &GameState,
+    player: PlayerId,
+    spell: Option<ObjectId>,
+    mana: ManaCost,
+) -> ManaCost {
+    let Some(object) = spell.and_then(|id| state.object(id)) else {
+        return mana;
+    };
+    let reference = object.reference();
+    state
+        .rules()
+        .life_for_one
+        .iter()
+        .filter(|(who, _, spells)| {
+            *who == player
+                && Scope::announcing(state, player, reference)
+                    .selects(spells, reference)
+                    .unwrap_or(false)
+        })
+        .fold(mana, |mana, (_, color, _)| mana.with_one_phyrexian(*color))
+}
+
 /// How many more cards `player` may draw this turn under the draw limits in force; `None` when no limit holds.
 pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usize> {
     let most = state
@@ -2227,21 +2318,25 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
     })
 }
 
-/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3): the one place the sight of
-/// a seat reads this rule.
+/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3) or a face-down permanent
+/// (CR 708.5): the one place the sight of a seat reads these rules.
 pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject) -> bool {
-    card.zone() == Zone::Exile
-        && state.rules().looks.iter().any(|look| {
-            look.who.contains(&viewer)
-                && look
-                    .only
-                    .as_ref()
-                    .is_none_or(|only| only.contains(&card.reference()))
-                && (look.what.is_empty()
-                    || Scope::announcing(state, look.controller, look.source)
-                        .selects(&look.what, card.reference())
-                        .unwrap_or(false))
-        })
+    let looks = match card.zone() {
+        Zone::Exile => &state.rules().looks,
+        Zone::Battlefield => &state.rules().face_down_looks,
+        _ => return false,
+    };
+    looks.iter().any(|look| {
+        look.who.contains(&viewer)
+            && look
+                .only
+                .as_ref()
+                .is_none_or(|only| only.contains(&card.reference()))
+            && (look.what.is_empty()
+                || Scope::announcing(state, look.controller, look.source)
+                    .selects(&look.what, card.reference())
+                    .unwrap_or(false))
+    })
 }
 
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).

@@ -1,0 +1,78 @@
+{
+  "oracle_id": "01160cb5-6d83-4317-9522-74083b3a83bb",
+  "name": "Eldrazi Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eldrazi Confluence",
+      "oracle_fingerprint": "68a19a9783b3b68876af68512bec8450",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 3, "toughness": -3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "exiled" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Eldrazi Scion",
+                                "types": ["Creature"],
+                                "subtypes": ["Eldrazi", "Scion"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [
+                                  {
+                                    "Activated": {
+                                      "cost": ["SacrificeSelf"],
+                                      "effects": [
+                                        { "AddMana": { "mana": { "Fixed": ["Colorless"] } } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

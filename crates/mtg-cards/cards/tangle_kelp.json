@@ -1,7 +1,7 @@
 {
   "oracle_id": "06ba313f-50b4-4e84-a8e0-b6dda47225f2",
   "name": "Tangle Kelp",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tangle Kelp",
@@ -15,9 +15,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 181 }
+          "Static": {
+            "affected": "Attached",
+            "mods": ["DoesntUntap"],
+            "condition": { "Matches": { "subject": "Attached", "selector": ["AttackedLastTurn"] } }
           }
         }
       ]

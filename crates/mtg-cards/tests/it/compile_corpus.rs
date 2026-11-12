@@ -312,6 +312,18 @@ fn hand_keyword_is_written(
     Some(())
 }
 
+/// The spell lines without the rows of a die table, which are lines of their own that the read back pairs row by row
+/// (`chance_tables`).
+fn without_die_rows(lines: &[&str]) -> String {
+    let row = |line: &&&str| {
+        line.split_once(" | ").is_some_and(|(range, _)| {
+            !range.is_empty() && range.chars().all(|c| c.is_ascii_digit() || c == '\u{2014}')
+        })
+    };
+    let spell: Vec<&str> = lines.iter().filter(|line| !row(line)).copied().collect();
+    spell.join("\n")
+}
+
 /// Every spell, triggered or mana ability of a hand-written file that the renderer can write is
 /// written as the text of the card: the clauses of its kind, on the same face.
 #[test]
@@ -446,6 +458,7 @@ fn pair_is_written(
 }
 
 /// How many abilities of the hand-written card the renderer writes, and each one not written as a clause of the card.
+#[allow(clippy::too_many_lines)]
 fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usize, Vec<String>) {
     let mut rendered = 0;
     let mut missing = Vec::new();
@@ -513,6 +526,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CastOnly { .. }
             | Ability::OpeningHand
             | Ability::OpeningHandWith { .. }
+            | Ability::FreeActivation { .. }
+            | Ability::InstantActivation { .. }
             | Ability::CostModifier { .. } => &[ClauseKind::Static],
             // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
             Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
@@ -524,11 +539,22 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
             .map(|clause| without_numerals(without_ability_word(&clause.text)))
             .collect();
-        let wanted = if matches!(ability, Ability::Spell { .. }) {
-            vec![lines.join("\n")]
+        let mut wanted = if matches!(ability, Ability::Spell { .. }) {
+            vec![lines.join("\n"), without_die_rows(&lines)]
         } else {
             lines.iter().map(|line| (*line).to_owned()).collect()
         };
+        // The checker reads "if evidence was collected" as the paid additional cost of the face, as written.
+        let paid: Vec<String> = wanted
+            .iter()
+            .filter(|text| text.contains("f evidence was collected"))
+            .map(|text| {
+                text.replace("If evidence was", "If this spell's additional cost was")
+                    .replace("if evidence was", "if this spell's additional cost was")
+                    .replace("additional cost was collected", "additional cost was paid")
+            })
+            .collect();
+        wanted.extend(paid);
         // The clause shows the face's own names as `~`, also inside a token name or a type.
         let names = printed.faces.get(face).map(own_names).unwrap_or_default();
         let shown = |variant: &str| {

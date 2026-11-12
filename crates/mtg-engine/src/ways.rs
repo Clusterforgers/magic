@@ -123,18 +123,39 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if way == CastWay::Harmonize {
         return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
     }
-    if !matches!(way, CastWay::Miracle | CastWay::Cleave) {
+    if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
         return 0;
     }
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
             (CastWay::Miracle, Keyword::Miracle(cost))
-            | (CastWay::Cleave, Keyword::Cleave { cost, .. }) => {
+            | (CastWay::Cleave, Keyword::Cleave { cost, .. })
+            | (CastWay::Madness, Keyword::Madness(cost))
+            | (CastWay::Foretold, Keyword::Foretell(cost))
+            | (CastWay::Freerunning, Keyword::Freerunning(cost)) => {
                 cast_cost_x(cost, false).map(|(_, _, x)| x)
             }
             _ => None,
         })
+        .unwrap_or(0)
+}
+
+/// The ways whose keyword cost may hold an `{X}` the mana cost lacks ("Madness {X}{B}{B}", "Foretell {X}{X}{W}",
+/// "Freerunning {X}{R}"), announced as the spell is cast that way and 0 otherwise (CR 107.3b), as a cleave cost's is.
+pub(crate) const R283_X_WAYS: [CastWay; 4] = [
+    CastWay::Cleave,
+    CastWay::Madness,
+    CastWay::Foretold,
+    CastWay::Freerunning,
+];
+
+/// The most `{X}` any keyword cost of the card holds that its mana cost may lack (`R283_X_WAYS`).
+pub(crate) fn r283_keyword_x(state: &GameState, id: ObjectId) -> u32 {
+    R283_X_WAYS
+        .iter()
+        .map(|way| alternative_x(state, id, *way))
+        .max()
         .unwrap_or(0)
 }
 
@@ -322,6 +343,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             ways.push(way);
         }
     }
+    r282_ways(state, player, id, instant, &mut ways);
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
     ways.extend(alt_cast_ways(state, player, card, instant));
@@ -379,6 +401,7 @@ fn ep24_rule_costs(
             SpendAs::Normal => cost,
         });
         let cost = cost.map(|cost| crate::rules::ep24_life_for_mana(state, player, cost));
+        let cost = cost.map(|cost| crate::rules::r284_life_for_one(state, player, Some(id), cost));
         if cost != way.cost(printed) {
             way.mana = cost;
         }
@@ -663,14 +686,16 @@ fn keyword_way(
             | CastWay::Blitz
             | CastWay::Prowl
             | CastWay::Spectacle
-            | CastWay::Freerunning
             | CastWay::Mayhem
             | CastWay::Mutate
             | CastWay::Prototype
     ) {
         cast_cost(cost)?
-    } else if way == CastWay::Cleave {
-        // A cleave cost may hold `{X}`, announced as the spell is cast (`alternative_x`).
+    } else if matches!(
+        way,
+        CastWay::Cleave | CastWay::Freerunning | CastWay::Foretold
+    ) {
+        // A cleave, freerunning or foretell cost may hold `{X}`, announced as the spell is cast (`alternative_x`).
         let (mana, parts, _) = cast_cost_with_x(cost).filter(|(_, parts, _)| parts.is_empty())?;
         (mana, parts)
     } else {
@@ -770,6 +795,25 @@ fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> boo
     })
 }
 
+/// The ways of the r28-2 pieces: a card an effect plotted is cast as a plotted card is, with or without plot
+/// (CR 702.170d), and the back face of a card with More Than Meets the Eye is cast from its owner's hand (CR 702.162a).
+fn r282_ways(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    instant: bool,
+    ways: &mut Vec<Way>,
+) {
+    if !ways
+        .iter()
+        .any(|way| way.alternative == Some(CastWay::Plotted))
+        && let Some(way) = plot_way(state, player, id)
+    {
+        ways.push(way);
+    }
+    ways.extend(keywords::r282_more_than_meets::way(state, id, instant));
+}
+
 /// The free cast of a plotted card as a sorcery (CR 702.170a), open on a later turn than the plot.
 fn plot_way(state: &GameState, player: PlayerId, id: ObjectId) -> Option<Way> {
     plotted_before_now(state, player, id).then(|| Way {
@@ -838,7 +882,12 @@ fn granted_before_required(
         return keyword_cost(state, id, named)
             .map(|(mana, parts)| Way {
                 alternative: Some(named),
-                label: format!("{} {}", way_name(named), cost_words(&mana, &parts)),
+                label: format!(
+                    "{} {}{}",
+                    way_name(named),
+                    "{X}".repeat(usize::try_from(alternative_x(state, id, named)).unwrap_or(0)),
+                    cost_words(&mana, &parts)
+                ),
                 mana: Some(mana),
                 instant: true,
                 variant: 0,
@@ -879,11 +928,45 @@ fn granted_before_required(
 
 /// The time counters and the mana of the suspend cost of the card `id` (CR 702.62), when the cost is paid with mana alone.
 pub(crate) fn suspend_of(state: &GameState, id: ObjectId) -> Option<(u32, ManaCost)> {
+    keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| {
+            let Keyword::Suspend { time, cost } = keyword else {
+                return None;
+            };
+            Some((*time, mana_only(cost)?))
+        })
+        // Suspend X is judged at the least X it allows.
+        .or_else(|| {
+            suspend_x_of(state, id).map(|(mana, symbols, least)| {
+                (
+                    0,
+                    mana.with(mtg_core::mana::ManaSymbol::Generic(symbols * least)),
+                )
+            })
+        })
+}
+
+/// Suspend X (CR 702.62a, "Suspend X—{X}{3}{U}. X can't be 0."): a suspend keyword with no fixed number of time counters
+/// and an `{X}` in its cost. The mana without the X, how many `{X}` it holds and the least X; `None` for another suspend.
+pub(crate) fn suspend_x_of(state: &GameState, id: ObjectId) -> Option<(ManaCost, u32, u32)> {
     keywords_of(state, id).into_iter().find_map(|keyword| {
-        let Keyword::Suspend { time, cost } = keyword else {
+        let Keyword::Suspend { time: 0, cost } = keyword else {
             return None;
         };
-        Some((*time, mana_only(cost)?))
+        let price = Price::announced(cost).ok()?;
+        if price.x == 0 || price.tap || price.moves_source() || !price.parts.is_empty() {
+            return None;
+        }
+        let least = cost
+            .0
+            .iter()
+            .find_map(|item| match item {
+                CostItem::XAtLeast(least) => Some(*least),
+                _ => None,
+            })
+            .unwrap_or(0);
+        Some((price.mana.unwrap_or_default(), price.x, least))
     })
 }
 
@@ -1071,8 +1154,8 @@ fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCo
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
-            (CastWay::Madness, Keyword::Madness(cost)) => cast_cost(cost),
-            (CastWay::Miracle, Keyword::Miracle(cost)) => {
+            (CastWay::Madness, Keyword::Madness(cost))
+            | (CastWay::Miracle, Keyword::Miracle(cost)) => {
                 cast_cost_x(cost, false).map(|(mana, parts, _)| (mana, parts))
             }
             _ => None,

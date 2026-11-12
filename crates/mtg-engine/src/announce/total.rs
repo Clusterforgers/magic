@@ -75,6 +75,12 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         SpendAs::Normal => mana,
     };
     let mana = mana.map(|mana| crate::rules::ep24_life_for_mana(ctx.state, ctx.player, mana));
+    // A way of casting already carries the symbol paid with life (`ways.rs`); the printed cost does not.
+    let mana = if ctx.needs.ways.iter().any(|way| way.is(choices)) {
+        mana
+    } else {
+        mana.map(|mana| crate::rules::r284_life_for_one(ctx.state, ctx.player, spell, mana))
+    };
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         What::Ability(_) if printed.waterbend => {
@@ -87,7 +93,12 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources: printed.sources,
         life: printed.life,
         help,
-        spend: spend(ctx, choices.way),
+        spend: crate::r281_kicked_spend::r281_kicked(
+            ctx.state,
+            ctx.what,
+            choices,
+            spend(ctx, choices.way),
+        ),
     })
 }
 

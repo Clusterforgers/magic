@@ -149,6 +149,7 @@ mod tests {
             most: None,
             most_at: vec![(P1, most)],
             cant_alone: Vec::new(),
+            joins: Vec::new(),
         }
     }
 

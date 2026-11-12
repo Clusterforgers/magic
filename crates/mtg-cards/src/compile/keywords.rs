@@ -22,8 +22,6 @@ enum Params {
     Dash,
     /// A cost: mana symbols, or a dash and a cost in words.
     Cost,
-    /// Mana symbols only: a cost in words leaves the line to the text (splice, whose engine pays mana alone).
-    Mana,
     /// A number or `X`.
     Number,
     /// Words (`creature`, `from red`).
@@ -92,8 +90,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("shadow", Params::None),
     ("skulk", Params::None),
     ("banding", Params::None),
-    ("splice onto arcane", Params::Mana),
-    ("splice onto instant or sorcery", Params::Mana),
+    ("splice onto arcane", Params::Cost),
+    ("splice onto instant or sorcery", Params::Cost),
     ("infect", Params::None),
     ("wither", Params::None),
     ("persist", Params::None),
@@ -292,7 +290,6 @@ fn plausible(params: Params, rest: &str) -> bool {
         Params::None => rest.is_empty(),
         Params::Dash => rest.is_empty() || rest.starts_with('\u{2014}'),
         Params::Cost => rest.contains('{') || rest.starts_with('\u{2014}'),
-        Params::Mana => rest.starts_with('{'),
         Params::Number => {
             rest == "X" || (!rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
         }
@@ -1019,15 +1016,18 @@ const SPLICE_OR_BAND: [&str; 3] = [
     "bands with other",
 ];
 
-/// Splice with its cost, which the engine pays in mana alone (CR 702.47a; a cost in words stays unread), or "bands with
-/// other" with its quality (CR 702.22b).
+/// Splice with its cost, in mana or after a dash in words ("Splice onto Arcane\u{2014}Sacrifice two Mountains.", CR
+/// 702.47a), or "bands with other" with its quality (CR 702.22b).
 fn splice_or_band(name: &str, rest: &str) -> Option<Keyword> {
     let onto = match name {
         "splice onto arcane" => SpliceOnto::Arcane,
         "splice onto instant or sorcery" => SpliceOnto::InstantOrSorcery,
         _ => return super::read::affinity_filter(rest).map(Keyword::BandsWithOther),
     };
-    let cost = ManaCostX::from_str(rest).ok().map(Cost::mana)?;
+    let cost = ManaCostX::from_str(rest)
+        .ok()
+        .map(Cost::mana)
+        .or_else(|| spell_cost(rest))?;
     Some(Keyword::Splice { onto, cost })
 }
 
@@ -1789,7 +1789,6 @@ mod tests {
     #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]
     #[case::splice_onto_a_made_up_kind("Splice onto Banana {1}")]
     #[case::splice_without_a_cost("Splice onto Arcane")]
-    #[case::splice_by_sacrifice("Splice onto Arcane\u{2014}Sacrifice two Mountains.")]
     #[case::splice_paid_by_an_opponents_life("Splice onto Arcane\u{2014}An opponent gains 5 life.")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
@@ -1872,10 +1871,15 @@ mod tests {
     }
 
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
-    /// attacks.").
-    const W9D_SENTENCES: [&str; 5] = [
+    /// attacks."), and the keywords whose lines only hand-written rules hold (More Than Meets the Eye, a cumulative upkeep
+    /// whose cost is an action, compleated).
+    const W9D_SENTENCES: [&str; 9] = [
+        "More Than Meets the Eye",
+        "Compleated",
+        "Cumulative upkeep action",
         "Exert",
         "Macro",
+        "Macro X",
         "Hexproof from",
         "Flash, sacrificed at cleanup",
         "Protection sparing",

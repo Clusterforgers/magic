@@ -1,0 +1,32 @@
+{
+  "oracle_id": "52d90fc8-bd72-432b-a6f8-d4bf6398c50d",
+  "name": "Soul Swindler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Swindler",
+      "oracle_fingerprint": "6e70f71934f624a05b49e9887d954111",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "AttractionsVisited" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

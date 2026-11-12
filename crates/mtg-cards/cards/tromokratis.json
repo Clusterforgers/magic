@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9aa2f27b-4c00-44c1-8bc4-014350f05b6d",
+  "name": "Tromokratis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tromokratis",
+      "oracle_fingerprint": "bb715f798c5e249285ca753f63c6a348",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Not": {
+                "Matches": {
+                  "subject": "This",
+                  "selector": [{ "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 60, "end": 234 }
+          }
+        }
+      ]
+    }
+  ]
+}

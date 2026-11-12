@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e0bdfbb4-3060-4492-bd9b-0c47e719400a",
+  "name": "Jumbo Cactuar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jumbo Cactuar",
+      "oracle_fingerprint": "4c73e88f5b7d8285b331a1592e6ec2bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 9999, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

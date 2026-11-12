@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0f5ac364-447b-4c43-9aed-6098dc0bab82",
+  "name": "Daybreak Coronet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daybreak Coronet",
+      "oracle_fingerprint": "bb5ca082753259a28eadd8e7850cde91",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "Type": "Creature" }, { "HasAttached": [{ "Subtype": "Aura" }, "Other"] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

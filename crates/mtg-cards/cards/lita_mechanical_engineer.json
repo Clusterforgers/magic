@@ -1,7 +1,7 @@
 {
   "oracle_id": "715cb547-726f-4bc8-ad46-297d4dccb881",
   "name": "Lita, Mechanical Engineer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lita, Mechanical Engineer",
@@ -28,9 +28,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 328 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}{W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zeppelin",
+                      "types": ["Artifact"],
+                      "subtypes": ["Vehicle"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Crew": 3 } }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

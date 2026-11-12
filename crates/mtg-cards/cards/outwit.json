@@ -1,0 +1,19 @@
+{
+  "oracle_id": "eac02e36-15c8-4b6d-b9b4-da549a722336",
+  "name": "Outwit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outwit",
+      "oracle_fingerprint": "d0d38e672377906dcb709171c2a620bb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "TargetsPlayer": "EachPlayer" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

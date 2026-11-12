@@ -73,6 +73,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         by,
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventCounted(_)
+            | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
@@ -382,10 +383,15 @@ struct Walker<'a> {
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
     counts_x: bool,
     x_free: bool,
+    /// Whether a madness, foretell or freerunning cost of the face holds an `{X}`, which its spell reads.
+    r283_keyword_x: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
+    /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
+    /// pay 3 life"), which the engine asks of the payer.
+    r281_paying: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -424,8 +430,10 @@ impl<'a> Walker<'a> {
             rather_cost: false,
             counts_x: false,
             x_free: false,
+            r283_keyword_x: false,
             x_now: false,
             choosing: false,
+            r281_paying: false,
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
@@ -708,7 +716,9 @@ impl<'a> Walker<'a> {
             }
             Pred::HasKeywordNamed(name) => {
                 self.uses("Pred", "HasKeywordNamed");
-                if !Keyword::NAMES.contains(&name.as_str()) {
+                if !Keyword::NAMES.contains(&name.as_str())
+                    && !crate::macros::is_keyword(&name.to_lowercase())
+                {
                     self.problem(format!("`{name}` is not a keyword"));
                 }
             }
@@ -859,6 +869,7 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::Stickered
             | Pred::Harnessed
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
@@ -870,6 +881,10 @@ impl<'a> Walker<'a> {
             | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
+            | Pred::AttackedLastTurn
+            | Pred::DealtDamageYet
+            | Pred::DealtCombatDamageYet
+            | Pred::NthCastThisTurn(_)
             | Pred::Attacking
             | Pred::AttackingAlone
             | Pred::AttackingBattle
@@ -1087,6 +1102,7 @@ impl<'a> Walker<'a> {
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
@@ -1335,6 +1351,9 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
+            Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
+            Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -1377,7 +1396,15 @@ impl<'a> Walker<'a> {
                 CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
-                    if !is_fixed(item) && (*who == Ref::You || r5g_fixed_by_condition(count)) =>
+                    if !is_fixed(item)
+                        && (*who == Ref::You
+                            || r5g_fixed_by_condition(count)
+                            || r283_counts_payers_own(count, who)) =>
+                {
+                    Some((i, count))
+                }
+                CostItem::ExileFromGraveyard { count, .. }
+                    if !is_fixed(item) && r283_counts_payers_own(count, who) =>
                 {
                     Some((i, count))
                 }
@@ -1390,7 +1417,9 @@ impl<'a> Walker<'a> {
         let mut fixed = cost.clone();
         for (i, _) in &counted {
             match &mut fixed.0[*i] {
-                CostItem::Discard { count, .. } | CostItem::Draw(count) => {
+                CostItem::Discard { count, .. }
+                | CostItem::Draw(count)
+                | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
@@ -1473,6 +1502,7 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::Mana(_)
                     | CostItem::OwnManaCost
+                    | CostItem::OwnManaValue
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap
@@ -1482,6 +1512,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
+                    | CostItem::OthersGainLife(_)
                     | CostItem::Forage => {}
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
@@ -1502,6 +1533,8 @@ impl<'a> Walker<'a> {
     fn alternatives(&mut self, costs: &[Cost]) {
         let tag = if self.choosing {
             "OneOf"
+        } else if self.r281_paying {
+            "OneOf.Pay"
         } else {
             "OneOf.Elsewhere"
         };
@@ -1878,6 +1911,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A macro keyword with X: the table names it with a number, and its expansion is walked as written.
+    fn keyword_macro_x(&mut self, name: &str, x: &Amount) {
+        let Some(abilities) = crate::macros::keyword_abilities_of(name, x) else {
+            self.problem(format!("`{name}` is not a keyword macro with a number"));
+            return;
+        };
+        let saved = std::mem::take(&mut self.scope);
+        for ability in &abilities {
+            self.ability(ability);
+        }
+        self.scope = saved;
+    }
+
     /// A companion condition may only ask about the card itself, since the deck check reads it from the card alone.
     fn companion(&mut self, condition: &crate::companion::DeckCondition) {
         for pred in condition.unreadable() {
@@ -1948,6 +1994,12 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
                 self.payment_of_the_source(cost);
             }
+            Keyword::CumulativeUpkeepActs { acts, payable } => {
+                self.effect_list("acts", acts, false);
+                if let Some(payable) = payable {
+                    self.at("payable", |w| w.condition(payable));
+                }
+            }
             Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
@@ -1985,15 +2037,26 @@ impl<'a> Walker<'a> {
             | Keyword::Prowl(cost)
             | Keyword::Mayhem(cost)
             | Keyword::Disturb(cost)
+            | Keyword::MoreThanMeetsTheEye(cost)
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Freerunning(cost)
-            | Keyword::Spectacle(cost) => {
+            | Keyword::Spectacle(cost)
+            | Keyword::Splice { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
                 self.turn_up_cost(cost);
+            }
+            // Suspend X: the X is announced as the card is suspended, and the least X with it.
+            Keyword::Suspend { time: 0, cost } if cost.has_x() => {
+                self.uses("Keyword", "Suspend.X");
+                let held = (self.x_now, self.activated_cost);
+                (self.x_now, self.activated_cost) = (true, true);
+                self.at("cost", |w| w.cost(cost));
+                (self.x_now, self.activated_cost) = held;
+                self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Multikicker(cost)
             | Keyword::Overload(cost)
@@ -2001,7 +2064,6 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
-            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
@@ -2043,6 +2105,7 @@ impl<'a> Walker<'a> {
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
             Keyword::Macro { name, amount } => self.keyword_macro(name, *amount),
+            Keyword::MacroX { name, x } => self.keyword_macro_x(name, x),
             Keyword::Companion(condition) => self.companion(condition),
             Keyword::PartnerWith(name) => {
                 self.names
@@ -2371,7 +2434,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Unblocked { what }
             | TriggerPattern::CountersPut { what, .. }
-            | TriggerPattern::CountersRemoved { what, .. } => {
+            | TriggerPattern::CountersRemoved { what, .. }
+            | TriggerPattern::FinalChapter { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::Blocks { what, blocking } => {
@@ -3376,11 +3440,13 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::TurnFaceDown { what }
+            | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
             | Effect::Harness { what }
+            | Effect::Plot { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -4078,6 +4144,22 @@ impl Walker<'_> {
                     w.uses("Effect", &format!("Shield.{}", tag_of(when)));
                 }
             }
+            Effect::DelayedTrigger {
+                when,
+                effects,
+                targets,
+                ..
+            } if !targets.is_empty() => {
+                w.at("when", |w| w.trigger_pattern(when));
+                // Targets of its own, as a reflexive trigger has: its effects name them and see the bound names.
+                let mut inner = Scope::new(targets, true);
+                inner.names.clone_from(&w.scope.names);
+                inner.numbers.clone_from(&w.scope.numbers);
+                inner.dealer = true;
+                let saved = std::mem::replace(&mut w.scope, inner);
+                w.body_checks(targets, effects, true);
+                w.scope = saved;
+            }
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
@@ -4127,7 +4209,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 let saved = w.x_free;
                 w.x_free |= announces_x(cost);
+                w.r281_paying = *times == Amount::one()
+                    && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r281_paying = false;
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
@@ -4331,7 +4416,7 @@ impl Walker<'_> {
         }
         if from {
             self.uses("Ability", "From");
-            // A mana ability is activated at priority from the battlefield alone.
+            // A mana ability from another zone is activated at priority.
             if ability.is_mana_ability() {
                 self.uses("Ability", "ManaAbility.From");
             }
@@ -4545,6 +4630,8 @@ impl Walker<'_> {
             Ability::Spell { targets, effects } => {
                 // The spell has the X of its own cost; one that another ability grants or a token carries has none.
                 w.x_now = w.nested == 0;
+                // A madness, foretell or freerunning cost with `{X}` gives the spell its X.
+                w.x_free |= w.nested == 0 && w.r283_keyword_x;
                 w.body(targets, effects, false);
             }
             Ability::Loyalty {
@@ -4797,6 +4884,10 @@ impl Walker<'_> {
                     w.at("only", |w| w.reference(only, Kind::Object));
                 }
             }),
+            GameRule::LookAtFaceDown { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+            }),
             GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -4833,6 +4924,7 @@ impl Walker<'_> {
             | GameRule::SpendManaAs {
                 spells: Some(_), ..
             }
+            | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
@@ -4882,7 +4974,8 @@ impl Walker<'_> {
                 who,
                 spells: Some(spells),
                 ..
-            } => self.at(tag, |w| {
+            }
+            | GameRule::PayLifeForOneSymbol { who, spells, .. } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("spells", |w| w.selector(spells));
             }),
@@ -4978,7 +5071,7 @@ impl Walker<'_> {
 
     /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
     /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
-    /// from its owner's hand as though it had flash from the hand.
+    /// from its owner's hand as though it had flash from the hand; a spell cost change also works from the command zone.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
         let c8_eg_itself = matches!(
@@ -4996,6 +5089,8 @@ impl Walker<'_> {
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
+            // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
+            ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
@@ -5146,6 +5241,16 @@ impl Walker<'_> {
                 }
                 self.at("PreventCounted", |w| w.amount(amount));
             }
+            ReplaceBy::PreventCountedAnd { most, effects }
+                if matches!(when, ReplaceWhen::Damage { .. }) =>
+            {
+                self.at("most", |w| w.amount(most));
+                // The effects run as each damage event is lessened, where no target of the spell is read.
+                if serde_json::to_string(effects).is_ok_and(|json| json.contains("\"Target\"")) {
+                    self.problem("the effects of a counted prevention read no target; `Triggering` is the damaged one");
+                }
+                self.w9c_prevent_and(when, effects);
+            }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
             ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             _ => {}
@@ -5161,6 +5266,7 @@ impl Walker<'_> {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventCountedAnd { .. }
         ) {
             self.problem("only a shield changes the next damage");
         }
@@ -5377,6 +5483,7 @@ impl Walker<'_> {
     fn face(&mut self, index: usize, face: &Face) {
         self.face = index;
         self.w6c_cost_x = w6c_cost_x(face);
+        self.r283_keyword_x = r283_keyword_x(face);
         self.spell_targets = face
             .abilities
             .iter()
@@ -5396,6 +5503,24 @@ fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
         TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
             if what.0.contains(&Pred::This)
     )
+}
+
+/// Whether a counted cost counts the cards of the payer named as such ("unless its controller discards their hand": the
+/// cards in the hand of the controller of the target), which reads the same whoever counts it.
+fn r283_counts_payers_own(count: &Amount, who: &Ref) -> bool {
+    matches!(count, Amount::Count(Selector(preds))
+        if preds.contains(&Pred::OwnedBy(who.clone())) && !matches!(who, Ref::You))
+}
+
+/// Whether the face has a madness, foretell or freerunning cost with an `{X}` ("Madness {X}{B}{B}").
+fn r283_keyword_x(face: &Face) -> bool {
+    face.abilities.iter().any(|ability| {
+        matches!(
+            ability,
+            Ability::Keyword(Keyword::Madness(cost) | Keyword::Foretell(cost) | Keyword::Freerunning(cost))
+                if has_x_mana(cost)
+        )
+    })
 }
 
 /// Whether the face has an `{X}` in a cycling cost or in the cost of an activated ability that makes it monstrous.
@@ -5833,6 +5958,9 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
         || (matches!(k, Keyword::EquipTo { .. })
             && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Cumulative upkeep` for a cumulative upkeep whose cost is an action.
+        || (matches!(k, Keyword::CumulativeUpkeepActs { .. })
+            && "Cumulative upkeep".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Hexproof` for "hexproof from black" as for plain hexproof.
         || (matches!(k, Keyword::HexproofFrom(_)) && "Hexproof".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
@@ -6257,6 +6385,9 @@ mod tests {
     #[case::a_condition_on_a_search_of_the_library(r#"{"Spell":{"effects":[{"Search":{"filter":[],"as":"card"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#, &["Ability.Spell", "Condition.Searched", "Effect.If", "Effect.Search", "Effect.Shuffle"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
     #[case::mana_spent_to_cast(r#"{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ManaSpent", "Effect.Draw", "Effect.If"])]
+    #[case::r281_a_payment_of_one_of_two_costs(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"OneOf":[[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.OneOf.Pay", "Cost.PayLife", "Cost.Sacrifice", "Effect.Draw", "Effect.Pay"])]
+    #[case::r281_one_of_two_costs_paid_twice_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","times":2,"cost":[{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
+    #[case::r281_one_of_two_costs_beside_another_part_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Mana":"{1}"},{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.Mana", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
     #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]
     #[case::an_x_in_a_triggered_ability(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::an_x_in_a_delayed_trigger_the_spell_leaves_behind(r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Spell", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]

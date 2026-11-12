@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "28693e54-c171-4c14-bfa3-bed417779cd4",
+  "oracle_id": "8b1796d2-5b19-48ab-8699-01f45d427498",
+  "multiverse_ids": [
+    580634
+  ],
+  "tcgplayer_id": 288092,
+  "cardmarket_id": 677286,
+  "name": "Croakid Amphibonaut",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/28693e54-c171-4c14-bfa3-bed417779cd4",
+  "scryfall_uri": "https://scryfall.com/card/unf/43/croakid-amphibonaut?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598",
+    "normal": "https://cards.scryfall.io/normal/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598",
+    "large": "https://cards.scryfall.io/large/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598",
+    "png": "https://cards.scryfall.io/png/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.png?1783920598",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.webp?1783920598",
+    "grid": "https://cards.scryfall.io/grid/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.webp?1783920598",
+    "display": "https://cards.scryfall.io/display/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.webp?1783920598",
+    "art": "https://cards.scryfall.io/art/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.webp?1783920598",
+    "crop": "https://cards.scryfall.io/crop/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.webp?1783920598",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/8/28693e54-c171-4c14-bfa3-bed417779cd4.jpg?1783920598"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Frog Guest",
+  "oracle_text": "This creature has flying as long as you control a stickered permanent.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/28693e54-c171-4c14-bfa3-bed417779cd4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8b1796d2-5b19-48ab-8699-01f45d427498&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"I designed the Astrotorium's jetpacks to be lightweight and inexpensive. Nobody mentioned reliable.\"\n—Truss, chief engineer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gaboleps",
+  "artist_ids": [
+    "0c37cdfe-5651-4ae6-a3c8-e7153509f970"
+  ],
+  "illustration_id": "29cd0f60-36b9-4074-a504-63ce7a6182e6",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27082,
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.11",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.31",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580634&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCroakid%2BAmphibonaut",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCroakid%2BAmphibonaut",
+    "edhrec": "https://edhrec.com/route/?cc=Croakid+Amphibonaut"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F288092%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=677286&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Croakid+Amphibonaut&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

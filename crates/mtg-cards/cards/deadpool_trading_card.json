@@ -20,9 +20,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 124, "end": 185 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "SacrificeSelf"],
+            "effects": [{ "Draw": { "who": "Opponents" } }]
           }
         }
       ]

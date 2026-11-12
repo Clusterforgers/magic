@@ -24,6 +24,7 @@ mod opening;
 mod p12_amounts;
 #[cfg(test)]
 mod p12_arrived;
+mod r285_ruin;
 #[cfg(test)]
 mod r3d_atoms;
 mod resolution;
@@ -512,6 +513,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
         Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
+        Event::DoorLocked { object, door, .. } => {
+            crate::dk1c5_rooms::r281_fold_locked(state, *object, *door)?;
+        }
         Event::ManaAdded {
             player,
             mana,

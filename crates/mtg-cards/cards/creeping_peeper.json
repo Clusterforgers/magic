@@ -1,0 +1,30 @@
+{
+  "oracle_id": "acf22340-7ff9-443f-a846-c44bb5a3f4e7",
+  "name": "Creeping Peeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Peeper",
+      "oracle_fingerprint": "fcf39c86fc3a6d017c6595895b6bfec6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [
+                    { "Spell": { "types": ["Enchantment"] } },
+                    { "Special": "Unlock" },
+                    { "Special": "TurnFaceUp" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

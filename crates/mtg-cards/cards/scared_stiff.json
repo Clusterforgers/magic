@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4a5d8acd-a460-43b2-816a-70f61d7831af",
+  "name": "Scared Stiff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scared Stiff",
+      "oracle_fingerprint": "438105537ad35a6dc32ede3a15db0608",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Stickered", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

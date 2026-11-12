@@ -57,7 +57,6 @@ fn the_wordings_read_in_a_trigger(#[case] text: &str) {
 #[case::no_order("Put two cards from your hand on top of your library.")]
 #[case::an_order_for_one_card("Put a card from your hand on top of your library in any order.")]
 #[case::a_random_order("Put two cards from your hand on top of your library in a random order.")]
-#[case::the_bottom("Put two cards from your hand on the bottom of your library in any order.")]
 #[case::the_graveyard("Put two cards from your graveyard on top of your library in any order.")]
 #[case::into_the_library("Put a card from your hand into your library.")]
 #[case::shuffled("Put a card from your hand into your library, then shuffle.")]

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9cefff18-96b1-4090-93cc-1ca981a58fbd",
+  "name": "Temper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temper",
+      "oracle_fingerprint": "99db3a678698f223c2690750edcba9a7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": "X",
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "Triggering",
+                            "counter": "+1/+1",
+                            "count": "Triggering"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

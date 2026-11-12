@@ -1,7 +1,7 @@
 {
   "oracle_id": "57d7deaf-ee08-49ab-b239-1c77a1f65225",
   "name": "Halls of Mist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Halls of Mist",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{1}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 245 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "AttackedLastTurn"] },
+            "mods": ["CantAttack"]
           }
         }
       ]

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "127ce189-2758-4789-9e02-4aa71d013431",
+  "name": "Cut the Earthly Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut the Earthly Bond",
+      "oracle_fingerprint": "da65d5d28dee895cdc8ea169f5c26844",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "HasAttached": [{ "Subtype": "Aura" }] }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -7,12 +7,7 @@
       "name": "Ratchet, Field Medic",
       "oracle_fingerprint": "78baf68865a7683d0bcae9b2e8b4e519",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 77 }
-          }
-        },
+        { "Keyword": { "MoreThanMeetsTheEye": "{1}{W}" } },
         { "Keyword": "Lifelink" },
         {
           "Manual": {
@@ -26,17 +21,21 @@
       "name": "Ratchet, Rescue Racer",
       "oracle_fingerprint": "c8371f152b0b19e3135339c8d4944f8e",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 65 }
-          }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 75, "end": 233 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]

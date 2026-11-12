@@ -212,7 +212,27 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
     else {
         return Vec::new();
     };
-    state
+    let statics =
+        state
+            .rules()
+            .static_spell_costs
+            .iter()
+            .filter_map(|(rule, controller, source)| {
+                let Rule::SpellCost {
+                    applies_to,
+                    change,
+                    mana,
+                } = rule
+                else {
+                    return None;
+                };
+                Some(cost_modifier(
+                    *source,
+                    *controller,
+                    (applies_to, *change, mana),
+                ))
+            });
+    let effects = state
         .rule_effects
         .iter()
         .filter(|effect| state.is_alive(effect.controller))
@@ -235,23 +255,36 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                         .is_some_and(|object| object.reference() == *source)
                 })
                 .unwrap_or(target);
-            Some(Modifier {
+            Some(cost_modifier(
                 source,
-                controller: effect.controller,
-                ability: Arc::new(Ability::CostModifier {
-                    targeting: None,
-                    applies_to: applies_to.clone(),
-                    change: *change,
-                    mana: mana.clone(),
-                    per: mtg_cards::value::Amount::one(),
-                    condition: None,
-                    activating: None,
-                    least: 0,
-                    life: 0,
-                }),
-            })
-        })
-        .collect()
+                effect.controller,
+                (applies_to, *change, mana),
+            ))
+        });
+    statics.chain(effects).collect()
+}
+
+/// The cost modifier a `SpellCost` rule of `controller` stands for, from `source`.
+fn cost_modifier(
+    source: ObjectRef,
+    controller: PlayerId,
+    (applies_to, change, mana): (&Selector, CostChange, &ManaCostX),
+) -> Modifier {
+    Modifier {
+        source,
+        controller,
+        ability: Arc::new(Ability::CostModifier {
+            targeting: None,
+            applies_to: applies_to.clone(),
+            change,
+            mana: mana.clone(),
+            per: mtg_cards::value::Amount::one(),
+            condition: None,
+            activating: None,
+            least: 0,
+            life: 0,
+        }),
+    }
 }
 
 /// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects.

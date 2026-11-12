@@ -1,0 +1,37 @@
+{
+  "oracle_id": "48296cc0-0141-47c6-9ec8-ada6171fee6f",
+  "name": "Boom Scholar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Boom Scholar",
+      "oracle_fingerprint": "d6fabc5e087e98a9db4bacb7a5058be2",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 76 } }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{R}{G}",
+            "limit": "OncePerGame",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

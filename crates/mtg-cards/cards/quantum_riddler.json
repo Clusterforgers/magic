@@ -20,10 +20,30 @@
             "span": { "start": 47, "end": 174 }
           }
         },
+        { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 175, "end": 186 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "eab16fd1-735c-411f-a23a-0b93131c2eb2",
+  "name": "Volshe Tideturner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volshe Tideturner",
+      "oracle_fingerprint": "aa8cdb432239e2b455cad5f14886fb25",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [
+                    { "Spell": { "types": ["Instant", "Sorcery"] } },
+                    { "Spell": { "facts": ["Kicked"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

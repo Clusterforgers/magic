@@ -1,0 +1,31 @@
+{
+  "oracle_id": "91da3f60-733f-42f9-9614-547ce53c0d7e",
+  "name": "Foam Weapons Kiosk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foam Weapons Kiosk",
+      "oracle_fingerprint": "109958f8e6f589f9bd200f0c55cc6d6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

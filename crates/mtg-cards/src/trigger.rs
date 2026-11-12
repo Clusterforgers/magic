@@ -368,6 +368,15 @@ pub enum TriggerPattern {
         /// The chapter number.
         number: u32,
     },
+    /// The final chapter ability of a Saga matching the selector triggers or, with `resolves`, resolves (CR 714.2c):
+    /// the chapter ability with the greatest number the Saga has. `Triggering` is the Saga.
+    FinalChapter {
+        /// The Saga.
+        what: Selector,
+        /// It resolves; it triggers when false.
+        #[serde(default, skip_serializing_if = "is_false")]
+        resolves: bool,
+    },
     /// An Aura, Equipment or Fortification becomes attached to a permanent.
     Attached {
         /// The attachment; any when empty.
@@ -934,6 +943,15 @@ pub enum ReplaceBy {
     /// Up to this many of the damage in all, counted as the shield begins ("prevent the next X damage", CR 611.2c); only
     /// a shield uses it.
     PreventCounted(Amount),
+    /// Up to `most` of the damage in all, counted as the shield begins, is prevented, and the effects follow each event
+    /// it lessens, reading the damage prevented from it as the amount of the event (`Amount::Triggering`): "prevent the
+    /// next 3 damage ... You gain life equal to the damage prevented this way"; only a shield uses it.
+    PreventCountedAnd {
+        /// The most damage prevented in all.
+        most: Amount,
+        /// What follows each prevention, reading the damage prevented.
+        effects: Vec<Effect>,
+    },
     /// Half of the damage is prevented, rounded up (CR 615): "prevent half that damage, rounded up"; only a static ability uses it.
     PreventHalf,
     /// These effects happen instead.
@@ -1148,6 +1166,7 @@ impl ShieldShape {
                 | ReplaceBy::PreventNext
                 | ReplaceBy::PreventUpTo(_)
                 | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventCountedAnd { .. }
                 | ReplaceBy::PreventAnd(_)
                 | ReplaceBy::Multiply(_)
                 | ReplaceBy::Add(_)

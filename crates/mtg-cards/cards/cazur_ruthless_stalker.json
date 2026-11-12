@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ccfc74f7-bf32-4201-ad8f-f552ed7f96f8",
+  "name": "Cazur, Ruthless Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cazur, Ruthless Stalker",
+      "oracle_fingerprint": "74519c79869b1cff636592249351c321",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Ukkima, Stalking Shadow" } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8b9734c1-7185-40f6-8582-9f87109e3a09",
+  "name": "Far Fortune, End Boss",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Far Fortune, End Boss",
+      "oracle_fingerprint": "7436f346445695d94937e240add98af3",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 211, "end": 358 }
+          }
+        }
+      ]
+    }
+  ]
+}

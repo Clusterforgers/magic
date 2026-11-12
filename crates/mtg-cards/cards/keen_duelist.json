@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b8602f19-6fc2-43c4-b0c4-2cd11d5dbda2",
+  "name": "Keen Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keen Duelist",
+      "oracle_fingerprint": "8c3056621f38b7ef97fb1ce2c8574566",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "mine"
+                }
+              },
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }, "TopOfLibrary"]
+                  },
+                  "as": "theirs"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "mine" } } },
+              { "Reveal": { "what": { "Bound": "theirs" } } },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "theirs" }, "stat": "ManaValue" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "mine" }, "stat": "ManaValue" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "mine" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "theirs" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

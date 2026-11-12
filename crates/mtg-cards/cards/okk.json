@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f835a8d3-e117-4669-9952-6e9ce13b35fa",
+  "name": "Okk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okk",
+      "oracle_fingerprint": "19874f6c9db9e446e01556467b10032b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": {
+                  "AttackWithOthers": {
+                    "others": 1,
+                    "among": [
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": {
+                  "BlockWithOthers": {
+                    "others": 1,
+                    "among": [
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Gt",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

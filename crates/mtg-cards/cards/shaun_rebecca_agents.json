@@ -15,9 +15,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 155, "end": 197 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless"] } } },
+              { "Reflexive": { "effects": [{ "Mill": { "count": 2 } }] } }
+            ]
           }
         }
       ]

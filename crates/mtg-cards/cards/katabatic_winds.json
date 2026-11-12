@@ -1,7 +1,7 @@
 {
   "oracle_id": "70446c56-07de-4d7f-94ae-4da88fba41cf",
   "name": "Katabatic Winds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Katabatic Winds",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Phasing" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 146, "end": 264 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": ["CantAttack", "CantBlock"]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "TapCost",
+                    "sources": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                  }
+                }
+              }
+            }
           }
         }
       ]

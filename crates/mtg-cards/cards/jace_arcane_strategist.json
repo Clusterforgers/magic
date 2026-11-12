@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4126bab7-6a2a-43b2-ba65-77299f9bb8cf",
+  "name": "Jace, Arcane Strategist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, Arcane Strategist",
+      "oracle_fingerprint": "08a678157f88fb9dd9142a0caedba281",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

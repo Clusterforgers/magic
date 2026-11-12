@@ -1,7 +1,7 @@
 {
   "oracle_id": "4229140f-fa5b-4727-a16a-cbbd756d979e",
   "name": "Torgaar, Famine Incarnate",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Torgaar, Famine Incarnate",
@@ -17,9 +17,17 @@
           "CostModifier": { "applies_to": ["This"], "change": "Reduce", "mana": "{2}", "per": "X" }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 158, "end": 269 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": 1 } }],
+            "effects": [
+              {
+                "SetLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Half": { "of": { "StartingLife": { "Target": 0 } }, "up": false } }
+                }
+              }
+            ]
           }
         }
       ]

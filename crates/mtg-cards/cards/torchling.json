@@ -1,7 +1,7 @@
 {
   "oracle_id": "769748a8-d861-46f9-8fcd-18c3f0585bd6",
   "name": "Torchling",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Torchling",
@@ -23,9 +23,12 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 87, "end": 158 }
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              { "what": { "Object": ["Spell", "SingleTarget", { "Targeting": ["This"] }] } }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
           }
         },
         {

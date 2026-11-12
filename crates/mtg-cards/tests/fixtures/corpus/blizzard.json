@@ -1,0 +1,129 @@
+{
+  "object": "card",
+  "id": "c369e4f9-0f2b-446c-9e2d-d3eefab0586d",
+  "oracle_id": "698feaaa-2fff-4809-81d1-4caad44c6c0a",
+  "multiverse_ids": [
+    2551
+  ],
+  "tcgplayer_id": 4608,
+  "cardmarket_id": 6327,
+  "name": "Blizzard",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/c369e4f9-0f2b-446c-9e2d-d3eefab0586d",
+  "scryfall_uri": "https://scryfall.com/card/ice/227/blizzard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481",
+    "large": "https://cards.scryfall.io/large/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481",
+    "png": "https://cards.scryfall.io/png/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.png?1783947481",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.webp?1783947481",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.webp?1783947481",
+    "display": "https://cards.scryfall.io/display/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.webp?1783947481",
+    "art": "https://cards.scryfall.io/art/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.webp?1783947481",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.webp?1783947481",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c369e4f9-0f2b-446c-9e2d-d3eefab0586d.jpg?1783947481"
+  },
+  "mana_cost": "{G}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Cast this spell only if you control a snow land.\nCumulative upkeep {2} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)\nCreatures with flying don't untap during their controllers' untap steps.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Cumulative upkeep"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c369e4f9-0f2b-446c-9e2d-d3eefab0586d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A698feaaa-2fff-4809-81d1-4caad44c6c0a&unique=prints",
+  "collector_number": "227",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anson Maddocks",
+  "artist_ids": [
+    "634430a7-b5c3-4e4a-b2ac-164e084e47c9"
+  ],
+  "illustration_id": "bffbf7fa-12ec-4488-966a-7011eb8385df",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28791,
+  "prices": {
+    "usd": "0.82",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.76",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2551&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlizzard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlizzard",
+    "edhrec": "https://edhrec.com/route/?cc=Blizzard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4608%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6327&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Blizzard&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

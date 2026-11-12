@@ -1,7 +1,7 @@
 {
   "oracle_id": "61bbf710-4eb4-4e11-be6e-700a0c6a41ee",
   "name": "Narci, Fable Singer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Narci, Fable Singer",
@@ -15,9 +15,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 61, "end": 210 }
+          "Triggered": {
+            "when": {
+              "FinalChapter": {
+                "what": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }],
+                "resolves": true
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              },
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } } } }
+            ]
           }
         }
       ]

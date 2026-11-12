@@ -1,7 +1,7 @@
 {
   "oracle_id": "3affd37a-d4f6-488a-b30f-8e824b640687",
   "name": "Ral and the Implicit Maze",
-  "impl_status": "Full",
+  "impl_status": "Partial",
   "faces": [
     {
       "name": "Ral and the Implicit Maze",
@@ -26,36 +26,15 @@
           }
         },
         {
-          "Triggered": {
-            "when": { "Chapter": { "number": 2 } },
-            "effects": [
-              {
-                "Pay": {
-                  "cost": [{ "Discard": {} }],
-                  "paid": [
-                    { "ExileTop": { "count": 2, "as": "impulse" } },
-                    {
-                      "Rule": {
-                        "rule": {
-                          "MayCast": {
-                            "from": "Exile",
-                            "only": { "Bound": "impulse" },
-                            "play": true
-                          }
-                        },
-                        "duration": "UntilEndOfYourNextTurn"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 176, "end": 307 }
           }
         },
         {
-          "Triggered": {
-            "when": { "Chapter": { "number": 3 } },
-            "effects": [{ "CreateToken": { "token": { "Card": "Spellgorger Weird" } } }]
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 308, "end": 470 }
           }
         }
       ]

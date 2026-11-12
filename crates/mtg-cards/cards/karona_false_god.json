@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9ea1f10c-5ceb-4ac0-84c6-29046dea649a",
+  "name": "Karona, False God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karona, False God",
+      "oracle_fingerprint": "f77ef1d96e0267369d63e56d4ef5e041",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "Untap": { "what": "This" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "Triggering" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "type" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "type" }] },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

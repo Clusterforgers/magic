@@ -9,6 +9,7 @@
 mod inline;
 mod left;
 pub(crate) mod prim;
+mod r285_attacked;
 mod share;
 mod tree;
 mod value;
@@ -358,6 +359,7 @@ fn scope_of<'a>(
         granter: ability.and_then(|a| a.origin().granter()),
         as_was: false,
         inline: None,
+        entering: None,
     }
 }
 

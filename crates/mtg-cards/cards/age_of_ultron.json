@@ -1,7 +1,7 @@
 {
   "oracle_id": "51042581-4add-4487-a1b6-85446539b975",
   "name": "Age of Ultron",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Age of Ultron",
@@ -53,9 +53,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 270, "end": 378 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "them"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "them" },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "them" }, "counter": "+1/+1" } }
+            ]
           }
         }
       ]

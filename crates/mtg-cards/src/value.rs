@@ -363,6 +363,18 @@ pub enum TurnTally {
     /// The creatures that left the battlefield for any zone while the players read controlled them ("for each creature that
     /// left the battlefield under your control this turn"). Added up over the players.
     CreaturesLeftUnder,
+    /// The cards the players read own that were put into exile this turn, from anywhere; a token is no card ("if one or
+    /// more cards were put into exile this turn": `EachPlayer`). Added up over the players.
+    CardsExiled,
+    /// The permanents put into the player's hand from the battlefield this turn ("if a permanent was put into your hand
+    /// from the battlefield this turn"). Added up over the players.
+    PermanentsToHand,
+    /// The cards put into the player's graveyard from anywhere other than the battlefield this turn; a token is no card.
+    /// Added up over the players.
+    CardsGravedNotFromBattlefield,
+    /// The cards the player played from exile this turn: spells cast and lands played from exile ("if you didn't play a
+    /// card from exile this turn"). Added up over the players.
+    PlayedFromExile,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
@@ -395,6 +407,14 @@ pub enum TallyEvent {
     /// An ability of the kind was activated (the source, as for `Activated`): "the first equip ability you activate each
     /// turn", "if you've activated a loyalty ability this turn", "if you cycled two or more cards this turn".
     KindActivated(crate::ability::ActivationKind),
+    /// A permanent was destroyed by a spell or ability (as it last existed on the battlefield, for the player who controlled
+    /// the spell or ability): "if a noncreature permanent under your control was destroyed this turn by a spell or ability
+    /// an opponent controlled".
+    Destroyed,
+    /// A spell was countered by a spell or ability (as it was on the stack, for the player who controlled the spell or
+    /// ability that countered it): "if a creature spell you cast this turn was countered by a spell or ability an opponent
+    /// controlled".
+    Countered,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -588,6 +608,15 @@ pub enum Amount {
     TurnsTaken(Ref),
     /// The players' life total as the turn began (the most of them).
     LifeAsTurnBegan(Ref),
+    /// The cards the filter selects that lie above the source in its owner's graveyard, put there after it ("with three or
+    /// more creature cards above it"); with `directly` only the card right above it counts ("with a creature card
+    /// directly above it"). 0 when the source is in no graveyard.
+    CardsAbove {
+        /// Which cards count.
+        filter: Selector,
+        /// Only the card directly above the source.
+        directly: bool,
+    },
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
     CastLastTurn(Ref),
@@ -813,6 +842,11 @@ enum Tagged {
     StartingLife(Ref),
     TurnsTaken(Ref),
     LifeAsTurnBegan(Ref),
+    CardsAbove {
+        filter: Selector,
+        #[serde(default)]
+        directly: bool,
+    },
     CastLastTurn(Ref),
     TalliedLastTurn {
         who: Ref,
@@ -958,6 +992,11 @@ enum TaggedRef<'a> {
         what: TurnTally,
     },
     Party(&'a Ref),
+    CardsAbove {
+        filter: &'a Selector,
+        #[serde(skip_serializing_if = "std::ops::Not::not")]
+        directly: bool,
+    },
     Triggering,
     Tally {
         event: TallyEvent,
@@ -1061,6 +1100,7 @@ impl From<Tagged> for Amount {
             Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
             Tagged::TalliedLastTurn { who, what } => Amount::TalliedLastTurn { who, what },
             Tagged::Party(who) => Amount::Party(who),
+            Tagged::CardsAbove { filter, directly } => Amount::CardsAbove { filter, directly },
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
@@ -1167,6 +1207,11 @@ impl Serialize for Amount {
                 TaggedRef::TalliedLastTurn { who, what: *what }.serialize(serializer)
             }
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
+            Amount::CardsAbove { filter, directly } => TaggedRef::CardsAbove {
+                filter,
+                directly: *directly,
+            }
+            .serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
             Amount::Tally { event, who, filter } => TaggedRef::Tally {
@@ -1387,6 +1432,15 @@ pub enum Condition {
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
     FirstCombat,
+    /// A player the reference names was attacked in the combat phase in progress, directly or through a planeswalker
+    /// they control or a battle they protect (CR 506.2); an attacker that left combat still counts: "if you've been
+    /// attacked this step" in the declare attackers step.
+    AttackedThisCombat(Ref),
+    /// The player could cast a sorcery now (CR 307.1): their own turn, a main phase and an empty stack ("can cast
+    /// spells only any time they could cast a sorcery").
+    SorceryTiming,
+    /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
+    AfterCombat,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

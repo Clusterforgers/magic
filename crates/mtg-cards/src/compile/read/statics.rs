@@ -1816,6 +1816,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::DrawLimit { .. }
             | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::PayLifeForMana { .. }
+            | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
@@ -1960,6 +1961,14 @@ fn leading_subject(subject: &str, affected: &Ref) -> String {
     }
 }
 
+/// The other names of the permanent an Aura is attached to, as the subject of a static ability.
+const OTHER_ATTACHED: [&str; 4] = [
+    "Enchanted land",
+    "Enchanted artifact",
+    "Enchanted permanent",
+    "Enchanted planeswalker",
+];
+
 fn static_texts(
     affected: &Ref,
     mods: &[Modification],
@@ -2004,14 +2013,7 @@ fn static_texts(
             .count()
             <= 1
     {
-        subjects.extend(
-            [
-                "Enchanted land",
-                "Enchanted artifact",
-                "Enchanted permanent",
-            ]
-            .map(|subject| (subject.to_owned(), false)),
-        );
+        subjects.extend(OTHER_ATTACHED.map(|subject| (subject.to_owned(), false)));
     }
     let mut written: Vec<String> = subjects
         .into_iter()

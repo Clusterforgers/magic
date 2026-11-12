@@ -1,0 +1,27 @@
+{
+  "oracle_id": "65c5e120-7a3d-475f-9bb2-8ddb5062e4ba",
+  "name": "Surrounded by Orcs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surrounded by Orcs",
+      "oracle_fingerprint": "e923e34dd36badec58b91a7e3eba2b30",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Amass": { "subtype": "Orc", "count": 3, "as": "army" } },
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": { "Stat": { "of": { "Bound": "army" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

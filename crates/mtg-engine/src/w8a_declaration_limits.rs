@@ -141,6 +141,7 @@ mod tests {
             blockers: Vec::new(),
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: vec![(ObjectId(9), 2)],
             max_blockers: Vec::new(),
             required: Vec::new(),

@@ -42,6 +42,7 @@ Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
 Alter Reality
+Amass the Components
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -147,6 +148,7 @@ Behold the Multiverse
 Belisarius Cawl
 Bespoke Battlewagon
 Big Mother Mouser
+Big Winner
 Bighorner Rancher
 Bilious Skulldweller
 Binding the Old Gods
@@ -188,6 +190,7 @@ Bloodline Pretender
 Bloom Hulk
 Body Count
 Body Double
+Bog Witch
 Bog Wraith
 Boggart Ram-Gang
 Boiling Earth
@@ -353,6 +356,7 @@ Crawlspace
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Croakid Amphibonaut
 Crocanura
 Crop Rotation
 Crown of Skemfar
@@ -387,6 +391,7 @@ Custodi Lich
 Custodi Soulbinders
 Cut // Ribbons
 Cut of the Profits
+Cut the Earthly Bond
 Cybermen Squadron
 Cyclonic Rift
 Cytoshape
@@ -543,6 +548,7 @@ Electro's Bolt
 Electrodominance
 Elegant Edgecrafters
 Elenda and Azor
+Elfhame Druid
 Eliminate the Competition
 Elspeth's Nightmare
 Elven Ambush
@@ -551,6 +557,7 @@ Elvish Rejuvenator
 Emergency Eject
 Emmara Tandris
 Empowered Autogenerator
+Empyrial Archangel
 Empyrial Plate
 Empyrial Storm
 Emrakul, the Promised End
@@ -576,6 +583,7 @@ Etched Oracle
 Eternal Dragon
 Eternal Witness
 Eternal of Harsh Truths
+Ether
 Ethereal Armor
 Ethereal Usher
 Ethersworn Sphinx
@@ -718,6 +726,7 @@ Gift of Paradise
 Gilded Goose
 Gilded Lotus
 Gilt-Leaf Palace
+Giltspire Avenger
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
@@ -760,6 +769,7 @@ Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
+Grabby Tabby
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
@@ -820,6 +830,7 @@ Hei Bai, Spirit of Balance
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
+Hellkite Overlord
 Hellkite Tyrant
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
@@ -855,6 +866,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hundred-Talon Strike
 Hungry Graffalon
 Hungry Lynx
 Hunt the Weak
@@ -913,6 +925,7 @@ Izzet Charm
 J. Jonah Jameson
 Jace Beleren
 Jace's Archivist
+Jace, Arcane Strategist
 Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
@@ -928,6 +941,7 @@ Jodah's Codex
 Join the Maestros
 Jolting Merfolk
 Judoon Enforcers
+Jumbo Cactuar
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
@@ -991,6 +1005,7 @@ Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
 Lantern Flare
+Laquatus's Disdain
 Lash Out
 Lat-Nam Adept
 Latchkey Faerie
@@ -1246,7 +1261,9 @@ Ostracize
 Otherworldly Gaze
 Oubliette
 Out of Time
+Outwit
 Overcharged Amalgam
+Overeager Apprentice
 Overgrown Arch
 Overgrowth
 Overwhelming Stampede
@@ -1297,6 +1314,7 @@ Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
+Pippin, Warden of Isengard
 Pit Fight
 Pixie Guide
 Plague Drone
@@ -1373,6 +1391,7 @@ Rambling Possum
 Ramos, Dragon Engine
 Rampaging War Mammoth
 Rampant Growth
+Ramses Overdark
 Rancor
 Ransom Note
 Ravenous Leucrocota
@@ -1383,6 +1402,7 @@ Realm Seekers
 Reap the Past
 Reassembling Skeleton
 Reaver Titan
+Reciprocate
 Reckless Endeavor
 Reckless Impulse
 Reconstructed Thopter
@@ -1479,6 +1499,7 @@ Sandsteppe Scavenger
 Sandwurm Convergence
 Sangromancer
 Sanguine Bond
+Sanguine Sipper
 Sanitarium Skeleton
 Saproling Symbiosis
 Sarah Jane Smith
@@ -1491,6 +1512,7 @@ Savage Ventmaw
 Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
+Scared Stiff
 Scarring Memories
 Scatter to the Winds
 Scavenging Ooze
@@ -1509,6 +1531,7 @@ Search the Premises
 Seasoned Hallowblade
 Secluded Courtyard
 Secluded Glen
+Second Guess
 Second Harvest
 Secret Rendezvous
 Seedglaive Mentor
@@ -1617,6 +1640,7 @@ Souvenir Snatcher
 Sower of Temptation
 Space Marine Devastator
 Spawn of Mayhem
+Spear of Heliod
 Species Specialist
 Spectral Rider
 Spectral Shift
@@ -1817,6 +1841,7 @@ Thriving Isle
 Thriving Moor
 Throatseeker
 Throes of Chaos
+Throne of Makindi
 Throne of the High City
 Thrull Champion
 Thunder-Thrash Elder
@@ -1834,6 +1859,7 @@ Time Walk
 Time Warp
 Timeless Lotus
 Timeless Witness
+Timin, Youthful Geist
 Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -1847,6 +1873,7 @@ Tivit, Seller of Secrets
 Toll of the Invasion
 Tomb Tyrant
 Topiary Lecturer
+Torrent of Stone
 Torrential Gearhulk
 Totentanz, Swarm Piper
 Towering Titan
@@ -1881,6 +1908,7 @@ Two-Headed Giant of Foriys
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar
+Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
 Ulamog's Dreadsire
@@ -1928,6 +1956,7 @@ Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
+Venomous Vines
 Verdant Confluence
 Vestige of Emrakul
 Vesuva
@@ -1951,6 +1980,7 @@ Vivid Meadow
 Voice of All
 Voice of the Blessed
 Voidmage Husher
+Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
 Vorel of the Hull Clade
@@ -1978,6 +2008,7 @@ Warmonger Hellkite
 Warrior's Sword
 Wash Away
 Wasteland Raider
+Wastes
 Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear

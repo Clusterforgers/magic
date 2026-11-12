@@ -105,7 +105,19 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * The color of the symbol.
+ */
+color: unknown, 
+/**
+ * The spells it is for.
+ */
+spells: unknown, } } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
 /**
  * The players.
  */
@@ -149,7 +161,15 @@ what: unknown,
 /**
  * Only these objects, as they were named when the rule began; every card `what` selects when absent.
  */
-only: Array<ObjectRef> | null, } } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+only: Array<ObjectRef> | null, } } | { "LookAtFaceDown": { 
+/**
+ * The players who may look.
+ */
+who: Array<PlayerId>, 
+/**
+ * The permanents, judged when a seat looks; every face-down permanent when empty.
+ */
+what: unknown, } } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */

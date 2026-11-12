@@ -190,6 +190,14 @@ pub(crate) enum Tally {
     /// A permanent card put into a graveyard from anywhere (counted for its owner).
     Descended,
     /// A card put into a graveyard from anywhere, a token excepted (counted for its owner).
+    /// A card the player owns put into exile (`TurnTally::CardsExiled`).
+    R287Exiled,
+    /// A permanent put into the player's hand from the battlefield (`TurnTally::PermanentsToHand`).
+    R287ToHand,
+    /// A card put into the player's graveyard from anywhere but the battlefield (`TurnTally::CardsGravedNotFromBattlefield`).
+    R287GravedElsewhere,
+    /// A card the player played from exile, cast or as a land (`TurnTally::PlayedFromExile`).
+    R287PlayedFromExile,
     G10cCardsGraved,
     /// A creature card put into a graveyard from anywhere, a token excepted (counted for its owner).
     G10cCreatureCardsGraved,
@@ -285,6 +293,9 @@ pub struct GameState {
     pub(crate) next_timestamp: u64,
     pub(crate) next_object: u64,
     pub(crate) resolving: Option<Resolving>,
+    /// The last chapter ability that resolved (the ability, its Saga and its chapter number), for the final chapter
+    /// triggers; the fold sets it again from the log, so the fingerprint leaves it out.
+    pub(crate) r288_resolved_chapter: Option<(ObjectId, ObjectRef, u32)>,
     pub(crate) pending_triggers: Vec<PendingTrigger>,
     pub(crate) trigger_round: u32,
     pub(crate) delayed: Vec<Delayed>,

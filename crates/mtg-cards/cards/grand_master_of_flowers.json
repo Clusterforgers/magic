@@ -1,0 +1,64 @@
+{
+  "oracle_id": "1f3dbc53-4075-40b8-b70d-ce74d3ff5f6d",
+  "name": "Grand Master of Flowers",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grand Master of Flowers",
+      "oracle_fingerprint": "04acefb3496664ba5e0aed437c97be5e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddType": "Creature" },
+              { "SetCreatureTypes": ["Dragon", "God"] },
+              { "SetPT": { "power": 7, "toughness": 7 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Indestructible" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "loyalty" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasKeyword": "FirstStrike" } },
+                    { "Not": { "HasKeyword": "DoubleStrike" } },
+                    { "Not": { "HasKeyword": "Vigilance" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 255, "end": 419 }
+          }
+        }
+      ]
+    }
+  ]
+}

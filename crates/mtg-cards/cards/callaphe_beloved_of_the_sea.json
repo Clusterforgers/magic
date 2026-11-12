@@ -1,7 +1,7 @@
 {
   "oracle_id": "faf081dc-1fb2-47ac-a9c7-8001b4904120",
   "name": "Callaphe, Beloved of the Sea",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Callaphe, Beloved of the Sea",
@@ -15,9 +15,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 144, "end": 266 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "CostModifier": {
+                    "applies_to": [
+                      "Spell",
+                      { "ControlledBy": "Opponents" },
+                      { "Targeting": ["This"] }
+                    ],
+                    "change": "Increase",
+                    "mana": "{1}"
+                  }
+                }
+              }
+            ]
           }
         }
       ]

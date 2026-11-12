@@ -1,0 +1,24 @@
+{
+  "oracle_id": "0a836332-5905-4afa-a442-47d0bcf8acea",
+  "name": "Timin, Youthful Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timin, Youthful Geist",
+      "oracle_fingerprint": "3b08f0b1c4e660d0d071ad8ccaa95625",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Rhoda, Geist Avenger" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

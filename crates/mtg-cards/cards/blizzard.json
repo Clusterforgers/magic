@@ -1,0 +1,33 @@
+{
+  "oracle_id": "698feaaa-2fff-4809-81d1-4caad44c6c0a",
+  "name": "Blizzard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blizzard",
+      "oracle_fingerprint": "e98a5027e52cbbe9b1800221b5eb7c21",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Supertype": "Snow" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

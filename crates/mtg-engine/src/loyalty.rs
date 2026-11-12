@@ -28,6 +28,11 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
         return None;
     }
     let loyalty = object.card().loyalty.filter(|loyalty| *loyalty > 0)?;
+    // Compleated: two fewer for each Phyrexian symbol paid with 2 life (CR 702.150a), so as many fewer as the life paid.
+    let loyalty = loyalty.saturating_sub(crate::keywords::r282_compleated::fewer(object));
+    if loyalty == 0 {
+        return None;
+    }
     Some(Event::CountersChanged(CountersChanged {
         on: Target::Object(ObjectRef {
             id,

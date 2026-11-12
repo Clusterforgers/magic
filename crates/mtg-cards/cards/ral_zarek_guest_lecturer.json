@@ -9,9 +9,10 @@
       "abilities": [
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Surveil": { "count": 2 } }] } },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 15, "end": 68 }
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": null } }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
           }
         },
         {

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b011d6b2-8930-4192-aa94-82869faa991b",
+  "name": "Titan's Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titan's Presence",
+      "oracle_fingerprint": "26ca7d85322b4c9d037b3791f53a522e",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }, "Colorless"] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                      "op": "Le",
+                      "right": { "Stat": { "of": "Paid", "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

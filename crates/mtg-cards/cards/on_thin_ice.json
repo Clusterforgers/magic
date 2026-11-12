@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6736bb96-6718-48bb-9385-789d3349dc20",
+  "name": "On Thin Ice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "On Thin Ice",
+      "oracle_fingerprint": "05a2c92e42ad59340db2c7b2ceca5479",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "Type": "Land" }, { "Supertype": "Snow" }, { "ControlledBy": "You" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

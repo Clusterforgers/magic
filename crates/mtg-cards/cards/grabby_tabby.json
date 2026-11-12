@@ -1,0 +1,26 @@
+{
+  "oracle_id": "67ee367c-e346-48b6-8694-01c8d5f020cb",
+  "name": "Grabby Tabby",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grabby Tabby",
+      "oracle_fingerprint": "7cde3d0d696213bbd0c9a8d422742d5a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Stickered", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

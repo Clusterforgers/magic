@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4440e41c-042f-4e13-925a-c1e40b77e010",
+  "name": "Canker Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canker Abomination",
+      "oracle_fingerprint": "1c0a64cd16e069bb1f2d257856639714",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "-1/-1",
+                "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Chosen" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

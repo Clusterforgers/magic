@@ -950,6 +950,12 @@ pub enum Effect {
         /// What becomes harnessed.
         what: Ref,
     },
+    /// Exiles cards face up and makes them plotted (CR 702.170): each one's owner may cast it without paying its mana cost
+    /// as a sorcery on a later turn ("Exile target spell. It becomes plotted.").
+    Plot {
+        /// What becomes plotted.
+        what: Ref,
+    },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
     Surveil {
         /// Who surveils.
@@ -1028,6 +1034,12 @@ pub enum Effect {
         /// Who unlocks it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// The controller of the effect locks an unlocked door or unlocks a locked door of the Room `what` names, the door
+    /// they choose (CR 709.5): "Lock or unlock a door of target Room you control".
+    LockOrUnlockDoor {
+        /// The Room.
+        what: Ref,
     },
     /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
     /// player during that player's next turn."
@@ -1686,6 +1698,11 @@ pub enum Effect {
         /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         until: Option<Duration>,
+        /// Targets of its own, chosen each time it goes on the stack ("whenever you cast a spell this turn, put a
+        /// +1/+1 counter on target creature you control"); `Target(i)` in its effects names them. Without any, its
+        /// effects name the targets of the ability that set it up.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
     },

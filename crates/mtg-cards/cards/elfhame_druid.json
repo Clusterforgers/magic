@@ -1,7 +1,7 @@
 {
   "oracle_id": "519fccdb-fde4-42cb-b2ca-35fc36cf984a",
   "name": "Elfhame Druid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Elfhame Druid",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 74 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green", "Green"] },
+                  "only": [{ "Spell": { "facts": ["Kicked"] } }]
+                }
+              }
+            ]
           }
         }
       ]

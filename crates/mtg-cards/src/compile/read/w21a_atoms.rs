@@ -177,6 +177,7 @@ pub(super) fn w21a_adjective(word: &str) -> Option<Pred> {
         "prepared" => Pred::Prepared,
         "suspected" => Pred::Suspected,
         "solved" => Pred::Solved,
+        "stickered" => Pred::Stickered,
         "noncommander" => Pred::Not(Box::new(Pred::Commander)),
         _ => return None,
     })
@@ -193,6 +194,7 @@ pub(super) fn w21a_adjective_text(pred: &Pred) -> Option<String> {
             Pred::Prepared => "prepared",
             Pred::Suspected => "suspected",
             Pred::Solved => "solved",
+            Pred::Stickered => "stickered",
             _ => return None,
         }
         .to_owned(),

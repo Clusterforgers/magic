@@ -1,0 +1,37 @@
+{
+  "oracle_id": "15df3467-c67e-4ae2-9e6f-ffb6ad288a5a",
+  "name": "Ricochet Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ricochet Trap",
+      "oracle_fingerprint": "44f6443442d29a9ec815f3ba1145fb01",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "Opponents",
+                    "filter": [{ "Color": "Blue" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{R}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

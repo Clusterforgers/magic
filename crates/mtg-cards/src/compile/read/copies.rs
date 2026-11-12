@@ -170,6 +170,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             },
             once: true,
             this_turn: false,
+            targets: Vec::new(),
             effects: vec![if verb == "exile" {
                 Effect::Exile {
                     what: copy,
@@ -462,6 +463,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             },
             once: true,
             this_turn: false,
+            targets: Vec::new(),
             effects: vec![Effect::Sacrifice {
                 who: Ref::You,
                 filter: Selector(vec![Pred::Is(token)]),
@@ -1264,11 +1266,15 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
             },
         once: true,
         this_turn: false,
+        targets: delayed_targets,
         effects,
     } = delayed
     else {
         return None;
     };
+    if !delayed_targets.is_empty() {
+        return None;
+    }
     let when = match step {
         Step::End => "at the beginning of the next end step",
         Step::EndCombat => "at end of combat",

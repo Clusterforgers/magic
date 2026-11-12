@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8b1796d2-5b19-48ab-8699-01f45d427498",
+  "name": "Croakid Amphibonaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Croakid Amphibonaut",
+      "oracle_fingerprint": "3adca5e826bb00949ad75c7ba399e73f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Stickered", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

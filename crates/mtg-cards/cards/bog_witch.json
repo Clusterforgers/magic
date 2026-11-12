@@ -1,0 +1,19 @@
+{
+  "oracle_id": "85573cba-07ae-4421-a167-a8569f85c0f7",
+  "name": "Bog Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bog Witch",
+      "oracle_fingerprint": "80f5975cd6aa9f06bfadf9241eeb0e98",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", { "Discard": {} }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

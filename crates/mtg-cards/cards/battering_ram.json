@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e7b91fba-8d96-4040-95e8-f0023b65c497",
+  "name": "Battering Ram",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battering Ram",
+      "oracle_fingerprint": "3566dff9e7f28fb8be20ad31adedd029",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Subtype": "Wall" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "wall" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "wall" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

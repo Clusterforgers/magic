@@ -1,0 +1,27 @@
+{
+  "oracle_id": "68dfc626-66d5-4a40-9410-2b15676ebcec",
+  "name": "Beast Walkers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beast Walkers",
+      "oracle_fingerprint": "823f9756475ba2ac7e48b5635365b456",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

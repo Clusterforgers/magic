@@ -1,0 +1,85 @@
+{
+  "oracle_id": "2f2c549d-0293-4b9d-b9a8-ff392800f3a5",
+  "name": "Kozilek's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kozilek's Command",
+      "oracle_fingerprint": "4c0e0f0597237941a32fbaba79cb50f3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Eldrazi Spawn",
+                                "types": ["Creature"],
+                                "subtypes": ["Eldrazi", "Spawn"],
+                                "power": 0,
+                                "toughness": 1,
+                                "abilities": [
+                                  {
+                                    "Activated": {
+                                      "cost": ["SacrificeSelf"],
+                                      "effects": [
+                                        { "AddMana": { "mana": { "Fixed": ["Colorless"] } } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "count": "X"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Scry": { "who": { "Target": 0 }, "count": "X" } },
+                        { "Draw": { "who": { "Target": 0 } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "In": "Graveyard" }] },
+                          "bounds": { "min": 0, "max": "X" }
+                        }
+                      ],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

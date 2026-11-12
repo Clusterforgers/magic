@@ -1030,6 +1030,15 @@ pub enum Event {
         /// Who unlocked it.
         player: PlayerId,
     },
+    /// An unlocked door of a Room was locked by an effect (CR 709.5): the permanent loses that door's characteristics.
+    DoorLocked {
+        /// The Room.
+        object: ObjectId,
+        /// The door, as an index into the card's faces.
+        door: u8,
+        /// Who locked it.
+        player: PlayerId,
+    },
     /// A mutating creature spell merged with a creature (CR 702.140b, 729.2): the spell left the stack and its card is
     /// part of the permanent, which keeps its id, counters, attachments and status.
     Mutated {
@@ -1430,6 +1439,7 @@ impl Event {
             | Event::TurnedFaceUp { object, .. }
             | Event::TurnedFaceDown { object, .. }
             | Event::DoorUnlocked { object, .. }
+            | Event::DoorLocked { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }
             | Event::Cycled { object, .. }

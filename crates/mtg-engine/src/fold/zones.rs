@@ -175,6 +175,15 @@ fn w21a_tally_graveyards(
     if matches!(from, Zone::Graveyard(_)) && !matches!(to, Zone::Graveyard(_)) {
         state.tally(owner, Tally::W21aLeftGraveyard);
     }
+    if from == Zone::Battlefield && matches!(to, Zone::Hand(_)) {
+        state.tally(owner, Tally::R287ToHand);
+    }
+    let is_card = state
+        .object(card.id)
+        .is_some_and(|object| object.kind() != ObjectKind::Token);
+    if to == Zone::Exile && from != Zone::Exile && is_card {
+        state.tally(owner, Tally::R287Exiled);
+    }
     if to == Zone::Battlefield {
         let controller = state.object(card.id).map(GameObject::controller);
         if let Some(controller) = controller {
@@ -207,6 +216,9 @@ fn w21a_tally_graveyards(
         if let Some(creature) = card.map(|object| object.base_types().contains(CardType::Creature))
         {
             state.tally(owner, Tally::G10cCardsGraved);
+            if from != Zone::Battlefield {
+                state.tally(owner, Tally::R287GravedElsewhere);
+            }
             if creature {
                 state.tally(owner, Tally::G10cCreatureCardsGraved);
             }
@@ -334,6 +346,9 @@ fn land_played(
         .find(|zone| state.zones.get(*zone).contains(&object))
         .unwrap_or(Zone::Hand(player));
     expect_in(state, object, from)?;
+    if from == Zone::Exile {
+        state.tally(player, Tally::R287PlayedFromExile);
+    }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
     if let Some(permanent) = state
@@ -408,6 +423,13 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|card| card.zone() == Zone::Exile)
+    {
+        state.tally(player, Tally::R287PlayedFromExile);
+    }
     if choices.way == Some(CastWay::Warp) {
         state.tally(player, Tally::Warped);
     }
@@ -562,6 +584,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             let before = state.objects.get(object).map(|o| o.controller);
             log_sacrifice(state, (*cause, *from), before, *object);
+            super::r285_ruin::log_ruin(state, *cause, *from, *object);
             move_object(state, *object, *to, Placement::Top)?;
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from

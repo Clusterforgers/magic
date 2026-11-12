@@ -1,7 +1,7 @@
 {
   "oracle_id": "0a1dc797-7531-4494-afe6-add6ac3f74c0",
   "name": "Defiler of Vigor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Defiler of Vigor",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 202 }
+          "Rule": {
+            "rule": {
+              "PayLifeForOneSymbol": {
+                "who": "You",
+                "color": "Green",
+                "spells": [
+                  { "Color": "Green" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ]
+              }
+            }
           }
         },
         {

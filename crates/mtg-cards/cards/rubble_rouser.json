@@ -1,7 +1,7 @@
 {
   "oracle_id": "f35aa497-bd0f-4642-8713-820b9f014da5",
   "name": "Rubble Rouser",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rubble Rouser",
@@ -14,9 +14,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 75, "end": 182 }
+          "Activated": {
+            "cost": ["Tap", { "ExileFromGraveyard": { "filter": [] } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+              {
+                "Reflexive": {
+                  "effects": [
+                    { "DealDamage": { "source": "This", "to": "Opponents", "amount": 1 } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

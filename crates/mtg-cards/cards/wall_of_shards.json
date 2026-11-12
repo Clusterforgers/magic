@@ -1,7 +1,7 @@
 {
   "oracle_id": "8fab68ad-169d-46d3-93c4-5bdee4eea2ce",
   "name": "Wall of Shards",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wall of Shards",
@@ -10,9 +10,13 @@
         { "Keyword": "Defender" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 210 }
+          "Keyword": {
+            "CumulativeUpkeepActs": {
+              "acts": [
+                { "Choose": { "from": "Opponents", "as": "opponent" } },
+                { "GainLife": { "who": { "Bound": "opponent" }, "amount": 1 } }
+              ]
+            }
           }
         }
       ]

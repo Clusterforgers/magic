@@ -1,7 +1,7 @@
 {
   "oracle_id": "03cd7583-d054-4359-8c94-7776c54198ed",
   "name": "Party Thrasher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Party Thrasher",
@@ -21,9 +21,36 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 173, "end": 350 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    { "ExileTop": { "count": 2, "as": "exiled" } },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "exiled" } }] },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "chosen" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

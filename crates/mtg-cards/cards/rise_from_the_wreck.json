@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8eeb83b4-dca1-497e-a6b7-0485807aeef3",
+  "name": "Rise from the Wreck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise from the Wreck",
+      "oracle_fingerprint": "6b879ba2839e6cc585e04dcee73fa04e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Mount" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Vehicle" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasAbility": "Any" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 2 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 3 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

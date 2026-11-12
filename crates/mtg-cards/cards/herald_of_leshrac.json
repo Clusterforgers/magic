@@ -1,7 +1,7 @@
 {
   "oracle_id": "ed9e39ad-996c-4a68-8d11-e1c7d35f556c",
   "name": "Herald of Leshrac",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Herald of Leshrac",
@@ -9,21 +9,84 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 7, "end": 216 }
+          "Keyword": {
+            "CumulativeUpkeepActs": {
+              "acts": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Land" }, { "Not": { "ControlledBy": "You" } }] },
+                    "as": "land"
+                  }
+                },
+                {
+                  "Continuous": {
+                    "affected": { "Bound": "land" },
+                    "mods": [{ "SetController": "You" }],
+                    "duration": "Forever"
+                  }
+                }
+              ],
+              "payable": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Land" }, { "Not": { "ControlledBy": "You" } }] },
+                  "op": "Ge",
+                  "right": { "Counters": { "on": "This", "counter": { "Other": "age" } } }
+                }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 217, "end": 282 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 283, "end": 391 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  },
+                  "as": "land",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "land" },
+                        "mods": [{ "SetController": { "OwnerOf": { "Bound": "land" } } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

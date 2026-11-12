@@ -1,0 +1,87 @@
+{
+  "oracle_id": "e49d745c-5130-4b54-bcbb-643b08528456",
+  "name": "Kytheon, Hero of Akros // Gideon, Battle-Forged",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kytheon, Hero of Akros",
+      "oracle_fingerprint": "fcff233a227e8c5956aa1e9a953de665",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 172 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gideon, Battle-Forged",
+      "oracle_fingerprint": "929cfa74d11b302c85b6cfa0e7378a9d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 0, "end": 108 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Human", "Soldier"] },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -57,13 +57,16 @@ const SPELL_RULES: [&str; 6] = [
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
 /// may cast this spell without paying its mana cost.", or an alternative cost "..., you may pay 4 life rather than pay
-/// this spell's mana cost.", or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...").
+/// this spell's mana cost.", or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
+/// "If there are two or more ..., you may cast this spell as though it had flash.").
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell without paying its mana cost"))
         || body.contains(" rather than pay this spell's mana cost")
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
+        || (body.starts_with("If ")
+            && body.contains(", you may cast this spell as though it had flash"))
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -167,6 +170,21 @@ fn t16a_flavour_name(word: &str) -> bool {
         })
 }
 
+/// Whether the text is a flavour name that opens with a number written with thousands commas ("10,000 Needles"): the
+/// number, then words that each begin with a capital letter.
+fn r286_numbered_name(word: &str) -> bool {
+    let Some((number, rest)) = word.split_once(' ') else {
+        return false;
+    };
+    number.starts_with(|c: char| c.is_ascii_digit())
+        && number.chars().all(|c| c.is_ascii_digit() || c == ',')
+        && !rest.is_empty()
+        && rest
+            .split(' ')
+            .all(|part| part.chars().next().is_some_and(char::is_uppercase))
+        && w20b_ability_letters(rest)
+}
+
 /// Whether the word is the ability word Descend with its number ("Descend 4", CR 207.2c).
 fn r6e_descend(word: &str) -> bool {
     word.strip_prefix("Descend ")
@@ -182,9 +200,12 @@ pub(crate) fn ability_word_len(line: &str) -> Option<usize> {
     let is_word = word
         .chars()
         .next()
-        .is_some_and(|c| c.is_uppercase() || c == '~')
+        .is_some_and(|c| c.is_uppercase() || c == '~' || c.is_ascii_digit())
         && word.chars().count() <= 40
-        && (w20b_ability_letters(word) || t16a_flavour_name(word) || r6e_descend(word))
+        && (w20b_ability_letters(word)
+            || t16a_flavour_name(word)
+            || r6e_descend(word)
+            || r286_numbered_name(word))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)

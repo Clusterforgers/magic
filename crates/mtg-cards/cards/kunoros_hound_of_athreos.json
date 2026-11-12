@@ -1,7 +1,7 @@
 {
   "oracle_id": "d297ce39-da98-4351-be9d-24f4d09bee7f",
   "name": "Kunoros, Hound of Athreos",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kunoros, Hound of Athreos",
@@ -11,15 +11,23 @@
         { "Keyword": "Menace" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 28, "end": 85 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "action": "EnterBattlefield"
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 86, "end": 128 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": [{ "In": "Graveyard" }] } }
+              }
+            }
           }
         }
       ]

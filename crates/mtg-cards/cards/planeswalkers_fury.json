@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2e482522-2eef-4f6c-887a-fcc51be61dc2",
+  "name": "Planeswalker's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planeswalker's Fury",
+      "oracle_fingerprint": "0c165479af1896457dee61f0167f53b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

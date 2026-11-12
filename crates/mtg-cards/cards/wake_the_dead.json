@@ -1,0 +1,42 @@
+{
+  "oracle_id": "69bf79c3-87d1-4244-8d58-989307c91a12",
+  "name": "Wake the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wake the Dead",
+      "oracle_fingerprint": "97414b6d170ca64dbc01f763067bd615",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": ["InCombat", { "Not": "YourTurn" }] } } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "returned" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "returned" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "returned" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

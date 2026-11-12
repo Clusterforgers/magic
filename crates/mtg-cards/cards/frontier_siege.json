@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4cfaa5cf-cc3d-49a7-9544-38a8bb7e9ec1",
+  "name": "Frontier Siege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frontier Siege",
+      "oracle_fingerprint": "1aff80d6288036cc07018d41863193af",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Khans", "Dragons"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "StepBegins": { "step": "Main1", "whose": "You" } },
+                { "StepBegins": { "step": "Main2", "whose": "You" } }
+              ]
+            },
+            "if": { "EnteredAs": "Khans" },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Flying" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "EnteredAs": "Dragons" },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Fight": { "what": "Triggering", "with": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

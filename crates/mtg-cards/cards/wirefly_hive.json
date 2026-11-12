@@ -1,0 +1,41 @@
+{
+  "oracle_id": "846bedc3-a1e0-4f11-a095-85b60ad482da",
+  "name": "Wirefly Hive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wirefly Hive",
+      "oracle_fingerprint": "d75b449621757ee025f0d470750f13fa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Wirefly",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "lose": [{ "Destroy": { "what": { "Each": [{ "Named": "Wirefly" }] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b48da54c-002f-4afb-9fdf-2a3e1cf77383",
+  "name": "Jared Carthalion, True Heir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jared Carthalion, True Heir",
+      "oracle_fingerprint": "6f4d1b59d3b1924b5e0822afe0a12073",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 106 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            },
+            "condition": { "Monarch": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

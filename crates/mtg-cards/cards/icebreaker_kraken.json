@@ -31,9 +31,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 218, "end": 318 }
+          "Activated": {
+            "cost": [
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Supertype": "Snow" }, { "Type": "Land" }],
+                  "count": 3
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
           }
         }
       ]

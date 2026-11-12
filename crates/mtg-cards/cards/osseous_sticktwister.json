@@ -1,7 +1,7 @@
 {
   "oracle_id": "33c3a81a-6cea-48c9-b966-67084d96e74f",
   "name": "Osseous Sticktwister",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Osseous Sticktwister",
@@ -9,9 +9,88 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 9, "end": 334 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "opponent" },
+                        "options": [
+                          [
+                            {
+                              "Sacrifice": {
+                                "who": { "Bound": "opponent" },
+                                "filter": [{ "Not": { "Type": "Land" } }]
+                              }
+                            },
+                            {
+                              "If": {
+                                "condition": { "Not": "Performed" },
+                                "then": [
+                                  {
+                                    "DealDamage": {
+                                      "to": { "Bound": "opponent" },
+                                      "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "If": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Count": [
+                                        { "In": "Hand" },
+                                        { "OwnedBy": { "Bound": "opponent" } }
+                                      ]
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": [{ "Discard": { "who": { "Bound": "opponent" } } }],
+                                "otherwise": [
+                                  {
+                                    "DealDamage": {
+                                      "to": { "Bound": "opponent" },
+                                      "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "DealDamage": {
+                                "to": { "Bound": "opponent" },
+                                "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5542ea4d-34ab-4f89-8894-793a7038f501",
+  "name": "Monstrous Emergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrous Emergence",
+      "oracle_fingerprint": "430782e943efbf882325c55581c860fc",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

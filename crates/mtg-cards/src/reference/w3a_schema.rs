@@ -15,13 +15,15 @@ use super::{all_defs, reachable};
 /// The type a rules file is.
 const W3A_ROOT: &str = "Card";
 
-/// Fields the checker fills in from the imported card, so a proposal may leave them out.
+/// Fields a proposal may leave out: those the checker fills in from the imported card, and those the hand-written
+/// deserializer of `Amount` defaults (`value.rs`).
 const W3A_FILLED: &[(&str, &str)] = &[
     ("Card", "oracle_id"),
     ("Card", "name"),
     ("Card", "impl_status"),
     ("Face", "name"),
     ("Face", "oracle_fingerprint"),
+    ("Amount::CardsAbove", "directly"),
 ];
 
 /// The schema of a card rules file: the root object with every type it reaches under `$defs`.
@@ -95,7 +97,7 @@ impl Builder<'_> {
                     continue;
                 }
                 Shape::Tuple(items) => self.tuple(items),
-                Shape::Fields(fields) => self.object("", fields),
+                Shape::Fields(fields) => self.object(&format!("{name}::{}", variant.name), fields),
             };
             options.push(json!({
                 "type": "object",

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "def592b9-9d8b-4e2d-9b52-e1bc9f4bd019",
+  "oracle_id": "66ce0ae5-7000-4e4a-891f-f571f0e58cd7",
+  "multiverse_ids": [
+    194017
+  ],
+  "mtgo_id": 35791,
+  "mtgo_foil_id": 35792,
+  "tcgplayer_id": 34437,
+  "cardmarket_id": 22248,
+  "name": "Slingbow Trap",
+  "lang": "en",
+  "released_at": "2010-02-05",
+  "uri": "https://api.scryfall.com/cards/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019",
+  "scryfall_uri": "https://scryfall.com/card/wwk/111/slingbow-trap?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:27:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043",
+    "large": "https://cards.scryfall.io/large/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043",
+    "png": "https://cards.scryfall.io/png/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.png?1783942043",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.webp?1783942043",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.webp?1783942043",
+    "display": "https://cards.scryfall.io/display/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.webp?1783942043",
+    "art": "https://cards.scryfall.io/art/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.webp?1783942043",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.webp?1783942043",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019.jpg?1783942043"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Instant — Trap",
+  "oracle_text": "If a black creature with flying is attacking, you may pay {G} rather than pay this spell's mana cost.\nDestroy target attacking creature with flying.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2f248ce6-c2a5-4c6f-a2be-0c593fbe173c",
+  "set": "wwk",
+  "set_name": "Worldwake",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2f248ce6-c2a5-4c6f-a2be-0c593fbe173c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awwk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/wwk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/def592b9-9d8b-4e2d-9b52-e1bc9f4bd019/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A66ce0ae5-7000-4e4a-891f-f571f0e58cd7&unique=prints",
+  "collector_number": "111",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The Tajuru elves devised ways to let the forest defend itself.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "c6a68283-4b72-49c3-a1cc-fe0c31084da4",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29977,
+  "prices": {
+    "usd": "0.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.23",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=194017&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlingbow%2BTrap",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlingbow%2BTrap",
+    "edhrec": "https://edhrec.com/route/?cc=Slingbow+Trap"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F34437%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=22248&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/35791?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

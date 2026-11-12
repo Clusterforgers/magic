@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f104a6a2-1d98-48c7-90f8-eed94eab0ca0",
+  "name": "Trash Bin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trash Bin",
+      "oracle_fingerprint": "6bd186f35871e86fdc98e426c7fc4c1a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

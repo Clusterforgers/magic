@@ -338,6 +338,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             toxic,
             ..
         } => {
+            if *amount > 0 {
+                let combat = crate::replace::in_combat_damage(state);
+                if let Some(permanent) = state
+                    .objects
+                    .get_mut(source)
+                    .and_then(|object| object.permanent.as_mut())
+                {
+                    permanent.designations.dealt[0] = true;
+                    permanent.designations.dealt[1] |= combat;
+                }
+            }
             let hit = match target {
                 DamageTarget::Player(id) => {
                     damage_player(state, *source, *id, (*amount, *form, *toxic))?;

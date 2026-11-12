@@ -7,12 +7,7 @@
       "name": "Karplusan Minotaur",
       "oracle_fingerprint": "62521f4919c3136632d65a53c639804c",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 180 }
-          }
-        },
+        { "Keyword": { "CumulativeUpkeepActs": { "acts": [{ "FlipCoin": {} }] } } },
         {
           "Triggered": {
             "when": { "CoinFlipWon": { "who": "You" } },

@@ -47,4 +47,9 @@ removed?: number,
  * The cards of the caster's hand revealed and spliced onto the spell (CR 702.47), in the order chosen: the spell has
  * their effects after its own.
  */
-spliced?: Array<ObjectId>, };
+spliced?: Array<ObjectId>, 
+/**
+ * The life paid in place of Phyrexian symbols to cast the spell (CR 107.4f), 2 for each: a planeswalker with
+ * compleated enters with that many fewer loyalty counters (CR 702.150a).
+ */
+phyrexian_life?: number, };

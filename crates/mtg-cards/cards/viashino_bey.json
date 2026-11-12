@@ -1,0 +1,14 @@
+{
+  "oracle_id": "d9c9b933-74f4-4898-bbb8-2da76b86ccda",
+  "name": "Viashino Bey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viashino Bey",
+      "oracle_fingerprint": "5c2cfc78b45a5dc6e7ebb0e5c18a44d1",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AttackWithAll" } } } }
+      ]
+    }
+  ]
+}

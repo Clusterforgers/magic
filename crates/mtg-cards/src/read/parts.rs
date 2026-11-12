@@ -634,6 +634,19 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "prevent it, then:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::PreventCountedAnd {
+            most,
+            effects: list,
+        } => {
+            out.push(Step::new(
+                depth,
+                format!(
+                    "prevent up to {} of it in all, then with the damage prevented:",
+                    generic::node(ctx, most)
+                ),
+            ));
+            effects::list(ctx, list, depth + 1, out);
+        }
         other => out.push(Step::new(depth, generic::node(ctx, other))),
     }
 }
@@ -648,9 +661,20 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
     match quirk {
         CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
         CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
+        CombatQuirk::AttackWithOthers { others, .. } => {
+            format!("{who} can't attack unless at least {others} other chosen creatures attack")
+        }
+        CombatQuirk::BlockWithOthers { others, .. } => {
+            format!("{who} can't block unless at least {others} other chosen creatures block")
+        }
+        CombatQuirk::AttackAlone => format!("{who} can attack only alone"),
+        CombatQuirk::AttackWithAll => {
+            format!("if {who} attack, all creatures their controller controls attack if able")
+        }
         CombatQuirk::AttackDespiteDefender => {
             format!("{who} can attack as though they didn't have defender")
         }
+        CombatQuirk::AttackAsThoughHaste => format!("{who} can attack as though they had haste"),
         CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
         CombatQuirk::MayStayTapped => {
             format!("{who} may choose not to untap during their controller's untap step")

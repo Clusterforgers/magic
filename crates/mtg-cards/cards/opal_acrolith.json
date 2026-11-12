@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d08b8dd6-3a44-4e86-8ce8-2d0a014a9aa8",
+  "name": "Opal Acrolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Acrolith",
+      "oracle_fingerprint": "cdcf291fb7c6972ac583eb7b682f6be8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Enchantment" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 4 } },
+                    { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Soldier"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

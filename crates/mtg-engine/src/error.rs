@@ -235,6 +235,12 @@ pub enum IllegalAnswer {
     /// A rule keeps the only one of its kind from being declared.
     #[error("the {0} can't be declared alone")]
     NotAlone(&'static str),
+    /// A rule keeps a creature from being declared without enough others of a kind beside it.
+    #[error("the {0} can't be declared without enough others beside it")]
+    TooFewBeside(&'static str),
+    /// A rule lets a creature be declared only alone.
+    #[error("the {0} can be declared only alone")]
+    OnlyAlone(&'static str),
     /// The wrong number of items was chosen.
     #[error("expected {expected} items but got {got}")]
     WrongCount {

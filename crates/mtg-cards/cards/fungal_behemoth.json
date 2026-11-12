@@ -1,0 +1,38 @@
+{
+  "oracle_id": "844f1fb4-81d2-4a2a-9de7-20e6bf37d77b",
+  "name": "Fungal Behemoth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fungal Behemoth",
+      "oracle_fingerprint": "50220b548fc345ca142f57c1bdafd8ba",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 110 }
+          }
+        },
+        {
+          "Keyword": {
+            "Suspend": { "time": 0, "cost": [{ "Mana": "{X}{G}{G}" }, { "XAtLeast": 1 }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,9 +17,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 164, "end": 261 }
+          "Activated": {
+            "cost": "{3}",
+            "by": "Anyone",
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "This" }, "amount": 2 } },
+              { "Draw": {} }
+            ]
           }
         }
       ]

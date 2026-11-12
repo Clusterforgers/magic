@@ -1,7 +1,7 @@
 {
   "oracle_id": "59154c04-6bc5-4b95-af1f-6de5fed05649",
   "name": "Legolas's Quick Reflexes",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Legolas's Quick Reflexes",
@@ -9,9 +9,42 @@
       "abilities": [
         { "Keyword": "SplitSecond" },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 130, "end": 307 }
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Reach" },
+                    { "AddKeyword": "Hexproof" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Tapped": { "what": ["This"] } },
+                          "targets": [
+                            {
+                              "what": { "Object": [{ "Type": "Creature" }] },
+                              "bounds": { "min": 0, "max": 1 }
+                            }
+                          ],
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "to": { "Target": 0 },
+                                "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

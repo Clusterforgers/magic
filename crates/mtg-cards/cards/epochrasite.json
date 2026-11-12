@@ -1,0 +1,29 @@
+{
+  "oracle_id": "54e2d2ff-51d2-48a5-ab2e-7d9de8c78b7e",
+  "name": "Epochrasite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Epochrasite",
+      "oracle_fingerprint": "e39b371744d4e3622807b0eb2e8c5668",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": ["This", { "Not": { "WasCast": { "by": "You", "from": "Hand" } } }]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 91, "end": 177 }
+          }
+        }
+      ]
+    }
+  ]
+}
