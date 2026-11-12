@@ -1,0 +1,77 @@
+{
+  "oracle_id": "0a744206-04c4-46cb-b64d-cf192c9324df",
+  "name": "Rhino's Rampage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhino's Rampage",
+      "oracle_fingerprint": "efb23174e1621b0fdef14ef5ff3c8bb1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "excess": { "as": "excess" }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 1 },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Target": 1 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Gt", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Artifact" },
+                                { "Not": { "Type": "Creature" } },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                              ]
+                            },
+                            "bounds": { "min": 0, "max": 1 }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

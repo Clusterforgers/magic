@@ -1,0 +1,63 @@
+{
+  "oracle_id": "744d6daa-2f93-43e1-88c0-0d9d5f9d111b",
+  "name": "Reweave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reweave",
+      "oracle_fingerprint": "2e90526a6b0368e7d22910fb2e909db5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "player" } },
+              {
+                "Sacrifice": {
+                  "who": { "Bound": "player" },
+                  "filter": [{ "Is": { "Target": 0 } }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" },
+                              { "Type": "Battle" }
+                            ]
+                          },
+                          { "SharesType": { "Bound": "sacrificed" } }
+                        ],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "under": { "Bound": "player" } } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{2}{U}{U}" } } }
+      ]
+    }
+  ]
+}

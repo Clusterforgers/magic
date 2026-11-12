@@ -1,0 +1,39 @@
+{
+  "oracle_id": "84587724-af96-4396-a0b3-1133d492d915",
+  "name": "Atalya, Samite Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atalya, Samite Master",
+      "oracle_fingerprint": "b43b879f31ce83dc30c2ca852e2248f1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", { "XColor": "White" }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Damage": { "to": { "Target": 0 } } },
+                            "by": { "PreventCounted": "X" },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": "X" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

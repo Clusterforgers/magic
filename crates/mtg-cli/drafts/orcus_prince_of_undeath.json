@@ -1,0 +1,82 @@
+{
+  "oracle_id": "9d02b5e1-bd29-45ad-b11d-f2cd21c48979",
+  "name": "Orcus, Prince of Undeath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcus, Prince of Undeath",
+      "oracle_fingerprint": "668038a0f4865500479ea1b6cb1cec6b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Times": { "by": -1, "of": "X" } },
+                                  "toughness": { "Times": { "by": -1, "of": "X" } }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        { "LoseLife": { "amount": "X" } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Together": {
+                              "what": {
+                                "Object": [
+                                  { "Type": "Creature" },
+                                  { "OwnedBy": "You" },
+                                  { "In": "Graveyard" }
+                                ]
+                              },
+                              "rule": { "TotalManaValueAtMost": "X" }
+                            }
+                          },
+                          "bounds": { "min": 0, "max": "X" }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": {} },
+                            "as": "returned"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "returned" },
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

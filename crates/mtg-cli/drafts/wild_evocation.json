@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9cf1af53-ab9f-4cce-bdb5-2c13b805523d",
+  "name": "Wild Evocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Evocation",
+      "oracle_fingerprint": "471f1022de18b226692ce7c1ae4921de",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "picked"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picked" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "picked" },
+                      "selector": [{ "Type": "Land" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "under": "Triggering" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CastFromZone": {
+                        "who": "Triggering",
+                        "what": { "Bound": "picked" },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "104f65d3-bedb-4dc5-a5dd-8ab9fe796af4",
+  "name": "Immard, the Stormcleaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immard, the Stormcleaver",
+      "oracle_fingerprint": "198434c6a5c6a1053a28505662d5167b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "PutCounters": { "on": "This", "counter": "charge" } }],
+                  "second": [
+                    { "RemoveCounters": { "from": "This", "counter": "charge" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Modal": {
+                              "modes": [
+                                {
+                                  "targets": [{ "what": "AnyTarget" }],
+                                  "effects": [
+                                    {
+                                      "DealDamage": {
+                                        "source": "This",
+                                        "to": { "Target": 0 },
+                                        "amount": 4
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "effects": [
+                                    {
+                                      "Continuous": {
+                                        "affected": "This",
+                                        "mods": [
+                                          { "AddKeyword": "Lifelink" },
+                                          { "AddKeyword": "Indestructible" }
+                                        ],
+                                        "duration": "UntilEndOfTurn"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

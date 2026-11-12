@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d57adf99-972a-43fe-9ba2-2b01e673252f",
+  "name": "Jenny Flint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jenny Flint",
+      "oracle_fingerprint": "57182d7d8c143cade52daddeb52446cd",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Madame Vastra" } },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Macro": { "name": "training", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [{ "AnyOf": [{ "Subtype": "Clue" }, { "Subtype": "Food" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
