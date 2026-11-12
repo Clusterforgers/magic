@@ -858,7 +858,7 @@ impl GameState {
                 mtg_cards::refs::Side::Left => (player.index() + i) % n,
                 mtg_cards::refs::Side::Right => (player.index() + n - i) % n,
             })
-            .filter(|i| self.players.get(*i).is_some_and(|p| p.is_in_game()))
+            .filter(|i| self.players.get(*i).is_some_and(crate::player::Player::is_in_game))
             .map(PlayerId::from_index)
             .collect()
     }

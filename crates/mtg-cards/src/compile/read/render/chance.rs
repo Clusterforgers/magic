@@ -7,6 +7,15 @@ use crate::effect::{DieRow, VoteFor};
 use crate::refs::Ref;
 use crate::value::Condition;
 
+/// The sentences of the whole texts (secret numbers, bids and the texts of card pack r37-6) at the head of `effects`,
+/// and how many effects they cover.
+fn r376_whole_text(effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+    super::super::dk27_numbers::dk27_numbers_text(effects)
+        .or_else(|| super::super::r376_secret::r376_secret_text(effects))
+        .or_else(|| super::super::r376_seats::r376_roll_treasures_text(effects))
+        .or_else(|| super::super::dk27_bid::dk27_bid_text(effects))
+}
+
 impl Writer<'_> {
     /// "flip five coins. Take an extra turn after this one for each coin that comes up heads": two or more flips of yours
     /// in a row, each with the same `win` list and nothing on a loss, and the number of effects they cover.
@@ -42,11 +51,7 @@ impl Writer<'_> {
     /// "flip a coin", "if you win the flip, S" and "if you lose the flip, S" as sentences, or "roll a d20", and the number
     /// of effects they cover.
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
-        let whole = (self.ep22_flips(effects))
-            .or_else(|| super::super::dk27_numbers::dk27_numbers_text(effects))
-            .or_else(|| super::super::r376_secret::r376_secret_text(effects))
-            .or_else(|| super::super::r376_seats::r376_roll_treasures_text(effects))
-            .or_else(|| super::super::dk27_bid::dk27_bid_text(effects));
+        let whole = (self.ep22_flips(effects)).or_else(|| r376_whole_text(effects));
         if whole.is_some() {
             return whole;
         }
