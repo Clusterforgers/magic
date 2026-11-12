@@ -172,3 +172,4 @@ mod w7d_selector_scenarios;
 mod w8a_declaration_limits;
 mod w9a_expend;
 mod wave_goodbye;
+mod wr38_reads;
