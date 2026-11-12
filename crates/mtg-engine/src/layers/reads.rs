@@ -237,7 +237,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
         Ref::OwnerOf(inner) => reads_of_ref(inner),
-        Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
+        Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
             .iter()
@@ -362,7 +362,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
-        Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
+        Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::FromSource(inner) => {
+            reads_of_selector(inner)
+        }
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),

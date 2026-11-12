@@ -891,6 +891,7 @@ const RUNS: &[&str] = &[
     "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
+    "Pred.FromSource",
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.LeastAmong",

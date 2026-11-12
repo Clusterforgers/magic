@@ -649,7 +649,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Either));
             }
-            Ref::Arrived { of, .. } | Ref::Departed(of) => {
+            Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => {
                 self.expect(Kind::Object, want);
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
@@ -713,6 +713,10 @@ impl<'a> Walker<'a> {
             Pred::TargetedBy(who) => {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
+            }
+            Pred::FromSource(source) => {
+                self.uses("Pred", "FromSource");
+                self.at("source", |w| w.selector(source));
             }
             Pred::GreatestAmong { group, .. } => {
                 self.uses("Pred", "GreatestAmong");
@@ -839,6 +843,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
@@ -2935,6 +2940,7 @@ impl Walker<'_> {
             | Ref::Convoked
             | Ref::Arrived { .. }
             | Ref::Departed(_)
+            | Ref::SourceOf(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope

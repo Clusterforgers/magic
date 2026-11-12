@@ -57,13 +57,15 @@ const SPELL_RULES: [&str; 6] = [
 
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
 /// may cast this spell without paying its mana cost.", or an alternative cost "..., you may pay 4 life rather than pay
-/// this spell's mana cost.", or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
+/// this spell's mana cost.", or a cost change in some turns ("During turns other than yours, this spell costs {3} more to
+/// cast."), or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
 /// "If there are two or more ..., you may cast this spell as though it had flash.").
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell without paying its mana cost"))
         || body.contains(" rather than pay this spell's mana cost")
+        || (body.starts_with("During ") && body.contains(", this spell costs "))
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))

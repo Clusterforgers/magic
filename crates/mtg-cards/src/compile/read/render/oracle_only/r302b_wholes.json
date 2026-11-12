@@ -1,0 +1,597 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 1
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": 2
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 1
+       },
+       "amount": 3
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 2
+       },
+       "amount": 4
+      }
+     },
+     {
+      "Shield": {
+       "when": {
+        "ZoneChange": {
+         "what": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "DamagedBy": "This"
+          }
+         ],
+         "from": "Battlefield",
+         "to": "Graveyard"
+        }
+       },
+       "by": {
+        "MoveTo": "Exile"
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "~ deals 2 damage to target creature, 3 damage to another target creature, and 4 damage to a third target creature. If a creature dealt damage this way would die this turn, exile it instead."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "AttackingPlayer": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Saproling",
+         "colors": [
+          "Green"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Saproling"
+         ],
+         "power": 1,
+         "toughness": 1
+        }
+       },
+       "blocking": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Create a 1/1 green Saproling creature token that's blocking target creature attacking you.\nDraw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Elemental Cat",
+         "colors": [
+          "Red"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Elemental",
+          "Cat"
+         ],
+         "power": 1,
+         "toughness": 1,
+         "abilities": [
+          {
+           "Keyword": "Haste"
+          }
+         ]
+        }
+       },
+       "count": "X",
+       "as": "cats"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "cats"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Create X 1/1 red Elemental Cat creature tokens with haste. Exile them at the beginning of the next end step."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Increase",
+    "mana": "{3}",
+    "condition": {
+     "Not": "YourTurn"
+    }
+   }
+  },
+  "During turns other than yours, this spell costs {3} more to cast."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "what": {
+        "Each": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       },
+       "to": "Hand"
+      }
+     },
+     "EndTurn"
+    ]
+   }
+  },
+  "Return all nonland permanents to their owners' hands. End the turn."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "filter": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "count": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, sacrifice all creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Target": 0
+       },
+       "amount": {
+        "Stat": {
+         "of": "Paid",
+         "stat": "Power"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~ deals damage to any target equal to the total power of the sacrificed creatures."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Ability": "Activated"
+        },
+        {
+         "FromSource": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Artifact"
+            },
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Enchantment"
+            },
+            {
+             "Type": "Land"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "Cant": {
+         "who": "EachPlayer",
+         "action": {
+          "ActivateKind": {
+           "kind": "Every",
+           "sources": [
+            {
+             "Is": {
+              "Bound": "source"
+             }
+            }
+           ]
+          }
+         }
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Counter target activated ability from an artifact, creature, enchantment, or land. That permanent's activated abilities can't be activated this turn.\nDraw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "source"
+         },
+         "selector": [
+          {
+           "In": "Battlefield"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": "EachPlayer",
+            "action": {
+             "ActivateKind": {
+              "kind": "Every",
+              "sources": [
+               {
+                "Is": {
+                 "Bound": "source"
+                }
+               }
+              ]
+             }
+            }
+           }
+          },
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target activated or triggered ability. If a permanent's ability is countered this way, activated abilities of that permanent can't be activated this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          "Spell",
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        },
+        {
+         "ControlledBy": "Opponents"
+        },
+        {
+         "Targeting": [
+          {
+           "Type": "Land"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "SourceOf": {
+         "Target": 0
+        }
+       },
+       "as": "source"
+      }
+     },
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "source"
+         },
+         "selector": [
+          {
+           "In": "Battlefield"
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "Destroy": {
+          "what": {
+           "Bound": "source"
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Draw": {
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "Counter target spell or ability an opponent controls that targets a land you control. If a permanent's ability is countered this way, destroy that permanent.\nDraw two cards."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Ability": "Activated"
+        },
+        {
+         "FromSource": [
+          {
+           "Type": "Artifact"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target activated ability from an artifact source."
+ ]
+]
