@@ -183,7 +183,7 @@ impl WsBot {
                 self.clocked += usize::from(deadline_ms.is_some());
                 return self.respond(id, decision).await;
             }
-            ServerMessage::Error { code, message } => self.errors.push((code, message)),
+            ServerMessage::Error { code, message, .. } => self.errors.push((code, message)),
             // The roster of a lobby is for people; a bot only waits for its first decision.
             ServerMessage::Chat { .. }
             | ServerMessage::Lobby { .. }

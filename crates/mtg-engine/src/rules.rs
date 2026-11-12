@@ -1198,7 +1198,7 @@ impl RulesInForce {
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
-            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule),
+            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule, source),
         }
     }
 }

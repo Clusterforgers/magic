@@ -33,7 +33,7 @@ The session's rules:
 
 - A Snapshot sets the base and `seq`. A batch whose `from_seq` is not `seq` (or any batch but the one at 0 while there is no view) sends one Resync; nothing is applied and decisions are ignored until the next Snapshot.
 - A `Decision` replaces `pending`. `answer()` sends once per decision id; a Snapshot or a lost connection forgets answered ids, so the server's repeat can be answered.
-- `GameOver` sets `result` and makes a later close final. `StaleDecision` and `IllegalAnswer` give a notice and a Resync; `BadMessage` and `Internal` only a notice.
+- `GameOver` sets `result` and makes a later close final. `StaleDecision` and `IllegalAnswer` give a notice and a Resync; an `IllegalAnswer` with `refusal` says why in the card's sentence (`features/table/whyWords.ts`, `refusalNotice`). `BadMessage` and `Internal` only a notice.
 - A wrong token is a refused upgrade, which a browser reports as 1006, so the client retries forever.
 
 | Close or message | Socket status |

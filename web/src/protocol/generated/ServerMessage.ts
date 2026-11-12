@@ -15,6 +15,7 @@ import type { LobbySeat } from "./LobbySeat";
 import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
+import type { Refusal } from "./Refusal";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
 import type { Teams } from "./Teams";
@@ -153,7 +154,12 @@ code: ErrorCode,
 /**
  * Human-readable detail.
  */
-message: string, } | { "type": "GameOver", 
+message: string, 
+/**
+ * For an `IllegalAnswer` that plays a card or ability the engine cannot play now: which, and why, for the
+ * client's own words. Only the refused seat gets it.
+ */
+refusal?: Refusal, } | { "type": "GameOver", 
 /**
  * How it ended.
  */

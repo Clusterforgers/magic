@@ -827,7 +827,12 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
 /// Whether a spell on the stack silences the players: none may cast spells or activate abilities that are not mana
 /// abilities until it leaves (split second, CR 702.61). Mana abilities, special actions and triggers go on as usual.
 pub(crate) fn split_second_on_stack(state: &GameState) -> bool {
-    state.stack().iter().any(|&id| {
+    split_second_spell(state).is_some()
+}
+
+/// The first spell on the stack that silences the players ([`split_second_on_stack`]).
+pub(crate) fn split_second_spell(state: &GameState) -> Option<ObjectId> {
+    state.stack().iter().copied().find(|&id| {
         keywords_of(state, id)
             .into_iter()
             .any(|keyword| rules(keyword).silences_players(keyword))

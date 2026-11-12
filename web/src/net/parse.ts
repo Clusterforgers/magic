@@ -6,6 +6,7 @@
  * come from the generated bindings, which a Rust test keeps in step with the server.
  */
 import type {
+  AbilityRef,
   AttackerForecast,
   AttackerView,
   AutoChoices,
@@ -25,6 +26,9 @@ import type {
   LogName,
   ObjectKind,
   ObjectView,
+  Refusal,
+  Unplayable,
+  Why,
   PlayerForecast,
   PlayerView,
   SeatDeck,
@@ -84,6 +88,61 @@ const ERROR_CODES: Record<ErrorCode, true> = {
   StaleDecision: true,
   IllegalAnswer: true,
   Internal: true,
+}
+
+const UNPLAYABLE: Record<Unplayable, true> = {
+  Timing: true,
+  LandPlayed: true,
+  Mana: true,
+  Targets: true,
+  Cost: true,
+  Restricted: true,
+}
+
+const PLAIN_WHY = new Set([
+  'SorcerySpeed',
+  'OwnCondition',
+  'SummoningSick',
+  'Tapped',
+  'LimitSpent',
+  'OtherCost',
+  'NoWay',
+])
+
+const withRefusal = (refusal: Refusal | undefined): { refusal?: Refusal } =>
+  refusal === undefined ? {} : { refusal }
+
+/** Whether `value` is a `Why` the words can read: a plain one, or a detailed one with the fields they read. */
+function isWhy(value: unknown): value is Why {
+  if (isText(value)) return PLAIN_WHY.has(value)
+  if (!isRecord(value)) return false
+  const [key, ...more] = Object.keys(value)
+  const inner = key === undefined ? undefined : value[key]
+  if (more.length > 0 || !isRecord(inner)) return false
+  switch (key) {
+    case 'Target':
+      return isText(inner.needs) && isText(inner.zone)
+    case 'Mana':
+      return Array.isArray(inner.cost) && isCount(inner.at_hand)
+    case 'ForbiddenBy':
+      return inner.name === undefined || isText(inner.name)
+    case 'SplitSecond':
+      return isText(inner.name)
+    default:
+      return false
+  }
+}
+
+/** The refusal of an `Error`, kept when it names an object and a known reason; a detail it cannot read is left out. */
+function refusalOf(value: unknown): Refusal | undefined {
+  if (!isRecord(value) || !isCount(value.object) || !isText(value.reason)) return undefined
+  if (!Object.hasOwn(UNPLAYABLE, value.reason)) return undefined
+  const refusal: Refusal = { object: value.object, reason: value.reason as Unplayable }
+  if (isRecord(value.ability) && isCount(value.ability.object) && isCount(value.ability.ability)) {
+    refusal.ability = value.ability as AbilityRef
+  }
+  if (isWhy(value.why)) refusal.why = value.why
+  return refusal
 }
 
 const YIELD_UNTIL: Record<YieldUntil, true> = { Resolve: true, EndOfTurn: true, MyTurn: true }
@@ -574,7 +633,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Error':
       if (!isErrorCode(v.code)) return '"code" is not a known error code'
       if (!isText(v.message)) return '"message" must be text'
-      return { type, code: v.code, message: v.message }
+      return { type, code: v.code, message: v.message, ...withRefusal(refusalOf(v.refusal)) }
     case 'GameOver':
       if (!isGameResult(v.result)) return '"result" must be Draw, a Winner or a Team'
       return { type, result: v.result }

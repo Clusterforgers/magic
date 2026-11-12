@@ -53,6 +53,7 @@ import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
 import type { Unplayable } from "./Unplayable";
 import type { W11dVentured } from "./W11dVentured";
+import type { Why } from "./Why";
 import type { Zone } from "./Zone";
 import type { ZoneCause } from "./ZoneCause";
 
@@ -192,7 +193,11 @@ object: ObjectId,
 /**
  * Why it could not go on.
  */
-reason: Unplayable, } } | { "PriorityGranted": { 
+reason: Unplayable, 
+/**
+ * The detail of the reason, when the engine can name it.
+ */
+why?: Why, } } | { "PriorityGranted": { 
 /**
  * Who has priority.
  */

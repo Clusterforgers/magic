@@ -777,3 +777,44 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     })
   })
 })
+
+describe('the refusal of an Error', () => {
+  const error = (refusal: unknown): unknown => ({
+    type: 'Error',
+    code: 'IllegalAnswer',
+    message: 'no',
+    refusal,
+  })
+  const refusalIn = (frame: unknown): unknown => {
+    const parsed = parseMessage(frame)
+    return parsed.ok && parsed.message.type === 'Error' ? parsed.message.refusal : 'not an Error'
+  }
+
+  it.each<[string, unknown, unknown]>([
+    [
+      'a plain detail',
+      { object: 3, reason: 'Cost', why: 'Tapped' },
+      { object: 3, reason: 'Cost', why: 'Tapped' },
+    ],
+    [
+      'a target',
+      { object: 3, reason: 'Targets', why: { Target: { needs: 'a spell on the stack', zone: 'Stack' } } },
+      { object: 3, reason: 'Targets', why: { Target: { needs: 'a spell on the stack', zone: 'Stack' } } },
+    ],
+    [
+      'an ability',
+      { object: 3, ability: { object: 3, ability: 1 }, reason: 'Mana' },
+      { object: 3, ability: { object: 3, ability: 1 }, reason: 'Mana' },
+    ],
+    [
+      'a detail it cannot read',
+      { object: 3, reason: 'Targets', why: { Target: { zone: 1 } } },
+      { object: 3, reason: 'Targets' },
+    ],
+    ['an unknown reason', { object: 3, reason: 'Nope' }, undefined],
+    ['no object', { reason: 'Mana' }, undefined],
+    ['none', undefined, undefined],
+  ])('keeps %s as the session can read it', (_, given, kept) => {
+    expect(refusalIn(error(given))).toEqual(kept)
+  })
+})

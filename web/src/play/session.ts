@@ -30,6 +30,7 @@ import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById, withBank, withPresence } from './view'
 import { createAwayClocks } from './awayClocks'
+import { refusalNotice } from '@/features/table/whyWords'
 
 /** The longest chat line the server accepts, in characters (`MAX_CHAT_CHARS` in `crates/mtg-server/src/actor.rs`). */
 export const MAX_CHAT_CHARS = 500
@@ -489,6 +490,11 @@ export function createSession(deps: SessionDeps): Session {
       case 'IllegalAnswer':
         // A refused manual action changes nothing, so it needs no resync; its sender says why in its own words.
         if (manualRefused(message.message, answeredAt) === 'told') return
+        if (message.refusal !== undefined) {
+          setState({ notice: refusalNotice(message.refusal, getState().objectsById) })
+          resyncUnlessWaiting()
+          return
+        }
         setState({ notice: NOTICES.illegal(message.message) })
         resyncUnlessWaiting()
         return
