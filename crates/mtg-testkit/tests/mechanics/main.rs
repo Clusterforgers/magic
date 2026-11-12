@@ -125,6 +125,7 @@ mod r306_steps;
 mod r307_cards;
 mod r307c_exiled;
 mod r307c_rooms;
+mod r374_draw_shield;
 mod r375_phasing;
 mod r3e;
 mod r3f_airbend;

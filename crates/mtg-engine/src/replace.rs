@@ -1658,14 +1658,21 @@ impl Pass<'_> {
     fn replaces_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
         let mut found = Vec::new();
         for effect in &self.shields {
-            let (Rule::Replaces { when, by }, Some(maker)) = (&effect.rule, effect.source) else {
+            let (Rule::Replaces { when, by, players }, Some(maker)) = (&effect.rule, effect.source)
+            else {
                 continue;
+            };
+            let fixed_out = match unit {
+                Unit::Draw { player } => !players.is_empty() && !players.contains(player),
+                _ => false,
             };
             let origin = Origin::Shield(effect.id);
             if slot.applied.contains(&origin)
                 || self.rmt5_next_spent(effect)
+                || fixed_out
                 || !applies_to(by, unit)
-                || !self.matches_for((effect.controller, maker), when, unit)?
+                || (players.is_empty() || !matches!(unit, Unit::Draw { .. }))
+                    && !self.matches_for((effect.controller, maker), when, unit)?
             {
                 continue;
             }

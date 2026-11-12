@@ -444,6 +444,12 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::R374Types => "number of types",
+        StatKind::R374CreatureTypes => "number of creature types",
+        StatKind::R374Bushido => "bushido",
+        StatKind::R374Toxic => "total toxic value",
+        StatKind::R374ManaCost => "mana cost",
+        StatKind::R374ColorSet => "color combination",
         StatKind::Subtypes => "subtypes",
     }
 }

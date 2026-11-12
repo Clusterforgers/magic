@@ -28,6 +28,8 @@ mod p12_amounts;
 mod p12_arrived;
 mod r285_ruin;
 #[cfg(test)]
+mod r374_counts;
+#[cfg(test)]
 mod r3d_atoms;
 mod resolution;
 #[cfg(test)]

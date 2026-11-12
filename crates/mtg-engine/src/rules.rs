@@ -396,6 +396,11 @@ pub enum Rule {
         /// What happens instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         by: ReplaceBy,
+        /// The players a draw shield covers, fixed as it began ("if target player would draw a card"); empty when its
+        /// event names them.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<PlayerId>>"))]
+        players: Vec<PlayerId>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,

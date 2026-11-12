@@ -1284,6 +1284,8 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
+            // "Until end of turn, if target player would draw a card, instead ...": every draw of the players.
+            (ReplaceWhen::Draw { .. }, ReplaceBy::Instead(_)) => Some(Self::Class),
             _ => None,
         }
     }

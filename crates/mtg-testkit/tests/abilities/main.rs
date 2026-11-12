@@ -63,6 +63,8 @@ mod r301b_corpus_play;
 mod r301b_dealt_this_turn;
 mod r301b_reveal_mana;
 mod r302_token_shield;
+mod r374_championed;
+mod r374_forecast_damage;
 mod r375_events;
 mod r4a_enters_with;
 mod r4i_granter;

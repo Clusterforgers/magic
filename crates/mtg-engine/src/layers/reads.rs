@@ -384,13 +384,17 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         // The base after the effects that set it still depends on the layers that set power and toughness.
         StatKind::Power | StatKind::BasePower => Traits::POWER,
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
-        StatKind::Colors => Traits::COLORS,
+        StatKind::Colors | StatKind::R374ColorSet => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType | StatKind::Subtypes => Traits::SUBTYPES,
+        StatKind::R374Types => Traits::TYPES.or(Traits::SUBTYPES).or(Traits::SUPERTYPES),
+        StatKind::R374CreatureTypes => Traits::TYPES.or(Traits::SUBTYPES),
+        StatKind::R374Bushido | StatKind::R374Toxic => Traits::KEYWORDS,
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
         | StatKind::Name
-        | StatKind::CounterKinds => Traits::NONE,
+        | StatKind::CounterKinds
+        | StatKind::R374ManaCost => Traits::NONE,
     }
 }
 
@@ -462,6 +466,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))
         }
+        Amount::R374AtMost(inner, _) => reads_of_amount(inner),
         Amount::Devotion(_) => Traits::CONTROL,
         Amount::ManaSymbols { of, .. } => reads_of_ref(of),
         Amount::Greatest { of, stat }

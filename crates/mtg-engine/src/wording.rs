@@ -41,6 +41,12 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::R374Types => "types",
+        StatKind::R374CreatureTypes => "creature types",
+        StatKind::R374Bushido => "bushido",
+        StatKind::R374Toxic => "total toxic value",
+        StatKind::R374ManaCost => "mana cost",
+        StatKind::R374ColorSet => "color pairs",
         StatKind::Subtypes => "subtypes",
     }
 }

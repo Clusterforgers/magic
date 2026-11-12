@@ -41,9 +41,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     // A class of events (every creature that dies this turn, every card put into a graveyard) is judged as each happens.
     if matches!(shape, ShieldShape::Class | ShieldShape::Next) {
+        let Some(players) = r374_fixed_players(cx, when)? else {
+            return Ok(Run::events(Vec::new()));
+        };
         let rule = Rule::Replaces {
             when: when.clone(),
             by: by.clone(),
+            players,
         };
         return Ok(begin(cx, rule, duration.clone()));
     }
@@ -240,6 +244,23 @@ fn judged_per_event(kind: &Selector) -> bool {
 }
 
 /// The rule of a shield begins for its duration, unless it names nothing.
+/// The players a draw shield names by a target, fixed as it begins (CR 611.2c): empty for a shield whose event names
+/// them by class, `None` when the reference names no player now.
+fn r374_fixed_players(
+    cx: &Cx<'_>,
+    when: &ReplaceWhen,
+) -> Result<Option<Vec<mtg_core::ids::PlayerId>>, ResolveError> {
+    match when {
+        ReplaceWhen::Draw { who, .. }
+            if !matches!(who, Ref::You | Ref::Opponents | Ref::EachPlayer) =>
+        {
+            let players = cx.scope.players(who)?;
+            Ok((!players.is_empty()).then_some(players))
+        }
+        _ => Ok(Some(Vec::new())),
+    }
+}
+
 fn begin(cx: &Cx<'_>, rule: Rule, duration: Duration) -> Run {
     if crate::rules::names_nothing(&rule) {
         return Run::events(Vec::new());

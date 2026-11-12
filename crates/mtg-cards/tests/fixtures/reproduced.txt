@@ -466,6 +466,7 @@ Devastation Tide
 Devoted Druid
 Diffusion Sliver
 Dig Up
+Diligent Zookeeper
 Dimir Cutpurse
 Dimir Infiltrator
 Dina, Soul Steeper
@@ -575,6 +576,7 @@ Elspeth's Nightmare
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Embiggen
 Emergency Eject
 Emmara Tandris
 Empowered Autogenerator
@@ -1838,6 +1840,7 @@ Tah-Crop Skirmisher
 Tainted Adversary
 Tainted Isle
 Tainted Remedy
+Takeno, Samurai General
 Tamiyo's Logbook
 Tandem Lookout
 Tangle Tumbler

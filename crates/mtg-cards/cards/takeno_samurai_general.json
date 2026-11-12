@@ -1,7 +1,7 @@
 {
   "oracle_id": "f995e0cc-b2bd-41c3-8c08-c8873312cebe",
   "name": "Takeno, Samurai General",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Takeno, Samurai General",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "bushido", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 95, "end": 179 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Samurai" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Stat": { "of": "Affected", "stat": "R374Bushido" } },
+                  "toughness": { "Stat": { "of": "Affected", "stat": "R374Bushido" } }
+                }
+              }
+            ]
           }
         }
       ]
