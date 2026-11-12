@@ -19,7 +19,8 @@ export function describeMarkError(error: unknown): string {
     if (error.code === 'invalid_request')
       return 'The note was not accepted. Make it shorter or remove odd characters.'
     if (error.code === 'unauthenticated') return 'Your session has ended. Sign in again to mark cards.'
-    if (error.code === 'rate_limited') return 'You changed many marks in a short time. Wait a few minutes, then try again.'
+    if (error.code === 'rate_limited')
+      return 'You changed many marks in a short time. Wait a few minutes, then try again.'
   }
   return describeDeckError(error)
 }

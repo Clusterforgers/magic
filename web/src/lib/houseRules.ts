@@ -178,13 +178,7 @@ const flag = (id: Flag, label: string, help: string, group: RuleGroup, on: strin
     own: { normal: false, commander: false },
   })
 
-const deckFlag = (
-  id: 'singleton' | 'color_identity',
-  label: string,
-  help: string,
-  on: string,
-  off: string,
-) =>
+const deckFlag = (id: 'singleton' | 'color_identity', label: string, help: string, on: string, off: string) =>
   rule<boolean>({
     id: `deck.${id}`,
     label,
