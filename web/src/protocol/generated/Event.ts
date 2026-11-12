@@ -854,7 +854,11 @@ player: PlayerId,
 /**
  * The player it was given to.
  */
-to: PlayerId, } } | { "DieRolled": { 
+to: PlayerId, } } | { "Foraged": { 
+/**
+ * Who foraged.
+ */
+player: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.
  */
