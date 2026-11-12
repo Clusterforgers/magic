@@ -9,49 +9,23 @@
       "abilities": [
         {
           "CostModifier": {
-            "applies_to": [
-              "Spell",
-              {
-                "Type": "Planeswalker"
-              },
-              {
-                "ControlledBy": "You"
-              }
-            ],
+            "applies_to": ["Spell", { "Type": "Planeswalker" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}"
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{W}{U}{B}{R}{G}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{W}{U}{B}{R}{G}" }, "Tap"],
             "effects": [
               {
                 "RepeatWhile": {
-                  "condition": {
-                    "All": []
-                  },
-                  "effects": [
-                    {
-                      "Proliferate": {}
-                    }
-                  ],
-                  "most": 20,
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [{ "Proliferate": {} }],
+                  "most": 1000,
                   "times": {
                     "Distinct": {
-                      "of": [
-                        {
-                          "Type": "Planeswalker"
-                        },
-                        {
-                          "ControlledBy": "You"
-                        }
-                      ],
+                      "of": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }],
                       "stat": "Subtypes"
                     }
                   }

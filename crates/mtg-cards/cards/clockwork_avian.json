@@ -7,35 +7,16 @@
       "name": "Clockwork Avian",
       "oracle_fingerprint": "7b7ead862962b3971194c9af02587fd1",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "WithCounters": {
-                "counter": {
-                  "Other": "+1/+0"
-                },
-                "count": 4
-              }
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 4 } }
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "EndCombat"
-              }
-            },
+            "when": { "StepBegins": { "step": "EndCombat" } },
             "if": {
               "Compare": {
                 "left": {
@@ -43,18 +24,8 @@
                     "This",
                     {
                       "AnyOf": [
-                        {
-                          "DidThisTurn": {
-                            "event": "Attacked",
-                            "combat": true
-                          }
-                        },
-                        {
-                          "DidThisTurn": {
-                            "event": "Blocked",
-                            "combat": true
-                          }
-                        }
+                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
                       ]
                     }
                   ]
@@ -63,34 +34,13 @@
                 "right": 1
               }
             },
-            "effects": [
-              {
-                "RemoveCounters": {
-                  "from": "This",
-                  "counter": {
-                    "Other": "+1/+0"
-                  }
-                }
-              }
-            ]
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{X}"
-              },
-              "Tap"
-            ],
-            "condition": {
-              "All": [
-                "YourTurn",
-                {
-                  "Step": "Upkeep"
-                }
-              ]
-            },
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
             "effects": [
               {
                 "ChooseValue": {
@@ -106,14 +56,7 @@
                               "right": {
                                 "Difference": [
                                   4,
-                                  {
-                                    "Counters": {
-                                      "on": "This",
-                                      "counter": {
-                                        "Other": "+1/+0"
-                                      }
-                                    }
-                                  }
+                                  { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
                                 ]
                               }
                             }
@@ -122,14 +65,7 @@
                           "otherwise": {
                             "Difference": [
                               4,
-                              {
-                                "Counters": {
-                                  "on": "This",
-                                  "counter": {
-                                    "Other": "+1/+0"
-                                  }
-                                }
-                              }
+                              { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
                             ]
                           }
                         }
@@ -142,12 +78,8 @@
               {
                 "PutCounters": {
                   "on": "This",
-                  "counter": {
-                    "Other": "+1/+0"
-                  },
-                  "count": {
-                    "ChosenAs": "n"
-                  }
+                  "counter": { "Other": "+1/+0" },
+                  "count": { "ChosenAs": "n" }
                 }
               }
             ]

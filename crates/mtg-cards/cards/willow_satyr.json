@@ -7,46 +7,18 @@
       "name": "Willow Satyr",
       "oracle_fingerprint": "ff9ba3354d08fa7d1c3685b88bd2aa46",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "Combat": {
-                "who": "This",
-                "quirk": "MayStayTapped"
-              }
-            }
-          }
-        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
+            "cost": ["Tap"],
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "Supertype": "Legendary"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
             ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    {
-                      "SetController": "You"
-                    }
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
                   "duration": "WhileYouControlSourceTapped"
                 }
               }

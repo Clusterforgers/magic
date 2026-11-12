@@ -440,7 +440,11 @@ fn pair_is_written(
         .clauses
         .iter()
         .filter(|clause| {
-            clause.face == face && matches!(clause.kind, ClauseKind::Static | ClauseKind::Triggered)
+            clause.face == face
+                && matches!(
+                    clause.kind,
+                    ClauseKind::Static | ClauseKind::Triggered | ClauseKind::Activated
+                )
         })
         .map(|clause| without_numerals(without_ability_word(&clause.text)))
         .collect();

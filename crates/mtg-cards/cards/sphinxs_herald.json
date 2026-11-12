@@ -5,76 +5,21 @@
   "faces": [
     {
       "name": "Sphinx's Herald",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "1cd641678e8e50f99da210aa281211d0",
       "abilities": [
         {
           "Activated": {
             "cost": [
-              {
-                "Mana": "{2}{U}"
-              },
+              { "Mana": "{2}{U}" },
               "Tap",
-              {
-                "Sacrifice": {
-                  "filter": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "Color": "White"
-                    }
-                  ]
-                }
-              },
-              {
-                "Sacrifice": {
-                  "filter": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "Color": "Blue"
-                    }
-                  ]
-                }
-              },
-              {
-                "Sacrifice": {
-                  "filter": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "Color": "Black"
-                    }
-                  ]
-                }
-              }
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "White" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Blue" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Black" }] } }
             ],
             "effects": [
-              {
-                "Search": {
-                  "filter": [
-                    {
-                      "Named": "Sphinx Sovereign"
-                    }
-                  ],
-                  "as": "found"
-                }
-              },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "found"
-                  },
-                  "to": {
-                    "Battlefield": {}
-                  }
-                }
-              },
-              {
-                "Shuffle": {}
-              }
+              { "Search": { "filter": [{ "Named": "Sphinx Sovereign" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
             ]
           }
         }

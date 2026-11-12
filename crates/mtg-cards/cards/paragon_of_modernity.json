@@ -7,42 +7,20 @@
       "name": "Paragon of Modernity",
       "oracle_fingerprint": "8ae84b95cd8cde751dc1308be6d9481c",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Activated": {
             "cost": "{3}",
             "effects": [
               {
                 "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": "ColorsSpent",
-                      "op": "Eq",
-                      "right": 3
-                    }
-                  },
-                  "then": [
-                    {
-                      "PutCounters": {
-                        "on": "This",
-                        "counter": "+1/+1"
-                      }
-                    }
-                  ],
+                  "condition": { "Compare": { "left": "ColorsSpent", "op": "Eq", "right": 3 } },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
                   "otherwise": [
                     {
                       "Continuous": {
                         "affected": "This",
-                        "mods": [
-                          {
-                            "ModifyPT": {
-                              "power": 1,
-                              "toughness": 1
-                            }
-                          }
-                        ],
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
                         "duration": "UntilEndOfTurn"
                       }
                     }

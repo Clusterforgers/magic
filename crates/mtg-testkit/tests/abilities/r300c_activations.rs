@@ -11,9 +11,11 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
+use mtg_core::mana::ManaType;
 use mtg_engine::characteristics::{self, characteristics};
-use mtg_engine::choose::NumberChoice;
+use mtg_engine::choose::{CardsChoice, NumberChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::mana::Payment;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{bear, cost, creature, forest, island, mountain, plains, swamp};
@@ -63,7 +65,7 @@ fn r300c_counters(driver: &Driver, name: &str, kind: &CounterKind) -> u32 {
         .unwrap()
         .counters()
         .filter(|(held, _)| *held == kind)
-        .map(|(_, n)| *n)
+        .map(|(_, n)| n)
         .sum()
 }
 
@@ -85,19 +87,21 @@ fn r300c_replays(driver: &Driver) {
 }
 
 #[rstest]
-#[case::treasure_paid("Jetmir's Fixer", &["Treasure", "Forest"], 1, 0)]
-#[case::lands_paid("Jetmir's Fixer", &["Mountain", "Forest"], 0, 1)]
-#[case::three_colors("Paragon of Modernity", &["Plains", "Island", "Swamp"], 1, 0)]
-#[case::two_colors("Paragon of Modernity", &["Island", "Island", "Swamp"], 0, 1)]
+#[case::treasure_paid("Jetmir's Fixer", true, &["Forest"], 1, 0)]
+#[case::lands_paid("Jetmir's Fixer", false, &["Mountain", "Forest"], 0, 1)]
+#[case::three_colors("Paragon of Modernity", false, &["Plains", "Island", "Swamp"], 1, 0)]
+#[case::two_colors("Paragon of Modernity", false, &["Island", "Island", "Swamp"], 0, 1)]
+#[case::treasure_red_and_two_colors("Paragon of Modernity", true, &["Island", "Swamp"], 1, 0)]
 fn r300c_the_mana_of_an_activation_decides_counter_or_pump(
     #[case] name: &str,
+    #[case] treasure: bool,
     #[case] paying: &[&str],
     #[case] counters: u32,
     #[case] pumped: i32,
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+    let mut driver =
+        Driver::from_scenario(Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
             0,
             [
                 ready(card(name).unwrap()),
@@ -109,11 +113,38 @@ fn r300c_the_mana_of_an_activation_decides_counter_or_pump(
                 ready(island()),
                 ready(swamp()),
             ],
-        ),
-    )?;
+        ))?;
     let before = r300c_power(&driver, name);
+    if treasure {
+        driver.tap_for_mana_of("Treasure", ManaType::Red)?;
+    }
     driver.begin_activation(name)?;
-    driver.pay_tapping(paying, 0)?;
+    let DecisionKind::PayMana(options) = &driver.decision()?.kind else {
+        panic!("the activation asks for mana");
+    };
+    let mut taps = Vec::new();
+    for land in paying {
+        let found = options
+            .sources
+            .iter()
+            .find(|o| {
+                !taps.contains(&o.source)
+                    && driver.state().object(o.source.object).unwrap().card().name == *land
+            })
+            .unwrap()
+            .source;
+        taps.push(found);
+    }
+    let pool = if treasure {
+        vec![ManaType::Red]
+    } else {
+        Vec::new()
+    };
+    driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        pool,
+        taps,
+        ..Payment::default()
+    })))?;
     r300c_resolve(&mut driver)?;
     assert_eq!(
         r300c_counters(&driver, name, &CounterKind::PlusOnePlusOne),
@@ -139,12 +170,15 @@ fn r300c_rubinia_keeps_a_creature_while_she_stays_tapped(
             .hand(0, vec![r300c_untapper()])
             .battlefield(1, [ready(bear())]),
     )?;
-    let bear = driver.id_of("Bear")?;
+    let bear = driver.id_of("Grizzly Bears")?;
     driver.begin_activation("Rubinia Soulsinger")?;
-    let target = driver.target_named("Bear")?;
+    let target = driver.target_named("Grizzly Bears")?;
     driver.choose_targets(&[target])?;
     r300c_resolve(&mut driver)?;
-    assert_eq!(characteristics::controller_of(driver.state(), bear), Some(pid(0)));
+    assert_eq!(
+        characteristics::controller_of(driver.state(), bear),
+        Some(pid(0))
+    );
     if untapped {
         driver.begin_cast("Untapper")?;
         let rubinia = driver.target_named("Rubinia Soulsinger")?;
@@ -155,7 +189,10 @@ fn r300c_rubinia_keeps_a_creature_while_she_stays_tapped(
         r300c_resolve(&mut driver)?;
     }
     let holder = if untapped { pid(1) } else { pid(0) };
-    assert_eq!(characteristics::controller_of(driver.state(), bear), Some(holder));
+    assert_eq!(
+        characteristics::controller_of(driver.state(), bear),
+        Some(holder)
+    );
     r300c_replays(&driver);
     Ok(())
 }
@@ -182,7 +219,11 @@ fn r300c_a_clockwork_never_passes_its_cap(
     driver.begin_activation("Clockwork Avian")?;
     driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    driver.pass()?;
+    while matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+        && !driver.state().stack().is_empty()
+    {
+        driver.pass()?;
+    }
     if let DecisionKind::ChooseNumber(options) = &driver.decision()?.kind {
         assert_eq!(options.max, Some(most));
         driver.answer(Answer::ChooseNumber(NumberChoice::Number(most)))?;
@@ -199,11 +240,10 @@ fn r300c_a_clockwork_never_passes_its_cap(
 fn r300c_a_clockwork_winds_only_in_its_controllers_upkeep(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let driver = Driver::from_scenario(
-        Scenario::new(seats)
-            .at(2, 0, Step::Main1)
-            .battlefield(0, [ready(card("Clockwork Avian").unwrap()), ready(mountain())]),
-    )?;
+    let driver = Driver::from_scenario(Scenario::new(seats).at(2, 0, Step::Main1).battlefield(
+        0,
+        [ready(card("Clockwork Avian").unwrap()), ready(mountain())],
+    ))?;
     assert!(driver.offered_abilities("Clockwork Avian")?.is_empty());
     Ok(())
 }
@@ -217,9 +257,19 @@ fn r300c_marshland_bloodcaster_lets_the_next_spell_be_paid_in_life(
             .at(1, 0, Step::Main1)
             .battlefield(
                 0,
-                [ready(card("Marshland Bloodcaster").unwrap()), ready(swamp()), ready(swamp())],
+                [
+                    ready(card("Marshland Bloodcaster").unwrap()),
+                    ready(swamp()),
+                    ready(swamp()),
+                ],
             )
-            .hand(0, vec![creature("Ogre", 3, &[], 3, 3), creature("Elk", 2, &[], 2, 2)]),
+            .hand(
+                0,
+                vec![
+                    creature("Ogre", 3, &[], 3, 3),
+                    creature("Elk", 2, &[], 2, 2),
+                ],
+            ),
     )?;
     driver.begin_activation("Marshland Bloodcaster")?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
@@ -232,6 +282,118 @@ fn r300c_marshland_bloodcaster_lets_the_next_spell_be_paid_in_life(
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), life - 3);
     // Only the next spell: the Elk has no life cost left and no mana to pay for it.
     assert!(driver.begin_cast("Elk").is_err() || driver.pay_options()?.cost.to_string() != "{0}");
+    r300c_replays(&driver);
+    Ok(())
+}
+
+/// A planeswalker of the one type with three loyalty counters.
+fn r300c_walker(name: &str, kind: &str) -> mtg_engine::setup::PresetPermanent {
+    with_counters(
+        ready(Arc::new(
+            CardDefinition::new(name)
+                .with_type(CardType::Planeswalker)
+                .with_subtype(kind)
+                .with_mana_cost(cost(3, &[])),
+        )),
+        CounterKind::Loyalty,
+        3,
+    )
+}
+
+#[rstest]
+#[case::none(&[], 0)]
+#[case::one(&["Jace"], 1)]
+#[case::one_type_twice(&["Jace", "Jace"], 1)]
+#[case::two_types(&["Jace", "Chandra"], 2)]
+fn r300c_tam_proliferates_once_for_each_planeswalker_type(
+    #[case] kinds: &[&str],
+    #[case] times: u32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut mine = vec![
+        ready(card("Tam, the Possibility").unwrap()),
+        with_counters(ready(bear()), CounterKind::PlusOnePlusOne, 1),
+        ready(plains()),
+        ready(island()),
+        ready(swamp()),
+        ready(mountain()),
+        ready(forest()),
+    ];
+    for (at, kind) in kinds.iter().enumerate() {
+        mine.push(r300c_walker(&format!("Walker {at}"), kind));
+    }
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .battlefield(0, mine),
+    )?;
+    driver.begin_activation("Tam, the Possibility")?;
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    for _ in 0..40 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        let decision = driver.decision()?.clone();
+        match &decision.kind {
+            DecisionKind::ChooseCards(options) => {
+                let bear = driver.id_of("Grizzly Bears")?;
+                let chosen = options
+                    .from
+                    .iter()
+                    .copied()
+                    .filter(|id| *id == bear)
+                    .collect();
+                driver.answer(Answer::ChooseCards(CardsChoice(chosen)))?;
+            }
+            _ => {
+                driver.answer(Driver::passive_answer(&decision))?;
+            }
+        }
+    }
+    assert_eq!(
+        r300c_counters(&driver, "Grizzly Bears", &CounterKind::PlusOnePlusOne),
+        1 + times
+    );
+    r300c_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn r300c_orcish_librarian_exiles_half_of_the_eight_at_random(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let library: Vec<_> = (0..12)
+        .map(|at| creature(&format!("Card {at}"), 1, &[], 1, 1))
+        .collect();
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .library(0, library)
+            .battlefield(
+                0,
+                [ready(card("Orcish Librarian").unwrap()), ready(mountain())],
+            ),
+    )?;
+    driver.begin_activation("Orcish Librarian")?;
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    for _ in 0..40 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        driver.answer_passively()?;
+    }
+    let exiled = driver
+        .state()
+        .objects()
+        .filter(|object| object.zone() == mtg_engine::zones::Zone::Exile)
+        .count();
+    assert_eq!(exiled, 4);
+    let library = driver
+        .state()
+        .objects()
+        .filter(|object| object.zone() == mtg_engine::zones::Zone::Library(pid(0)))
+        .count();
+    assert_eq!(library, 8);
     r300c_replays(&driver);
     Ok(())
 }

@@ -19,10 +19,12 @@ pub(super) fn r300c_wordings(
     found.extend(counter_instead(ability, written));
     found.extend(pump_and_choice(ability, written));
     found.extend(snow_kept(ability, written));
-    found.extend(and_monarch(ability, written));
+    found.extend(returned_from_graveyard(ability, written));
+    found.extend(mana_artifact_or_basic(ability, written));
     found.extend(milled_kept(ability, written));
     found.extend(life_rather(ability, written));
     found.extend(proliferate_per_type(ability, written));
+    found.extend(exiled_at_random(ability, written));
     for text in found {
         if !texts.contains(&text) {
             texts.push(text);
@@ -126,12 +128,13 @@ fn any_number_removed(ability: &Ability, written: fn(&Ability) -> Vec<String>) -
     };
     let mut changed = false;
     for effect in effects.iter_mut() {
-        let Some(remove) = effect.get_mut("RemoveCounters").and_then(Value::as_object_mut) else {
+        let Some(remove) = effect
+            .get_mut("RemoveCounters")
+            .and_then(Value::as_object_mut)
+        else {
             continue;
         };
-        let all = remove
-            .get("from")
-            .map(|from| json!({"AnyCounters": from}));
+        let all = remove.get("from").map(|from| json!({"AnyCounters": from}));
         if remove.get("counter").is_none()
             && remove.get("up_to") == Some(&json!(true))
             && all.is_some()
@@ -151,7 +154,10 @@ fn any_number_removed(ability: &Ability, written: fn(&Ability) -> Vec<String>) -
         .into_iter()
         .filter(|text| text.contains("emove up to three counters from "))
         .map(|text| {
-            text.replace("emove up to three counters from ", "emove any number of counters from ")
+            text.replace(
+                "emove up to three counters from ",
+                "emove any number of counters from ",
+            )
         })
         .collect()
 }
@@ -251,14 +257,13 @@ fn chained_keywords(effect: &Value, affected: &Value, duration: &Value) -> Optio
     let either = effect.get("Either")?;
     let mut keywords = vec![grant(either.get("first")?)?];
     let second = either.get("second")?;
-    match grant(second) {
-        Some(last) => keywords.push(last),
-        None => {
-            let [inner] = second.as_array()?.as_slice() else {
-                return None;
-            };
-            keywords.extend(chained_keywords(inner, affected, duration)?);
-        }
+    if let Some(last) = grant(second) {
+        keywords.push(last);
+    } else {
+        let [inner] = second.as_array()?.as_slice() else {
+            return None;
+        };
+        keywords.extend(chained_keywords(inner, affected, duration)?);
     }
     Some(keywords)
 }
@@ -379,32 +384,6 @@ fn snow_kept(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<Str
         .collect()
 }
 
-/// "If you do, return that card to the battlefield ... and you become the monarch.": the steps of an "if you do" that end
-/// with becoming the monarch, written as the twin without it and the clause joined by "and".
-fn and_monarch(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
-    const THEN: &str = "/Activated/effects/0/May/effects/1/If/then";
-    let Ok(mut value) = serde_json::to_value(ability) else {
-        return Vec::new();
-    };
-    let Some(Value::Array(then)) = value.pointer_mut(THEN) else {
-        return Vec::new();
-    };
-    if then.len() < 2 || then.last() != Some(&json!({"BecomeMonarch": {}})) {
-        return Vec::new();
-    }
-    then.pop();
-    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
-        return Vec::new();
-    };
-    written(&twin)
-        .into_iter()
-        .filter_map(|text| {
-            text.strip_suffix('.')
-                .map(|head| format!("{head} and you become the monarch."))
-        })
-        .collect()
-}
-
 /// "Mill five cards. Put all creature cards with activated abilities that aren't mana abilities from among the milled
 /// cards into your hand.": a mill bound to a name, then every milled creature card with such an ability moved to the
 /// hand; the twin mills alone.
@@ -492,9 +471,9 @@ fn proliferate_per_type(ability: &Ability, written: fn(&Ability) -> Vec<String>)
         return Vec::new();
     };
     let repeat = json!([{"RepeatWhile": {
-        "condition": {"All": []},
+        "condition": {"Compare": {"left": 0, "op": "Eq", "right": 0}},
         "effects": [{"Proliferate": {}}],
-        "most": 20,
+        "most": crate::effect::MOST_PASSES,
         "times": {"Distinct": {"of": [{"Type": "Planeswalker"}, {"ControlledBy": "You"}], "stat": "Subtypes"}},
     }}]);
     let Some(slot) = value.pointer_mut("/Activated/effects") else {
@@ -514,6 +493,166 @@ fn proliferate_per_type(ability: &Ability, written: fn(&Ability) -> Vec<String>)
             text.replace(
                 ": Proliferate.",
                 ": Proliferate X times, where X is the number of planeswalker types among planeswalkers you control.",
+            )
+        })
+        .collect()
+}
+
+/// "Look at the top eight cards of your library. Exile four of them at random, then put the rest on top of your library
+/// in any order.": a look, a random pick among the cards looked at, their exile and the others put back on top in an
+/// order their owner chooses; the twin draws a card.
+fn exiled_at_random(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return Vec::new();
+    };
+    let Some(Value::Array(effects)) = value.pointer("/Activated/effects") else {
+        return Vec::new();
+    };
+    let [look, pick, exile, rest] = effects.as_slice() else {
+        return Vec::new();
+    };
+    let (Some(seen), Some(taken)) = (
+        look.pointer("/LookAtTop/count").and_then(Value::as_u64),
+        pick.pointer("/ChooseAtRandom/count")
+            .and_then(Value::as_u64),
+    ) else {
+        return Vec::new();
+    };
+    let shape = json!([
+        {"LookAtTop": {"count": seen, "as": "top"}},
+        {"ChooseAtRandom": {"from": {"Bound": "top"}, "count": taken, "as": "exiled"}},
+        {"Exile": {"what": {"Bound": "exiled"}}},
+        {"Move": {
+            "what": {"Each": [{"In": "Library"}, {"Is": {"Bound": "top"}}]},
+            "to": {"Library": {"place": "Top", "order": "Chosen"}},
+        }},
+    ]);
+    if json!([look, pick, exile, rest]) != shape || taken >= seen {
+        return Vec::new();
+    }
+    let (Some(seen), Some(taken)) = (
+        u32::try_from(seen).ok().and_then(count_word),
+        u32::try_from(taken).ok().and_then(count_word),
+    ) else {
+        return Vec::new();
+    };
+    let Some(slot) = value.pointer_mut("/Activated/effects") else {
+        return Vec::new();
+    };
+    *slot = json!([{"Draw": {}}]);
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return Vec::new();
+    };
+    let words = format!(
+        ": Look at the top {seen} cards of your library. Exile {taken} of them at random, then put the rest on top of \
+         your library in any order."
+    );
+    written(&twin)
+        .into_iter()
+        .filter(|text| text.ends_with(": Draw a card."))
+        .map(|text| text.replace(": Draw a card.", &words))
+        .collect()
+}
+
+/// "{3}, {T}: Return target artifact creature card from your graveyard to your hand.": an activated return of one target
+/// card from a graveyard to its owner's hand, worded as the spell of the same target and step after the cost; the twins
+/// are that spell and the ability drawing a card.
+fn returned_from_graveyard(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    let Ok(value) = serde_json::to_value(ability) else {
+        return Vec::new();
+    };
+    let Some(body) = value.get("Activated").and_then(Value::as_object) else {
+        return Vec::new();
+    };
+    let step = json!([{"Move": {"what": {"Target": 0}, "to": "Hand"}}]);
+    let Some(Value::Array(targets)) = body.get("targets") else {
+        return Vec::new();
+    };
+    let [target] = targets.as_slice() else {
+        return Vec::new();
+    };
+    let from_graveyard = target
+        .pointer("/what/Object")
+        .and_then(Value::as_array)
+        .is_some_and(|preds| preds.contains(&json!({"In": "Graveyard"})));
+    if body.get("effects") != Some(&step) || !from_graveyard {
+        return Vec::new();
+    }
+    // "target artifact creature card" is worded from the twin of a plain creature card.
+    let artifact_creature = target.pointer("/what/Object")
+        == Some(
+            &json!([{"Type": "Artifact"}, {"Type": "Creature"}, {"In": "Graveyard"}, {"OwnedBy": "You"}]),
+        );
+    let spell_targets = if artifact_creature {
+        json!([{"what": {"Object": [{"Type": "Creature"}, {"In": "Graveyard"}, {"OwnedBy": "You"}]}}])
+    } else {
+        json!(targets)
+    };
+    let spell = json!({"Spell": {"targets": spell_targets, "effects": step}});
+    let mut drawing = value.clone();
+    if let Some(slot) = drawing.pointer_mut("/Activated/effects") {
+        *slot = json!([{"Draw": {}}]);
+    }
+    if let Some(Value::Object(body)) = drawing.get_mut("Activated") {
+        body.remove("targets");
+    }
+    let (Ok(spell), Ok(drawing)) = (
+        serde_json::from_value::<Ability>(spell),
+        serde_json::from_value::<Ability>(drawing),
+    ) else {
+        return Vec::new();
+    };
+    let heads: Vec<String> = written(&drawing)
+        .iter()
+        .filter_map(|text| text.strip_suffix(": Draw a card.").map(str::to_owned))
+        .collect();
+    let mut texts = Vec::new();
+    for head in &heads {
+        for words in written(&spell) {
+            let words = if artifact_creature {
+                words.replacen("target creature card", "target artifact creature card", 1)
+            } else {
+                words
+            };
+            texts.push(format!("{head}: {words}"));
+        }
+    }
+    texts
+}
+
+/// Both predicates, as `AnyOf` and `Not` say it: neither is false.
+fn both(first: Value, second: Value) -> Value {
+    json!({"Not": {"AnyOf": [{"Not": first}, {"Not": second}]}})
+}
+
+/// "Search your library for an artifact card with a mana ability or a basic land card, reveal it, ...": a search whose
+/// one filter is an artifact with a mana ability or a basic land; the twin searches for an artifact card.
+fn mana_artifact_or_basic(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return Vec::new();
+    };
+    let wanted = json!([{"AnyOf": [
+        both(json!({"Type": "Artifact"}), json!({"HasAbility": "Mana"})),
+        both(json!({"Type": "Land"}), json!({"Supertype": "Basic"})),
+    ]}]);
+    let Some(filter) = value.pointer_mut("/Activated/effects/0/Search/filter") else {
+        return Vec::new();
+    };
+    if *filter != wanted {
+        return Vec::new();
+    }
+    *filter = json!([{"Type": "Artifact"}]);
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return Vec::new();
+    };
+    written(&twin)
+        .into_iter()
+        .filter(|text| text.contains("Search your library for an artifact card, "))
+        .map(|text| {
+            text.replacen(
+                "Search your library for an artifact card, ",
+                "Search your library for an artifact card with a mana ability or a basic land card, ",
+                1,
             )
         })
         .collect()

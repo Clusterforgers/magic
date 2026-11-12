@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Jetmir's Fixer",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "7425be6f772b4556c66b7ba52fa00743",
       "abilities": [
         {
           "Activated": {
@@ -15,39 +15,17 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "ManaSpent": {
-                          "from": {
-                            "subtypes": [
-                              "Treasure"
-                            ]
-                          }
-                        }
-                      },
+                      "left": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } },
                       "op": "Ge",
                       "right": 1
                     }
                   },
-                  "then": [
-                    {
-                      "PutCounters": {
-                        "on": "This",
-                        "counter": "+1/+1"
-                      }
-                    }
-                  ],
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
                   "otherwise": [
                     {
                       "Continuous": {
                         "affected": "This",
-                        "mods": [
-                          {
-                            "ModifyPT": {
-                              "power": 1,
-                              "toughness": 1
-                            }
-                          }
-                        ],
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
                         "duration": "UntilEndOfTurn"
                       }
                     }

@@ -5,50 +5,27 @@
   "faces": [
     {
       "name": "Tazri, Stalwart Survivor",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "3751938f05b00c5463f6e7be815db765",
       "abilities": [
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": {
-              "start": 0,
-              "end": 204
-            }
+            "span": { "start": 0, "end": 204 }
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{W}{U}{B}{R}{G}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{W}{U}{B}{R}{G}" }, "Tap"],
             "effects": [
-              {
-                "Mill": {
-                  "count": 5,
-                  "as": "milled"
-                }
-              },
+              { "Mill": { "count": 5, "as": "milled" } },
               {
                 "Move": {
                   "what": {
                     "Each": [
-                      {
-                        "Is": {
-                          "Bound": "milled"
-                        }
-                      },
-                      {
-                        "In": "Graveyard"
-                      },
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "HasAbility": "NonManaActivated"
-                      }
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      { "Type": "Creature" },
+                      { "HasAbility": "NonManaActivated" }
                     ]
                   },
                   "to": "Hand"

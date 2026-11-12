@@ -9,47 +9,19 @@
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "WithCounters": {
-                "counter": {
-                  "Other": "+1/+0"
-                },
-                "count": 4
-              }
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 4 } }
           }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "CantBeBlockedBy": [
-                  {
-                    "Type": "Artifact"
-                  },
-                  {
-                    "Type": "Creature"
-                  }
-                ]
-              }
-            ]
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "EndCombat"
-              }
-            },
+            "when": { "StepBegins": { "step": "EndCombat" } },
             "if": {
               "Compare": {
                 "left": {
@@ -57,18 +29,8 @@
                     "This",
                     {
                       "AnyOf": [
-                        {
-                          "DidThisTurn": {
-                            "event": "Attacked",
-                            "combat": true
-                          }
-                        },
-                        {
-                          "DidThisTurn": {
-                            "event": "Blocked",
-                            "combat": true
-                          }
-                        }
+                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
                       ]
                     }
                   ]
@@ -77,34 +39,13 @@
                 "right": 1
               }
             },
-            "effects": [
-              {
-                "RemoveCounters": {
-                  "from": "This",
-                  "counter": {
-                    "Other": "+1/+0"
-                  }
-                }
-              }
-            ]
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{X}"
-              },
-              "Tap"
-            ],
-            "condition": {
-              "All": [
-                "YourTurn",
-                {
-                  "Step": "Upkeep"
-                }
-              ]
-            },
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
             "effects": [
               {
                 "ChooseValue": {
@@ -120,14 +61,7 @@
                               "right": {
                                 "Difference": [
                                   4,
-                                  {
-                                    "Counters": {
-                                      "on": "This",
-                                      "counter": {
-                                        "Other": "+1/+0"
-                                      }
-                                    }
-                                  }
+                                  { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
                                 ]
                               }
                             }
@@ -136,14 +70,7 @@
                           "otherwise": {
                             "Difference": [
                               4,
-                              {
-                                "Counters": {
-                                  "on": "This",
-                                  "counter": {
-                                    "Other": "+1/+0"
-                                  }
-                                }
-                              }
+                              { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
                             ]
                           }
                         }
@@ -156,12 +83,8 @@
               {
                 "PutCounters": {
                   "on": "This",
-                  "counter": {
-                    "Other": "+1/+0"
-                  },
-                  "count": {
-                    "ChosenAs": "n"
-                  }
+                  "counter": { "Other": "+1/+0" },
+                  "count": { "ChosenAs": "n" }
                 }
               }
             ]

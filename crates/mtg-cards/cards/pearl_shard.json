@@ -5,34 +5,17 @@
   "faces": [
     {
       "name": "Pearl Shard",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "59b8d1db05bcbfbcc060b631d8c4147d",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{3}"
-              },
-              "Tap"
-            ],
-            "targets": [
-              {
-                "what": "AnyTarget"
-              }
-            ],
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
             "effects": [
               {
                 "Shield": {
-                  "when": {
-                    "Damage": {
-                      "to": {
-                        "Target": 0
-                      }
-                    }
-                  },
-                  "by": {
-                    "PreventUpTo": 2
-                  },
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
                   "duration": "UntilEndOfTurn"
                 }
               }
@@ -41,30 +24,13 @@
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{W}"
-              },
-              "Tap"
-            ],
-            "targets": [
-              {
-                "what": "AnyTarget"
-              }
-            ],
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
             "effects": [
               {
                 "Shield": {
-                  "when": {
-                    "Damage": {
-                      "to": {
-                        "Target": 0
-                      }
-                    }
-                  },
-                  "by": {
-                    "PreventUpTo": 2
-                  },
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 2 },
                   "duration": "UntilEndOfTurn"
                 }
               }

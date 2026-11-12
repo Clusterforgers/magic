@@ -7,43 +7,16 @@
       "name": "Rubinia Soulsinger",
       "oracle_fingerprint": "868ff6e40e5359b93c6ce4df73c704f2",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "Combat": {
-                "who": "This",
-                "quirk": "MayStayTapped"
-              }
-            }
-          }
-        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
           "Activated": {
-            "cost": [
-              "Tap"
-            ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    {
-                      "SetController": "You"
-                    }
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
                   "duration": "WhileYouControlSourceTapped"
                 }
               }

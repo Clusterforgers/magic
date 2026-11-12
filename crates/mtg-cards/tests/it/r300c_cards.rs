@@ -58,6 +58,26 @@ fn probe() {
         for stray in &report.strays {
             println!("  stray: {stray:?}");
         }
+        if std::env::var("R300C_WORDS").is_ok() {
+            let card: mtg_cards::card::Card =
+                serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+            let listed: Vec<_> = card
+                .abilities()
+                .map(|(_, ability)| ability.clone())
+                .collect();
+            for (at, ability) in listed.iter().enumerate() {
+                println!(
+                    "  words {at}: {:?}",
+                    mtg_cards::compile::written_variants(ability)
+                );
+                if let Some(next) = listed.get(at + 1) {
+                    println!(
+                        "  pair {at}: {:?}",
+                        mtg_cards::compile::either_way_pair_texts(ability, next)
+                    );
+                }
+            }
+        }
     }
 }
 
@@ -84,7 +104,8 @@ fn probe() {
 #[case("Hivis of the Scale")]
 #[case("Marshland Bloodcaster")]
 #[case("Tam, the Possibility")]
-#[case("Heart-Shaped Herb")]
+#[case("Orcish Librarian")]
+#[case("Moonsilver Key")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -108,16 +129,24 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[rstest]
 #[case::same_cost_twice("Pearl Shard", r#""{W}""#, r#""{3}""#)]
 #[case::other_amount("Pearl Shard", r#""PreventUpTo":2"#, r#""PreventUpTo":3"#)]
-#[case::other_keyword("Heartwood Shard", r#""AddKeyword":"Trample""#, r#""AddKeyword":"Flying""#)]
+#[case::other_keyword(
+    "Heartwood Shard",
+    r#""AddKeyword":"Trample""#,
+    r#""AddKeyword":"Flying""#
+)]
 #[case::other_damage("Granite Shard", r#""amount":1"#, r#""amount":2"#)]
 #[case::other_cap("Clockwork Avian", r#"[4,"#, r#"[5,"#)]
 #[case::other_kind(
     "Clockwork Beast",
-    r#""counter":{"Other":"+1/+0"},"count":{"ChosenAs""#,
-    r#""counter":"+1/+1","count":{"ChosenAs""#
+    r#""count":{"ChosenAs":"n"},"counter":{"Other":"+1/+0"}"#,
+    r#""count":{"ChosenAs":"n"},"counter":"+1/+1""#
 )]
 #[case::exactly_x("Clockwork Steed", r#"[0,"#, r#"[1,"#)]
-#[case::any_time("Clockwork Swarm", r#""condition":{"All":["YourTurn",{"Step":"Upkeep"}]},"#, "")]
+#[case::any_time(
+    "Clockwork Swarm",
+    r#""condition":{"All":["YourTurn",{"Step":"Upkeep"}]},"#,
+    ""
+)]
 #[case::up_to_three("Rhys, the Evermore", r#"{"AnyCounters":{"Target":0}}"#, "3")]
 #[case::all_of_them("Rhys, the Evermore", r#","up_to":true"#, "")]
 #[case::other_name("Behemoth's Herald", r#""Color":"Red""#, r#""Color":"Blue""#)]
@@ -126,15 +155,28 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::other_pump("Urza's Avenger", r#""power":-1"#, r#""power":1"#)]
 #[case::two_treasures("Jetmir's Fixer", r#""right":1"#, r#""right":2"#)]
 #[case::four_colors("Paragon of Modernity", r#""right":3"#, r#""right":4"#)]
-#[case::while_tapped_only("Helm of Possession", r#""WhileYouControlSourceTapped""#, r#""WhileSourceTapped""#)]
-#[case::while_controlled_only("Rubinia Soulsinger", r#""WhileYouControlSourceTapped""#, r#""WhileYouControlSource""#)]
+#[case::while_tapped_only(
+    "Helm of Possession",
+    r#""WhileYouControlSourceTapped""#,
+    r#""WhileSourceTapped""#
+)]
+#[case::while_controlled_only(
+    "Rubinia Soulsinger",
+    r#""WhileYouControlSourceTapped""#,
+    r#""WhileYouControlSource""#
+)]
 #[case::once("Tam, the Possibility", r#""stat":"Subtypes""#, r#""stat":"Name""#)]
 #[case::half_life(
     "Marshland Bloodcaster",
     r#"{"Stat":{"of":"This","stat":"ManaValue"}}"#,
     r#"{"Half":{"of":{"Stat":{"of":"This","stat":"ManaValue"}},"up":true}}"#
 )]
-#[case::not_monarch("Heart-Shaped Herb", r#",{"BecomeMonarch":{}}"#, "")]
+#[case::from_any_graveyard("Skeleton Shard", r#",{"OwnedBy":"You"}"#, "")]
+#[case::any_artifact(
+    "Moonsilver Key",
+    r#"{"Not":{"HasAbility":"Mana"}}"#,
+    r#"{"Not":{"HasAbility":"Any"}}"#
+)]
 #[case::other_milled("Tazri, Stalwart Survivor", r#""NonManaActivated""#, r#""Mana""#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
@@ -151,6 +193,6 @@ fn tazri_keeps_only_its_grant_by_hand() {
         .map(|clause| format!("{:?}", clause.state))
         .collect();
     assert_eq!(states.len(), 2, "{states:?}");
-    assert!(states[0].starts_with("ByHand"), "{states:?}");
+    assert!(states[0].starts_with("Manual"), "{states:?}");
     assert!(states[1].starts_with("Reads"), "{states:?}");
 }

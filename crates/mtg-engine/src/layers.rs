@@ -873,12 +873,12 @@ fn compute(state: &GameState) -> Layers {
                 effect.duration,
                 Duration::WhileYouControlSource | Duration::WhileYouControlSourceTapped
             ) && !effect.source.is_some_and(|source| {
-                    layers
-                        .get(source.id)
-                        .map(|held| held.controller)
-                        .or_else(|| state.object(source.id).map(GameObject::controller))
-                        == Some(effect.controller)
-                })
+                layers
+                    .get(source.id)
+                    .map(|held| held.controller)
+                    .or_else(|| state.object(source.id).map(GameObject::controller))
+                    == Some(effect.controller)
+            })
         });
         match lost {
             Some(at) => {

@@ -7,55 +7,20 @@
       "name": "Helm of Possession",
       "oracle_fingerprint": "42020a9d2a2b42a3d8a9015e563a2317",
       "abilities": [
-        {
-          "Rule": {
-            "rule": {
-              "Combat": {
-                "who": "This",
-                "quirk": "MayStayTapped"
-              }
-            }
-          }
-        },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
           "Activated": {
             "cost": [
-              {
-                "Mana": "{2}"
-              },
+              { "Mana": "{2}" },
               "Tap",
-              {
-                "Sacrifice": {
-                  "filter": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
             ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    {
-                      "SetController": "You"
-                    }
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
                   "duration": "WhileYouControlSourceTapped"
                 }
               }

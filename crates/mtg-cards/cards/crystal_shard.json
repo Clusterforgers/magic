@@ -5,46 +5,18 @@
   "faces": [
     {
       "name": "Crystal Shard",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "9ac2808c0ef0653f96db92d302520822",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{3}"
-              },
-              "Tap"
-            ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Pay": {
-                  "who": {
-                    "ControllerOf": {
-                      "Target": 0
-                    }
-                  },
+                  "who": { "ControllerOf": { "Target": 0 } },
                   "cost": "{1}",
-                  "unpaid": [
-                    {
-                      "Move": {
-                        "what": {
-                          "Target": 0
-                        },
-                        "to": "Hand"
-                      }
-                    }
-                  ]
+                  "unpaid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                 }
               }
             ]
@@ -52,42 +24,14 @@
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{U}"
-              },
-              "Tap"
-            ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               {
                 "Pay": {
-                  "who": {
-                    "ControllerOf": {
-                      "Target": 0
-                    }
-                  },
+                  "who": { "ControllerOf": { "Target": 0 } },
                   "cost": "{1}",
-                  "unpaid": [
-                    {
-                      "Move": {
-                        "what": {
-                          "Target": 0
-                        },
-                        "to": "Hand"
-                      }
-                    }
-                  ]
+                  "unpaid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                 }
               }
             ]
