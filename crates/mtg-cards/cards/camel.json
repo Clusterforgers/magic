@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d33b3591-c01f-4ac4-8626-7cbfdabaf90d",
+  "name": "Camel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Camel",
+      "oracle_fingerprint": "465c65eebda8e41a191edf956707367a",
+      "abilities": [
+        { "Keyword": "Banding" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "AnyOf": ["This", { "BandedWith": "This" }] }] },
+                "source": [{ "Subtype": "Desert" }]
+              }
+            },
+            "by": "Prevent",
+            "condition": { "Matches": { "subject": "This", "selector": ["Attacking"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

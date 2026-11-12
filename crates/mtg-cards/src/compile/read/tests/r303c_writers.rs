@@ -260,3 +260,35 @@ fn costs_of_all_or_half_read_back(
 ) {
     assert_eq!(written(&json, clause), expected, "{json}\n{clause}");
 }
+
+const PACT: &str =
+    "As long as ~ is attached to a creature, you don't lose the game for having 0 or less life.";
+const CAMEL: &str = "As long as ~ is attacking, prevent all damage Deserts would deal to ~ and to creatures banded with ~.";
+
+fn pact(counted: &str) -> String {
+    format!(
+        r#"{{"Rule":{{"rule":{{"CantLoseGame":{{"who":"You","life_only":true}}}},"condition":{{"Compare":{{"left":{{"Count":{counted}}},"op":"Ge","right":1}}}}}}}}"#
+    )
+}
+
+fn camel(to: &str, source: &str) -> String {
+    format!(
+        r#"{{"Replacement":{{"when":{{"Damage":{{"to":{{"Each":{to}}},"source":[{{"Subtype":"{source}"}}]}}}},"by":"Prevent","condition":{{"Matches":{{"subject":"This","selector":["Attacking"]}}}}}}}}"#
+    )
+}
+
+const BANDED: &str = r#"[{"AnyOf":["This",{"BandedWith":"This"}]}]"#;
+
+#[rstest]
+#[case::pact(pact(r#"[{"Type":"Creature"},{"HasAttached":["This"]}]"#), PACT, true)]
+#[case::pact_on_an_artifact(pact(r#"[{"Type":"Artifact"},{"HasAttached":["This"]}]"#), PACT, false)]
+#[case::camel(camel(BANDED, "Desert"), CAMEL, true)]
+#[case::camel_of_mountains(camel(BANDED, "Mountain"), CAMEL, false)]
+#[case::camel_alone(camel(r#"["This"]"#, "Desert"), CAMEL, false)]
+fn shields_and_rules_of_attached_and_banded_read_back(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] expected: bool,
+) {
+    assert_eq!(written(&json, clause), expected, "{json}\n{clause}");
+}

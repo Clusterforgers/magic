@@ -82,6 +82,25 @@ fn plain(ability: &Ability) -> Vec<String> {
         } if source.0 == [Pred::Spell, Pred::Targeting(Selector::this())] => {
             vec!["Prevent all damage that would be dealt to ~ by spells that target it.".to_owned()]
         }
+        Ability::Replacement {
+            when:
+                ReplaceWhen::Damage {
+                    to: Some(Ref::Each(to)),
+                    source,
+                    combat: None,
+                },
+            by: ReplaceBy::Prevent,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } if to.0 == [Pred::AnyOf(vec![Pred::This, Pred::BandedWith(Ref::This)])] => {
+            let [Pred::Subtype(kind)] = source.0.as_slice() else {
+                return Vec::new();
+            };
+            let kinds = plural_subtype(&kind.0);
+            vec![format!(
+                "Prevent all damage {kinds} would deal to ~ and to creatures banded with ~."
+            )]
+        }
         _ => Vec::new(),
     }
 }
@@ -339,6 +358,16 @@ fn compared(left: &Amount, number: u32) -> Vec<String> {
                 .into_iter()
                 .map(|n| format!("there are {n} or more different kinds of counters among {among}"))
                 .collect()
+        }
+        Amount::Count(counted)
+            if number == 1
+                && counted.0
+                    == [
+                        Pred::Type(mtg_core::card::CardType::Creature),
+                        Pred::HasAttached(Selector::this()),
+                    ] =>
+        {
+            vec!["~ is attached to a creature".to_owned()]
         }
         Amount::Count(counted) if number == 1 => {
             let [kinds @ .., Pred::ControlledBy(Ref::You), Pred::Attacking] = counted.0.as_slice()

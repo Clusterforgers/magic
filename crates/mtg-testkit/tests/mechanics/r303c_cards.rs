@@ -1,4 +1,4 @@
-//! Goal: the r30-3c corpus cards play as their rules say at tables of two to four seats: Archelos has other permanents enter tapped while it is tapped and untapped while it is untapped, Hundred-Battle Veteran gets +2/+4 only with three kinds of counters among its controller's creatures, Enkira must be blocked only while equipped, Sanwell is spared damage only while an artifact creature of its controller attacks, Kaervek's Spite costs every permanent and card in hand of its caster; each game replays to the state it reached.
+//! Goal: the r30-3c corpus cards play as their rules say at tables of two to four seats: Archelos has other permanents enter tapped while it is tapped and untapped while it is untapped, Hundred-Battle Veteran gets +2/+4 only with three kinds of counters among its controller's creatures, Enkira must be blocked only while equipped, Sanwell is spared damage only while an artifact creature of its controller attacks, Kaervek's Spite costs every permanent and card in hand of its caster, Pact Weapon keeps its controller in the game at 0 life only while attached, and Camel is spared Desert damage only while attacking; each game replays to the state it reached.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
@@ -272,4 +272,112 @@ fn names_on(driver: &Driver, seat: mtg_core::ids::PlayerId) -> usize {
         .iter()
         .filter(|id| driver.state().object(**id).unwrap().controller() == seat)
         .count()
+}
+
+/// A free instant whose caster loses the life.
+fn drain(life: u32) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_str(&format!(
+        r#"{{"Spell":{{"effects":[{{"LoseLife":{{"amount":{life}}}}}]}}}}"#
+    ))
+    .unwrap();
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Drain")
+            .with_type(mtg_core::card::CardType::Instant)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
+            .with_rules(rules),
+    )
+}
+
+#[rstest]
+fn pact_weapon_keeps_its_controller_in_the_game_while_attached(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] attached: bool,
+) -> Result<(), ScriptError> {
+    let weapon = card("Pact Weapon").unwrap();
+    let weapon = if attached {
+        attached_to(ready(weapon), 0, 0)
+    } else {
+        ready(weapon)
+    };
+    let scenario = libraries(Scenario::new(seats), seats)
+        .at(1, 0, Step::Main1)
+        .life(0, 2)
+        .battlefield(0, vec![ready(free_creature("Bearer", 1, 1)), weapon])
+        .hand(0, vec![drain(5)]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Drain")?;
+    for _ in 0..seats {
+        if driver.state().zone(Zone::Stack).is_empty() {
+            break;
+        }
+        driver.pass()?;
+    }
+    let seat = mtg_core::ids::PlayerId::from_index(0);
+    assert_eq!(
+        driver.state().is_alive(seat),
+        attached,
+        "attached: {attached}"
+    );
+    replays(&driver);
+    Ok(())
+}
+
+/// A Desert whose ability deals 1 damage to any creature.
+fn desert() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#,
+    )
+    .unwrap();
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Desert")
+            .with_type(mtg_core::card::CardType::Land)
+            .with_subtype("Desert")
+            .with_rules(rules),
+    )
+}
+
+#[rstest]
+fn camel_is_spared_desert_damage_while_attacking(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] attacking: bool,
+) -> Result<(), ScriptError> {
+    let scenario = libraries(Scenario::new(seats), seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, vec![ready(card("Camel").unwrap())])
+        .battlefield(1, vec![ready(desert())]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    if attacking {
+        driver.attack(&[("Camel", 1)])?;
+    } else {
+        driver.attack(&[])?;
+    }
+    for _ in 0..10 {
+        let decision = driver.decision()?.clone();
+        if decision.player == mtg_core::ids::PlayerId::from_index(1)
+            && matches!(decision.kind, DecisionKind::Priority(_))
+        {
+            break;
+        }
+        driver.answer(Driver::passive_answer(&decision))?;
+    }
+    driver.begin_activation("Desert")?;
+    let camel = driver.id_of("Camel")?;
+    if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+        let camel = driver.state().object(camel).unwrap().reference();
+        driver.choose_targets(&[mtg_engine::choose::Target::Object(camel)])?;
+    }
+    for _ in 0..=seats {
+        if driver.state().zone(Zone::Stack).is_empty() {
+            break;
+        }
+        driver.pass()?;
+    }
+    assert_eq!(
+        driver.id_of("Camel").is_ok(),
+        attacking,
+        "attacking: {attacking}"
+    );
+    replays(&driver);
+    Ok(())
 }
