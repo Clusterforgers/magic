@@ -1195,7 +1195,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                 .prop_map(|(who, what, free, play, otherwise, way)| {
                     Effect::CastFromZone {
                         rather: None,
-                        spend_as: Default::default(),
+                        spend_as: mtg_cards::modify::SpendAs::default(),
                         who,
                         what,
                         free,

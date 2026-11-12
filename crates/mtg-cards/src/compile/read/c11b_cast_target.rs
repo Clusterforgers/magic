@@ -24,7 +24,7 @@ pub fn c11b_cast_target(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 fn c11b_cast(what: Ref, free: bool, bind: Option<String>) -> Effect {
     Effect::CastFromZone {
         rather: None,
-        spend_as: Default::default(),
+        spend_as: crate::modify::SpendAs::default(),
         who: Ref::You,
         what,
         free,

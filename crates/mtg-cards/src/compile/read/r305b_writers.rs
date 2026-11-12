@@ -84,6 +84,7 @@ fn held_if(mods: &Value, atom: &str) -> Value {
 }
 
 /// The wordings of whole abilities this module knows by shape.
+#[allow(clippy::too_many_lines)]
 fn fixed(value: &Value) -> Vec<String> {
     let counted = |color: &str| json!({ "Count": [{ "Color": color }, { "Type": "Creature" }] });
     let defined = |stat: &str, color: &str| json!({ "Static": { "affected": "This", "mods": [{ stat: counted(color) }], "defining": true } });

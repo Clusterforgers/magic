@@ -49,7 +49,7 @@ fn the_sentences_of_an_exile_until_a_card_is_found_and_its_free_cast_read_one_by
         effects[1],
         Effect::CastFromZone {
             rather: None,
-            spend_as: Default::default(),
+            spend_as: crate::modify::SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound("found".into()),
             free: true,

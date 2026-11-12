@@ -1997,7 +1997,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
         },
         Effect::CastFromZone {
             rather: None,
-            spend_as: Default::default(),
+            spend_as: SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,

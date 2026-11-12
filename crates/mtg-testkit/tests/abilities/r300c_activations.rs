@@ -244,7 +244,10 @@ fn r300c_a_clockwork_winds_only_in_its_controllers_upkeep(
         0,
         [ready(card("Clockwork Avian").unwrap()), ready(mountain())],
     ))?;
-    assert!(driver.offered_abilities("Clockwork Avian")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Clockwork Avian")?,
+        Vec::<usize>::new()
+    );
     Ok(())
 }
 

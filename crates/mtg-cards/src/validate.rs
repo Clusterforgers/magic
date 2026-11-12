@@ -5060,8 +5060,8 @@ impl Walker<'_> {
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
             | GameRule::DamageAsWither
-            | GameRule::ManaBurn => {}
-            GameRule::CantBeCopied => {}
+            | GameRule::ManaBurn
+            | GameRule::CantBeCopied => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));

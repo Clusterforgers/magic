@@ -54,7 +54,7 @@ impl KeywordRules for Cipher {
                 },
                 Effect::CastFromZone {
                     rather: None,
-                    spend_as: Default::default(),
+                    spend_as: mtg_cards::modify::SpendAs::default(),
                     who: Ref::You,
                     what: Ref::Bound(COPY.to_owned()),
                     free: true,
