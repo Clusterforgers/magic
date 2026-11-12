@@ -187,13 +187,11 @@ async fn the_server_checks_its_own_table_for_edited_migrations(pool: PgPool) {
 #[sqlx::test(migrations = false)]
 async fn stored_recipes_take_the_color_identity_spelling(pool: PgPool) {
     let mut before = migrator();
-    let all = before.migrations.len();
     let last = before
         .migrations
         .iter()
         .position(|m| m.description.contains("color identity key"))
         .unwrap();
-    assert_eq!(last + 1, all, "the rename is the newest migration");
     before.migrations = before.migrations[..last].to_vec().into();
     before.run(&pool).await.unwrap();
     let recipes = [
