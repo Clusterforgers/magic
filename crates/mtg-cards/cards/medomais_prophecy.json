@@ -26,9 +26,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 220, "end": 271 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [{ "LookAtTop": { "who": { "Bound": "player" }, "as": "top" } }]
+                }
+              }
+            ]
           }
         }
       ]

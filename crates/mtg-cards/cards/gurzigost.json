@@ -1,16 +1,27 @@
 {
   "oracle_id": "835733a2-3738-4fc0-97d5-33156b711ba4",
   "name": "Gurzigost",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gurzigost",
       "oracle_fingerprint": "d768ac38607593146f2d6556a67a7b18",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 132 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "ToLibrary": { "from": "Graveyard", "filter": [], "count": 2, "bottom": true }
+                    }
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
           }
         },
         {

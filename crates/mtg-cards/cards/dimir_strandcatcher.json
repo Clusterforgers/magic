@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4689206f-7907-46fb-82a7-2716687a58fc",
+  "name": "Dimir Strandcatcher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dimir Strandcatcher",
+      "oracle_fingerprint": "e0ca82e7319ce2af2d422f70ef2f13bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 89 } }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "CardsGravedNotFromBattlefield" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

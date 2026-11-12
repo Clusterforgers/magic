@@ -1,7 +1,7 @@
 {
   "oracle_id": "784f0ca3-efe1-4e22-aedd-57cba7996fa5",
   "name": "Briarbridge Patrol",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Briarbridge Patrol",
@@ -18,9 +18,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 162, "end": 310 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Sacrificed",
+                    "who": "You",
+                    "filter": [{ "Subtype": "Clue" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

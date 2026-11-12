@@ -1,0 +1,44 @@
+{
+  "oracle_id": "fd9b8889-a78a-4cda-9a6b-39f5536c3a0b",
+  "name": "Invasion of Amonkhet // Lazotep Convert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Amonkhet",
+      "oracle_fingerprint": "9a398c332c8bce5685b7a10a536c5121",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 3 } },
+              { "Discard": { "who": "Opponents" } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lazotep Convert",
+      "oracle_fingerprint": "df5a694451f794e738c76f6108252389",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "In": "Graveyard" }],
+                "except": [
+                  { "SetPT": { "power": 4, "toughness": 4 } },
+                  { "AddColors": ["Black"] },
+                  { "AddSubtype": "Zombie" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

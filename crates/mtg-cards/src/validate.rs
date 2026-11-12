@@ -716,7 +716,9 @@ impl<'a> Walker<'a> {
             }
             Pred::HasKeywordNamed(name) => {
                 self.uses("Pred", "HasKeywordNamed");
-                if !Keyword::NAMES.contains(&name.as_str()) {
+                if !Keyword::NAMES.contains(&name.as_str())
+                    && !crate::macros::is_keyword(&name.to_lowercase())
+                {
                     self.problem(format!("`{name}` is not a keyword"));
                 }
             }
@@ -1100,6 +1102,7 @@ impl<'a> Walker<'a> {
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
@@ -4863,6 +4866,10 @@ impl Walker<'_> {
                 if let Some(only) = only {
                     w.at("only", |w| w.reference(only, Kind::Object));
                 }
+            }),
+            GameRule::LookAtFaceDown { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
             }),
             GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));

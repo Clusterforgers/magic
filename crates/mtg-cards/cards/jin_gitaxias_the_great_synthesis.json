@@ -51,9 +51,14 @@
       "oracle_fingerprint": "28626fcddd21779b5b9fb0cf324aea72",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 68, "end": 193 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Draw": { "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] } } },
+              {
+                "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "WhileYouControlSource" }
+              }
+            ]
           }
         },
         {

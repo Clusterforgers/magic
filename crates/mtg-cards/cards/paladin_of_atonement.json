@@ -1,14 +1,24 @@
 {
   "oracle_id": "f44dc71d-d08a-45ed-ac7c-f6d1ef811d96",
   "name": "Paladin of Atonement",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Paladin of Atonement",
       "oracle_fingerprint": "d40382ad1da99e9ddc0446f9b72f9b6e",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 98 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "TalliedLastTurn": { "who": "You", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
         },
         {
           "Triggered": {

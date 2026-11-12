@@ -1,7 +1,7 @@
 {
   "oracle_id": "4b23a89c-89ba-41ad-b894-ec02221689eb",
   "name": "Death Spark",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Death Spark",
@@ -14,9 +14,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 42, "end": 207 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "CardsAbove": { "filter": [{ "Type": "Creature" }], "directly": true } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{1}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
           }
         }
       ]

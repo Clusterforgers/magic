@@ -1,0 +1,12 @@
+{
+  "oracle_id": "857d94f7-113c-45a4-a88a-5d087347d57f",
+  "name": "Leonin Shikari",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonin Shikari",
+      "oracle_fingerprint": "a4e00da1a921a7f2599fd8e7fe38472e",
+      "abilities": [{ "InstantActivation": { "kind": "Equip" } }]
+    }
+  ]
+}

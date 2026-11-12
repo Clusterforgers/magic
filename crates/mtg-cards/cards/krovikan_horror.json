@@ -1,16 +1,24 @@
 {
   "oracle_id": "a4c15223-784f-43a7-8626-30f96ccfdcaf",
   "name": "Krovikan Horror",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Krovikan Horror",
       "oracle_fingerprint": "8913a9b912b6684ff5dd1e33c1f1f11e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 146 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "CardsAbove": { "filter": [{ "Type": "Creature" }], "directly": true } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
           }
         },
         {

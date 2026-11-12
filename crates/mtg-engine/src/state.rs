@@ -190,6 +190,14 @@ pub(crate) enum Tally {
     /// A permanent card put into a graveyard from anywhere (counted for its owner).
     Descended,
     /// A card put into a graveyard from anywhere, a token excepted (counted for its owner).
+    /// A card the player owns put into exile (`TurnTally::CardsExiled`).
+    R287Exiled,
+    /// A permanent put into the player's hand from the battlefield (`TurnTally::PermanentsToHand`).
+    R287ToHand,
+    /// A card put into the player's graveyard from anywhere but the battlefield (`TurnTally::CardsGravedNotFromBattlefield`).
+    R287GravedElsewhere,
+    /// A card the player played from exile, cast or as a land (`TurnTally::PlayedFromExile`).
+    R287PlayedFromExile,
     G10cCardsGraved,
     /// A creature card put into a graveyard from anywhere, a token excepted (counted for its owner).
     G10cCreatureCardsGraved,

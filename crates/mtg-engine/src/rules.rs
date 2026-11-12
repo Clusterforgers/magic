@@ -255,6 +255,14 @@ pub enum Rule {
         /// Only these objects, as they were named when the rule began; every card `what` selects when absent.
         only: Option<Vec<ObjectRef>>,
     },
+    /// The players may look at the face-down permanents the selector picks any time (CR 708.5).
+    LookAtFaceDown {
+        /// The players who may look.
+        who: Vec<PlayerId>,
+        /// The permanents, judged when a seat looks; every face-down permanent when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+    },
     /// Each player may play this many lands more on each of their turns (CR 305.2).
     AdditionalLandPlays(Vec<(PlayerId, u32)>),
     /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
@@ -668,6 +676,7 @@ pub(crate) struct RulesInForce {
     taxes: Vec<Taxing>,
     block_taxes: Vec<crate::block_tax::BlockTaxing>,
     looks: Vec<Look>,
+    face_down_looks: Vec<Look>,
     attack_limit: Option<u32>,
     attack_limit_at: BTreeMap<AttackTarget, u32>,
     block_limit: Option<u32>,
@@ -1084,6 +1093,17 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::LookAtFaceDown { who, what } => {
+                if let Some(source) = source {
+                    self.face_down_looks.push(Look {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        only: None,
+                    });
+                }
+            }
             Rule::AdditionalLandPlays(plays) => {
                 for (player, count) in plays {
                     let total = self.extra_lands.entry(*player).or_default();
@@ -1433,6 +1453,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .map(|named| scope.objects(named))
                 .transpose()?,
         },
+        GameRule::LookAtFaceDown { who, what } => Rule::LookAtFaceDown {
+            who: scope.players(who)?,
+            what: what.clone(),
+        },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
@@ -1570,6 +1594,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
+        | Rule::LookAtFaceDown { who, .. }
         | Rule::UntapLimit { who, .. }
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
@@ -1743,6 +1768,7 @@ static NONE: RulesInForce = RulesInForce {
     taxes: Vec::new(),
     block_taxes: Vec::new(),
     looks: Vec::new(),
+    face_down_looks: Vec::new(),
     attack_limit: None,
     attack_limit_at: BTreeMap::new(),
     block_limit: None,
@@ -2292,21 +2318,25 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
     })
 }
 
-/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3): the one place the sight of
-/// a seat reads this rule.
+/// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3) or a face-down permanent
+/// (CR 708.5): the one place the sight of a seat reads these rules.
 pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject) -> bool {
-    card.zone() == Zone::Exile
-        && state.rules().looks.iter().any(|look| {
-            look.who.contains(&viewer)
-                && look
-                    .only
-                    .as_ref()
-                    .is_none_or(|only| only.contains(&card.reference()))
-                && (look.what.is_empty()
-                    || Scope::announcing(state, look.controller, look.source)
-                        .selects(&look.what, card.reference())
-                        .unwrap_or(false))
-        })
+    let looks = match card.zone() {
+        Zone::Exile => &state.rules().looks,
+        Zone::Battlefield => &state.rules().face_down_looks,
+        _ => return false,
+    };
+    looks.iter().any(|look| {
+        look.who.contains(&viewer)
+            && look
+                .only
+                .as_ref()
+                .is_none_or(|only| only.contains(&card.reference()))
+            && (look.what.is_empty()
+                || Scope::announcing(state, look.controller, look.source)
+                    .selects(&look.what, card.reference())
+                    .unwrap_or(false))
+    })
 }
 
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).

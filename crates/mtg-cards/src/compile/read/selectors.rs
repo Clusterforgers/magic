@@ -800,6 +800,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        Pred::HasKeywordNamed(name) => format!("with {}", name.to_lowercase()),
         Pred::HasCounter(kind) if form.plural() => {
             format!("with {} counters on them", counters::kind_text(kind)?)
         }

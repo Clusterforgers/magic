@@ -1,7 +1,7 @@
 {
   "oracle_id": "97e1fcdf-04e8-40cf-b04a-8505d9b7cecc",
   "name": "Ennis, Debate Moderator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ennis, Debate Moderator",
@@ -30,9 +30,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 171, "end": 287 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CardsExiled" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

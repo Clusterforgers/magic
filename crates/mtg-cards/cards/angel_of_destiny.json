@@ -10,9 +10,18 @@
         { "Keyword": "Flying" },
         { "Keyword": "DoubleStrike" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 22, "end": 132 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": "Triggering" } },
+              { "GainLife": { "who": "Triggering", "amount": "Triggering" } }
+            ]
           }
         },
         {

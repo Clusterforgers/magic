@@ -1,7 +1,7 @@
 {
   "oracle_id": "e90f298f-c54b-4fe8-82db-5b9153a57712",
   "name": "Zoyowa Lava-Tongue",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zoyowa Lava-Tongue",
@@ -9,9 +9,66 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 11, "end": 278 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "opponent" },
+                        "options": [
+                          [
+                            {
+                              "If": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Count": [
+                                        { "In": "Hand" },
+                                        { "OwnedBy": { "Bound": "opponent" } }
+                                      ]
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": [{ "Discard": { "who": { "Bound": "opponent" } } }],
+                                "otherwise": [
+                                  { "DealDamage": { "to": { "Bound": "opponent" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            { "Sacrifice": { "who": { "Bound": "opponent" }, "filter": [] } },
+                            {
+                              "If": {
+                                "condition": { "Not": "Performed" },
+                                "then": [
+                                  { "DealDamage": { "to": { "Bound": "opponent" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [{ "DealDamage": { "to": { "Bound": "opponent" }, "amount": 3 } }]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

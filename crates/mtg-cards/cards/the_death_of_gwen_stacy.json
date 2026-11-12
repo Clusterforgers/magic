@@ -1,7 +1,7 @@
 {
   "oracle_id": "2624b5c5-ba59-4e20-8e66-e463268366e4",
   "name": "The Death of Gwen Stacy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Death of Gwen Stacy",
@@ -15,15 +15,43 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 118, "end": 192 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [{ "Discard": { "who": { "Bound": "player" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Not": "Performed" },
+                        "then": [{ "LoseLife": { "who": { "Bound": "player" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 193, "end": 246 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": null } }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
           }
         }
       ]
