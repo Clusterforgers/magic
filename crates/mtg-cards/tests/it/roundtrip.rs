@@ -613,6 +613,7 @@ fn prohibited() -> impl Strategy<Value = Prohibited> {
         selector().prop_map(Prohibited::BeTargeted),
         trigger_pattern().prop_map(Prohibited::Trigger),
         Just(Prohibited::PlayLand),
+        selector().prop_map(Prohibited::PlayLands),
         Just(Prohibited::Sacrifice),
         Just(Prohibited::PutCounter),
         Just(Prohibited::PutCounterOf(

@@ -82,6 +82,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
+            | ReplaceBy::PreventNextAnd(_)
     )
 }
 
@@ -5307,6 +5308,7 @@ impl Walker<'_> {
         match action {
             Prohibited::ActivateKind { sources, .. }
             | Prohibited::Activate(sources)
+            | Prohibited::PlayLands(sources)
             | Prohibited::BeTargeted(sources) => {
                 self.at("action", |w| w.selector(sources));
             }
@@ -5564,6 +5566,7 @@ impl Walker<'_> {
         if matches!(
             by,
             ReplaceBy::PreventNext
+                | ReplaceBy::PreventNextAnd(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::RedirectCounted { .. }
@@ -5744,7 +5747,9 @@ impl Walker<'_> {
                 self.r6f_redirect(when, u32::MAX, to);
                 self.at("most", |w| w.amount(most));
             }
-            ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
+            ReplaceBy::PreventAnd(effects) | ReplaceBy::PreventNextAnd(effects) => {
+                self.w9c_prevent_and(when, effects);
+            }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
                     self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");

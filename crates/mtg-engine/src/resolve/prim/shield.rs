@@ -83,6 +83,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ReplaceWhen::Damage { to, source, combat },
         ReplaceBy::Prevent
         | ReplaceBy::PreventNext
+        | ReplaceBy::PreventNextAnd(_)
         | ReplaceBy::PreventUpTo(_)
         | ReplaceBy::PreventCounted(_)
         | ReplaceBy::PreventCountedAnd { .. }
@@ -122,7 +123,10 @@ pub(super) fn damage_shield(
 ) -> Result<Option<DamageShield>, ResolveError> {
     let once = matches!(
         by,
-        ReplaceBy::PreventNext | ReplaceBy::InsteadNext(_) | ReplaceBy::Redirect { next: true, .. }
+        ReplaceBy::PreventNext
+            | ReplaceBy::PreventNextAnd(_)
+            | ReplaceBy::InsteadNext(_)
+            | ReplaceBy::Redirect { next: true, .. }
     );
     let instead = match by {
         ReplaceBy::Multiply(_)
@@ -149,7 +153,7 @@ pub(super) fn damage_shield(
             let most = u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX);
             (Some(most), effects.clone())
         }
-        ReplaceBy::PreventAnd(then) => (None, then.clone()),
+        ReplaceBy::PreventAnd(then) | ReplaceBy::PreventNextAnd(then) => (None, then.clone()),
         _ => (None, Vec::new()),
     };
     // A kind of object ("creatures you control") is judged as each damage event is replaced (CR 611.2c, 614.6); a

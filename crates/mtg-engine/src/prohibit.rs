@@ -72,6 +72,8 @@ pub(crate) enum Doing {
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
     PlayLand { player: PlayerId },
+    /// `player` plays the land card `card`, judged where it is.
+    PlayLandCard { player: PlayerId, card: ObjectId },
     /// `player` sacrifices `object`.
     Sacrifice { player: PlayerId, object: ObjectId },
     /// Counters are put on `on`.
@@ -186,6 +188,12 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 Target::Object(o) => (None, Some(o.id)),
             };
             covers(who, player, object) && picks(state, ban, by, source)
+        }
+        (Prohibited::PlayLands(lands), Doing::PlayLandCard { player, card }) => {
+            covers(who, Some(player), None)
+                && state
+                    .object(card)
+                    .is_some_and(|o| picks(state, ban, lands, o.reference()))
         }
         (Prohibited::PlayLand, Doing::PlayLand { player })
         | (Prohibited::SkipTurn, Doing::SkipTurn { player }) => covers(who, Some(player), None),

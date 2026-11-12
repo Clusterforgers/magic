@@ -103,12 +103,12 @@ pub(crate) fn unplayable(
             }
             let land = object.base_types().contains(CardType::Land);
             let reason = if land {
-                land_reason(state, player)
+                land_reason(state, player, card)
             } else {
                 judged.get(&card).copied().flatten()
             };
             let why = match reason {
-                Some(reason) if land => land_why(state, player, reason),
+                Some(reason) if land => land_why(state, player, card, reason),
                 Some(reason) => ways::why_now(state, player, card, reason, at_hand, restricted),
                 None => None,
             };
@@ -122,11 +122,17 @@ pub(crate) fn unplayable(
 }
 
 /// The detail of `reason`, which [`land_reason`] gave: the timing, or the rule that forbids the land play.
-fn land_why(state: &GameState, player: PlayerId, reason: Unplayable) -> Option<Why> {
+fn land_why(state: &GameState, player: PlayerId, card: ObjectId, reason: Unplayable) -> Option<Why> {
     match reason {
         Unplayable::Timing => Some(Why::SorcerySpeed),
         Unplayable::Restricted => {
             crate::prohibit::forbidder(state, crate::prohibit::Doing::PlayLand { player })
+                .or_else(|| {
+                    crate::prohibit::forbidder(
+                        state,
+                        crate::prohibit::Doing::PlayLandCard { player, card },
+                    )
+                })
                 .map(|source| crate::why::forbidden_by(state, source))
         }
         _ => None,
@@ -135,10 +141,12 @@ fn land_why(state: &GameState, player: PlayerId, reason: Unplayable) -> Option<W
 
 /// Why `player` cannot play a land now: not their main phase with an empty stack, or no land play left (extra land
 /// plays counted); `None` when both allow it.
-fn land_reason(state: &GameState, player: PlayerId) -> Option<Unplayable> {
+fn land_reason(state: &GameState, player: PlayerId, card: ObjectId) -> Option<Unplayable> {
     if !sorcery_timing(state, player) {
         Some(Unplayable::Timing)
-    } else if crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player }) {
+    } else if crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player })
+        || !crate::priority::land_card_open(state, player, card)
+    {
         Some(Unplayable::Restricted)
     } else if !land_play_left(state, player) {
         Some(Unplayable::LandPlayed)

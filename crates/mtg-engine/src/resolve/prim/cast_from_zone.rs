@@ -71,6 +71,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if *play && is_land(card) {
             card.zone() != crate::zones::Zone::Battlefield
                 && may_play_land_while_resolving(state, player, cx.resolving.object())
+                && crate::priority::land_card_open(state, player, card.id())
         } else {
             ways::grantable(state, player, card.id(), &granted)
         }

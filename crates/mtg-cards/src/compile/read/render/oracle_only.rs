@@ -342,6 +342,7 @@ mod w8c_damage_and;
 mod w8c_kind_controller;
 mod w8c_on_top;
 mod w8c_opponent_graveyard;
+mod r408_turn_cost;
 mod w8c_other_turns;
 mod w8c_prevent_next;
 mod w8c_return_both;
@@ -625,6 +626,7 @@ fn add_w8c(ability: &Ability, texts: &mut Vec<String>) {
     w8c_still_kind::add(ability, texts);
     w8c_return_both::add(ability, texts);
     w8c_other_turns::add(ability, texts);
+    r408_turn_cost::add(ability, texts);
     w8c_then_discards::add(ability, texts);
     w8c_spell_colors::add(ability, texts);
 }

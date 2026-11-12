@@ -211,6 +211,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r408_pact::r408_pact_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }
@@ -3364,6 +3367,7 @@ impl Writer<'_> {
             Effect::TurnFaceDown { what } | Effect::Harness { what } => {
                 self.rmt8_action(effect, what)?
             }
+            Effect::EndTurn => "end the turn".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".
             Effect::GainSuspend {
