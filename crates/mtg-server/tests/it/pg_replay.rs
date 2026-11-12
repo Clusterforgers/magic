@@ -1,4 +1,4 @@
-//! Goal: `GET /api/games/{id}/replay` gives a finished recorded game as steps that fold into exactly the view the asker may have of the final state: the account that held a seat sees its own cards, anybody else (another account, a guest) only what a spectator sees; an unknown, malformed or unfinished game is one 404.
+//! Goal: `GET /api/games/{id}/replay` gives a finished recorded game as steps that fold into exactly the view the asker may have of the final state: the account that held a seat sees its own cards, any other account only what a spectator sees; a guest is refused (401) as for watching; an unknown, malformed or unfinished game is one 404.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::time::Duration;
@@ -89,8 +89,10 @@ async fn a_finished_game_replays_for_its_seat_and_in_public_for_anybody_else(poo
     assert!(mine.result.is_some());
     let theirs: Replay = serde_json::from_slice(&bob.get(server.addr, &path).await.body).unwrap();
     let guest = net::get(server.addr, &path).await;
-    let guests: Replay = serde_json::from_slice(&guest.body).unwrap();
-    assert_eq!(theirs, guests, "another account sees what a guest sees");
+    assert_eq!(
+        guest.status, 401,
+        "a replay is for the signed-in, as watching is"
+    );
     assert_eq!(theirs.seat, None);
 
     let status = server
@@ -113,11 +115,12 @@ async fn a_finished_game_replays_for_its_seat_and_in_public_for_anybody_else(poo
 async fn an_unknown_or_malformed_game_has_no_replay(pool: PgPool) {
     migrate(&pool).await.unwrap();
     let server = TestServer::start_on(pool, bot_config()).await;
-    for path in [
-        format!("/api/games/{}/replay", GameId::random()),
-        "/api/games/not-a-game/replay".to_owned(),
-    ] {
-        let reply = net::get(server.addr, &path).await;
+    let ann = register(server.addr, "Ann", PASSWORD).await;
+    let unknown = format!("/api/games/{}/replay", GameId::random());
+    let guest = net::get(server.addr, &unknown).await;
+    assert_eq!(guest.status, 401, "a guest is asked to sign in first");
+    for path in [unknown, "/api/games/not-a-game/replay".to_owned()] {
+        let reply = ann.get(server.addr, &path).await;
         assert_eq!(reply.status, 404, "{path}");
         assert_eq!(reply.json()["error"], "not_found");
     }
