@@ -65,7 +65,7 @@ fn banefire() -> PrintedCard {
         "Banefire",
         "{X}{R}",
         "Sorcery",
-        "Banefire deals X damage to any target.\nIf X is 5 or more, this spell can't be countered and the damage can't be prevented.",
+        "Banefire deals X damage to any target.\nIf X is 5 or more, the damage can't be prevented.",
     )
 }
 
@@ -93,7 +93,7 @@ fn phoenix() -> PrintedCard {
     BANEFIRE,
     vec![
         row("A", "CARDNAME deals X damage to any target.", &[0], None),
-        row("S", "If X is 5 or more, this spell can't be countered and the damage can't be prevented.", &[], Some("static:CantBeCountered")),
+        row("S", "If X is 5 or more, the damage can't be prevented.", &[], Some("static:CantPrevent")),
     ],
 )]
 #[case::aether_web(

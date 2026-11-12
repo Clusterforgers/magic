@@ -536,7 +536,13 @@ fn without_earlier_reads(what: &Targetable) -> Targetable {
     }
     fn earlier(pred: &Pred) -> bool {
         match pred {
-            Pred::ControlledBy(by) | Pred::OwnedBy(by) | Pred::Is(by) => reads(by),
+            Pred::ControlledBy(by)
+            | Pred::OwnedBy(by)
+            | Pred::Is(by)
+            | Pred::SharesType(by)
+            | Pred::SharesSubtype(by)
+            | Pred::SharesName(by)
+            | Pred::SharesColor(by) => reads(by),
             Pred::Not(inner) => earlier(inner),
             _ => false,
         }

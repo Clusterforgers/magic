@@ -5163,16 +5163,21 @@ impl Walker<'_> {
         self.scope = Scope::new(&[], false);
         self.at("rule", |w| w.rule(rule));
         if let Some(condition) = condition {
+            // A rule of a spell on the stack reads the X the spell announced ("If X is 5 or more, ...").
+            let saved = std::mem::replace(&mut self.x_now, from == ZoneKind::Stack);
             self.at("condition", |w| w.condition(condition));
+            self.x_now = saved;
         }
         self.rule_zone(rule, from);
     }
 
-    /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
+    /// A rule works from the battlefield, "this spell can't be countered" and "its damage can't be prevented" from the
+    /// stack (CR 113.6b), and a card's
     /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
     /// from its owner's hand as though it had flash from the hand; a spell cost change also works from the command zone.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
-        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
+        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This))
+            || matches!(rule, GameRule::DamageCantBePrevented { source, combat: None } if source.0 == [Pred::This]);
         let c8_eg_itself = matches!(
             rule,
             GameRule::MayCast(permission)

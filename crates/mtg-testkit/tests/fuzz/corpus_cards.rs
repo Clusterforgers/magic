@@ -34,6 +34,7 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Blazing Shoal", Partial, 1),
     ("Conflagrate", Partial, 1),
     ("Kaervek's Spite", Partial, 1),
+    ("Flash of Insight", Partial, 1),
     ("Invasion of Amonkhet // Lazotep Convert", Partial, 3),
     ("Nourishing Shoal", Partial, 1),
     ("Plagiarize", Manual, 0),

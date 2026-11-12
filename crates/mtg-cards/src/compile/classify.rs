@@ -68,6 +68,16 @@ fn is_spell_rule(body: &str) -> bool {
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))
+        || r302c_conditional_rule(body)
+}
+
+/// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be
+/// countered.", "If this spell was kicked, it has split second."
+fn r302c_conditional_rule(body: &str) -> bool {
+    body.starts_with("If ")
+        && (body.ends_with(", this spell can't be countered.")
+            || body.ends_with(", this spell can't be countered and the damage can't be prevented.")
+            || body.ends_with(", it has split second."))
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -457,6 +467,17 @@ mod tests {
     )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
+    #[case::r302c_uncounterable_if(
+        "If you revealed a Dragon card or controlled a Dragon as you cast this spell, this spell can't be countered.",
+        true,
+        Static
+    )]
+    #[case::r302c_split_second_if("If this spell was kicked, it has split second.", true, Static)]
+    #[case::r302c_an_effect_after_if(
+        "If you control a Swamp, destroy target nonblack creature.",
+        true,
+        Spell
+    )]
     #[case::ep29_flash_for_more(
         "You may cast this spell as though it had flash if you pay {2} more to cast it.",
         true,
