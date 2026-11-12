@@ -3914,5 +3914,76 @@
    }
   },
   "−3: Until your next turn, whenever a creature attacks you or a planeswalker you control, it gets -5/-0 until end of turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "revealed",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "revealed"
+       }
+      }
+     },
+     {
+      "GainLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "ManaSymbols": {
+           "color": "Green",
+           "of": {
+            "Bound": "revealed"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Chroma — Reveal any number of cards in your hand. You gain 2 life for each green mana symbol in those cards' mana costs."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Reduce",
+    "mana": "{3}",
+    "per": {
+     "Tally": {
+      "event": "SpellCast",
+      "filter": [],
+      "who": "EachPlayer"
+     }
+    }
+   }
+  },
+  "This spell costs {3} less to cast for each other spell cast this turn."
  ]
 ]

@@ -72,6 +72,71 @@ fn report(rules: &Path, fixture: &Path) -> (Vec<String>, bool) {
     (lines, whole)
 }
 
+/// The cards of the pack whose rules are whole: each reads back clause by clause.
+const WHOLE: &[&str] = &[
+    "nissa_ascended_animist",
+    "jace_the_perfected_mind",
+    "ajani_sleeper_agent",
+    "tamiyo_compleated_sage",
+    "braid_of_fire",
+    "wall_of_shards",
+    "herald_of_leshrac",
+    "varchilds_war_riders",
+    "sheltering_ancient",
+    "daybreak_coronet",
+    "on_thin_ice",
+    "starscream_power_hungry_starscream_seeker_leader",
+    "aeon_chronicler",
+    "detritivore",
+    "benalish_commander",
+    "roiling_horror",
+    "vincents_limit_break",
+    "chandra_flames_fury",
+    "professor_onyx",
+    "liliana_waker_of_the_dead",
+    "ral_zarek",
+    "ajani_steadfast",
+    "kaito_bane_of_nightmares",
+    "sorin_markov",
+    "sarkhan_the_dragonspeaker",
+    "ob_nixilis_of_the_black_oath",
+    "dovin_baan",
+    "confront_the_past",
+    "kozileks_command",
+    "eldrazi_confluence",
+    "return_the_favor",
+    "kellan_joins_up",
+    "surrounded_by_orcs",
+    "aura_finesse",
+    "reroute",
+    "ricochet_trap",
+    "crush_underfoot",
+    "swallowed_by_leviathan",
+    "phosphorescent_feast",
+    "molten_influence",
+];
+
+#[test]
+fn the_whole_cards_of_the_pack_read_back_as_their_oracle_text() {
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut wrong = Vec::new();
+    for slug in WHOLE {
+        let (lines, whole) = report(
+            &dir.join(format!("cards/{slug}.json")),
+            &dir.join(format!("tests/fixtures/corpus/{slug}.json")),
+        );
+        // A keyword line its rules stand for through the costs of the modes (Tiered) has no ability of its own.
+        let open_keyword = |line: &String| {
+            line.strip_suffix(" => Open")
+                .is_some_and(|clause| !clause.contains(' '))
+        };
+        if !whole && !lines.iter().all(|line| line.ends_with("=> Reads") || open_keyword(line)) {
+            wrong.push(format!("{slug}:\n{}", lines.join("\n")));
+        }
+    }
+    assert!(wrong.is_empty(), "{}", wrong.join("\n"));
+}
+
 /// Prints the read back of the cards `R282` names (slugs, comma separated), and the compiler's reading with `R282_COMPILE`.
 #[test]
 #[ignore = "dev report"]

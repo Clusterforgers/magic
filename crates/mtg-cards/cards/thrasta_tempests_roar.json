@@ -8,9 +8,11 @@
       "oracle_fingerprint": "8ce5864af7d4bb9fb2bec4c2c5dca989",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 70 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "per": { "Tally": { "event": "SpellCast", "who": "EachPlayer", "filter": [] } }
           }
         },
         { "Keyword": "Trample" },
@@ -22,9 +24,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 213, "end": 266 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
           }
         }
       ]
