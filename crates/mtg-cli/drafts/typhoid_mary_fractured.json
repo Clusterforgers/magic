@@ -1,0 +1,75 @@
+{
+  "oracle_id": "867b3923-692c-4444-a071-518a290e43d8",
+  "name": "Typhoid Mary, Fractured",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Typhoid Mary, Fractured",
+      "oracle_fingerprint": "f0e3eab7d95f64d967351189f61b795e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [{ "CreateToken": { "token": { "Named": "treasure" } } }],
+                          [{ "Draw": {} }],
+                          [
+                            { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                            { "GainLife": { "amount": 2 } }
+                          ]
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Let": { "as": "mode", "amount": { "Random": { "min": 1, "max": 3 } } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "mode" }, "op": "Eq", "right": 1 }
+                        },
+                        "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "mode" }, "op": "Eq", "right": 2 }
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "mode" }, "op": "Eq", "right": 3 }
+                        },
+                        "then": [
+                          { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                          { "GainLife": { "amount": 2 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

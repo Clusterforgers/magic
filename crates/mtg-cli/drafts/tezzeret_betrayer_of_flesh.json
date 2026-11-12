@@ -1,0 +1,105 @@
+{
+  "oracle_id": "5dedd5a9-bc5d-47bb-9ae1-7d683843d041",
+  "name": "Tezzeret, Betrayer of Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret, Betrayer of Flesh",
+      "oracle_fingerprint": "33a8d7e228ba1b4cfca67b5c24e5ae66",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Artifact" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": { "KindActivated": "Any" },
+                    "who": "You",
+                    "filter": [{ "Type": "Artifact" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "activating": "Any"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Type": "Artifact" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Target": 0 },
+                        "selector": [{ "Subtype": "Vehicle" }]
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetPT": { "power": 4, "toughness": 4 } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "Tapped": { "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                        },
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

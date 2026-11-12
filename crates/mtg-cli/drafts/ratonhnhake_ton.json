@@ -1,0 +1,70 @@
+{
+  "oracle_id": "a37f8381-83a4-4b6b-8176-c90f6a61da74",
+  "name": "Ratonhnhaké꞉ton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ratonhnhaké꞉ton",
+      "oracle_fingerprint": "a1d091b25835a5542e59b32b732e7f74",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }, "CantBeBlocked"],
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["DealtDamageYet"] } }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Assassin",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Assassin"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Subtype": "Equipment" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": {} },
+                        "as": "equipment"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "equipment" }, "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

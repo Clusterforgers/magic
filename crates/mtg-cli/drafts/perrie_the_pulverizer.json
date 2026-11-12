@@ -1,0 +1,50 @@
+{
+  "oracle_id": "41d408dc-f6fe-45b2-b225-2ac25db9ad0f",
+  "name": "Perrie, the Pulverizer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perrie, the Pulverizer",
+      "oracle_fingerprint": "0f4040d8f06bdcd0192bbb49a9ea60e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": {
+                    "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "CounterKinds" }
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    { "ModifyPT": { "power": { "Bound": "x" }, "toughness": { "Bound": "x" } } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

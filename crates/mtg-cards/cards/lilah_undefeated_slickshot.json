@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0757c5a7-e51b-4c39-bb4d-b32657c10cb4",
+  "name": "Lilah, Undefeated Slickshot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lilah, Undefeated Slickshot",
+      "oracle_fingerprint": "e1741c877abd5bde724e954561cbf712",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 349 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "19e302f8-6ddb-4a43-98bc-ee71a456ac5a",
+  "name": "Archangel of Strife",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archangel of Strife",
+      "oracle_fingerprint": "6545628862874adf11eb58b213e74d2b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "RepeatEach": {
+                    "over": "EachPlayer",
+                    "as": "player",
+                    "effects": [
+                      {
+                        "ChooseValue": {
+                          "who": { "Bound": "player" },
+                          "kind": { "Options": ["war", "peace"] },
+                          "as": "choice"
+                        }
+                      },
+                      {
+                        "If": {
+                          "condition": { "ChosenWord": { "name": "choice", "word": "war" } },
+                          "then": [{ "Remember": { "what": { "Bound": "player" }, "slot": "war" } }],
+                          "otherwise": [
+                            { "Remember": { "what": { "Bound": "player" }, "slot": "peace" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": { "Remembered": { "on": "This", "slot": "war" } } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": { "Remembered": { "on": "This", "slot": "peace" } } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

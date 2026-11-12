@@ -1,0 +1,60 @@
+{
+  "oracle_id": "00bf9859-d5bf-455a-a4be-965ea4250c7e",
+  "name": "Hot Pursuit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hot Pursuit",
+      "oracle_fingerprint": "7a246fe6d21b49f8a58d95917596a39e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Suspect": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["Goaded"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Compare": { "left": "PlayersLost", "op": "Ge", "right": 2 } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "AnyOf": ["Goaded", "Suspected"] }] },
+                  "as": "taken"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "taken" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Bound": "taken" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "taken" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

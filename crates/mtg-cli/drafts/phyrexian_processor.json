@@ -1,0 +1,47 @@
+{
+  "oracle_id": "36c800cb-b1ca-4432-ad3c-4d8b90337f4c",
+  "name": "Phyrexian Processor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Processor",
+      "oracle_fingerprint": "c2805d3be692dbdd28ed0d7170845779",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                { "ChooseValue": { "kind": { "Number": [0, { "Life": "You" }] }, "as": "life" } },
+                { "LoseLife": { "amount": { "ChosenAs": "life" } } },
+                { "RememberValue": { "value": { "ChosenAs": "life" }, "slot": "life_paid" } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Remembered": { "on": "This", "slot": "life_paid" } },
+                      "token": {
+                        "name": "Phyrexian Minion",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Minion"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

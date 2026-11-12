@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "25e6ebfb-8f0b-44f0-a911-103ade41c6bc",
+  "oracle_id": "723a66c3-2c2c-411c-bba5-922e8601981b",
+  "multiverse_ids": [
+    642686
+  ],
+  "mtgo_id": 117436,
+  "tcgplayer_id": 517549,
+  "cardmarket_id": 740986,
+  "name": "Indominus Rex, Alpha",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/25e6ebfb-8f0b-44f0-a911-103ade41c6bc",
+  "scryfall_uri": "https://scryfall.com/card/rex/14/indominus-rex-alpha?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:33:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634",
+    "normal": "https://cards.scryfall.io/normal/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634",
+    "large": "https://cards.scryfall.io/large/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634",
+    "png": "https://cards.scryfall.io/png/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.png?1783913634",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.webp?1783913634",
+    "grid": "https://cards.scryfall.io/grid/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.webp?1783913634",
+    "display": "https://cards.scryfall.io/display/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.webp?1783913634",
+    "art": "https://cards.scryfall.io/art/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.webp?1783913634",
+    "crop": "https://cards.scryfall.io/crop/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.webp?1783913634",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/5/25e6ebfb-8f0b-44f0-a911-103ade41c6bc.jpg?1783913634"
+  },
+  "mana_cost": "{1}{U/B}{U/B}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Dinosaur Mutant",
+  "oracle_text": "As Indominus Rex enters, discard any number of creature cards. It enters with a flying counter on it if a card discarded this way has flying. The same is true for first strike, double strike, deathtouch, hexproof, haste, indestructible, lifelink, menace, reach, trample, and vigilance.\nWhen Indominus Rex enters, draw a card for each counter on it.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "B",
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set": "rex",
+  "set_name": "Jurassic World Collection",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arex&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rex?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/25e6ebfb-8f0b-44f0-a911-103ade41c6bc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A723a66c3-2c2c-411c-bba5-922e8601981b&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Miro Petrov",
+  "artist_ids": [
+    "bd56e591-b386-4ee1-9652-2de0d7acaf40"
+  ],
+  "illustration_id": "7b70ad02-09ff-4d58-9ed8-f1b4d741c688",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 10451,
+  "prices": {
+    "usd": "23.81",
+    "usd_foil": "39.87",
+    "usd_etched": null,
+    "eur": "17.85",
+    "eur_foil": "38.45",
+    "tix": "4.69"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642686&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIndominus%2BRex%252C%2BAlpha",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIndominus%2BRex%252C%2BAlpha",
+    "edhrec": "https://edhrec.com/route/?cc=Indominus+Rex%2C+Alpha"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F517549%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=740986&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117436?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
