@@ -197,10 +197,6 @@ fn fixed(value: &Value) -> Option<&'static str> {
             "Players can't cast spells with the same name as a nontoken permanent.",
         ),
         (
-            json!({ "Replacement": { "when": { "Damage": { "source": ["This"] } }, "by": { "Multiply": 2 } } }),
-            "Double all damage ~ would deal.",
-        ),
-        (
             json!({ "CostModifier": {
                 "applies_to": ["This"],
                 "change": "Reduce",
@@ -210,13 +206,6 @@ fn fixed(value: &Value) -> Option<&'static str> {
             "This spell costs {1} less to cast for each counter among players and permanents.",
         ),
         (
-            json!({ "Rule": {
-                "rule": { "Combat": { "who": "This", "quirk": "AttackAsThoughHaste" } },
-                "condition": { "Not": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } } }
-            } }),
-            "~ can attack as though it had haste unless it entered this turn.",
-        ),
-        (
             enter(json!({ "Each": [permanent, { "In": "Graveyard" }] })),
             "Permanent cards in graveyards can't enter the battlefield.",
         ),
@@ -224,68 +213,86 @@ fn fixed(value: &Value) -> Option<&'static str> {
             enter(json!({ "Union": [nonland("Graveyard"), nonland("Library")] })),
             "Nonland permanent cards in graveyards and libraries can't enter the battlefield.",
         ),
+    ];
+    table
+        .into_iter()
+        .chain(plain_shapes())
+        .find(|(shape, _)| shape == value)
+        .map(|(_, text)| text)
+}
+
+/// The shapes of `fixed` that need no shared part.
+fn plain_shapes() -> [(Value, &'static str); 8] {
+    [
+        (
+            json!({ "Replacement": { "when": { "Damage": { "source": ["This"] } }, "by": { "Multiply": 2 } } }),
+            "Double all damage ~ would deal.",
+        ),
+        (
+            json!({ "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackAsThoughHaste" } },
+            "condition": { "Not": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } } }
+        } }),
+            "~ can attack as though it had haste unless it entered this turn.",
+        ),
         (
             json!({ "Static": {
-                "affected": "This",
-                "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
-                "defining": true
-            } }),
+            "affected": "This",
+            "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+            "defining": true
+        } }),
             "~ is all colors. This ability doesn't affect its color identity.",
         ),
         (
             json!({ "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": { "Cast": { "filter": [
-                { "Not": { "Type": "Creature" } },
-                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
-            ] } } } } } }),
+            { "Not": { "Type": "Creature" } },
+            { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+        ] } } } } } }),
             "Players can't cast noncreature spells from graveyards or exile.",
         ),
         (
             json!({ "Static": {
-                "affected": { "Each": [{ "Type": "Creature" }, { "AnyOf": [
-                    { "Subtype": "Saproling" },
-                    { "Not": { "AnyOf": [{ "Not": { "Subtype": "Treefolk" } }, "This"] } }
-                ] }] },
-                "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
-            } }),
+            "affected": { "Each": [{ "Type": "Creature" }, { "AnyOf": [
+                { "Subtype": "Saproling" },
+                { "Not": { "AnyOf": [{ "Not": { "Subtype": "Treefolk" } }, "This"] } }
+            ] }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+        } }),
             "Saproling creatures and other Treefolk creatures get +1/+1.",
         ),
         (
             json!({ "Triggered": {
-                "when": { "DealsDamage": {
-                    "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
-                    "combat": true
-                } },
-                "if": { "AtTrigger": "YourTurn" },
-                "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1", "count": "Triggering" } }]
-            } }),
+            "when": { "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "combat": true
+            } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1", "count": "Triggering" } }]
+        } }),
             "Whenever a creature you control deals combat damage during your turn, put that many +1/+1 counters on it.",
         ),
         (
             json!({ "Rule": {
-                "rule": { "MayCast": {
-                    "what": ["This"],
-                    "from": "Graveyard",
-                    "additional": [{ "RemoveCountersAmong": { "count": 6, "from": [{ "Type": "Creature" }] } }]
-                } },
-                "from": "Graveyard"
-            } }),
+            "rule": { "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "additional": [{ "RemoveCountersAmong": { "count": 6, "from": [{ "Type": "Creature" }] } }]
+            } },
+            "from": "Graveyard"
+        } }),
             "You may cast this card from your graveyard by removing six counters from among creatures you control in \
-             addition to paying its other costs.",
+         addition to paying its other costs.",
         ),
         (
             json!({ "Triggered": {
-                "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-                "if": { "CastWith": "Escape" },
-                "effects": [{ "Sacrifice": {
-                    "who": "Opponents",
-                    "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Gorgon" } }]
-                } }]
-            } }),
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Escape" },
+            "effects": [{ "Sacrifice": {
+                "who": "Opponents",
+                "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Gorgon" } }]
+            } }]
+        } }),
             "When it enters this way, each opponent sacrifices a non-Gorgon creature of their choice.",
         ),
-    ];
-    table
-        .into_iter()
-        .find(|(shape, _)| shape == value)
-        .map(|(_, text)| text)
+    ]
 }
