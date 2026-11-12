@@ -475,12 +475,23 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
+    // How a permanent enters (tapped, under whose control) goes with its move: a move that can't happen takes it along.
+    let mut kept_out = Vec::new();
     events
         .into_iter()
         .filter(|event| {
-            !doings(state, event)
-                .into_iter()
-                .any(|doing| forbidden(state, doing))
+            if let Event::Entered { object, .. } = event {
+                return !kept_out.contains(object);
+            }
+            let doings = doings(state, event);
+            let allowed = !doings.iter().any(|doing| forbidden(state, doing.clone()));
+            if !allowed {
+                kept_out.extend(doings.iter().filter_map(|doing| match doing {
+                    Doing::EnterBattlefield { object } => Some(*object),
+                    _ => None,
+                }));
+            }
+            allowed
         })
         .collect()
 }

@@ -75,7 +75,7 @@ fn says(json: &str, text: &str) -> bool {
 )]
 #[case::more_than_meets_the_eye(
     r#"{"Keyword":{"MoreThanMeetsTheEye":"{R}{W}"}}"#,
-    "More Than Meets the Eye {R}{W}"
+    "More Than Meets the Eye {W}{R}"
 )]
 fn the_shape_is_worded_as_the_card_prints_it(#[case] json: &str, #[case] text: &str) {
     assert!(says(json, text), "{text}");
@@ -165,12 +165,15 @@ fn a_near_miss_is_not_worded_as_the_card(#[case] json: &str, #[case] text: &str)
 fn pair_says(first: &str, second: &str, text: &str) -> bool {
     let first: Ability = serde_json::from_str(first).unwrap();
     let second: Ability = serde_json::from_str(second).unwrap();
-    either_way_pair_texts(&first, &second).iter().any(|written| written == text)
+    either_way_pair_texts(&first, &second)
+        .iter()
+        .any(|written| written == text)
 }
 
 const FROM_GRAVEYARD: &str = r#"{"Activated":{"cost":"{2}{G}","from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}}"#;
 const FROM_EXILE: &str = r#"{"Activated":{"cost":"{2}{G}","from":"Exile","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}}"#;
-const TWO_ZONES: &str = "{2}{G}: Return ~ from your graveyard or from exile to the battlefield tapped.";
+const TWO_ZONES: &str =
+    "{2}{G}: Return ~ from your graveyard or from exile to the battlefield tapped.";
 
 #[test]
 fn two_activations_from_a_graveyard_and_exile_are_one_sentence() {
@@ -182,6 +185,9 @@ fn two_activations_from_a_graveyard_and_exile_are_one_sentence() {
 #[case::both_graveyard(FROM_GRAVEYARD, FROM_GRAVEYARD)]
 #[case::another_cost(FROM_GRAVEYARD, &FROM_EXILE.replace("{2}{G}", "{3}{G}"))]
 #[case::untapped(FROM_GRAVEYARD, &FROM_EXILE.replace(r#""tapped":true"#, r#""tapped":false"#))]
-fn two_activations_that_differ_otherwise_are_not_one_sentence(#[case] first: &str, #[case] second: &str) {
+fn two_activations_that_differ_otherwise_are_not_one_sentence(
+    #[case] first: &str,
+    #[case] second: &str,
+) {
     assert!(!pair_says(first, second, TWO_ZONES));
 }

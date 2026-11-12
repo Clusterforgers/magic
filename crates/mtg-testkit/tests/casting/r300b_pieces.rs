@@ -1,4 +1,4 @@
-//! Goal: the r30-0b engine pieces play as their rules say at tables of two to four seats: mana whose rider counts the commander's casts from the command zone (Opal Palace's counters, Study Hall's amount) counts that commander alone, this cast included, after zero to two earlier casts, and gives a spell that is not the commander nothing; an ability only the owner may activate is offered to its owner whoever controls the permanent, and to nobody else.
+//! Goal: the r30-0b engine pieces play as their rules say at tables of two to four seats: mana whose rider counts the commander's casts from the command zone (Opal Palace's counters, Study Hall's amount) counts that commander alone, this cast included, after zero to two earlier casts, and gives a spell that is not the commander nothing; an ability only the owner may activate is offered to its owner whoever controls the permanent, and to nobody else; Mister Immortal returns tapped from a graveyard, once however often it was activated, and stays there while a creature card can't enter the battlefield from it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -218,5 +218,54 @@ fn an_owner_only_ability_follows_the_owner_not_the_controller(
         pass_to(&mut driver, 2)?;
         assert!(!offered(&driver, name), "neither owner nor controller");
     }
+    Ok(())
+}
+
+#[rstest]
+fn mister_immortal_returns_tapped_from_the_graveyard(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(1, 2)] activations: usize,
+) -> Result<(), ScriptError> {
+    let mut lands = Vec::new();
+    lands.extend((0..6).map(|_| ready(forest())));
+    let table = Scenario::new(seats)
+        .battlefield(0, lands)
+        .graveyard(0, [corpus::card("Mister Immortal").unwrap()]);
+    let mut driver = Driver::from_scenario(table)?;
+    for _ in 0..activations {
+        driver.begin_ability("Mister Immortal", 0)?;
+        if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+            driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
+        }
+    }
+    resolve(&mut driver)?;
+    let id = driver.id_of("Mister Immortal")?;
+    let object = driver.state().object(id).unwrap();
+    assert_eq!(object.zone(), Zone::Battlefield);
+    assert!(object.permanent().unwrap().tapped());
+    Ok(())
+}
+
+#[rstest]
+fn a_creature_card_that_cant_enter_stays_in_the_graveyard(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut lands = vec![ready(corpus::card("Grafdigger's Cage").unwrap())];
+    lands.extend((0..3).map(|_| ready(forest())));
+    let table = Scenario::new(seats)
+        .battlefield(0, lands)
+        .graveyard(0, [corpus::card("Mister Immortal").unwrap()]);
+    let mut driver = Driver::from_scenario(table)?;
+    driver.begin_ability("Mister Immortal", 0)?;
+    if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+        driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
+    }
+    resolve(&mut driver)?;
+    let zone = driver
+        .state()
+        .objects()
+        .find(|object| object.card().name == "Mister Immortal")
+        .map(mtg_engine::object::GameObject::zone);
+    assert_eq!(zone, Some(Zone::Graveyard(pid(0))));
     Ok(())
 }

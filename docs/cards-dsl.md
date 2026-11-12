@@ -232,6 +232,8 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Suspend X | `Suspend { time: 0, cost }` with `{X}` in the cost (`XAtLeast` for the least X): suspending asks X (`ChooseNumber`), costs X more per `{X}` and puts X time counters on the card (`ways::suspend_x_of`). |
 | Plotting by an effect | `Effect::Plot { what }` exiles cards from a hand, graveyard, library or the stack face up as plotted (CR 702.170d): the owner casts each free as a sorcery on a later turn. |
 | Cleave | `Cleave { cost, spell }`: the keyword carries the `Spell` ability without the bracketed words, which a spell cast for the cleave cost announces and resolves instead of the printed one (CR 702.148); an `{X}` of the cleave cost is announced for that cast only. The compiler and the read back check each version against its text. |
+| Casts of one commander | `Amount::CastsFromCommand(ref)` counts the casts from the command zone of each commander the reference names on its own ("the number of times it's been cast from the command zone this game"); `CommanderCasts` adds up all of a player's. A mana rider `Enters` with `per_command_cast` gives the commander as many more +1/+1 counters, this cast included (`r300b_value.rs`, `spend_rider.rs`). |
+| Owner-only activation | `Activators::Owner`: only the owner of the permanent is offered the ability, whoever controls it ("Only this creature's owner may activate this ability"). |
 
 ## Validation
 

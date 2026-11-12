@@ -485,7 +485,8 @@ fn draw_then_land(who: &Value) -> Value {
         choose["Choose"]["who"] = who.clone();
         may["May"]["who"] = who.clone();
     }
-    may["May"]["effects"] = json!([choose, {"Move": {"what": {"Bound": "card"}, "to": {"Battlefield": {}}}}]);
+    may["May"]["effects"] =
+        json!([choose, {"Move": {"what": {"Bound": "card"}, "to": {"Battlefield": {}}}}]);
     json!([draw, may])
 }
 
@@ -524,12 +525,16 @@ pub(super) fn r300b_two_zone_texts(first: &Ability, second: &Ability) -> Vec<Str
     let (Some(graveyard), Some(exile)) = (value_of(first), value_of(second)) else {
         return Vec::new();
     };
-    let (Some(from_graveyard), Some(from_exile)) = (graveyard.get("Activated"), exile.get("Activated")) else {
+    let (Some(from_graveyard), Some(from_exile)) =
+        (graveyard.get("Activated"), exile.get("Activated"))
+    else {
         return Vec::new();
     };
     let mut same = from_exile.clone();
     same["from"] = json!("Graveyard");
-    if from_graveyard["from"] != json!("Graveyard") || from_exile["from"] != json!("Exile") || same != *from_graveyard
+    if from_graveyard["from"] != json!("Graveyard")
+        || from_exile["from"] != json!("Exile")
+        || same != *from_graveyard
     {
         return Vec::new();
     }
@@ -537,13 +542,14 @@ pub(super) fn r300b_two_zone_texts(first: &Ability, second: &Ability) -> Vec<Str
         .into_iter()
         .filter(|text| !text.contains("ctivate only"))
         .filter_map(|text| {
-            text.contains(" from your graveyard to the battlefield").then(|| {
-                text.replacen(
-                    " from your graveyard to the battlefield",
-                    " from your graveyard or from exile to the battlefield",
-                    1,
-                )
-            })
+            text.contains(" from your graveyard to the battlefield")
+                .then(|| {
+                    text.replacen(
+                        " from your graveyard to the battlefield",
+                        " from your graveyard or from exile to the battlefield",
+                        1,
+                    )
+                })
         })
         .collect()
 }
@@ -557,7 +563,9 @@ fn remove_one_or_more(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec
     let Some(effects) = body["effects"].as_array() else {
         return Vec::new();
     };
-    let (Some((last_cost, cost_rest)), Some((last_step, steps))) = (cost.split_last(), effects.split_last()) else {
+    let (Some((last_cost, cost_rest)), Some((last_step, steps))) =
+        (cost.split_last(), effects.split_last())
+    else {
         return Vec::new();
     };
     let removes_x = cost_rest
