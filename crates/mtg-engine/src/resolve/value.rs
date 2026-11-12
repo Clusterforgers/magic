@@ -509,11 +509,13 @@ impl<'a> Scope<'a> {
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
+            | TurnTally::PlayedFromExile
             | TurnTally::CardsLeftGraveyard => {
                 let kind = match what {
                     TurnTally::CardsExiled => Tally::R287Exiled,
                     TurnTally::PermanentsToHand => Tally::R287ToHand,
                     TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
+                    TurnTally::PlayedFromExile => Tally::R287PlayedFromExile,
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,

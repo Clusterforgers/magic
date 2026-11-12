@@ -1,0 +1,23 @@
+{
+  "oracle_id": "7df50107-25d8-47dc-9a13-27b257cfbf6f",
+  "name": "Lens of Clarity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lens of Clarity",
+      "oracle_fingerprint": "dbfdc7eaf54913fa21aab2752e9a9259",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "LookAtFaceDown": {
+                "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

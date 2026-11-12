@@ -1,7 +1,7 @@
 //! Goal: the writers r28-7 adds write the card's words and nothing near them: "your life total becomes 4" (Captive
 //! Audience), "each creature you control with modular" (a macro keyword by its own name), the turn facts "one or more cards
-//! were put into exile this turn", "a permanent was put into your hand from the battlefield this turn" and "three or more cards were put into your graveyard from anywhere other than the battlefield this
-//! turn", and the whole abilities of the r28-7 table, each changed in one place reading back as nothing.
+//! were put into exile this turn", "a permanent was put into your hand from the battlefield this turn", "three or more cards were put into your graveyard from anywhere other than the battlefield this turn"
+//! and "you didn't play a card from exile this turn", and the whole abilities of the r28-7 table, each changed in one place reading back as nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
@@ -57,6 +57,7 @@ fn end_step_if(who: &str, what: &str, op: &str, at: u32) -> String {
 
 const EXILED: &str = "At the beginning of your end step, if one or more cards were put into exile this turn, draw a card.";
 const TO_HAND: &str = "At the beginning of your end step, if a permanent was put into your hand from the battlefield this turn, draw a card.";
+const FROM_EXILE: &str = "At the beginning of your end step, if you didn't play a card from exile this turn, draw a card.";
 const GRAVED: &str = "At the beginning of your end step, if three or more cards were put into your graveyard from anywhere other than the battlefield this turn, draw a card.";
 
 #[rstest]
@@ -65,6 +66,13 @@ const GRAVED: &str = "At the beginning of your end step, if three or more cards 
 #[case::exiled_two(end_step_if("EachPlayer", "CardsExiled", "Ge", 2), EXILED, false)]
 #[case::to_hand(end_step_if("You", "PermanentsToHand", "Ge", 1), TO_HAND, true)]
 #[case::to_any_hand(end_step_if("EachPlayer", "PermanentsToHand", "Ge", 1), TO_HAND, false)]
+#[case::not_from_exile(end_step_if("You", "PlayedFromExile", "Lt", 1), FROM_EXILE, true)]
+#[case::from_exile(end_step_if("You", "PlayedFromExile", "Ge", 1), FROM_EXILE, false)]
+#[case::nobody_from_exile(
+    end_step_if("EachPlayer", "PlayedFromExile", "Lt", 1),
+    FROM_EXILE,
+    false
+)]
 #[case::graved(
     end_step_if("You", "CardsGravedNotFromBattlefield", "Ge", 3),
     GRAVED,

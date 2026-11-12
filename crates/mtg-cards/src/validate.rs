@@ -4800,6 +4800,10 @@ impl Walker<'_> {
                     w.at("only", |w| w.reference(only, Kind::Object));
                 }
             }),
+            GameRule::LookAtFaceDown { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+            }),
             GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));

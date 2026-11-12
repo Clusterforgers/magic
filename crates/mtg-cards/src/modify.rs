@@ -694,6 +694,16 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         only: Option<Ref>,
     },
+    /// The players may look at the face-down permanents the selector picks any time (CR 708.5): "You may look at face-down
+    /// creatures you don't control any time."
+    LookAtFaceDown {
+        /// The players who may look; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The permanents they may look at; every face-down permanent when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Ref),
     /// The players' maximum hand size is `size` (CR 402.2): the least of the sizes in force.

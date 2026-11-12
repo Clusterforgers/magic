@@ -1,6 +1,7 @@
 //! Facts of the turn an intervening "if" asks (r28-7): "if one or more cards were put into exile this turn", "if a
 //! permanent was put into your hand from the battlefield this turn", "if three
-//! or more cards were put into your graveyard from anywhere other than the battlefield this turn".
+//! or more cards were put into your graveyard from anywhere other than the battlefield this turn", "if you didn't play a
+//! card from exile this turn".
 
 use super::facts::quantity_texts;
 use crate::refs::Ref;
@@ -11,6 +12,9 @@ pub(super) fn texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
     let Amount::Tallied { who, what } = left else {
         return Vec::new();
     };
+    if (who, what, op, number) == (&Ref::You, &TurnTally::PlayedFromExile, Cmp::Lt, 1) {
+        return vec!["you didn't play a card from exile this turn".to_owned()];
+    }
     if op != Cmp::Ge || number == 0 {
         return Vec::new();
     }
@@ -25,6 +29,9 @@ pub(super) fn texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             "one or more cards were put into exile this turn".to_owned(),
             "a card was put into exile this turn".to_owned(),
         ],
+        (Ref::You, TurnTally::PlayedFromExile, 1) => {
+            vec!["you played a card from exile this turn".to_owned()]
+        }
         (Ref::You, TurnTally::PermanentsToHand, 1) => {
             vec!["a permanent was put into your hand from the battlefield this turn".to_owned()]
         }

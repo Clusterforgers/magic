@@ -372,6 +372,9 @@ pub enum TurnTally {
     /// The cards put into the player's graveyard from anywhere other than the battlefield this turn; a token is no card.
     /// Added up over the players.
     CardsGravedNotFromBattlefield,
+    /// The cards the player played from exile this turn: spells cast and lands played from exile ("if you didn't play a
+    /// card from exile this turn"). Added up over the players.
+    PlayedFromExile,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.

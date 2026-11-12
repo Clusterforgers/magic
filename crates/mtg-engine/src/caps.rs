@@ -418,6 +418,7 @@ const RUNS: &[&str] = &[
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
+    "Rule.LookAtFaceDown",
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",

@@ -1,0 +1,95 @@
+{
+  "oracle_id": "ae7e14cf-a275-4260-8d78-324429a042b7",
+  "name": "Sigil of Myrkul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil of Myrkul",
+      "oracle_fingerprint": "fe08e062ce46fb7b3abfd49fe700de28",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Mill": {} },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "In": "Graveyard" },
+                                { "OwnedBy": "You" },
+                                { "Type": "Creature" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": [
+                          {
+                            "Reflexive": {
+                              "targets": [
+                                {
+                                  "what": {
+                                    "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              ],
+                              "effects": [
+                                {
+                                  "If": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            { "In": "Graveyard" },
+                                            { "OwnedBy": "You" },
+                                            { "Type": "Creature" }
+                                          ]
+                                        },
+                                        "op": "Ge",
+                                        "right": 4
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" }
+                                      },
+                                      {
+                                        "Continuous": {
+                                          "affected": { "Target": 0 },
+                                          "mods": [{ "AddKeyword": "Deathtouch" }],
+                                          "duration": "UntilEndOfTurn"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

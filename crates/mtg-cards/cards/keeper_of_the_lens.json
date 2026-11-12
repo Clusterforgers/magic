@@ -1,0 +1,22 @@
+{
+  "oracle_id": "84b28100-ad70-4a78-b557-99f5ef6126a3",
+  "name": "Keeper of the Lens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Lens",
+      "oracle_fingerprint": "7d99138085bce01e211b665d5f5516e5",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "LookAtFaceDown": {
+                "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -346,6 +346,9 @@ fn land_played(
         .find(|zone| state.zones.get(*zone).contains(&object))
         .unwrap_or(Zone::Hand(player));
     expect_in(state, object, from)?;
+    if from == Zone::Exile {
+        state.tally(player, Tally::R287PlayedFromExile);
+    }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
     if let Some(permanent) = state
@@ -420,6 +423,13 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|card| card.zone() == Zone::Exile)
+    {
+        state.tally(player, Tally::R287PlayedFromExile);
+    }
     if choices.way == Some(CastWay::Warp) {
         state.tally(player, Tally::Warped);
     }

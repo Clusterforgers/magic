@@ -149,7 +149,15 @@ what: unknown,
 /**
  * Only these objects, as they were named when the rule began; every card `what` selects when absent.
  */
-only: Array<ObjectRef> | null, } } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
+only: Array<ObjectRef> | null, } } | { "LookAtFaceDown": { 
+/**
+ * The players who may look.
+ */
+who: Array<PlayerId>, 
+/**
+ * The permanents, judged when a seat looks; every face-down permanent when empty.
+ */
+what: unknown, } } | { "AdditionalLandPlays": Array<[PlayerId, number]> } | { "MayCast": { 
 /**
  * The players who may cast.
  */

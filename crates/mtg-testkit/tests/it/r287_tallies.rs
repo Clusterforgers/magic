@@ -1,8 +1,9 @@
 //! Goal: the turn facts r28-7 adds hold at two to four seats and replay to the live state: a card put into exile from any
 //! graveyard (`CardsExiled`, Ennis: "if one or more cards were put into exile this turn"), a permanent put into your own
 //! hand from the battlefield and not an opponent's (`PermanentsToHand`, Barrin), a card put into your graveyard from
-//! anywhere but the battlefield and not a creature that died (`CardsGravedNotFromBattlefield`, Dimir Strandcatcher), and
-//! a creature with a macro keyword named by its own name (Arcbound Overseer: "each creature you control with modular").
+//! anywhere but the battlefield and not a creature that died (`CardsGravedNotFromBattlefield`, Dimir Strandcatcher), a
+//! land played from exile and none (`PlayedFromExile`, Visions of Phyrexia: "if you didn't play a card from exile this
+//! turn"), and a creature with a macro keyword named by its own name (Arcbound Overseer: "each creature you control with modular").
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -33,18 +34,32 @@ fn card(name: &str, kind: CardType, rules: &[&str]) -> Arc<CardDefinition> {
 
 /// A watcher that gains 1 life at its controller's end step when the tally reaches `at`.
 fn watcher(who: &str, what: &str, at: u32) -> Arc<CardDefinition> {
+    watcher_by(who, what, "Ge", at)
+}
+
+/// A watcher that gains 1 life at its controller's end step when the tally compares to `at` by `op`.
+fn watcher_by(who: &str, what: &str, op: &str, at: u32) -> Arc<CardDefinition> {
     let rule = format!(
-        r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"End","whose":"You"}}}},"if":{{"Compare":{{"left":{{"Tallied":{{"who":"{who}","what":"{what}"}}}},"op":"Ge","right":{at}}}}},"effects":[{{"GainLife":{{"amount":1}}}}]}}}}"#
+        r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"End","whose":"You"}}}},"if":{{"Compare":{{"left":{{"Tallied":{{"who":"{who}","what":"{what}"}}}},"op":"{op}","right":{at}}}}},"effects":[{{"GainLife":{{"amount":1}}}}]}}}}"#
     );
     card("Watcher", CardType::Creature, &[&rule])
 }
 
 /// Casts the sorcery, then plays the turn out; the life seat 0 ends the turn with, and the replay checked.
 fn life_after(scenario: Scenario) -> i64 {
+    life_after_playing(scenario, None)
+}
+
+/// Casts the sorcery, plays the named land if one is given, then plays the turn out; the life seat 0 ends the turn with,
+/// and the replay checked.
+fn life_after_playing(scenario: Scenario, land: Option<&str>) -> i64 {
     let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
     driver.cast("Act").unwrap();
     while !driver.state().stack().is_empty() {
         driver.pass().unwrap();
+    }
+    if let Some(land) = land {
+        driver.play_land(land).unwrap();
     }
     for _ in 0..400 {
         if driver.state().turn().number() != 3 {
@@ -168,4 +183,20 @@ fn r287_a_macro_keyword_is_named_by_its_own_name(
     let setup = scenario.setup().unwrap();
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+}
+
+const IMPULSE: &str = r#"{"Spell":{"effects":[{"ExileTop":{"as":"impulse"}},{"Rule":{"rule":{"MayCast":{"from":"Exile","only":{"Bound":"impulse"},"play":true}},"duration":"UntilEndOfTurn"}}]}}"#;
+
+#[rstest]
+fn r287_a_card_played_from_exile_counts(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] played: bool,
+) {
+    let scenario = Scenario::new(seats)
+        .at(3, 0, Step::Main1)
+        .battlefield(0, [ready(watcher_by("You", "PlayedFromExile", "Lt", 1))])
+        .library(0, [card("Waste", CardType::Land, &[])])
+        .hand(0, [card("Act", CardType::Sorcery, &[IMPULSE])]);
+    let life = life_after_playing(scenario, played.then_some("Waste"));
+    assert_eq!(life - 20, i64::from(!played));
 }

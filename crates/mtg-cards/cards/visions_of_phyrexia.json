@@ -1,7 +1,7 @@
 {
   "oracle_id": "634b46a6-ec8b-41f0-8eb6-1e9144035847",
   "name": "Visions of Phyrexia",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Visions of Phyrexia",
@@ -24,9 +24,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 103, "end": 313 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PlayedFromExile" } },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
           }
         }
       ]
