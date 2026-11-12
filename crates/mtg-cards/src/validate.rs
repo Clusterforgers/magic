@@ -1523,6 +1523,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::XColor(_)
                     | CostItem::Forage => {}
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
@@ -3158,6 +3159,9 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
+                            | Effect::ExchangeControl { .. }
+                            | Effect::PayAnyTimes { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
@@ -3406,6 +3410,8 @@ impl Walker<'_> {
                 }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind_kept(name, Kind::Object));
+                    // The number discarded, as for a step that moved its objects (`bind_moved`).
+                    w.scope.numbers.insert(format!("{name}~moved"));
                 }
             }
             Effect::LookAtTop { who, count, bind }
@@ -3703,7 +3709,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::Unattach { what } | Effect::JoinAttack { what } => {
+            Effect::Unattach { what } | Effect::JoinAttack { what } | Effect::Reattack { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::MyriadCopies { of, bind } => {
@@ -4176,6 +4182,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::StillResolves
             | Effect::Forget { .. }
             | Effect::DrawGame {}
             | Effect::Crewed { .. }
@@ -4284,6 +4291,17 @@ impl Walker<'_> {
             Effect::May { who, effects } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.effect_list("effects", effects, false);
+            }
+            Effect::PayAnyTimes { who, cost } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                if cost
+                    .0
+                    .iter()
+                    .any(|item| matches!(item, CostItem::SacrificeSelf | CostItem::ExileSelf))
+                {
+                    w.problem("a cost paid any number of times cannot take its source");
+                }
             }
             Effect::Pay {
                 who,
@@ -5463,6 +5481,20 @@ impl Walker<'_> {
         }
     }
 
+    /// A choice of forms as a permanent enters: two or more, each made of changes a copy effect can make.
+    fn r303_becomes_choice(&mut self, enters: bool, forms: &[Vec<Modification>]) {
+        if !enters {
+            self.problem("only an `Enters` event becomes a chosen form");
+        }
+        if forms.len() < 2 || forms.iter().any(Vec::is_empty) {
+            self.problem("a choice of forms offers two or more forms, each with a change");
+        }
+        let mut values = crate::definition::CardDefinition::new("form");
+        if forms.iter().flatten().any(|change| !values.except(change)) {
+            self.problem("a form changes only what a copy effect changes: types, subtypes, keywords, a fixed power and toughness");
+        }
+    }
+
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
@@ -5534,6 +5566,13 @@ impl Walker<'_> {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
             ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
+            ReplaceBy::BecomesChoice(forms) => self.r303_becomes_choice(enters, forms),
+            ReplaceBy::Mill(count) => {
+                if !enters {
+                    self.problem("only an `Enters` event mills as it happens");
+                }
+                self.at("count", |w| w.amount(count));
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

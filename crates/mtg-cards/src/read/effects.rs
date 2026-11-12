@@ -359,6 +359,16 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
         ),
         Effect::Goad { what } => format!("goad {}", phrase::who(ctx, what)),
         Effect::Regenerate { what } => format!("regenerate {}", phrase::who(ctx, what)),
+        Effect::Reattack { what, players } => format!(
+            "you may reselect which {} {} is attacking",
+            if *players {
+                "player"
+            } else {
+                "player or permanent"
+            },
+            phrase::who(ctx, what)
+        ),
+        Effect::StillResolves => "it still resolves if its targets become illegal".to_owned(),
         Effect::Explore { what } => format!("{} explores", phrase::who(ctx, what)),
         _ => return None,
     })
@@ -593,6 +603,13 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
             out.push(Step::new(depth, format!("{} may:", phrase::who(ctx, who))));
             list(ctx, effects, depth + 1, out);
         }
+        Effect::PayAnyTimes { who, cost } => out.push(Step::new(
+            depth,
+            format!(
+                "{} any number of times",
+                may_pay(ctx, who, &parts::cost(ctx, cost))
+            ),
+        )),
         Effect::Pay {
             who,
             cost,

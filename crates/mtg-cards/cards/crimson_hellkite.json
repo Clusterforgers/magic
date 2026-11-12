@@ -1,7 +1,7 @@
 {
   "oracle_id": "37a1f340-10d5-407e-bf2b-cbbbb6cab985",
   "name": "Crimson Hellkite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Crimson Hellkite",
@@ -9,7 +9,11 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 91 } }
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", { "XColor": "Red" }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
         }
       ]
     }

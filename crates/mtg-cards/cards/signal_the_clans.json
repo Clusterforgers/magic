@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fd68ae3c-52cd-4b20-b015-bd31378d972e",
+  "name": "Signal the Clans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Signal the Clans",
+      "oracle_fingerprint": "2655b83a18ec96012e686439a8dd73bf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "min": 3, "max": 3 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Is": { "Bound": "found" } }, { "In": "Library" }],
+                          "stat": "Name"
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    { "ChooseAtRandom": { "from": { "Bound": "found" }, "as": "pick" } },
+                    { "Move": { "what": { "Bound": "pick" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

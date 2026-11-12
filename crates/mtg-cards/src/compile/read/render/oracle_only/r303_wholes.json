@@ -1,0 +1,1349 @@
+[
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "as": "it",
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Reflexive": {
+       "effects": [
+        {
+         "Fight": {
+          "what": {
+           "Bound": "it"
+          },
+          "with": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "targets": [
+        {
+         "bounds": {
+          "max": 1,
+          "min": 0
+         },
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "Not": {
+             "ControlledBy": "You"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Return target creature card from your graveyard to the battlefield. When you do, it fights up to one target creature you don't control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Compare": {
+           "left": {
+            "Distinct": {
+             "of": [
+              {
+               "Type": "Land"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ],
+             "stat": "BasicLandTypes"
+            }
+           },
+           "op": "Ge",
+           "right": 5
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "Distinct": {
+             "of": [
+              {
+               "Type": "Creature"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ],
+             "stat": "Colors"
+            }
+           },
+           "op": "Ge",
+           "right": 5
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "WinGame": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "You win the game if you control a land of each basic land type and a creature of each color."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "LoseLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Count": [
+           {
+            "Subtype": "Swamp"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Count": [
+         {
+          "Subtype": "Mountain"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "to": {
+        "Target": 1
+       }
+      }
+     },
+     {
+      "CreateToken": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Forest"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "token": {
+        "Custom": {
+         "colors": [
+          "Green"
+         ],
+         "name": "Saproling",
+         "power": 1,
+         "subtypes": [
+          "Saproling"
+         ],
+         "toughness": 1,
+         "types": [
+          "Creature"
+         ]
+        }
+       }
+      }
+     },
+     {
+      "GainLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Count": [
+           {
+            "Subtype": "Plains"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Island"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Island"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Target opponent loses 2 life for each Swamp you control. ~ deals damage to target creature equal to the number of Mountains you control. Create a 1/1 green Saproling creature token for each Forest you control. You gain 2 life for each Plains you control. Draw a card for each Island you control, then discard that many cards."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilEndOfCombat",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": 10,
+          "toughness": 0
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        "Blocking",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Target blocking Wall you control gets +10/+0 until end of combat. Prevent all damage that would be dealt to it this turn. Destroy it at the beginning of the next end step."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "countered",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "AnyOf": [
+             {
+              "Type": "Instant"
+             },
+             {
+              "Type": "Sorcery"
+             }
+            ]
+           },
+           {
+            "OwnedBy": "You"
+           },
+           {
+            "In": "Graveyard"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 2
+        }
+       },
+       "then": [
+        {
+         "May": {
+          "effects": [
+           {
+            "CopySpell": {
+             "new_targets": true,
+             "what": {
+              "Bound": "countered"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "TargetsPlayer": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell that targets you.\nIf there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy."
+ ],
+ [
+  {
+   "OpeningReveal": {
+    "effects": [
+     {
+      "SetLife": {
+       "amount": 26
+      }
+     }
+    ],
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    }
+   }
+  },
+  "You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, your life total becomes 26."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "found",
+       "count": {
+        "max": "X",
+        "min": 0
+       },
+       "distinct": true,
+       "filter": [
+        {
+         "Type": "Battle"
+        }
+       ]
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for up to X battle cards with different names, put them onto the battlefield, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "w",
+       "filter": [
+        {
+         "Color": "White"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "u",
+       "filter": [
+        {
+         "Color": "Blue"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "b",
+       "filter": [
+        {
+         "Color": "Black"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "r",
+       "filter": [
+        {
+         "Color": "Red"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "b"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "g",
+       "filter": [
+        {
+         "Color": "Green"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "b"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "r"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "w"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "u"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "b"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "r"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "g"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for a white card, a blue card, a black card, a red card, and a green card. Reveal those cards, put them into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Target": 0
+         },
+         "stat": "Power"
+        }
+       },
+       "source": {
+        "Target": 0
+       },
+       "to": "ActivePlayer"
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "combat": true,
+         "to": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "combat": true,
+         "source": [
+          {
+           "Is": {
+            "Target": 0
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "ActivePlayer"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Tap target creature that player controls. That creature deals damage equal to its power to the player. Prevent all combat damage that would be dealt to and dealt by the creature this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "DealDamage": {
+          "amount": "Triggering",
+          "source": "Dealer",
+          "to": {
+           "ControllerOf": "Dealer"
+          }
+         }
+        }
+       ],
+       "once": false,
+       "this_turn": true,
+       "when": {
+        "DealsDamage": {
+         "combat": true,
+         "source": [
+          {
+           "Type": "Creature"
+          },
+          "Attacking"
+         ],
+         "to": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "This turn, whenever an attacking creature deals combat damage to you, it deals that much damage to its controller."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "instant",
+       "count": {
+        "max": 1,
+        "min": 0
+       },
+       "filter": [
+        {
+         "Type": "Instant"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "sorcery",
+       "count": {
+        "max": 1,
+        "min": 0
+       },
+       "filter": [
+        {
+         "Type": "Sorcery"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "instant"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "sorcery"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for an instant card and/or a sorcery card, reveal them, put them into your hand, then shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Draw": {
+       "as": "card"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "Triggering",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Stat": {
+            "of": {
+             "Bound": "card"
+            },
+            "stat": "ManaValue"
+           }
+          },
+          "toughness": {
+           "Stat": {
+            "of": {
+             "Bound": "card"
+            },
+            "stat": "ManaValue"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "LoseLife": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Bound": "card"
+         },
+         "stat": "ManaValue"
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "Attacks": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "Whenever equipped creature attacks, draw a card and reveal it. The creature gets +X/+X until end of turn and you lose X life, where X is that card's mana value."
+ ],
+ [
+  {
+   "FreeActivation": {
+    "condition": {
+     "All": [
+      {
+       "EnduringStory": "You"
+      },
+      {
+       "Compare": {
+        "left": {
+         "Tally": {
+          "event": {
+           "KindActivated": "Equip"
+          },
+          "filter": [],
+          "who": "You"
+         }
+        },
+        "op": "Lt",
+        "right": 1
+       }
+      }
+     ]
+    },
+    "kind": "Equip"
+   }
+  },
+  "As long as you have an enduring story, you may pay {0} rather than pay the equip cost of the first equip ability you activate each turn."
+ ],
+ [
+  {
+   "Replacement": {
+    "by": "Prevent",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        "Other",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "when": {
+     "Damage": {
+      "source": [
+       "Spell",
+       {
+        "Targeting": [
+         "This"
+        ]
+       }
+      ],
+      "to": "This"
+     }
+    }
+   }
+  },
+  "As long as you control another creature, prevent all damage that would be dealt to ~ by spells that target it."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "as": "them",
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": "X",
+         "op": "Ge",
+         "right": 6
+        }
+       },
+       "then": [
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "them"
+          },
+          "duration": "Forever",
+          "mods": [
+           {
+            "AddType": "Creature"
+           },
+           {
+            "SetPT": {
+             "power": 4,
+             "toughness": 4
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": "X",
+       "min": 0
+      },
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Enchantment"
+          }
+         ]
+        },
+        {
+         "Not": {
+          "Subtype": "Aura"
+         }
+        },
+        {
+         "Compare": {
+          "op": "Le",
+          "stat": "ManaValue",
+          "to": "X"
+         }
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Return up to X target artifact and/or non-Aura enchantment cards each with mana value X or less from your graveyard to the battlefield. If X is 6 or more, those permanents are 4/4 creatures in addition to their other types."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "found",
+       "count": {
+        "max": 3,
+        "min": 3
+       },
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Distinct": {
+           "of": [
+            {
+             "Is": {
+              "Bound": "found"
+             }
+            },
+            {
+             "In": "Library"
+            }
+           ],
+           "stat": "Name"
+          }
+         },
+         "op": "Eq",
+         "right": 3
+        }
+       },
+       "then": [
+        {
+         "ChooseAtRandom": {
+          "as": "pick",
+          "count": 1,
+          "from": {
+           "Bound": "found"
+          }
+         }
+        },
+        {
+         "Move": {
+          "to": "Hand",
+          "what": {
+           "Bound": "pick"
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for three creature cards and reveal them. If you reveal three cards with different names, choose one of them at random and put that card into your hand. Shuffle the rest into your library."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "CreateToken": {
+       "count": 2,
+       "token": {
+        "Custom": {
+         "colors": [
+          "Black"
+         ],
+         "name": "Walker",
+         "power": 2,
+         "subtypes": [
+          "Zombie"
+         ],
+         "toughness": 2,
+         "types": [
+          "Creature"
+         ]
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, create two Walker tokens."
+ ],
+ [
+  {
+   "Rule": {
+    "condition": {
+     "Matches": {
+      "selector": [
+       {
+        "HasAttached": [
+         {
+          "Subtype": "Equipment"
+         }
+        ]
+       }
+      ],
+      "subject": "This"
+     }
+    },
+    "rule": {
+     "Combat": {
+      "quirk": {
+       "MustBeBlocked": "AtLeastOne"
+      },
+      "who": "This"
+     }
+    }
+   }
+  },
+  "As long as ~ is equipped, it must be blocked if able."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ]
+      }
+     }
+    ],
+    "if": {
+     "AtTrigger": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Subtype": "Zombie"
+         },
+         "Attacking",
+         "Other"
+        ]
+       },
+       "op": "Ge",
+       "right": 2
+      }
+     }
+    },
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever ~ and at least two Zombies attack, ~ gains indestructible until end of turn."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "count": {
+        "Count": [
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "filter": []
+      }
+     },
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand."
+ ],
+ [
+  {
+   "Rule": {
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "HasAttached": [
+          "This"
+         ]
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "rule": {
+     "CantLoseGame": {
+      "life_only": true,
+      "who": "You"
+     }
+    }
+   }
+  },
+  "As long as this Equipment is attached to a creature, you don't lose the game for having 0 or less life."
+ ],
+ [
+  {
+   "Replacement": {
+    "by": "Prevent",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        "Attacking"
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "when": {
+     "Damage": {
+      "to": "This"
+     }
+    }
+   }
+  },
+  "As long as an artifact creature you control is attacking, prevent all damage that would be dealt to ~."
+ ]
+]
