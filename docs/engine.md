@@ -271,6 +271,8 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - Join rules (`r286_joins.rs`, CR 508.1c, 509.1b): `AttackWithOthers`, `BlockWithOthers` (at least N others the selector picks, read with the creature as `This`), `AttackAlone` and `AttackWithAll` become `JoinRule`s of the options; the check refuses a declaration that breaks one, a bound creature is never required, and the web holds Confirm while one is broken.
 - The untap step asks the active player one `ChooseCards` (min 0, `steps::untap_events`) of the tapped permanents that may stay tapped; the answer stays tapped, the clock untaps all, and with none there is no question.
 - `Duration::WhileSourceTapped` ends an effect when its source untaps or leaves (CR 611.2b).
+- `Duration::WhileYouControlSourceTapped` also ends it when another player gains control of the source; the layers judge that control after the control layer, as for `WhileYouControlSource`.
+- `Effect::ExchangeLifeWithToughness` (CR 701.12c) moves the life total to the creature's toughness through `LifeGained` or `LifeLost` and sets its toughness to the former total in layer 7b for good; a creature gone or a barred life change exchanges nothing.
 - `AttackOptions::required_attack` and `BlockOptions::required_blocks` declare only what the rules require, for the bots, the server's clock and the testkit's passive seats.
 - A library top played revealed (`GameState::revealed_top`) is shown to every seat; `Rule::LookAtTop` to its owner alone.
 - `GameRule::LifeTotalCantChange` (CR 119.7) stops gain, loss, lifelink and mana burn.

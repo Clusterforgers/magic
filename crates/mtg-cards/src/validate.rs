@@ -3824,6 +3824,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("with", |w| w.reference(with, Kind::Player));
             }
+            Effect::ExchangeLifeWithToughness { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RepeatWhile {
                 condition,

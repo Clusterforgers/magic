@@ -286,6 +286,7 @@ const RUNS: &[&str] = &[
     "Effect.DrawGame",
     "Effect.SetLife",
     "Effect.ExchangeLife",
+    "Effect.ExchangeLifeWithToughness",
     "Effect.RemoveDamage",
     "Effect.RepeatWhile",
     "Effect.SeparatePiles",

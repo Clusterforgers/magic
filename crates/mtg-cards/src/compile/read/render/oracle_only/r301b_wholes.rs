@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R301B_WHOLES: [(&str, &str); 4] = [
+const R301B_WHOLES: [(&str, &str); 5] = [
     // rosheen_roaring_prophet
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Mill":{"count":6,"as":"milled"}},{"Choose":{"from":{"Each":[{"Is":{"Bound":"milled"}},{"In":"Graveyard"},"XInCost"]},"count":{"min":0,"max":1},"as":"kept"}},{"Move":{"what":{"Bound":"kept"},"to":"Hand"}}]}}"#,
@@ -19,6 +19,11 @@ const R301B_WHOLES: [(&str, &str); 4] = [
     (
         r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":{"Other":"dream"},"count":"X"}},{"XAtLeast":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"RemovedThisWay":{"Other":"dream"}}}}]}}"#,
         r"{T}, Remove one or more dream counters from ~: Add that much {C}.",
+    ),
+    // tree_of_redemption
+    (
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"ExchangeLifeWithToughness":{"what":"This"}}]}}"#,
+        r"{T}: Exchange your life total with ~'s toughness.",
     ),
     // vazi_keen_negotiator
     (

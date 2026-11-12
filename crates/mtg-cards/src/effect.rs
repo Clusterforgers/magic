@@ -1393,6 +1393,16 @@ pub enum Effect {
         /// The other player.
         with: Ref,
     },
+    /// A player's life total and a creature's toughness are exchanged (CR 701.12c): the player gains or loses life to the
+    /// creature's toughness, and the creature's toughness becomes the player's former life total (layer 7b, for good).
+    /// Nothing happens when the creature is not on the battlefield or the life total can't change.
+    ExchangeLifeWithToughness {
+        /// The player.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The creature.
+        what: Ref,
+    },
     /// All damage marked on each creature is removed (CR 120.6).
     RemoveDamage {
         /// The creatures.
@@ -2210,6 +2220,7 @@ mod tests {
     #[case::draw_game(Effect::DrawGame {}, r#"{"DrawGame":{}}"#)]
     #[case::set_life(Effect::SetLife { who: Ref::You, amount: Amount::Fixed(1) }, r#"{"SetLife":{"amount":1}}"#)]
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
+    #[case::exchange_life_with_toughness(Effect::ExchangeLifeWithToughness { who: Ref::You, what: Ref::This }, r#"{"ExchangeLifeWithToughness":{"what":"This"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
         Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false, ask: None },

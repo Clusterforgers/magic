@@ -93,8 +93,10 @@ fn compiled() {
 #[case("Rosheen, Roaring Prophet")]
 #[case("Rubinia Soulsinger")]
 #[case("Sacellum Godspeaker")]
+#[case("Seasinger")]
 #[case("Shelkin Brownie")]
 #[case("Tolaria")]
+#[case("Tree of Redemption")]
 #[case("Urza's Engine")]
 #[case("Vazi, Keen Negotiator")]
 #[case("Vexing Puzzlebox")]
@@ -159,6 +161,21 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#"{"Subtype":"Clue"}"#
 )]
 #[case::opponents_treasures("Vazi, Keen Negotiator", r#""who":"You"}"#, r#""who":"Opponents"}"#)]
+#[case::another_life(
+    "Tree of Redemption",
+    r#"{"ExchangeLifeWithToughness":{"what":"This"}}"#,
+    r#"{"ExchangeLifeWithToughness":{"who":"Opponents","what":"This"}}"#
+)]
+#[case::a_forest(
+    "Seasinger",
+    r#"{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Ge","right":1"#,
+    r#"{"Subtype":"Forest"},{"ControlledBy":"You"}]},"op":"Ge","right":1"#
+)]
+#[case::two_islands(
+    "Seasinger",
+    r#"{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Ge","right":1"#,
+    r#"{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Ge","right":2"#
+)]
 #[case::four_damage(
     "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
     r#""right":3"#,

@@ -1,6 +1,7 @@
 //! Goal: the corpus rules of the r30-1b pack play as printed at tables of two to four seats: Rasputin removes the dream
 //! counters its controller chooses (one or more) and adds that much {C}, and Vazi gives its target opponent as many
-//! Treasures as its controller created this turn, not counting the opponent's own.
+//! Treasures as its controller created this turn, and Tree of Redemption exchanges its controller's life total with its
+//! toughness, and Seasinger takes only a creature whose controller controls an Island.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -121,5 +122,77 @@ fn vazi_gives_as_many_treasures_as_you_created(
     settle(&mut driver, 0, Some(PlayerId(1)))?;
     assert_eq!(treasures(driver.state(), 1), made);
     assert_eq!(treasures(driver.state(), 0), made);
+    Ok(())
+}
+
+/// Tree of Redemption (0/13) with `counters` +1/+1 counters exchanges seat 0's 20 life with its toughness: the life becomes
+/// the toughness it had, its base toughness becomes 20 and the counters still count.
+#[rstest]
+fn tree_of_redemption_exchanges_life_with_its_toughness(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 2)] counters: u32,
+) -> Result<(), ScriptError> {
+    let tree = with_counters(
+        ready(card("Tree of Redemption").unwrap()),
+        CounterKind::PlusOnePlusOne,
+        counters,
+    );
+    let scenario = table(seats, vec![tree]).life(0, 20);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Tree of Redemption")?;
+    settle(&mut driver, 0, None)?;
+    let state = driver.state();
+    let tree = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .find(|id| {
+            state
+                .object(*id)
+                .is_some_and(|o| o.card().name == "Tree of Redemption")
+        })
+        .unwrap();
+    let toughness = mtg_engine::characteristics::characteristics(state, tree)
+        .and_then(|chars| chars.toughness)
+        .unwrap();
+    let before = 13 + i32::try_from(counters).unwrap();
+    assert_eq!(state.player(PlayerId(0)).unwrap().life(), before);
+    assert_eq!(toughness, 20 + i32::try_from(counters).unwrap());
+    Ok(())
+}
+
+/// Seasinger may take a creature only while that creature's controller controls an Island, and keeps it while it stays
+/// tapped under its controller.
+#[rstest]
+fn seasinger_takes_a_creature_whose_controller_controls_an_island(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] island_there: bool,
+) -> Result<(), ScriptError> {
+    let mut theirs = vec![ready(mtg_testkit::cards::free_creature("Bear", 2, 2))];
+    if island_there {
+        theirs.push(ready(island()));
+    }
+    let scenario = table(
+        seats,
+        vec![ready(card("Seasinger").unwrap()), ready(island())],
+    )
+    .battlefield(1, theirs);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Seasinger")?;
+    let decision = driver.decision()?.clone();
+    let DecisionKind::ChooseTargets(options) = &decision.kind else {
+        panic!("targets, not {:?}", decision.kind);
+    };
+    let bear = driver.target_named("Bear")?;
+    assert_eq!(options.legal.contains(&bear), island_there);
+    if island_there {
+        driver.choose_targets(&[bear])?;
+        settle(&mut driver, 0, None)?;
+        let bear = driver.id_of("Bear")?;
+        assert_eq!(
+            mtg_engine::characteristics::controller_of(driver.state(), bear),
+            Some(PlayerId(0))
+        );
+    }
     Ok(())
 }
