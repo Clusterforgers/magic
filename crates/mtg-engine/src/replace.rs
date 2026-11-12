@@ -757,6 +757,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
+        | ReplaceBy::AsEnters(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -793,6 +794,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
+                | ReplaceBy::AsEnters(_)
         )
     )
 }
@@ -2254,6 +2256,10 @@ impl Pass<'_> {
                 self.day_if_neither(at, applied);
                 Ok(Applied::Done)
             }
+            ReplaceBy::AsEnters(effects) => {
+                let unit = Unit::Enter { object, controller };
+                Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
+            }
             _ => self.enter(at, candidate, by, object, controller, applied),
         }
     }
@@ -3538,6 +3544,7 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod r304_as_enters;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

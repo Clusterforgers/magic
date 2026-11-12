@@ -1,14 +1,26 @@
 {
   "oracle_id": "e5818ab3-8c37-4063-9e9d-cbe4ae0bba14",
   "name": "Overlaid Terrain",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Overlaid Terrain",
       "oracle_fingerprint": "1ac1e80bbcfae7f4163077e2c4b183f6",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 60 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Sacrifice": {
+                    "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                  }
+                }
+              ]
+            }
+          }
         },
         {
           "Static": {

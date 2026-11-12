@@ -5451,6 +5451,15 @@ impl Walker<'_> {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
             ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
+            ReplaceBy::AsEnters(effects) => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                if effects.is_empty() {
+                    self.problem("needs at least one effect");
+                }
+                self.effect_list("AsEnters", effects, false);
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

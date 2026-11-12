@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d79e8ec4-b44b-4598-991c-7781dab55868",
+  "name": "Nefarious Lich",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nefarious Lich",
+      "oracle_fingerprint": "8523caa37eb876a8b1f88e66917f97ee",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 116 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "LifeGain": {} },
+            "by": { "Instead": [{ "Draw": { "count": "Triggering" } }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "LoseGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

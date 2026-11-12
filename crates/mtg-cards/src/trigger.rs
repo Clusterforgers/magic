@@ -1119,6 +1119,9 @@ pub enum ReplaceBy {
     /// The permanent enters under the control of an opponent its controller chooses as it enters ("~ enters under the
     /// control of an opponent of your choice"); under its controller's own control when there is no opponent.
     UnderChosenOpponent,
+    /// As the permanent enters, these effects happen first, then it enters (CR 614.1c, 614.12): "As ~ enters, discard
+    /// your hand"; a question they ask goes to the permanent's controller.
+    AsEnters(Vec<Effect>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

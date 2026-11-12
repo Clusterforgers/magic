@@ -172,6 +172,7 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r304_as_enters;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
