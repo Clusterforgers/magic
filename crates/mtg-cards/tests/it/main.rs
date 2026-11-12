@@ -74,6 +74,7 @@ mod r372_cards;
 mod r374_cards;
 mod r374_writers;
 mod r375_cards;
+mod r376_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

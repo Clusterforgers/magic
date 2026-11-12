@@ -2608,8 +2608,9 @@ fn object_triggers(
                 snapshot: shot.clone(),
                 delayed: None,
             };
-            // An ability that triggers only once each turn does so once, whatever else is said of it.
-            if limit.is_none() && zone == ZoneKind::Battlefield {
+            // An ability that triggers only once each turn does so once, whatever else is said of it; one that works
+            // from another zone than the battlefield triggers again only when the rule names its zone (`again_watches`).
+            if limit.is_none() {
                 for _ in 0..repeats(state, happened, controller, source) {
                     found.push(trigger.clone());
                 }

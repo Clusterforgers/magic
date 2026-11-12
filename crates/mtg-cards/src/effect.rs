@@ -324,6 +324,8 @@ pub enum VoteFor {
     Named(Vec<String>),
     /// The players or objects a reference names ("votes for a nonland permanent you don't control").
     Of(Ref),
+    /// A player other than the voter ("each player secretly votes for another player").
+    AnotherPlayer,
 }
 
 /// What an `Effect::ChooseValue` asks a player for.
@@ -1557,7 +1559,8 @@ pub enum Effect {
     },
     /// Each player votes (CR 701.38), the controller first and the others in turn order. A vote on named choices binds
     /// each name to the players who voted for it; a vote on players or objects binds `bind` to those with the most votes,
-    /// all of them when tied. A secret vote is shown to the other seats only when every vote is cast.
+    /// all of them when tied, and `tally` to every vote cast. A secret vote is shown to the other seats only when every
+    /// vote is cast; a vote on objects is never secret.
     Vote {
         /// What is voted for.
         options: VoteFor,
@@ -1567,6 +1570,26 @@ pub enum Effect {
         /// Names the players or objects with the most votes when `options` is `Of`.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+        /// Names every vote cast on players or objects, each voted for once for each vote it got ("for each vote they
+        /// received").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        tally: Option<String>,
+    },
+    /// Each player `who` names chooses one of the words, the controller first and the others in turn order; secret
+    /// choices are made face down and revealed together ("each opponent secretly chooses silence or snitch"). Each word
+    /// is bound to the players who chose it. No vote: nothing that counts votes sees it.
+    ChooseWords {
+        /// Who chooses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The words, each a name of its own.
+        words: Vec<String>,
+        /// The choices are made face down and revealed together.
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
     },
     /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
     /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").
@@ -2296,7 +2319,7 @@ mod tests {
         r#"{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"a","rest_as":"b"}}"#
     )]
     #[case::vote_on_two_names(
-        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None },
+        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None, tally: None },
         r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
     )]
     #[case::c10_vp_chaos_ensues(
@@ -2320,7 +2343,7 @@ mod tests {
         r#"{"ChooseValue":{"kind":"Color","as":"c"}}"#
     )]
     #[case::vote_on_objects(
-        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()) },
+        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()), tally: None },
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::w2d_villainous_choice(

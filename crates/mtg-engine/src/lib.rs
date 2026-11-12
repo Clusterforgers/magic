@@ -204,3 +204,5 @@ pub use mana_ability::mana_ways;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
 pub use snapshot::{Snapshot, snapshot};
 pub use state::{GameResult, GameState};
+#[cfg(test)]
+mod r376_nearest_tests;

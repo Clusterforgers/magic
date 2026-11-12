@@ -606,6 +606,10 @@ impl<'a> Walker<'a> {
                 self.condition(test);
                 self.expect(Kind::Player, want);
             }
+            Ref::Seated { of, .. } => {
+                self.reference(of, Kind::Player);
+                self.expect(Kind::Player, want);
+            }
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
@@ -812,6 +816,7 @@ impl<'a> Walker<'a> {
             Pred::Is(r)
             | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
+            | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
             | Pred::HauntedBy(r)
@@ -915,6 +920,7 @@ impl<'a> Walker<'a> {
             | Pred::Token
             | Pred::Commander
             | Pred::Spell
+            | Pred::Dungeon
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
@@ -3108,7 +3114,8 @@ impl Walker<'_> {
             | Ref::ControllerOf(_)
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
-            | Ref::PlayersWhere { .. } => Kind::Player,
+            | Ref::PlayersWhere { .. }
+            | Ref::Seated { .. } => Kind::Player,
             Ref::Affected
             | Ref::Candidate
             | Ref::This
@@ -3216,31 +3223,38 @@ impl Walker<'_> {
     }
 
     /// `Vote`: at least two named choices that are names of their own, or the players or objects to vote for with the
-    /// name of the winners.
-    fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>) {
-        match options {
+    /// name of the winners or of every vote; only a vote on named choices or on players is secret.
+    fn vote(&mut self, options: &VoteFor, secret: bool, bind: Option<&str>, tally: Option<&str>) {
+        let kind = match options {
             VoteFor::Named(names) => {
                 if names.len() < 2 {
                     self.problem("a vote has at least two choices");
                 }
-                if bind.is_some() {
+                if bind.is_some() || tally.is_some() {
                     self.problem("a vote on named choices binds the choices, not a winner");
                 }
                 for name in names {
                     self.at("options", |w| w.bind(name, Kind::Player));
                 }
+                return;
             }
             VoteFor::Of(of) => {
-                if secret {
-                    self.problem("only a vote on named choices is secret");
-                }
                 self.at("options", |w| w.reference(of, Kind::Either));
-                let kind = self.kind_of(of);
-                match bind {
-                    Some(name) => self.at("as", |w| w.bind(name, kind)),
-                    None => self.problem("a vote on players or objects names its winners"),
-                }
+                self.kind_of(of)
             }
+            VoteFor::AnotherPlayer => Kind::Player,
+        };
+        if secret && kind != Kind::Player {
+            self.problem("only a vote on named choices or on players is secret");
+        }
+        if bind.is_none() && tally.is_none() {
+            self.problem("a vote on players or objects names its winners");
+        }
+        if let Some(name) = bind {
+            self.at("as", |w| w.bind(name, kind));
+        }
+        if let Some(name) = tally {
+            self.at("tally", |w| w.bind(name, kind));
         }
     }
 
@@ -4101,7 +4115,8 @@ impl Walker<'_> {
                 options,
                 secret,
                 bind,
-            } => w.vote(options, *secret, bind.as_deref()),
+                tally,
+            } => w.vote(options, *secret, bind.as_deref(), tally.as_deref()),
             Effect::BidLife {
                 who,
                 start,
@@ -4117,6 +4132,15 @@ impl Walker<'_> {
                 }
                 w.at("as", |w| w.bind(bind, Kind::Value));
                 w.at("winner", |w| w.bind(winner, Kind::Player));
+            }
+            Effect::ChooseWords { who, words, .. } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if words.len() < 2 {
+                    w.problem("a choice of words has at least two words");
+                }
+                for word in words {
+                    w.at("words", |w| w.bind(word, Kind::Player));
+                }
             }
             Effect::ChooseNumbers {
                 who,
@@ -5216,6 +5240,8 @@ impl Walker<'_> {
             GameRule::CanBeCommander
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
+            | GameRule::ReverseTurnOrder
+            | GameRule::AttackOnlyNearest(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn
             | GameRule::CantBeCopied => {}

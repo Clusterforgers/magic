@@ -11,6 +11,10 @@ mod left;
 pub(crate) mod prim;
 mod r285_attacked;
 mod r300b_value;
+#[cfg(test)]
+mod r376_seats_tests;
+#[cfg(test)]
+mod r376_shares_tests;
 mod share;
 mod tree;
 mod value;

@@ -76,6 +76,15 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
             condition(ctx, test)
         ),
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
+        Ref::Seated { of, side, opponent } => format!(
+            "the {} to the {} of {}",
+            if *opponent { "opponent" } else { "player" },
+            match side {
+                crate::refs::Side::Left => "left",
+                crate::refs::Side::Right => "right",
+            },
+            who(ctx, of)
+        ),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
         Ref::SourceOf(of) => format!("the source of {}", who(ctx, of)),
@@ -335,6 +344,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Token => Part::Before("token".to_owned()),
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),
+        Pred::Dungeon => Part::Kind("dungeon".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),

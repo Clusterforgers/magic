@@ -125,6 +125,7 @@ mod proliferate;
 mod put_counters;
 mod r281_lock_door;
 mod r281_pay_one_of;
+mod r376_choose_words;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -351,6 +352,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Clash { .. } => w9b_clash::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
+        Effect::ChooseWords { .. } => r376_choose_words::run(cx, effect),
         Effect::BidLife { .. } => dk27_bid::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
@@ -415,7 +417,8 @@ mod tests {
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
         {"Either":{"first":[],"second":[]}},
-        {"OneOf":{"options":[[],[],[]]}}
+        {"OneOf":{"options":[[],[],[]]}},
+        {"ChooseWords":{"words":["silence","snitch"],"secret":true}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -602,5 +605,6 @@ mod tests {
         "Effect.VillainousChoice",
         "Effect.Either",
         "Effect.OneOf",
+        "Effect.ChooseWords",
     ];
 }

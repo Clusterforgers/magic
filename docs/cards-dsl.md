@@ -102,6 +102,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "When a Faerie is championed with this creature" is `Caused { ZoneChange { [Subtype], Battlefield, Exile }, source: [This] }`: the champion ability is the only one of the card that exiles (CR 702.72b).
 - "Whenever target creature deals damage this turn" is a `DelayedTrigger` with `this_turn` over `Batch(DealsDamage { source: [Is(Target(0))] })`; a delayed trigger waits for a batch as a printed one does.
 - "Spend only black mana on X." is `CostItem::XColor`: the X of the cost is paid with mana of that color; a spell holds it as a required `AdditionalCost` that pays nothing.
+- "The player to your right" is `Ref::Seated`: the left is the next seat still in the game, as turns pass; `GameRule::ReverseTurnOrder` (in force an odd number of times) runs the turn order the other way and leaves the seats. `GameRule::AttackOnlyNearest` keeps only the nearest opponent on a side, and their planeswalkers, among each player's defenders; several such rules all apply.
+- A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

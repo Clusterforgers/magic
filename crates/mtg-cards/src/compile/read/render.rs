@@ -227,6 +227,11 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::dk27_animate::dk27_animate_variants(ability) {
         return texts;
     }
+    let mut r376 = Vec::new();
+    super::r376_nearest::r376_nearest_wordings(ability, &mut r376);
+    if !r376.is_empty() {
+        return r376;
+    }
     if let Some(texts) = super::wf25_writers::wf25_whole(ability) {
         return texts;
     }
@@ -3688,6 +3693,7 @@ impl Writer<'_> {
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))
+            .or_else(|| super::r376_seats::r376_reverse_text(effect))
             .or_else(|| c10_vp_planar_text(effect))
     }
 
@@ -3712,6 +3718,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::Seated { .. } => super::r376_seats::r376_seated_text(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }

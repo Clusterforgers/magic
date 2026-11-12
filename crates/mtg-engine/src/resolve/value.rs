@@ -618,6 +618,30 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The next player still in the game on `side` of each player `of` names, the nearest opponent of theirs with
+    /// `opponent` (`Ref::Seated`); each once, in the order of the players named.
+    fn r376_seated(
+        &self,
+        of: &Ref,
+        side: mtg_cards::refs::Side,
+        opponent: bool,
+    ) -> Result<Vec<Target>, ResolveError> {
+        let mut found: Vec<Target> = Vec::new();
+        for player in self.players(of)? {
+            let next = self
+                .state
+                .r376_seats_from(player, side)
+                .into_iter()
+                .find(|seat| !opponent || self.state.is_opponent(player, *seat));
+            if let Some(next) = next.map(Target::Player)
+                && !found.contains(&next)
+            {
+                found.push(next);
+            }
+        }
+        Ok(found)
+    }
+
     fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
         let counted = Amount::Count(of.clone());
         let mut most = 0;
@@ -1197,6 +1221,7 @@ impl<'a> Scope<'a> {
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
+            Ref::Seated { of, side, opponent } => self.r376_seated(of, *side, *opponent)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
             Ref::OrController(inner) => self.players_or_controllers(inner)?,
@@ -1709,6 +1734,51 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
+    /// Whether the object seen shares a creature type with each object `named` names (`Pred::SharesCreatureTypeWithEach`):
+    /// a creature type both have, every creature type counting for one with all of them (changeling).
+    fn r376_shares_creature_type(
+        &self,
+        named: &Ref,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        let types = |one: &Seen<'_>| -> (Vec<Subtype>, bool, Vec<Subtype>) {
+            let printed = one
+                .card
+                .map(|c| c.card().subtypes.clone())
+                .unwrap_or_default();
+            let listed = one
+                .chars
+                .subtypes
+                .iter()
+                .chain(&printed)
+                .filter(|subtype| {
+                    subtype.is_creature_type() && one.chars.has_subtype(&printed, subtype)
+                })
+                .cloned()
+                .collect();
+            (listed, one.chars.all_creature_types, printed)
+        };
+        let (mine, all_mine, my_printed) = types(seen);
+        for other in self.objects(named)? {
+            let Some(theirs) = self.seen(other) else {
+                return Ok(false);
+            };
+            let (listed, all_theirs, their_printed) = types(&theirs);
+            let shares = (all_mine && (all_theirs || !listed.is_empty()))
+                || (all_theirs && !mine.is_empty())
+                || mine
+                    .iter()
+                    .any(|subtype| theirs.chars.has_subtype(&their_printed, subtype))
+                || listed
+                    .iter()
+                    .any(|subtype| seen.chars.has_subtype(&my_printed, subtype));
+            if !shares {
+                return Ok(false);
+            }
+        }
+        Ok(true)
+    }
+
     #[allow(clippy::too_many_lines)]
     fn pred(
         &self,
@@ -1725,6 +1795,9 @@ impl<'a> Scope<'a> {
                 crate::attach::legal_host_entering(state, reference.id, self.source.id)
             }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
+            Pred::SharesCreatureTypeWithEach(named) => {
+                self.r376_shares_creature_type(named, seen)?
+            }
             Pred::SharesName(_)
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
@@ -1770,6 +1843,7 @@ impl<'a> Scope<'a> {
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
+            Pred::Dungeon => state.r376_is_dungeon(reference.id),
             Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
             Pred::SourceOf(named) => self.r302_source_of(named, reference)?,

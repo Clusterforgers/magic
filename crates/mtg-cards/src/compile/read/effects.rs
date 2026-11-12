@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 118] = [
+const TEMPLATES: [Template; 122] = [
     super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -69,9 +69,13 @@ const TEMPLATES: [Template; 118] = [
     super::w15c_clash::w15c_clash,
     super::w11c_clash::w11c_clash,
     super::w9b_clash::w9b_clash,
+    super::r376_seats::r376_roll_treasures,
     super::chance::roll,
     super::vote::named,
     super::dk27_numbers::dk27_numbers,
+    super::r376_secret::r376_secret,
+    super::r376_seats::r376_seat_control,
+    super::r376_seats::r376_reverse_turn_order,
     super::dk27_bid::dk27_bid,
     super::w2d_villainous::w2d_villainous,
     super::repeat::each_player,
@@ -622,6 +626,9 @@ pub(super) fn sacrifice_itself(r: &mut Reader<'_>) -> Option<Effect> {
 pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.word("you") {
         return Some(Ref::You);
+    }
+    if let Some(seated) = super::r376_seats::r376_seated(r) {
+        return Some(seated);
     }
     if r.words("each opponent") {
         return Some(Ref::Opponents);

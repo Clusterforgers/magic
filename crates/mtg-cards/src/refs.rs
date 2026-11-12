@@ -165,6 +165,18 @@ pub enum Ref {
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
     /// damage shield used up by what it covers shares what it has left among them.
     Union(Vec<Ref>),
+    /// The next player still in the game seated on `side` of each player `of` names (CR 101.4: turns pass to the left):
+    /// "the player to your right"; with `opponent`, the nearest opponent of that player on that side ("the opponent to
+    /// your left"). Nobody when no other player is left.
+    Seated {
+        /// The players whose neighbour is named.
+        of: Box<Ref>,
+        /// Which side of them.
+        side: Side,
+        /// Only an opponent of theirs counts.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        opponent: bool,
+    },
     /// The players `who` names for whom the condition holds, each taken as "you" ("each opponent who lost life this turn",
     /// "a player with seven or more cards in their graveyard"); nobody when it holds for none.
     PlayersWhere {
@@ -195,6 +207,15 @@ impl Ref {
     pub const fn is_each_player(&self) -> bool {
         matches!(self, Ref::EachPlayer)
     }
+}
+
+/// A side of a player at the table (CR 101.4): turns pass from each player to the player on their left.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Side {
+    /// The side turns pass to: the next seat.
+    Left,
+    /// The side turns come from: the seat before.
+    Right,
 }
 
 /// Which kind of ability on the stack a predicate selects.
@@ -229,6 +250,11 @@ pub enum Pred {
     Is(Ref),
     /// Shares a subtype with one of the objects the reference names (`{"SharesSubtype": {"Bound": "land"}}`).
     SharesSubtype(Ref),
+    /// Shares a creature type with each of the objects the reference names ("that shares a creature type with each
+    /// creature tapped this way"); true when it names none.
+    SharesCreatureTypeWithEach(Ref),
+    /// Is a dungeon a player is in (CR 309): the object in a command zone that holds a venture marker.
+    Dungeon,
     /// Has the same name as one of the objects the reference names ("with the same name as that creature"); a nameless
     /// object (a face-down one) shares no name.
     SharesName(Ref),
