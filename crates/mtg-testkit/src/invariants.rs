@@ -1284,7 +1284,9 @@ impl InvariantChecker {
         // Damage to a planeswalker or a battle takes loyalty or defense counters, not marked damage (CR 120.3c, 120.3h).
         let battle = printed.is_some_and(|types| types.contains(CardType::Battle));
         let walker = battle || printed.is_some_and(|types| types.contains(CardType::Planeswalker));
-        let creature = printed.is_some_and(|types| types.contains(CardType::Creature));
+        // A planeswalker that an effect made a creature ("becomes a 5/5 creature") has damage marked too (CR 120.3e).
+        let creature = printed.is_some_and(|types| types.contains(CardType::Creature))
+            || characteristics(&self.shadow, object).is_some_and(|chars| chars.is_creature());
         let counter = if battle {
             CounterKind::defense()
         } else {

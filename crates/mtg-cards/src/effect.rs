@@ -92,6 +92,17 @@ pub enum Order {
     Random,
 }
 
+/// What the controller chooses for each kind of counter a `PutCountersOf` reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PerKind {
+    /// Put the counter or remove one of that kind instead ("put another counter of that kind on it or remove one from
+    /// it").
+    PutOrRemove,
+    /// Put a counter of that kind, a +1/+1 counter instead, or nothing ("you may put your choice of a +1/+1 counter or a
+    /// counter of that kind on ~").
+    MayPlusOneInstead,
+}
+
 /// Where a moved object goes.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -842,6 +853,9 @@ pub enum Effect {
         /// permanent. Put an additional counter of that kind on that permanent").
         #[serde(default, skip_serializing_if = "is_false")]
         one_kind: bool,
+        /// What the controller chooses for each kind in turn instead of putting it as read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per_kind: Option<PerKind>,
     },
     /// Taps permanents.
     Tap {
@@ -1447,6 +1461,10 @@ pub enum Effect {
         /// Flips again after each won flip, `win` done after each, until a flip is lost ("flip a coin until you lose a flip").
         #[serde(default, skip_serializing_if = "is_false")]
         until: bool,
+        /// The name the number of flips won is kept under, as a `Let` keeps a number (`Amount::Bound`): "for each flip
+        /// you won".
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        won_as: Option<String>,
     },
     /// The player clashes with an opponent they choose (CR 701.23): each reveals the top card of their library and puts it
     /// on the top or the bottom; `win` is done when the player's card had the greater mana value, `lose` otherwise. Both
@@ -2141,11 +2159,11 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
-        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true },
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None },
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(

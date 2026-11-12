@@ -112,8 +112,9 @@ fn the_fingerprints_of_every_card_are_current() {
 }
 
 #[test]
+/// A rule names a corpus card or a draft.
 fn the_corpus_matches_the_imported_cards() {
-    let errors = library().check_printed(&printed());
+    let errors = library().check_printed_naming(&printed(), &common::draft_names());
     assert!(
         errors.is_empty(),
         "{}\n(a drifted fingerprint: run `{UPDATE}`; see {ADDING})",

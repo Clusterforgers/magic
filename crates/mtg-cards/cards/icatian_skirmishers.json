@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ddbe82b-7fc9-4b2c-85de-dc747adbb3ca",
+  "name": "Icatian Skirmishers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icatian Skirmishers",
+      "oracle_fingerprint": "13acd9857fa5942a50c4220febcced4f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Banding" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "BandedWith": "This" }] },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

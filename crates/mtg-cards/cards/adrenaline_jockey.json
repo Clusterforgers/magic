@@ -1,7 +1,7 @@
 {
   "oracle_id": "c3dc6b0e-8790-4bd3-b166-63b2dc77488f",
   "name": "Adrenaline Jockey",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Adrenaline Jockey",
@@ -18,9 +18,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 174 }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedExhaust", "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]

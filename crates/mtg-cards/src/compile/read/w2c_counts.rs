@@ -1,7 +1,8 @@
 //! Counted amounts left over from the other readers: what the resolving effect destroyed ("for each creature destroyed
 //! this way", "the number of creatures you controlled that were destroyed this way") and different values ("the number
 //! of different powers among creatures you control", "three or more creatures with different powers") and domain ("the
-//! number of basic land types among lands you control").
+//! number of basic land types among lands you control") and kinds of counters ("for each kind of counter among permanents
+//! you control").
 
 use super::defining;
 use super::facts;
@@ -30,6 +31,16 @@ pub(super) fn w2c_distinct(r: &mut Reader<'_>, plural: bool) -> Option<Amount> {
                 stat: StatKind::BasicLandTypes,
             });
         }
+        if r.words(if plural {
+            "kinds of counters among"
+        } else {
+            "kind of counter among"
+        }) {
+            return Some(Amount::Distinct {
+                of: defining::counted(r)?,
+                stat: StatKind::CounterKinds,
+            });
+        }
         r.need("different")?;
         let stat = W2C_STATS
             .iter()
@@ -54,6 +65,14 @@ pub(super) fn w2c_distinct_text(amount: &Amount, plural: bool) -> Option<String>
             "basic land {name} among {}",
             defining::counted_text(of)?
         ));
+    }
+    if *stat == StatKind::CounterKinds {
+        let name = if plural {
+            "kinds of counters"
+        } else {
+            "kind of counter"
+        };
+        return Some(format!("{name} among {}", defining::counted_text(of)?));
     }
     let (one, many, _) = W2C_STATS.iter().find(|(_, _, kind)| kind == stat)?;
     let name = if plural { many } else { one };

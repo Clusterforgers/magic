@@ -47,6 +47,21 @@ pub fn embedded_meta() -> &'static [(&'static str, &'static str)] {
     META
 }
 
+/// The lowercase card and face names of the embedded drafts; a draft that does not parse names nothing.
+pub fn names() -> &'static BTreeSet<String> {
+    static NAMES: std::sync::OnceLock<BTreeSet<String>> = std::sync::OnceLock::new();
+    NAMES.get_or_init(|| {
+        FILES
+            .iter()
+            .filter_map(|(_, text)| serde_json::from_str::<Card>(text).ok())
+            .flat_map(|card| {
+                let faces: Vec<String> = card.faces.iter().map(|f| f.name.to_lowercase()).collect();
+                std::iter::once(card.name.to_lowercase()).chain(faces)
+            })
+            .collect()
+    })
+}
+
 /// Where a draft came from, which `drafts/meta/<slug>.json` and a proposal's `meta/<slug>.json` say; a draft without
 /// a file is a sweep draft whose text was not matched.
 #[derive(Debug, Clone, PartialEq, Eq, Default, serde::Serialize, serde::Deserialize)]
