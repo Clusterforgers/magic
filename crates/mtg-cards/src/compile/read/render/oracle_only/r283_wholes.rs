@@ -5,11 +5,21 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const R283_WHOLES: [(&str, &str); 38] = [
+const R283_WHOLES: [(&str, &str); 43] = [
     // avacyn_s_judgment#0.1
     (
         r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}},"divide":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
         r"~ deals 2 damage divided as you choose among any number of targets. If this spell's madness cost was paid, it deals X damage divided as you choose among those permanents and/or players instead.",
+    ),
+    // basri_devoted_paladin#0.0
+    (
+        r#"{"Loyalty":{"cost":{"Plus":1},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Vigilance"}],"duration":"UntilEndOfTurn"}}]}}"#,
+        r"+1: Put a +1/+1 counter on up to one target creature. It gains vigilance until end of turn.",
+    ),
+    // basri_devoted_paladin#0.1
+    (
+        r#"{"Loyalty":{"cost":{"Minus":1},"effects":[{"DelayedTrigger":{"when":{"Attacks":{"what":[{"Type":"Creature"}]}},"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1"}}],"once":false,"this_turn":true}}]}}"#,
+        r"−1: Whenever a creature attacks this turn, put a +1/+1 counter on it.",
     ),
     // beacon_of_immortality#0.0
     (
@@ -66,6 +76,11 @@ const R283_WHOLES: [(&str, &str); 38] = [
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}},"count":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":3}},"tapped":true}},{"GainLife":{"amount":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":3}}}}]}}"#,
         r"Create three tapped 2/2 black Zombie creature tokens and you gain 3 life. If this spell's madness cost was paid, instead create X of those tokens and you gain X life.",
     ),
+    // gideon_the_oathsworn#0.2
+    (
+        r#"{"Loyalty":{"cost":{"Minus":9},"effects":[{"Together":{"effects":[{"Exile":{"what":"This"}},{"Exile":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}}]}}]}}"#,
+        r"−9: Exile ~ and each creature your opponents control.",
+    ),
     // grip_of_amnesia#0.0
     (
         r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"ExileFromGraveyard":{"filter":[],"count":{"Count":[{"In":"Graveyard"},{"OwnedBy":{"ControllerOf":{"Target":0}}}]}}}],"unpaid":[{"Counter":{"what":{"Target":0}}}]}},{"Draw":{}}]}}"#,
@@ -101,6 +116,11 @@ Draw a card.",
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"},{"Not":{"Supertype":"Basic"}}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":6}],"unpaid":[{"Destroy":{"what":{"Target":0}}}]}}]}}"#,
         r"Destroy target nonbasic land unless its controller has ~ deal 6 damage to them.",
+    ),
+    // liliana_death_mage#0.2
+    (
+        r#"{"Loyalty":{"cost":{"Minus":7},"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":{"Times":{"by":2,"of":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":{"Target":0}}]}}}}}]}}"#,
+        r"−7: Target opponent loses 2 life for each creature card in their graveyard.",
     ),
     // misinformation#0.0
     (
@@ -187,6 +207,11 @@ Each creature with a +1/+1 counter on it gains trample until end of turn.",
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":{"Target":0},"stat":"Power"}},"op":"Le","right":{"Stat":{"of":"Paid","stat":"Power"}}}},"then":[{"Exile":{"what":{"Target":0}}}]}}]}}"#,
         r"Exile target creature if its power is less than or equal to the revealed card's power.",
+    ),
+    // vraska_regal_gorgon#0.0
+    (
+        r#"{"Loyalty":{"cost":{"Plus":2},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Menace"}],"duration":"UntilEndOfTurn"}}]}}"#,
+        r"+2: Put a +1/+1 counter on up to one target creature. That creature gains menace until end of turn.",
     ),
     // wake_the_dead#0.1
     (

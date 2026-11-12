@@ -1,0 +1,55 @@
+{
+  "oracle_id": "19a81aa7-823b-43fa-abc2-b2700a122bc1",
+  "name": "Gideon, the Oathsworn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gideon, the Oathsworn",
+      "oracle_fingerprint": "653563941066bb7f0f5c695f6de2ca4f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Subtype": "Gideon" } }
+                ],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 107, "end": 303 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Exile": { "what": "This" } },
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
