@@ -1,5 +1,5 @@
 import { CardPicture } from '@/features/cards/CardPicture'
-import { CircleAlertIcon, InfoIcon, ShieldCheckIcon } from 'lucide-react'
+import { CircleAlertIcon, ImageIcon, InfoIcon, ShieldCheckIcon } from 'lucide-react'
 import { Fragment, useId } from 'react'
 import type { ComponentProps, ReactNode } from 'react'
 import { Loading } from '@/components/Loading'
@@ -31,6 +31,15 @@ interface CardPreviewProps {
   finalFocus?: FinalFocus
   /** The fix-mark endpoints; with them the preview offers "Mark important to fix" for any card. */
   fixMarks?: FixMarksApi
+  /** The art of a card of the deck: the preview draws it and offers "Choose art". */
+  art?: PreviewArt
+}
+
+/** The art the preview of a deck's card draws and how to choose another. */
+export interface PreviewArt {
+  /** The printing drawn; null for the default art. */
+  printingId: string | null
+  choose: () => void
 }
 
 // A card has several faces when its name joins them with `//` (CardHit.name).
@@ -208,7 +217,17 @@ function Clauses({ support, reasons }: { support: Support; reasons: readonly Rea
   )
 }
 
-function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?: FixMarksApi }) {
+function Body({
+  card,
+  api,
+  fixMarks,
+  art,
+}: {
+  card: CardHit
+  api: CardsApi
+  fixMarks?: FixMarksApi
+  art?: PreviewArt | undefined
+}) {
   const { state, retry } = useCardDetail(api, card.oracle_id)
   const support = state.status === 'ready' ? state.detail.card.support : card.support
   return (
@@ -229,12 +248,19 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
             support={support}
           />
         )}
+        {art === undefined ? null : (
+          <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={art.choose}>
+            <ImageIcon aria-hidden="true" />
+            Choose art
+          </Button>
+        )}
       </header>
       <div data-slot="preview-pictures" className="flex min-w-0 flex-wrap gap-2">
         {Array.from({ length: hasManyFaces(card) ? 2 : 1 }, (_, face) => (
           <CardPicture
             key={face}
             oracleId={card.oracle_id}
+            printingId={art?.printingId ?? null}
             name={card.name}
             face={face}
             alt={face === 0 ? card.name : ''}
@@ -295,7 +321,7 @@ function Body({ card, api, fixMarks }: { card: CardHit; api: CardsApi; fixMarks?
  * resolve underlined in the text with their reasons in words under it. The detail loads when the preview opens and
  * shows its own loading, failed and unavailable states; Escape closes it and focus returns to `finalFocus`.
  */
-export function CardPreview({ card, open, api, onClose, finalFocus, fixMarks }: CardPreviewProps) {
+export function CardPreview({ card, open, api, onClose, finalFocus, fixMarks, art }: CardPreviewProps) {
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onClose()}>
       {card === null ? null : (
@@ -304,7 +330,7 @@ export function CardPreview({ card, open, api, onClose, finalFocus, fixMarks }: 
           data-slot="card-preview"
           className="p-4 max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:max-h-[90dvh] max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 sm:max-w-2xl sm:p-6"
         >
-          <Body key={card.oracle_id} card={card} api={api} fixMarks={fixMarks} />
+          <Body key={card.oracle_id} card={card} api={api} fixMarks={fixMarks} art={art} />
         </DialogContent>
       )}
     </Dialog>

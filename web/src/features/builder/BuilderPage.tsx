@@ -13,6 +13,7 @@ import type { CardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
+import type { PrintingsApi } from '@/net/printings'
 import { Builder } from './Builder'
 import { useDeckView } from './useDeckView'
 
@@ -25,6 +26,8 @@ interface BuilderPageProps {
   cards?: CardsApi
   /** The fix-mark endpoints; with them a card's preview offers "Mark important to fix". */
   fixMarks?: FixMarksApi
+  /** The art endpoints; with them a card's picture opens the art picker. */
+  printings?: PrintingsApi
 }
 
 // The two panes while the deck loads.
@@ -42,11 +45,21 @@ function DeckLoader({
   api,
   cards,
   fixMarks,
-}: Required<Omit<BuilderPageProps, 'fixMarks'>> & Pick<BuilderPageProps, 'fixMarks'>) {
+  printings,
+}: Required<Omit<BuilderPageProps, 'fixMarks' | 'printings'>> & Pick<BuilderPageProps, 'fixMarks' | 'printings'>) {
   const { state, reload } = useDeckView(api, deckId)
 
   if (state.status === 'ready')
-    return <Builder key={state.view.id} view={state.view} api={api} cards={cards} fixMarks={fixMarks} />
+    return (
+      <Builder
+        key={state.view.id}
+        view={state.view}
+        api={api}
+        cards={cards}
+        fixMarks={fixMarks}
+        printings={printings}
+      />
+    )
   return (
     <PageShell width="wide">
       {state.status === 'loading' ? (
@@ -112,7 +125,7 @@ function DeckLoader({
  * `/decks/$deckId`: the builder for one of the signed-in user's decks. Someone who is not signed in is sent to the
  * sign-in form and back; a server without accounts keeps no decks; a deck that is not the account's reads as missing.
  */
-export function BuilderPage({ deckId, api = decksApi, cards = cardsApi, fixMarks }: BuilderPageProps) {
+export function BuilderPage({ deckId, api = decksApi, cards = cardsApi, fixMarks, printings }: BuilderPageProps) {
   usePageTitle('Deck builder')
   const status = useAuth((state) => state.status)
 
@@ -153,5 +166,5 @@ export function BuilderPage({ deckId, api = decksApi, cards = cardsApi, fixMarks
       </PageShell>
     )
   }
-  return <DeckLoader deckId={deckId} api={api} cards={cards} fixMarks={fixMarks} />
+  return <DeckLoader deckId={deckId} api={api} cards={cards} fixMarks={fixMarks} printings={printings} />
 }

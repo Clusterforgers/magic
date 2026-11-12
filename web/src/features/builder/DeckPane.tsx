@@ -306,6 +306,7 @@ export function DeckPane({
                     checkOf={(line) => checkOf(checks, line)}
                     onRemove={(card) => actions.remove('commander', card.oracle_id)}
                     onPreview={actions.preview}
+                    art={actions.art}
                     onFind={onFind}
                   />
                 ) : null}

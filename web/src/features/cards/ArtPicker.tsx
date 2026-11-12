@@ -38,20 +38,51 @@ type Loading = { kind: 'loading' } | { kind: 'failed'; message: string } | { kin
  * the printings; Enter or Space chooses.
  */
 export function ArtPicker({ target, api, onChoose, offerEverywhere = false, onClose }: ArtPickerProps) {
+  const [saving, setSaving] = useState(false)
+  return (
+    <Dialog
+      open={target !== null}
+      onOpenChange={(open) => {
+        if (!open && !saving) onClose()
+      }}
+    >
+      <DialogContent data-slot="art-picker" className="max-w-2xl gap-3">
+        {target === null ? null : (
+          <Picker
+            key={target.oracleId}
+            target={target}
+            api={api}
+            onChoose={onChoose}
+            offerEverywhere={offerEverywhere}
+            onClose={onClose}
+            saving={saving}
+            setSaving={setSaving}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+/** The picker's body for one card; a new card mounts a new body, so the filter and the list start afresh. */
+function Picker({
+  target,
+  api,
+  onChoose,
+  offerEverywhere,
+  onClose,
+  saving,
+  setSaving,
+}: Omit<ArtPickerProps, 'target'> & { target: ArtTarget; saving: boolean; setSaving(saving: boolean): void }) {
   const [loading, setLoading] = useState<Loading>({ kind: 'loading' })
   const [query, setQuery] = useState('')
   const [everywhere, setEverywhere] = useState(false)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const grid = useRef<HTMLUListElement>(null)
-  const oracleId = target?.oracleId ?? null
+  const oracleId = target.oracleId
 
   useEffect(() => {
-    if (oracleId === null) return
     const controller = new AbortController()
-    setLoading({ kind: 'loading' })
-    setQuery('')
-    setError(null)
     api.printingsOf(oracleId, controller.signal).then(
       (printings) => setLoading({ kind: 'ready', printings }),
       (failure: unknown) => {
@@ -92,15 +123,9 @@ export function ArtPicker({ target, api, onChoose, offerEverywhere = false, onCl
   }
 
   return (
-    <Dialog
-      open={target !== null}
-      onOpenChange={(open) => {
-        if (!open && !saving) onClose()
-      }}
-    >
-      <DialogContent data-slot="art-picker" className="max-w-2xl gap-3">
+    <>
         <div className="grid gap-1 pr-8">
-          <DialogTitle>Art for {target?.name}</DialogTitle>
+          <DialogTitle>Art for {target.name}</DialogTitle>
           <DialogDescription>Choose a printing; it is saved at once.</DialogDescription>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -114,8 +139,8 @@ export function ArtPicker({ target, api, onChoose, offerEverywhere = false, onCl
           />
           <Button
             type="button"
-            variant={target?.chosen === null ? 'default' : 'outline'}
-            aria-pressed={target?.chosen === null}
+            variant={target.chosen === null ? 'default' : 'outline'}
+            aria-pressed={target.chosen === null}
             disabled={saving}
             onClick={() => void choose(null)}
           >
@@ -154,7 +179,7 @@ export function ArtPicker({ target, api, onChoose, offerEverywhere = false, onCl
             className="grid grid-cols-3 gap-2 sm:grid-cols-4"
           >
             {shown.map((printing) => {
-              const current = printing.printing_id === target?.chosen
+              const current = printing.printing_id === target.chosen
               const traits = printingTraits(printing)
               return (
                 <li key={printing.printing_id} className="min-w-0">
@@ -202,7 +227,6 @@ export function ArtPicker({ target, api, onChoose, offerEverywhere = false, onCl
             })}
           </ul>
         )}
-      </DialogContent>
-    </Dialog>
+    </>
   )
 }
