@@ -201,6 +201,7 @@ mod r284_wordings;
 mod r286_wordings;
 mod r288_wordings;
 mod r304_sacrifice_all;
+mod r304_skip_draw;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -994,6 +995,7 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     each_draw_sz2::add(ability, texts);
     each_sacrifice::add(ability, texts);
     r304_sacrifice_all::add(ability, texts);
+    r304_skip_draw::add(ability, texts);
     you_create::add(ability, texts);
     and_create::add(ability, texts);
     damage_instead::add(ability, texts);

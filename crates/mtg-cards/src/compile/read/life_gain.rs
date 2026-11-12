@@ -99,7 +99,10 @@ mod r304_tests {
 
     #[rstest]
     #[case::draw_that_many(r#"{"Replacement":{"when":{"LifeGain":{"who":"You"}},"by":{"Instead":[{"Draw":{"count":"Triggering"}}]}}}"#, true)]
-    #[case::draw_one(r#"{"Replacement":{"when":{"LifeGain":{"who":"You"}},"by":{"Instead":[{"Draw":{}}]}}}"#, false)]
+    #[case::draw_one(
+        r#"{"Replacement":{"when":{"LifeGain":{"who":"You"}},"by":{"Instead":[{"Draw":{}}]}}}"#,
+        false
+    )]
     #[case::opponents_gain(r#"{"Replacement":{"when":{"LifeGain":{"who":"Opponents"}},"by":{"Instead":[{"Draw":{"count":"Triggering"}}]}}}"#, false)]
     fn gained_life_becomes_cards(#[case] json: &str, #[case] written: bool) {
         let ability: Ability = serde_json::from_str(json).expect("ability");

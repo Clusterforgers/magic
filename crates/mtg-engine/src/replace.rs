@@ -3545,6 +3545,8 @@ fn zone_word(zone: Zone) -> &'static str {
 
 mod day;
 mod r304_as_enters;
+#[cfg(test)]
+mod r304_skip;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
