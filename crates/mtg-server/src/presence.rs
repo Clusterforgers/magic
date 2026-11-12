@@ -82,6 +82,28 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Tells the connected seats how many spectators watch, when the number changed since they were last told.
+    pub(crate) fn tell_spectator_count(&mut self) {
+        let Some(count) = self.seats.spectator_news() else {
+            return;
+        };
+        let message = ServerMessage::Spectators {
+            count: u32::try_from(count).unwrap_or(u32::MAX),
+        };
+        for seat in self.seats.connected() {
+            self.seats.send(seat, message.clone());
+        }
+    }
+
+    /// Tells a seat that just joined how many spectators watch, when some do.
+    pub(crate) fn tell_joiner_spectators(&mut self, joiner: PlayerId) {
+        let count = self.seats.watcher_count();
+        if count > 0 {
+            let count = u32::try_from(count).unwrap_or(u32::MAX);
+            self.seats.send(joiner, ServerMessage::Spectators { count });
+        }
+    }
+
     /// Tells the other seats and the spectators the time `seat` now has, when it is away: it was issued a decision or its clock grew.
     pub(crate) fn tell_away(&mut self, seat: PlayerId, deadline_ms: Option<u64>) {
         let connected = self.seats.connected();

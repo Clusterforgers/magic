@@ -18,6 +18,8 @@ pub(crate) struct Seats {
     sinks: Vec<Option<Sender<ServerMessage>>>,
     /// The spectators' queues; a spectator that hangs up or falls behind is dropped without a word to the table.
     watchers: Vec<Sender<ServerMessage>>,
+    /// How many spectators the seats were last told of.
+    told_watchers: usize,
     capacity: usize,
     /// Set when a queue was dropped because its client hung up or fell behind; see [`Seats::take_gone`].
     gone: bool,
@@ -29,6 +31,7 @@ impl Seats {
         Seats {
             sinks: (0..seats).map(|_| None).collect(),
             watchers: Vec::new(),
+            told_watchers: 0,
             capacity: capacity.max(MIN_QUEUE),
             gone: false,
         }
@@ -59,8 +62,22 @@ impl Seats {
 
     /// Whether some spectator listens; queues whose client went away are closed first.
     pub(crate) fn watched(&mut self) -> bool {
+        self.watcher_count() > 0
+    }
+
+    /// How many spectators listen; queues whose client went away are closed first.
+    pub(crate) fn watcher_count(&mut self) -> usize {
         self.watchers.retain(|sink| !sink.is_closed());
-        !self.watchers.is_empty()
+        self.watchers.len()
+    }
+
+    /// The number of spectators when it changed since the seats were last told, and notes it as told.
+    pub(crate) fn spectator_news(&mut self) -> Option<usize> {
+        let now = self.watcher_count();
+        (now != self.told_watchers).then(|| {
+            self.told_watchers = now;
+            now
+        })
     }
 
     /// Opens a queue for `seat`, replacing (and so closing) any earlier one; `None` for a seat that does not exist.
@@ -100,13 +117,15 @@ impl Seats {
         std::mem::take(&mut self.gone)
     }
 
-    /// Resolves once some seat's client has gone away without leaving (its queue is closed), at once if one already
-    /// has; never while every client listens. The closed queue stays in its slot until [`Seats::connected`] sweeps it.
+    /// Resolves once some seat's or spectator's client has gone away without leaving (its queue is closed), at once
+    /// if one already has; never while every client listens. The closed queue stays until [`Seats::connected`] (a
+    /// seat's) or [`Seats::spectator_news`] (a spectator's) sweeps it.
     pub(crate) async fn client_gone(&self) {
         let mut closed: Vec<Pin<Box<dyn Future<Output = ()> + Send + '_>>> = self
             .sinks
             .iter()
             .flatten()
+            .chain(&self.watchers)
             .map(|sink| Box::pin(sink.closed()) as Pin<Box<dyn Future<Output = ()> + Send + '_>>)
             .collect();
         poll_fn(|cx| {

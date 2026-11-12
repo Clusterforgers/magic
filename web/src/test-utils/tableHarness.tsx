@@ -2,7 +2,7 @@ import { act, render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { GameContext } from '@/features/game/gameContext'
-import type { GameContextValue, SpectatorCalls } from '@/features/game/gameContext'
+import type { GameContextValue } from '@/features/game/gameContext'
 import type { GameLookup } from '@/features/game/useGameInfo'
 import { fixtureLookup, fixtureSession, fixtureState } from '@/features/table/dev/devGame'
 import { buildFixture } from '@/features/table/dev/fixture'
@@ -33,8 +33,6 @@ export interface TableSetup {
   state?: (state: PlayState) => PlayState
   /** What to render instead of `GameTable` inside the game; the same providers wrap it. */
   ui?: ReactElement
-  /** A player's spectator calls; none by default, as at a table without a server. */
-  spectators?: SpectatorCalls
 }
 
 /** A table on a fixture game with no server, and the means to change what it shows. */
@@ -84,12 +82,7 @@ export function renderTable(setup: TableSetup = {}): TableHarness {
   store.setState(setup.state === undefined ? first : setup.state(first))
   const session: Session = { ...fixtureSession(store), ...setup.session }
   const lookup = setup.lookup ?? fixtureLookup(fixture)
-  const value: GameContextValue = {
-    game: 'test-game',
-    session,
-    lookup,
-    ...(setup.spectators === undefined ? {} : { spectators: setup.spectators }),
-  }
+  const value: GameContextValue = { game: 'test-game', session, lookup }
   const view = render(
     <GameContext value={value}>
       <TableOptionsContext value={{ viewport: TEST_VIEWPORT, ...setup.options }}>

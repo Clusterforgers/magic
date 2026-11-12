@@ -9,7 +9,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
     GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
-    SpectatorsBody, Visibility, VisibilityBody, WatchLink,
+    Visibility, VisibilityBody,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -48,6 +48,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),
         age_secs: 125,
+        running: false,
     }
 }
 
@@ -100,7 +101,6 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         result,
         visibility,
         manual_play: false,
-        spectators: true,
         house_rules: None,
     }
 }
@@ -120,7 +120,6 @@ fn the_game_lookup_has_the_documented_wire_shape() {
             "result": null,
             "visibility": "public",
             "manual_play": false,
-            "spectators": true,
         })
     );
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), waiting);
@@ -416,7 +415,6 @@ fn the_bindings_carry_the_game_browser_types() {
         "result: GameResult | null",
         "visibility: Visibility",
         "manual_play: boolean",
-        "spectators: boolean",
         "house_rules?: HouseRules",
     ] {
         assert!(files["GameInfo.ts"].contains(field), "{field}");
@@ -502,25 +500,17 @@ fn the_game_lookup_names_house_rules_only_when_some_are_set() {
 }
 
 #[test]
-fn the_spectator_bodies_have_the_documented_wire_shape_and_a_watch_link_hides_its_token() {
-    let allowed = SpectatorsBody { allowed: false };
-    assert_eq!(
-        serde_json::to_value(allowed).unwrap(),
-        json!({ "allowed": false })
-    );
-    assert!(
-        serde_json::from_value::<SpectatorsBody>(json!({ "allowed": true, "more": 1 })).is_err()
-    );
-    let link = WatchLink {
-        game: "g".into(),
-        token: "secret-token".into(),
+fn a_running_row_says_so_and_a_lobby_row_leaves_it_out() {
+    let lobby = serde_json::to_value(game("Ann", 1)).unwrap();
+    assert!(lobby.get("running").is_none());
+    let running = LobbyGame {
+        running: true,
+        ..game("Ann", 4)
     };
-    assert_eq!(
-        serde_json::to_value(&link).unwrap(),
-        json!({ "game": "g", "token": "secret-token" })
-    );
-    assert!(!format!("{link:?}").contains("secret-token"));
-    let files = generated();
-    assert!(files["SpectatorsBody.ts"].contains("allowed: boolean"));
-    assert!(files["WatchLink.ts"].contains("token: string"));
+    let value = serde_json::to_value(&running).unwrap();
+    assert_eq!(value["running"], json!(true));
+    assert_eq!(serde_json::from_value::<LobbyGame>(value).unwrap(), running);
+    let older: LobbyGame = serde_json::from_value(lobby).unwrap();
+    assert!(!older.running, "a row without the flag is a lobby");
+    assert!(generated()["LobbyGame.ts"].contains("running?: boolean"));
 }

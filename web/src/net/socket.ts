@@ -90,10 +90,10 @@ export function retryDelay(failures: number, random: number): number {
 /**
  * The WebSocket address of a seat on `origin`, with ws or wss to match its scheme: `/ws/{game}/{token}` for a seat
  * link, `/ws/{game}` without a token, where the session cookie of the upgrade request picks the signed-in user's seat,
- * and `/ws/{game}/watch/{token}` for a spectator's watch link (`watch`).
+ * and `/ws/{game}/watch` for a signed-in spectator (`watch`), whom the session cookie names too.
  */
 export function socketUrl(game: string, token: string | undefined, origin: string, watch = false): string {
-  const seat = token === undefined ? '' : `${watch ? '/watch' : ''}/${encodeURIComponent(token)}`
+  const seat = watch ? '/watch' : token === undefined ? '' : `/${encodeURIComponent(token)}`
   const url = new URL(`/ws/${encodeURIComponent(game)}${seat}`, origin)
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
   return url.href
@@ -102,8 +102,6 @@ export function socketUrl(game: string, token: string | undefined, origin: strin
 const REPLACED_TEXT = 'This seat was opened in another window or tab, which took it over.'
 // The seat was given back or the host removed its player: its token opens nothing now, so retrying cannot help.
 const REMOVED_TEXT = 'You were removed from this game.'
-// A spectator's 4001: the host stopped spectators, and the watch link opens nothing now.
-const UNWATCHED_TEXT = 'The host stopped spectators, so this game cannot be watched now.'
 // The host ended the lobby: its links and code open nothing any more, so the game cannot come back either.
 const CLOSED_TEXT = 'The host closed this game.'
 
@@ -251,7 +249,7 @@ export class GameSocket {
       return
     }
     if (code === REMOVED_CODE) {
-      this.halt('stopped', this.options.watch === true ? UNWATCHED_TEXT : REMOVED_TEXT)
+      this.halt('stopped', REMOVED_TEXT)
       return
     }
     if (code === CLOSED_CODE) {

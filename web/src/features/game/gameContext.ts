@@ -12,16 +12,6 @@ export interface GameContextValue {
   session: Session
   /** Seat names and who is connected, from REST; see `useGameInfo`. */
   lookup: GameLookup
-  /** A player's spectator calls; absent for a spectator and where no server stands behind the table. */
-  spectators?: SpectatorCalls
-}
-
-/** What a player does about spectators: hand out a watch link, and (the host) allow spectators or stop them. */
-export interface SpectatorCalls {
-  /** A new watch link's full address, to hand out. */
-  watchLink(): Promise<string>
-  /** Allows spectators or stops them; resolves with the setting in force. */
-  setAllowed(allowed: boolean): Promise<boolean>
 }
 
 /** Provided by `GamePage`; read it through `useGame`. */

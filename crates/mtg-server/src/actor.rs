@@ -386,6 +386,7 @@ impl<S: EventStore> GameActor<S> {
         self.seats.send(seat, welcome);
         self.sync(seat);
         self.tell_joiner(seat);
+        self.tell_joiner_spectators(seat);
         if takeover {
             self.send_roster(seat);
         } else {

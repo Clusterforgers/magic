@@ -38,15 +38,3 @@ export function parseSeatFragment(fragment: string): SeatLink | null {
   const number = Number(seat)
   return Number.isSafeInteger(number) ? { seat: number, token } : null
 }
-
-/** The path of a spectator's watch link, with the token only in the fragment. */
-export function watchLinkPath(game: string, token: string): string {
-  return `/watch/${encodeURIComponent(game)}#token=${encodeURIComponent(token)}`
-}
-
-/** Reads a watch link's token from a fragment (a leading `#` is fine); null when it is missing or malformed. */
-export function parseWatchFragment(fragment: string): string | null {
-  const params = new URLSearchParams(fragment.startsWith('#') ? fragment.slice(1) : fragment)
-  const token = params.get('token')
-  return token !== null && TOKEN_SHAPE.test(token) ? token : null
-}

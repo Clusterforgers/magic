@@ -1,4 +1,4 @@
-// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and offers a join code field that checks the code before it asks anybody.
+// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and offers a join code field that checks the code before it asks anybody. A running game is offered to watch.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -47,6 +47,22 @@ describe('the open games', () => {
     ])
     expect(within(rowOf('Cy')).getByText('just now')).toBeInTheDocument()
     expect(within(table()).getAllByRole('row').slice(1)).toHaveLength(2)
+  })
+
+  it('offers to watch a running game instead of joining it, saying it runs', async () => {
+    await open(
+      fakeLobbies([
+        lobbyRow({ game: 'g-run', host: 'Bo', filled: 4, total: 4, running: true }),
+        lobbyRow({ game: 'g-full', host: 'Cy', filled: 2, total: 2 }),
+      ]),
+    )
+    const bo = within(rowOf('Bo'))
+    const watch = bo.getByRole('link', { name: "Watch Bo's game" })
+    expect(watch).toHaveAttribute('href', '/watch/g-run')
+    expect(bo.queryByRole('button', { name: /^Join/ })).toBeNull()
+    expect(bo.getByText('Running')).toBeInTheDocument()
+    expect(bo.queryByText('Full')).toBeNull()
+    expect(within(rowOf('Cy')).getByText('Full')).toBeInTheDocument()
   })
 
   it('puts the creation stamp in a time element', async () => {

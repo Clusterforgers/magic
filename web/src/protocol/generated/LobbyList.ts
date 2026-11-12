@@ -2,7 +2,8 @@
 import type { LobbyGame } from "./LobbyGame";
 
 /**
- * The answer of `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+ * The answer of `GET /api/lobbies`: the public games still in their lobby and the running games, newest first, at
+ * most 50 of each.
  */
 export type LobbyList = { 
 /**

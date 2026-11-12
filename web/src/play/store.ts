@@ -187,6 +187,8 @@ export interface PlayState {
    * waits for nobody or before the first word.
    */
   deciding: DecidingView[]
+  /** How many spectators watch the game, as the server last told this seat (`Spectators`); 0 before any word. */
+  spectators: number
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -225,6 +227,7 @@ export function initialPlayState(): PlayState {
     byHand: null,
     away: {},
     deciding: [],
+    spectators: 0,
   }
 }
 

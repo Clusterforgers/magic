@@ -289,7 +289,7 @@ fn account_routes() -> Router<AppState> {
 }
 
 /// All routes of the server.
-/// The routes of games: making one, its lobby and seats, its spectators and the game browser.
+/// The routes of games: making one, its lobby and seats, and the game browser.
 fn game_routes() -> Router<AppState> {
     Router::new()
         .route("/api/games", post(api::create_game))
@@ -301,10 +301,6 @@ fn game_routes() -> Router<AppState> {
         )
         .route("/api/games/{id}/join", post(lobbies::join_game))
         .route("/api/games/{id}/leave", post(lobbies::leave))
-        .route(
-            "/api/games/{id}/spectators",
-            post(lobbies::watch_link).put(lobbies::set_spectators),
-        )
         .route(
             "/api/games/{id}/seats/{seat}/release",
             post(lobbies::release),
@@ -383,7 +379,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
         .route("/ws/{game}/{token}", get(ws::upgrade))
-        .route("/ws/{game}/watch/{token}", get(ws::upgrade_watcher))
+        .route("/ws/{game}/watch", get(ws::upgrade_watcher))
         .route("/ws/{game}", get(ws::upgrade_as_user))
         .fallback(api::not_found)
         .method_not_allowed_fallback(api::method_not_allowed)

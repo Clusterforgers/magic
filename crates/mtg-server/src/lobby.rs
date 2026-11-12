@@ -218,6 +218,7 @@ impl<S: EventStore> GameActor<S> {
     /// Nobody says so, so it is looked for after every command (any of them may be the one that finds a closed queue
     /// first) and whenever a queue closes while the actor is idle.
     pub(crate) fn announce_departures(&mut self) {
+        self.tell_spectator_count();
         if !self.in_lobby() {
             self.push_presence();
             return;

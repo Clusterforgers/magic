@@ -3,7 +3,7 @@
  * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
  * fields are dropped.
  */
-import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility, WatchLink } from '@/protocol/generated'
+import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
 import { readHouseRules } from './houseRules'
 import { isGameResult, readSeatDeck } from './parse'
@@ -35,6 +35,8 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (!isText(createdAt) || !STAMP.test(createdAt)) return null
   const rules = readHouseRules(item.house_rules)
   if (rules === null) return null
+  const running = item.running === undefined ? false : item.running
+  if (!isFlag(running)) return null
   return {
     game,
     host,
@@ -45,6 +47,7 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
     total,
     created_at: createdAt,
     age_secs: age,
+    ...(running ? { running } : {}),
   }
 }
 
@@ -74,18 +77,6 @@ export function readJoined(body: unknown): Joined | null {
 /** What `PUT /api/games/{id}/seats/{n}/deck` answers: the facts the table now knows of the seat's deck. */
 export { readSeatDeck }
 
-/** A new watch link from `POST /api/games/{id}/spectators`: the game and a token that must be there. */
-export function readWatchLink(body: unknown): WatchLink | null {
-  return isRecord(body) && isText(body.game) && body.game !== '' && isText(body.token) && body.token !== ''
-    ? { game: body.game, token: body.token }
-    : null
-}
-
-/** Whether the host allows spectators, as `PUT /api/games/{id}/spectators` answers. */
-export function readSpectators(body: unknown): boolean | null {
-  return isRecord(body) && isFlag(body.allowed) ? body.allowed : null
-}
-
 /** The visibility `PATCH /api/games/{id}` answers with. */
 export function readVisibility(body: unknown): Visibility | null {
   return isRecord(body) && isVisibility(body.visibility) ? body.visibility : null
@@ -101,8 +92,7 @@ function readGameSeat(item: unknown): GameSeat | null {
  * The answer of `GET /api/games/{id}`. A server from before the lobby showed readiness sends no `ready` (nobody is
  * known to be ready then) and one from before visibility sends no `visibility` (it listed nothing, so its games were
  * invite-only), one from before Commander sends no `format` (it played Normal only) and one from before manual cards
- * sends no `manual_play` (no table played by hand) and one from before spectators sends no `spectators` (it allowed
- * none); a field that is there must be right. `house_rules` is there only for
+ * sends no `manual_play` (no table played by hand); a field that is there must be right. `house_rules` is there only for
  * a game with rules set.
  */
 export function readGameInfo(body: unknown): GameInfo | null {
@@ -116,8 +106,6 @@ export function readGameInfo(body: unknown): GameInfo | null {
   if (!isVisibility(visibility)) return null
   const manual = body.manual_play === undefined ? false : body.manual_play
   if (!isFlag(manual)) return null
-  const spectators = body.spectators === undefined ? false : body.spectators
-  if (!isFlag(spectators)) return null
   const rules = readHouseRules(body.house_rules)
   if (rules === null) return null
   const result = body.result === null || isGameResult(body.result) ? body.result : undefined
@@ -137,7 +125,6 @@ export function readGameInfo(body: unknown): GameInfo | null {
     result,
     visibility,
     manual_play: manual,
-    spectators,
     ...(rules === undefined ? {} : { house_rules: rules }),
   }
 }

@@ -239,6 +239,8 @@ export function createSession(deps: SessionDeps): Session {
         setState({
           seat: message.player,
           seatCount: message.seats,
+          // A joining seat is told the count again when some watch.
+          spectators: 0,
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
@@ -331,6 +333,9 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'Deciding':
         setState({ deciding: message.seats })
+        return
+      case 'Spectators':
+        setState({ spectators: message.count })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.

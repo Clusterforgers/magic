@@ -27,6 +27,12 @@ describe('readLobbyGame', () => {
     expect(readLobbyGame({ ...row, filled, total })).toEqual({ ...row, filled, total })
   })
 
+  it('reads a running game as running and a row without the flag as a lobby, and refuses a flag that is not one', () => {
+    expect(readLobbyGame({ ...row, running: true })).toEqual({ ...row, running: true })
+    expect(readLobbyGame({ ...row, running: false })).toEqual(row)
+    expect(readLobbyGame({ ...row, running: 'yes' })).toBeNull()
+  })
+
   it.each([true, false])('reads the flag of a table that plays by hand: %s', (manual_play) => {
     expect(readLobbyGame({ ...row, manual_play })).toEqual({ ...row, manual_play })
   })

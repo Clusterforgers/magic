@@ -1,13 +1,6 @@
-// Goal: a seat link and a watch link carry their token only in the fragment, read back to the same seat and token, and anything malformed is refused instead of guessed at.
+// Goal: a seat link carries its token only in the fragment, reads back to the same seat and token, and anything malformed is refused instead of guessed at.
 import { describe, expect, it } from 'vitest'
-import {
-  fragmentOf,
-  parseSeatFragment,
-  parseWatchFragment,
-  seatLinkPath,
-  seatLinkUrl,
-  watchLinkPath,
-} from './seatLink'
+import { fragmentOf, parseSeatFragment, seatLinkPath, seatLinkUrl } from './seatLink'
 
 // Every seat a table can have is a number; these are the ones the cases try.
 const SEATS_TRIED = [0, 1, 2, 7, 11, 12, 13, 23, 63, 999]
@@ -95,23 +88,5 @@ describe('parseSeatFragment', () => {
 
   it('takes the first of a repeated field, so a pasted extra token cannot swap the seat', () => {
     expect(parseSeatFragment('seat=1&token=first&token=second')).toEqual({ seat: 1, token: 'first' })
-  })
-})
-
-describe('watch links', () => {
-  it('puts the token in the fragment of /watch and reads it back', () => {
-    const path = watchLinkPath('g/1', 'a-b_c')
-    expect(path).toBe('/watch/g%2F1#token=a-b_c')
-    expect(parseWatchFragment(fragmentOf(path))).toBe('a-b_c')
-    expect(parseWatchFragment('#token=a-b_c')).toBe('a-b_c')
-  })
-
-  it.each([
-    ['no token', ''],
-    ['an empty token', 'token='],
-    ['a token with a space only', 'token=%20'],
-    ['a token too long', `token=${'x'.repeat(513)}`],
-  ])('reads no token from a fragment with %s', (_what, fragment) => {
-    expect(parseWatchFragment(fragment)).toBeNull()
   })
 })

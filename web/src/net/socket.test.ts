@@ -30,9 +30,9 @@ describe('socketUrl', () => {
   })
 
   it.each([
-    ['http://localhost:5173', 'g', 't', 'ws://localhost:5173/ws/g/watch/t'],
-    ['https://play.example', 'a/b', 'x y', 'wss://play.example/ws/a%2Fb/watch/x%20y'],
-  ])('%s with game %s and watch token %s is the spectator address %s', (origin, game, token, expected) => {
+    ['http://localhost:5173', 'g', undefined, 'ws://localhost:5173/ws/g/watch'],
+    ['https://play.example', 'a/b', 'ignored', 'wss://play.example/ws/a%2Fb/watch'],
+  ])('%s with game %s (token %s) is the spectator address %s', (origin, game, token, expected) => {
     expect(socketUrl(game, token, origin, true)).toBe(expected)
   })
 

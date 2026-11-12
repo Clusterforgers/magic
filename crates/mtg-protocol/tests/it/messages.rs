@@ -53,7 +53,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 21;
-const SERVER_VARIANTS: usize = 19;
+const SERVER_VARIANTS: usize = 20;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -137,6 +137,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::AutoYields { .. } => 16,
         ServerMessage::Deciding { .. } => 17,
         ServerMessage::AutoSkips { .. } => 18,
+        ServerMessage::Spectators { .. } => 19,
     }
 }
 
@@ -823,6 +824,8 @@ fn server_samples() -> Vec<ServerMessage> {
         },
     ));
     out.push(ServerMessage::Deciding { seats: Vec::new() });
+    out.push(ServerMessage::Spectators { count: 0 });
+    out.push(ServerMessage::Spectators { count: 3 });
     out.push(ServerMessage::Deciding {
         seats: vec![
             DecidingView {

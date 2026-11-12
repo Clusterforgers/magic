@@ -19,7 +19,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
-    LobbyGame, LobbyList, SpectatorsBody, VisibilityBody, WatchLink,
+    LobbyGame, LobbyList, VisibilityBody,
 };
 use sha2::{Digest, Sha256};
 
@@ -28,7 +28,7 @@ use crate::auth::client_address;
 use crate::deck_choice::{self, Refused};
 use crate::game_id::GameId;
 use crate::registry::{
-    ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError, WatchError,
+    ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError,
 };
 use crate::server::AppState;
 use crate::throttle::Blocked;
@@ -149,7 +149,8 @@ fn game_of(path: Result<Path<String>, PathRejection>) -> Result<GameId, ApiError
 
 // --- the listing ---------------------------------------------------------------------------
 
-/// `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+/// `GET /api/lobbies`: the public games still in their lobby, then the running games (to watch), each newest first,
+/// at most 50 of each.
 ///
 /// The `ETag` is a digest of what the rows say apart from their age, so a poll that finds
 /// nothing new gets a `304` however long the games have been waiting.
@@ -174,7 +175,8 @@ pub(crate) async fn list(
                 "requests for the list",
             )
         })?;
-    let listed = app.registry().lobbies().await;
+    let mut listed = app.registry().lobbies().await;
+    listed.extend(app.registry().running().await);
     let tag = listing_tag(&listed);
     let Ok(header) = HeaderValue::from_str(&tag) else {
         return Err(failure(
@@ -203,6 +205,7 @@ fn view(game: ListedGame) -> LobbyGame {
         total: count(game.total),
         created_at: game.created_at,
         age_secs: game.age.as_secs(),
+        running: game.running,
     }
 }
 
@@ -212,6 +215,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
     let mut hash = Sha256::new();
     for game in listed {
         let manual = if game.manual_play { "1" } else { "0" };
+        let running = if game.running { "1" } else { "0" };
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
@@ -226,6 +230,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &filled,
             &total,
             &game.created_at,
+            running,
         ];
         for part in parts {
             hash.update(u64::try_from(part.len()).unwrap_or(u64::MAX).to_be_bytes());
@@ -479,53 +484,6 @@ pub(crate) async fn set_visibility(
     Ok(Json(body))
 }
 
-/// `POST /api/games/{id}/spectators`: a player of the game (any seat, by token or session) gets a new watch link
-/// to hand out, while the host allows spectators.
-pub(crate) async fn watch_link(
-    State(app): State<AppState>,
-    path: Result<Path<String>, PathRejection>,
-    headers: HeaderMap,
-) -> Result<(StatusCode, Json<WatchLink>), ApiError> {
-    let game = game_of(path)?;
-    if app.stopping() {
-        return Err(shutting_down());
-    }
-    let by = holder(&app, &headers, game).await?;
-    match app.registry().watch_link(game, by) {
-        Ok(token) => Ok((
-            StatusCode::CREATED,
-            Json(WatchLink {
-                game: game.to_string(),
-                token: token.expose().to_owned(),
-            }),
-        )),
-        Err(WatchError::NotFound) => Err(ApiError::not_found()),
-        Err(WatchError::NotAllowed) => Err(forbidden("the host does not allow spectators")),
-        Err(WatchError::Random) => {
-            tracing::error!(%game, "no random source for a watch link");
-            Err(ApiError::internal())
-        }
-    }
-}
-
-/// `PUT /api/games/{id}/spectators`: the host allows spectators or stops them (which ends every watch link and
-/// closes the spectators' sockets).
-pub(crate) async fn set_spectators(
-    State(app): State<AppState>,
-    path: Result<Path<String>, PathRejection>,
-    request: Request,
-) -> Result<Json<SpectatorsBody>, ApiError> {
-    let game = game_of(path)?;
-    if app.stopping() {
-        return Err(shutting_down());
-    }
-    let headers = request.headers().clone();
-    let body = read_json::<SpectatorsBody>(request).await?;
-    let by = holder(&app, &headers, game).await?;
-    app.registry().set_spectators(game, by, body.allowed)?;
-    Ok(Json(body))
-}
-
 /// `DELETE /api/games/{id}`: the host closes a game that is still in its lobby. Its sockets are
 /// closed with 4002 and it leaves the listing at once.
 pub(crate) async fn close(
@@ -658,6 +616,7 @@ mod tests {
             total: 4,
             created_at: "2026-10-19T12:30:00Z".to_owned(),
             age: Duration::from_secs(5),
+            running: false,
         }
     }
 
