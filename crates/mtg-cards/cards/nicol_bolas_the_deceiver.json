@@ -9,9 +9,7 @@
       "abilities": [
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 3
-            },
+            "cost": { "Plus": 3 },
             "effects": [
               {
                 "RepeatEach": {
@@ -20,38 +18,17 @@
                   "effects": [
                     {
                       "OneOf": {
-                        "who": {
-                          "Bound": "each"
-                        },
+                        "who": { "Bound": "each" },
                         "options": [
                           [
                             {
                               "Pay": {
-                                "who": {
-                                  "Bound": "each"
-                                },
+                                "who": { "Bound": "each" },
                                 "cost": [
-                                  {
-                                    "Sacrifice": {
-                                      "filter": [
-                                        {
-                                          "Not": {
-                                            "Type": "Land"
-                                          }
-                                        }
-                                      ]
-                                    }
-                                  }
+                                  { "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }
                                 ],
                                 "unpaid": [
-                                  {
-                                    "LoseLife": {
-                                      "who": {
-                                        "Bound": "each"
-                                      },
-                                      "amount": 3
-                                    }
-                                  }
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
                                 ]
                               }
                             }
@@ -59,23 +36,10 @@
                           [
                             {
                               "Pay": {
-                                "who": {
-                                  "Bound": "each"
-                                },
-                                "cost": [
-                                  {
-                                    "Discard": {}
-                                  }
-                                ],
+                                "who": { "Bound": "each" },
+                                "cost": [{ "Discard": {} }],
                                 "unpaid": [
-                                  {
-                                    "LoseLife": {
-                                      "who": {
-                                        "Bound": "each"
-                                      },
-                                      "amount": 3
-                                    }
-                                  }
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
                                 ]
                               }
                             }
@@ -91,51 +55,17 @@
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 3
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              {
-                "Destroy": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              },
-              {
-                "Draw": {}
-              }
-            ]
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Draw": {} }]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 11
-            },
+            "cost": { "Minus": 11 },
             "effects": [
-              {
-                "DealDamage": {
-                  "to": "Opponents",
-                  "amount": 7
-                }
-              },
-              {
-                "Draw": {
-                  "count": 7
-                }
-              }
+              { "DealDamage": { "to": "Opponents", "amount": 7 } },
+              { "Draw": { "count": 7 } }
             ]
           }
         }
