@@ -224,3 +224,49 @@ fn a_creature_damaged_by_your_source_is_exiled_as_it_dies(
     assert_eq!((in_exile, in_graveyard), (exiled, !exiled));
     replays(scenario, &driver);
 }
+
+#[rstest]
+#[case::enough(2, false)]
+#[case::all(3, false)]
+#[case::too_few(4, true)]
+fn damage_to_the_lich_exiles_from_the_graveyard_or_loses(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] amount: u32,
+    #[case] loses: bool,
+) {
+    let burn = spell(
+        "Burn",
+        CardType::Instant,
+        r#"[{"what":"Player"}]"#,
+        &format!(r#"[{{"DealDamage":{{"to":{{"Target":0}},"amount":{amount}}}}}]"#),
+    );
+    let scenario = Scenario::new(seats)
+        .at(3, 1, Step::Main1)
+        .hand(1, [burn])
+        .battlefield_named(0, ["Nefarious Lich"])
+        .graveyard_named(0, ["Forest", "Forest", "Forest"]);
+    let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
+    let target = driver.target_player(0);
+    let life = driver.state().player(pid(0)).unwrap().life();
+    driver.cast_at("Burn", &[target]).unwrap();
+    for _ in 0..20 {
+        if driver.state().stack().is_empty() || !driver.state().player(pid(0)).unwrap().is_in_game()
+        {
+            break;
+        }
+        match driver.decision().unwrap().kind {
+            DecisionKind::Priority(_) => driver.pass().unwrap(),
+            _ => driver.answer_passively().unwrap(),
+        };
+    }
+    let player = driver.state().player(pid(0)).unwrap();
+    assert_eq!(!player.is_in_game(), loses);
+    assert_eq!(player.life(), life);
+    if !loses {
+        assert_eq!(
+            driver.state().zone(Zone::Graveyard(pid(0))).len(),
+            3 - amount as usize
+        );
+    }
+    replays(scenario, &driver);
+}

@@ -109,6 +109,7 @@ fn file_of(name: &str) -> String {
 #[case::enduring_renewal("Enduring Renewal")]
 #[case::kumano("Kumano Faces Kakkazan // Etching of Kumano")]
 #[case::harsh_judgment("Harsh Judgment")]
+#[case::nefarious_lich("Nefarious Lich")]
 fn the_pack_cards_read_back_whole(#[case] name: &str) {
     let report = report_of(name, &file_of(name));
     assert_eq!(
@@ -168,6 +169,11 @@ fn the_pack_cards_read_back_whole(#[case] name: &str) {
     "Harsh Judgment",
     r#""to": { "ControllerOf": "Dealer" }"#,
     r#""to": { "OwnerOf": "Dealer" }"#
+)]
+#[case::nefarious_lich_opponent_draws(
+    "Nefarious Lich",
+    r#""Draw": { "count""#,
+    r#""Draw": { "who": "Opponents", "count""#
 )]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let text = file_of(name);

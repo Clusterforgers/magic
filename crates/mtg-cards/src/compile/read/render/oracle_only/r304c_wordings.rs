@@ -10,7 +10,7 @@ use crate::compile::read::triggers::subject_text;
 use crate::effect::{Destination, Effect, Place};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition, CounterKind, StatKind};
+use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 
 /// Adds the wordings of the shapes this family writes.
@@ -22,6 +22,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(milled_exiled(ability))
         .chain(draw_replaced(ability))
         .chain(dies_exiled(ability))
+        .chain(lich(ability))
+        .chain(exiled_then(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -544,4 +546,133 @@ fn dies_exiled(ability: &Ability) -> Vec<String> {
     vec![format!(
         "If a {kind} dealt damage this turn by a source you controlled would die, exile it instead."
     )]
+}
+
+/// "If damage would be dealt to you, exile that many cards from your graveyard instead. If you can't, you lose the
+/// game." and "If you would gain life, draw that many cards instead."
+fn lich(ability: &Ability) -> Vec<String> {
+    let Ability::Replacement {
+        when,
+        by: ReplaceBy::Instead(steps),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let graveyard = Selector(vec![Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
+    match (when, steps.as_slice()) {
+        (
+            ReplaceWhen::LifeGain { who: Ref::You },
+            [
+                Effect::Draw {
+                    who: Ref::You,
+                    count: Amount::Triggering,
+                    bind: None,
+                },
+            ],
+        ) => vec!["If you would gain life, draw that many cards instead.".to_owned()],
+        (
+            ReplaceWhen::Damage {
+                to: Some(Ref::You),
+                source,
+                combat: None,
+            },
+            [
+                Effect::If {
+                    condition:
+                        Condition::Compare {
+                            left,
+                            op: Cmp::Ge,
+                            right: Amount::Triggering,
+                        },
+                    then,
+                    otherwise,
+                },
+            ],
+        ) if source.is_empty()
+            && *left == Amount::Count(graveyard.clone())
+            && matches!(otherwise.as_slice(), [Effect::LoseGame { who: Ref::You }]) =>
+        {
+            let [
+                Effect::Choose {
+                    who: Ref::You,
+                    from: Ref::Each(from),
+                    count,
+                    bind,
+                    rest_as: None,
+                },
+                Effect::Exile {
+                    what: Ref::Bound(exiled),
+                    bind: None,
+                    duration: None,
+                },
+            ] = then.as_slice()
+            else {
+                return Vec::new();
+            };
+            let exact = count.min == Amount::Triggering && count.max == Some(Amount::Triggering);
+            if *from == graveyard && exact && bind == exiled {
+                vec!["If damage would be dealt to you, exile that many cards from your graveyard instead. If you \
+                      can't, you lose the game."
+                    .to_owned()]
+            } else {
+                Vec::new()
+            }
+        }
+        _ => Vec::new(),
+    }
+}
+
+/// "If a nontoken creature an opponent controls would die, exile it instead. When you do, <steps>": a death replaced
+/// by exile, with a reflexive trigger after it.
+fn exiled_then(ability: &Ability) -> Vec<String> {
+    let Ability::Replacement {
+        when:
+            ReplaceWhen::ZoneChange {
+                what,
+                from: Some(ZoneKind::Battlefield),
+                to: Some(ZoneKind::Graveyard),
+            },
+        by: ReplaceBy::Instead(steps),
+        condition: None,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [
+        Effect::Exile {
+            what: Ref::Triggering,
+            bind: None,
+            duration: None,
+        },
+        Effect::Reflexive {
+            targets, effects, ..
+        },
+    ] = steps.as_slice()
+    else {
+        return Vec::new();
+    };
+    let Some(subject) = subject_text(what) else {
+        return Vec::new();
+    };
+    if !targets.is_empty() {
+        return Vec::new();
+    }
+    let spell = Ability::Spell {
+        targets: Vec::new(),
+        effects: effects.clone(),
+    };
+    crate::compile::read::render::variants(&spell)
+        .into_iter()
+        .filter_map(|text| {
+            let mut chars = text.chars();
+            let first = chars.next()?;
+            let lower: String = first.to_lowercase().chain(chars).collect();
+            Some(format!(
+                "If {subject} would die, exile it instead. When you do, {lower}"
+            ))
+        })
+        .collect()
 }
