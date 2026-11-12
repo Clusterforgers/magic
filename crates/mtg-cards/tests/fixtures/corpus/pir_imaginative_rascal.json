@@ -1,0 +1,28 @@
+{
+  "id": "5a7241f5-4d69-47fe-b037-95037008184c",
+  "oracle_id": "7683c2b2-a06f-4691-9cc5-1968dc032885",
+  "name": "Pir, Imaginative Rascal",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bbd",
+  "collector_number": "11",
+  "rarity": "rare",
+  "released_at": "2018-06-08",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human",
+  "oracle_text": "Partner with Toothy, Imaginary Friend (When this creature enters, target player may put Toothy into their hand from their library, then shuffle.)\nIf one or more counters would be put on a permanent your team controls, that many plus one of each of those kinds of counters are put on that permanent instead.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner"
+  ]
+}

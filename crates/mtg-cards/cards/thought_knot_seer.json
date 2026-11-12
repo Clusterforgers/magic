@@ -1,0 +1,103 @@
+{
+  "oracle_id": "cef7396d-2168-4282-bf38-670ca9eebd91",
+  "name": "Thought-Knot Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought-Knot Seer",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": "Opponent"
+              }
+            ],
+            "effects": [
+              {
+                "Reveal": {
+                  "what": {
+                    "Each": [
+                      {
+                        "OwnedBy": {
+                          "Target": 0
+                        }
+                      },
+                      {
+                        "In": "Hand"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "OwnedBy": {
+                          "Target": 0
+                        }
+                      },
+                      {
+                        "In": "Hand"
+                      },
+                      {
+                        "Not": {
+                          "Type": "Land"
+                        }
+                      }
+                    ]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Bound": "chosen"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": "Opponent"
+              }
+            ],
+            "effects": [
+              {
+                "Draw": {
+                  "who": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

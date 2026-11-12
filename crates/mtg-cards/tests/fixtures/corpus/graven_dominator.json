@@ -1,0 +1,28 @@
+{
+  "id": "b6dc44f8-ff1d-4c5a-971d-c3ce9a65f35d",
+  "oracle_id": "5462d711-037b-4c62-9238-c557a66534f8",
+  "name": "Graven Dominator",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gpt",
+  "collector_number": "7",
+  "rarity": "rare",
+  "released_at": "2006-02-03",
+  "digital": false,
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Gargoyle",
+  "oracle_text": "Flying\nHaunt (When this creature dies, exile it haunting target creature.)\nWhen this creature enters or the creature it haunts dies, each other creature has base power and toughness 1/1 until end of turn.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Haunt"
+  ]
+}

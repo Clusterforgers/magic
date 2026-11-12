@@ -1,0 +1,25 @@
+{
+  "id": "04d1fbb7-aa02-4f56-8be7-88a3ba55f7d2",
+  "oracle_id": "be109ed5-9e3e-40b3-9bf0-7caf7cdbb958",
+  "name": "Marshdrinker Giant",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eve",
+  "collector_number": "69",
+  "rarity": "uncommon",
+  "released_at": "2008-07-25",
+  "digital": false,
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Giant Warrior",
+  "oracle_text": "When this creature enters, destroy target Island or Swamp an opponent controls.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

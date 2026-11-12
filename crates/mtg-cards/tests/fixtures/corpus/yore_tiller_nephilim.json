@@ -1,0 +1,31 @@
+{
+  "id": "0247d76c-dee4-4d1b-9c25-faa56171541e",
+  "oracle_id": "7e9d61d3-6ba7-45ac-a55c-a2f36595c5d2",
+  "name": "Yore-Tiller Nephilim",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gpt",
+  "collector_number": "140",
+  "rarity": "rare",
+  "released_at": "2006-02-03",
+  "digital": false,
+  "mana_cost": "{W}{U}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Nephilim",
+  "oracle_text": "Whenever this creature attacks, return target creature card from your graveyard to the battlefield tapped and attacking.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

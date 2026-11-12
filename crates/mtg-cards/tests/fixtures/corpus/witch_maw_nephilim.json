@@ -1,0 +1,31 @@
+{
+  "id": "185d56ab-b7f2-4eb2-9540-db8f2dc9b436",
+  "oracle_id": "26edbbb8-331e-42a6-a550-acc7e9efb32c",
+  "name": "Witch-Maw Nephilim",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gpt",
+  "collector_number": "138",
+  "rarity": "rare",
+  "released_at": "2006-02-03",
+  "digital": false,
+  "mana_cost": "{G}{W}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Nephilim",
+  "oracle_text": "Whenever you cast a spell, you may put two +1/+1 counters on this creature.\nWhenever this creature attacks, it gains trample until end of turn if its power is 10 or greater.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

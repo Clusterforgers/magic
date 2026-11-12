@@ -1,0 +1,21 @@
+{
+  "id": "bffc360e-db41-48f3-9365-680d55046e04",
+  "oracle_id": "cef7396d-2168-4282-bf38-670ca9eebd91",
+  "name": "Thought-Knot Seer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ogw",
+  "collector_number": "9",
+  "rarity": "rare",
+  "released_at": "2016-01-22",
+  "digital": false,
+  "mana_cost": "{3}{C}",
+  "cmc": 4.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "({C} represents colorless mana.)\nWhen this creature enters, target opponent reveals their hand. You choose a nonland card from it and exile that card.\nWhen this creature leaves the battlefield, target opponent draws a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [],
+  "keywords": []
+}

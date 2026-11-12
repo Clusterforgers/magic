@@ -5,46 +5,66 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R289_WHOLES: [(&str, &str); 8] = [
+const R289_WHOLES: [(&str, &str); 12] = [
     // gideon_martial_paragon
     (
         r#"{"Loyalty":{"cost":"Zero","effects":[{"Continuous":{"affected":"This","mods":[{"AddType":"Creature"},{"SetCreatureTypes":["Human","Soldier"]},{"SetPT":{"power":5,"toughness":5}},{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}},{"Shield":{"when":{"Damage":{"to":"This"}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#,
-        r#"0: Until end of turn, ~ becomes a 5/5 Human Soldier creature with indestructible that's still a planeswalker. Prevent all damage that would be dealt to him this turn."#,
+        r"0: Until end of turn, ~ becomes a 5/5 Human Soldier creature with indestructible that's still a planeswalker. Prevent all damage that would be dealt to him this turn.",
     ),
     // rowan_fearless_sparkmage
     (
         r#"{"Loyalty":{"cost":{"Minus":2},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":2}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}},{"Continuous":{"affected":{"Target":0},"mods":["CantBlock"],"duration":"UntilEndOfTurn"}}]}}"#,
-        r#"−2: ~ deals 1 damage to each of up to two target creatures. Those creatures can't block this turn."#,
+        r"−2: ~ deals 1 damage to each of up to two target creatures. Those creatures can't block this turn.",
     ),
     // elspeth_undaunted_hero
     (
         r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Search":{"also":["Graveyard"],"filter":[{"OwnedBy":"You"},{"Named":"Sunlit Hoplite"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":{"Battlefield":{"under":"You"}}}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#,
-        r#"−2: Search your library and/or graveyard for a card named Sunlit Hoplite and put it onto the battlefield. If you search your library this way, shuffle."#,
+        r"−2: Search your library and/or graveyard for a card named Sunlit Hoplite and put it onto the battlefield. If you search your library this way, shuffle.",
     ),
     // chandra_flames_catalyst
     (
         r#"{"Loyalty":{"cost":{"Minus":8},"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}},{"Draw":{"count":7}},{"Rule":{"rule":{"MayCast":{"from":"Hand","free":true}},"duration":"UntilEndOfTurn"}}]}}"#,
-        r#"−8: Discard your hand, then draw seven cards. Until end of turn, you may cast spells from your hand without paying their mana costs."#,
+        r"−8: Discard your hand, then draw seven cards. Until end of turn, you may cast spells from your hand without paying their mana costs.",
     ),
     // transcendence
     (
         r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Life":"You"},"op":"Ge","right":20}}}},"effects":[{"LoseGame":{}}]}}"#,
-        r#"When you have 20 or more life, you lose the game."#,
+        r"When you have 20 or more life, you lose the game.",
     ),
     // transcendence
     (
         r#"{"Triggered":{"when":{"LifeLost":{"who":"You"}},"effects":[{"GainLife":{"amount":{"Times":{"by":2,"of":"Triggering"}}}}]}}"#,
-        r#"Whenever you lose life, you gain 2 life for each 1 life you lost."#,
+        r"Whenever you lose life, you gain 2 life for each 1 life you lost.",
     ),
     // lichs_tomb
     (
         r#"{"Triggered":{"when":{"LifeLost":{"who":"You"}},"effects":[{"Sacrifice":{"count":"Triggering","filter":[]}}]}}"#,
-        r#"Whenever you lose life, sacrifice a permanent for each 1 life you lost."#,
+        r"Whenever you lose life, sacrifice a permanent for each 1 life you lost.",
     ),
     // opal_avenger
     (
         r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Life":"You"},"op":"Le","right":10}}}},"if":{"Matches":{"subject":"This","selector":[{"Type":"Enchantment"}]}},"effects":[{"Continuous":{"affected":"This","mods":[{"SetTypes":["Creature"]},{"SetCreatureTypes":["Soldier"]},{"SetPT":{"power":3,"toughness":5}}],"duration":"Forever"}}]}}"#,
-        r#"When you have 10 or less life, if this permanent is an enchantment, it becomes a 3/5 Soldier creature."#,
+        r"When you have 10 or less life, if this permanent is an enchantment, it becomes a 3/5 Soldier creature.",
+    ),
+    // thought_knot_seer
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Opponent"}],"effects":[{"Reveal":{"what":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]}}},{"Choose":{"from":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"},{"Not":{"Type":"Land"}}]},"as":"chosen"}},{"Exile":{"what":{"Bound":"chosen"}}}]}}"#,
+        r"When this creature enters, target opponent reveals their hand. You choose a nonland card from it and exile that card.",
+    ),
+    // singe_mind_ogre
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":"Player"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]},"as":"revealed"}},{"Reveal":{"what":{"Bound":"revealed"}}},{"LoseLife":{"who":{"Target":0},"amount":{"Stat":{"of":{"Bound":"revealed"},"stat":"ManaValue"}}}}]}}"#,
+        r"When this creature enters, target player reveals a card at random from their hand, then loses life equal to that card's mana value.",
+    ),
+    // orzhov_euthanist
+    (
+        r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"HauntedBy":"This"}],"from":"Battlefield","to":"Graveyard"}}]},"targets":[{"what":{"Object":[{"Type":"Creature"},{"DidThisTurn":{"event":"Damaged"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#,
+        r"When this creature enters or the creature it haunts dies, destroy target creature that was dealt damage this turn.",
+    ),
+    // witch_maw_nephilim
+    (
+        r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Ge","right":10}},"then":[{"Continuous":{"affected":"This","mods":[{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}}]}}"#,
+        r"Whenever this creature attacks, it gains trample until end of turn if its power is 10 or greater.",
     ),
     // END
 ];

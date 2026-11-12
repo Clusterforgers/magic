@@ -1,0 +1,27 @@
+{
+  "id": "bda5609a-ab22-4f03-988b-8056c97fdc9e",
+  "oracle_id": "843c9962-dee1-449d-8106-6383df32bcf6",
+  "name": "Legion Angel",
+  "lang": "en",
+  "layout": "normal",
+  "set": "znr",
+  "collector_number": "23",
+  "rarity": "rare",
+  "released_at": "2020-09-25",
+  "digital": false,
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Angel Warrior",
+  "oracle_text": "Flying\nWhen this creature enters, you may reveal a card you own named Legion Angel from outside the game and put it into your hand.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ]
+}

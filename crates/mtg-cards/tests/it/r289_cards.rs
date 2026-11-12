@@ -121,6 +121,52 @@ fn compact(name: &str) -> String {
     r#"{"May":{"effects":[{"TapOrUntap""#,
     r#"{"Pay":{"cost":"{1}","paid":[{"TapOrUntap""#
 )]
+#[case::hook_destroys(
+    "Captain's Hook",
+    r#"{"Destroy":{"what":"Triggering"}}"#,
+    r#"{"Exile":{"what":"Triggering"}}"#
+)]
+#[case::exhumer_haunt("Exhumer Thrull", r#"{"HauntedBy":"This"}"#, r#""Other""#)]
+#[case::belfry_two("Belfry Spirit", r#""count":2"#, r#""count":3"#)]
+#[case::absolver_enchantment("Absolver Thrull", r#""Enchantment""#, r#""Artifact""#)]
+#[case::blind_hunter_two(
+    "Blind Hunter",
+    r#""amount":2}},{"GainLife""#,
+    r#""amount":3}},{"GainLife""#
+)]
+#[case::euthanist_damaged("Orzhov Euthanist", r#""event":"Damaged""#, r#""event":"Attacked""#)]
+#[case::graven_other(
+    "Graven Dominator",
+    r#",{"Type":"Creature"}]"#,
+    r#",{"Type":"Creature"},"Other"]"#
+)]
+#[case::pontiff_minus("Orzhov Pontiff", r#""power":-1"#, r#""power":-2"#)]
+#[case::robot_third("Robot Domination", r#""reaching":3"#, r#""reaching":4"#)]
+#[case::rewrite_fourth("Rewrite History", r#""reaching":4"#, r#""reaching":3"#)]
+#[case::cube_seventh("Construct a Cosmic Cube", r#""reaching":7"#, r#""reaching":6"#)]
+#[case::marshdrinker_swamp("Marshdrinker Giant", r#""Swamp""#, r#""Forest""#)]
+#[case::seer_nonland(
+    "Thought-Knot Seer",
+    r#"{"Not":{"Type":"Land"}}"#,
+    r#"{"Not":{"Type":"Creature"}}"#
+)]
+#[case::nephilim_ten("Witch-Maw Nephilim", r#""right":10"#, r#""right":9"#)]
+#[case::yore_tiller_attacking(
+    "Yore-Tiller Nephilim",
+    r#"{"JoinAttack":{"what":{"Target":0}}}"#,
+    r#"{"Tap":{"what":{"Target":0}}}"#
+)]
+#[case::legion_name(
+    "Legion Angel",
+    r#""Named":"Legion Angel""#,
+    r#""Named":"Serra Angel""#
+)]
+#[case::ogre_life("Singe-Mind Ogre", r#"{"LoseLife""#, r#"{"GainLife""#)]
+#[case::toothy_draw(
+    "Toothy, Imaginary Friend",
+    r#"{"Drew":{"who":"You"}}"#,
+    r#"{"Drew":{"who":"Opponents"}}"#
+)]
 fn r289_a_card_reads_back_and_a_near_miss_does_not(
     #[case] name: &str,
     #[case] from: &str,
@@ -143,6 +189,8 @@ fn r289_a_card_reads_back_and_a_near_miss_does_not(
 
 #[rstest]
 #[case::bolas_unless_or_discard("Nicol Bolas, the Deceiver", 1)]
+#[case::cacophony_legendary_god("Cacophony Unleashed", 1)]
+#[case::pir_team_counters("Pir, Imaginative Rascal", 1)]
 fn r289_a_partial_card_leaves_only_its_listed_clauses(#[case] name: &str, #[case] manual: usize) {
     let rules = compact(name);
     let (verdict, support) = judged(name, &rules);

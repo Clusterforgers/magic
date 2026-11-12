@@ -1,0 +1,27 @@
+{
+  "id": "711979c3-e70b-4973-a4f1-020db534fc73",
+  "oracle_id": "a9002245-0f33-48cb-96d3-fde884236eb5",
+  "name": "Absolver Thrull",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gpt",
+  "collector_number": "1",
+  "rarity": "common",
+  "released_at": "2006-02-03",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Thrull Cleric",
+  "oracle_text": "Haunt (When this creature dies, exile it haunting target creature.)\nWhen this creature enters or the creature it haunts dies, destroy target enchantment.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Haunt"
+  ]
+}

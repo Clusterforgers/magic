@@ -8,12 +8,11 @@ use std::sync::Arc;
 use common::pid;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_cards::keyword::Keyword;
 use mtg_core::card::CardType;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::{Engine, GameSetup, replay};
-use mtg_testkit::cards::{free_creature, keyworded};
+use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -50,6 +49,35 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     Err(ScriptError::Stuck("the stack did not empty".to_owned()))
 }
 
+/// As `settle`, answering the target choices with `targets` in turn.
+fn settle_choosing(
+    driver: &mut Driver,
+    targets: &[mtg_core::ids::ObjectId],
+) -> Result<(), ScriptError> {
+    let mut next = targets.iter();
+    for _ in 0..60 {
+        match &driver.decision()?.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => return Ok(()),
+            DecisionKind::ChooseTargets(options) => {
+                let at = match next.next() {
+                    Some(id) => mtg_engine::choose::Target::Object(
+                        driver.state().object(*id).unwrap().reference(),
+                    ),
+                    None => options.legal[0],
+                };
+                driver.choose_targets(&[at])?;
+            }
+            DecisionKind::PayMana(_) => {
+                driver.answer(Answer::PayMana(PayChoice::Auto))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    Err(ScriptError::Stuck("the stack did not empty".to_owned()))
+}
+
 fn assert_replays(driver: &Driver, setup: &GameSetup) {
     let log = driver.engine().events().to_vec();
     let replayed = replay(setup, &log).unwrap();
@@ -63,8 +91,12 @@ fn roller(sides: u32, results: &str) -> Arc<CardDefinition> {
     with(
         &Arc::new(CardDefinition::new("Roller").with_type(CardType::Artifact)),
         &[
-            &format!(r#"{{"Activated":{{"cost":"{{0}}","effects":[{{"RollDice":{{"sides":{sides},"results":[]}}}}]}}}}"#),
-            &format!(r#"{{"Triggered":{{"when":{{"DiceRolled":{{"who":"You","results":{results}}}}},"effects":[{{"GainLife":{{"amount":"Triggering"}}}}]}}}}"#),
+            &format!(
+                r#"{{"Activated":{{"cost":"{{0}}","effects":[{{"RollDice":{{"sides":{sides},"results":[]}}}}]}}}}"#
+            ),
+            &format!(
+                r#"{{"Triggered":{{"when":{{"DiceRolled":{{"who":"You","results":{results}}}}},"effects":[{{"GainLife":{{"amount":"Triggering"}}}}]}}}}"#
+            ),
         ],
     )
 }
@@ -131,8 +163,9 @@ fn the_third_counter_triggers_once(
 /// Haunt and "When this creature enters or the creature it haunts dies, you gain 2 life."
 fn haunter() -> Arc<CardDefinition> {
     with(
-        &keyworded("Haunter", 1, 1, &[Keyword::Haunt]),
+        &free_creature("Haunter", 1, 1),
         &[
+            r#"{"Keyword":"Haunt"}"#,
             r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"HauntedBy":"This"}],"from":"Battlefield","to":"Graveyard"}}]},"effects":[{"GainLife":{"amount":2}}]}}"#,
         ],
     )
@@ -165,22 +198,15 @@ fn the_haunted_creature_dying_triggers_from_exile(
     let haunter = driver.id_of("Haunter")?;
     let victim = driver.id_of("Victim")?;
     driver.begin_ability("Slayer", 0)?;
-    driver.choose_targets(&[mtg_engine::choose::Target::Object(haunter)])?;
-    for _ in 0..60 {
-        match &driver.decision()?.kind {
-            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
-            DecisionKind::ChooseTargets(_) => {
-                driver.choose_targets(&[mtg_engine::choose::Target::Object(victim)])?;
-            }
-            _ => {
-                driver.answer_passively()?;
-            }
-        }
-    }
-    assert_eq!(life(&driver, 0), 22, "dying haunts and gains nothing");
+    settle_choosing(&mut driver, &[haunter, victim])?;
+    let exiled = driver.state().object(haunter).map(|o| o.zone());
+    assert_eq!(
+        life(&driver, 0),
+        22,
+        "dying haunts and gains nothing: {exiled:?}"
+    );
     driver.begin_ability("Slayer", 0)?;
-    driver.choose_targets(&[mtg_engine::choose::Target::Object(victim)])?;
-    settle(&mut driver)?;
+    settle_choosing(&mut driver, &[victim])?;
     assert_eq!(life(&driver, 0), 24, "the haunted creature died");
     assert_replays(&driver, &table().setup().unwrap());
     Ok(())

@@ -1,0 +1,28 @@
+{
+  "id": "556e4e71-b149-49c8-8a22-83660bef57bb",
+  "oracle_id": "c171065f-7947-4161-a481-1ea2d3ce8422",
+  "name": "Belfry Spirit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "gpt",
+  "collector_number": "2",
+  "rarity": "uncommon",
+  "released_at": "2006-02-03",
+  "digital": false,
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nHaunt (When this creature dies, exile it haunting target creature.)\nWhen this creature enters or the creature it haunts dies, create two 1/1 black Bat creature tokens with flying.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Haunt"
+  ]
+}

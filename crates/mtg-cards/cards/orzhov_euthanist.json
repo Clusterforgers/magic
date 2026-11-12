@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3cc82a02-2906-4411-aebf-474b0735bb53",
+  "name": "Orzhov Euthanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Euthanist",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Keyword": "Haunt"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "This"
+                    ],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "HauntedBy": "This"
+                      }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "DidThisTurn": {
+                        "event": "Damaged"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

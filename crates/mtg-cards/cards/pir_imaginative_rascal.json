@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7683c2b2-a06f-4691-9cc5-1968dc032885",
+  "name": "Pir, Imaginative Rascal",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pir, Imaginative Rascal",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Keyword": {
+            "PartnerWith": "Toothy, Imaginary Friend"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": {
+              "start": 146,
+              "end": 306
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

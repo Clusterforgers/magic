@@ -1,0 +1,30 @@
+{
+  "id": "814a5348-988d-480f-806d-9c958f1a10b9",
+  "oracle_id": "a731f5bc-892c-4857-9590-4fa31c1caf00",
+  "name": "Blind Hunter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "rvr",
+  "collector_number": "166",
+  "rarity": "common",
+  "released_at": "2024-01-12",
+  "digital": false,
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Bat",
+  "oracle_text": "Flying\nHaunt (When this creature dies, exile it haunting target creature.)\nWhen this creature enters or the creature it haunts dies, target player loses 2 life and you gain 2 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Haunt"
+  ]
+}

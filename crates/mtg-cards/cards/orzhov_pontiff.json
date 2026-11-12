@@ -1,0 +1,107 @@
+{
+  "oracle_id": "3620ef25-d9e2-4460-b25f-592ff7df681b",
+  "name": "Orzhov Pontiff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Pontiff",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Keyword": "Haunt"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "This"
+                    ],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "HauntedBy": "This"
+                      }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                {
+                                  "Type": "Creature"
+                                },
+                                {
+                                  "ControlledBy": "You"
+                                }
+                              ]
+                            },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                {
+                                  "Type": "Creature"
+                                },
+                                {
+                                  "Not": {
+                                    "ControlledBy": "You"
+                                  }
+                                }
+                              ]
+                            },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": -1,
+                                  "toughness": -1
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
