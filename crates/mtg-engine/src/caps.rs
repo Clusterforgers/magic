@@ -782,6 +782,7 @@ const RUNS: &[&str] = &[
     "Keyword.Gift",
     "ReplaceBy.Devour",
     "ReplaceBy.AsEnters",
+    "ReplaceBy.AsEntersWith",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",

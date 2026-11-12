@@ -758,6 +758,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsEnters(_)
+        | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -795,6 +796,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::AsEnters(_)
+                | ReplaceBy::AsEntersWith { .. }
         )
     )
 }
@@ -2259,6 +2261,15 @@ impl Pass<'_> {
             ReplaceBy::AsEnters(effects) => {
                 let unit = Unit::Enter { object, controller };
                 Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
+            }
+            ReplaceBy::AsEntersWith {
+                effects,
+                counter,
+                count,
+            } => {
+                let unit = Unit::Enter { object, controller };
+                let with = (effects.as_slice(), counter, count);
+                Ok(self.r304_as_enters_with(at, candidate, with, &unit, applied))
             }
             _ => self.enter(at, candidate, by, object, controller, applied),
         }

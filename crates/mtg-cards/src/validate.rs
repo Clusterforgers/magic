@@ -5460,6 +5460,13 @@ impl Walker<'_> {
                 }
                 self.effect_list("AsEnters", effects, false);
             }
+            ReplaceBy::AsEntersWith { effects, count, .. } => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                self.effect_list("AsEntersWith", effects, false);
+                self.at("count", |w| w.amount(count));
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

@@ -1122,6 +1122,17 @@ pub enum ReplaceBy {
     /// As the permanent enters, these effects happen first, then it enters (CR 614.1c, 614.12): "As ~ enters, discard
     /// your hand"; a question they ask goes to the permanent's controller.
     AsEnters(Vec<Effect>),
+    /// As `AsEnters`, and then the permanent enters with `count` counters of the kind on it, the count worked out after the
+    /// effects in the names they bound ("As ~ enters, remove all counters from all permanents. ~ enters with a +1/+1
+    /// counter on it for each counter removed this way").
+    AsEntersWith {
+        /// What happens first.
+        effects: Vec<Effect>,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many, read after the effects.
+        count: Amount,
+    },
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
