@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images AS \"images: _\"\n               FROM printings WHERE oracle_id = $1\n               ORDER BY released_at DESC NULLS LAST, printing_id",
+  "query": "SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images AS \"images: _\", set_name, frame, finishes, full_art\n               FROM printings WHERE oracle_id = $1\n               ORDER BY released_at DESC NULLS LAST, printing_id",
   "describe": {
     "columns": [
       {
@@ -101,6 +101,50 @@
             "name": "images"
           }
         }
+      },
+      {
+        "ordinal": 9,
+        "name": "set_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "set_name"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "frame",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "frame"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "finishes",
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "finishes"
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "full_art",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "full_art"
+          }
+        }
       }
     ],
     "parameters": {
@@ -117,8 +161,12 @@
       true,
       false,
       false,
+      false,
+      true,
+      true,
+      false,
       false
     ]
   },
-  "hash": "2c27e051e0c0656e1a6f675f58db487ba878b5e2af651ecd34fa15e538be83bc"
+  "hash": "1fb25dee95d0d459991cd1c4011336964fb42e013083c7204ae8a044e3043fe7"
 }

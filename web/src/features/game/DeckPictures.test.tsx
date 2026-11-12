@@ -1,4 +1,4 @@
-// Goal: a deck row asks for its pictures when it is in view, only as many at once as the queue allows, and shows a tile where it has no card to ask for.
+// Goal: a deck row asks for its pictures when it is in view, only as many at once as the queue allows, in the art the deck chose for the card, and shows a tile where it has no card to ask for.
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { createImageQueue } from '@/features/cards/imageQueue'
@@ -51,5 +51,14 @@ describe('the pictures of a deck row', () => {
     expect(tile).not.toBeNull()
     expect(tile?.textContent).toBe(text)
     expect(screen.queryByRole('img')).toBeNull()
+  })
+
+  it.each([
+    ['the chosen printing', { printingId: 'art-1' }, '/api/images/printing/art-1/0/small'],
+    ['the card when none is chosen', {}, '/api/images/oracle/o-1/0/small'],
+  ])('draws %s', (_what, art, url) => {
+    const row = { ...entry(1, 0), pictures: [{ oracleId: 'o-1', name: 'Card', ...art }] }
+    const { container } = render(<DeckPictures entry={row} fallback={[]} queue={createImageQueue(2)} />)
+    expect(container.querySelector('[data-slot="deck-pictures"] img')?.getAttribute('src')).toBe(url)
   })
 })

@@ -261,7 +261,7 @@ impl Accounts {
     }
 
     /// Deletes the account with everything that refers to it, in one transaction: its decks, its fix
-    /// marks, its read verdicts, its favourite precons, its sessions (by cascade) and its hold on seats (a seat stays and loses its account). The admin's account stays ([`Outcome::Admin`]), since nothing makes another one.
+    /// marks, its read verdicts, its favourite precons, its preferred art, its sessions (by cascade) and its hold on seats (a seat stays and loses its account). The admin's account stays ([`Outcome::Admin`]), since nothing makes another one.
     pub(crate) async fn delete_user(&self, user: UserId) -> Result<Outcome, AccountError> {
         let mut tx = self.pool.begin().await?;
         if let Some(stop) = lock_unless_admin(&mut tx, user).await? {
@@ -280,6 +280,9 @@ impl Accounts {
             .await
             .map_err(|error| AccountError::Unavailable(error.to_string()))?;
         PrefsRepo::delete_all_of(&mut tx, user.uuid())
+            .await
+            .map_err(|error| AccountError::Unavailable(error.to_string()))?;
+        mtg_db::PreferredPrintingRepo::delete_all_of(&mut tx, user.uuid())
             .await
             .map_err(|error| AccountError::Unavailable(error.to_string()))?;
         sqlx::query!("DELETE FROM users WHERE id = $1", user.uuid())

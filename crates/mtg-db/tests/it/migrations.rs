@@ -51,6 +51,7 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
             "import_runs",
             "precon_deck_cards",
             "precon_decks",
+            "preferred_printings",
             "printings",
             "rulings",
             "user_prefs"
