@@ -107,6 +107,7 @@ mod r1g_taken_names;
 mod r285_pieces;
 mod r2a_doubling;
 mod r2d;
+mod r305c_random_keyword;
 mod r305c_you_and;
 mod r3e;
 mod r3f_airbend;
