@@ -7,12 +7,7 @@
       "name": "Blast-Furnace Hellkite",
       "oracle_fingerprint": "3185ce8272af87063e8ee105a56954de",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 201 }
-          }
-        },
+        { "Keyword": { "Offering": [{ "Type": "Artifact" }] } },
         { "Keyword": "Flying" },
         { "Keyword": "DoubleStrike" },
         {

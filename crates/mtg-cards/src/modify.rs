@@ -260,6 +260,8 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
+    /// While you control the source and it stays tapped.
+    WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -487,6 +489,8 @@ pub enum Prohibited {
     Exile,
     /// Transform (CR 701.28).
     Transform,
+    /// Phase out (CR 702.26).
+    PhaseOut,
     /// Become untapped, by an untap step, an effect or a {Q} cost.
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).

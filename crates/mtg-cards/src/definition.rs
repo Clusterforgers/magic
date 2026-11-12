@@ -636,7 +636,7 @@ impl CardDefinition {
                         .fold(ColorSet::EMPTY, |set, color| set.with(*color)),
                 );
             }
-            // "red in addition to its other colors": the colors it has, from its cost or indicator, and these.
+            // "red in addition to its other colors": the colors it has, from its cost or indicator, and these (CR 707.9b).
             Modification::AddColors(colors) => {
                 self.color_indicator = Some(
                     colors
@@ -879,6 +879,25 @@ mod tests {
         if let Some(indicator) = indicator {
             card = card.with_color_indicator(letters(indicator));
         }
+        assert_eq!(card.colors(), letters(expected));
+    }
+
+    #[rstest]
+    #[case::adds_to_the_cost_colors("{1}{R}", &[Color::Black], "RB")]
+    #[case::adds_to_a_colorless_card("{3}", &[Color::Black], "B")]
+    #[case::keeps_a_color_it_had("{B}", &[Color::Black], "B")]
+    #[case::adds_nothing("{G}", &[], "G")]
+    fn r301_a_copy_in_addition_to_its_colors_keeps_its_own(
+        #[case] cost: &str,
+        #[case] added: &[Color],
+        #[case] expected: &str,
+    ) {
+        let letters =
+            |text: &str| -> ColorSet { text.chars().filter_map(Color::from_symbol).collect() };
+        let mut card = CardDefinition::new("X")
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse(cost).unwrap());
+        assert!(card.except(&Modification::AddColors(added.to_vec())));
         assert_eq!(card.colors(), letters(expected));
     }
 

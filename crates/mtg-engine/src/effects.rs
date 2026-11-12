@@ -497,6 +497,16 @@ pub(crate) fn lasts(
                 crate::characteristics::controller_of(state, source.id) == Some(controller)
             })
         }
+        Duration::WhileYouControlSourceTapped => {
+            lasts(state, &Duration::WhileSourceTapped, began, controller, source)
+                && lasts(
+                    state,
+                    &Duration::WhileYouControlSource,
+                    began,
+                    controller,
+                    source,
+                )
+        }
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
         // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
@@ -613,6 +623,7 @@ impl ContinuousEffect {
     pub(crate) fn is_active_before_control(&self, state: &GameState) -> bool {
         let duration = match &self.duration {
             Duration::WhileYouControlSource => &Duration::WhileSourceOnBattlefield,
+            Duration::WhileYouControlSourceTapped => &Duration::WhileSourceTapped,
             other => other,
         };
         self.lasts_by(state, duration)

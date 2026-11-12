@@ -1,18 +1,13 @@
 {
   "oracle_id": "e514546a-ca03-48ba-90e1-7a0e145137f2",
   "name": "Patron of the Moon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Patron of the Moon",
       "oracle_fingerprint": "646e1464e1dd6ec7e6679c8215033f06",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 212 }
-          }
-        },
+        { "Keyword": { "Offering": [{ "Subtype": "Moonfolk" }] } },
         { "Keyword": "Flying" },
         {
           "Activated": {

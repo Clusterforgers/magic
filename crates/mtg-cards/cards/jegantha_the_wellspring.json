@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f0587c55-06c1-4930-a62e-668f37464ce9",
+  "name": "Jegantha, the Wellspring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jegantha, the Wellspring",
+      "oracle_fingerprint": "c2f333132afcc0eacb8214253870dfc4",
+      "abilities": [
+        { "Keyword": { "Companion": "NoRepeatedSymbol" } },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 217, "end": 294 }
+          }
+        }
+      ]
+    }
+  ]
+}

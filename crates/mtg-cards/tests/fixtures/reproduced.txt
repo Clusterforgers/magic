@@ -1316,6 +1316,8 @@ Path of the Ghosthunter
 Path to Exile
 Path to the Festival
 Patrolling Peacemaker
+Patron of the Akki
+Patron of the Kitsune
 Patron of the Vein
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
@@ -1327,6 +1329,7 @@ Persist
 Personal Sanctuary
 Pestilent Syphoner
 Peter Parker's Camera
+Petrified Wood-Kin
 Petting Zookeeper
 Phantasmal Image
 Phantom Nantuko
@@ -1858,6 +1861,7 @@ The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
 The Torment of Gollum
+The Underworld Cookbook
 The War Doctor
 The Warring Triad
 The Wise Mothman

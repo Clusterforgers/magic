@@ -68,10 +68,24 @@ pub(super) fn w6e_duration(r: &mut Reader<'_>) -> Option<Duration> {
         return Some(Duration::UntilEndOfTurn);
     }
     if r.words("for as long as you control") {
-        return r.source().then_some(Duration::WhileYouControlSource);
+        r.source().then_some(())?;
+        // "for as long as you control ~ and ~ remains tapped"
+        if r.attempt(|r| {
+            r.need("and")?;
+            r.source().then_some(())?;
+            r.need("remains tapped")
+        })
+        .is_some()
+        {
+            return Some(Duration::WhileYouControlSourceTapped);
+        }
+        return Some(Duration::WhileYouControlSource);
     }
     if r.words("for as long as") {
         r.source().then_some(())?;
+        if r.words("remains tapped") {
+            return Some(Duration::WhileSourceTapped);
+        }
         r.need("remains on the battlefield")?;
         return Some(Duration::WhileSourceOnBattlefield);
     }

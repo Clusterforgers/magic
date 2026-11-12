@@ -1,18 +1,13 @@
 {
   "oracle_id": "05d09c55-f551-4cb4-a8d2-4811dccc848d",
   "name": "Vraska, Betrayal's Sting",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vraska, Betrayal's Sting",
       "oracle_fingerprint": "717220f5593cd53c73d562bba418485d",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 126 }
-          }
-        },
+        { "Keyword": "Compleated" },
         {
           "Loyalty": {
             "cost": "Zero",
@@ -20,15 +15,63 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 176, "end": 332 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetTypes": ["Artifact"] },
+                    { "AddSubtype": "Treasure" },
+                    "LoseAbilities",
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap", "SacrificeSelf"],
+                          "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 333, "end": 452 }
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": { "Target": 0 }, "counter": "poison" } },
+                      "op": "Lt",
+                      "right": 9
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "poison",
+                        "count": {
+                          "Difference": [
+                            9,
+                            { "Counters": { "on": { "Target": 0 }, "counter": "poison" } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

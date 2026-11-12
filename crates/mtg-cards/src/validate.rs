@@ -385,6 +385,8 @@ struct Walker<'a> {
     x_free: bool,
     /// Whether a madness, foretell or freerunning cost of the face holds an `{X}`, which its spell reads.
     r283_keyword_x: bool,
+    /// The alternative cost being walked is a keyword's (`AltCast`), whose `{X}` the cast announces.
+    r301_alt_x: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
@@ -431,6 +433,7 @@ impl<'a> Walker<'a> {
             counts_x: false,
             x_free: false,
             r283_keyword_x: false,
+            r301_alt_x: false,
             x_now: false,
             choosing: false,
             r281_paying: false,
@@ -1632,7 +1635,9 @@ impl<'a> Walker<'a> {
         else {
             return;
         };
+        self.r301_alt_x = true;
         self.w14c_free_cast(condition.as_ref(), cost.as_ref());
+        self.r301_alt_x = false;
         if matches!(from, ZoneKind::Battlefield | ZoneKind::Stack) {
             self.problem(
                 "a card is cast from a hand, a library, a graveyard, exile or the command zone",
@@ -1653,11 +1658,26 @@ impl<'a> Walker<'a> {
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        // A card picked for the cost may be chosen by the X the spell announces ("Exile a red card with mana value X from
+        // your hand"): the cast asks X first.
+        let reads_x = cost
+            .0
+            .iter()
+            .any(|item| r301_pick_filter(item).is_some_and(Selector::r301_reads_x));
+        let held = self.x_now;
+        self.x_now |= reads_x;
         self.at("cost", |w| w.cost(cost));
+        self.x_now = held;
+        if reads_x {
+            self.uses("Cost", "Pick.FilterX");
+        }
         if cost.0.is_empty() {
             self.problem("an alternative cost names what is paid; leave it out for a free cast");
         }
-        if cost.has_x() {
+        // A keyword's alternative cost may hold an `{X}` ("Surge {X}{R}", "Warp {X}{G}"), announced with the cast.
+        if cost.has_x() && self.r301_alt_x {
+            self.uses("Ability", "AltCast.X");
+        } else if cost.has_x() {
             self.problem("an alternative cost has no X");
         }
         let by_the_source = cost.0.iter().any(|item| {
@@ -2050,7 +2070,6 @@ impl<'a> Walker<'a> {
             | Keyword::Squad(cost)
             | Keyword::Replicate(cost)
             | Keyword::Offspring(cost)
-            | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
             | Keyword::Miracle(cost)
             | Keyword::Buyback(cost)
@@ -2071,6 +2090,15 @@ impl<'a> Walker<'a> {
             | Keyword::Splice { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
+            }
+            // A part of a flashback cost that counts X takes the X the spell announces ("Flashback—{R}{R}, Discard X
+            // cards."), which the cast for that cost asks.
+            Keyword::Flashback(cost) => {
+                let held = self.x_now;
+                self.x_now |= cost.0.iter().any(amount_is_x) && !has_x_mana(cost);
+                self.at("cost", |w| w.cost(cost));
+                self.x_now = held;
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Flashback.Cost", cost, false);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
                 self.turn_up_cost(cost);
@@ -2106,6 +2134,7 @@ impl<'a> Walker<'a> {
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
             | Keyword::BandsWithOther(quality)
+            | Keyword::Offering(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
@@ -4076,6 +4105,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Duration", "WhileYouControlSourceTapped");
+                }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.uses("Duration", "UntilPaid");
                 }
@@ -4104,6 +4136,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Duration", "WhileYouControlSource");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Exchange", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
                 }
@@ -4131,6 +4166,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Rule", "Duration.WhileYouControlSourceTapped");
                 }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
@@ -4201,6 +4239,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Shield", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Shield", "Duration.WhileYouControlSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
@@ -5650,6 +5691,19 @@ fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
 fn r283_counts_payers_own(count: &Amount, who: &Ref) -> bool {
     matches!(count, Amount::Count(Selector(preds))
         if preds.contains(&Pred::OwnedBy(who.clone())) && !matches!(who, Ref::You))
+}
+
+/// The filter of a cost item that picks cards or permanents.
+fn r301_pick_filter(item: &CostItem) -> Option<&Selector> {
+    match item {
+        CostItem::ExileFromHand { filter, .. }
+        | CostItem::Sacrifice { filter, .. }
+        | CostItem::ExileFromGraveyard { filter, .. }
+        | CostItem::RevealFromHand { filter, .. }
+        | CostItem::ReturnToHand { filter, .. } => Some(filter),
+        CostItem::Discard { filter, .. } => filter.as_ref(),
+        _ => None,
+    }
 }
 
 /// Whether the face has a madness, foretell or freerunning cost with an `{X}` ("Madness {X}{B}{B}").

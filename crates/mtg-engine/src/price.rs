@@ -263,6 +263,25 @@ impl Price {
         }
     }
 
+    /// [`Self::at`] with a part that picks by X ("a red card with mana value X") kept as it is: what the mana sources
+    /// leave out is judged for some X, and which values of X can be announced is the announcement's business (`x.rs`).
+    pub(crate) fn r301_at_keeping_x_picks(&self, x: u32) -> Price {
+        Price {
+            parts: self
+                .parts
+                .iter()
+                .map(|part| {
+                    if part.r301_picks_by_x() {
+                        part.clone()
+                    } else {
+                        part.at(x)
+                    }
+                })
+                .collect(),
+            ..self.clone()
+        }
+    }
+
     /// Whether some part takes the X announced with the ability.
     pub(crate) fn counted(&self) -> bool {
         self.parts.iter().any(Part::is_counted)

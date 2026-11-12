@@ -167,6 +167,7 @@ const RUNS: &[&str] = &[
     "Cost.ReturnToHand",
     "Cost.ExilePermanents",
     "Cost.ExileFromHand",
+    "Cost.Pick.FilterX",
     "Cost.RevealFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
@@ -368,6 +369,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
+    "Duration.WhileYouControlSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
@@ -460,6 +462,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Discard",
     "Rule.Cant.Exile",
     "Rule.Cant.Transform",
+    "Rule.Cant.PhaseOut",
     "Rule.Cant.Untap",
     "Rule.Cant.Crew",
     "Rule.Cant.EnterBattlefield",
@@ -605,9 +608,11 @@ const RUNS: &[&str] = &[
     "Ability.FreeActivation",
     "Ability.InstantActivation",
     "Ability.AltCast",
+    "Ability.AltCast.X",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
+    "Keyword.Flashback.Cost.Discard.X",
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
@@ -861,6 +866,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exploit",
     "Keyword.Soulbond",
     "Keyword.Emerge",
+    "Keyword.Offering",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
     "Keyword.Recover",
@@ -1305,6 +1311,7 @@ mod tests {
     #[case::cant_discard("Rule.Cant.Discard", true)]
     #[case::cant_exile("Rule.Cant.Exile", true)]
     #[case::cant_transform("Rule.Cant.Transform", true)]
+    #[case::r301_cant_phase_out("Rule.Cant.PhaseOut", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
     #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]

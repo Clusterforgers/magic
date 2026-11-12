@@ -239,6 +239,9 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Compleated | The cast keeps the life paid for Phyrexian symbols (`CostTaken.phyrexian_life`); a planeswalker with `Compleated` enters with two fewer loyalty counters per such symbol (CR 702.150, `r282_compleated.rs`). |
 | Suspend X | `Suspend { time: 0, cost }` with `{X}` in the cost (`XAtLeast` for the least X): suspending asks X (`ChooseNumber`), costs X more per `{X}` and puts X time counters on the card (`ways::suspend_x_of`). |
 | Plotting by an effect | `Effect::Plot { what }` exiles cards from a hand, graveyard, library or the stack face up as plotted (CR 702.170d): the owner casts each free as a sorcery on a later turn. |
+| Offering | `Offering(quality)` (CR 702.48): an instant-speed way from hand that sacrifices one permanent of the quality and pays the mana cost less that permanent's, a colored symbol taking off the same symbol or else one generic (`r301_offering.rs`). |
+| Costs that read X | A flashback part counted by X takes the spell's X; an alternative cost whose pick filter reads X asks X first and offers only values with a card to pick; an `AltCast` may hold `{X}`. |
+| Companion conditions | Besides `Each`, `Distinct` and `ExtraCards`: `ShareCardType`, `ManaValueParity { even }` and `NoRepeatedSymbol`. |
 | Cleave | `Cleave { cost, spell }`: the keyword carries the `Spell` ability without the bracketed words, which a spell cast for the cleave cost announces and resolves instead of the printed one (CR 702.148); an `{X}` of the cleave cost is announced for that cast only. The compiler and the read back check each version against its text. |
 
 ## Validation
