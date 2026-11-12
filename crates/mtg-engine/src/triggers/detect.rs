@@ -94,7 +94,8 @@ enum Happened {
     },
     /// A step began.
     Step { step: Step, active: PlayerId },
-    /// A source dealt damage; `combat` is whether it was combat damage.
+    /// A source dealt damage; `combat` is whether it was combat damage. `nth` is the time of the turn the object was dealt
+    /// damage, or for a player the time of the turn the source dealt damage of this kind to a player.
     Damaged {
         source: ObjectId,
         to: DamageTarget,
@@ -1077,6 +1078,14 @@ fn about_players_and_permanents(
                         .map_or(0, |object| {
                             object_ordinal(look, object, None, Tally::Damaged)
                         }),
+                    DamageTarget::Player(_) if *amount > 0 => {
+                        super::r307b_first_damage::to_players_ordinal(
+                            look.post,
+                            look.later,
+                            *source,
+                            in_combat_damage(look.post),
+                        )
+                    }
                     _ => 0,
                 },
                 amount: *amount,

@@ -29,6 +29,7 @@ mod detect_turn_nth;
 mod l291_detect;
 mod life_floor;
 mod queue;
+mod r307b_first_damage;
 mod reads_x;
 mod state;
 mod w11c_crime;

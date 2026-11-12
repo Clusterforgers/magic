@@ -28,6 +28,7 @@ pub(super) fn c5_gl_add(ability: &Ability, texts: &mut Vec<String>) {
             who: crate::refs::Ref::You,
             repeat: false,
             at_random: false,
+            chosen_if: None,
             different_players: false,
             once_each_turn: false,
             once_ever: false,

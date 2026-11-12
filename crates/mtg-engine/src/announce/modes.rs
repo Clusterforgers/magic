@@ -9,7 +9,7 @@
 use super::{Ctx, Next, What, Work, optional, price};
 use mtg_core::ids::PlayerId;
 
-use crate::choose::{Modal, ModeOptions, modal_of, mode_options};
+use crate::choose::{Modal, ModeOptions, modal_of, mode_options, r307b_picked_at_random};
 use crate::decision::{Decision, DecisionKind};
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::Scope;
@@ -44,7 +44,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         if !price::restrict(ctx, work.choices, &mut options) {
             return Some(Next::Drop);
         }
-        if modal.at_random {
+        if r307b_picked_at_random(ctx.state, ctx.source, ctx.player, &modal) {
             return pick(ctx, work, &modal, &options);
         }
         // Nothing to choose between when no mode may be chosen.

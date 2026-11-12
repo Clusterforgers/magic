@@ -1,20 +1,23 @@
 //! Goal: corpus cards of pack r30-7b play as their rules say at two, three and four seats: Crag Saurian goes to the
 //! controller of the source that dealt it damage; Heartwood Storyteller lets each opponent of the caster of a
 //! noncreature spell draw, and not the caster; Combustion Man destroys the target unless its controller takes damage
-//! equal to his power.
+//! equal to his power; Archfiend of Spite makes the controller of the source that dealt it damage lose that much life
+//! unless they sacrifice that many permanents; Yuna, Grand Summoner puts as many +1/+1 counters as a dying permanent
+//! had of every kind.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
 use common::pid;
+use mtg_cards::value::CounterKind;
 use mtg_engine::choose::{TargetChoice, YesNoChoice};
 use mtg_engine::decision::{DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Event};
-use mtg_testkit::cards::{instant, pinger};
+use mtg_testkit::cards::{free_creature, instant, pinger};
 use mtg_testkit::corpus::corpus;
-use mtg_testkit::{Driver, Scenario, ScriptError, ready};
+use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
 
 /// Answers until the stack is empty and priority is back: targets go to the object named `target`, yes-or-no questions
@@ -119,14 +122,20 @@ fn combustion_man_destroys_unless_its_controller_takes_his_power(
 #[test]
 fn every_card_of_the_pack_is_verified() {
     for name in [
+        "Archfiend of Spite",
         "Archnemesis",
         "Combustion Man",
         "Crag Saurian",
+        "Deathmist Raptor",
+        "Elbrus, the Binding Blade // Withengar Unbound",
         "Heartwood Storyteller",
         "Perrie, the Pulverizer",
+        "Raphael, Tag Team Tough",
         "Rufus Shinra",
         "Silver Surfer, Galactus's Herald",
+        "Typhoid Mary, Fractured",
         "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+        "Yuna, Grand Summoner",
     ] {
         let support = corpus().unwrap().support(name).unwrap();
         assert_eq!(
@@ -135,4 +144,64 @@ fn every_card_of_the_pack_is_verified() {
             "{name}: {support:?}"
         );
     }
+}
+
+fn on_battlefield(driver: &Driver, name: &str) -> bool {
+    driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .any(|id| common::name_of(driver.state(), *id) == name)
+}
+
+#[rstest]
+fn archfiend_of_spite_takes_life_unless_the_source_controller_sacrifices(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] sacrifice: bool,
+) -> Result<(), ScriptError> {
+    let archfiend = corpus().unwrap().card("Archfiend of Spite").unwrap();
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 1, Step::Main1)
+            .battlefield(0, [ready(archfiend)])
+            .battlefield(1, [ready(pinger("Pinger", 0))]),
+    )?;
+    driver.begin_activation("Pinger")?;
+    settle(&mut driver, "Archfiend of Spite", sacrifice)?;
+    assert_eq!(on_battlefield(&driver, "Pinger"), !sacrifice);
+    let life = driver.state().player(pid(1)).unwrap().life();
+    assert_eq!(life, if sacrifice { 20 } else { 19 });
+    Ok(())
+}
+
+#[rstest]
+fn yuna_puts_as_many_counters_as_the_permanent_had(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let yuna = corpus().unwrap().card("Yuna, Grand Summoner").unwrap();
+    let charged = with_counters(
+        ready(free_creature("Charged", 1, 1)),
+        CounterKind::Other("charge".to_owned()),
+        3,
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, [ready(yuna), charged, ready(pinger("Pinger", 0))]),
+    )?;
+    driver.begin_activation("Pinger")?;
+    // The pinger's target is the charged creature; Yuna's trigger then targets the pinger.
+    let charged = driver.target_named("Charged")?;
+    driver.answer(Answer::ChooseTargets(TargetChoice::Targets(vec![charged])))?;
+    settle(&mut driver, "Pinger", true)?;
+    let pinger = driver.id_of("Pinger")?;
+    let counters = driver
+        .state()
+        .object(pinger)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::PlusOnePlusOne);
+    assert_eq!(counters, 3);
+    Ok(())
 }

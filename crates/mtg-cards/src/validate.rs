@@ -1416,6 +1416,11 @@ impl<'a> Walker<'a> {
                 // Damage equal to a stat of an object reads the same whoever pays ("has ~ deal damage to them equal to
                 // his power").
                 CostItem::DamageToYou(amount @ Amount::Stat { .. }) => Some((i, amount)),
+                // "that many" of the event reads the same whoever pays ("unless they sacrifice that many permanents").
+                CostItem::Sacrifice {
+                    count: count @ Amount::Triggering,
+                    ..
+                } => Some((i, count)),
                 _ => None,
             })
             .collect();
@@ -1428,7 +1433,8 @@ impl<'a> Walker<'a> {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
                 | CostItem::ExileFromGraveyard { count, .. }
-                | CostItem::DamageToYou(count) => {
+                | CostItem::DamageToYou(count)
+                | CostItem::Sacrifice { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
@@ -2625,6 +2631,12 @@ impl Walker<'_> {
             | TriggerPattern::BecomesSaddled { .. }
             // The counters put on an object, of any kind.
             | TriggerPattern::CountersPut { counter: None, .. } => true,
+            // The times the source itself dealt combat damage to a player ("for the first time each turn").
+            TriggerPattern::DealsDamage {
+                source,
+                to: Some(Ref::EachPlayer | Ref::Opponents),
+                combat: Some(true),
+            } => source.0 == [Pred::This],
             // Every cycling of the player, whatever the card.
             TriggerPattern::Cycled { what, .. } => what.0.iter().all(|p| *p == Pred::Other),
             // Tokens under the player's control, from no zone.
@@ -2656,7 +2668,7 @@ impl Walker<'_> {
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control, combat damage the source deals to a player and damage dealt to an object from any source or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -4265,6 +4277,7 @@ impl Walker<'_> {
                 modes,
                 repeat,
                 at_random,
+                chosen_if,
                 different_players,
                 once_each_turn,
                 once_ever,
@@ -4293,6 +4306,13 @@ impl Walker<'_> {
                     w.at("all_if", |w| w.condition(condition));
                     if *at_random || *repeat {
                         w.problem("every mode under a condition cannot be a pick at random or repeat");
+                    }
+                }
+                if let Some(condition) = chosen_if {
+                    w.uses("Effect", "Modal.ChosenIf");
+                    w.at("chosen_if", |w| w.condition(condition));
+                    if !*at_random {
+                        w.problem("a choice instead of a pick at random needs a pick at random");
                     }
                 }
             }

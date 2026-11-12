@@ -89,15 +89,21 @@ fn wordings() {
 }
 
 /// The cards of the pack that play whole.
-const WHOLE: [&str; 8] = [
+const WHOLE: [&str; 14] = [
+    "Archfiend of Spite",
     "Archnemesis",
     "Combustion Man",
     "Crag Saurian",
+    "Deathmist Raptor",
+    "Elbrus, the Binding Blade // Withengar Unbound",
     "Heartwood Storyteller",
     "Perrie, the Pulverizer",
+    "Raphael, Tag Team Tough",
     "Rufus Shinra",
     "Silver Surfer, Galactus's Herald",
+    "Typhoid Mary, Fractured",
     "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+    "Yuna, Grand Summoner",
 ];
 
 #[test]
@@ -123,6 +129,10 @@ fn wordings_of(json: &str) -> Vec<String> {
 
 const OPPONENTS_DRAW: &str = r#"{"RepeatEach":{"over":{"PlayersWhere":{"who":"EachPlayer","test":{"Not":{"Among":"Triggering"}}}},"as":"player","effects":[{"May":{"who":{"Bound":"player"},"effects":[{"Draw":{"who":{"Bound":"player"}}}]}}]}}"#;
 const GAINS_CONTROL: &str = r#"{"Continuous":{"affected":"This","mods":[{"SetController":{"ControllerOf":"Dealer"}}],"duration":"Forever"}}"#;
+const YUNA: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"if":{"Compare":{"left":{"AnyCounters":"Triggering"},"op":"Ge","right":1}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"May":{"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"AnyCounters":"Triggering"}}}]}}]}}"#;
+const SPITE: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":[{"ControlledBy":"Opponents"}],"to":"This"}},"effects":[{"Pay":{"who":{"ControllerOf":"Dealer"},"cost":[{"Sacrifice":{"filter":[],"count":"Triggering"}}],"unpaid":[{"LoseLife":{"who":{"ControllerOf":"Dealer"},"amount":"Triggering"}}]}}]}}"#;
+const RAPHAEL: &str = r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"nth":1}},"effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"},"Attacking"]}}},{"AddPhase":{"phases":["Combat"]}}]}}"#;
+const MARY: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Modal":{"at_random":true,"chosen_if":{"Compare":{"left":{"Tallied":{"who":"You","what":"Discarded"}},"op":"Ge","right":1}},"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]}}]}}"#;
 const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"CounterKinds"}}"#;
 
 /// Each wording appears for its exact shape and disappears when one part changes.
@@ -227,6 +237,56 @@ const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"Counte
     "convert ~ at end of combat",
     false
 )]
+#[case::that_number_of_counters(
+    YUNA.to_owned(),
+    "is put into a graveyard from the battlefield, if it had one or more counters on it, you may put that number of +1/+1 counters on target creature.",
+    true
+)]
+#[case::that_number_of_one_kind(
+    YUNA.replace(r#"{"AnyCounters":"Triggering"}}}"#, r#"{"Counters":{"on":"Triggering","counter":"+1/+1"}}}}"#),
+    "that number of +1/+1 counters",
+    false
+)]
+#[case::life_unless_sacrifice(
+    SPITE.to_owned(),
+    "Whenever a source an opponent controls deals damage to ~, that source's controller loses that much life unless they sacrifice that many permanents of their choice.",
+    true
+)]
+#[case::life_unless_sacrifice_one(
+    SPITE.replace(r#""count":"Triggering""#, r#""count":1"#),
+    "unless they sacrifice that many permanents",
+    false
+)]
+#[case::any_source(
+    SPITE.replace(r#"[{"ControlledBy":"Opponents"}]"#, "[]"),
+    "that source's controller loses that much life",
+    false
+)]
+#[case::after_this_combat_phase(
+    RAPHAEL.to_owned(),
+    "untap all attacking creatures. After this combat phase, there is an additional combat phase.",
+    true
+)]
+#[case::after_this_combat_phase_outside_combat(
+    RAPHAEL.replace(r#""combat":true"#, r#""combat":false"#),
+    "After this combat phase",
+    false
+)]
+#[case::chosen_instead(
+    MARY.to_owned(),
+    "choose one at random. If you discarded a card this turn, you choose one instead.",
+    true
+)]
+#[case::chosen_instead_of_two(
+    MARY.replace(r#""left":{"Tallied":{"who":"You","what":"Discarded"}},"op":"Ge","right":1"#, r#""left":{"Tallied":{"who":"You","what":"Discarded"}},"op":"Ge","right":2"#),
+    "If you discarded a card this turn",
+    false
+)]
+#[case::picked_at_random_alone(
+    MARY.replace(r#""chosen_if":{"Compare":{"left":{"Tallied":{"who":"You","what":"Discarded"}},"op":"Ge","right":1}},"#, ""),
+    "instead",
+    false
+)]
 fn a_wording_is_written_for_its_shape_alone(
     #[case] json: String,
     #[case] words: &str,
@@ -238,4 +298,77 @@ fn a_wording_is_written_for_its_shape_alone(
         written,
         "{words:?} in {texts:#?}"
     );
+}
+
+/// A counted cost in an effect runs when its count reads the same for any payer: a stat of an object as damage and the
+/// event's amount as a sacrifice; a count of the payer's own permanents stays out.
+#[rstest]
+#[case::damage_equal_to_power(r#"[{"DamageToYou":{"Stat":{"of":"This","stat":"Power"}}}]"#, true)]
+#[case::sacrifice_that_many(r#"[{"Sacrifice":{"filter":[],"count":"Triggering"}}]"#, true)]
+#[case::sacrifice_as_many_as_you_control(
+    r#"[{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}}]"#,
+    false
+)]
+fn a_counted_cost_another_player_pays_is_counted_in_the_effect(
+    #[case] cost: &str,
+    #[case] counted: bool,
+) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"DealsDamage":{{"source":[],"to":"This"}}}},"effects":[{{"Pay":{{"who":{{"ControllerOf":"Dealer"}},"cost":{cost},"unpaid":[{{"LoseLife":{{"who":{{"ControllerOf":"Dealer"}},"amount":"Triggering"}}}}]}}}}]}}}}"#
+    );
+    let ability: Ability = mtg_cards::load::parse_json("ability", &json).unwrap();
+    let used = mtg_cards::validate::used_primitives(&ability);
+    assert_eq!(
+        used.iter().any(|p| p == "Effect.Pay.Counted"),
+        counted,
+        "{used:?}"
+    );
+}
+
+/// The first time each turn the source deals combat damage to a player is counted; damage of any kind, or by another
+/// source, is not.
+#[rstest]
+#[case::combat_damage_by_this(r#"{"source":["This"],"to":"EachPlayer","combat":true}"#, true)]
+#[case::any_damage_by_this(r#"{"source":["This"],"to":"EachPlayer"}"#, false)]
+#[case::combat_damage_by_a_creature(
+    r#"{"source":[{"Type":"Creature"}],"to":"EachPlayer","combat":true}"#,
+    false
+)]
+#[case::combat_damage_to_you(r#"{"source":["This"],"to":"You","combat":true}"#, false)]
+fn the_first_combat_damage_to_a_player_is_counted(#[case] event: &str, #[case] counted: bool) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"Nth":{{"event":{{"DealsDamage":{event}}},"nth":1}}}},"effects":[{{"Draw":{{}}}}]}}}}"#
+    );
+    let card = format!(
+        r#"{{"oracle_id":"00000000-0000-4000-8000-000000000001","name":"Probe","impl_status":"Full","faces":[{{"name":"Probe","oracle_fingerprint":"","abilities":[{json}]}}]}}"#
+    );
+    let problems = Library::from_sources(&[mtg_cards::load::Source {
+        path: "cards/probe.json".to_owned(),
+        text: card,
+    }])
+    .err()
+    .map(|e| format!("{e:?}"))
+    .unwrap_or_default();
+    assert_eq!(
+        !problems.contains("counted in a turn"),
+        counted,
+        "{problems}"
+    );
+}
+
+/// A choice instead of a pick at random needs the pick at random.
+#[test]
+fn a_choice_instead_needs_a_pick_at_random() {
+    let json = MARY.replace(r#""at_random":true,"#, "");
+    let card = format!(
+        r#"{{"oracle_id":"00000000-0000-4000-8000-000000000002","name":"Probe","impl_status":"Full","faces":[{{"name":"Probe","oracle_fingerprint":"","abilities":[{json}]}}]}}"#
+    );
+    let problems = Library::from_sources(&[mtg_cards::load::Source {
+        path: "cards/probe.json".to_owned(),
+        text: card,
+    }])
+    .err()
+    .map(|e| format!("{e:?}"))
+    .unwrap_or_default();
+    assert!(problems.contains("needs a pick at random"), "{problems}");
 }

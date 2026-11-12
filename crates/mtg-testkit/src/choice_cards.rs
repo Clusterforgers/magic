@@ -114,6 +114,7 @@ pub fn charm(name: &str, min: u32, max: u32, repeat: bool) -> Arc<CardDefinition
             },
             repeat,
             at_random: false,
+            chosen_if: None,
             different_players: false,
             once_each_turn: false,
             once_ever: false,

@@ -119,6 +119,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) modes: &'a [Mode],
     /// The game picks the modes at random.
     pub(crate) at_random: bool,
+    /// The controller chooses instead of the pick at random when this holds as the ability is announced.
+    pub(crate) chosen_if: Option<&'a Condition>,
     /// A player a mode chosen earlier targets is not offered to the later ones.
     pub(crate) different_players: bool,
     /// Which modes this ability chose before are not offered.
@@ -167,6 +169,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 repeat,
                 modes,
                 at_random,
+                chosen_if,
                 different_players,
                 once_each_turn,
                 once_ever,
@@ -180,6 +183,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             repeat: *repeat,
             modes,
             at_random: *at_random,
+            chosen_if: chosen_if.as_ref(),
             different_players: *different_players,
             once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),
@@ -249,6 +253,17 @@ fn announcing(state: &GameState, source: ObjectId, controller: PlayerId) -> Scop
         GameObject::reference,
     );
     Scope::announcing(state, controller, origin)
+}
+
+/// Whether the game picks the modes of `modal` at random: it does unless its condition for a choice holds as the ability
+/// is announced ("If you discarded a card this turn, you choose one instead").
+pub(crate) fn r307b_picked_at_random(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    modal: &Modal<'_>,
+) -> bool {
+    modal.at_random && !all_may_be_chosen(state, source, controller, modal.chosen_if)
 }
 
 /// Whether the condition that lets every mode be chosen holds as the ability is announced ("If you control a commander

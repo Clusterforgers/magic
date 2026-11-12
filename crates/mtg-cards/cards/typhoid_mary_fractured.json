@@ -1,0 +1,46 @@
+{
+  "oracle_id": "867b3923-692c-4444-a071-518a290e43d8",
+  "name": "Typhoid Mary, Fractured",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Typhoid Mary, Fractured",
+      "oracle_fingerprint": "f0e3eab7d95f64d967351189f61b795e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "at_random": true,
+                  "chosen_if": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Discarded" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "label": "Mary",
+                      "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                    },
+                    { "label": "Typhoid Mary", "effects": [{ "Draw": {} }] },
+                    {
+                      "label": "Bloody Mary",
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

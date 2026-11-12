@@ -30,6 +30,8 @@ pub(crate) struct Record {
     pub(crate) other: Option<Target>,
     /// How much: the damage dealt, the counters put; 1 for the rest.
     pub(crate) amount: u32,
+    /// Combat damage, dealt in a combat damage step (CR 510.2).
+    pub(crate) combat: bool,
 }
 
 impl GameState {
@@ -63,6 +65,7 @@ impl GameState {
             .public_object(subject)
             .and_then(|_| crate::snapshot::snapshot(self, subject));
         let subject = self.public_object(subject);
+        let combat = event == TallyEvent::Damaged && crate::replace::in_combat_damage(self);
         self.tallies.records.push(Record {
             event,
             player,
@@ -70,6 +73,7 @@ impl GameState {
             shot,
             other,
             amount,
+            combat,
         });
     }
 

@@ -32,6 +32,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
             who: crate::refs::Ref::You,
             repeat,
             at_random: false,
+            chosen_if: None,
             different_players: false,
             once_each_turn: false,
             once_ever: false,

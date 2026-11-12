@@ -1239,6 +1239,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     who,
                     repeat,
                     at_random: false,
+                    chosen_if: None,
                     different_players: false,
                     once_each_turn: false,
                     once_ever: false,

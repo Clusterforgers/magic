@@ -4,10 +4,12 @@
 //! power ("unless its controller has ~ deal damage to them equal to his power"), "different kinds of counters", an Aura
 //! attached to the player who attacks you, the life drain of an attack on the enchanted player, a creature made to
 //! attack the damaged player each combat until the end of your next turn, and a card from your hand put onto the
-//! battlefield tapped and attacking with a conversion at end of combat if you do.
+//! battlefield tapped and attacking with a conversion at end of combat if you do, counters as many as a permanent that
+//! left had, and life lost unless the damage source's controller sacrifices that many permanents, and "after this combat
+//! phase" in a trigger on combat damage, and modes picked at random unless a condition lets the controller choose.
 
 use super::super::super::selectors::{Form, phrase_text};
-use super::super::super::triggers::article;
+use super::super::super::triggers::{article, condition_text};
 use super::r288_wordings::r288_heads;
 use crate::ability::Ability;
 use crate::cost::{Cost, CostItem};
@@ -15,7 +17,7 @@ use crate::effect::{Destination, Effect};
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
-use crate::value::{Amount, Condition, StatKind};
+use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind, TurnTally};
 use mtg_core::card::CardType;
 
 /// Adds the wordings of the shapes this family writes.
@@ -28,12 +30,56 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(drain_enchanted_player(ability))
         .chain(attacks_that_player(ability))
         .chain(put_attacking_then_convert(ability))
+        .chain(that_number_of_counters(ability))
+        .chain(life_unless_sacrifice(ability))
+        .chain(chosen_instead(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
         }
     }
     different_kinds(texts);
+    after_this_combat_phase(ability, texts);
+}
+
+/// "After this combat phase, there is an additional combat phase." in a trigger on combat damage, which resolves in the
+/// combat phase: "this combat phase" is "this phase".
+fn after_this_combat_phase(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Triggered { when, .. } = ability else {
+        return;
+    };
+    let on_combat_damage = |pattern: &TriggerPattern| {
+        matches!(
+            pattern,
+            TriggerPattern::DealsDamage {
+                combat: Some(true),
+                ..
+            }
+        )
+    };
+    let combat = match when {
+        TriggerPattern::Nth { event, .. } => on_combat_damage(event),
+        pattern => on_combat_damage(pattern),
+    };
+    if !combat {
+        return;
+    }
+    let said = ". After this phase, there is an additional combat phase.";
+    let more: Vec<String> = texts
+        .iter()
+        .filter(|text| text.ends_with(said))
+        .map(|text| {
+            text.replace(
+                said,
+                ". After this combat phase, there is an additional combat phase.",
+            )
+        })
+        .collect();
+    for text in more {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
 }
 
 /// "the number of different kinds of counters": every kind counts once, as "the number of kinds of counters" says.
@@ -404,6 +450,190 @@ fn unless_damage_equal_to_power(ability: &Ability) -> Vec<String> {
         for pronoun in ["its", "his", "her"] {
             texts.push(format!(
                 "{head} destroy target permanent unless its controller has ~ deal damage to them equal to {pronoun} power."
+            ));
+        }
+    }
+    texts
+}
+
+/// "Whenever another permanent you control is put into a graveyard from the battlefield, if it had one or more counters
+/// on it, you may put that number of +1/+1 counters on target creature.": the counters of every kind the permanent had.
+fn that_number_of_counters(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        when:
+            TriggerPattern::ZoneChange {
+                from: Some(ZoneKind::Battlefield),
+                to: Some(ZoneKind::Graveyard),
+                ..
+            },
+        intervening_if:
+            Some(Condition::Compare {
+                left,
+                op: Cmp::Ge,
+                right: Amount::Fixed(1),
+            }),
+        targets,
+        effects,
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let had = Amount::AnyCounters(Ref::Triggering);
+    let put = Effect::May {
+        who: Ref::You,
+        effects: vec![Effect::PutCounters {
+            on: Ref::Target(0),
+            counter: CounterKind::PlusOnePlusOne,
+            count: had.clone(),
+        }],
+    };
+    let creature = Selector(vec![Pred::Type(CardType::Creature)]);
+    let [spec] = targets.as_slice() else {
+        return Vec::new();
+    };
+    if *left != had
+        || *effects != [put]
+        || spec.what != Targetable::Object(creature)
+        || !spec.bounds.is_one()
+        || spec.divide.is_some()
+    {
+        return Vec::new();
+    }
+    let mut texts = Vec::new();
+    for head in r288_heads(ability) {
+        let mut heads = vec![head.clone()];
+        if let Some((subject, rest)) = head.split_once(" permanent you control dies, ") {
+            heads.push(format!(
+                "{subject} permanent you control is put into a graveyard from the battlefield, {rest}"
+            ));
+        }
+        for head in heads {
+            texts.push(format!(
+                "{head} you may put that number of +1/+1 counters on target creature."
+            ));
+        }
+    }
+    texts
+}
+
+/// "Whenever a source an opponent controls deals damage to this creature, that source's controller loses that much life
+/// unless they sacrifice that many permanents of their choice.".
+fn life_unless_sacrifice(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        when:
+            TriggerPattern::DealsDamage {
+                source,
+                to: Some(Ref::This),
+                combat: None,
+            },
+        intervening_if: None,
+        limit: None,
+        targets,
+        effects,
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let whose = match source.0.as_slice() {
+        [Pred::ControlledBy(Ref::Opponents)] => "an opponent controls",
+        [Pred::ControlledBy(Ref::You)] => "you control",
+        _ => return Vec::new(),
+    };
+    let dealer = Ref::ControllerOf(Box::new(Ref::Dealer));
+    let pay = Effect::Pay {
+        who: dealer.clone(),
+        cost: Cost(vec![CostItem::Sacrifice {
+            filter: Selector(Vec::new()),
+            count: Amount::Triggering,
+        }]),
+        times: Amount::Fixed(1),
+        paid: Vec::new(),
+        unpaid: vec![Effect::LoseLife {
+            who: dealer,
+            amount: Amount::Triggering,
+        }],
+    };
+    if !targets.is_empty() || *effects != [pay] {
+        return Vec::new();
+    }
+    vec![format!(
+        "Whenever a source {whose} deals damage to ~, that source's controller loses that much life unless they sacrifice that many permanents of their choice."
+    )]
+}
+
+/// The words of a condition under which the controller chooses the modes instead of a pick at random.
+fn chosen_condition_texts(condition: &Condition) -> Vec<String> {
+    let mut texts = Vec::new();
+    if let Condition::Compare {
+        left:
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::Discarded,
+            },
+        op: Cmp::Ge,
+        right: Amount::Fixed(1),
+    } = condition
+    {
+        texts.push("you discarded a card this turn".to_owned());
+    }
+    if let Some(said) = condition_text(condition)
+        && !texts.contains(&said)
+    {
+        texts.push(said);
+    }
+    texts
+}
+
+/// "Whenever ~ attacks, choose one at random. If you discarded a card this turn, you choose one instead.": the modes of
+/// the twin picked at random, with the condition that lets the controller choose them.
+fn chosen_instead(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        when,
+        intervening_if,
+        limit,
+        from,
+        targets,
+        effects,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [
+        Effect::Modal {
+            at_random: true,
+            chosen_if: Some(condition),
+            ..
+        },
+    ] = effects.as_slice()
+    else {
+        return Vec::new();
+    };
+    let mut plain = effects.clone();
+    if let Some(Effect::Modal { chosen_if, .. }) = plain.first_mut() {
+        *chosen_if = None;
+    }
+    let twin = Ability::Triggered {
+        when: when.clone(),
+        intervening_if: intervening_if.clone(),
+        limit: *limit,
+        from: *from,
+        targets: targets.clone(),
+        effects: plain,
+    };
+    let conditions = chosen_condition_texts(condition);
+    let mut texts = Vec::new();
+    for text in crate::compile::written_variants(&twin) {
+        let Some((head, rest)) = text.split_once(" at random —\n") else {
+            continue;
+        };
+        let Some(count) = head.rsplit_once("choose ").map(|(_, count)| count) else {
+            continue;
+        };
+        for said in &conditions {
+            texts.push(format!(
+                "{head} at random. If {said}, you choose {count} instead.\n{rest}"
             ));
         }
     }
