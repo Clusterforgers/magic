@@ -113,6 +113,14 @@ pub struct Printing {
     pub digital: bool,
     /// Card art.
     pub images: PrintingImages,
+    /// Name of the set, when known.
+    pub set_name: Option<String>,
+    /// Frame edition (`1993`, `1997`, `2003`, `2015`, `future`), when known.
+    pub frame: Option<String>,
+    /// Finishes the printing exists in (`nonfoil`, `foil`, `etched`).
+    pub finishes: Vec<String>,
+    /// Whether the art covers the whole card.
+    pub full_art: bool,
 }
 
 /// A ruling attached to a card.

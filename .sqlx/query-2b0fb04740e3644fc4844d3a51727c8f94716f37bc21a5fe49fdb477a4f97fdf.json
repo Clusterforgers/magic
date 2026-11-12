@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images AS \"images: _\"\n               FROM printings WHERE set_code = lower($1) AND collector_number = $2\n               ORDER BY digital, lang <> 'en', printing_id LIMIT 1",
+  "query": "SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images AS \"images: _\", set_name, frame, finishes, full_art\n               FROM printings WHERE set_code = lower($1) AND collector_number = $2\n               ORDER BY digital, lang <> 'en', printing_id LIMIT 1",
   "describe": {
     "columns": [
       {
@@ -101,6 +101,50 @@
             "name": "images"
           }
         }
+      },
+      {
+        "ordinal": 9,
+        "name": "set_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "set_name"
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "frame",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "frame"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "finishes",
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "finishes"
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "full_art",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "full_art"
+          }
+        }
       }
     ],
     "parameters": {
@@ -118,8 +162,12 @@
       true,
       false,
       false,
+      false,
+      true,
+      true,
+      false,
       false
     ]
   },
-  "hash": "988d0bd921a466d55aafadb6ec1eca905a1b58a096033ad5730a20bcd3ca8a98"
+  "hash": "2b0fb04740e3644fc4844d3a51727c8f94716f37bc21a5fe49fdb477a4f97fdf"
 }
