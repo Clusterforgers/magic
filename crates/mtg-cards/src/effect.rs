@@ -1045,6 +1045,13 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
         up_to: u32,
     },
+    /// "Choose creatures you control one at a time until each creature you control has been chosen. Each of those
+    /// creatures gets +1/+1 until end of turn for each creature chosen before it." (Parade!): the controller orders the
+    /// objects of `what`, and the nth chosen gets +(n-1)/+(n-1) until end of turn.
+    Parade {
+        /// The objects chosen one at a time.
+        what: Selector,
+    },
     /// "Claim the prize" of the Attraction that is the source: its prize abilities trigger (`TriggerPattern::Prize`), as
     /// do the abilities that wait for a player to claim a prize (`TriggerPattern::ClaimedPrize`).
     ClaimPrize {

@@ -671,6 +671,31 @@ pub enum Amount {
         /// Only stickers of this kind.
         kind: Option<crate::ability::StickerKind>,
     },
+    /// The spells the players named have cast this game with the same name as the object with the ability, that object
+    /// included when it was cast ("if ... you've cast another spell named ~ this game": 2 or more).
+    CastSameNameThisGame(Ref),
+    /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
+    /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
+    TallyLastTurn {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
+    /// The stat of the objects of this turn's events of the kind, added up ("the total mana value of other spells you've
+    /// cast this turn"); only the kinds kept as objects.
+    TallyTotal {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+        /// The stat added up.
+        stat: StatKind,
+    },
     /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
     /// number of unique vowels on that sticker"); 0 when it put none.
     StickerVowels,
@@ -891,6 +916,18 @@ enum Tagged {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    CastSameNameThisGame(Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1043,6 +1080,18 @@ enum TaggedRef<'a> {
         kind: Option<crate::ability::StickerKind>,
     },
     StickerVowels,
+    CastSameNameThisGame(&'a Ref),
+    TallyLastTurn {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
+    TallyTotal {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+        stat: StatKind,
+    },
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1143,6 +1192,21 @@ impl From<Tagged> for Amount {
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
+            Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
+            Tagged::TallyLastTurn { event, who, filter } => {
+                Amount::TallyLastTurn { event, who, filter }
+            }
+            Tagged::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            },
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::When {
                 condition,
@@ -1268,6 +1332,27 @@ impl Serialize for Amount {
                 TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
             }
             Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
+            Amount::CastSameNameThisGame(who) => {
+                TaggedRef::CastSameNameThisGame(who).serialize(serializer)
+            }
+            Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
+                event: *event,
+                who,
+                filter,
+            }
+            .serialize(serializer),
+            Amount::TallyTotal {
+                event,
+                who,
+                filter,
+                stat,
+            } => TaggedRef::TallyTotal {
+                event: *event,
+                who,
+                filter,
+                stat: *stat,
+            }
+            .serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::When {
                 condition,

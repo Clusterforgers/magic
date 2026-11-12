@@ -702,6 +702,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::BlockedThisTurnBy(who) => {
+                self.uses("Pred", "BlockedThisTurnBy");
+                self.reference(who, Kind::Object);
+            }
             Pred::BandedWith(who) => {
                 self.uses("Pred", "BandedWith");
                 self.reference(who, Kind::Object);
@@ -836,6 +840,7 @@ impl<'a> Walker<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BlockedThisTurnBy(_)
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
@@ -1161,6 +1166,32 @@ impl<'a> Walker<'a> {
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
+            Amount::CastSameNameThisGame(who) => self.player_amount("CastSameNameThisGame", who),
+            Amount::TallyLastTurn { event, who, filter }
+            | Amount::TallyTotal {
+                event, who, filter, ..
+            } => {
+                let tag = if matches!(amount, Amount::TallyTotal { .. }) {
+                    "TallyTotal"
+                } else {
+                    "TallyLastTurn"
+                };
+                self.uses("Amount", tag);
+                if matches!(
+                    event,
+                    crate::value::TallyEvent::Damaged
+                        | crate::value::TallyEvent::Attacked
+                        | crate::value::TallyEvent::Blocked
+                        | crate::value::TallyEvent::Activated
+                        | crate::value::TallyEvent::KindActivated(_)
+                        | crate::value::TallyEvent::CountersPut
+                        | crate::value::TallyEvent::PlusOneCountersPut
+                ) {
+                    self.problem("only the kinds kept as objects are read last turn or added up");
+                }
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("filter", |w| w.selector(filter));
+            }
             Amount::When {
                 condition,
                 then,
@@ -3527,6 +3558,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::Parade { what } => w.at("what", |w| w.selector(what)),
             Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("on", |w| w.selector(on));

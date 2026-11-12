@@ -322,6 +322,7 @@ const RUNS: &[&str] = &[
     "Effect.OpenAttraction",
     "Effect.RollToVisit",
     "Effect.PutSticker",
+    "Effect.Parade",
     "Effect.ClaimPrize",
     "Trigger.VisitedAttraction",
     "Trigger.Prize",
@@ -685,6 +686,9 @@ const RUNS: &[&str] = &[
     "Amount.TurnNumber",
     "Amount.Stickers",
     "Amount.StickerVowels",
+    "Amount.TallyLastTurn",
+    "Amount.CastSameNameThisGame",
+    "Amount.TallyTotal",
     "Amount.TriggeringTargets",
     "Amount.When",
     "Amount.ManaSpent",
@@ -899,6 +903,7 @@ const RUNS: &[&str] = &[
     "Pred.TopOfGraveyard",
     "Pred.TopCreatureOfGraveyard",
     "Pred.BlockedBy",
+    "Pred.BlockedThisTurnBy",
     "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
@@ -909,6 +914,7 @@ const RUNS: &[&str] = &[
     "Pred.CounterCount",
     "Pred.Suspended",
     "Pred.Kicked",
+    "Pred.AdditionalCostPaid",
 ];
 
 /// The capabilities of this engine.

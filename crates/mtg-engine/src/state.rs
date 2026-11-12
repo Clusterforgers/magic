@@ -333,6 +333,8 @@ pub struct GameState {
     pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
     /// The seat whose turn ended last.
     pub(crate) last_turn_of: Option<PlayerId>,
+    /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
+    pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -961,6 +963,10 @@ impl Hash for GameState {
             day_night.hash(state);
         }
         self.hash_turn_summaries(state);
+        // A game where no spell was cast hashes as it did before the names were counted.
+        if !self.cast_names.is_empty() {
+            self.cast_names.hash(state);
+        }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);
         self.rmt8_upkeeps.hash(state);

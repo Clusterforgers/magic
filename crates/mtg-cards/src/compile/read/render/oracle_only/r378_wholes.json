@@ -520,5 +520,262 @@
    }
   },
   "Whenever enchanted artifact becomes tapped or a player activates an ability of enchanted artifact without {T} in its activation cost, this Aura deals 2 damage to that artifact's controller."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "TallyLastTurn": {
+        "event": "Entered",
+        "who": "You",
+        "filter": [
+         {
+          "Type": "Creature"
+         },
+         "Other"
+        ]
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "At the beginning of each upkeep, if you had another creature enter the battlefield under your control last turn, draw a card."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "to": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "amount": {
+        "TallyTotal": {
+         "event": "SpellCast",
+         "who": "You",
+         "filter": [
+          "Other"
+         ],
+         "stat": "ManaValue"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Call Forth the Tempest deals damage to each creature your opponents control equal to the total mana value of other spells you've cast this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "Target": 0
+       },
+       "as": "wall"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "EndCombat"
+        }
+       },
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Each": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "BlockedThisTurnBy": {
+              "Bound": "wall"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target Wall creature. At this turn's next end of combat, destroy all creatures that were blocked by that creature this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "HasKeywordNamed": "Teamwork"
+       },
+       "AdditionalCostPaid"
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Robot Hero",
+         "types": [
+          "Artifact",
+          "Creature"
+         ],
+         "subtypes": [
+          "Robot",
+          "Hero"
+         ],
+         "power": 1,
+         "toughness": 1,
+         "abilities": [
+          {
+           "Keyword": "Flying"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast a spell using teamwork, create a 1/1 colorless Robot Hero artifact creature token with flying."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Matches": {
+           "subject": "This",
+           "selector": [
+            {
+             "CastFrom": "Hand"
+            }
+           ]
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "CastSameNameThisGame": "You"
+           },
+           "op": "Ge",
+           "right": 2
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "WinGame": {}
+        }
+       ],
+       "otherwise": [
+        {
+         "Move": {
+          "what": "This",
+          "to": {
+           "Library": {
+            "place": {
+             "Below": 6
+            }
+           }
+          }
+         }
+        },
+        {
+         "GainLife": {
+          "amount": 7
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Parade": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Parade! \u2014 At the beginning of combat on your turn, choose creatures you control one at a time until each creature you control has been chosen. Each of those creatures gets +1/+1 until end of turn for each creature chosen before it."
  ]
 ]

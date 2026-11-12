@@ -1,4 +1,4 @@
-//! Whole abilities of the r37-8 pack (sticker kinds, counts and vowels) whose steps the renderers do not join: the ability is matched whole as data and
+//! Whole abilities of the r37-8 pack (stickers, activations without {T}, turn history, teamwork) whose steps the renderers do not join: the ability is matched whole as data and
 //! worded as the card prints it.
 
 use crate::ability::Ability;

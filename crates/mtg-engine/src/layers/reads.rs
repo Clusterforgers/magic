@@ -329,6 +329,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)
+        | Pred::BlockedThisTurnBy(who)
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
@@ -411,6 +412,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TurnNumber
         | Amount::Stickers { .. }
         | Amount::StickerVowels
+        | Amount::TallyLastTurn { .. }
+        | Amount::CastSameNameThisGame(_)
+        | Amount::TallyTotal { .. }
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
