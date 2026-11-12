@@ -397,6 +397,7 @@ fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: Default::default(),
             who: Ref::You,
             what: Ref::Bound("paradigm".to_owned()),
             free: true,
@@ -2612,6 +2613,7 @@ impl Pass<'_> {
                 until: None,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
                     rather: None,
+                    spend_as: Default::default(),
                     who: Ref::You,
                     what: Ref::This,
                     free: true,

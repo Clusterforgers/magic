@@ -86,6 +86,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
             r.need("without paying its mana cost")?;
             Effect::CastFromZone {
                 rather: None,
+                spend_as: Default::default(),
                 who: Ref::You,
                 what: Ref::Bound(FOUND.to_owned()),
                 free: true,
@@ -269,6 +270,7 @@ fn exiled_with_source() -> Ref {
 fn free_cast(what: Ref, play: bool) -> Effect {
     Effect::CastFromZone {
         rather: None,
+        spend_as: Default::default(),
         who: Ref::You,
         what,
         free: true,
@@ -412,7 +414,7 @@ pub fn text(effect: &Effect) -> Option<String> {
                 points_text(count)?
             )
         }
-        Effect::CastFromZone { rather: None,
+        Effect::CastFromZone { rather: None, spend_as: crate::modify::SpendAs::Normal,
             who: Ref::You,
             what: Ref::Bound(name),
             free: true,
@@ -472,6 +474,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: Default::default(),
             who: Ref::You,
             what: Ref::Bound(FROM_HAND.to_owned()),
             free: true,

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "ef7fce1b-0d95-4f92-a8ad-09d9756fa0e4",
+  "name": "The Curse of Fenric",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Curse of Fenric",
+      "oracle_fingerprint": "f7f7fad241719c7f3b3024a689389393",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "EachPlayer", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "destroyed" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Mutant",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Mutant"],
+                                  "power": 3,
+                                  "toughness": 3,
+                                  "abilities": [{ "Keyword": "Deathtouch" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 278, "end": 385 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 386, "end": 450 }
+          }
+        }
+      ]
+    }
+  ]
+}

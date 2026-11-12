@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::TokenSpec;
 use crate::cost::Cost;
-use crate::modify::{CastPermission, Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification, SpendAs};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -1284,6 +1284,9 @@ pub enum Effect {
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
+        /// Which mana may pay for the spell: "mana of any type can be spent to cast that spell" (CR 609.4b).
+        #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+        spend_as: SpendAs,
         /// The name the spell cast is bound to, as the object it is on the stack ("that spell"); nothing is bound when the
         /// card is not cast or is played as a land.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
@@ -1935,6 +1938,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: Default::default(),
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,

@@ -917,7 +917,12 @@ fn granted_before_required(
         .map(|cost| Way {
             alternative: None,
             label: format!("Cast for {cost}"),
-            mana: None,
+            // Mana of any type or colour may pay it (CR 609.4b): the colours of the cost need no mana of their own.
+            mana: match granted.spend_as {
+                SpendAs::AnyType => Some(cost.paid_by_any_mana()),
+                SpendAs::AnyColor => Some(cost.paid_by_any_color()),
+                SpendAs::Normal => None,
+            },
             instant: true,
             variant: 0,
             parts: Vec::new(),

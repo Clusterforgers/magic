@@ -45,6 +45,7 @@ impl KeywordRules for Madness {
                 targets: Vec::new(),
                 effects: vec![Effect::CastFromZone {
                     rather: None,
+                    spend_as: Default::default(),
                     who: Ref::You,
                     what: Ref::This,
                     free: false,
