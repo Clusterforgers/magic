@@ -135,6 +135,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if (typeof modification === 'string') {
     return {
       LoseAbilities: `${loses} all abilities`,
+      LoseAbilitiesExceptMana: `${loses} all abilities except mana abilities`,
       SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
       CantAttack: "can't attack",
       CantBlock: "can't block",
@@ -298,6 +299,10 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
   let what: string
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
+  else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
+  else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if ('AttackAsThoughHasteAt' in rule)
+    what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
   else if ('MustAttackPlayers' in rule)
     what = rule.MustAttackPlayers.map(
