@@ -110,6 +110,8 @@ fn file_of(name: &str) -> String {
 #[case::kumano("Kumano Faces Kakkazan // Etching of Kumano")]
 #[case::harsh_judgment("Harsh Judgment")]
 #[case::nefarious_lich("Nefarious Lich")]
+#[case::pir("Pir, Imaginative Rascal")]
+#[case::toothy("Toothy, Imaginary Friend")]
 fn the_pack_cards_read_back_whole(#[case] name: &str) {
     let report = report_of(name, &file_of(name));
     assert_eq!(
@@ -175,6 +177,7 @@ fn the_pack_cards_read_back_whole(#[case] name: &str) {
     r#""Draw": { "count""#,
     r#""Draw": { "who": "Opponents", "count""#
 )]
+#[case::pir_plus_two("Pir, Imaginative Rascal", r#""Add": 1"#, r#""Add": 2"#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let text = file_of(name);
     assert!(text.contains(from), "{name} holds {from}");
