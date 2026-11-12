@@ -1,0 +1,165 @@
+Baron Helmut Zemo	activated: Boast — Exile any number of black cards from your graveyard with fifteen or more black mana symbols among their mana costs: Copy those exiled cards. You may cast up to N of the copies without paying their mana costs.	partial
+Zygon Infiltrator	activated: Body-print — {M}: Tap another target creature and put a stun counter on it. This creature becomes a copy of that creature for as long as that creature remains tapped. Activate only as a sorcery.	manual
+Kylox's Voltstrider	activated: Collect evidence N: This Vehicle becomes an artifact creature until end of turn.	partial
+Shifting Woodland	activated: Delirium — {M}: This land becomes a copy of target permanent card in your graveyard until end of turn. Activate only if there are N or more card types among cards in your graveyard.	partial
+Kozilek, the Great Distortion	activated: Discard a card with mana value X: Counter target spell with mana value X.	partial
+Lightning Storm	activated: Discard a land card: Put N charge counters on ~. You may choose a new target for it. Any player may activate this ability but only if ~ is on the stack.	partial
+Plague Reaver	activated: Discard N cards, Sacrifice this creature: Choose target opponent. Return this creature to the battlefield under that player's control at the beginning of their next upkeep.	manual
+Sphinx of the Chimes	activated: Discard N nonland cards with the same name: Draw N cards.	partial
+Titans' Nest	activated: Exile a card from your graveyard: Add {M}. Spend this mana only to cast a spell that's N or more colors without {M} in its mana cost.	partial
+Back from the Brink	activated: Exile a creature card from your graveyard and pay its mana cost: Create a token that's a copy of that card. Activate only as a sorcery.	manual
+Food Chain	activated: Exile a creature you control: Add X mana of any N color, where X is N plus the exiled creature's mana value. Spend this mana only to cast creature spells.	manual
+Primordial Mist	activated: Exile a face-down permanent you control face up: You may play that card this turn.	partial
+Nivmagus Elemental	activated: Exile an instant or sorcery spell you control: Put N +N/+N counters on this creature.	manual
+The Capitoline Triad	activated: Exile any number of historic cards from your graveyard with total mana value N or greater: You get an emblem with "Creatures you control have base power and toughness N/N."	partial
+Elvish Spirit Guide	activated: Exile this card from your hand: Add {M}.	manual
+Simian Spirit Guide	activated: Exile this card from your hand: Add {M}.	manual
+Blitzball Stadium	activated: Go for the Goal! — {M}, {T}: Until end of turn, target creature gains "Whenever this creature deals combat damage to a player, draw a card for each kind of counter on it" and it can't be blocked this turn.	manual
+Strax, Sontaran Nurse	activated: Grenades! — {M}, {T}, Sacrifice an artifact: Choose a player at random. When you do, ~ fights another target creature that player controls.	partial
+Foraging Wickermaw	activated: {M}: Add N mana of any color. This creature becomes that color until end of turn. Activate only once each turn.	partial
+Baaallerina	activated: {M}: Another target creature with a name sticker on it gains flying until end of turn.	partial
+Proficient Pyrodancer	activated: {M}: Another target creature with an art sticker on it gets +N/+N and gains menace until end of turn.	manual
+Kitsune Mystic // Autumn-Tail, Kitsune Sage	activated: {M}: Attach target Aura attached to a creature to another creature.	manual
+Urza's Engine	activated: {M}: Attacking creatures banded with this creature gain trample until end of turn.	partial
+Mimeoplasm, Revered One	activated: {M}: ~ becomes a copy of target creature card exiled with it, except it's N/N and has this ability.	manual
+Spawnsire of Ulamog	activated: {M}: Cast any number of Eldrazi spells from among cards you own outside the game without paying their mana costs.	partial
+Volatile Chimera	activated: {M}: Choose a card at random you exiled with cards named ~. This creature becomes a copy of that card, except it has this ability.	manual
+Valki, God of Lies // Tibalt, Cosmic Impostor	activated: {M}: Choose a creature card exiled with ~ with mana value X. ~ becomes a copy of that card.	partial
+Pyramids	activated: {M}: Choose N — | • Destroy target Aura attached to a land. | • The next time target land would be destroyed this turn, remove all damage marked on it instead.	manual
+Tenth District Hero	activated: {M}, Collect evidence N: If this creature is a Detective, it becomes a legendary creature named Mileva, the Stalwart, it has base power and toughness N/N, and it gains "Other creatures you control have indestructible."	partial
+Thrull Wizard	activated: {M}: Counter target black spell unless that spell's controller pays {M} or {M}.	manual
+Master of the Hunt	activated: {M}: Create a N/N green Wolf creature token named Wolves of the Hunt. It has "bands with other creatures named Wolves of the Hunt."	manual
+Brutal Hordechief	activated: {M}: Creatures your opponents control block this turn if able, and you choose how those creatures block.	partial
+Wall of Vipers	activated: {M}: Destroy this creature and target creature it's blocking. Any player may activate this ability.	partial
+Stormscale Anarch	activated: {M}, Discard a card at random: This creature deals N damage to any target. If the discarded card was multicolored, this creature deals N damage instead.	manual
+Pyromancy	activated: {M}, Discard a card at random: This enchantment deals damage to any target equal to the mana value of the discarded card.	manual
+Nature's Blessing	activated: {M}, Discard a card: Put a +N/+N counter on target creature or that creature gains banding, first strike, or trample.	manual
+Ormos, Archive Keeper	activated: {M}, Discard N cards with different names: Draw N cards.	partial
+Kogla and Yidaro	activated: {M}, Discard this card: Destroy up to N target artifact or enchantment. Shuffle this card into your library from your graveyard, then draw a card.	partial
+Gix, Yawgmoth Praetor	activated: {M}, Discard X cards: Exile the top X cards of target opponent's library. You may play lands and cast spells from among cards exiled this way without paying their mana costs.	manual
+Genju of the Realm	activated: {M}: Enchanted land becomes a legendary N/N Spirit creature with trample until end of turn. It's still a land.	partial
+Curie, Emergent Intelligence	activated: {M}, Exile another nontoken artifact creature you control: ~ becomes a copy of the exiled creature, except it has "Whenever this creature deals combat damage to a player, draw cards equal to its base power."	manual
+Flickerform	activated: {M}: Exile enchanted creature and all Auras attached to it. At the beginning of the next end step, return that card to the battlefield under its owner's control. If you do, return the other cards exiled this way to the battlefield under their owners' control attached to that creature.	partial
+Night Soil	activated: {M}, Exile N creature cards from a single graveyard: Create a N/N green Saproling creature token.	manual
+Venom, Deadly Devourer	activated: {M}: Exile target creature card from a graveyard. When you do, put X +N/+N counters on target Symbiote, where X is the exiled card's toughness.	partial
+Urabrask // The Great Work	activated: {M}: Exile ~, then return it to the battlefield transformed under its owner's control. Activate only as a sorcery and only if you've cast N or more instant and/or sorcery spells this turn.	partial
+Fire Lord Ozai	activated: {M}: Exile the top card of each opponent's library. Until end of turn, you may play N of those cards without paying its mana cost.	manual
+Fires of Mount Doom	activated: {M}: Exile the top card of your library. You may play that card this turn. When you play a card this way, ~ deals N damage to each player.	partial
+Mechtitan Core	activated: {M}, Exile this Vehicle and N other artifact creatures and/or Vehicles you control: Create Mechtitan, a legendary N/N Construct artifact creature token with flying, vigilance, trample, lifelink, and haste that's all colors. When that token leaves the battlefield, return all cards exiled with this Vehicle except this card to the battlefield tapped under their owners' control.	partial
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	activated: {M}, Exile X creature cards from your graveyard: Transform ~. X can't be N. Activate only as a sorcery.	partial
+Frodo, Sauron's Bane	activated: {M}: If ~ is a Scout, it becomes a Halfling Rogue with "Whenever this creature deals combat damage to a player, that player loses the game if the Ring has tempted you N or more times this game. Otherwise, the Ring tempts you."	partial
+Quicksilver Dragon	activated: {M}: If target spell has only N target and that target is this creature, change that spell's target to another creature.	partial
+Urza, Lord Protector	activated: {M}: If you both own and control ~ and an artifact named The Mightstone and Weakstone, exile them, then meld them into ~, Planeswalker. Activate only as a sorcery.	partial
+Aven Soulgazer	activated: {M}: Look at target face-down creature.	partial
+Smoke Teller	activated: {M}: Look at target face-down creature.	manual
+Kenessos, Priest of Thassa	activated: {M}: Look at the top card of your library. If it's a Kraken, Leviathan, Octopus, or Serpent creature card, you may put it onto the battlefield. If you don't put the card onto the battlefield, you may put it on the bottom of your library.	manual
+Magar of the Magic Strings	activated: {M}: Note the name of target instant or sorcery card in your graveyard and put it onto the battlefield face down. It's a N/N creature with "Whenever this creature deals combat damage to a player, you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost" and "If this creature would leave the battlefield, exile it instead of putting it anywhere else."	manual
+Protective Sphere	activated: {M}, Pay N life: Prevent all damage that would be dealt to you this turn by a source of your choice that shares a color with the mana spent on this activation cost.	manual
+Vengeful Archon	activated: {M}: Prevent the next X damage that would be dealt to you this turn. If damage is prevented this way, this creature deals that much damage to target player or planeswalker.	partial
+Capricopian	activated: {M}: Put a +N/+N counter on this creature, then you may reselect which player this creature is attacking. Only the player this creature is attacking may activate this ability and only during the declare attackers step.	partial
+Chromatic Armor	activated: {M}: Put a sleight counter on this Aura and choose a color. X is the number of sleight counters on this Aura.	partial
+Vikya, Scorching Stalwart	activated: {M}, {Q}, Discard a card: ~ deals damage equal to its power to any target. If excess damage was dealt to a creature this way, draw a card.	partial
+Arcee, Sharpshooter // Arcee, Acrobatic Coupe	activated: {M}, Remove N or more +N/+N counters from ~: It deals that much damage to target creature. Convert ~.	partial
+Asmodeus the Archfiend	activated: {M}: Return all cards exiled with ~ to their owner's hand and you lose that much life.	partial
+Scampire	activated: {M}: Return target creature card with a sticker on it from your graveyard to the battlefield. That creature gains haste. Exile it at the beginning of the next end step. Activate only as a sorcery.	manual
+Mister Immortal	activated: {M}: Return this card from your graveyard or from exile to the battlefield tapped.	manual
+Ashen Ghoul	activated: {M}: Return this card from your graveyard to the battlefield. Activate only during your upkeep and only if N or more creature cards are above this card.	partial
+Grinning Ignus	activated: {M}, Return this creature to its owner's hand: Add {M}. Activate only as a sorcery.	manual
+Hauntwoods Shrieker	activated: {M}: Reveal target face-down permanent. If it's a creature card, you may turn it face up.	partial
+Clay Golem	activated: {M}, Roll a dN: Monstrosity X, where X is the result.	partial
+Zack Fair	activated: {M}, Sacrifice ~: Target creature you control gains indestructible until end of turn. Put ~'s counters on that creature and attach an Equipment that was attached to ~ to that creature.	partial
+Gauntlets of Chaos	activated: {M}, Sacrifice this artifact: Exchange control of target artifact, creature, or land you control and target permanent an opponent controls that shares N of those types with it. If those permanents are exchanged this way, destroy all Auras attached to them.	manual
+Ouphe Vandals	activated: {M}, Sacrifice this creature: Counter target activated ability from an artifact source and destroy that artifact if it's on the battlefield.	manual
+Whirlpool Warrior	activated: {M}, Sacrifice this creature: Each player shuffles the cards from their hand into their library, then draws that many cards.	manual
+Theorist's Proxy	activated: {M}, Sacrifice this creature: The next spell you cast this turn can't be countered.	partial
+Grimoire Thief	activated: {M}, Sacrifice this creature: Turn all cards exiled with this creature face up. Counter all spells with those names.	manual
+Scion of the Ur-Dragon	activated: {M}: Search your library for a Dragon permanent card and put it into your graveyard. If you do, ~ becomes a copy of that card until end of turn. Then shuffle.	partial
+Opal Palace	activated: {M}, {T}: Add N mana of any color in your commander's color identity. If you spend this mana to cast your commander, it enters with a number of additional +N/+N counters on it equal to the number of times it's been cast from the command zone this game.	partial
+Study Hall	activated: {M}, {T}: Add N mana of any color. When you spend this mana to cast your commander, scry X, where X is the number of times it's been cast from the command zone this game.	partial
+Forsworn Paladin	activated: {M}: Target creature gets +N/+N until end of turn. If mana from a Treasure was spent to activate this ability, that creature also gains deathtouch until end of turn.	partial
+Lineprancers	activated: {M}: Target creature you don't control blocks target creature you control with a power and toughness sticker on it other than ~ this turn if able.	manual
+Crown of Doom	activated: {M}: Target player other than this artifact's owner gains control of it. Activate only during your turn.	partial
+Reflecting Mirror	activated: {M}, {T}: Change the target of target spell with a single target if that target is you. The new target must be a player. X is twice the mana value of that spell.	manual
+Atalya, Samite Master	activated: {M}, {T}: Choose N — | • Prevent the next X damage that would be dealt to target creature this turn. Spend only white mana on X. | • You gain X life. Spend only white mana on X.	manual
+Yenna, Redtooth Regent	activated: {M}, {T}: Choose target enchantment you control that doesn't have the same name as another permanent you control. Create a token that's a copy of it, except it isn't legendary. If the token is an Aura, untap ~, then scry N. Activate only as a sorcery.	manual
+Elite Arcanist	activated: {M}, {T}: Copy the exiled card. You may cast the copy without paying its mana cost. X is the mana value of the exiled card.	manual
+Volrath's Laboratory	activated: {M}, {T}: Create a N/N creature token of the chosen color and type.	manual
+Churning Reservoir	activated: {M}, {T}: Create a N/N red Phyrexian Goblin creature token. Activate only if an oil counter was removed from a permanent you controlled this turn or a permanent with an oil counter on it was put into a graveyard this turn.	partial
+Phyrexian Processor	activated: {M}, {T}: Create an X/X black Phyrexian Minion creature token, where X is the life paid as this artifact entered.	manual
+Riptide Replicator	activated: {M}, {T}: Create an X/X creature token of the chosen color and type, where X is the number of charge counters on this artifact.	partial
+Caller of the Untamed	activated: {M}, {T}: Create a token that's a copy of a card you exiled with cards named ~. X is the mana value of that card.	manual
+The Jolly Balloon Man	activated: {M}, {T}: Create a token that's a copy of another target creature you control, except it's a N/N red Balloon creature in addition to its other colors and types and it has flying and haste. Sacrifice it at the beginning of the next end step. Activate only as a sorcery.	partial
+Harvest Mage	activated: {M}, {T}, Discard a card: Until end of turn, if you tap a land for mana, it produces N mana of a color of your choice instead of any other type and amount.	manual
+Jandor's Ring	activated: {M}, {T}, Discard the last card you drew this turn: Draw a card.	manual
+Doubling Cube	activated: {M}, {T}: Double the amount of each type of unspent mana you have.	manual
+Chromatic Orrery	activated: {M}, {T}: Draw a card for each color among permanents you control.	partial
+Volo, Itinerant Scholar	activated: {M}, {T}: Draw a card for each creature type noted for target permanent you control named ~'s Journal.	partial
+Heirloom Epic	activated: {M}, {T}: Draw a card. For each mana in this ability's activation cost, you may tap an untapped creature you control rather than pay that mana. Activate only as a sorcery.	manual
+Pendant of Prosperity	activated: {M}, {T}: Draw a card, then you may put a land card from your hand onto the battlefield. This artifact's owner draws a card, then that player may put a land card from their hand onto the battlefield.	partial
+Hithlain Rope	activated: {M}, {T}: Draw a card. The player to your right gains control of this artifact.	manual
+Throne of Eldraine	activated: {M}, {T}: Draw N cards. Spend only mana of the chosen color to activate this ability.	partial
+Golgothian Sylex	activated: {M}, {T}: Each nontoken permanent with a name originally printed in the Antiquities expansion is sacrificed by its controller.	manual
+Theorist's Sanctum	activated: {M}, {T}: Empower Jace N.	manual
+Synthesis Pod	activated: {M}, {T}, Exile a spell you control: Target opponent reveals cards from the top of their library until they reveal a card with mana value equal to N plus the exiled spell's mana value. Exile that card, then that player shuffles. You may cast that exiled card without paying its mana cost.	manual
+Sunken Palace	activated: {M}, {T}, Exile N cards from your graveyard: Add {M}. When you spend this mana to cast a spell or activate an ability, copy that spell or ability. You may choose new targets for the copy.	partial
+Fabrication Foundry	activated: {M}, {T}, Exile N or more other artifacts you control with total mana value X: Return target artifact card with mana value X or less from your graveyard to the battlefield. Activate only as a sorcery.	partial
+Pestilent Cauldron // Restorative Burst	activated: {M}, {T}: Exile N target cards from a single graveyard. Draw a card.	partial
+Tawnos's Coffin	activated: {M}, {T}: Exile target creature and all Auras attached to it. Note the number and kind of counters that were on that creature. When this artifact leaves the battlefield or becomes untapped, return that exiled card to the battlefield under its owner's control tapped with the noted number and kind of counters on it. If you do, return the other exiled cards to the battlefield under their owner's control attached to that permanent.	partial
+Myra the Magnificent	activated: {M}, {T}: Exile target instant or sorcery card with mana value X from your graveyard and choose an Attraction you control that doesn't have a midway counter on it. Put a midway counter on it. For as long as that Attraction is on the battlefield, whenever you visit it, copy the exiled card. You may cast the copy without paying its mana cost.	partial
+Niko, Light of Hope	activated: {M}, {T}: Exile target nonlegendary creature you control. Shards you control become copies of it until the next end step. Return it to the battlefield under its owner's control at the beginning of the next end step.	manual
+Crooked Scales	activated: {M}, {T}: Flip a coin. If you win the flip, destroy target creature an opponent controls. If you lose the flip, destroy target creature you control unless you pay {M} and repeat this process.	manual
+The Chain Veil	activated: {M}, {T}: For each planeswalker you control, you may activate N of its loyalty abilities once this turn as though none of its loyalty abilities have been activated this turn.	manual
+North Star	activated: {M}, {T}: For N spell this turn, you may spend mana as though it were mana of any type to pay that spell's mana cost.	manual
+Personal Incarnation	activated: {M}: The next N damage that would be dealt to this creature this turn is dealt to its owner instead. Only this creature's owner may activate this ability.	manual
+Forcefield	activated: {M}: The next time an unblocked creature of your choice would deal combat damage to you this turn, prevent all but N of that damage.	manual
+Soulfire Grand Master	activated: {M}: The next time you cast an instant or sorcery spell from your hand this turn, put that card into your hand instead of into your graveyard as it resolves.	partial
+Mangara's Tome	activated: {M}: The next time you would draw a card this turn, instead put the top card of the exiled pile into its owner's hand.	manual
+Words of War	activated: {M}: The next time you would draw a card this turn, this enchantment deals N damage to any target instead.	manual
+Clergy of the Holy Nimbus	activated: {M}: This creature can't be regenerated this turn. Only your opponents may activate this ability.	manual
+Quicksilver Elemental	activated: {M}: This creature gains all activated abilities of target creature until end of turn.	manual
+Urza's Avenger	activated: {M}: This creature gets -N/-N and gains your choice of banding, flying, first strike, or trample until end of turn.	manual
+_____ _____ _____ Trespasser	activated: {M}: This creature gets +N/+N until end of turn for each name sticker on it. It can't be blocked this turn.	manual
+Paragon of Modernity	activated: {M}: This creature gets +N/+N until end of turn. If exactly N colors of mana were spent to activate this ability, put a +N/+N counter on it instead.	partial
+Jetmir's Fixer	activated: {M}: This creature gets +N/+N until end of turn. If mana from a Treasure was spent to activate this ability, put a +N/+N counter on this creature instead.	manual
+Nalathni Dragon	activated: {M}: This creature gets +N/+N until end of turn. If this ability has been activated N or more times this turn, sacrifice this creature at the beginning of the next end step.	partial
+Withering Wisps	activated: {M}: This enchantment deals N damage to each creature and each player. Activate no more times each turn than the number of snow Swamps you control.	partial
+Taii Wakeen, Perfect Shot	activated: {M}, {T}: If a source you control would deal noncombat damage to a permanent or player this turn, it deals that much damage plus X instead.	manual
+Hanweir Battlements	activated: {M}, {T}: If you both own and control this land and a creature named Hanweir Garrison, exile them, then meld them into Hanweir, the Writhing Township.	partial
+Scrying Sheets	activated: {M}, {T}: Look at the top card of your library. If that card is snow, you may reveal it and put it into your hand.	partial
+Orcish Librarian	activated: {M}, {T}: Look at the top N cards of your library. Exile N of them at random, then put the rest on top of your library in any order.	manual
+Tazri, Stalwart Survivor	activated: {M}, {T}: Mill N cards. Put all creature cards with activated abilities that aren't mana abilities from among the milled cards into your hand.	manual
+Goldberry, River-Daughter	activated: {M}, {T}: Move N or more counters from ~ onto another target permanent you control. If you do, draw a card.	manual
+Blaster, Combat DJ // Blaster, Morale Booster	activated: {M}, {T}: Move X +N/+N counters from ~ onto another target artifact. That artifact gains haste until end of turn. If ~ has no +N/+N counters on it, convert it. Activate only as a sorcery.	partial
+Pearl Shard	activated: {M}, {T} or {M}, {T}: Prevent the next N damage that would be dealt to any target this turn.	manual
+Skeleton Shard	activated: {M}, {T} or {M}, {T}: Return target artifact creature card from your graveyard to your hand.	manual
+Crystal Shard	activated: {M}, {T} or {M}, {T}: Return target creature to its owner's hand unless its controller pays {M}.	manual
+Heartwood Shard	activated: {M}, {T} or {M}, {T}: Target creature gains trample until end of turn.	manual
+Granite Shard	activated: {M}, {T} or {M}, {T}: This artifact deals N damage to any target.	manual
+Tam, the Possibility	activated: {M}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control.	partial
+Jeweled Amulet	activated: {M}, {T}: Put a charge counter on this artifact. Note the type of mana spent to pay this activation cost. Activate only if there are no charge counters on this artifact.	manual
+Cyclopean Tomb	activated: {M}, {T}: Put a mire counter on target non-Swamp land. That land is a Swamp for as long as it has a mire counter on it. Activate only during your upkeep.	manual
+Sword-Swallowing Seraph	activated: {M}, {T}: Put a +N/+N counter on another target creature with a name sticker on it. Activate only as a sorcery.	partial
+Clockwork Avian	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Beast	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Steed	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Swarm	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Marshland Bloodcaster	activated: {M}, {T}: Rather than pay the mana cost of the next spell you cast this turn, you may pay life equal to that spell's mana value.	partial
+Rhys, the Evermore	activated: {M}, {T}: Remove any number of counters from target creature you control. Activate only as a sorcery.	partial
+Plargg, Dean of Chaos // Augusta, Dean of Order	activated: {M}, {T}: Reveal cards from the top of your library until you reveal a nonlegendary, nonland card with mana value N or less. You may cast that card without paying its mana cost. Put all revealed cards not cast this way on the bottom of your library in a random order.	partial
+Illuminated Folio	activated: {M}, {T}, Reveal N cards from your hand that share a color: Draw a card.	manual
+Bucknard's Everfull Purse	activated: {M}, {T}: Roll a dN and create a number of Treasure tokens equal to the result. The player to your right gains control of this artifact.	manual
+Mr. House, President and CEO	activated: {M}, {T}: Roll a N-sided die plus an additional N-sided die for each mana from Treasures spent to activate this ability.	manual
+Luck Bobblehead	activated: {M}, {T}: Roll X N-sided dice, where X is the number of Bobbleheads you control. Create a tapped Treasure token for each even result. If you rolled N exactly N times, you win the game.	partial
+Helm of Possession	activated: {M}, {T}, Sacrifice a creature: Gain control of target creature for as long as you control this artifact and this artifact remains tapped.	partial
+Tomb of Urami	activated: {M}, {T}, Sacrifice all lands you control: Create Urami, a legendary N/N black Demon Spirit creature token with flying.	manual
+Bullseye, Death Dealer	activated: {M}, {T}, Sacrifice an artifact or discard a nonland card: ~ deals N damage to any target.	manual
+Smelting Vat	activated: {M}, {T}, Sacrifice another artifact: Reveal the top N cards of your library. Put up to N noncreature artifact cards with total mana value less than or equal to the sacrificed artifact's mana value from among them onto the battlefield and the rest on the bottom of your library in a random order.	manual
+Behemoth's Herald	activated: {M}, {T}, Sacrifice a red creature, a green creature, and a white creature: Search your library for a card named Godsire, put it onto the battlefield, then shuffle.	manual
+Quintorius, Loremaster	activated: {M}, {T}, Sacrifice a Spirit: Choose target card exiled with ~. You may cast that card this turn without paying its mana cost. If that spell would be put into a graveyard, put it on the bottom of its owner's library instead.	partial
+Sphinx's Herald	activated: {M}, {T}, Sacrifice a white creature, a blue creature, and a black creature: Search your library for a card named Sphinx Sovereign, put it onto the battlefield, then shuffle.	manual
+Transmutation Font	activated: {M}, {T}, Sacrifice N artifact tokens with different names: Search your library for an artifact card, put it onto the battlefield, then shuffle. Activate only as a sorcery.	partial
+Apocalypse Chime	activated: {M}, {T}, Sacrifice this artifact: Destroy all nontoken permanents with a name originally printed in the Homelands expansion. They can't be regenerated.	manual
+Moonsilver Key	activated: {M}, {T}, Sacrifice this artifact: Search your library for an artifact card with a mana ability or a basic land card, reveal it, put it into your hand, then shuffle.	manual
+Rod of Absorption	activated: {M}, {T}, Sacrifice this artifact: You may cast any number of spells from among cards exiled with this artifact with total mana value X or less without paying their mana costs.	manual
+Heart-Shaped Herb	activated: {M}, {T}, Sacrifice this artifact: You may sacrifice a creature. If you do, return that card to the battlefield under its owner's control with N +N/+N counters on it and you become the monarch.	partial
+Magus of the Balance	activated: {M}, {T}, Sacrifice this creature: Each player chooses a number of lands they control equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players discard cards and sacrifice creatures the same way.	manual

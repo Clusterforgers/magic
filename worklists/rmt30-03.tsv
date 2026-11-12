@@ -1,0 +1,182 @@
+Sacred Boon	spell: Prevent the next N damage that would be dealt to target creature this turn. At the beginning of the next end step, put a +N/+N counter on that creature for each N damage prevented this way.	manual
+Guardian Angel	spell: Prevent the next X damage that would be dealt to any target this turn. Until end of turn, you may pay {M} any time you could cast an instant. If you do, prevent the next N damage that would be dealt to that permanent or player this turn.	manual
+Acolyte's Reward	spell: Prevent the next X damage that would be dealt to target creature this turn, where X is your devotion to white. If damage is prevented this way, ~ deals that much damage to any target.	manual
+Divine Deflection	spell: Prevent the next X damage that would be dealt to you and/or permanents you control this turn. If damage is prevented this way, ~ deals that much damage to any target.	manual
+Ripples of Potential	spell: Proliferate, then choose any number of permanents you control that had a counter put on them this way. Those permanents phase out.	manual
+Fight for the Throne	spell: Put a +N/+N counter on target creature you control. Then it fights target creature an opponent controls. When the creature an opponent controls dies this turn, if you control your commander, you become the monarch.	manual
+Awakening of Vitu-Ghazi	spell: Put N +N/+N counters on target land you control. It becomes a legendary N/N Elemental creature with haste named Vitu-Ghazi. It's still a land.	manual
+Glyph of Delusion	spell: Put X glyph counters on target creature that target Wall blocked this turn, where X is the power of that blocked creature. The creature gains "This creature doesn't untap during your untap step if it has a glyph counter on it" and "At the beginning of your upkeep, remove a glyph counter from this creature."	manual
+Reverse the Sands	spell: Redistribute any number of players' life totals.	manual
+Illusionist's Gambit	spell: Remove all attacking creatures from combat and untap them. After this phase, there is an additional combat phase. Each of those creatures attacks that combat if able. They can't attack you or planeswalkers you control that combat.	manual
+Eventide's Shadow	spell: Remove any number of counters from among permanents on the battlefield. You draw cards and lose life equal to the number of counters removed this way.	manual
+False Orders	spell: Remove target creature defending player controls from combat. Creatures it was blocking that had become blocked by only that creature this combat become unblocked. You may have it block an attacking creature of your choice.	partial
+Fossil Find	spell: Return a card at random from your graveyard to your hand, then reorder your graveyard as you choose.	manual
+Retether	spell: Return each Aura card from your graveyard to the battlefield. Only creatures can be enchanted this way.	manual
+Abuelo's Awakening	spell: Return target artifact or non-Aura enchantment card from your graveyard to the battlefield with X additional +N/+N counters on it. It's a N/N Spirit creature with flying in addition to its other types.	manual
+Heroic Return	spell: Return target creature card from your graveyard to the battlefield. If a Hero enters this way, it enters with N additional +N/+N counters on it.	partial
+Back for More	spell: Return target creature card from your graveyard to the battlefield. When you do, it fights up to N target creature you don't control.	manual
+Dance of the Manse	spell: Return up to X target artifact and/or non-Aura enchantment cards each with mana value X or less from your graveyard to the battlefield. If X is N or more, those permanents are N/N creatures in addition to their other types.	manual
+Selective Snare	spell: Return X target creatures of the creature type of your choice to their owner's hand.	manual
+Portent of Calamity	spell: Reveal the top X cards of your library. For each card type, you may exile a card of that type from among them. Put the rest into your graveyard. You may cast a spell from among the exiled cards without paying its mana cost if you exiled N or more cards this way. Then put the rest of the exiled cards into your hand.	manual
+Garbage Fire	spell: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	manual
+Circuits Act	spell: Roll N N-sided dice. For each different result, create a N/N white Clown Robot artifact creature token.	manual
+Pair o' Dice Lost	spell: Roll N N-sided dice. Return any number of cards with total mana value X or less from your graveyard to your hand, where X is the total of those results. Exile ~.	manual
+Celestial Reunion	spell: Search your library for a creature card with mana value X or less, reveal it, put it into your hand, then shuffle. If this spell's additional cost was paid and the revealed card is the chosen type, put that card onto the battlefield instead of putting it into your hand.	manual
+Invert // Invent	spell: Search your library for an instant card and/or a sorcery card, reveal them, put them into your hand, then shuffle.	partial
+Conflux	spell: Search your library for a white card, a blue card, a black card, a red card, and a green card. Reveal those cards, put them into your hand, then shuffle.	manual
+Signal the Clans	spell: Search your library for N creature cards and reveal them. If you reveal N cards with different names, choose N of them at random and put that card into your hand. Shuffle the rest into your library.	manual
+Begin the Invasion	spell: Search your library for up to X battle cards with different names, put them onto the battlefield, then shuffle.	manual
+Trap the Trespassers	spell: Secret council — Each player secretly votes for a creature you don't control, then those votes are revealed. For each creature with N or more votes, put that many stun counters on it, then tap it.	manual
+Mob Verdict	spell: Secret council — Each player secretly votes for another player, then those votes are revealed. For each vote an opponent received, ~ deals N damage to that player and each creature that player controls. For each vote you received, draw a card.	manual
+Time and Tide	spell: Simultaneously, all phased-out creatures phase in and all creatures with phasing phase out.	manual
+Psychic Rebuttal	spell: Spell mastery — If there are N or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy.	manual
+Soul Burn	spell: Spend only black and/or red mana on X.	manual
+Consume Spirit	spell: Spend only black mana on X.	manual
+Drain Life	spell: Spend only black mana on X.	manual
+Plague of Vermin	spell: Starting with you, each player may pay any amount of life. Repeat this process until no N pays life. Each player creates a N/N black Rat creature token for each N life they paid this way.	manual
+Whims of the Fates	spell: Starting with you, each player separates all permanents they control into N piles. Then each player chooses N of their piles at random and sacrifices those permanents.	manual
+Esper Origins // Summon: Esper Maduin	spell: Surveil N. You gain N life. If this spell was cast from a graveyard, exile it, then put it onto the battlefield transformed under its owner's control with a finality counter on it.	partial
+Telekinesis	spell: Tap target creature. Prevent all combat damage that would be dealt by that creature this turn. It doesn't untap during its controller's next N untap steps.	manual
+Delirium	spell: Tap target creature that player controls. That creature deals damage equal to its power to the player. Prevent all combat damage that would be dealt to and dealt by the creature this turn.	manual
+Crashing Wave	spell: Tap up to X target creatures, then distribute N stun counters among any number of tapped creatures your opponents control.	manual
+Illithid Harvester // Plant Tadpoles	spell: Tap X target creatures. They don't untap during their controllers' next untap steps.	manual
+Glyph of Destruction	spell: Target blocking Wall you control gets +N/+N until end of combat. Prevent all damage that would be dealt to it this turn. Destroy it at the beginning of the next end step.	manual
+Rapid Fire	spell: Target creature gains first strike until end of turn. If it doesn't have rampage, that creature gains rampage N until end of turn.	manual
+Defiant Stand	spell: Target creature gets +N/+N until end of turn. Untap that creature.	manual
+Barroom Brawl	spell: Target creature you control fights target creature the opponent to your left controls. Then that player may copy this spell and may choose new targets for the copy.	manual
+Compleat Devotion	spell: Target creature you control gets +N/+N until end of turn. If that creature has toxic, draw a card.	manual
+Rhino's Rampage	spell: Target creature you control gets +N/+N until end of turn. It fights target creature an opponent controls. When excess damage is dealt to the creature an opponent controls this way, destroy up to N target noncreature artifact with mana value N or less.	manual
+Forgotten Lore	spell: Target opponent chooses a card in your graveyard. You may pay {M}. If you do, repeat this process except that opponent can't choose a card already chosen for ~. Then put the last chosen card into your hand.	manual
+Shrouded Lore	spell: Target opponent chooses a card in your graveyard. You may pay {M}. If you do, repeat this process except that opponent can't choose a card already chosen for ~. Then put the last chosen card into your hand.	manual
+Last Stand	spell: Target opponent loses N life for each Swamp you control. ~ deals damage to target creature equal to the number of Mountains you control. Create a N/N green Saproling creature token for each Forest you control. You gain N life for each Plains you control. Draw a card for each Island you control, then discard that many cards.	manual
+Empty City Ruse	spell: Target opponent skips all combat phases of their next turn.	manual
+Reweave	spell: Target permanent's controller sacrifices it. If the player does, they reveal cards from the top of their library until they reveal a permanent card that shares a card type with the sacrificed permanent, put that card onto the battlefield, then shuffle.	partial
+Drain Power	spell: Target player activates a mana ability of each land they control. Then that player loses all unspent mana and you add the mana lost this way.	manual
+Invasion of Alara // Awaken the Maelstrom	spell: Target player draws N cards. You may put an artifact card from your hand onto the battlefield. Create a token that's a copy of a permanent you control. Distribute N +N/+N counters among N, N, or N creatures you control. Destroy target permanent an opponent controls.	manual
+Mathemagics	spell: Target player draws Nˣ cards.	manual
+Leadership Vacuum	spell: Target player returns each commander they control from the battlefield to the command zone.	manual
+False Peace	spell: Target player skips all combat phases of their next turn.	manual
+Ertai's Meddling	spell: Target spell's controller exiles it with X delay counters on it.	manual
+Tempt with Mayhem	spell: Tempting offer — Choose target instant or sorcery spell. Each opponent may copy that spell and may choose new targets for the copy they control. You copy that spell once plus an additional time for each opponent who copied the spell this way. You may choose new targets for the copies you control.	manual
+Tempt with Bunnies	spell: Tempting Offer — Draw a card and create a N/N white Rabbit creature token. Then each opponent may draw a card and create a N/N white Rabbit creature token. For each opponent who does, you draw a card and you create a N/N white Rabbit creature token.	manual
+Tempt with Discovery	spell: Tempting offer — Search your library for a land card and put it onto the battlefield. Each opponent may search their library for a land card and put it onto the battlefield. For each opponent who searches a library this way, search your library for a land card and put it onto the battlefield. Then each player who searched a library this way shuffles.	manual
+Shining Shoal	spell: The next X damage that a source of your choice would deal to you and/or creatures you control this turn is dealt to any target instead.	manual
+Captain's Maneuver	spell: The next X damage that would be dealt to target creature, planeswalker, or player this turn is dealt to another target creature, planeswalker, or player instead.	manual
+Camouflage	spell: This turn, instead of declaring blockers, each defending player chooses any number of creatures they control and divides them into a number of piles equal to the number of attacking creatures for whom that player is the defending player. Creatures those players control that can block additional creatures may likewise be put into additional piles. Assign each pile to a different N of those attacking creatures at random. Each creature in a pile that can block the creature that pile is assigned to does so.	manual
+Harsh Justice	spell: This turn, whenever an attacking creature deals combat damage to you, it deals that much damage to its controller.	manual
+Cyber Conversion	spell: Turn target creature face down. It's a N/N Cyberman artifact creature.	manual
+Yavimaya Bloomsage // Channel	spell: Until end of turn, any time you could activate a mana ability, you may pay N life. If you do, add {M}.	manual
+Blood of the Martyr	spell: Until end of turn, if damage would be dealt to any creature, you may have that damage dealt to you instead.	manual
+Don't Blink	spell: Until end of turn, if N or more creatures would enter from exile or after being cast from exile, their owners shuffle them into their libraries instead.	partial
+Plagiarize	spell: Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card.	manual
+Hellish Rebuke	spell: Until end of turn, permanents your opponents control gain "When this permanent deals damage to the player who cast ~, sacrifice this permanent. You lose N life."	manual
+False Dawn	spell: Until end of turn, spells and abilities you control that would add colored mana instead add that much white mana. Until end of turn, you may spend white mana as though it were mana of any color.	manual
+Not Dead After All	spell: Until end of turn, target creature you control gains "When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it."	manual
+Embiggen	spell: Until end of turn, target non-Brushwagg creature gets +N/+N for each supertype, card type, and subtype it has.	manual
+Piracy	spell: Until end of turn, you may tap lands you don't control for mana. Spend this mana only to cast spells.	manual
+Pure Intentions	spell: Whenever a spell or ability an opponent controls causes you to discard cards this turn, return those cards from your graveyard to your hand.	manual
+Open the Way	spell: X can't be greater than the number of players in the game.	manual
+Mana Clash	spell: You and target opponent each flip a coin. ~ deals N damage to each player whose coin comes up tails. Repeat this process until both players' coins come up heads on the same flip.	manual
+Mages' Contest	spell: You and target spell's controller bid life. You start the bidding with a bid of N. In turn order, each player may top the high bid. The bidding ends if the high bid stands. The high bidder loses life equal to the high bid. If you win the bidding, counter that spell.	manual
+Illusion of Choice	spell: You choose how each player votes this turn.	manual
+Master Warcraft	spell: You choose which creatures attack this turn.	manual
+Melee	spell: You choose which creatures block this combat and how those creatures block.	manual
+Secret of Bloodbending	spell: You control target opponent during their next combat phase. If this spell's additional cost was paid, you control that player during their next turn instead.	manual
+Reverse Polarity	spell: You gain X life, where X is twice the damage dealt to you so far this turn by artifacts.	manual
+Eelectrocute	spell: You may cast this card from your graveyard as long as you've rolled a N this turn. If you cast it this way and it would be put into your graveyard, exile it instead.	manual
+Providence	spell: You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, your life total becomes N.	manual
+Coalition Victory	spell: You win the game if you control a land of each basic land type and a creature of each color.	manual
+Drought	static: Activated abilities cost an additional "Sacrifice a Swamp" to activate for each black mana symbol in their activation costs.	partial
+Brutal Suppression	static: Activated abilities of nontoken Rebels cost an additional "Sacrifice a land" to activate.	manual
+Petrified Hamlet	static: Activated abilities of sources with the chosen name can't be activated unless they're mana abilities.	partial
+Sorcerous Spyglass	static: Activated abilities of sources with the chosen name can't be activated unless they're mana abilities.	manual
+Anointed Peacekeeper	static: Activated abilities of sources with the chosen name cost {M} more to activate unless they're mana abilities.	partial
+Scheming Fence	static: Activated abilities of the chosen permanent can't be activated.	manual
+Night Shift of the Living Dead	static: After you roll a die, you may pay N life. If you do, increase or decrease the result by N. Do this only once each turn.	manual
+Xenosquirrels	static: After you roll a die, you may remove a +N/+N counter from this creature. If you do, increase or decrease the result by N.	partial
+Mycosynth Lattice	static: All cards that aren't on the battlefield, spells, and permanents are colorless.	manual
+Painter's Servant	static: All cards that aren't on the battlefield, spells, and permanents are the chosen color in addition to their other colors.	partial
+Frenzied Saddlebrute	static: All creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste.	partial
+Everlasting Torment	static: All damage is dealt as though its source had wither.	partial
+Ancient Adamantoise	static: All damage that would be dealt to you and other permanents you control is dealt to this creature instead.	partial
+Pariah's Shield	static: All damage that would be dealt to you is dealt to equipped creature instead.	partial
+Life and Limb	static: All Forests and all Saprolings are N/N green Saproling creatures and Forest lands in addition to their other types.	manual
+Swirl the Mists	static: All instances of color words in the text of spells and permanents are changed to the chosen color word.	manual
+Blood Sun	static: All lands lose all abilities except mana abilities.	partial
+Exiled Doomsayer	static: All morph costs cost {M} more.	manual
+Lymph Sliver	static: All Sliver creatures have absorb N.	manual
+Pulmonic Sliver	static: All Slivers have "If this permanent would be put into a graveyard, you may put it on top of its owner's library instead."	partial
+Mistform Sliver	static: All Slivers have "{M}: This permanent becomes the creature type of your choice in addition to its other types until end of turn."	manual
+Seeker of Slaanesh	static: Allure of Slaanesh — Each opponent must attack with at least N creature each combat if able.	partial
+Marble Priest	static: All Walls able to block this creature do so.	manual
+Henry Wu, InGen Geneticist	static: ~ and other Human creatures you control have exploit.	manual
+Serum Powder	static: Any time you could mulligan and this card is in your hand, you may exile all the cards from your hand, then draw that many cards.	partial
+Yurlok of Scorch Thrash	static: A player losing unspent mana causes that player to lose that much life.	partial
+The Golden Throne	static: Arcane Life-support — If you would lose the game, instead exile ~ and your life total becomes N.	partial
+Tannuk, Steadfast Second	static: Artifact cards and red creature cards in your hand have warp {M}.	partial
+Rebbec, Architect of Ascension	static: Artifacts you control have protection from each mana value among artifacts you control.	partial
+Displaced Dinosaurs	static: As a historic permanent you control enters, it becomes a N/N Dinosaur creature in addition to its other types.	manual
+Chorus of the Conclave	static: As an additional cost to cast creature spells, you may pay any amount of mana. If you do, that creature enters with that many additional +N/+N counters on it.	partial
+Caller of the Hunt	static: As an additional cost to cast this spell, choose a creature type.	partial
+Urgent Necropsy	static: As an additional cost to cast this spell, collect evidence X, where X is the total mana value of the permanents this spell targets.	partial
+Kaervek's Spite	static: As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand.	partial
+Tectonic Split	static: As an additional cost to cast this spell, sacrifice half the lands you control, rounded up.	partial
+Dargo, the Shipwrecker	static: As an additional cost to cast this spell, you may sacrifice any number of artifacts and/or creatures. This spell costs {M} less to cast for each permanent sacrificed this way and {M} less to cast for each other artifact or creature you've sacrificed this turn.	partial
+Plumb the Forbidden	static: As an additional cost to cast this spell, you may sacrifice N or more creatures. When you do, copy this spell for each creature sacrificed this way.	partial
+Pramikon, Sky Rampart	static: As ~ enters, choose left or right.	partial
+Greymond, Avacyn's Stalwart	static: As ~ enters, choose N abilities from among first strike, vigilance, and lifelink.	partial
+Haktos the Unscarred	static: As ~ enters, choose N, N, or N at random.	partial
+Indominus Rex, Alpha	static: As ~ enters, discard any number of creature cards. It enters with a flying counter on it if a card discarded this way has flying. The same is true for first strike, double strike, deathtouch, hexproof, haste, indestructible, lifelink, menace, reach, trample, and vigilance.	partial
+Alhammarret, High Arbiter	static: As ~ enters, each opponent reveals their hand. You choose the name of a nonland card revealed this way.	partial
+Arachne, Psionic Weaver	static: As ~ enters, look at an opponent's hand, then choose a card type other than creature.	partial
+Sin, Unending Cataclysm	static: As ~ enters, remove all counters from any number of artifacts, creatures, and enchantments. ~ enters with X +N/+N counters on it, where X is twice the number of counters removed this way.	partial
+Deadpool, Trading Card	static: As ~ enters, you may exchange his text box and another creature's.	partial
+The Mimeoplasm	static: As ~ enters, you may exile N creature cards from graveyards. If you do, it enters as a copy of N of those cards with a number of additional +N/+N counters on it equal to the power of the other card.	manual
+Eater of Virtue	static: As long as a card exiled with ~ has flying, equipped creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance.	partial
+Death-Mask Duplicant	static: As long as a card exiled with this creature has flying, this creature has flying. The same is true for fear, first strike, double strike, haste, landwalk, protection, and trample.	partial
+Duplicant	static: As long as a card exiled with this creature is a creature card, this creature has the power, toughness, and creature types of the last creature card exiled with it. It's still a Shapeshifter.	partial
+Sanwell, Avenger Ace	static: As long as an artifact creature you control is attacking, prevent all damage that would be dealt to ~.	manual
+Ace's Baseball Bat	static: As long as equipped creature is attacking, it has first strike and must be blocked by a Dalek if able.	partial
+The Masamune	static: As long as equipped creature is attacking, it has first strike and must be blocked if able.	partial
+Ratonhnhaké꞉ton	static: As long as ~ hasn't dealt damage yet, it has hexproof and can't be blocked.	manual
+Enkira, Hostile Scavenger	static: As long as ~ is equipped, it must be blocked if able.	manual
+Archelos, Lagoon Mystic	static: As long as ~ is tapped, other permanents enter tapped.	manual
+Hundred-Battle Veteran	static: As long as there are N or more different kinds of counters among creatures you control, this creature gets +N/+N.	manual
+Volrath's Shapeshifter	static: As long as the top card of your graveyard is a creature card, this creature has the full text of that card and has the text "{M}: Discard a card."	partial
+Storage Matrix	static: As long as this artifact is untapped, each player chooses artifact, creature, or land during their untap step. That player can untap only permanents of the chosen type this step.	manual
+Retriever Phoenix	static: As long as this card is in your graveyard, if you would learn, you may instead return this card to the battlefield.	partial
+Camel	static: As long as this creature is attacking, prevent all damage Deserts would deal to this creature and to creatures banded with this creature.	partial
+Guardian Beast	static: As long as this creature is untapped, noncreature artifacts you control can't be enchanted, they have indestructible, and other players can't gain control of them. This effect doesn't remove Auras already attached to those artifacts.	manual
+Mirrormind Crown	static: As long as this Equipment is attached to a creature, the first time you would create N or more tokens each turn, you may instead create that many tokens that are copies of equipped creature.	partial
+Pact Weapon	static: As long as this Equipment is attached to a creature, you don't lose the game for having N or less life.	partial
+Deification	static: As long as you control a creature, if damage dealt to a planeswalker you control of the chosen type would result in all loyalty counters on it being removed, instead all but N of those counters are removed.	partial
+Bronze Horse	static: As long as you control another creature, prevent all damage that would be dealt to this creature by spells that target it.	partial
+Noble Banneret	static: As long as you control N or more creatures with a name you noted for cards named ~, this creature and those creatures get +N/+N and have lifelink.	manual
+Kíli the Resourceful	static: As long as you have an enduring story, you may pay {M} rather than pay the equip cost of the first equip ability you activate each turn.	partial
+Quantum Riddler	static: As long as you have N or fewer cards in hand, if you would draw N or more cards, you draw that many cards plus N instead.	partial
+Phyrexian Unlife	static: As long as you have N or less life, all damage is dealt to you as though its source had infect.	partial
+New Perspectives	static: As long as you have N or more cards in hand, you may pay {M} rather than pay cycling costs.	partial
+Ezio Auditore da Firenze	static: Assassin spells you cast have freerunning {M}.	partial
+Booby Trap	static: As this artifact enters, choose an opponent and a card name other than a basic land card name.	manual
+Seal of the Guildpact	static: As this artifact enters, choose N colors.	manual
+Tablet of the Guilds	static: As this artifact enters, choose N colors.	manual
+Metamorphic Alteration	static: As this Aura enters, choose a creature.	partial
+Gift of Doom	static: As this Aura is turned face up, you may attach it to a creature.	partial
+Council of the Absolute	static: As this creature enters, choose a noncreature, nonland card name.	manual
+Tyrannical Pitlord	static: As this creature enters, choose another creature you control.	partial
+Shapeshifter	static: As this creature enters, choose a number between N and N.	manual
+Sower of Discord	static: As this creature enters, choose N players.	partial
+Archangel of Strife	static: As this creature enters, each player chooses war or peace.	partial
+Living Lore	static: As this creature enters, exile an instant or sorcery card from your graveyard.	manual
+Sutured Ghoul	static: As this creature enters, exile any number of creature cards from your graveyard.	partial
+Frankenstein's Monster	static: As this creature enters, exile X creature cards from your graveyard. If you can't, put this creature into its owner's graveyard instead of onto the battlefield. For each creature card exiled this way, this creature enters with a +N/+N, +N/+N, or +N/+N counter on it.	manual
+Molten Sentry	static: As this creature enters, flip a coin. If the coin comes up heads, this creature enters as a N/N creature with haste. If it comes up tails, this creature enters as a N/N creature with defender.	manual
+Monstrous War-Leech	static: As this creature enters, if it was kicked, mill N cards.	partial
+Primal Clay	static: As this creature enters, it becomes your choice of a N/N artifact creature, a N/N artifact creature with flying, or a N/N Wall artifact creature with defender in addition to its other types.	manual
+Primal Plasma	static: As this creature enters, it becomes your choice of a N/N creature, a N/N creature with flying, or a N/N creature with defender.	manual
+Corrupted Shapeshifter	static: As this creature enters, it becomes your choice of a N/N creature with flying, a N/N creature with vigilance, or a N/N creature with defender.	partial
+Urborg Lhurgoyf	static: As this creature enters, mill N cards for each time it was kicked.	partial
+Aquamorph Entity	static: As this creature enters or is turned face up, it becomes your choice of N/N or N/N.	partial
+Vesuvan Shapeshifter	static: As this creature enters or is turned face up, you may choose another creature on the battlefield. If you do, until this creature is turned face down, it becomes a copy of that creature, except it has "At the beginning of your upkeep, you may turn this creature face down."	partial
+Minion of the Wastes	static: As this creature enters, pay any amount of life.	partial
+Nameless Race	static: As this creature enters, pay any amount of life. The amount you pay can't be more than the total number of white nontoken permanents your opponents control plus the total number of white cards in their graveyards.	partial

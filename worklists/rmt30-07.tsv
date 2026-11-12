@@ -1,0 +1,151 @@
+Casey & Raph, Hotheads	triggered: When ~ enter, choose N or both. Each mode must target a different player. | • Target player exiles the top card of their library. Until that player's next end step, they may play that card without paying its mana cost. | • Target player creates N Treasure tokens.	manual
+Aang, Airbending Master	triggered: When ~ enters, airbend another target creature.	partial
+Aang, Swift Savior // Aang and La, Ocean's Fury	triggered: When ~ enters, airbend up to N other target creature or spell.	partial
+Orcus, Prince of Undeath	triggered: When ~ enters, choose N — | • Each other creature gets -X/-X until end of turn. You lose X life. | • Return up to X target creature cards with total mana value X or less from your graveyard to the battlefield. They gain haste until end of turn.	partial
+The Motherlode, Excavator	triggered: When ~ enters, choose target opponent. You get an amount of {E} equal to the number of nonbasic lands that player controls.	manual
+Azog, Moria's Ruin	triggered: When ~ enters, destroy up to N other target creature. Its controller amasses Goblins X, where X is that creature's power. If you controlled that creature, draw a card.	manual
+Fblthp, the Lost	triggered: When ~ enters, draw a card. If it entered from your library or was cast from your library, draw N cards instead.	partial
+Azor, the Lawbringer	triggered: When ~ enters, each opponent can't cast instant or sorcery spells during that player's next turn.	partial
+The Cyber-Controller	triggered: When ~ enters, each opponent mills X cards. Put all creature cards milled this way onto the battlefield face down under your control. They're N/N Cyberman artifact creatures.	partial
+Way of the Mind Sculptor	triggered: When ~ enters, empower Jace N.	manual
+Victor Mancha, Runaway	triggered: When ~ enters, exile target card from your graveyard. You may play it for as long as you control ~.	manual
+Kotose, the Silent Spider	triggered: When ~ enters, exile target card other than a basic land card from an opponent's graveyard. Search that player's graveyard, hand, and library for any number of cards with the same name as that card and exile them. Then that player shuffles. For as long as you control ~, you may play N of the exiled cards, and you may spend mana as though it were mana of any color to cast it.	manual
+Kangee, Aerie Keeper	triggered: When ~ enters, if it was kicked, put X feather counters on it.	partial
+Jace, Mirror Mage	triggered: When ~ enters, if ~ was kicked, create a token that's a copy of ~, except it's not legendary and its starting loyalty is N.	partial
+King Solomon's Frogs	triggered: When ~ enters, if you cast it, for each opponent, exile up to N target permanent that player controls with mana value N or greater. For each permanent exiled this way, its controller draws a card.	partial
+Tiamat	triggered: When ~ enters, if you cast it, search your library for up to N Dragon cards not named ~ that each have different names, reveal them, put them into your hand, then shuffle.	partial
+Acererak the Archlich	triggered: When ~ enters, if you haven't completed Tomb of Annihilation, return ~ to its owner's hand and venture into the dungeon.	manual
+Atraxa, Grand Unifier	triggered: When ~ enters, reveal the top N cards of your library. For each card type, you may put a card of that type from among the revealed cards into your hand. Put the rest on the bottom of your library in a random order.	partial
+Kroxa, Titan of Death's Hunger	triggered: When ~ enters, sacrifice it unless it escaped.	partial
+Shaun & Rebecca, Agents	triggered: When ~ enters, search your graveyard, hand, and library for a card named The Animus and put it onto the battlefield, then shuffle.	partial
+The First Doctor	triggered: When ~ enters, search your library and/or graveyard for a card named TARDIS, reveal it, and put it into your hand. If you search your library this way, shuffle.	manual
+Spider-Woman, Secret Agent	triggered: When ~ enters, tap target creature an opponent controls. That creature can't become untapped for as long as you control ~.	partial
+Jared Carthalion, True Heir	triggered: When ~ enters, target opponent becomes the monarch. You can't become the monarch this turn.	partial
+Niambi, Faithful Healer	triggered: When ~ enters, you may search your library and/or graveyard for a card named Teferi, Timebender, reveal it, and put it into your hand. If you search your library this way, shuffle.	manual
+Gauntlet of Power	triggered: Whenever a basic land is tapped for mana of the chosen color, its controller adds an additional N mana of that color.	partial
+Kazuul, Tyrant of the Cliffs	triggered: Whenever a creature an opponent controls attacks, if you're the defending player, create a N/N red Ogre creature token unless that creature's controller pays {M}.	manual
+Fall of Cair Andros	triggered: Whenever a creature an opponent controls is dealt excess noncombat damage, amass Orcs X, where X is that excess damage.	partial
+Seifer, Balamb Rival	triggered: Whenever a creature attacking N of your opponents becomes blocked by N or more creatures, that attacking creature gains deathtouch until end of turn.	partial
+The Beast, Deathless Prince	triggered: Whenever a creature deals combat damage to its owner, untap ~ and draw a card.	partial
+Gonti, Night Minister	triggered: Whenever a creature deals combat damage to N of your opponents, its controller looks at the top card of that opponent's library and exiles it face down. They may play that card for as long as it remains exiled. Mana of any type can be spent to cast a spell this way.	manual
+Aegar, the Freezing Flame	triggered: Whenever a creature or planeswalker an opponent controls is dealt excess damage, if a Giant, Wizard, or spell you controlled dealt damage to it this turn, draw a card.	manual
+Sovereigns of Lost Alara	triggered: Whenever a creature you control attacks alone, you may search your library for an Aura card that could enchant that creature, put it onto the battlefield attached to that creature, then shuffle.	partial
+Aradesh, the Founder	triggered: Whenever a creature you control attacks, if it enlisted a creature this combat, the creature that attacked gains double strike until end of turn. If that creature's power is N or greater, draw a card.	partial
+Skull Skaab	triggered: Whenever a creature you control exploits a nontoken creature, create a N/N black Zombie creature token.	partial
+Nicanzil, Current Conductor	triggered: Whenever a creature you control explores a land card, you may put a land card from your hand onto the battlefield tapped.	manual
+Foe-Razer Regent	triggered: Whenever a creature you control fights, put N +N/+N counters on it at the beginning of the next end step.	partial
+Kaust, Eyes of the Glade	triggered: Whenever a creature you control that was turned face up this turn deals combat damage to a player, draw a card.	partial
+Wrathful Raptors	triggered: Whenever a Dinosaur you control is dealt damage, it deals that much damage to any target that isn't a Dinosaur.	partial
+Wrathful Red Dragon	triggered: Whenever a Dragon you control is dealt damage, it deals that much damage to any target that isn't a Dragon.	partial
+Yarus, Roar of the Old Gods	triggered: Whenever a face-down creature you control dies, return it to the battlefield face down under its owner's control if it's a permanent card, then turn it face up.	partial
+Mana Web	triggered: Whenever a land an opponent controls is tapped for mana, tap all lands that player controls that could produce any type of mana that land could produce.	manual
+Caged Sun	triggered: Whenever a land's ability causes you to add N or more mana of the chosen color, add an additional N mana of that color.	partial
+Powerleech	triggered: Whenever an artifact an opponent controls becomes tapped or an opponent activates an artifact's ability without {T} in its activation cost, you gain N life.	manual
+Haunting Wind	triggered: Whenever an artifact becomes tapped or a player activates an artifact's ability without {T} in its activation cost, this enchantment deals N damage to that artifact's controller.	manual
+Charismatic Conqueror	triggered: Whenever an artifact or creature an opponent controls enters untapped, they may tap that permanent. If they don't, you create a N/N white Vampire creature token with lifelink.	partial
+Eriette, the Beguiler	triggered: Whenever an Aura you control becomes attached to a nonland permanent an opponent controls with mana value less than or equal to that Aura's mana value, gain control of that permanent for as long as that Aura is attached to it.	partial
+Goldbug, Humanity's Ally // Goldbug, Scrappy Scout	triggered: Whenever ~ and at least N Human attack, draw a card and convert ~.	partial
+Odric, Master Tactician	triggered: Whenever ~ and at least N other creatures attack, you choose which creatures block this combat and how those creatures block.	partial
+Snowfall	triggered: Whenever an Island is tapped for mana, its controller may add an additional {M}. If that Island is snow, its controller may add an additional {M} instead. Spend this mana only to pay cumulative upkeep costs.	partial
+Protean Hydra	triggered: Whenever a +N/+N counter is removed from this creature, put N +N/+N counters on it at the beginning of the next end step.	partial
+Tahngarth, First Mate	triggered: Whenever an opponent attacks with N or more creatures, if ~ is tapped, you may have that opponent gain control of ~ until end of combat. If you do, choose a player or planeswalker that opponent is attacking. ~ is attacking that player or planeswalker.	partial
+Garland, Royal Kidnapper	triggered: Whenever an opponent becomes the monarch, gain control of target creature that player controls for as long as they're the monarch.	partial
+Captured by the Consulate	triggered: Whenever an opponent casts a spell, if it has a single target, change the target to enchanted creature if able.	partial
+Zidane, Tantalus Thief	triggered: Whenever an opponent gains control of a permanent from you, you create a Treasure token.	partial
+Kefka, Court Mage // Kefka, Ruler of Ruin	triggered: Whenever an opponent loses life during your turn, you draw that many cards.	partial
+Bold Plagiarist	triggered: Whenever an opponent puts N or more counters on a creature they control, they put the same number and kind of counters on this creature.	partial
+Silumgar Scavenger	triggered: Whenever another creature you control dies, put a +N/+N counter on this creature. It gains haste until end of turn if it exploited that creature.	partial
+Marvel Boy, Noh-Varr	triggered: Whenever another creature you control enters and whenever you activate a power-up ability, put a +N/+N counter on ~.	manual
+Ratadrabik of Urborg	triggered: Whenever another legendary creature you control dies, create a token that's a copy of that creature, except it's not legendary and it's a N/N black Zombie in addition to its other colors and types.	partial
+Magnanimous Magistrate	triggered: Whenever another nontoken creature you control dies, if its mana value was N or greater, you may remove that many reprieve counters from this creature. If you do, return that card to the battlefield under its owner's control.	partial
+Yedora, Grave Gardener	triggered: Whenever another nontoken creature you control dies, you may return it to the battlefield face down under its owner's control. It's a Forest land.	manual
+Kodama of the East Tree	triggered: Whenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.	partial
+Yuna, Grand Summoner	triggered: Whenever another permanent you control is put into a graveyard from the battlefield, if it had N or more counters on it, you may put that number of +N/+N counters on target creature.	partial
+Strict Proctor	triggered: Whenever a permanent entering causes a triggered ability to trigger, counter that ability unless its controller pays {M}.	partial
+Deathmist Raptor	triggered: Whenever a permanent you control is turned face up, you may return this card from your graveyard to the battlefield face up or face down.	partial
+Breena, the Demagogue	triggered: Whenever a player attacks N of your opponents, if that opponent has more life than another of your opponents, that attacking player draws a card and you put N +N/+N counters on a creature you control.	partial
+Suppressor Skyguard	triggered: Whenever a player attacks you, if that player has another opponent who isn't being attacked, prevent all combat damage that would be dealt to you this combat.	partial
+Archnemesis	triggered: Whenever a player attacks you, you may attach this Aura to that player.	partial
+Ink-Treader Nephilim	triggered: Whenever a player casts an instant or sorcery spell, if that spell targets only this creature, copy the spell for each other creature that spell could target. Each copy targets a different N of those creatures.	manual
+Heartwood Storyteller	triggered: Whenever a player casts a noncreature spell, each of that player's opponents may draw a card.	manual
+Ice Cave	triggered: Whenever a player casts a spell, any other player may pay that spell's mana cost. If a player does, counter the spell.	manual
+Void Mirror	triggered: Whenever a player casts a spell, if no colored mana was spent to cast it, counter that spell.	manual
+Psychic Battle	triggered: Whenever a player chooses N or more targets, each player reveals the top card of their library. The player who reveals the card with the greatest mana value may change the target or targets. If N or more cards are tied for greatest, the target or targets remain unchanged. Changing targets this way doesn't trigger abilities of permanents named ~.	manual
+Ramses, Assassin Lord	triggered: Whenever a player loses the game, if they were attacked this turn by an Assassin you controlled, you win the game.	partial
+Elbrus, the Binding Blade // Withengar Unbound	triggered: Whenever a player loses the game, put thirteen +N/+N counters on ~.	partial
+Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	triggered: Whenever a player plays a card exiled with ~, you draw a card and convert ~.	partial
+Archfiend of Spite	triggered: Whenever a source an opponent controls deals damage to this creature, that source's controller loses that much life unless they sacrifice that many permanents of their choice.	partial
+Crag Saurian	triggered: Whenever a source deals damage to this creature, that source's controller gains control of this creature.	manual
+Grip of Chaos	triggered: Whenever a spell or ability is put onto the stack, if it has a single target, reselect its target at random.	manual
+Typhoid Mary, Fractured	triggered: Whenever ~ attacks, choose N at random. If you discarded a card this turn, you choose N instead. | • Mary — Create a Treasure token. | • ~ — Draw a card. | • Bloody Mary — Each opponent loses N life and you gain N life.	manual
+Combustion Man	triggered: Whenever ~ attacks, destroy target permanent unless its controller has ~ deal damage to them equal to his power.	manual
+Rufus Shinra	triggered: Whenever ~ attacks, if you don't control a creature named Darkstar, create Darkstar, a legendary N/N white and black Dog creature token.	manual
+Frodo, Adventurous Hobbit	triggered: Whenever ~ attacks, if you gained N or more life this turn, the Ring tempts you. Then if ~ is your Ring-bearer and the Ring has tempted you N or more times this game, draw a card.	partial
+Gollum, Scheming Guide	triggered: Whenever ~ attacks, look at the top N cards of your library, put them back in any order, then choose land or nonland. An opponent guesses whether the top card of your library is the chosen kind. Reveal that card. If they guessed right, remove ~ from combat. Otherwise, you draw a card and ~ can't be blocked this turn.	manual
+Ultima, Origin of Oblivion	triggered: Whenever ~ attacks, put a blight counter on target land. For as long as that land has a blight counter on it, it loses all land types and abilities and has "{T}: Add {M}."	partial
+Sensational Spider-Man	triggered: Whenever ~ attacks, tap target creature defending player controls and put a stun counter on it. Then you may remove up to N stun counters from among all permanents. Draw cards equal to the number of stun counters removed this way.	manual
+Perrie, the Pulverizer	triggered: Whenever ~ attacks, target creature you control gains trample and gets +X/+X until end of turn, where X is the number of different kinds of counters among permanents you control.	partial
+Grub, Storied Matriarch // Grub, Notorious Auntie	triggered: Whenever ~ attacks, you may blight N. If you do, create a tapped and attacking token that's a copy of the blighted creature, except it has "At the beginning of the end step, sacrifice this token."	partial
+Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier	triggered: Whenever ~ attacks, you may put an artifact creature card from your hand onto the battlefield tapped and attacking. If you do, convert ~ at end of combat.	partial
+Balthier and Fran	triggered: Whenever a Vehicle crewed by ~ this turn attacks, if it's the first combat phase of the turn, you may pay {M}. If you do, after this phase, there is an additional combat phase.	partial
+Bill Ferny, Bree Swindler	triggered: Whenever ~ becomes blocked, choose N — | • Create a Treasure token. | • Target opponent gains control of target Horse you control. If they do, remove ~ from combat and create N Treasure tokens.	manual
+Agent Maria Hill	triggered: Whenever ~ becomes tapped to pay a teamwork cost, put a +N/+N counter on her and draw a card.	manual
+Agrus Kos, Eternal Soldier	triggered: Whenever ~ becomes the target of an ability that targets only it, you may pay {M}. If you do, copy that ability for each other creature you control that ability could target. Each copy targets a different N of those creatures.	partial
+Selfless Squire	triggered: Whenever damage that would be dealt to you is prevented, put that many +N/+N counters on this creature.	partial
+Yidris, Maelstrom Wielder	triggered: Whenever ~ deals combat damage to a player, as you cast spells from your hand this turn, they gain cascade.	partial
+Leori, Sparktouched Hunter	triggered: Whenever ~ deals combat damage to a player, choose a planeswalker type. Until end of turn, whenever you activate an ability of a planeswalker of that type, copy that ability. You may choose new targets for the copies.	partial
+Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter	triggered: Whenever ~ deals combat damage to a player, convert it. If you do, there is an additional beginning phase after this phase.	partial
+Power Pack	triggered: Whenever ~ deals combat damage to a player, exile target instant or sorcery card from your graveyard chosen at random. At the beginning of your next upkeep, you may cast that card without paying its mana cost. If that spell would be put into your graveyard, exile it instead.	partial
+Nashi, Moon Sage's Scion	triggered: Whenever ~ deals combat damage to a player, exile the top card of each player's library. Until end of turn, you may play N of those cards. If you cast a spell this way, pay life equal to its mana value rather than paying its mana cost.	partial
+Raphael, Tag Team Tough	triggered: Whenever ~ deals combat damage to a player for the first time each turn, untap all attacking creatures. After this combat phase, there is an additional combat phase.	partial
+O-Kagachi, Vengeful Kami	triggered: Whenever ~ deals combat damage to a player, if that player attacked you during their last turn, exile target nonland permanent that player controls.	partial
+Niv-Mizzet, Guildpact	triggered: Whenever ~ deals combat damage to a player, it deals X damage to any target, target player draws X cards, and you gain X life, where X is the number of different color pairs among permanents you control that are exactly N colors.	partial
+Storrev, Devkarin Lich	triggered: Whenever ~ deals combat damage to a player or planeswalker, return to your hand target creature or planeswalker card in your graveyard that wasn't put there this combat.	partial
+Shark Shredder, Killer Clone	triggered: Whenever ~ deals combat damage to a player, put up to N target creature card from that player's graveyard onto the battlefield under your control. It enters tapped and attacking that player.	partial
+Bumi, Unleashed	triggered: Whenever ~ deals combat damage to a player, untap all lands you control. After this phase, there is an additional combat phase. Only land creatures can attack during that combat phase.	partial
+Silver Surfer, Galactus's Herald	triggered: Whenever ~ deals combat damage to a player, until the end of your next turn, target creature attacks that player each combat if able.	partial
+Obeka, Splitter of Seconds	triggered: Whenever ~ deals combat damage to a player, you get that many additional upkeep steps after this phase.	partial
+Tinybones, the Pickpocket	triggered: Whenever ~ deals combat damage to a player, you may cast target nonland permanent card from that player's graveyard, and mana of any type can be spent to cast that spell.	partial
+Maarika, Brutal Gladiator	triggered: Whenever ~ deals damage to a creature, if that creature was dealt excess damage this turn, that creature's controller sacrifices a noncreature, nonland permanent.	partial
+Artifact Possession	triggered: Whenever enchanted artifact becomes tapped or a player activates an ability of enchanted artifact without {T} in its activation cost, this Aura deals N damage to that artifact's controller.	partial
+Infinite Authority	triggered: Whenever enchanted creature blocks or becomes blocked by a creature with toughness N or less, destroy the other creature at end of combat. At the beginning of the next end step, if that creature was destroyed this way, put a +N/+N counter on the first creature.	partial
+Maddening Hex	triggered: Whenever enchanted player casts a noncreature spell, roll a dN. This Aura deals damage to that player equal to the result. Then attach this Aura to another N of your opponents chosen at random.	partial
+Immard, the Stormcleaver	triggered: Whenever ~ enters or attacks, put a charge counter on it or remove N from it. When you remove a counter this way, choose N — | • ~ deals N damage to any target. | • ~ gains lifelink and indestructible until end of turn.	manual
+Gisa's Favorite Shovel	triggered: Whenever equipped creature attacks, defending player sacrifices a creature of their choice. If they do, you create a Walker token.	partial
+Nuka-Nuke Launcher	triggered: Whenever equipped creature attacks, until the end of defending player's next turn, that player gets N rad counters whenever they cast a spell.	partial
+Aegis of the Legion	triggered: Whenever equipped creature mentors a creature, put a shield counter on that creature.	partial
+Ketramose, the New Dawn	triggered: Whenever N or more cards are put into exile from graveyards and/or the battlefield during your turn, you draw a card and lose N life.	partial
+Polluted Cistern // Dim Oubliette	triggered: Whenever N or more cards are put into your graveyard from your library, each opponent loses N life for each card type among those cards.	partial
+Nelly Borca, Impulsive Accuser	triggered: Whenever N or more creatures an opponent controls deal combat damage to N or more of your opponents, you and the controller of those creatures each draw a card.	partial
+Frontier Warmonger	triggered: Whenever N or more creatures attack N of your opponents or a planeswalker they control, those creatures gain menace until end of turn.	manual
+Raging River	triggered: Whenever N or more creatures you control attack, each defending player divides all creatures without flying they control into a "left" pile and a "right" pile. Then, for each attacking creature you control, choose "left" or "right." That creature can't be blocked this combat except by creatures with flying and creatures in a pile with the chosen label.	manual
+Disa the Restless	triggered: Whenever N or more creatures you control deal combat damage to a player, create a Tarmogoyf token.	manual
+Kaito, Dancing Shadow	triggered: Whenever N or more creatures you control deal combat damage to a player, you may return N of them to its owner's hand. If you do, you may activate loyalty abilities of ~ twice this turn rather than only once.	partial
+Neyith of the Dire Hunt	triggered: Whenever N or more creatures you control fight or become blocked, draw a card.	partial
+Inniaz, the Gale Force	triggered: Whenever N or more creatures you control with flying attack, each player gains control of a nonland permanent of your choice controlled by the player to their right.	partial
+Magmatic Galleon	triggered: Whenever N or more creatures your opponents control are dealt excess noncombat damage, create a Treasure token.	partial
+Soundwave, Sonic Spy // Soundwave, Superior Captain	triggered: Whenever N or more creature tokens you control deal combat damage to a player, exile target instant or sorcery card with mana value equal to the damage dealt from their graveyard. Copy it. You may cast the copy without paying its mana cost. If you do, convert ~.	partial
+Firkraag, Cunning Instigator	triggered: Whenever N or more Dragons you control attack an opponent, goad target creature that player controls.	partial
+Zurgo and Ojutai	triggered: Whenever N or more Dragons you control deal combat damage to a player or battle, look at the top N cards of your library. Put N of them into your hand and the rest on the bottom of your library in any order. You may return N of those Dragons to its owner's hand.	partial
+Heroes in a Half Shell	triggered: Whenever N or more Mutants, Ninjas, and/or Turtles you control deal combat damage to a player, put a +N/+N counter on each of those creatures and draw a card.	partial
+Frantic Scapegoat	triggered: Whenever N or more other creatures you control enter, if this creature is suspected, you may suspect N of the other creatures. If you do, this creature is no longer suspected.	partial
+The Ur-Sphinx	triggered: Whenever N or more Sphinxes you control attack, each player mills that many cards. For each player, you may cast a card that player milled this way without paying its mana cost.	partial
+Hordewing Skaab	triggered: Whenever N or more Zombies you control deal combat damage to N or more of your opponents, you may draw cards equal to the number of opponents dealt damage this way. If you do, discard that many cards.	partial
+Cass, Hand of Vengeance	triggered: Whenever ~ or another creature you control dies, if it was enchanted or equipped, return any number of Aura cards that were attached to it from your graveyard to the battlefield attached to target creature, then attach any number of Equipment that were attached to it to that creature.	partial
+Balin, Loremaster	triggered: Whenever ~ or another Dwarf you control enters, you may discard your hand. Draw X cards, where X is the number of cards discarded this way. If you have an enduring story, ~ deals X damage to each opponent.	partial
+Grudge Keeper	triggered: Whenever players finish voting, each opponent who voted for a choice you didn't vote for loses N life.	manual
+Erestor of the Council	triggered: Whenever players finish voting, each opponent who voted for a choice you voted for creates a Treasure token. You scry X, where X is the number of opponents who voted for a choice you didn't vote for. Draw a card.	manual
+Model of Unity	triggered: Whenever players finish voting, you and each opponent who voted for a choice you voted for may scry N.	partial
+Nullstone Gargoyle	triggered: Whenever the first noncreature spell of a turn is cast, counter that spell.	partial
+Aragorn, Company Leader	triggered: Whenever the Ring tempts you, if you chose a creature other than ~ as your Ring-bearer, put your choice of a counter from among first strike, vigilance, deathtouch, and lifelink on ~.	manual
+Master of Cruelties	triggered: Whenever this creature attacks a player and isn't blocked, that player's life total becomes N. This creature assigns no combat damage this combat.	partial
+Rowan's Talent	triggered: Whenever you activate a loyalty ability of enchanted planeswalker, copy that ability. You may choose new targets for the copy.	partial
+Optimus Prime, Hero // Optimus Prime, Autobot Leader	triggered: Whenever you attack, bolster N. The chosen creature gains trample until end of turn. When that creature deals combat damage to a player this turn, convert ~.	partial
+Dimir Strandcatcher	triggered: Whenever you attack, surveil X, where X is the number of opponents being attacked.	partial
+Fire Lord Zuko	triggered: Whenever you cast a spell from exile and whenever a permanent you control enters from exile, put a +N/+N counter on each creature you control.	partial
+Ratchet, Field Medic // Ratchet, Rescue Racer	triggered: Whenever you gain life, you may convert ~. When you do, return target artifact card with mana value less than or equal to the amount of life you gained this turn from your graveyard to the battlefield tapped.	partial
+Karplusan Minotaur	triggered: Whenever you lose a coin flip, this creature deals N damage to any target of an opponent's choice.	partial
+Reidane, God of the Worthy // Valkmira, Protector's Shield	triggered: Whenever you or another permanent you control becomes the target of a spell or ability an opponent controls, counter that spell or ability unless its controller pays {M}.	partial
+Desert Warfare	triggered: Whenever you sacrifice a Desert and whenever a Desert card is put into your graveyard from your hand or library, put that card onto the battlefield under your control at the beginning of your next end step.	partial
+Epochrasite	triggered: When this creature dies, exile it with N time counters on it and it gains suspend.	partial
+Risky Move	triggered: When you gain control of this enchantment from another player, choose a creature you control and an opponent. Flip a coin. If you lose the flip, that opponent gains control of that creature.	partial

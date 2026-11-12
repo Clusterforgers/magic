@@ -1,0 +1,202 @@
+Aloy, Savior of Meridian	static: In You, All Things Are Possible — Whenever N or more artifact creatures you control attack, discover X, where X is the greatest power among them.	partial
+The Kami War // O-Kagachi Made Manifest	static: ~ is all colors.	partial
+Fallaji Wayfarer	static: ~ is all colors. This ability doesn't affect its color identity.	partial
+Worms of the Earth	static: Lands can't enter the battlefield.	manual
+Tomik, Distinguished Advokist	static: Lands on the battlefield and land cards in graveyards can't be the targets of spells or abilities your opponents control.	partial
+Rootpath Purifier	static: Lands you control and land cards in your library are basic.	manual
+Zilortha, Strength Incarnate	static: Lethal damage dealt to creatures you control is determined by their power rather than their toughness.	partial
+Thran Portal	static: Mana abilities of this land cost an additional N life to activate.	partial
+Sharkey, Tyrant of the Shire	static: Mana of any type can be spent to activate ~'s abilities.	partial
+Far Fortune, End Boss	static: Max speed — If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus N instead.	partial
+River Song	static: Meet in Reverse — You draw cards from the bottom of your library rather than the top.	manual
+Ninja Teen	static: {M}: Level N | Creature cards in your graveyard have sneak {M}. | You may cast creature spells from your graveyard using their sneak abilities.	partial
+Artist's Talent	static: {M}: Level N | If a source you control would deal noncombat damage to an opponent or a permanent an opponent controls, it deals that much damage plus N instead.	partial
+Druid Class	static: {M}: Level N | When this Class becomes level N, target land you control becomes a creature with haste and "This creature's power and toughness are each equal to the number of lands you control." It's still a land.	partial
+Avenger of the Fallen	static: Mobilize X, where X is the number of creature cards in your graveyard.	partial
+Gorm the Great	static: ~ must be blocked if able, and ~ must be blocked by N or more creatures if able.	partial
+Mathise, Surge Channeler	static: N | Copy that spell. You may choose new targets for the copy.	partial
+Entropic Battlecruiser	static: N+ | Flying, deathtouch | Whenever this Spacecraft attacks, each opponent discards a card. Each opponent who can't loses N life.	partial
+Edgar, King of Figaro	static: N-Headed Coin — The first time you flip N or more coins each turn, those coins come up heads and you win those flips.	partial
+Adagia, Windswept Bastion	static: N+ | {M}, {T}: Create a token that's a copy of target artifact or enchantment you control, except it's legendary. Activate only as a sorcery.	partial
+Weathered Runestone	static: Nonland permanent cards in graveyards and libraries can't enter the battlefield.	manual
+Secret Arcade // Dusty Parlor	static: Nonland permanents you control and permanent spells you control are enchantments in addition to their other types.	manual
+Celestial Dawn	static: Nonland permanents you control are white. The same is true for spells you control and nonland cards you own that aren't on the battlefield.	partial
+Infinite Reflection	static: Nontoken creatures you control enter as a copy of enchanted creature.	partial
+Druid of the Emerald Grove	static: N or less | Put those cards into your hand, then shuffle.	manual
+Comet, Stellar Pup	static: N or N — [+N], then create N N/N green Squirrel creature tokens. They gain haste until end of turn.	partial
+Bell Borca, Spectral Sergeant	static: Note the mana value of each card as it's put into exile.	partial
+Iron Mastiff	static: N | This creature deals damage equal to its power to each opponent.	manual
+Edgar, Master Machinist	static: Once during each of your turns, you may cast an artifact spell from your graveyard. If you cast a spell this way, that artifact enters tapped.	partial
+Demon of Fate's Design	static: Once during each of your turns, you may cast an enchantment spell by paying life equal to its mana value rather than paying its mana cost.	partial
+Kess, Dissident Mage	static: Once during each of your turns, you may cast an instant or sorcery spell from your graveyard. If a spell cast this way would be put into your graveyard, exile it instead.	partial
+One with the Multiverse	static: Once during each of your turns, you may cast a spell from your hand or the top of your library without paying its mana cost.	partial
+Serra Paragon	static: Once during each of your turns, you may play a land from your graveyard or cast a permanent spell with mana value N or less from your graveyard. If you do, it gains "When this permanent is put into a graveyard from the battlefield, exile it and you gain N life."	partial
+As Foretold	static: Once each turn, you may pay {M} rather than pay the mana cost for a spell you cast with mana value X or less, where X is the number of time counters on this enchantment.	partial
+Monitor Monitor	static: Once each turn, you may pay {M} to reroll N or more dice you rolled.	partial
+Evelyn, the Covetous	static: Once each turn, you may play a card from exile with a collection counter on it if it was exiled by an ability you controlled, and you may spend mana as though it were mana of any color to cast it.	partial
+Grothama, All-Devouring	static: Other creatures have "Whenever this creature attacks, you may have it fight ~."	manual
+Kalain, Reclusive Painter	static: Other creatures you control enter with an additional +N/+N counter on them for each mana from a Treasure spent to cast them.	partial
+Soulless Jailer	static: Permanent cards in graveyards can't enter the battlefield.	manual
+Disciple of Caelus Nin	static: Permanents can't phase in.	manual
+Carth the Lion	static: Planeswalkers' loyalty abilities you activate cost an additional [+N] to activate.	partial
+Sanctum Lurker	static: Planeswalkers you control aren't put into their owners' graveyards for having N loyalty.	manual
+Way of the Cryomancer	static: Planeswalkers you control have "[−N]: When you next cast an instant or sorcery spell this turn, copy that spell. You may choose new targets for the copy."	manual
+Ashes of the Abhorrent	static: Players can't cast spells from graveyards or activate abilities of cards in graveyards.	partial
+City in a Bottle	static: Players can't cast spells or play lands with a name originally printed in the Arabian Nights expansion.	manual
+Mana Maze	static: Players can't cast spells that share a color with the spell most recently cast this turn.	manual
+Cornered Market	static: Players can't cast spells with the same name as a nontoken permanent.	manual
+Omen Machine	static: Players can't draw cards.	manual
+Angel of Jubilation	static: Players can't pay life or sacrifice creatures to cast spells or activate abilities.	partial
+Yasharn, Implacable Earth	static: Players can't pay life or sacrifice nonland permanents to cast spells or activate abilities.	partial
+Karn's Sylex	static: Players can't pay life to cast spells or to activate abilities that aren't mana abilities.	partial
+Leonin Arbiter	static: Players can't search libraries. Any player may pay {M} for that player to ignore this effect until end of turn.	manual
+Doc Aurlock, Grizzled Genius	static: Plotting cards from your hand costs {M} less.	manual
+Hulk, Gamma Goliath	static: Power-up abilities of other creatures you control cost {M} less to activate.	partial
+Well-Laid Plans	static: Prevent all damage that would be dealt to a creature by another creature if they share a color.	manual
+Liesa, Shroud of Dusk	static: Rather than pay {M} for each previous time you've cast this spell from the command zone this game, pay N life that many times.	partial
+Dream Halls	static: Rather than pay the mana cost for a spell, its controller may discard a card that shares a color with that spell.	manual
+Defensive Formation	static: Rather than the attacking player, you assign the combat damage of each creature attacking you. You can divide that creature's combat damage as you choose among any of the creatures blocking it.	manual
+Rowen	static: Reveal the first card you draw each turn. Whenever you reveal a basic land card this way, draw a card.	manual
+Primitive Etchings	static: Reveal the first card you draw each turn. Whenever you reveal a creature card this way, draw a card.	manual
+Keranos, God of Storms	static: Reveal the first card you draw on each of your turns. Whenever you reveal a land card this way, draw a card. Whenever you reveal a nonland card this way, ~ deals N damage to any target.	partial
+Lore Seeker	static: Reveal this card as you draft it. After you draft this card, you may add a booster pack to the draft.	manual
+Lurking Automaton	static: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	manual
+Pyretic Hunter	static: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	partial
+Cogwork Tracker	static: Reveal this card as you draft it and note the player who passed it to you.	partial
+Aether Searcher	static: Reveal this card as you draft it. Reveal the next card you draft and note its name.	manual
+Spire Phantasm	static: Reveal this card as you draft it. The next time a player drafts a card from this booster pack, guess that card's name. Then that player reveals the drafted card.	partial
+Aether Revolt	static: Revolt — As long as a permanent left the battlefield under your control this turn, if a source you control would deal noncombat damage to an opponent or a permanent an opponent controls, it deals that much damage plus N instead.	manual
+Hama Pashar, Ruin Seeker	static: Room abilities of dungeons you own trigger an additional time.	manual
+Verdeloth the Ancient	static: Saproling creatures and other Treefolk creatures get +N/+N.	partial
+Scarlet Spider, Ben Reilly	static: Sensational Save — If ~ was cast using web-slinging, he enters with X +N/+N counters on him, where X is the mana value of the returned creature.	partial
+Rukarumel, Biologist	static: Slivers you control and nontoken creatures you control are the chosen type in addition to their other creature types. The same is true for creature spells you control and creature cards you own that aren't on the battlefield.	partial
+Case of the Gorgon's Kiss	static: Solved — This Case is a N/N Gorgon creature with deathtouch and lifelink in addition to its other types.	manual
+Case of the Locked Hothouse	static: Solved — You may look at the top card of your library any time, and you may play lands and cast creature and enchantment spells from the top of your library.	partial
+Ashiok, Dream Render	static: Spells and abilities your opponents control can't cause their controller to search their library.	partial
+Cemetery Prowler	static: Spells you cast cost {M} less to cast for each card type they share with cards exiled with this creature.	partial
+Locket of Yesterdays	static: Spells you cast cost {M} less to cast for each card with the same name as that spell in your graveyard.	manual
+Heliod, the Radiant Dawn // Heliod, the Warped Eclipse	static: Spells you cast cost {M} less to cast for each card your opponents have drawn this turn.	partial
+Hinata, Dawn-Crowned	static: Spells you cast cost {M} less to cast for each target.	partial
+Accursed Witch // Infectious Curse	static: Spells you cast that target enchanted player cost {M} less to cast.	partial
+Aven Interrupter	static: Spells your opponents cast from graveyards or from exile cost {M} more to cast.	partial
+Imperiosaur	static: Spend only mana produced by basic lands to cast this spell.	manual
+Myr Superion	static: Spend only mana produced by creatures to cast this spell.	manual
+Fungal Behemoth	static: ~'s power and toughness are each equal to the number of +N/+N counters on creatures you control.	partial
+Roxi, Publicist to the Stars	static: ~'s power is equal to the number of permanents you control with an art sticker plus the number of cards in your graveyard with an art sticker.	partial
+Yavimaya Kavu	static: ~'s power is equal to the number of red creatures on the battlefield.	manual
+Fear of Sleep Paralysis	static: Stun counters can't be removed from permanents your opponents control.	partial
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	static: Super Nova — As this creature transforms into ~, you get an emblem with "Whenever a creature dies, target opponent loses N life and you gain N life."	partial
+Invasion Plans	static: The attacking player chooses how each creature blocks each combat.	partial
+Tezzeret, Betrayer of Flesh	static: The first activated ability of an artifact you activate each turn costs {M} less to activate.	partial
+Professor Hojo	static: The first activated ability you activate during your turn that targets a creature you control costs {M} less to activate.	manual
+Ranar the Ever-Watchful	static: The first card you foretell each turn costs {M} to foretell.	partial
+Eluge, the Shoreless Sea	static: The first instant or sorcery spell you cast each turn costs {M} less to cast for each land you control with a flood counter on it.	partial
+Vine Gecko	static: The first kicked spell you cast each turn costs {M} less to cast.	partial
+Weftwalking	static: The first spell each player casts during each of their turns may be cast without paying its mana cost.	partial
+Esix, Fractal Bloom	static: The first time you would create N or more tokens during each of your turns, you may instead choose a creature other than ~ and create that many tokens that are copies of that creature.	partial
+Moonlit Meditation	static: The first time you would create N or more tokens each turn, you may instead create that many tokens that are copies of enchanted permanent.	partial
+Reed Richards, Smartest Man	static: The first time you would draw a card each turn except the first card you draw during each of your draw steps, you draw N cards instead.	partial
+The Master, Multiplied	static: The "legend rule" doesn't apply to creature tokens you control.	partial
+Spider-Verse	static: The "legend rule" doesn't apply to Spiders you control.	manual
+Fblthp, Lost on the Range	static: The top card of your library has plot. The plot cost is equal to its mana cost.	partial
+Agent's Toolkit	static: This artifact enters with a +N/+N counter, a flying counter, a deathtouch counter, and a shield counter on it.	partial
+Manascape Refractor	static: This artifact has all activated abilities of all lands on the battlefield.	partial
+Chaos Lord	static: This creature can attack as though it had haste unless it entered this turn.	partial
+Weathered Sentinels	static: This creature can attack players who attacked you during their last turn as though it didn't have defender.	partial
+Giant Turtle	static: This creature can't attack if it attacked during your last turn.	manual
+Hollow Warrior	static: This creature can't attack or block unless you tap an untapped creature you control not declared as an attacking or blocking creature this combat.	manual
+Floodtide Serpent	static: This creature can't attack unless you return an enchantment you control to its owner's hand.	manual
+Exalted Dragon	static: This creature can't attack unless you sacrifice a land.	partial
+Leviathan	static: This creature can't attack unless you sacrifice N Islands.	partial
+Pompous Gadabout	static: This creature can't be blocked by creatures that don't have a name.	partial
+Ogre Enforcer	static: This creature can't be destroyed by lethal damage unless lethal damage dealt by a single source is marked on it.	manual
+Wall of Shadows	static: This creature can't be the target of spells that can target only Walls or of abilities that can target only Walls.	partial
+Goblin Rock Sled	static: This creature doesn't untap during your untap step if it attacked during your last turn.	partial
+Embodiment of Agonies	static: This creature enters with a +N/+N counter on it for each different mana cost among nonland cards in your graveyard.	partial
+Nine-Lives Familiar	static: This creature enters with N revival counters on it if you cast it.	manual
+Grimdancer	static: This creature enters with your choice of N different counters on it from among menace, deathtouch, and lifelink.	manual
+Pharika's Spawn	static: This creature escapes with N +N/+N counters on it. When it enters this way, each opponent sacrifices a non-Gorgon creature of their choice.	partial
+Rampant Frogantua	static: This creature gets +N/+N for each player who has lost the game.	partial
+Centaur of Attention	static: This creature gets +X/+X, where X is the greatest number of stored results on it of the same value.	manual
+Volcano Hellion	static: This creature has echo {M}, where X is your life total.	manual
+Altar of the Wretched // Wretched Bonemass	static: This creature has flying as long as an exiled card used to craft it has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance.	partial
+Karakyk Guardian	static: This creature has hexproof as long as it hasn't dealt damage yet.	partial
+Nacatl War-Pride	static: This creature must be blocked by exactly N creature if able.	partial
+Korvold, Gleeful Glutton	static: This spell costs {M} less to cast for each card type among permanents you've sacrificed this turn.	partial
+Lumbering Megasloth	static: This spell costs {M} less to cast for each counter among players and permanents.	partial
+Valiant Changeling	static: This spell costs {M} less to cast for each creature type among creatures you control. This effect can't reduce the amount of mana this spell costs by more than {M}.	partial
+Blaster Hulk	static: This spell costs {M} less to cast for each {E} you've paid or lost this turn.	partial
+Obsidian Charmaw	static: This spell costs {M} less to cast for each land your opponents control that could produce {M}.	partial
+Avenge	static: This spell costs {M} less to cast if a player attacked you during their last turn.	partial
+Chandra's Incinerator	static: This spell costs {M} less to cast, where X is the total amount of noncombat damage dealt to your opponents this turn.	partial
+Inquisitive Glimmer	static: Unlock costs you pay cost {M} less.	partial
+Wolverine, Best There Is	static: Unrivaled Lethality — Double all damage ~ would deal.	partial
+Coalition Honor Guard	static: While an opponent is choosing targets as part of casting a spell they control or activating an ability they control, that player must choose at least N Flagbearer on the battlefield if able.	manual
+Standard Bearer	static: While an opponent is choosing targets as part of casting a spell they control or activating an ability they control, that player must choose at least N Flagbearer on the battlefield if able.	manual
+Panglacial Wurm	static: While you're searching your library, you may cast this card from your library.	partial
+Serra's Emissary	static: You and creatures you control have protection from the chosen card type.	partial
+Gor Muldrak, Amphinologist	static: You and permanents you control have protection from Salamanders.	manual
+Enthralling Hold	static: You can't choose an untapped creature as this spell's target as you cast it.	partial
+Dream Leash	static: You can't choose an untapped permanent as this spell's target as you cast it.	partial
+Experimental Frenzy	static: You can't play lands or cast spells from your hand.	partial
+Hogaak, Arisen Necropolis	static: You can't spend mana to cast this spell.	partial
+Carry Away	static: You control enchanted Equipment.	partial
+Omnath, Locus of Mana	static: You don't lose unspent green mana as steps and phases end.	manual
+Marina Vendrell's Grimoire	static: You have no maximum hand size and don't lose the game for having N or less life.	partial
+Oath of Teferi	static: You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once.	partial
+Butcher Orgg	static: You may assign this creature's combat damage divided as you choose among defending player and/or any number of creatures they control.	manual
+Galea, Kindler of Hope	static: You may cast Aura and Equipment spells from the top of your library. When you cast an Equipment spell this way, it gains "When this Equipment enters, attach it to target creature you control."	partial
+Thundermane Dragon	static: You may cast creature spells with power N or greater from the top of your library. If you cast a creature spell this way, it gains haste until end of turn.	partial
+Intrepid Paleontologist	static: You may cast Dinosaur creature spells from among cards you own exiled with this creature. If you cast a spell this way, that creature enters with a finality counter on it.	partial
+Dracogenesis	static: You may cast Dragon spells without paying their mana costs.	manual
+Haakon, Stromgald Scourge	static: You may cast this card from your graveyard, but not from anywhere else.	partial
+Quilled Greatwurm	static: You may cast this card from your graveyard by removing N counters from among creatures you control in addition to paying its other costs.	partial
+Risen Executioner	static: You may cast this creature from your graveyard if you pay {M} more to cast it for each other creature card in your graveyard.	partial
+Tegwyll's Scouring	static: You may cast this spell as though it had flash by tapping N untapped creatures you control with flying in addition to paying its other costs.	partial
+Quantum Reduction	static: You may cast this spell as though it had flash if it's cast using teamwork.	partial
+Timely Ward	static: You may cast this spell as though it had flash if it targets a commander.	partial
+Flash Photography	static: You may cast this spell as though it had flash if it targets a permanent you control.	partial
+Silver Scrutiny	static: You may cast this spell as though it had flash if X is N or less.	partial
+Molten Exhale	static: You may cast this spell as though it had flash if you behold a Dragon as an additional cost to cast it.	partial
+Circling Vultures	static: You may discard this card any time you could cast an instant.	partial
+Spinning Darkness	static: You may exile the top N black cards of your graveyard rather than pay this spell's mana cost.	partial
+Moritte of the Frost	static: You may have ~ enter as a copy of a permanent you control, except it's legendary and snow in addition to its other types and, if it's a creature, it enters with N additional +N/+N counters on it and has changeling.	partial
+Spark Double	static: You may have this creature enter as a copy of a creature or planeswalker you control, except it enters with an additional +N/+N counter on it if it's a creature, it enters with an additional loyalty counter on it if it's a planeswalker, and it isn't legendary.	manual
+Hulking Metamorph	static: You may have this creature enter as a copy of an artifact or creature you control, except it's an artifact creature in addition to its other types, and its power and toughness are equal to this creature's power and toughness.	partial
+Vizier of Many Faces	static: You may have this creature enter as a copy of any creature on the battlefield, except if this creature was embalmed, the token has no mana cost, it's white, and it's a Zombie in addition to its other types.	partial
+Undercover Operative	static: You may have this creature enter as a copy of any creature on the battlefield, except it enters with a shield counter on it if you control that creature.	manual
+Altered Ego	static: You may have this creature enter as a copy of any creature on the battlefield, except it enters with X additional +N/+N counters on it.	partial
+Wall of Stolen Identity	static: You may have this creature enter as a copy of any creature on the battlefield, except it's a Wall in addition to its other types and has defender. When you do, tap the copied creature and it doesn't untap during its controller's untap step for as long as you control this creature.	manual
+Enhanced Surveillance	static: You may look at an additional N cards each time you surveil.	partial
+Thick-Skinned Goblin	static: You may pay {M} rather than pay the echo cost for permanents you control.	partial
+Kentaro, the Smiling Cat	static: You may pay {M} rather than pay the mana cost for Samurai spells you cast, where X is that spell's mana value.	partial
+Fist of Suns	static: You may pay {M} rather than pay the mana cost for spells you cast.	manual
+Jodah, Archmage Eternal	static: You may pay {M} rather than pay the mana cost for spells you cast.	partial
+Advancing the Spirit	static: You may pay {M} rather than pay the power-up cost of the first power-up ability you activate during each of your turns.	partial
+Security Rhox	static: You may pay {M} rather than pay this spell's mana cost. Spend only mana produced by Treasures to cast it this way.	manual
+Mikey & Don, Party Planners	static: You may play lands and cast Mutant, Ninja, or Turtle spells from the top of your library. If you cast a creature spell this way, that creature enters with an additional +N/+N counter on it.	partial
+Eye of Duskmantle	static: You may play lands and cast spells from among cards in your graveyard you've surveilled this turn. If you cast a spell this way, you pay life equal to its mana value rather than paying its mana cost.	partial
+Heart of Kiran	static: You may remove a loyalty counter from a planeswalker you control rather than pay ~'s crew cost.	partial
+God-Eternal Kefnet	static: You may reveal the first card you draw each turn as you draw it. Whenever you reveal an instant or sorcery card this way, copy that card and you may cast the copy. That copy costs {M} less to cast.	partial
+Inquisitor Eisenhorn	static: You may reveal the first card you draw each turn as you draw it. Whenever you reveal an instant or sorcery card this way, create Cherubael, a legendary N/N black Demon creature token with flying.	partial
+Chancellor of the Annex	static: You may reveal this card from your opening hand. If you do, when each opponent casts their first spell of the game, counter that spell unless that player pays {M}.	partial
+Case File Auditor	static: You may spend mana as though it were mana of any color to cast Case spells.	manual
+Nathan Drake, Treasure Hunter	static: You may spend mana as though it were mana of any color to cast spells you don't own or to activate abilities of permanents you control but don't own.	partial
+Sunglasses of Urza	static: You may spend white mana as though it were red mana.	manual
+Altar of the Pantheon	static: Your devotion to each color and each combination of colors is increased by N.	partial
+Megatron, Tyrant // Megatron, Destructive Force	static: Your opponents can't cast spells during combat.	partial
+The Tenth Doctor	triggered: Allons-y! — Whenever you attack, exile cards from the top of your library until you exile a nonland card. Put N time counters on it. If it doesn't have suspend, it gains suspend.	partial
+Heat Stroke	triggered: At end of combat, destroy each creature that blocked or was blocked this turn.	manual
+Jace, Multiverse Architect	triggered: At the beginning of combat on each opponent's turn, they may pay {M}. If they don't, creatures they control can't attack Jaces you control this turn.	partial
+Overencumbered	triggered: At the beginning of combat on enchanted opponent's turn, that player may pay {M} for each artifact they control. If they don't, creatures can't attack this combat.	partial
+Crystalline Giant	triggered: At the beginning of combat on your turn, choose a kind of counter at random that this creature doesn't have on it from among flying, first strike, deathtouch, hexproof, lifelink, menace, reach, trample, vigilance, and +N/+N. Put a counter of that kind on this creature.	manual
+Territorial Hellkite	triggered: At the beginning of combat on your turn, choose an opponent at random that this creature didn't attack during your last combat. This creature attacks that player this combat if able. If you can't choose an opponent this way, tap this creature.	partial
+Sigardian Zealot	triggered: At the beginning of combat on your turn, choose any number of creatures with different powers. Each of them gets +X/+X and gains vigilance until end of turn, where X is this creature's power.	manual
+Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant	triggered: At the beginning of combat on your turn, choose flying or indestructible at random. ~ gains that ability until end of turn.	partial
+Vannifar, Evolved Enigma	triggered: At the beginning of combat on your turn, choose N — | • Cloak a card from your hand. | • Put a +N/+N counter on each colorless creature you control.	manual
+Chaos Dragon	triggered: At the beginning of combat on your turn, each player rolls a dN. If N or more opponents had the highest result, this creature can't attack those players or planeswalkers they control this combat.	partial
+Hot Pursuit	triggered: At the beginning of combat on your turn, if N or more players have lost the game, gain control of all goaded and/or suspected creatures until end of turn. Untap them. They gain haste until end of turn.	manual
+Graf Rats	triggered: At the beginning of combat on your turn, if you both own and control this creature and a creature named Midnight Scavengers, exile them, then meld them into Chittering Host.	manual
+Rootha, Mastering the Moment	triggered: At the beginning of combat on your turn, if you've cast an instant or sorcery spell this turn, create an X/X blue and red Elemental creature token with flying and haste, where X is the greatest mana value among instant and sorcery spells you've cast this turn.	manual
+Serene Sleuth	triggered: At the beginning of combat on your turn, investigate for each goaded creature you control. Then each creature you control is no longer goaded.	partial
+Deceiver of Form	triggered: At the beginning of combat on your turn, reveal the top card of your library. If a creature card is revealed this way, you may have creatures you control other than this creature become copies of that card until end of turn. You may put that card on the bottom of your library.	manual
