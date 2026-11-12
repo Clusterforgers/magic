@@ -437,3 +437,57 @@ const TYPES: &str =
 fn r305b_a_reduction_that_cant_pass_five(#[case] json: String, #[case] reads: bool) {
     assert_eq!(writes(&json, CHANGELING), reads);
 }
+
+const TO_SOLVE: &str = "To solve \u{2014} You control seven or more lands.";
+
+fn to_solve(lands: i32, solved_check: bool) -> String {
+    let unsolved = r#"{"Not":{"Matches":{"subject":"This","selector":["Solved"]}}},"#;
+    let condition = format!(
+        r#"{{"All":[{}{{"Compare":{{"left":{{"Count":[{{"Type":"Land"}},{{"ControlledBy":"You"}}]}},"op":"Ge","right":{lands}}}}}]}}"#,
+        if solved_check { unsolved } else { "" }
+    );
+    format!(
+        r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"End","whose":"You"}}}},"if":{condition},"effects":[{{"Solve":{{"what":"This"}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::seven(to_solve(7, true), true)]
+#[case::six(to_solve(6, true), false)]
+#[case::solved_again(to_solve(7, false), false)]
+fn r305b_a_case_solved_with_seven_lands(#[case] json: String, #[case] reads: bool) {
+    assert_eq!(writes(&json, TO_SOLVE), reads);
+}
+
+const HOTHOUSE: &str = "Solved \u{2014} You may look at the top card of your library any time, and you may play lands and cast creature and enchantment spells from the top of your library.";
+
+fn solved_rule(rule: &str) -> String {
+    format!(
+        r#"{{"Rule":{{"rule":{rule},"condition":{{"Matches":{{"subject":"This","selector":["Solved"]}}}}}}}}"#
+    )
+}
+
+const LOOK: &str = r#"{"LookAtTopAnyTime":"You"}"#;
+const PLAY: &str = r#"{"MayCast":{"what":[{"AnyOf":[{"Type":"Land"},{"Type":"Creature"},{"Type":"Enchantment"}]}],"from":"Library","play":true}}"#;
+const CAST_ONLY: &str = r#"{"MayCast":{"what":[{"AnyOf":[{"Type":"Creature"},{"Type":"Enchantment"}]}],"from":"Library"}}"#;
+
+#[rstest]
+#[case::solved(solved_rule(LOOK), solved_rule(PLAY), true)]
+#[case::no_lands(solved_rule(LOOK), solved_rule(CAST_ONLY), false)]
+#[case::always(solved_rule(LOOK), PLAY.to_owned(), false)]
+fn r305b_what_a_solved_case_lets_you_play(
+    #[case] first: String,
+    #[case] second: String,
+    #[case] reads: bool,
+) {
+    let second = if second.starts_with(r#"{"MayCast""#) {
+        format!(r#"{{"Rule":{{"rule":{second}}}}}"#)
+    } else {
+        second
+    };
+    let texts = static_pair_texts(&ability(&first), &ability(&second));
+    assert_eq!(
+        texts.iter().any(|text| same_written_text(text, HOTHOUSE)),
+        reads
+    );
+}

@@ -6,7 +6,8 @@
 //! enters this way, a counter moved onto "that creature", a cost changed for each target of the spell, a bonus for each
 //! player who has lost the game, lands put onto the battlefield from among the cards a trigger milled, and a spell that
 //! costs less if a player attacked you during their last turn, spells that target the enchanted player costing less,
-//! and a reduction for each creature type that can't reduce the cost by more than {5}.
+//! a reduction for each creature type that can't reduce the cost by more than {5}, and a Case solved with seven lands
+//! that lets its controller look at and play from the top of their library.
 
 use serde_json::{Value, json};
 
@@ -48,6 +49,22 @@ pub(super) fn r305b_pair_texts(first: &Ability, second: &Ability) -> Vec<String>
         "if": { "CastWith": "Escape" },
         "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "Gorgon" } }] } }]
     } });
+    let solved = json!({ "Matches": { "subject": "This", "selector": ["Solved"] } });
+    let look = json!({ "Rule": { "rule": { "LookAtTopAnyTime": "You" }, "condition": solved } });
+    let play = json!({ "Rule": {
+        "rule": { "MayCast": {
+            "what": [{ "AnyOf": [{ "Type": "Land" }, { "Type": "Creature" }, { "Type": "Enchantment" }] }],
+            "from": "Library",
+            "play": true
+        } },
+        "condition": solved
+    } });
+    if first == look && second == play {
+        return vec![
+            "Solved \u{2014} You may look at the top card of your library any time, and you may play lands and cast creature and enchantment spells from the top of your library"
+                .to_owned(),
+        ];
+    }
     if first == escapes && second == sacrifice {
         return vec![
             "~ escapes with two +1/+1 counters on it. When it enters this way, each opponent sacrifices a non-Gorgon creature of their choice"
@@ -124,7 +141,17 @@ fn fixed(value: &Value) -> Vec<String> {
             "most": 5
         } }
     } });
-    let text = if value == &changeling {
+    let to_solve = json!({ "Triggered": {
+        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+        "if": { "All": [
+            { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
+            { "Compare": { "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }, "op": "Ge", "right": 7 } }
+        ] },
+        "effects": [{ "Solve": { "what": "This" } }]
+    } });
+    let text = if value == &to_solve {
+        "To solve \u{2014} You control seven or more lands"
+    } else if value == &changeling {
         "This spell costs {1} less to cast for each creature type among creatures you control. This effect can't reduce the amount of mana this spell costs by more than {5}"
     } else if value == &at_enchanted {
         "Spells you cast that target enchanted player cost {1} less to cast"

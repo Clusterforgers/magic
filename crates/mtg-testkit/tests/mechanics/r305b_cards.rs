@@ -424,3 +424,41 @@ fn r305b_valiant_changeling_reduces_at_most_five(
     assert_eq!(driver.pay_options()?.cost.to_string(), cost);
     Ok(())
 }
+
+#[rstest]
+#[case::seven_lands(7, true)]
+#[case::six_lands(6, false)]
+fn r305b_case_of_the_locked_hothouse_is_solved_with_seven_lands(
+    #[values(2, 3)] seats: usize,
+    #[case] count: usize,
+    #[case] solved: bool,
+) -> Result<(), ScriptError> {
+    use mtg_engine::turn::Step;
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            lands(count, forest)
+                .into_iter()
+                .chain([ready(card("Case of the Locked Hothouse").unwrap())]),
+        )
+        .library(
+            0,
+            [free_creature("Topmost", 2, 2), forest(), forest(), forest()],
+        );
+    let mut driver = Driver::from_scenario(scenario)?;
+    let next = 1 + u32::try_from(seats).unwrap();
+    driver.idle_until(next, Step::Main1)?;
+    // The draw step took the creature; the next card on top is a Forest, which is played from the library once solved.
+    let mtg_engine::decision::DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("seat 0 has priority in its main phase");
+    };
+    let from_library = options.playable_lands.iter().any(|land| {
+        driver
+            .state()
+            .object(*land)
+            .is_some_and(|object| object.zone() == Zone::Library(pid(0)))
+    });
+    assert_eq!(from_library, solved);
+    Ok(())
+}
