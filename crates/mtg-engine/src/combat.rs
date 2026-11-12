@@ -1,6 +1,6 @@
 //! Combat state and the legality of attacks and blocks.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
 use mtg_cards::modify::Blocking;
 use mtg_core::card::CardType;
@@ -9,8 +9,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::attack_tax;
 use crate::characteristics::{
-    blocker_limits, cant_attack, cant_attack_defender, cant_be_blocked_by, cant_block,
-    cant_block_attacker, characteristics, controller_of, goaded_by,
+    BlockSide, blocker_limits, cant_attack, cant_attack_defender, cant_be_blocked_between,
+    cant_block, cant_block_between, characteristics, controller_of, goaded_by,
 };
 use crate::combat_quirks::{
     attacks_despite_defender, blocks_while_tapped, cant_attack_alone, cant_block_alone,
@@ -519,80 +519,55 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .filter(|a| a.defender(state) == Some(player))
         .map(Attacker::object)
         .collect();
-    let candidates: Vec<(ObjectId, Vec<ObjectId>)> = state
-        .zone(Zone::Battlefield)
-        .iter()
-        .copied()
-        .filter(|id| {
-            controller_of(state, *id) == Some(player)
-                && may_block_body(state, *id)
-                && !cant_block(state, *id)
-        })
-        .map(|object| {
-            let can_block: Vec<ObjectId> = blockable
-                .iter()
-                .copied()
-                .filter(|attacker| {
-                    !keywords::stops_block(state, *attacker, object)
-                        && !cant_be_blocked_by(state, *attacker, object)
-                        && !cant_block_attacker(state, object, *attacker)
-                })
-                .collect();
-            (object, can_block)
-        })
-        .collect();
-    // How many candidates could block each attacker, counted once rather than per pair.
-    let mut able: BTreeMap<ObjectId, usize> = BTreeMap::new();
-    for (_, can_block) in &candidates {
-        for attacker in can_block {
-            *able.entry(*attacker).or_default() += 1;
-        }
-    }
+    let (candidates, able) = block_pairs(state, player, &blockable);
     let most = block_limit(state, player);
-    let together: BTreeSet<ObjectId> = blockable
+    // Whether each attacker can be blocked at all, by index into `blockable`.
+    let together: Vec<bool> = blockable
         .iter()
-        .copied()
-        .filter(|attacker| {
+        .zip(&able)
+        .map(|(attacker, able)| {
             let needed = keywords::min_blockers(state, *attacker);
             // An attacker that must have more blockers than it may have can't be blocked at all.
-            able.get(attacker).copied().unwrap_or(0) >= needed
+            *able >= needed
                 && blocker_limits(state, *attacker)
                     .1
                     .is_none_or(|most| needed <= most)
                 && most.is_none_or(|most| needed <= most)
         })
         .collect();
-    let blockable_together = |attacker: ObjectId| together.contains(&attacker);
+    let blockable_together = || {
+        blockable
+            .iter()
+            .zip(&together)
+            .filter(|(_, together)| **together)
+            .map(|(attacker, _)| *attacker)
+    };
     let mut blockers: Vec<BlockerOption> = candidates
-        .iter()
+        .into_iter()
         .filter_map(|(object, can_block)| {
             let can_block: Vec<ObjectId> = can_block
-                .iter()
-                .copied()
-                .filter(|attacker| blockable_together(*attacker))
+                .into_iter()
+                .filter(|index| together[*index])
+                .map(|index| blockable[index])
                 .collect();
-            let extra = w14c_extra_blocks(state, *object).min(can_block.len().saturating_sub(1));
+            let extra = w14c_extra_blocks(state, object).min(can_block.len().saturating_sub(1));
             (!can_block.is_empty()).then_some(BlockerOption {
-                object: *object,
+                object,
                 can_block,
                 extra,
             })
         })
         .collect();
-    let min_blockers = blockable
-        .iter()
-        .copied()
-        .filter(|attacker| blockable_together(*attacker))
+    // Every attacker that can be blocked at all is offered to some blocker: `together` asks for at least one.
+    let offered: BTreeSet<ObjectId> = blockable_together().collect();
+    let min_blockers = blockable_together()
         .map(|attacker| (attacker, keywords::min_blockers(state, attacker)))
         .filter(|(_, needed)| *needed > 1)
         .collect();
-    let max_blockers = blockable
-        .iter()
-        .copied()
-        .filter(|attacker| blockable_together(*attacker))
+    let max_blockers = blockable_together()
         .filter_map(|attacker| Some((attacker, blocker_limits(state, attacker).1?)))
         .collect();
-    let (mut must_be_blocked, forced) = name_requirements(state, &mut blockers);
+    let (mut must_be_blocked, forced) = name_requirements(state, &offered, &mut blockers);
     let cant_alone = cant_block_alone_of(state, &blockers);
     crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
@@ -615,6 +590,57 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
     }
 }
 
+/// The creatures `player` may block with, each with the attackers of `blockable` it could block as indices into it,
+/// and how many of them could block each attacker. Each attacker and each blocker is read once; a pair only compares
+/// what was read, so counting takes no map.
+fn block_pairs(
+    state: &GameState,
+    player: PlayerId,
+    blockable: &[ObjectId],
+) -> (Vec<(ObjectId, Vec<usize>)>, Vec<usize>) {
+    let attackers: Vec<(keywords::Combatant<'_>, BlockSide<'_>)> = blockable
+        .iter()
+        .map(|id| {
+            (
+                keywords::Combatant::of(state, *id),
+                BlockSide::of(state, *id),
+            )
+        })
+        .collect();
+    let mut able = vec![0usize; blockable.len()];
+    let candidates: Vec<(ObjectId, Vec<usize>)> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| {
+            controller_of(state, *id) == Some(player)
+                && may_block_body(state, *id)
+                && !cant_block(state, *id)
+        })
+        .map(|object| {
+            let (fighter, side) = (
+                keywords::Combatant::of(state, object),
+                BlockSide::of(state, object),
+            );
+            let can_block: Vec<usize> = attackers
+                .iter()
+                .enumerate()
+                .filter(|(_, (attacker, attacker_side))| {
+                    !keywords::stops_block_between(state, attacker, &fighter)
+                        && !cant_be_blocked_between(state, attacker_side, &side)
+                        && !cant_block_between(state, &side, attacker_side)
+                })
+                .map(|(index, _)| index)
+                .collect();
+            for index in &can_block {
+                able[*index] += 1;
+            }
+            (object, can_block)
+        })
+        .collect();
+    (candidates, able)
+}
+
 /// The blockers among `blockers` that can't block alone.
 fn cant_block_alone_of(state: &GameState, blockers: &[BlockerOption]) -> Vec<ObjectId> {
     let alone = blockers.iter().map(|option| option.object);
@@ -623,19 +649,16 @@ fn cant_block_alone_of(state: &GameState, blockers: &[BlockerOption]) -> Vec<Obj
         .collect()
 }
 
-/// Applies the requirements that name attackers to the blockers: a creature that must block an attacker it could block
+/// Applies the requirements that name attackers to the blockers (`offered` holds every attacker some blocker is offered): a creature that must block an attacker it could block
 /// is offered that attacker (or those) only, and the attackers that must be blocked by some creature are listed.
 /// Returns those attackers and the creatures so bound. A creature that can't block alone is bound by nothing.
 fn name_requirements(
     state: &GameState,
+    offered: &BTreeSet<ObjectId>,
     blockers: &mut [BlockerOption],
 ) -> (Vec<ObjectId>, Vec<ObjectId>) {
-    let offered: BTreeSet<ObjectId> = blockers
-        .iter()
-        .flat_map(|option| option.can_block.iter().copied())
-        .collect();
     let (mut some, mut every) = (Vec::new(), Vec::new());
-    for attacker in offered {
+    for attacker in offered.iter().copied() {
         match must_be_blocked(state, attacker) {
             Some(Blocking::Every) => every.push(attacker),
             Some(Blocking::AtLeastOne) => some.push(attacker),

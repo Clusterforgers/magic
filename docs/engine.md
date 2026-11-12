@@ -202,7 +202,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 
 | Hook | Keyword | Read by |
 |---|---|---|
-| `restricts_blocking`, `restricts_blocked`, `answers_evasion` | flying, reach, fear, intimidate, skulk, shadow, horsemanship, landwalk | `stops_block` in `block_options` |
+| `restricts_blocking`, `restricts_blocked`, `answers_evasion` | flying, reach, fear, intimidate, skulk, shadow, horsemanship, landwalk | `stops_block_between` in `block_options` |
 | `min_blockers` | menace | `block_options`, `check_blockers` |
 | `forbids_attacking` | defender | `can_attack` |
 | `ignores_summoning_sickness` | haste | `can_attack`, mana and `{T}` abilities, the views |
@@ -211,7 +211,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 | `adds_abilities` (a `defining` static) | changeling, devoid | `layers::outside` and the layers pass |
 | `is_indestructible` | indestructible | state-based actions; the `Destroy` primitive |
 | `restricts_targeting`, `restricts_player_targeting` | hexproof, shroud | `legal_targets` through `protects` and `protects_player`; a player's hexproof from a quality through `hexproof::ep23_player_hexproof_from` |
-| `protects_from` (`Holder`, `Source`) | protection | `keywords::protected_from`: damage in `replace.rs`, `legal_host` in `attach.rs`, `stops_block`, `legal_targets` |
+| `protects_from` (`Holder`, `Source`) | protection | `keywords::protected_from`: damage in `replace.rs`, `legal_host` in `attach.rs`, `stops_block_between`, `legal_targets` |
 | `grants_timing` | flash | `priority_options` through `grants_instant_timing` |
 
 - Keywords that are triggers or activated abilities (prowess, battle cry, ward, equip, reconfigure, living weapon, crew, cycling, ...) return DSL abilities from `adds_abilities`; the rest of the engine reads them as printed abilities. Each instance adds its own.

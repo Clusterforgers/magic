@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, sound cues, deployment.
+- Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, deployment.
 - In progress: M3 card system and M6 coverage. A card the compiler does not read whole is played through by-hand clauses. The owner's Moxfield deck is fully Verified. Run `mtg-cli compile` and `coverage` for the current numbers before quoting any.
 - Open: spectators, handicaps, an off-queen copy of the backups (M7), replays and solo play (M8).
 
@@ -42,6 +42,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Control and text: a player controlled during their next turn with the controller answering and seeing for them (CR 722), control of a spell on the stack, text changes in layer 3 (CR 612), cleave, a restart of the game (CR 727) and the cards an opponent finds exiled for the searcher's controller (`docs/engine.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
 - Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps and side-by-side test binaries, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Polish: block options that read each attacker and blocker once (67 ms at 1,500 against 1,500), synthesized sound cues for the viewer's turn, a decision and a win, with a mute (`docs/web.md`, Sounds).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 
 ## Live game
@@ -158,4 +159,4 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] Animations beyond the table feedback (`docs/web.md`), replays, solo play against bots
 - [ ] Performance profile on real hardware with real card art
-- [ ] (p1a) Block options test evasion once per attacker and per blocker (0.4 s at 1,500 against 1,500 today), and a death re-derives the layers only when an effect reads it
+- [ ] (p1b) A death re-derives the layers only when an effect reads it, so a sweep of a table full of static abilities costs time in proportion to the table (`layers.rs` `leaves_alone`, `crowded_turn.rs`)

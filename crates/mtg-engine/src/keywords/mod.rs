@@ -758,17 +758,56 @@ pub(crate) fn protected_from(state: &GameState, holder: Holder, source: Source<'
         .any(|keyword| rules(keyword).protects_from(state, keyword, holder, source))
 }
 
-/// Whether a keyword of the attacker stops `blocker` from blocking it: menace-like restrictions, and protection from
-/// the blocker.
+/// [`stops_block_between`] for two creatures by id.
+#[cfg(test)]
 pub(crate) fn stops_block(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
-    keywords_of(state, attacker)
-        .into_iter()
-        .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
-        || keywords_of(state, blocker)
-            .into_iter()
-            .any(|keyword| rules(keyword).restricts_blocked(state, keyword, attacker, blocker))
-        || Source::live(state, blocker)
-            .is_some_and(|source| protected_from(state, Holder::Object(attacker), source))
+    stops_block_between(
+        state,
+        &Combatant::of(state, attacker),
+        &Combatant::of(state, blocker),
+    )
+}
+
+/// A creature of a block declaration with its keywords, read once, so each pair of an attacker and a blocker is judged
+/// without reading either again.
+pub(crate) struct Combatant<'a> {
+    id: ObjectId,
+    keywords: Vec<&'a Keyword>,
+    source: Option<Source<'static>>,
+}
+
+impl<'a> Combatant<'a> {
+    /// The creature `id` as it is now.
+    pub(crate) fn of(state: &'a GameState, id: ObjectId) -> Combatant<'a> {
+        Combatant {
+            id,
+            keywords: keywords_of(state, id),
+            source: Source::live(state, id),
+        }
+    }
+}
+
+/// Whether a keyword of the attacker stops the blocker from blocking it: menace-like restrictions, the blocker's own
+/// (reach, landwalk answers), and protection of the attacker from the blocker (the keywords `protected_from` reads).
+pub(crate) fn stops_block_between(
+    state: &GameState,
+    attacker: &Combatant<'_>,
+    blocker: &Combatant<'_>,
+) -> bool {
+    let (a, b) = (attacker.id, blocker.id);
+    attacker
+        .keywords
+        .iter()
+        .any(|keyword| rules(keyword).restricts_blocking(state, keyword, a, b))
+        || blocker
+            .keywords
+            .iter()
+            .any(|keyword| rules(keyword).restricts_blocked(state, keyword, a, b))
+        || blocker.source.is_some_and(|source| {
+            attacker.keywords.iter().any(|keyword| {
+                rules(keyword).protects_from(state, keyword, Holder::Object(a), source)
+            })
+        })
 }
 
 /// Whether a keyword lets the card be cast whenever an instant could be.
