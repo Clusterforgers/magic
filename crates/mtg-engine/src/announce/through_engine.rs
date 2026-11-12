@@ -170,6 +170,7 @@ fn a_cast_that_cannot_go_on_is_taken_back_with_a_logged_reason_and_nothing_else(
             player: SEAT,
             object: card,
             reason: Unplayable::Mana,
+            why: None,
         }]
     );
     assert_eq!(engine.state().zone(Zone::Hand(SEAT)), [card]);

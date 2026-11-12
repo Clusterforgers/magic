@@ -165,7 +165,7 @@ enum Quantity {
 /// many Treasure tokens.", "Investigate."
 pub fn tokens(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if r.word("investigate") {
-        return Some(vec![clue(Ref::You)]);
+        return Some(super::l31a_performed::investigation(clue(Ref::You)));
     }
     made_by(r, &Ref::You)
 }

@@ -53,7 +53,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 21;
-const SERVER_VARIANTS: usize = 19;
+const SERVER_VARIANTS: usize = 20;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -137,6 +137,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::AutoYields { .. } => 16,
         ServerMessage::Deciding { .. } => 17,
         ServerMessage::AutoSkips { .. } => 18,
+        ServerMessage::Spectators { .. } => 19,
     }
 }
 
@@ -257,6 +258,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
+            inactive: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -370,6 +372,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
+            inactive: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -754,6 +757,7 @@ fn server_samples() -> Vec<ServerMessage> {
         ServerMessage::Lobby {
             seats: lobby_seats(),
             needed: 2,
+            teams: None,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -826,6 +830,8 @@ fn server_samples() -> Vec<ServerMessage> {
         },
     ));
     out.push(ServerMessage::Deciding { seats: Vec::new() });
+    out.push(ServerMessage::Spectators { count: 0 });
+    out.push(ServerMessage::Spectators { count: 3 });
     out.push(ServerMessage::Deciding {
         seats: vec![
             DecidingView {
@@ -849,6 +855,7 @@ fn server_samples() -> Vec<ServerMessage> {
         out.push(ServerMessage::Error {
             code,
             message: format!("{code:?}"),
+            refusal: None,
         });
     }
     out.extend(clocked_decisions());
@@ -1072,6 +1079,7 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Lobby {
         seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false, deck: None }],
         needed: 1,
+        teams: None,
     },
     json!({
         "type": "Lobby", "needed": 1,
@@ -1168,7 +1176,7 @@ fn client_wire_shape_is_flat_and_tagged(
     })
 )]
 #[case(
-    ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into() },
+    ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into(), refusal: None },
     json!({"type": "Error", "code": "StaleDecision", "message": "late"})
 )]
 #[case(
@@ -1406,7 +1414,7 @@ proptest! {
             decision: DecisionId(u64::from(id)),
             answer: Answer::Discard(cards.iter().map(|c| ObjectId(u64::from(*c))).collect()),
         };
-        let error = ServerMessage::Error { code: ErrorCode::BadMessage, message: text };
+        let error = ServerMessage::Error { code: ErrorCode::BadMessage, message: text, refusal: None };
         round_trip(&join);
         round_trip(&answer);
         round_trip(&error);
@@ -1935,6 +1943,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         endable: Vec::new(),
         faces: Vec::new(),
         unplayable: Vec::new(),
+        inactive: Vec::new(),
         can_act: true,
         can_pass: true,
     };

@@ -241,6 +241,20 @@ export function lobbyApi(
 ): LobbyApi {
   return {
     setVisibility: async (_game, visibility) => visibility,
+    setTeams: async (_game, teams) => {
+      session.store.setState((state) =>
+        state.lobby === null
+          ? {}
+          : {
+              lobby: {
+                seats: state.lobby.seats.map((entry) => ({ ...entry, ready: false })),
+                needed: state.lobby.seats.length,
+                ...(teams === null ? {} : { teams }),
+              },
+            },
+      )
+      return teams
+    },
     closeGame: async () => undefined,
     leaveGame: async () => undefined,
     releaseSeat: async (_game, seat) => {

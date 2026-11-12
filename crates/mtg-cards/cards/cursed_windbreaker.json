@@ -15,6 +15,7 @@
               { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
               { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
               { "Manifest": { "as": "manifested4" } },
+              { "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest3" } } },
               { "Attach": { "what": "This", "to": { "Bound": "manifested4" } } }
             ]
           }

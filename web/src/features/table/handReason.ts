@@ -6,6 +6,7 @@
 import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable } from '@/protocol/generated'
 import type { CardNote, CardNotes } from './prompt/marks'
 import { manaValue } from './prompt/payment'
+import { whyLine } from './whyWords'
 
 /** A reason the server can give. */
 export type { Unplayable }
@@ -66,9 +67,43 @@ export function handNotes(
   for (const id of view.players[view.viewer]?.hand.cards ?? []) {
     const object = objectsById[id]
     const reason = object === undefined ? null : unplayableReason(object, view, options)
-    if (reason === null) continue
+    if (reason === null || object === undefined) continue
     const { label, line } = REASON_WORDS[reason]
-    notes.set(id, { hint: label, line, words: label.toLowerCase() })
+    const told = options.unplayable?.find((entry) => entry.card === id)
+    if (told?.why === undefined) {
+      notes.set(id, { hint: label, line, words: label.toLowerCase() })
+      continue
+    }
+    const said = whyLine(
+      { name: object.name, rulesText: object.rules_text, doing: 'cast' },
+      told.reason,
+      told.why,
+    )
+    notes.set(id, { hint: label, line: said, words: `${label.toLowerCase()}: ${said}` })
+  }
+  return notes
+}
+
+/**
+ * The note of every permanent of the viewer with activated abilities, none of which can be activated now: the reason
+ * of its first ability (`PriorityOptions.inactive`) in the preview and the spoken name, no hint on the card.
+ */
+export function inactiveNotes(
+  objectsById: Readonly<Record<number, ObjectView>>,
+  options: PriorityOptions,
+): CardNotes {
+  const notes = new Map<number, CardNote>()
+  const usable = new Set((options.abilities ?? []).map((ability) => ability.object))
+  for (const entry of options.inactive ?? []) {
+    const id = entry.ability.object
+    const object = objectsById[id]
+    if (object === undefined || usable.has(id) || notes.has(id)) continue
+    const line = whyLine(
+      { name: object.name, rulesText: object.rules_text, doing: 'activate' },
+      entry.reason,
+      entry.why,
+    )
+    notes.set(id, { line, words: `can't activate now: ${line}` })
   }
   return notes
 }

@@ -94,7 +94,14 @@ describe('the requests', () => {
         reportCard('Lightning Bolt', {
           count: 4,
           support: 'partial',
-          reasons: [{ face: 0, span: { start: 0, end: 21 }, text: 'the engine does not run X yet' }],
+          reasons: [
+            {
+              face: 0,
+              span: { start: 0, end: 21 },
+              text: 'the engine does not run X yet',
+              quote: 'Lightning Bolt deals 3',
+            },
+          ],
         }),
       ],
       [legalityIssue('the deck has 4 cards, a Modern deck has at least 60')],
@@ -251,7 +258,12 @@ describe('answers that do not match the types', () => {
     ['a card in a support state the server never sends', badCard({ support: 'great' })],
     ['a card without its reasons', badCard({ reasons: undefined })],
     ['a card whose draft is in a state the server never sends', badCard({ draft: 'great' })],
-    ['a reason without a span', badCard({ reasons: [{ face: 0, text: 'why' }] })],
+    ['a reason without a span', badCard({ reasons: [{ face: 0, text: 'why', quote: '' }] })],
+    [
+      'a reason without its quote',
+      badCard({ reasons: [{ face: 0, span: { start: 0, end: 1 }, text: 'why' }] }),
+    ],
+    ['a whole text that is not text', badCard({ whole_text: 3 })],
     [
       'a reason whose span is not numbers',
       badCard({ reasons: [{ face: 0, span: { start: 'a', end: 2 }, text: 'why' }] }),
@@ -330,6 +342,7 @@ describe('failures', () => {
     internal: 500,
     rate_limited: 429,
     stale_read: 409,
+    fix_mark_limit: 409,
   }
 
   it.each(DECK_ERROR_CODES)('keeps the code, status and sentence of %s on every call', async (code) => {

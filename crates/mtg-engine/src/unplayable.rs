@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use crate::decision::{FaceOption, Unplayable, UnplayableCard};
+use crate::decision::{FaceOption, Unplayable, UnplayableCard, Why};
 use crate::mana::{ManaOption, ManaPool};
 use crate::object::ObjectKind;
 use crate::priority::{land_play_left, sorcery_timing};
@@ -83,6 +83,8 @@ pub(crate) fn unplayable(
     player: PlayerId,
     judged: &BTreeMap<ObjectId, Option<Unplayable>>,
     offered: &Offered<'_>,
+    at_hand: (&ManaPool, &[ManaOption], i32),
+    restricted: bool,
 ) -> Vec<UnplayableCard> {
     let listed: BTreeSet<ObjectId> = offered
         .lands
@@ -99,17 +101,36 @@ pub(crate) fn unplayable(
             if object.kind() != ObjectKind::Card {
                 return None;
             }
-            let reason = if object.base_types().contains(CardType::Land) {
+            let land = object.base_types().contains(CardType::Land);
+            let reason = if land {
                 land_reason(state, player)
             } else {
                 judged.get(&card).copied().flatten()
             };
+            let why = match reason {
+                Some(reason) if land => land_why(state, player, reason),
+                Some(reason) => ways::why_now(state, player, card, reason, at_hand, restricted),
+                None => None,
+            };
             Some(UnplayableCard {
                 card,
                 reason: reason.unwrap_or(Unplayable::Restricted),
+                why,
             })
         })
         .collect()
+}
+
+/// The detail of `reason`, which [`land_reason`] gave: the timing, or the rule that forbids the land play.
+fn land_why(state: &GameState, player: PlayerId, reason: Unplayable) -> Option<Why> {
+    match reason {
+        Unplayable::Timing => Some(Why::SorcerySpeed),
+        Unplayable::Restricted => {
+            crate::prohibit::forbidder(state, crate::prohibit::Doing::PlayLand { player })
+                .map(|source| crate::why::forbidden_by(state, source))
+        }
+        _ => None,
+    }
 }
 
 /// Why `player` cannot play a land now: not their main phase with an empty stack, or no land play left (extra land

@@ -11,7 +11,10 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

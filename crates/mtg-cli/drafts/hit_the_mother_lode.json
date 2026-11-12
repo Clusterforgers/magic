@@ -33,6 +33,7 @@
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               },
+              { "Performed": { "action": "Discovered", "card": { "Bound": "found" }, "value": 10 } },
               {
                 "If": {
                   "condition": {

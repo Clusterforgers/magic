@@ -156,7 +156,7 @@ async fn the_lobby_shows_an_open_seat_with_no_name_and_counts_it_as_needed() {
 
     let mut host = Client::join(&handle, 0).await;
     assert!(matches!(host.next().await, ServerMessage::Welcome { .. }));
-    let ServerMessage::Lobby { seats, needed } = host.next().await else {
+    let ServerMessage::Lobby { seats, needed, .. } = host.next().await else {
         panic!("the host is sent the roster");
     };
     let open = |number: usize| LobbySeat {

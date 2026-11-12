@@ -12,6 +12,7 @@ mod c10_dice_per_player;
 mod c10_uc;
 mod c6_blk_aura;
 mod c7_untap;
+mod ce29_charm;
 mod chance;
 mod compared_to_chosen;
 mod control;
@@ -207,6 +208,10 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    // An investigation is worded as the Clue tokens it makes.
+    if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
+        return variants(&unlogged);
+    }
     if let Some(texts) = super::dk27_animate::dk27_animate_variants(ability) {
         return texts;
     }
@@ -542,6 +547,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // An investigation is worded as the Clue tokens it makes.
+    if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
+        return written_variants(&unlogged);
+    }
     // A keyword given twice ("Cascade, cascade.") is not worded as one list.
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
@@ -552,6 +561,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::r300c_writers::r300c_wordings(ability, written_variants, &mut texts);
+    super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
+    super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
+    super::l31a_events::l31a_wordings(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -1160,6 +1172,9 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
+    }
+    if let Some(found) = ce29_charm::ce29_joined(targets, effects) {
+        return found;
     }
     if let [
         Effect::Modal {

@@ -2,6 +2,16 @@
 import type { PreconListItem, PreconView } from '@/protocol/generated'
 import { board, cardLine, checked, issue, preconItem, preconView, reason } from '../fakePrecons'
 
+// Every card reads the same made-up text, long enough for the fixture's spans to quote something.
+const MADE_UP = Array.from(
+  { length: 5 },
+  (_, index) => `Clause ${index + 1} of the made-up text reads like this.`,
+).join(' ')
+
+/** A clause over `start`..`end` of the made-up text, quoting its words as the server does. */
+const quoted = (text: string, start = 0, end = 10) =>
+  reason(text, start, end, Array.from(MADE_UP).slice(start, end).join(''))
+
 /** Text that only the dev fixture holds, which `devBuild.test.ts` looks for in the production bundle. */
 export const PRECONS_FIXTURE_MARKER = 'dev-precons-fixture'
 
@@ -151,18 +161,18 @@ export function fixtureView(code: string): PreconView | null {
     return preconView(item, [
       cardLine('Eldrazi Temple'),
       cardLine('Kozilek, the Great Distortion', 'partial', {
-        reasons: [reason('Discard a card with mana value equal to the spell is not implemented', 40, 90)],
+        reasons: [quoted('Discard a card with mana value equal to the spell is not implemented', 40, 90)],
       }),
       cardLine('Emrakul, the Promised End', 'partial', {
         reasons: [
-          reason('Control of another player’s turn is not implemented', 12, 60),
-          reason('Protection from instants is not implemented', 62, 100),
+          quoted('Control of another player’s turn is not implemented', 12, 60),
+          quoted('Protection from instants is not implemented', 62, 100),
         ],
       }),
       cardLine('Ugin’s Conjurant', 'manual'),
-      cardLine('Thought-Knot Seer', 'manual', { reasons: [reason('No rules for this card yet')] }),
+      cardLine('Thought-Knot Seer', 'manual', { reasons: [quoted('No rules for this card yet')] }),
       cardLine('Eldrazi Monument', 'manual', {
-        reasons: [reason('Sacrifice a creature at upkeep is not implemented')],
+        reasons: [quoted('Sacrifice a creature at upkeep is not implemented')],
       }),
       cardLine('Sol Ring', 'verified'),
       cardLine('Wastes', 'verified', { count: 8 }),
