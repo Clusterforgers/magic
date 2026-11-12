@@ -246,7 +246,7 @@ fn kaerveks_spite_takes_every_permanent_and_card_in_hand(
     let mut driver = Driver::from_scenario(scenario)?;
     cast_at_seat_one(&mut driver, "Kaervek's Spite")?;
     let seat = mtg_core::ids::PlayerId::from_index(0);
-    assert!(driver.state().zone(Zone::Hand(seat)).is_empty());
+    assert_eq!(driver.state().zone(Zone::Hand(seat)).len(), 0);
     assert_eq!(names_on(&driver, seat), 0);
     assert_eq!(
         driver.state().zone(Zone::Graveyard(seat)).len(),

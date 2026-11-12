@@ -164,6 +164,9 @@ mod tests {
 
     #[test]
     fn r305c_no_counters_is_no_wording() {
-        assert!(r305c_counter_copy_texts(&creature(), &[], false, false, &[]).is_empty());
+        assert_eq!(
+            r305c_counter_copy_texts(&creature(), &[], false, false, &[]),
+            Vec::<String>::new()
+        );
     }
 }
