@@ -478,6 +478,9 @@ pub enum Prohibited {
     Activate(Selector),
     /// Be the target of spells and abilities from the sources the selector picks (CR 115); every source when empty.
     BeTargeted(Selector),
+    /// Be the target of spells or abilities that can target only Walls: a specification whose every kind of object is a
+    /// Wall.
+    BeTargetedByWallsOnly,
     /// Play lands as the special action (CR 305.1).
     PlayLand,
     /// Sacrifice permanents, or be sacrificed (CR 701.21).

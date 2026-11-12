@@ -337,6 +337,11 @@ pub(crate) fn legal_from(
         Target::Object(object) => {
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
                 && !forbidden_target(state, Target::Object(*object), source)
+                && !(r377_walls_only(&spec.what)
+                    && crate::prohibit::forbidden(
+                        state,
+                        crate::prohibit::Doing::BeTargetedByWallsOnly { object: object.id },
+                    ))
                 && !keywords::protects(state, object.id, source.id, controller)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
@@ -352,6 +357,19 @@ pub(crate) fn legal_from(
     legal.sort_unstable();
     legal.dedup();
     legal
+}
+
+/// Whether a specification can target only Walls: each kind of object it allows is a Wall.
+fn r377_walls_only(what: &Targetable) -> bool {
+    match what {
+        Targetable::Object(selector) => selector
+            .0
+            .iter()
+            .any(|pred| matches!(pred, Pred::Subtype(subtype) if subtype.0 == "Wall")),
+        Targetable::Either(kinds) => !kinds.is_empty() && kinds.iter().all(r377_walls_only),
+        Targetable::Together { what, .. } => r377_walls_only(what),
+        _ => false,
+    }
 }
 
 /// Whether a prohibition keeps the spell or ability of `by` from targeting `target` (`GameRule::Cant`).

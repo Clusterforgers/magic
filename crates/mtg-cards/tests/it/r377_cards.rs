@@ -103,6 +103,7 @@ fn written() {
 #[case("Loot, the Anomaly")]
 #[case("Phyrexian Unlife")]
 #[case("Keen-Eared Sentry")]
+#[case("Wall of Shadows")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -177,6 +178,8 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 )]
 #[case::twice("Keen-Eared Sentry", r#""per_turn":1"#, r#""per_turn":2"#)]
 #[case::you_too("Keen-Eared Sentry", r#""who":"Opponents""#, r#""who":"EachPlayer""#)]
+#[case::any_targeting("Wall of Shadows", r#""BeTargetedByWallsOnly""#, r#"{"BeTargeted":[]}"#)]
+#[case::the_walls("Wall of Shadows", r#""who":"This""#, r#""who":{"Each":[{"Subtype":"Wall"}]}"#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");

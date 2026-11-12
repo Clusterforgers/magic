@@ -220,5 +220,18 @@
    }
   },
   "Each opponent can't venture into the dungeon more than once each turn."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Cant": {
+      "who": "This",
+      "action": "BeTargetedByWallsOnly"
+     }
+    }
+   }
+  },
+  "This creature can't be the target of spells that can target only Walls or of abilities that can target only Walls."
  ]
 ]

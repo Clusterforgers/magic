@@ -461,6 +461,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant",
     "Rule.Cant.Activate",
     "Rule.Cant.BeTargeted",
+    "Rule.Cant.BeTargetedByWallsOnly",
     "Rule.Cant.PlayLand",
     "Rule.Cant.Sacrifice",
     "Rule.Cant.PutCounter",
@@ -1315,6 +1316,7 @@ mod tests {
     #[case::ending_the_turn("Effect.EndTurn", true)]
     #[case::cant_activate("Rule.Cant.Activate", true)]
     #[case::cant_be_targeted("Rule.Cant.BeTargeted", true)]
+    #[case::r377_cant_be_targeted_by_walls_only("Rule.Cant.BeTargetedByWallsOnly", true)]
     #[case::cant_play_land("Rule.Cant.PlayLand", true)]
     #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
     #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
