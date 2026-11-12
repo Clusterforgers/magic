@@ -1208,6 +1208,26 @@ describe('events with more than one shape', () => {
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
     ],
     [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [
+              { id: 1, counter: 1 },
+              { id: 2, counter: 1 },
+            ],
+            play: false,
+          },
+        },
+        'UntilEndOfCombatOnYourNextTurn',
+      ),
+      "Ana may cast Grizzly Bears and Hill Giant until end of combat on their controller's next turn",
+    ],
+    [
       ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),
       'Triggered abilities trigger an additional time',
     ],

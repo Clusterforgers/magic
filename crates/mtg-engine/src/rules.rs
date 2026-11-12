@@ -529,7 +529,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,

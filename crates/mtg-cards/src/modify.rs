@@ -253,6 +253,9 @@ pub enum Duration {
     UntilYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
+    /// Until the end of combat on the controller's next turn: it ends as that turn's postcombat main phase begins
+    /// ("Until end of combat on your next turn, you may play that card").
+    UntilEndOfCombatOnYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).

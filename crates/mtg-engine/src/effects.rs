@@ -463,6 +463,12 @@ pub(crate) fn lasts(
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
+        Duration::UntilEndOfCombatOnYourNextTurn => {
+            state.is_alive(controller)
+                && !(turn.number() > began
+                    && turn.active() == controller
+                    && turn.step() > Step::EndCombat)
+        }
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
@@ -795,6 +801,10 @@ mod tests {
     #[case::the_end_of_your_next_turn_in_the_turn_it_began(Duration::UntilEndOfYourNextTurn, (3, ME, Step::End), true)]
     #[case::the_end_of_your_next_turn_in_another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE, Step::Main1), true)]
     #[case::the_end_of_your_next_turn_in_that_turn(Duration::UntilEndOfYourNextTurn, (5, ME, Step::Main2), true)]
+    #[case::r306c_next_combat_in_the_turn_it_began(Duration::UntilEndOfCombatOnYourNextTurn, (3, ME, Step::End), true)]
+    #[case::r306c_next_combat_in_another_seats_turn(Duration::UntilEndOfCombatOnYourNextTurn, (4, FOE, Step::Main2), true)]
+    #[case::r306c_next_combat_through_its_last_step(Duration::UntilEndOfCombatOnYourNextTurn, (5, ME, Step::EndCombat), true)]
+    #[case::r306c_next_combat_after_it(Duration::UntilEndOfCombatOnYourNextTurn, (5, ME, Step::Main2), false)]
     fn each_duration_lasts_as_long_as_its_rule_says(
         #[case] duration: Duration,
         #[case] now: (u32, PlayerId, Step),

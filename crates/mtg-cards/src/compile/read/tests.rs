@@ -391,6 +391,7 @@ mod pump_wordings;
 mod put_back;
 mod r303c_writers;
 mod r304b_writers;
+mod r306c_wordings;
 mod r3g_outside;
 mod r4h_writers;
 mod r5b_writers;
