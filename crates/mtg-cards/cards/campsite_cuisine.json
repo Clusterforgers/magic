@@ -1,0 +1,63 @@
+{
+  "oracle_id": "45f58002-c831-4b35-8b8c-9a502118e2ec",
+  "name": "Campsite Cuisine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Campsite Cuisine",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "This"
+                    ],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "Type": "Creature"
+                      },
+                      {
+                        "Supertype": "Legendary"
+                      },
+                      {
+                        "ControlledBy": "You"
+                      }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Named": "food"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": {
+              "start": 91,
+              "end": 256
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

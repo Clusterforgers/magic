@@ -177,6 +177,18 @@ fn compact(name: &str) -> String {
     r#"{"HasKeywordNamed":"Disguise"}"#
 )]
 #[case::cerberus_hand("Underworld Cerberus", r#""to":"Hand""#, r#""to":"Exile""#)]
+#[case::preacher_most_life(
+    "Preacher of the Schism",
+    r#""op":"Ge","right":{"HighestLife""#,
+    r#""op":"Gt","right":{"HighestLife""#
+)]
+#[case::lammasu_three("Absolving Lammasu", r#""amount":3"#, r#""amount":2"#)]
+#[case::monitor_four(
+    "Surveillance Monitor",
+    r#"{"CollectEvidence":4}"#,
+    r#"{"CollectEvidence":3}"#
+)]
+#[case::overlord_tapped("Overlord of the Hauntwoods", r#""tapped":true,"#, "")]
 fn r289_a_card_reads_back_and_a_near_miss_does_not(
     #[case] name: &str,
     #[case] from: &str,
@@ -201,6 +213,7 @@ fn r289_a_card_reads_back_and_a_near_miss_does_not(
 #[case::bolas_unless_or_discard("Nicol Bolas, the Deceiver", 1)]
 #[case::cacophony_legendary_god("Cacophony Unleashed", 1)]
 #[case::pir_team_counters("Pir, Imaginative Rascal", 1)]
+#[case::campsite_sacrifice_foods("Campsite Cuisine", 1)]
 fn r289_a_partial_card_leaves_only_its_listed_clauses(#[case] name: &str, #[case] manual: usize) {
     let rules = compact(name);
     let (verdict, support) = judged(name, &rules);

@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R289_WHOLES: [(&str, &str); 17] = [
+const R289_WHOLES: [(&str, &str); 22] = [
     // gideon_martial_paragon
     (
         r#"{"Loyalty":{"cost":"Zero","effects":[{"Continuous":{"affected":"This","mods":[{"AddType":"Creature"},{"SetCreatureTypes":["Human","Soldier"]},{"SetPT":{"power":5,"toughness":5}},{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}},{"Shield":{"when":{"Damage":{"to":"This"}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#,
@@ -90,6 +90,31 @@ const R289_WHOLES: [(&str, &str); 17] = [
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Exile":{"what":{"Arrived":{"of":"This","zone":"Graveyard"}}}},{"Move":{"what":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"to":"Hand"}}]}}"#,
         r"When this creature dies, exile it and each player returns all creature cards from their graveyard to their hand.",
+    ),
+    // preacher_of_the_schism
+    (
+        r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"Compare":{"left":{"Life":"You"},"op":"Ge","right":{"HighestLife":"EachPlayer"}}},"effects":[{"Draw":{}},{"LoseLife":{"amount":1}}]}}"#,
+        r"Whenever this creature attacks while you have the most life or are tied for most life, you draw a card and you lose 1 life.",
+    ),
+    // absolving_lammasu
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Unsuspect":{"what":{"Each":[{"Type":"Creature"},"Suspected"]}}}]}}"#,
+        r"When this creature enters, all suspected creatures are no longer suspected.",
+    ),
+    // surveillance_monitor
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Pay":{"cost":[{"CollectEvidence":4}]}}]}}"#,
+        r"When this creature enters, you may collect evidence 4.",
+    ),
+    // campsite_cuisine
+    (
+        r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Type":"Creature"},{"Supertype":"Legendary"},{"ControlledBy":"You"}],"to":"Battlefield"}}]},"effects":[{"CreateToken":{"token":{"Named":"food"}}}]}}"#,
+        r"Whenever this enchantment or a legendary creature you control enters, create a Food token.",
+    ),
+    // overlord_of_the_hauntwoods
+    (
+        r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Everywhere","types":["Land"],"subtypes":["Plains","Island","Swamp","Mountain","Forest"]}},"tapped":true}}]}}"#,
+        r"Whenever this permanent enters or attacks, create a tapped colorless land token named Everywhere that is every basic land type.",
     ),
     // END
 ];

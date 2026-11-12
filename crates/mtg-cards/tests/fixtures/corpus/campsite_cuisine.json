@@ -1,0 +1,25 @@
+{
+  "id": "ec6d3402-eed6-44be-a572-9ec0678af403",
+  "oracle_id": "45f58002-c831-4b35-8b8c-9a502118e2ec",
+  "name": "Campsite Cuisine",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fic",
+  "collector_number": "464",
+  "rarity": "rare",
+  "released_at": "2025-12-05",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever this enchantment or a legendary creature you control enters, create a Food token.\nWhenever you attack, you may sacrifice X Foods. When you do, up to X target attacking creatures each get +3/+3 and gain trample and indestructible until end of turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Food"
+  ]
+}

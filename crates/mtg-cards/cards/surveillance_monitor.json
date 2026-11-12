@@ -1,0 +1,71 @@
+{
+  "oracle_id": "9be5a350-c38e-425f-9d6a-8eb111132a89",
+  "name": "Surveillance Monitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surveillance Monitor",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "CollectEvidence": 4
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "CollectedEvidence",
+                "who": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": [
+                        "Artifact",
+                        "Creature"
+                      ],
+                      "subtypes": [
+                        "Thopter"
+                      ],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Keyword": "Flying"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
