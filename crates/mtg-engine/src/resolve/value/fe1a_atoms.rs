@@ -35,9 +35,14 @@ impl Scope<'_> {
     ) -> Result<bool, ResolveError> {
         Ok(match pred {
             Pred::WasCast { by, from } => self.fe1a_was_cast(by.as_ref(), *from, seen)?,
-            Pred::CastWith(way) => {
-                Self::fe1a_cast_object(seen).is_some_and(|card| card.cast_way() == Some(*way))
-            }
+            Pred::CastWith(way) => match (self.casting, self.cast_targets.as_ref()) {
+                // A spell still being announced is cast the way its announcement chose (CR 601.2b), before it is on
+                // the stack: a cost change for spells cast that way reads it ("Flashback costs you pay cost {2} less").
+                (Some((cast, _)), Some(announced)) if cast == reference.id => {
+                    announced.choices.way == Some(*way)
+                }
+                _ => Self::fe1a_cast_object(seen).is_some_and(|card| card.cast_way() == Some(*way)),
+            },
             Pred::Attacking => self
                 .state
                 .combat()

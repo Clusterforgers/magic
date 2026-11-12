@@ -177,6 +177,7 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r301c_writers;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -322,6 +323,7 @@ pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
+pub use r301c_writers::keyword_cost_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -396,6 +398,14 @@ fn wf26_enchant_either(text: &str) -> Option<Selector> {
 /// What an affinity counts, from the words after "Affinity for" ("artifacts", "artifact creatures", "Equipment",
 /// "Islands", "tokens"), when all of the text reads.
 pub fn affinity_filter(text: &str) -> Option<Selector> {
+    // "snow lands": the supertype goes before what the rest of the words read (CR 205.4g).
+    if let Some(rest) = text.strip_prefix("snow ") {
+        let mut found = affinity_filter(rest)?;
+        found
+            .0
+            .insert(0, Pred::Supertype(mtg_core::card::Supertype::Snow));
+        return Some(found);
+    }
     let tokens = tokenize(&format!("all {text}"));
     let mut reader = Reader::new(&tokens, false);
     reader.word("all").then_some(())?;

@@ -69,6 +69,15 @@ fn is_spell_rule(body: &str) -> bool {
             && body.contains(", you may cast this spell as though it had flash"))
 }
 
+/// "Flashback costs you pay cost {2} less.", "Dash costs your opponents pay cost {2} more.": a cost change of the spells
+/// cast a way opens with the keyword's name but is a rule.
+fn r301c_way_costs(head: &str) -> bool {
+    head.split_once(" costs ").is_some_and(|(word, rest)| {
+        !word.contains(' ')
+            && (rest.starts_with("you pay ") || rest.starts_with("your opponents pay "))
+    })
+}
+
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 
 /// The kind of a clause's normalized text; `spell` is true on an instant or sorcery face.
@@ -92,6 +101,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
         && head.contains(" abilities you activate "))
         || head.starts_with("Equip costs you pay ")
+        || r301c_way_costs(head)
     {
         return ClauseKind::Static;
     }

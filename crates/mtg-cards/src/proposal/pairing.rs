@@ -7,8 +7,8 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    ep23_three_texts, own_names, read_keyword, read_keywords, same_written_text, static_pair_texts,
-    written_variants,
+    ep23_three_texts, keyword_cost_texts, own_names, read_keyword, read_keywords,
+    same_written_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -318,6 +318,7 @@ impl<'a> Pairer<'a> {
 
     fn run(mut self) -> Paired {
         self.manual();
+        self.r301c_keyword_costs();
         self.rmt0_cleave();
         self.keywords();
         self.alt_keywords();
@@ -661,6 +662,27 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             if let Some(slot) = self.find_text(kinds_of(&abilities[at - 1]), &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
+    }
+
+    /// A keyword cost and the spell's own reduction when cast for it are one clause of the card ("Flashback {8}{G}{G}.
+    /// This spell costs {X} less to cast this way, where X is ...").
+    fn r301c_keyword_costs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = keyword_cost_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(&[ClauseKind::Keyword], &written, false) {
                 self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
                 self.taken[at] = true;
                 self.slot_of[at] = Some(slot);
