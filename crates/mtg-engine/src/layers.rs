@@ -410,6 +410,12 @@ impl Held {
                 self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
                 self.keep_newer_counter_keywords(stamp, |_| true);
             }
+            Modification::LoseAbilitiesExceptMana => {
+                self.keywords.clear();
+                self.abilities.retain(|held| held.body.is_mana_ability());
+                self.suspect_cant_block = false;
+                self.keep_newer_counter_keywords(stamp, |_| true);
+            }
             Modification::LoseAbility(address) => self.e15g_lose(*address),
             Modification::GrantAbility(granted) => self.abilities.push(HeldAbility {
                 address: AbilityRef::granted(self.id, origin),
@@ -662,7 +668,7 @@ impl Cand<'_> {
         let loses = match &self.what {
             Source::Static(cand) => matches!(
                 &*cand.body,
-                Ability::Static { mods, .. } if matches!(mods.get(cand.index), Some(Wanted::LoseAbilities))
+                Ability::Static { mods, .. } if matches!(mods.get(cand.index), Some(Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana))
             ),
             Source::Registered(_) => false,
         };
@@ -728,6 +734,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::AddAllCreatureTypes => Layer::Type,
         Wanted::SetColors(_)
@@ -744,7 +751,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
-        | Wanted::LoseAbilities => Layer::Ability,
+        | Wanted::LoseAbilities
+        | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) => Layer::PtSet,
         Wanted::ModifyPT { .. } => Layer::PtModify,

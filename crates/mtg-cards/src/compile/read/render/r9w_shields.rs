@@ -150,6 +150,65 @@ impl Writer<'_> {
                     1,
                 ))
             }
+            // The same with an amount counted as the shield begins: "The next X damage that a source of your choice would deal to you and/or permanents you control this turn is
+            // dealt to any target instead."
+            [
+                Effect::Choose {
+                    who: Ref::You,
+                    from,
+                    count,
+                    bind,
+                    rest_as: None,
+                },
+                Effect::Shield {
+                    when:
+                        ReplaceWhen::Damage {
+                            to: Some(dealt),
+                            source,
+                            combat: None,
+                        },
+                    by: ReplaceBy::RedirectCounted { most, to },
+                    duration: Duration::UntilEndOfTurn,
+                },
+                ..,
+            ] if count.is_one()
+                && r303b_counted(most).is_some()
+                && source.0 == [Pred::Is(Ref::Bound(bind.clone()))] =>
+            {
+                let most = r303b_counted(most)?;
+                let chosen = chosen_source(from)?;
+                let dealt = self.r9w_one(dealt)?;
+                let to = self.r9w_one(to)?;
+                Some((
+                    vec![format!(
+                        "the next {most} damage that {chosen} would deal to {dealt} this turn is dealt to {to} instead"
+                    )],
+                    2,
+                ))
+            }
+            [
+                Effect::Shield {
+                    when:
+                        ReplaceWhen::Damage {
+                            to: Some(dealt),
+                            source,
+                            combat: None,
+                        },
+                    by: ReplaceBy::RedirectCounted { most, to },
+                    duration: Duration::UntilEndOfTurn,
+                },
+                ..,
+            ] if source.0.is_empty() && r303b_counted(most).is_some() => {
+                let most = r303b_counted(most)?;
+                let dealt = self.r9w_one(dealt)?;
+                let to = self.r9w_one(to)?;
+                Some((
+                    vec![format!(
+                        "the next {most} damage that would be dealt to {dealt} this turn is dealt to {to} instead"
+                    )],
+                    1,
+                ))
+            }
             _ => None,
         }
     }
@@ -177,5 +236,14 @@ impl Writer<'_> {
             },
             _ => None,
         }
+    }
+}
+
+/// The words of a total counted as a redirection shield begins: "X" or a number.
+fn r303b_counted(most: &crate::value::Amount) -> Option<String> {
+    match most {
+        crate::value::Amount::X => Some("X".to_owned()),
+        crate::value::Amount::Fixed(n) if *n > 0 => Some(n.to_string()),
+        _ => None,
     }
 }

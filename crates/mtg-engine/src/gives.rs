@@ -116,7 +116,9 @@ impl Gives {
             Modification::BlocksAdditional(_) => GivenRule::BlocksAdditional,
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
-            Modification::LoseAbilities => GivenRule::LoseAbilities,
+            Modification::LoseAbilities | Modification::LoseAbilitiesExceptMana => {
+                GivenRule::LoseAbilities
+            }
             Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
             | Modification::LockKeyword(_) => GivenRule::LoseKeyword,

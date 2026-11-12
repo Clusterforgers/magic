@@ -81,6 +81,9 @@ pub enum Modification {
     /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
     /// creature type of your choice". Only an effect of a spell or ability has it.
     SetCreatureTypesChosen(String),
+    /// Adds the creature type the resolution chose under this name (layer 4): "becomes the creature type of your choice
+    /// in addition to its other types". Only an effect of a spell or ability has it.
+    AddCreatureTypeChosen(String),
     /// Changes the text (layer 3, CR 612): every instance of the word the resolution chose under `from` becomes the word it
     /// chose under `to` ("replacing all instances of one color word with another"). Only an effect of a spell or ability
     /// has it.
@@ -118,6 +121,9 @@ pub enum Modification {
     GainAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
+    /// The object loses all its abilities except mana abilities (layer 6, CR 605): "lose all abilities except mana
+    /// abilities"; abilities granted after it still count.
+    LoseAbilitiesExceptMana,
     /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
     /// effect of an activated ability has it, never a static ability.
     LoseThisAbility,
@@ -189,6 +195,7 @@ impl Modification {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddCreatureTypeChosen(_)
             | Modification::AddChosenSubtype
             | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_)
@@ -205,7 +212,8 @@ impl Modification {
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
-            | Modification::LoseAbilities => Some("6"),
+            | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana => Some("6"),
             Modification::SetPT { .. }
             | Modification::SetPower(_)
             | Modification::SetToughness(_) => Some("7b"),
@@ -421,6 +429,9 @@ pub enum CombatQuirk {
     AssignsByToughness,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
+    /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
+    /// "All Walls able to block ~ do so."
+    MustBeBlockedBy(Selector),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.
@@ -834,6 +845,12 @@ pub enum GameRule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
+    /// counters.
+    DamageAsWither,
+    /// Every creature can attack the players and the planeswalkers they control as though it had haste (CR 302.6): "All
+    /// creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste."
+    AttackAsThoughHasteAt(Ref),
     /// The players can't lose the game (CR 104.3), and with `opponents_cant_win` their opponents can't win it.
     CantLoseGame {
         /// The players who can't lose.

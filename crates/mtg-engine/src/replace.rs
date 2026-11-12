@@ -766,7 +766,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
             )
         }
-        ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
+        ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
+        | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }

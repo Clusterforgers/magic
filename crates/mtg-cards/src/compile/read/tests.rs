@@ -151,6 +151,7 @@ mod dk1d_spells;
 mod dk25_identity_protection;
 mod fix8_writers;
 mod fix9_writers;
+mod r303b;
 mod r7c_writers;
 mod r7d;
 

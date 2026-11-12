@@ -526,6 +526,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CastOnly { .. }
             | Ability::OpeningHand
             | Ability::OpeningHandWith { .. }
+            | Ability::OpeningReveal { .. }
             | Ability::FreeActivation { .. }
             | Ability::InstantActivation { .. }
             | Ability::CostModifier { .. } => &[ClauseKind::Static],

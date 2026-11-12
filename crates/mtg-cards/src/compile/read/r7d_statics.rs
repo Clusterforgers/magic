@@ -22,6 +22,9 @@ pub(super) fn combat_texts(rule: &GameRule) -> Vec<String> {
         CombatQuirk::MayStayTapped => "You may choose not to untap ~ during your untap step",
         CombatQuirk::MustBeBlocked(Blocking::Every) => "All creatures able to block ~ do so",
         CombatQuirk::MustBeBlocked(Blocking::AtLeastOne) => "~ must be blocked if able",
+        CombatQuirk::MustBeBlockedBy(blockers) => {
+            return super::r303b_statics::r303b_blocked_by_texts(blockers);
+        }
         CombatQuirk::AssignsNoCombatDamage => "~ assigns no combat damage",
         CombatQuirk::BlockAsThoughShadow => {
             "~ can block creatures with shadow as though it had shadow"

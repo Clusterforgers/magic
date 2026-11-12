@@ -1,17 +1,20 @@
 {
   "oracle_id": "f9d72bd4-8b4c-47bb-9361-a8cb5e5f64cb",
   "name": "Frenzied Saddlebrute",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Frenzied Saddlebrute",
       "oracle_fingerprint": "38c7953ab1bd797af945836cb5136091",
       "abilities": [
-        { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 123 }
+          "Keyword": "Haste"
+        },
+        {
+          "Rule": {
+            "rule": {
+              "AttackAsThoughHasteAt": "Opponents"
+            }
           }
         }
       ]

@@ -993,6 +993,14 @@ pub enum ReplaceBy {
         /// The player or permanent the damage is dealt to instead.
         to: Ref,
     },
+    /// `RedirectUpTo` with the total an amount counted as the shield begins (CR 611.2c): "the next X damage that would be
+    /// dealt to ~ this turn is dealt to target creature instead"; only a shield uses it.
+    RedirectCounted {
+        /// The most damage redirected in all, counted as the shield begins.
+        most: Amount,
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+    },
     /// All of the damage is dealt to `to` instead, by the same source (CR 614.9); only a shield uses it, which fixes `to`
     /// as it begins ("all damage that would be dealt to ~ this turn is dealt to target creature instead"). With `next`,
     /// only the next damage event it covers, and the shield ends ("the next time damage would be dealt to ~ this turn").

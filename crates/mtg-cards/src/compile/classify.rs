@@ -64,6 +64,7 @@ fn is_spell_rule(body: &str) -> bool {
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell without paying its mana cost"))
         || body.contains(" rather than pay this spell's mana cost")
+        || body.starts_with("You may reveal this card from your opening hand.")
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))
