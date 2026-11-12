@@ -36,7 +36,7 @@ for kind in test clippy check; do
   case_key "web source" $kind "" -- web/src/lib/flash.ts
   case_key "leaf crate" $kind "mtg-protocol mtg-server" -- crates/mtg-protocol/src/lib.rs
   case_key "dependency of all" $kind "$all" -- crates/mtg-core/src/lib.rs
-  case_key "a test file" $kind "mtg-cli mtg-protocol mtg-server mtg-testkit" -- crates/mtg-testkit/tests/it/new.rs
+  case_key "a test file" $kind "mtg-cli mtg-protocol mtg-server mtg-testkit" -- crates/mtg-testkit/tests/game/new.rs
   case_key "Cargo.lock" $kind "$all" -- Cargo.lock
   case_key "toolchain file" $kind "$all" -- rust-toolchain.toml
   case_key "cargo config" $kind "$all" -- .cargo/extra.toml
