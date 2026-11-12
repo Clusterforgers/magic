@@ -1,0 +1,65 @@
+Memory Crystal	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	manual
+Obsidian Charmaw	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	partial
+Professor Hojo	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	manual
+Ranar the Ever-Watchful	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	partial
+Rowan, Scion of War	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	partial
+Will, Scion of Peace	cost modifiers with new counts and scopes (first each turn, per X, mechanic costs) [A]	partial
+Dargo, the Shipwrecker	cost reader: existing cost shapes in new wording [A]	partial
+Night Soil	cost reader: existing cost shapes in new wording [A]	manual
+Tectonic Split	cost reader: existing cost shapes in new wording [A]	partial
+Urgent Necropsy	cost reader: existing cost shapes in new wording [A]	partial
+Desertion	countered spell goes elsewhere instead (reader) [A]	manual
+Guile	countered spell goes elsewhere instead (reader) [A]	partial
+Minamo's Meddling	countered spell goes elsewhere instead (reader) [A]	manual
+Diligent Farmhand	counts as a card named X in a graveyard [A]	partial
+Pardic Firecat	counts as a card named X in a graveyard [A]	partial
+Balduvian Fallen	cumulative upkeep/echo paid or not paid triggers [A]	partial
+Heart of Bogardan	cumulative upkeep/echo paid or not paid triggers [A]	partial
+Hibernation's End	cumulative upkeep/echo paid or not paid triggers [A]	partial
+Shah of Naar Isle	cumulative upkeep/echo paid or not paid triggers [A]	partial
+Thought Lash	cumulative upkeep/echo paid or not paid triggers [A]	partial
+Aether Revolt	damage/life-loss increase, double and cap replacements (reader) [A]	manual
+Anthem of Rakdos	damage/life-loss increase, double and cap replacements (reader) [A]	manual
+Bloodletter of Aclazotz	damage/life-loss increase, double and cap replacements (reader) [A]	partial
+Far Fortune, End Boss	damage/life-loss increase, double and cap replacements (reader) [A]	partial
+Taii Wakeen, Perfect Shot	damage/life-loss increase, double and cap replacements (reader) [A]	manual
+Power Pack	delayed actions: return/draw/cast at a later step (reader) [A]	partial
+Bounty of the Hunt	divide damage or counters among any number of targets [A]	partial
+Crashing Wave	divide damage or counters among any number of targets [A]	manual
+Impact Resonance	divide damage or counters among any number of targets [A]	manual
+Nahiri's Sacrifice	divide damage or counters among any number of targets [A]	manual
+Shambling Swarm	divide damage or counters among any number of targets [A]	manual
+Spoils of War	divide damage or counters among any number of targets [A]	manual
+Stumpsquall Hydra	divide damage or counters among any number of targets [A]	manual
+Vastwood Hydra	divide damage or counters among any number of targets [A]	partial
+Blinding Beam	doesn't untap during next untap step(s) (reader) [A]	partial
+Illithid Harvester // Plant Tadpoles	doesn't untap during next untap step(s) (reader) [A]	manual
+Stunning Strike	doesn't untap during next untap step(s) (reader) [A]	partial
+Alms Collector	draw replacements: draw extra, reveal, from the bottom [A]	partial
+Breathstealer's Crypt	draw replacements: draw extra, reveal, from the bottom [A]	manual
+Quantum Riddler	draw replacements: draw extra, reveal, from the bottom [A]	partial
+Reed Richards, Smartest Man	draw replacements: draw extra, reveal, from the bottom [A]	partial
+River Song	draw replacements: draw extra, reveal, from the bottom [A]	manual
+Zur's Weirding	draw replacements: draw extra, reveal, from the bottom [A]	partial
+Catch // Release	each player chooses what to keep and sacrifices the rest [A]	partial
+Destined Confrontation	each player chooses what to keep and sacrifices the rest [A]	manual
+Slaughter the Strong	each player chooses what to keep and sacrifices the rest [A]	manual
+Denry Klin, Editor in Chief	enters with counters: new counts and conditions (reader) [A]	manual
+Dragon's Disciple	enters with counters: new counts and conditions (reader) [A]	partial
+Dralnu's Pet	enters with counters: new counts and conditions (reader) [A]	partial
+Emblazoned Golem	enters with counters: new counts and conditions (reader) [A]	partial
+Grimdancer	enters with counters: new counts and conditions (reader) [A]	manual
+Ulamog, the Defiler	enters with counters: new counts and conditions (reader) [A]	partial
+Voidpouncer	enters with counters: new counts and conditions (reader) [A]	partial
+Wildgrowth Archaic	enters with counters: new counts and conditions (reader) [A]	partial
+Aegar, the Freezing Flame	excess damage triggers and amounts (reader) [A]	manual
+Fall of Cair Andros	excess damage triggers and amounts (reader) [A]	partial
+Maarika, Brutal Gladiator	excess damage triggers and amounts (reader) [A]	partial
+Magmatic Galleon	excess damage triggers and amounts (reader) [A]	partial
+Overclocked Electromancer	excess damage triggers and amounts (reader) [A]	partial
+Rith, Liberated Primeval	excess damage triggers and amounts (reader) [A]	partial
+Legerdemain	exchange control with a shared-type target rule [A]	manual
+Role Reversal	exchange control with a shared-type target rule [A]	manual
+Cosmic Intervention	exile and return at the next end step (with Auras, replacement form) [A]	partial
+Waterbender's Restoration	exile and return at the next end step (with Auras, replacement form) [A]	manual
+Braided Net // Braided Quipu	for-as-long-as durations: control while tapped/enchanted, while counter [A]	partial

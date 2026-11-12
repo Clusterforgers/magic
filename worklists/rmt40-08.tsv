@@ -1,0 +1,37 @@
+Jegantha, the Wellspring	(unsorted) activated: {T}: Add {M}. This mana can't be spent to pay generic mana costs.	partial
+Paliano, the High City	(unsorted) activated: {T}: Add N mana of any color chosen as you drafted cards named ~.	manual
+Flash of Insight	(unsorted) engine: Keyword.Flashback.Cost.ExileFromGraveyard.X	partial
+Firecat Blitz	(unsorted) engine: Keyword.Flashback.Cost.Sacrifice.X	partial
+Catalyst Stone	(unsorted) keyword: Flashback costs you pay cost {M} less.	manual
+Garza's Assassin	(unsorted) keyword: Recover—Pay half your life, rounded up.	partial
+Intervention Pact	(unsorted) spell: At the beginning of your next upkeep, pay {M}. If you don't, you lose the game.	manual
+Chance for Glory	(unsorted) spell: Creatures you control gain indestructible. Take an extra turn after this N. At the beginning of that turn's end step, you lose the game.	manual
+Regicide	(unsorted) spell: Destroy target creature that's N or more of the colors chosen as you drafted cards named ~.	manual
+Discontinuity	(unsorted) spell: End the turn.	manual
+March of Reckless Joy	(unsorted) spell: Exile the top X cards of your library. You may play up to N of those cards until the end of your next turn.	manual
+Face Yourself	(unsorted) spell: For each creature target player controls, create a token that's a copy of that creature, except it has haste and "At the beginning of the end step, if you don't control a planeswalker, sacrifice this creature."	manual
+Garbage Fire	(unsorted) spell: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	manual
+Martyrdom	(unsorted) spell: Until end of turn, target creature you control gains "{M}: The next N damage that would be dealt to target creature, planeswalker, or player this turn is dealt to this creature instead." Only you may activate this ability.	manual
+Arcane Savant	(unsorted) static: Before you shuffle your deck to start the game, you may reveal this card from your deck and exile an instant or sorcery card you drafted that isn't in your deck.	manual
+Tazri, Stalwart Survivor	(unsorted) static: Each creature you control has "{T}: Add N mana of any of this creature's colors. Spend this mana only to activate an ability of a creature. Activate only if this creature has another activated ability."	partial
+The Masamune	(unsorted) static: Equipped creature has "If a creature dying causes a triggered ability of this creature or an emblem you own to trigger, that ability triggers an additional time."	partial
+Omnath, Locus of Mana	(unsorted) static: ~ gets +N/+N for each unspent green mana you have.	partial
+Demonfire	(unsorted) static: Hellbent — If you have no cards in hand, this spell can't be countered and the damage can't be prevented.	partial
+Sekki, Seasons' Guide	(unsorted) static: If damage would be dealt to ~, prevent that damage, remove that many +N/+N counters from ~, and create that many N/N colorless Spirit creature tokens.	partial
+Animus of Predation	(unsorted) static: If you removed a creature card with flying from the draft with cards named ~, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, reach, and vigilance.	partial
+Paliano Vanguard	(unsorted) static: Other creatures you control of a type you noted for cards named ~ get +N/+N.	partial
+Cornered Market	(unsorted) static: Players can't play nonbasic lands with the same name as a nontoken permanent.	partial
+Doc Aurlock, Grizzled Genius	(unsorted) static: Plotting cards from your hand costs {M} less.	partial
+Khârn the Betrayer	(unsorted) static: The Betrayer — If damage would be dealt to ~, prevent that damage and an opponent of your choice gains control of it.	partial
+Agent's Toolkit	(unsorted) static: This artifact enters with a +N/+N counter, a flying counter, a deathtouch counter, and a shield counter on it.	partial
+Cogwork Tracker	(unsorted) static: This creature attacks a player you noted for cards named ~ each combat if able.	partial
+Lurking Automaton	(unsorted) static: This creature enters with X +N/+N counters on it, where X is the highest number you noted for cards named ~.	partial
+Pyretic Hunter	(unsorted) static: This creature enters with X +N/+N counters on it, where X is the highest number you noted for cards named ~.	partial
+Cogwork Grinder	(unsorted) static: This creature enters with X +N/+N counters on it, where X is the number of cards you removed from the draft with cards named ~.	partial
+The Master, Multiplied	(unsorted) static: Triggered abilities you control can't cause you to sacrifice or exile creature tokens you control.	partial
+Experimental Frenzy	(unsorted) static: You can't play lands or cast spells from your hand.	partial
+Marina Vendrell's Grimoire	(unsorted) static: You have no maximum hand size and don't lose the game for having N or less life.	partial
+Hundred-Battle Veteran	(unsorted) static: You may cast this card from your graveyard. If you do, it enters with a finality counter on it.	partial
+Wolverine, Best There Is	(unsorted) triggered: At the beginning of each end step, if ~ dealt damage to another creature this turn, put a +N/+N counter on him.	partial
+Gor Muldrak, Amphinologist	(unsorted) triggered: At the beginning of your end step, each player who controls the fewest creatures creates a N/N blue Salamander Warrior creature token.	partial
+Demonic Pact	(unsorted) triggered: At the beginning of your upkeep, choose N that hasn't been chosen — | • This enchantment deals N damage to any target and you gain N life. | • Target opponent discards N cards. | • Draw N cards. | • You lose the game.	manual

@@ -1,0 +1,62 @@
+Witness Protection	static oddities (reader) [A]	partial
+Tempt with Discovery	tempting offer [A]	manual
+Tempt with Mayhem	tempting offer [A]	manual
+Alrund, God of the Cosmos // Hakka, Whispering Raven	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Chandra, Chill of Compliance	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Galloping Lizrog	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Niko Defies Destiny	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Starving Revenant	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Voracious Dragon	'this way' references: cards and amounts moved/removed/revealed this way [A]	partial
+Wolf of Devil's Breach	'this way' references: cards and amounts moved/removed/revealed this way [A]	manual
+Foggy Swamp Visions	token copies of chosen/exiled objects (reader) [A]	manual
+Yenna, Redtooth Regent	token copies of chosen/exiled objects (reader) [A]	manual
+Esix, Fractal Bloom	token-creation replacement: create copies or other tokens instead [A]	partial
+Jinnie Fay, Jetmir's Second	token-creation replacement: create copies or other tokens instead [A]	manual
+Mirrormind Crown	token-creation replacement: create copies or other tokens instead [A]	partial
+Moonlit Meditation	token-creation replacement: create copies or other tokens instead [A]	partial
+Ashiok, Wicked Manipulator	tokens with granted abilities or linked P/T (reader) [A]	partial
+Acererak the Archlich	triggered oddities (reader) [A]	manual
+Azog, Moria's Ruin	triggered oddities (reader) [A]	manual
+Casey & Raph, Hotheads	triggered oddities (reader) [A]	manual
+Hellkite Courser	triggered oddities (reader) [A]	partial
+Imperial Mask	triggered oddities (reader) [A]	partial
+Jared Carthalion, True Heir	triggered oddities (reader) [A]	partial
+Kangee, Aerie Keeper	triggered oddities (reader) [A]	partial
+King Solomon's Frogs	triggered oddities (reader) [A]	partial
+Kozilek, the Broken Reality	triggered oddities (reader) [A]	partial
+Matter Reshaper	triggered oddities (reader) [A]	manual
+Nuka-Nuke Launcher	triggered oddities (reader) [A]	partial
+Rampaging Raptor	triggered oddities (reader) [A]	partial
+Shark Shredder, Killer Clone	triggered oddities (reader) [A]	partial
+Spellweaver Volute	triggered oddities (reader) [A]	partial
+Spikeshell Harrier	triggered oddities (reader) [A]	manual
+The Motherlode, Excavator	triggered oddities (reader) [A]	manual
+Vannifar, Evolved Enigma	triggered oddities (reader) [A]	manual
+Adeline, Resplendent Cathar	trigger reader: existing event with new filter or condition [A]	partial
+Adipose Offspring	trigger reader: existing event with new filter or condition [A]	partial
+Aragorn, Company Leader	trigger reader: existing event with new filter or condition [A]	manual
+Breena, the Demagogue	trigger reader: existing event with new filter or condition [A]	partial
+Canal Courier	trigger reader: existing event with new filter or condition [A]	partial
+Conspiracy Theorist	trigger reader: existing event with new filter or condition [A]	partial
+Desert Warfare	trigger reader: existing event with new filter or condition [A]	partial
+Frodo, Adventurous Hobbit	trigger reader: existing event with new filter or condition [A]	partial
+Gisa's Favorite Shovel	trigger reader: existing event with new filter or condition [A]	partial
+Kaust, Eyes of the Glade	trigger reader: existing event with new filter or condition [A]	partial
+Kodama of the East Tree	trigger reader: existing event with new filter or condition [A]	partial
+Magmablood Archaic	trigger reader: existing event with new filter or condition [A]	partial
+Nev, the Practical Dean	trigger reader: existing event with new filter or condition [A]	partial
+Protean Hydra	trigger reader: existing event with new filter or condition [A]	partial
+Rage Extractor	trigger reader: existing event with new filter or condition [A]	manual
+Reidane, God of the Worthy // Valkmira, Protector's Shield	trigger reader: existing event with new filter or condition [A]	partial
+Rigo, Streetwise Mentor	trigger reader: existing event with new filter or condition [A]	partial
+Riku of Many Paths	trigger reader: existing event with new filter or condition [A]	manual
+Rumbling Aftershocks	trigger reader: existing event with new filter or condition [A]	manual
+Void Mirror	trigger reader: existing event with new filter or condition [A]	manual
+Yidaro, Wandering Monster	trigger reader: existing event with new filter or condition [A]	partial
+Kozilek, the Great Distortion	(unsorted) activated: Discard a card with mana value X: Counter target spell with mana value X.	partial
+Spawnsire of Ulamog	(unsorted) activated: {M}: Cast any number of Eldrazi spells from among cards you own outside the game without paying their mana costs.	partial
+Volatile Chimera	(unsorted) activated: {M}: Choose a card at random you exiled with cards named ~. This creature becomes a copy of that card, except it has this ability.	manual
+Genju of the Realm	(unsorted) activated: {M}: Enchanted land becomes a legendary N/N Spirit creature with trample until end of turn. It's still a land.	partial
+Caller of the Untamed	(unsorted) activated: {M}, {T}: Create a token that's a copy of a card you exiled with cards named ~. X is the mana value of that card.	manual
+Bullseye, Death Dealer	(unsorted) activated: {M}, {T}, Sacrifice an artifact or discard a nonland card: ~ deals N damage to any target.	partial
+Prairie Dog	(unsorted) activated: {M}: Until end of turn, if you would put N or more +N/+N counters on a creature you control, put that many plus N +N/+N counters on it instead.	partial

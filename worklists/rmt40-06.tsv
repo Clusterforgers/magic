@@ -1,0 +1,67 @@
+Enhanced Surveillance	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Leader, Super-Genius	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Retriever Phoenix	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Steamflogger Boss	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Tekuthal, Inquiry Dominus	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+The Valeyard	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Topography Tracker	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Twinning Staff	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Twists and Turns // Mycoid Maze	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Zabaz, the Glimmerwasp	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial
+Abandoned Sarcophagus	replacement reader: existing event and outcome in new combinations [A]	manual
+Aven Mindcensor	replacement reader: existing event and outcome in new combinations [A]	partial
+Crafty Cutpurse	replacement reader: existing event and outcome in new combinations [A]	partial
+Don't Blink	replacement reader: existing event and outcome in new combinations [A]	partial
+Enduring Angel // Angelic Enforcer	replacement reader: existing event and outcome in new combinations [A]	partial
+Firestorm Phoenix	replacement reader: existing event and outcome in new combinations [A]	partial
+Freyalise's Winds	replacement reader: existing event and outcome in new combinations [A]	partial
+Gather Specimens	replacement reader: existing event and outcome in new combinations [A]	manual
+Land Equilibrium	replacement reader: existing event and outcome in new combinations [A]	manual
+Library of Leng	replacement reader: existing event and outcome in new combinations [A]	partial
+Primeval Spawn	replacement reader: existing event and outcome in new combinations [A]	partial
+Rain of Gore	replacement reader: existing event and outcome in new combinations [A]	manual
+Unpredictable Cyclone	replacement reader: existing event and outcome in new combinations [A]	partial
+Valentin, Dean of the Vein // Lisette, Dean of the Root	replacement reader: existing event and outcome in new combinations [A]	partial
+Wolverine, Fierce Fighter	replacement reader: existing event and outcome in new combinations [A]	partial
+Portal Manipulator	reselect the player a creature attacks [A]	partial
+Old Stickfingers	reveal/exile until with computed condition (reader) [A]	partial
+Sanar, Innovative First-Year	reveal/exile until with computed condition (reader) [A]	manual
+Thought Dissector	reveal/exile until with computed condition (reader) [A]	manual
+God-Eternal Kefnet	reveal the first card drawn each turn and act on it [A]	partial
+Inquisitor Eisenhorn	reveal the first card drawn each turn and act on it [A]	partial
+Keranos, God of Storms	reveal the first card drawn each turn and act on it [A]	partial
+Primitive Etchings	reveal the first card drawn each turn and act on it [A]	manual
+Rowen	reveal the first card drawn each turn and act on it [A]	manual
+Not Dead After All	Role tokens attached on resolution [A]	manual
+Invasion of Arcavios // Invocation of the Founders	search several zones for a named card [A]	partial
+Niambi, Faithful Healer	search several zones for a named card [A]	manual
+Adagia, Windswept Bastion	sectioned text (station/level/die tables) reader [A]	partial
+Captain America, First Avenger	sectioned text (station/level/die tables) reader [A]	manual
+Comet, Stellar Pup	sectioned text (station/level/die tables) reader [A]	partial
+Druid Class	sectioned text (station/level/die tables) reader [A]	partial
+Druid of the Emerald Grove	sectioned text (station/level/die tables) reader [A]	manual
+Iron Mastiff	sectioned text (station/level/die tables) reader [A]	manual
+Mathise, Surge Channeler	sectioned text (station/level/die tables) reader [A]	partial
+Whims of the Fates	separate into N piles at random [A]	manual
+Esper Origins // Summon: Esper Maduin	spell oddities (reader) [A]	partial
+Eventide's Shadow	spell oddities (reader) [A]	manual
+Heroic Return	spell oddities (reader) [A]	partial
+Invasion of Alara // Awaken the Maelstrom	spell oddities (reader) [A]	manual
+Leadership Vacuum	spell oddities (reader) [A]	manual
+Primitive Justice	spell oddities (reader) [A]	manual
+Soul Immolation	spell oddities (reader) [A]	manual
+Stolen Uniform	spell oddities (reader) [A]	manual
+Ashes of the Abhorrent	static oddities (reader) [A]	partial
+Ashiok, Dream Render	static oddities (reader) [A]	partial
+Carry Away	static oddities (reader) [A]	partial
+Chancellor of the Annex	static oddities (reader) [A]	partial
+Fallaji Wayfarer	static oddities (reader) [A]	partial
+Gift of Doom	static oddities (reader) [A]	partial
+Guardian Beast	static oddities (reader) [A]	manual
+Magnigoth Treefolk	static oddities (reader) [A]	manual
+Minthara, Merciless Soul	static oddities (reader) [A]	partial
+Nils, Discipline Enforcer	static oddities (reader) [A]	manual
+Rasputin Dreamweaver	static oddities (reader) [A]	partial
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	static oddities (reader) [A]	partial
+Solemnity	static oddities (reader) [A]	manual
+Tomik, Distinguished Advokist	static oddities (reader) [A]	partial

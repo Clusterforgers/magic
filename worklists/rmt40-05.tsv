@@ -1,0 +1,66 @@
+Animal Attendant	mana spend restrictions and permissions with new filters [A]	manual
+Case File Auditor	mana spend restrictions and permissions with new filters [A]	manual
+Freya Crescent	mana spend restrictions and permissions with new filters [A]	partial
+Nathan Drake, Treasure Hunter	mana spend restrictions and permissions with new filters [A]	partial
+North Star	mana spend restrictions and permissions with new filters [A]	manual
+Open the Omenpaths	mana spend restrictions and permissions with new filters [A]	manual
+Quinjet Technician	mana spend restrictions and permissions with new filters [A]	partial
+Ronin, Shadow Stalker	mana spend restrictions and permissions with new filters [A]	manual
+Sharkey, Tyrant of the Shire	mana spend restrictions and permissions with new filters [A]	partial
+Sunglasses of Urza	mana spend restrictions and permissions with new filters [A]	manual
+Throne of Eldraine	mana spend restrictions and permissions with new filters [A]	partial
+Titans' Nest	mana spend restrictions and permissions with new filters [A]	partial
+Unblinking Observer	mana spend restrictions and permissions with new filters [A]	manual
+Aura Graft	move an Aura to another permanent [A]	manual
+Enchantment Alteration	move an Aura to another permanent [A]	manual
+Goldberry, River-Daughter	move counters between permanents (reader) [A]	manual
+Break the Ice	new object filters and cast-time target restrictions (reader) [A]	partial
+Dream Leash	new object filters and cast-time target restrictions (reader) [A]	partial
+Enthralling Hold	new object filters and cast-time target restrictions (reader) [A]	partial
+Magewright's Stone	new object filters and cast-time target restrictions (reader) [A]	manual
+Vizier of the Anointed	new object filters and cast-time target restrictions (reader) [A]	manual
+Parallel Thoughts	next-time replacements: next draw, next enter (reader) [A]	manual
+Storyweave	next-time replacements: next draw, next enter (reader) [A]	manual
+Urabrask, Heretic Praetor	next-time replacements: next draw, next enter (reader) [A]	partial
+Bell Borca, Spectral Sergeant	note a value as it enters and use it later [A]	partial
+Behemoth of Vault 0	pay any amount / any number of times and use the amount [A]	partial
+Chorus of the Conclave	pay any amount / any number of times and use the amount [A]	partial
+Nameless Race	pay any amount / any number of times and use the amount [A]	partial
+Pia Nalaar, Chief Mechanic	pay any amount / any number of times and use the amount [A]	partial
+Power Leak	pay any amount / any number of times and use the amount [A]	partial
+Spectral Adversary	pay any amount / any number of times and use the amount [A]	partial
+Fractured Powerstone	planar die and planeswalking replacements [A]	partial
+Ichor Elixir	planar die and planeswalking replacements [A]	partial
+Susan Foreman	planar die and planeswalking replacements [A]	partial
+Braids, Arisen Nightmare	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Fatal Lore	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Ice Cave	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Jace, Multiverse Architect	player chooses among options or pays (punisher/unless) (reader) [A]	partial
+Kazuul, Tyrant of the Cliffs	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Mind Bomb	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Nicol Bolas, Dragon-God	player chooses among options or pays (punisher/unless) (reader) [A]	partial
+Tariff	player chooses among options or pays (punisher/unless) (reader) [A]	manual
+Biblioplex Tomekeeper	prepared/unprepared [A]	manual
+Infinite Coursework	prepared/unprepared [A]	partial
+Bitterheart Witch	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Cass, Hand of Vengeance	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Curse of Leeches // Leeching Lurker	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Curse of Misfortunes	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Lynde, Cheerful Tormentor	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Maddening Hex	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Radiant Grace // Radiant Restraints	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Retether	put an Aura onto the battlefield attached to a chosen object/player [A]	manual
+Soul Seizer // Ghastly Haunting	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Takklemaggot	put an Aura onto the battlefield attached to a chosen object/player [A]	partial
+Ancient Adamantoise	redirect damage to this/chosen creature (reader) [A]	partial
+Ajani, Nacatl Pariah // Ajani, Nacatl Avenger	reflexive "when you do" with conditions (reader) [A]	partial
+Argentum Masticore	reflexive "when you do" with conditions (reader) [A]	partial
+Cemetery Desecrator	reflexive "when you do" with conditions (reader) [A]	partial
+Incinerator of the Guilty	reflexive "when you do" with conditions (reader) [A]	partial
+Game of Chaos	repeat this process loops (reader) [A]	manual
+Grist, the Hunger Tide	repeat this process loops (reader) [A]	partial
+Mana Clash	repeat this process loops (reader) [A]	manual
+Research // Development	repeat this process loops (reader) [A]	manual
+Shrouded Lore	repeat this process loops (reader) [A]	manual
+The Tale of Tamiyo	repeat this process loops (reader) [A]	manual
+Eligeth, Crossroads Augur	replace keyword actions (explore, connive, proliferate, scry, surveil, copy count) [A]	partial

@@ -1,0 +1,55 @@
+Slayer's Cleaver	attack/block requirements: targets, next turn, if one attacks all attack, blocked by [A]	partial
+Territorial Hellkite	attack/block requirements: targets, next turn, if one attacks all attack, blocked by [A]	partial
+Trench Behemoth	attack/block requirements: targets, next turn, if one attacks all attack, blocked by [A]	partial
+Trove of Temptation	attack/block requirements: targets, next turn, if one attacks all attack, blocked by [A]	partial
+Firkraag, Cunning Instigator	batched triggers: N or more creatures attack/deal combat damage [A]	partial
+Frontier Warmonger	batched triggers: N or more creatures attack/deal combat damage [A]	manual
+Soundwave, Sonic Spy // Soundwave, Superior Captain	batched triggers: N or more creatures attack/deal combat damage [A]	partial
+Azor, the Lawbringer	can't cast spells during that player's next turn [A]	partial
+Case of the Burning Masks	Case: solved abilities reader [A]	partial
+Flash Photography	cast as though it had flash if a condition holds [A]	partial
+Molten Exhale	cast as though it had flash if a condition holds [A]	partial
+Quantum Reduction	cast as though it had flash if a condition holds [A]	partial
+Silver Scrutiny	cast as though it had flash if a condition holds [A]	partial
+Tegwyll's Scouring	cast as though it had flash if a condition holds [A]	partial
+Timely Ward	cast as though it had flash if a condition holds [A]	partial
+Conduit of Worlds	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Edgar, Master Machinist	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Eye of Duskmantle	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Fblthp, Lost on the Range	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Galea, Kindler of Hope	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Glimpse the Cosmos	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	manual
+Haakon, Stromgald Scourge	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Kess, Dissident Mage	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Leonardo, Sewer Samurai	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+One with the Multiverse	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Osteomancer Adept	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Panglacial Wurm	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Tarrian's Journal // The Tomb of Aclazotz	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Thundermane Dragon	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Tinybones, the Pickpocket	cast permissions from graveyard/library top, once per turn, riders (reader) [A]	partial
+Baron Helmut Zemo	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	partial
+Elite Arcanist	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Gix, Yawgmoth Praetor	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Goliath Daydreamer	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Intrepid Paleontologist	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	partial
+Meeting of the Five	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Nashi, Moon Sage's Scion	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	partial
+Plargg and Nassari	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Reenact the Crime	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+River Song's Diary	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Rod of Absorption	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Sanwell, Avenger Ace	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	partial
+Shared Fate	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Spelltwine	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Summons of Saruman	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+Sunbird's Invocation	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	manual
+The Temporal Anchor	cast/play from among exiled or revealed cards (free, limits, until) (reader) [A]	partial
+Chef's Kiss	change the target of a single-target spell (conditions, random) [A]	manual
+Grip of Chaos	change the target of a single-target spell (conditions, random) [A]	manual
+Psychic Battle	change the target of a single-target spell (conditions, random) [A]	manual
+Rebound	change the target of a single-target spell (conditions, random) [A]	manual
+Reflecting Mirror	change the target of a single-target spell (conditions, random) [A]	manual
+Caller of the Hunt	choice or reveal made as an additional cost and used on resolution [A]	partial
+Celestial Reunion	choice or reveal made as an additional cost and used on resolution [A]	manual
+Close Encounter	choice or reveal made as an additional cost and used on resolution [A]	manual
