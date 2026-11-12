@@ -24,6 +24,9 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     }
     texts.extend(cast_from_graveyard(ability));
     texts.extend(while_attacked_with(&value));
+    texts.extend(while_visited(&value));
+    texts.extend(copy_for_target_player(&value));
+    texts.extend(quick_reflexes(&value));
     texts.extend(fixed_wordings(&value));
     if let Some(text) = must_this_turn(&value) {
         texts.push(text);
@@ -420,7 +423,20 @@ fn while_attacked_with(value: &Value) -> Vec<String> {
 
 /// Abilities of one exact shape and their one wording: the shapes below say all they do in words of their own.
 fn fixed_wordings(value: &Value) -> Vec<String> {
-    let melting = json!({ "Static": { "affected": { "Each": [{ "Type": "Land" }] }, "mods": [{ "RemoveSupertype": "Snow" }] } });
+    let Some(text) = fixed_spells(value).or_else(|| fixed_others(value)) else {
+        return Vec::new();
+    };
+    // The card's own name is "this creature" in newer Oracle text.
+    let named = text.replacen("~ is tapped", "this creature is tapped", 1);
+    if named == text {
+        vec![text.to_owned()]
+    } else {
+        vec![text.to_owned(), named]
+    }
+}
+
+/// The wording of a spell of one exact shape.
+fn fixed_spells(value: &Value) -> Option<&'static str> {
     let sideswipe = json!({ "Spell": {
         "targets": [{ "what": { "Object": ["Spell", { "Subtype": "Arcane" }] } }],
         "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
@@ -442,15 +458,6 @@ fn fixed_wordings(value: &Value) -> Vec<String> {
             { "DealDamage": { "to": { "Target": 0 }, "amount": { "Stat": { "of": revealed, "stat": "ManaValue" } } } }
         ]
     } });
-    let tapped_disguise = json!({ "Static": {
-        "affected": "This",
-        "mods": [
-            { "SetCreatureTypes": ["Human", "Citizen"] },
-            { "SetPT": { "power": 1, "toughness": 1 } },
-            "CantBeBlocked"
-        ],
-        "condition": { "Matches": { "subject": "This", "selector": ["Tapped"] } }
-    } });
     let creature = json!({ "Bound": "creature" });
     let breach = json!({ "Spell": { "effects": [{ "May": { "effects": [
         { "Choose": { "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }] }, "as": "creature" } },
@@ -461,29 +468,211 @@ fn fixed_wordings(value: &Value) -> Vec<String> {
             "effects": [{ "Sacrifice": { "filter": [{ "Is": creature }] } }]
         } }
     ] } }] } });
-    let text = if value == &breach {
-        "You may put a creature card from your hand onto the battlefield. That creature gains haste. Sacrifice that \
-         creature at the beginning of the next end step."
-    } else if value == &melting {
-        "All lands are no longer snow."
+    let backslide = json!({ "Spell": {
+        "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "HasKeywordNamed": "Morph" }] } }],
+        "effects": [{ "TurnFaceDown": { "what": { "Target": 0 } } }]
+    } });
+    let instant_or_sorcery = json!({ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] });
+    let split_decision = json!({ "Spell": {
+        "targets": [{ "what": { "Object": ["Spell", instant_or_sorcery] } }],
+        "effects": [
+            { "Vote": { "options": { "Named": ["denial", "duplication"] } } },
+            { "If": {
+                "condition": { "Compare": {
+                    "left": { "Players": { "Bound": "denial" } },
+                    "op": "Gt",
+                    "right": { "Players": { "Bound": "duplication" } }
+                } },
+                "then": [{ "Counter": { "what": { "Target": 0 } } }],
+                "otherwise": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+            } }
+        ]
+    } });
+    let indestructible = |target: u32| {
+        json!({ "Continuous": {
+            "affected": { "Target": target },
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "duration": "UntilEndOfTurn"
+        } })
+    };
+    let clash = json!({ "Spell": {
+        "targets": [
+            { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+        ],
+        "effects": [indestructible(0), indestructible(1), { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+    } });
+    if value == &split_decision {
+        Some(
+            "Choose target instant or sorcery spell. Starting with you, each player votes for denial or duplication. If \
+         denial gets more votes, counter the spell. If duplication gets more votes or the vote is tied, copy the spell. \
+         You may choose new targets for the copy.",
+        )
+    } else if value == &clash {
+        Some(
+            "Target creature you control and target creature an opponent controls each gain indestructible until end of \
+         turn. Then destroy all creatures.",
+        )
+    } else if value == &backslide {
+        Some("Turn target creature with a morph ability face down.")
+    } else if value == &breach {
+        Some(
+            "You may put a creature card from your hand onto the battlefield. That creature gains haste. Sacrifice that \
+         creature at the beginning of the next end step.",
+        )
     } else if value == &sideswipe {
-        "You may change any targets of target Arcane spell."
+        Some("You may change any targets of target Arcane spell.")
     } else if value == &plagiarize {
-        "Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card."
+        Some(
+            "Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card.",
+        )
     } else if value == &ignite {
-        "Target player reveals a card at random from their hand. ~ deals damage to that player equal to that card's mana value."
-    } else if value == &tapped_disguise {
-        "As long as ~ is tapped, it's a Human Citizen with base power and toughness 1/1 and can't be blocked."
+        Some(
+            "Target player reveals a card at random from their hand. ~ deals damage to that player equal to that card's mana value.",
+        )
     } else {
+        None
+    }
+}
+
+/// The wording of a rule, a static or a trigger of one exact shape.
+fn fixed_others(value: &Value) -> Option<&'static str> {
+    let melting = json!({ "Static": { "affected": { "Each": [{ "Type": "Land" }] }, "mods": [{ "RemoveSupertype": "Snow" }] } });
+    let tapped_disguise = json!({ "Static": {
+        "affected": "This",
+        "mods": [
+            { "SetCreatureTypes": ["Human", "Citizen"] },
+            { "SetPT": { "power": 1, "toughness": 1 } },
+            "CantBeBlocked"
+        ],
+        "condition": { "Matches": { "subject": "This", "selector": ["Tapped"] } }
+    } });
+    let learns = json!({ "Triggered": {
+        "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+        "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": { "by": "You" } }] } },
+        "effects": [{ "Learn": {} }]
+    } });
+    let in_combat = json!({ "Rule": {
+        "rule": { "MayCast": { "what": ["This"], "flash": true } },
+        "condition": { "All": [
+            { "Compare": { "left": { "Count": [{ "Type": "Creature" }, "Attacking"] }, "op": "Ge", "right": 1 } },
+            { "Compare": { "left": { "Count": [{ "Type": "Creature" }, "Blocking"] }, "op": "Ge", "right": 1 } }
+        ] },
+        "from": "Hand"
+    } });
+    if value == &in_combat {
+        Some(
+            "You may cast this spell as though it had flash if a creature is attacking and a creature is blocking.",
+        )
+    } else if value == &learns {
+        Some("When ~ enters, if you cast it, learn.")
+    } else if value == &melting {
+        Some("All lands are no longer snow.")
+    } else if value == &tapped_disguise {
+        Some(
+            "As long as ~ is tapped, it's a Human Citizen with base power and toughness 1/1 and can't be blocked.",
+        )
+    } else {
+        None
+    }
+}
+
+/// "As long as you've visited an Attraction this turn, this creature has indestructible.": a static ability of the card
+/// itself, a keyword, under the condition that its controller visited an Attraction this turn.
+fn while_visited(value: &Value) -> Vec<String> {
+    let visited = json!({ "Compare": {
+        "left": { "Tallied": { "who": "You", "what": "AttractionsVisited" } },
+        "op": "Ge",
+        "right": 1
+    } });
+    // The data's own form of the condition, with its defaults left out.
+    let Some(visited) = serde_json::from_value::<Condition>(visited)
+        .ok()
+        .and_then(|condition| serde_json::to_value(condition).ok())
+    else {
         return Vec::new();
     };
-    // The card's own name is "this creature" in newer Oracle text.
-    let named = text.replacen("~ is tapped", "this creature is tapped", 1);
-    if named == text {
-        vec![text.to_owned()]
-    } else {
-        vec![text.to_owned(), named]
+    let Some(body) = value.get("Static").and_then(Value::as_object) else {
+        return Vec::new();
+    };
+    if body.get("condition") != Some(&visited) || body.get("affected") != Some(&json!("This")) {
+        return Vec::new();
     }
+    // A keyword the card has is written as the keyword alone: "~ has <keyword>." after the condition.
+    let Some([keyword]) = body
+        .get("mods")
+        .and_then(Value::as_array)
+        .map(Vec::as_slice)
+    else {
+        return Vec::new();
+    };
+    // A plain keyword's name ("Indestructible", "FirstStrike") in words: "indestructible", "first strike".
+    let Some(name) = keyword.get("AddKeyword").and_then(Value::as_str) else {
+        return Vec::new();
+    };
+    let mut words = String::new();
+    for letter in name.chars() {
+        if letter.is_uppercase() && !words.is_empty() {
+            words.push(' ');
+        }
+        words.extend(letter.to_lowercase());
+    }
+    [format!("~ has {words}.")]
+        .into_iter()
+        .flat_map(|text| {
+            let head = "As long as you've visited an Attraction this turn,";
+            [
+                format!("{head} {text}"),
+                format!("{head} {}", text.replacen('~', "this creature", 1)),
+            ]
+        })
+        .collect()
+}
+
+/// "Target player creates a token that's a copy of target creature you control.": the first target, a player, creates a
+/// copy of the second, a creature its caster controls.
+fn copy_for_target_player(value: &Value) -> Option<String> {
+    let shape = json!({ "Spell": {
+        "targets": [{ "what": "Player" }, { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }],
+        "effects": [{ "CreateToken": { "who": { "Target": 0 }, "token": { "CopyOf": { "of": { "Target": 1 } } } } }]
+    } });
+    (value == &shape).then(|| {
+        "Target player creates a token that's a copy of target creature you control.".to_owned()
+    })
+}
+
+/// "Untap target creature. Until end of turn, it gains reach, hexproof, and "Whenever this creature becomes tapped, it
+/// deals damage equal to its power to up to one target creature."": an untap and two keywords and a trigger given to
+/// the target until end of turn.
+fn quick_reflexes(value: &Value) -> Option<String> {
+    let creature = json!({ "what": { "Object": [{ "Type": "Creature" }] } });
+    let shape = json!({ "Spell": {
+        "targets": [creature],
+        "effects": [
+            { "Untap": { "what": { "Target": 0 } } },
+            { "Continuous": {
+                "affected": { "Target": 0 },
+                "mods": [
+                    { "AddKeyword": "Reach" },
+                    { "AddKeyword": "Hexproof" },
+                    { "GrantAbility": { "Triggered": {
+                        "when": { "Tapped": { "what": ["This"] } },
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }],
+                        "effects": [{ "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                        } }]
+                    } } }
+                ],
+                "duration": "UntilEndOfTurn"
+            } }
+        ]
+    } });
+    (value == &shape).then(|| {
+        "Untap target creature. Until end of turn, it gains reach, hexproof, and \"Whenever this creature becomes tapped, \
+         it deals damage equal to its power to up to one target creature.\""
+            .to_owned()
+    })
 }
 
 /// "Target creature attacks this turn if able." and "Target creature blocks this turn if able." for a spell whose one

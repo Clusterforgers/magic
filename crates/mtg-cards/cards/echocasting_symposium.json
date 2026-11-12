@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d88c3554-18db-4e5e-a979-2402990a0311",
+  "name": "Echocasting Symposium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echocasting Symposium",
+      "oracle_fingerprint": "e5dc472a8e8adae278e226d7ef94dbe5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": { "CopyOf": { "of": { "Target": 1 } } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Paradigm" }
+      ]
+    }
+  ]
+}

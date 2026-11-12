@@ -367,3 +367,142 @@ fn a_search_of_library_and_graveyard_reads_back_as_a_spell(
         wordings(ability)
     );
 }
+
+const BACKSLIDE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"HasKeywordNamed":"Morph"}]}}],"effects":[{"TurnFaceDown":{"what":{"Target":0}}}]}}"#;
+const BACKSLIDE_ANY: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"TurnFaceDown":{"what":{"Target":0}}}]}}"#;
+const LEARNS: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"Matches":{"subject":"This","selector":[{"WasCast":{"by":"You"}}]}},"effects":[{"Learn":{}}]}}"#;
+const LEARNS_ALWAYS: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Learn":{}}]}}"#;
+
+#[rstest]
+#[case::backslide(
+    BACKSLIDE,
+    "Turn target creature with a morph ability face down.",
+    true
+)]
+#[case::any_creature(
+    BACKSLIDE_ANY,
+    "Turn target creature with a morph ability face down.",
+    false
+)]
+#[case::learns_if_cast(LEARNS, "When ~ enters, if you cast it, learn.", true)]
+#[case::learns_always(LEARNS_ALWAYS, "When ~ enters, if you cast it, learn.", false)]
+fn a_face_down_turn_and_a_learn_read_back_only_as_printed(
+    #[case] ability: &str,
+    #[case] text: &str,
+    #[case] written: bool,
+) {
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}
+
+const IOS: &str = r#"{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}"#;
+
+fn split(tie_counters: bool) -> String {
+    let (then, otherwise) = if tie_counters {
+        (
+            r#"{"CopySpell":{"what":{"Target":0},"new_targets":true}}"#,
+            r#"{"Counter":{"what":{"Target":0}}}"#,
+        )
+    } else {
+        (
+            r#"{"Counter":{"what":{"Target":0}}}"#,
+            r#"{"CopySpell":{"what":{"Target":0},"new_targets":true}}"#,
+        )
+    };
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":["Spell",{IOS}]}}}}],"effects":[{{"Vote":{{"options":{{"Named":["denial","duplication"]}}}}}},{{"If":{{"condition":{{"Compare":{{"left":{{"Players":{{"Bound":"denial"}}}},"op":"Gt","right":{{"Players":{{"Bound":"duplication"}}}}}}}},"then":[{then}],"otherwise":[{otherwise}]}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::denial_counters(split(false), true)]
+#[case::denial_copies(split(true), false)]
+fn the_council_vote_reads_back_only_as_printed(#[case] ability: String, #[case] written: bool) {
+    let text = "Choose target instant or sorcery spell. Starting with you, each player votes for denial or duplication. If denial gets more votes, counter the spell. If duplication gets more votes or the vote is tied, copy the spell. You may choose new targets for the copy.";
+    assert_eq!(
+        wordings(&ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(&ability)
+    );
+}
+
+fn clash(second: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"You"}}]}}}},{{"what":{{"Object":[{{"Type":"Creature"}},{{"ControlledBy":"{second}"}}]}}}}],"effects":[{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"AddKeyword":"Indestructible"}}],"duration":"UntilEndOfTurn"}}}},{{"Continuous":{{"affected":{{"Target":1}},"mods":[{{"AddKeyword":"Indestructible"}}],"duration":"UntilEndOfTurn"}}}},{{"Destroy":{{"what":{{"Each":[{{"Type":"Creature"}}]}}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::an_opponent_s_creature(clash("Opponents"), true)]
+#[case::two_of_yours(clash("You"), false)]
+fn the_clash_reads_back_only_as_printed(#[case] ability: String, #[case] written: bool) {
+    let text = "Target creature you control and target creature an opponent controls each gain indestructible until end of turn. Then destroy all creatures.";
+    assert_eq!(
+        wordings(&ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(&ability)
+    );
+}
+
+fn swindler(at_least: u32) -> String {
+    format!(
+        r#"{{"Static":{{"affected":"This","mods":[{{"AddKeyword":"Indestructible"}}],"condition":{{"Compare":{{"left":{{"Tallied":{{"who":"You","what":"AttractionsVisited"}}}},"op":"Ge","right":{at_least}}}}}}}}}"#
+    )
+}
+
+#[rstest]
+#[case::visited(swindler(1), true)]
+#[case::visited_twice(swindler(2), false)]
+fn a_static_while_an_attraction_was_visited_reads_back_only_as_printed(
+    #[case] ability: String,
+    #[case] written: bool,
+) {
+    let text = "As long as you've visited an Attraction this turn, ~ has indestructible.";
+    assert_eq!(
+        wordings(&ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(&ability)
+    );
+}
+
+#[rstest]
+#[case::target_player(r#"{"Spell":{"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"CreateToken":{"who":{"Target":0},"token":{"CopyOf":{"of":{"Target":1}}}}}]}}"#, true)]
+#[case::you_create(r#"{"Spell":{"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Target":1}}}}}]}}"#, false)]
+fn a_copy_for_a_target_player_reads_back_only_as_printed(
+    #[case] ability: &str,
+    #[case] written: bool,
+) {
+    let text = "Target player creates a token that's a copy of target creature you control.";
+    assert_eq!(
+        wordings(ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(ability)
+    );
+}
+
+fn reflexes(keyword: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"Untap":{{"what":{{"Target":0}}}}}},{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"AddKeyword":"Reach"}},{{"AddKeyword":"{keyword}"}},{{"GrantAbility":{{"Triggered":{{"when":{{"Tapped":{{"what":["This"]}}}},"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}},"bounds":{{"min":0,"max":1}}}}],"effects":[{{"DealDamage":{{"to":{{"Target":0}},"amount":{{"Stat":{{"of":"This","stat":"Power"}}}}}}}}]}}}}}}],"duration":"UntilEndOfTurn"}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::hexproof(reflexes("Hexproof"), true)]
+#[case::shroud(reflexes("Shroud"), false)]
+fn quick_reflexes_read_back_only_as_printed(#[case] ability: String, #[case] written: bool) {
+    let text = "Untap target creature. Until end of turn, it gains reach, hexproof, and \"Whenever this creature becomes tapped, it deals damage equal to its power to up to one target creature.\"";
+    assert_eq!(
+        wordings(&ability).iter().any(|found| found == text),
+        written,
+        "{:?}",
+        wordings(&ability)
+    );
+}
