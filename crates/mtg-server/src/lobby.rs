@@ -56,6 +56,16 @@ impl<S: EventStore> GameActor<S> {
         };
         let changed = !std::mem::replace(flag, true);
         if ready.iter().all(|r| *r) {
+            // The teams the players chose are checked whole only now; the Ready stays, and a change of teams takes
+            // every Ready back for another try.
+            if let Err(error) = self.final_teams() {
+                if changed {
+                    self.push_roster();
+                }
+                let reason = format!("the game cannot start: {error}");
+                self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
+                return Ok(());
+            }
             self.start(seat).await?;
             // The opening events are the news once the game began; a start that failed leaves the lobby as it is.
             if !self.in_lobby() {
@@ -178,26 +188,47 @@ impl<S: EventStore> GameActor<S> {
         Ok(note)
     }
 
-    /// Sets the teams of the table and tells it; every seat takes Ready back, since its holder agreed to other teams.
+    /// Sets the teams of the table exactly as chosen and tells it; every seat takes Ready back, since its holder agreed
+    /// to other teams. Only the seat count and the team numbers are checked here; the sizes are checked at the start.
     pub(crate) fn set_teams(&mut self, teams: Option<Teams>) -> Result<(), TeamsRefusal> {
         let Phase::Lobby { ready, .. } = &mut self.phase else {
             return Err(TeamsRefusal::Started);
         };
+        let seats = self.setup.players.len();
         let rules = HouseRules {
-            teams: teams.clone(),
+            teams: None,
             ..self.setup.house_rules.clone()
         };
-        rules
-            .validate_for(self.setup.players.len())
-            .map_err(TeamsRefusal::Invalid)?;
+        rules.validate_for(seats).map_err(TeamsRefusal::Invalid)?;
+        if let Some(teams) = &teams {
+            teams
+                .validate_draft(seats)
+                .map_err(|error| TeamsRefusal::Invalid(error.into()))?;
+        }
         for flag in ready.iter_mut() {
             *flag = false;
         }
-        self.setup.house_rules = rules;
-        if let Some(decks) = self.decks.as_mut() {
-            decks.set_teams(teams);
-        }
+        self.install_teams(teams);
         self.push_roster();
+        Ok(())
+    }
+
+    /// Puts `teams` into the setup, the seats' decks and the stops.
+    fn install_teams(&mut self, teams: Option<Teams>) {
+        self.stops.share_turns(teams.as_ref());
+        if let Some(decks) = self.decks.as_mut() {
+            decks.set_teams(teams.clone());
+        }
+        self.setup.house_rules.teams = teams;
+    }
+
+    /// The chosen teams numbered without gaps and checked whole (CR 808, CR 810), installed for the start.
+    fn final_teams(&mut self) -> Result<(), mtg_core::teams::TeamError> {
+        let Some(teams) = self.setup.house_rules.teams.as_ref().map(Teams::compacted) else {
+            return Ok(());
+        };
+        teams.validate_for(self.setup.players.len())?;
+        self.install_teams(Some(teams));
         Ok(())
     }
 

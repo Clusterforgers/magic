@@ -278,6 +278,7 @@ export type { Scried } from "./Scried";
 export type { ScryChoice } from "./ScryChoice";
 export type { ScryOptions } from "./ScryOptions";
 export type { SeatDeck } from "./SeatDeck";
+export type { SeatTeamBody } from "./SeatTeamBody";
 export type { Selector } from "./Selector";
 export type { ServerMessage } from "./ServerMessage";
 export type { SetMatchOutcome } from "./SetMatchOutcome";

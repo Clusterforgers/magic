@@ -53,7 +53,7 @@ impl Active {
         let reached = match self.until {
             YieldUntil::Resolve => state.stack().is_empty(),
             YieldUntil::EndOfTurn => turn.number() != self.turn,
-            YieldUntil::MyTurn => turn.number() != self.turn && turn.active() == seat,
+            YieldUntil::MyTurn => turn.number() != self.turn && state.is_active(seat),
         };
         let seen_here = turn.number() == self.turn && self.here == Some(turn.step());
         reached || (stopped && !seen_here) || self.opponent_added(state, seat)
@@ -161,7 +161,7 @@ impl Yields {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a yield passes at every priority window until the thing it waits for happens and ends at exactly that window; an opponent's new object ends it whatever the seat could do about it, a stop of the seat at the window ends it, objects the seat already passed on never do, other decisions leave it alone, and it never outlives the seat or the game.
+    //! Goal: a yield passes at every priority window until the thing it waits for happens and ends at exactly that window; an opponent's new object ends it whatever the seat could do about it, a stop of the seat at the window ends it, objects the seat already passed on never do, other decisions leave it alone, and it never outlives the seat or the game; "my turn" in Two-Headed Giant is the team's turn.
     use super::*;
     use crate::stops::Stops;
     use crate::windows::passes_for;
@@ -340,6 +340,32 @@ mod tests {
         });
         assert!(windows > 0);
         assert_eq!(engine.state().turn().number(), ends_in_turn);
+        assert!(!yields.passes(ME, engine.state(), false));
+    }
+
+    #[test]
+    fn my_turn_in_two_headed_giant_ends_on_the_next_turn_of_the_team() {
+        // Seat 1 plays with seat 0, whose seat takes the team's turns.
+        let teams = mtg_core::teams::Teams {
+            mode: mtg_core::teams::TeamMode::TwoHeadedGiant,
+            seats: vec![0, 0, 1, 1],
+        };
+        let setup = Scenario::new(4)
+            .house_rules(mtg_core::house::HouseRules {
+                teams: Some(teams),
+                ..mtg_core::house::HouseRules::default()
+            })
+            .at(1, 0, mtg_engine::turn::Step::Main1)
+            .setup()
+            .unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let mut yields = Yields::new(4);
+        yields.start(ME, YieldUntil::MyTurn, engine.state());
+        run_to(&mut engine, &mut yields, ME, |state| {
+            state.turn().number() != 1 && state.is_active(ME)
+        });
+        assert_eq!(engine.state().turn().number(), 3);
+        assert_eq!(engine.state().turn().active(), FOE, "the team's turn");
         assert!(!yields.passes(ME, engine.state(), false));
     }
 

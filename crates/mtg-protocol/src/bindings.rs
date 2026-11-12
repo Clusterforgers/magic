@@ -17,7 +17,7 @@ use crate::rest::{
     DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
     ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList, MyGames,
     PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
-    ReadQueue, Replay, TeamsBody, UserPrefs, UserView, VisibilityBody,
+    ReadQueue, Replay, SeatTeamBody, TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
 use crate::rest::{
     CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
@@ -92,6 +92,7 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     Joined::export_all(&config)?;
     VisibilityBody::export_all(&config)?;
     TeamsBody::export_all(&config)?;
+    SeatTeamBody::export_all(&config)?;
     LobbyErrorCode::export_all(&config)?;
     ChooseDeck::export_all(&config)?;
     DeckChoiceErrorCode::export_all(&config)?;

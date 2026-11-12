@@ -354,6 +354,10 @@ fn game_routes() -> Router<AppState> {
                 .delete(lobbies::close),
         )
         .route("/api/games/{id}/teams", put(lobbies::set_teams))
+        .route(
+            "/api/games/{id}/seats/{seat}/team",
+            put(lobbies::set_seat_team),
+        )
         .route("/api/games/{id}/join", post(lobbies::join_game))
         .route("/api/games/{id}/replay", get(api::replay))
         .route("/api/games/{id}/leave", post(lobbies::leave))
