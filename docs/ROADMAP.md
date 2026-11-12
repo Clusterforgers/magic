@@ -41,7 +41,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Reviewing cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/review` (`/read` forwards): one place for a deck's, a precon's or every card's drafts to read and cards played by hand to check, most played first, the card large beside its rules and Oracle text, progress, bulk approval of wording-only drafts, keys C, W, J, K, H and ?, `ReadDialog` from the table's preview and a link from every deck check (`docs/server.md`, `docs/web.md`).
 - Control and text: a player controlled during their next turn with the controller answering and seeing for them (CR 722), control of a spell on the stack, text changes in layer 3 (CR 612), cleave, a restart of the game (CR 727) and the cards an opponent finds exiled for the searcher's controller (`docs/engine.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
-- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries and a throwaway Postgres per database test binary, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
+- Testing: scenarios, invariants and fuzz decks, `scripts/check.sh` with the `gate` and `affected` modes, content stamps, side-by-side test binaries, family test binaries in `mtg-testkit` and a throwaway Postgres per database test binary, and Playwright specs including the four-seat Commander game with precons or the owner's deck (`E2E_DECK=owner`).
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 
 ## Live game
@@ -128,7 +128,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (ts1e) The release images build while the batch run of the release commit runs, both images at once, and `scripts/release.sh` reuses them from the build cache (release after the check: 600 s to about 120 s; `scripts/release.sh`, `docs/deploy.md`; after ts1d)
 - [ ] (ts1f) A diff of card files only tests those cards, the test modules and fixture decks that name them and a fixed sample, and the batch run tests the whole corpus (a card change to about 3 min; `scripts/check.sh`; after ts1a)
-- [ ] (ts1g) The `mtg-testkit` `it` binary splits into about six binaries by family, so one test edit rebuilds in about 30 s instead of 136 s and the families run side by side (`crates/mtg-testkit/tests`; after ts1c)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
 - [ ] (ts1k) The check ends with the seconds of each test binary and the 20 slowest tests, and the tag run sets `MTG_FUZZ_GAMES` to the long count (`scripts/check.sh`, `docs/testing.md`; after ts1b)
 - [ ] (ts1n) `scripts/check.sh` puts `scripts/warm-bin` first in `PATH` for its cargo calls and runs `scripts/tests/warm_target.sh` with its script tests, so a warm worktree needs no prefix (`scripts/check.sh`; after ts1a to ts1d)
