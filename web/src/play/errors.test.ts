@@ -155,3 +155,22 @@ describe('the notice', () => {
     expect(h.net.sockets).toHaveLength(2)
   })
 })
+
+describe('a refused play', () => {
+  it('says why in the words of the card, then asks again', () => {
+    const h = connected()
+    h.deliver({
+      type: 'Error',
+      code: 'IllegalAnswer',
+      message: 'that cannot be played now (Targets)',
+      refusal: {
+        object: 99,
+        reason: 'Targets',
+        why: { Target: { needs: 'a creature spell you control on the stack', zone: 'Stack' } },
+      },
+    })
+    expect(h.state().notice).toMatch(/needs a target: a creature spell you control on the stack\./)
+    expect(h.state().notice).toMatch(/Full Control/)
+    expect(h.sentOf('Resync')).toHaveLength(1)
+  })
+})

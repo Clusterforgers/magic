@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import { describeRules, requestRules, ruleGroups } from '@/lib/houseRules'
+import { describeRules, HANDICAP_FIELDS, handicapId, requestRules, ruleGroups } from '@/lib/houseRules'
 import type { GameFormat, RuleSpec } from '@/lib/houseRules'
 import type { Draft } from './form'
 
@@ -64,6 +64,69 @@ function RuleRow({ spec, format, text, problem, onChange }: RuleRowProps) {
   )
 }
 
+interface HandicapsProps {
+  draft: Draft
+  problems: Readonly<Record<string, string>> | null
+  onChange(id: string, text: string): void
+}
+
+/** The name a seat goes by in the handicaps: its number, and the name the form gives it when the form names it. */
+function seatTitle(draft: Draft, index: number): string {
+  const name = draft.seats[index]?.name.trim() ?? ''
+  const named = draft.links || index === 0
+  return named && name !== '' ? `Seat ${index + 1}, ${name}` : `Seat ${index + 1}`
+}
+
+/** A row per seat with the life and opening hand it starts with in place of the table's; empty keeps the table's. */
+function Handicaps({ draft, problems, onChange }: HandicapsProps) {
+  return (
+    <fieldset data-slot="handicaps">
+      <legend className="mb-1 text-sm font-semibold">Handicaps</legend>
+      <p className="mb-3 text-xs text-muted-foreground">
+        What one seat starts with in place of the table’s rule. Leave a field empty to keep the table’s.
+      </p>
+      <div className="grid gap-3">
+        {draft.seats.map((seat, index) => (
+          <div key={seat.id} className="grid gap-1" data-handicap-seat={index}>
+            <p className="text-sm font-medium">{seatTitle(draft, index)}</p>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+              {HANDICAP_FIELDS.map((field) => {
+                const id = handicapId(index, field.key)
+                const dom = `rule-${id.replaceAll('.', '-')}`
+                const problem = problems?.[id] ?? null
+                return (
+                  <div key={field.key} className="grid content-start gap-1">
+                    {/* The input's own name says whose it is; this is the column's word for the eye. */}
+                    <span aria-hidden="true" className="text-xs font-medium">
+                      {field.label}
+                    </span>
+                    <Input
+                      id={dom}
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={draft.rules[id] ?? ''}
+                      placeholder="Table’s"
+                      aria-label={`${field.label} of ${seatTitle(draft, index)}`}
+                      aria-describedby={problem === null ? undefined : `${dom}-problem`}
+                      aria-invalid={problem !== null}
+                      onChange={(event) => onChange(id, event.target.value)}
+                    />
+                    {problem === null ? null : (
+                      <p id={`${dom}-problem`} className="text-sm text-destructive">
+                        {problem}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </fieldset>
+  )
+}
+
 interface HouseRulesFieldProps {
   draft: Draft
   /** What is wrong with each rule's text, by rule id, or null to show nothing yet. */
@@ -83,7 +146,7 @@ export function HouseRulesField({ draft, problems, onChange }: HouseRulesFieldPr
   useEffect(() => {
     if (troubled && details.current !== null) details.current.open = true
   }, [troubled])
-  const changed = describeRules(requestRules(draft.rules, format), format)
+  const changed = describeRules(requestRules(draft.rules, format, draft.seats.length), format)
   const summary =
     changed.length === 0
       ? `${format === 'commander' ? 'Commander' : 'Normal'} rules`
@@ -122,6 +185,7 @@ export function HouseRulesField({ draft, problems, onChange }: HouseRulesFieldPr
             </div>
           </fieldset>
         ))}
+        <Handicaps draft={draft} problems={problems} onChange={onChange} />
       </div>
     </details>
   )

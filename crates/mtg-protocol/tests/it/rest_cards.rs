@@ -115,6 +115,7 @@ fn a_card_page_has_the_documented_wire_shape() {
             face: 0,
             span: Span { start: 0, end: 44 },
             text: "the engine does not run Effect.DealDamage yet".into(),
+            quote: "Lightning Bolt deals 3 damage to any target.".into(),
         }],
         draft: None,
     };
@@ -122,7 +123,7 @@ fn a_card_page_has_the_documented_wire_shape() {
     assert_eq!(value["legalities"], json!({"commander": "legal"}));
     assert_eq!(
         value["reasons"],
-        json!([{"face": 0, "span": {"start": 0, "end": 44}, "text": "the engine does not run Effect.DealDamage yet"}])
+        json!([{"face": 0, "span": {"start": 0, "end": 44}, "text": "the engine does not run Effect.DealDamage yet", "quote": "Lightning Bolt deals 3 damage to any target."}])
     );
     assert_eq!(value["printings"][0]["released_at"], "2009-07-17");
     assert_eq!(value["faces"][0]["power"], json!(null));
@@ -201,4 +202,12 @@ fn the_bindings_carry_the_card_types() {
     assert!(files["CardDetail.ts"].contains("reasons: Array<Reason>"));
     assert!(files["Reason.ts"].contains("span: Span"));
     assert!(files["Span.ts"].contains("start: number"));
+}
+
+#[test]
+fn a_reason_stored_before_its_quote_reads_with_an_empty_one() {
+    let old = json!({"face": 1, "span": {"start": 2, "end": 9}, "text": "left to the table"});
+    let reason: Reason = serde_json::from_value(old).unwrap();
+    assert_eq!(reason.quote, "");
+    assert_eq!(reason.face, 1);
 }

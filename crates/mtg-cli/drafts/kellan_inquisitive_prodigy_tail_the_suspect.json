@@ -43,6 +43,7 @@
           "Spell": {
             "effects": [
               { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } },
               { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
             ]
           }

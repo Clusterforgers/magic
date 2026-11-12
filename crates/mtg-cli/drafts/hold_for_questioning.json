@@ -17,7 +17,8 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               { "Tap": { "what": "Attached" } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         },

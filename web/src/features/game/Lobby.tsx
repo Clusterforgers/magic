@@ -10,6 +10,7 @@ import { useAuth } from '@/features/auth/context'
 import { cn } from '@/lib/utils'
 import { loadInvites } from '@/lib/invites'
 import { gameFormat } from '@/lib/houseRules'
+import { MODE_WORDS, modeOf, teamChoices, teamOf } from '@/lib/teams'
 import type { DecksApi } from '@/net/decks'
 import { preconsApi as sharedPrecons } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
@@ -30,6 +31,7 @@ import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useLobbyControls } from './useLobbyControls'
 import type { LobbyApi } from './useLobbyControls'
 import { useSeatAccounts } from './useSeatAccounts'
+import { useTeams } from './useTeams'
 import { useVisibility } from './useVisibility'
 import { VisibilityToggle } from './VisibilityToggle'
 
@@ -83,6 +85,18 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
     run: controls.run,
     stop: controls.stop,
   })
+  // The roster is the server's latest word on the teams; before it the lookup's house rules stand in.
+  const knownTeams = roster === null ? (tableRules?.teams ?? null) : (roster.teams ?? null)
+  const teams = useTeams({
+    api,
+    game,
+    credential: controls.credential,
+    known: knownTeams,
+    run: controls.run,
+    stop: controls.stop,
+  })
+  const shownTeams = teams.shown
+  const mode = modeOf(shownTeams)
   // The seats this tab holds a token for came with the game; the server cannot give those back.
   const [issued] = useState<ReadonlySet<number>>(
     () => new Set(loadInvites(game)?.seats.map((invite) => invite.seat) ?? []),
@@ -145,6 +159,12 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
           <p data-slot="lobby-format" className="mt-1 text-base">
             <span className="font-medium">{format === 'commander' ? 'Commander' : 'Normal'} game</span>
             <span className="text-muted-foreground"> · {rows.length || seatCount || '?'} seats</span>
+            {mode === 'free_for_all' ? null : (
+              <span data-slot="lobby-mode" className="text-muted-foreground">
+                {' · '}
+                {MODE_WORDS[mode].name}
+              </span>
+            )}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             The game starts as soon as every seat has joined and pressed Ready.
@@ -193,24 +213,55 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
             {summary.headline}
           </p>
           <ul aria-label="Seats" className={cn('divide-y rounded-lg border', seatListClasses(rows.length))}>
-            {rows.map((row) => (
-              <LobbySeatRow
-                key={row.seat}
-                row={row}
-                host={row.seat === HOST_SEAT}
-                account={accounts.bySeat.get(row.seat) ?? null}
-                remove={
-                  host && editable && removable(row, HOST_SEAT, issued)
-                    ? {
-                        disabled: controls.busy,
-                        onPress: (opener) =>
-                          controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
-                      }
-                    : undefined
-                }
-              />
-            ))}
+            {rows.map((row) => {
+              const team = teamOf(shownTeams, row.seat)
+              return (
+                <LobbySeatRow
+                  key={row.seat}
+                  row={row}
+                  host={row.seat === HOST_SEAT}
+                  account={accounts.bySeat.get(row.seat) ?? null}
+                  team={
+                    team === null || shownTeams === null
+                      ? undefined
+                      : {
+                          team,
+                          ...(host && editable
+                            ? {
+                                change: {
+                                  choices: teamChoices(shownTeams),
+                                  disabled: controls.busy,
+                                  onChange: (next: number) => teams.choose(row.seat, next, row.name),
+                                },
+                              }
+                            : {}),
+                        }
+                  }
+                  remove={
+                    host && editable && removable(row, HOST_SEAT, issued)
+                      ? {
+                          disabled: controls.busy,
+                          onPress: (opener) =>
+                            controls.ask({ kind: 'remove', seat: row.seat, name: row.name }, opener),
+                        }
+                      : undefined
+                  }
+                />
+              )
+            })}
           </ul>
+          {shownTeams === null ? null : (
+            <>
+              <p data-slot="teams-note" aria-live="polite" className="text-sm empty:hidden">
+                {teams.note}
+              </p>
+              {teams.problem === null ? null : (
+                <p data-slot="teams-problem" role="alert" className="text-sm text-destructive">
+                  {teams.problem}
+                </p>
+              )}
+            </>
+          )}
           <p data-slot="lobby-summary" className="text-sm text-muted-foreground [overflow-wrap:anywhere]">
             {summaryText(rows)}
           </p>

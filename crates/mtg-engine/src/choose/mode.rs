@@ -387,6 +387,40 @@ pub(crate) fn announceable(
     }
 }
 
+/// The first target specification that keeps [`announceable`] from holding: for a plain ability, the first with too
+/// few legal targets; for a modal one with too few modes to choose, the first target of a mode that cannot be chosen.
+/// `None` when it holds, or when what fails is not a target.
+pub(crate) fn unmet_target<'a>(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    rules: &'a Ability,
+) -> Option<&'a TargetSpec> {
+    match modal_of(rules) {
+        Some(modal) => {
+            if mode_options(state, source, player, &modal, true, None).is_some() {
+                return None;
+            }
+            modal.modes.iter().find_map(|mode| {
+                mode.targets.iter().enumerate().find_map(|(index, spec)| {
+                    options_before_x(state, source, player, index, spec, None)
+                        .is_none()
+                        .then_some(spec)
+                })
+            })
+        }
+        None => rules
+            .targets()
+            .iter()
+            .enumerate()
+            .find_map(|(index, spec)| {
+                options_before_x(state, source, player, index, spec, None)
+                    .is_none()
+                    .then_some(spec)
+            }),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: an answer to a mode decision is accepted exactly when it names modes among those offered, each once unless the mode may repeat, between the fewest and the most, or backs out of a cast that can be backed out of, and the modes come back in printed order; a mode is offered only when its targets can be met, a modal ability with too few modes to choose cannot be announced, the target specifications of a modal ability are those of the modes chosen, in order, and a mode is offered under the label the card gives it, else under the oracle wording of what it does.

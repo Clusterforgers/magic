@@ -46,7 +46,10 @@
         {
           "Triggered": {
             "when": { "Chapter": { "number": 2 } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

@@ -186,7 +186,11 @@ fn lobby_rosters() -> Vec<ServerMessage> {
         };
         let seats = vec![seat(0, "Ana", true, false), seat(1, "Bo", here, ready)];
         let needed = if ready { 1 } else { 2 };
-        ServerMessage::Lobby { seats, needed }
+        ServerMessage::Lobby {
+            seats,
+            needed,
+            teams: None,
+        }
     })
     .collect()
 }

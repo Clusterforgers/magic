@@ -52,7 +52,7 @@ const BASICS: readonly (readonly [string, Colour])[] = [
 ]
 
 /** A made-up reason the game plays a card by hand. */
-export const reasonOf = (text: string): Reason => ({ face: 0, span: { start: 0, end: 10 }, text })
+export const reasonOf = (text: string): Reason => ({ face: 0, span: { start: 0, end: 10 }, text, quote: '' })
 
 const hit = (name: string, type: string, value: number, cost: string, identity: readonly Colour[]): CardHit =>
   cardHit(name, {

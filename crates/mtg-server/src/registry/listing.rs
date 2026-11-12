@@ -1,4 +1,5 @@
-//! What the game browser may see of the registry: public games that are still in their lobby.
+//! What the game browser may see of the registry: public games that are still in their lobby, and every running game
+//! for spectators.
 
 use std::net::IpAddr;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
@@ -7,16 +8,17 @@ use mtg_core::house::HouseRules;
 
 use super::Registry;
 use crate::game_id::GameId;
-use crate::handle::GameHandle;
+use crate::handle::{GameHandle, GameStatus};
 use crate::recipe::FormatKind;
 use crate::records::{SeatState, Visibility};
 use crate::throttle::Blocked;
 
-/// Most games [`Registry::lobbies`] returns: the newest.
+/// Most games [`Registry::lobbies`] and [`Registry::running`] each return: the newest.
 pub const MAX_LISTED_LOBBIES: usize = 50;
 
-/// A public game in its lobby, as the game browser lists it. There is no token, join code or seat
-/// link in it: the id is all a visitor needs to ask to join, and only a public game lets them.
+/// A public game in its lobby or any running game, as the game browser lists it. There is no token, join code or seat
+/// link in it: the id is all a visitor needs to ask to join a public lobby, or a signed-in visitor to watch a running
+/// game.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ListedGame {
     /// The game.
@@ -37,6 +39,8 @@ pub struct ListedGame {
     pub created_at: String,
     /// Time since the game was created.
     pub age: Duration,
+    /// Whether the game runs, so it can be watched and not joined.
+    pub running: bool,
 }
 
 impl Registry {
@@ -58,11 +62,30 @@ impl Registry {
     /// [`MAX_LISTED_LOBBIES`]. Invite games, started games and games whose actor is gone are
     /// never in it.
     pub async fn lobbies(&self) -> Vec<ListedGame> {
+        self.listed(|visibility, status| {
+            (visibility == Visibility::Public && !status.started).then_some(false)
+        })
+        .await
+    }
+
+    /// The running games of either visibility, which any signed-in visitor may watch, newest first, at most
+    /// [`MAX_LISTED_LOBBIES`]. Lobbies, ended games, tutorials and games whose actor is gone are never in it.
+    pub async fn running(&self) -> Vec<ListedGame> {
+        self.listed(|_, status| (status.started && status.result.is_none()).then_some(true))
+            .await
+    }
+
+    /// The newest games `pick` lists, at most [`MAX_LISTED_LOBBIES`]; `pick` says whether a game is listed and
+    /// whether as running.
+    async fn listed(
+        &self,
+        pick: impl Fn(Visibility, &GameStatus) -> Option<bool>,
+    ) -> Vec<ListedGame> {
         let (now, wall) = (Instant::now(), SystemTime::now());
-        let mut candidates: Vec<(Instant, GameHandle, ListedGame)> = self
+        let mut candidates: Vec<(Instant, GameHandle, Visibility, ListedGame)> = self
             .games()
             .iter()
-            .filter(|(_, entry)| entry.visibility == Visibility::Public)
+            .filter(|(_, entry)| !entry.unlisted)
             .map(|(id, entry)| {
                 let age = now.saturating_duration_since(entry.created);
                 let listed = ListedGame {
@@ -84,22 +107,30 @@ impl Registry {
                     total: entry.seats.len(),
                     created_at: utc_stamp(wall.checked_sub(age).unwrap_or(UNIX_EPOCH)),
                     age,
+                    running: false,
                 };
-                (entry.created, entry.handle.clone(), listed)
+                (
+                    entry.created,
+                    entry.handle.clone(),
+                    entry.visibility,
+                    listed,
+                )
             })
             .collect();
         // Newest first; two games made in the same instant keep a fixed order by id.
-        candidates.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.2.game.cmp(&a.2.game)));
+        candidates.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.3.game.cmp(&a.3.game)));
 
         let mut listed = Vec::new();
-        for (_, handle, mut game) in candidates {
+        for (_, handle, visibility, mut game) in candidates {
             if listed.len() == MAX_LISTED_LOBBIES {
                 break;
             }
-            if let Ok(status) = handle.status().await
-                && !status.started
-            {
+            let Ok(status) = handle.status().await else {
+                continue;
+            };
+            if let Some(running) = pick(visibility, &status) {
                 game.manual_play = status.manual_play;
+                game.running = running;
                 listed.push(game);
             }
         }

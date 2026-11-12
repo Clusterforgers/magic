@@ -358,7 +358,8 @@ fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<()
 
 /// Whether the players still in the game explain the result: the last one standing wins and nobody left is a draw;
 /// under the house rules of the turn limit and the winning life total a game also ends with several players in it, the
-/// winner then alone at the highest life and a draw a tie for it or everyone at the winning life.
+/// winner then alone at the highest life and a draw a tie for it or everyone at the winning life. At a table with teams
+/// the winner is a team.
 fn result_explained(state: &GameState, result: GameResult) -> bool {
     let survivors: Vec<_> = state.players().iter().filter(|p| p.is_in_game()).collect();
     let rules = state.house_rules();
@@ -380,6 +381,12 @@ fn result_explained(state: &GameState, result: GameResult) -> bool {
             limited && matches!(leaders.as_slice(), [only] if only.id() == winner)
         }
         (GameResult::Draw, _) => (limited && leaders.len() > 1) || everyone_wins,
+        // A team wins once its players are the only ones left, or alone at the highest life at the turn limit.
+        (GameResult::Team(team), _) => {
+            (!survivors.is_empty() && survivors.iter().all(|p| state.team_of(p.id()) == team))
+                || (limited
+                    && matches!(leaders.as_slice(), [only] if state.team_of(only.id()) == team))
+        }
     }
 }
 

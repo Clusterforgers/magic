@@ -156,6 +156,7 @@ fn damage_player(
     }
     let player = player_mut(state, id)?;
     player.life = player.life.saturating_sub(lost);
+    super::share_life(state, id);
     let poison = match form {
         DamageForm::Infect => amount.saturating_add(toxic),
         _ => toxic,

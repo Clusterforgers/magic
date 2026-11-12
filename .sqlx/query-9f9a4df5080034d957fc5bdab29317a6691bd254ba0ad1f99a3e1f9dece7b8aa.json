@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT entrant, name, dropped FROM tournament_entrants\n             WHERE tournament_id = $1 ORDER BY entrant",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "entrant",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_entrants",
+            "name": "entrant"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "tournament_entrants",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "dropped",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "tournament_entrants",
+            "name": "dropped"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9f9a4df5080034d957fc5bdab29317a6691bd254ba0ad1f99a3e1f9dece7b8aa"
+}

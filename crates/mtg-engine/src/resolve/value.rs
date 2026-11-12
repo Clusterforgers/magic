@@ -1103,9 +1103,8 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::Opponents => state
-                .turn_order_from(state.turn().active())
+                .opponents_of(self.controller)
                 .into_iter()
-                .filter(|p| *p != self.controller)
                 .map(Target::Player)
                 .collect(),
             Ref::EachPlayer => state
@@ -1309,7 +1308,7 @@ impl<'a> Scope<'a> {
         self.state
             .turn_order_from(active)
             .into_iter()
-            .filter(|player| *player != active)
+            .filter(|player| self.state.is_opponent(active, *player))
             .collect()
     }
 
@@ -1338,7 +1337,9 @@ impl<'a> Scope<'a> {
         self.state
             .turn_order_from(self.state.turn().active())
             .into_iter()
-            .filter(|player| *player != self.controller && attacked.contains(player))
+            .filter(|player| {
+                self.state.is_opponent(self.controller, *player) && attacked.contains(player)
+            })
             .collect()
     }
 
@@ -2130,12 +2131,22 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
-            Amount::Remembered { on, slot } => {
+            Amount::Remembered { on, slot, per } => {
+                let slots = match per {
+                    Some(per) => self
+                        .players(per)?
+                        .into_iter()
+                        .map(|player| crate::memory::player_slot(slot, player))
+                        .collect(),
+                    None => vec![slot.clone()],
+                };
                 let mut total = 0_i64;
                 for source in self.objects(on)? {
-                    total += crate::memory::recall_numbers(self.state, source, slot)
-                        .iter()
-                        .sum::<i64>();
+                    for slot in &slots {
+                        total += crate::memory::recall_numbers(self.state, source, slot)
+                            .iter()
+                            .sum::<i64>();
+                    }
                 }
                 total
             }
@@ -2748,7 +2759,7 @@ impl<'a> Scope<'a> {
     fn turn_fact(&self, condition: &Condition) -> bool {
         match condition {
             Condition::ExtraTurn => self.state.turn().is_extra(),
-            _ => self.state.turn().active() == self.controller,
+            _ => self.state.is_active(self.controller),
         }
     }
 

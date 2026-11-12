@@ -7,6 +7,7 @@ import type { HandLimit } from "./HandLimit";
 import type { Handicap } from "./Handicap";
 import type { MulliganStyle } from "./MulliganStyle";
 import type { SkipFirstDraw } from "./SkipFirstDraw";
+import type { Teams } from "./Teams";
 
 /**
  * What a game's creator sets in place of the format's values. A rule that is left out keeps the
@@ -104,4 +105,8 @@ commanders_per_seat?: number,
 /**
  * What single seats start with, at most one entry for each seat.
  */
-handicaps?: Array<Handicap>, };
+handicaps?: Array<Handicap>, 
+/**
+ * The teams of the table; left out, every player plays for themself.
+ */
+teams?: Teams, };

@@ -3,11 +3,10 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { COMMAND_GAP_PX, handDockNeed, handLayout, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
+import { dockLayouts, handDockNeed, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { HandFan } from './HandFan'
 import type { HandCommander } from './HandFan'
-import type { HandLayout } from './handFit'
 import { useSeatNamer } from './names'
 import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
@@ -96,13 +95,8 @@ export const HandDock = memo(function HandDock({
     if (room === null || cards === null) return undefined
     const width = room.width - 2 * PAD_PX
     const height = room.height - 2 * PAD_PX
-    if (waiting.size === 0) return { hand: handLayout({ width, height, count: cards.length, coarse, cap }) }
     // The commanders take one card's width each, and a divider, at the head of the dock; the hand fits the rest.
-    const all = handLayout({ width, height, count: cards.length + waiting.size, coarse, cap })
-    const head = waiting.size * (all.box.width + all.gap) + COMMAND_GAP_PX
-    const hand = handLayout({ width: Math.max(0, width - head), height, count: cards.length, coarse, cap })
-    const command: HandLayout = { ...hand, rows: 1, perRow: waiting.size, scrolls: false, overlap: 0 }
-    return { hand, command }
+    return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse, cap })
   }, [room, cards, waiting, coarse, cap])
   const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
   const need =
@@ -144,7 +138,8 @@ export const HandDock = memo(function HandDock({
           // divider is this box's edge, so it must not follow the fan up into the battlefield.
           <div
             data-slot="hand-command"
-            className="flex h-full shrink-0 items-end border-r border-foreground/15 pr-1"
+            className="flex h-full min-w-0 shrink-0 items-end border-r border-foreground/15 pr-1"
+            style={layouts?.command?.scrolls === true ? { maxWidth: layouts.commandWidth } : undefined}
           >
             <HandFan
               ids={[...waiting.keys()]}

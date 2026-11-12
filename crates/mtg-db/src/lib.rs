@@ -33,7 +33,7 @@ pub use drafts::{
 };
 pub use error::DbError;
 pub use favourites::{FavouritePreconRepo, MAX_CODE_CHARS, is_code};
-pub use fix_marks::{FixMark, FixMarkRepo, MAX_NOTE_CHARS, RankedMark};
+pub use fix_marks::{FixMark, FixMarkRepo, MAX_NOTE_CHARS, Marked, RankedMark};
 pub use import::{
     CheckReport, ImportError, Importer, PrintingImportReport, check_cards, check_precons,
     check_printings, check_rulings,

@@ -275,8 +275,13 @@ pub struct ReportCard {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ReadDiffers>>", optional))]
     pub differs: Vec<ReadDiffers>,
-    /// The clauses left to the table, each with the span of oracle text it covers.
+    /// The clauses left to the table, each with the span of oracle text it covers and the words it quotes.
     pub reasons: Vec<Reason>,
+    /// The card's oracle text, faces joined by a line break, for a card the game leaves to the table whole: one it
+    /// does not run whole with no clause of its own. Left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub whole_text: Option<String>,
     /// Whether the deck's owner marked the card "play by hand": it is then `manual` whatever its rules, with
     /// [`crate::support::OWNER_BY_HAND`] as its reason. Left out while false.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
@@ -411,6 +416,22 @@ pub(crate) fn differs_now(library: &Library, printed: &PrintedCard) -> Vec<ReadD
         .collect()
 }
 
+/// The oracle text of face `face` of `card`.
+fn face_text(card: Option<&PrintedCard>, face: usize) -> Option<&str> {
+    Some(card?.faces.get(face)?.oracle_text.as_str())
+}
+
+/// The oracle text of every face of `card` joined by line breaks; `None` when it has none.
+fn whole_text(card: Option<&PrintedCard>) -> Option<String> {
+    let texts: Vec<&str> = card?
+        .faces
+        .iter()
+        .map(|face| face.oracle_text.trim())
+        .filter(|text| !text.is_empty())
+        .collect();
+    (!texts.is_empty()).then(|| texts.join("\n"))
+}
+
 /// The cards of a deck as the report lists them: by zone, each zone by name.
 fn report_cards(
     deck: &BTreeMap<(DeckZone, String), u32>,
@@ -425,10 +446,15 @@ fn report_cards(
             .filter(|((z, _), _)| *z == zone)
             .map(|((_, id), count)| {
                 let record = supports.get(id).and_then(Option::as_ref);
-                let (support, reasons) = match record {
+                let printed = cards.get(id).map(|facts| &facts.printed);
+                let (support, reasons): (Support, Vec<Reason>) = match record {
                     Some(record) => (
                         record.support,
-                        record.clauses.iter().map(Reason::from).collect(),
+                        record
+                            .clauses
+                            .iter()
+                            .map(|clause| Reason::quoting(clause, face_text(printed, clause.face)))
+                            .collect(),
                     ),
                     None => (
                         Support::Unplayable,
@@ -436,9 +462,13 @@ fn report_cards(
                             face: 0,
                             span: crate::card::Span { start: 0, end: 0 },
                             text: "the card is not in the card database".to_owned(),
+                            quote: String::new(),
                         }],
                     ),
                 };
+                let whole_text = (reasons.is_empty() && !support.runs_whole())
+                    .then(|| whole_text(printed))
+                    .flatten();
                 ReportCard {
                     oracle_id: id.clone(),
                     name: name_of(cards.get(id), id).to_owned(),
@@ -451,6 +481,7 @@ fn report_cards(
                         .map(|(_, differs)| differs.clone())
                         .unwrap_or_default(),
                     reasons,
+                    whole_text,
                     by_hand: by_hand.contains(id) && support == Support::Manual,
                 }
             })

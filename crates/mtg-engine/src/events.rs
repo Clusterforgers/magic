@@ -198,6 +198,10 @@ pub enum Event {
         object: ObjectId,
         /// Why it could not go on.
         reason: Unplayable,
+        /// The detail of the reason, when the engine can name it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        why: Option<crate::decision::Why>,
     },
     /// A priority round started with this player.
     PriorityGranted {
@@ -579,6 +583,9 @@ pub enum Event {
     /// A step of a spell or ability of a card that runs on a player's read failed, so the rest of it is left to the table: the
     /// steps before it stand and the resolution ends right after (`docs/engine.md`, Fail-soft resolution).
     AbilityLeftToTable(Box<LeftToTable>),
+    /// The event a triggered line the table plays by hand waits for happened, so its controller applies it now
+    /// (`docs/engine.md`, By-hand lines): a note, no state change.
+    ByHandDue(Box<crate::triggers::ByHandDue>),
     /// An object moved from one zone to another.
     ZoneChanged {
         /// The object.
@@ -854,6 +861,34 @@ pub enum Event {
     EvidenceCollected {
         /// Who collected it.
         player: PlayerId,
+    },
+    /// A player investigated (CR 701.16a): the Clue token is the creation before it.
+    Investigated {
+        /// Who investigated.
+        player: PlayerId,
+    },
+    /// A player discovered (CR 701.57): the exile, cast or move to the hand are the events before it.
+    Discovered {
+        /// Who discovered.
+        player: PlayerId,
+        /// The discover value.
+        value: u32,
+        /// The card discovered, when one was found and still exists.
+        card: Option<ObjectId>,
+    },
+    /// A player manifested dread (CR 701.62): the look, the move to the graveyard and the manifest are the events before it.
+    DreadManifested {
+        /// Who manifested dread.
+        player: PlayerId,
+        /// The card they put into their graveyard this way, if any.
+        card: Option<ObjectId>,
+    },
+    /// A player gave a gift (CR 702.174): the gift itself is the events before it.
+    GiftGiven {
+        /// Who gave it.
+        player: PlayerId,
+        /// The player it was given to.
+        to: PlayerId,
     },
     /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
     DieRolled {
@@ -1323,6 +1358,10 @@ impl Event {
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::EvidenceCollected { .. }
+            | Event::Investigated { .. }
+            | Event::Discovered { .. }
+            | Event::DreadManifested { .. }
+            | Event::GiftGiven { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
@@ -1351,6 +1390,7 @@ impl Event {
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
             | Event::AbilityLeftToTable(_)
+            | Event::ByHandDue(_)
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
