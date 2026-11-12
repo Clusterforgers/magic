@@ -691,6 +691,8 @@ pub struct InvariantChecker {
     /// The mana without a restriction that outlasts the step, by the history of what was added and spent.
     expected_kept: Vec<Vec<(ManaType, ManaLasts)>>,
     expected_damage: BTreeMap<ObjectId, u32>,
+    /// Whether the object the event being checked damages was a creature as the damage was dealt, before the fold.
+    damaged_creature: bool,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
     expected_attached: BTreeMap<ObjectId, ObjectRef>,
@@ -765,6 +767,7 @@ impl InvariantChecker {
             expected_restricted: vec![Vec::new(); shadow.players().len()],
             expected_kept: vec![Vec::new(); shadow.players().len()],
             expected_damage,
+            damaged_creature: false,
             expected_object_counters,
             expected_player_counters,
             loyalty_turns: BTreeMap::new(),
@@ -990,6 +993,9 @@ impl InvariantChecker {
                 )));
             }
         }
+        // Damage that takes the loyalty a planeswalker is a creature by leaves it marked (CR 120.3e), so look first.
+        self.damaged_creature = matches!(event, Event::DamageDealt { target: DamageTarget::Object(o), .. }
+            if characteristics(&self.shadow, *o).is_some_and(|chars| chars.is_creature()));
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;
@@ -1286,6 +1292,7 @@ impl InvariantChecker {
         let walker = battle || printed.is_some_and(|types| types.contains(CardType::Planeswalker));
         // A planeswalker that an effect made a creature ("becomes a 5/5 creature") has damage marked too (CR 120.3e).
         let creature = printed.is_some_and(|types| types.contains(CardType::Creature))
+            || self.damaged_creature
             || characteristics(&self.shadow, object).is_some_and(|chars| chars.is_creature());
         let counter = if battle {
             CounterKind::defense()
