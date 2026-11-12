@@ -10,6 +10,7 @@ use crate::compile::{
     ep23_three_texts, own_names, read_keyword, read_keywords, same_written_text, static_pair_texts,
     written_variants,
 };
+use crate::effect::Effect;
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
 use crate::trigger::TriggerPattern;
@@ -328,11 +329,13 @@ impl<'a> Pairer<'a> {
         self.static_pairs();
         self.either_way_pairs();
         self.haunt_pairs();
+        self.shared_pairs();
         self.exact();
         self.blocks();
         self.leftovers();
         self.tables();
         self.r5g_escalate();
+        self.tiered();
         let face = self.face;
         Paired {
             clauses: self
@@ -555,6 +558,23 @@ impl<'a> Pairer<'a> {
         }
     }
 
+    /// Tiered (CR 702.183): the spell that read its modes, each with a cost of its own and one chosen, stands for the
+    /// keyword line.
+    fn tiered(&mut self) {
+        let Some(at) = (0..self.abilities.len())
+            .find(|&at| self.slot_of[at].is_some() && tiered_spell(&self.abilities[at]))
+        else {
+            return;
+        };
+        if let Some(slot) = self
+            .slots
+            .iter()
+            .position(|slot| slot.state.is_none() && slot.clause.text.trim() == "Tiered")
+        {
+            self.slots[slot].state = Some(ClauseState::Reads { ability: at });
+        }
+    }
+
     /// Equip with an option: the activated abilities that attach the Equipment stand for the one line of the text.
     fn equip_options(&mut self) {
         let abilities = self.abilities;
@@ -609,6 +629,28 @@ impl<'a> Pairer<'a> {
                 continue;
             }
             if let Some(slot) = self.find_text(&[ClauseKind::Triggered], &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
+    }
+
+    /// Two different abilities next to each other that write the same sentence are that one sentence of the card: an
+    /// eminence trigger and the same trigger from the command zone, "You may look at the top card of your library and at
+    /// face-down creatures you don't control any time."
+    fn shared_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = shared_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(kinds_of(&abilities[at - 1]), &written, false) {
                 self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
                 self.taken[at] = true;
                 self.slot_of[at] = Some(slot);
@@ -1268,6 +1310,95 @@ mod c11g_stripped_tests {
             crate::proposal::pairing::r7c_unworded(text).as_deref(),
             unworded
         );
+    }
+}
+
+/// Whether the ability is a spell that chooses one of modes that each add a cost: a Tiered spell.
+fn tiered_spell(ability: &Ability) -> bool {
+    let Ability::Spell { effects, .. } = ability else {
+        return false;
+    };
+    matches!(
+        effects.as_slice(),
+        [Effect::Modal { choose, mode_costs, modes, .. }]
+            if choose.is_one() && !mode_costs.is_empty() && mode_costs.len() == modes.len()
+    )
+}
+
+/// The sentences both of two different abilities of one kind write; none for two equal abilities, which a card never
+/// prints as one sentence.
+fn shared_texts(first: &Ability, second: &Ability) -> Vec<String> {
+    if first == second || kinds_of(first) != kinds_of(second) {
+        return Vec::new();
+    }
+    let theirs = written_variants(second);
+    written_variants(first)
+        .into_iter()
+        .filter(|text| theirs.contains(text))
+        .collect()
+}
+
+#[cfg(test)]
+mod tiered_tests {
+    //! Goal: only a spell that chooses exactly one of modes that each carry a cost is Tiered.
+    use rstest::rstest;
+
+    use super::tiered_spell;
+    use crate::ability::Ability;
+
+    const MODES: &str =
+        r#""modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]"#;
+
+    #[rstest]
+    #[case::one_with_costs(r#""mode_costs":["{0}","{1}"],"#, true)]
+    #[case::spree(r#""choose":{"min":1,"max":2},"mode_costs":["{1}","{1}"],"#, false)]
+    #[case::no_costs("", false)]
+    fn a_tiered_spell(#[case] fields: &str, #[case] tiered: bool) {
+        let spell: Ability = serde_json::from_str(&format!(
+            r#"{{"Spell":{{"effects":[{{"Modal":{{{fields}{MODES}}}}}]}}}}"#
+        ))
+        .unwrap_or_else(|error| panic!("{error}"));
+        assert_eq!(tiered_spell(&spell), tiered);
+    }
+}
+
+#[cfg(test)]
+mod shared_tests {
+    //! Goal: two different abilities of one kind read as one sentence when both write it, and never two equal abilities or abilities without a common sentence.
+    use rstest::rstest;
+
+    use super::shared_texts;
+    use crate::ability::Ability;
+
+    const VAMPIRE: &str = r#""when":{"SpellCast":{"what":[{"Subtype":"Vampire"},"Other"],"by":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Vampire","colors":["Black"],"types":["Creature"],"subtypes":["Vampire"],"power":1,"toughness":1}}}}]"#;
+    const TOP: &str = r#"{"Rule":{"rule":{"LookAtTopAnyTime":"You"}}}"#;
+    const FACE_DOWN: &str = r#"{"Rule":{"rule":{"LookAtFaceDown":{"what":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}}}"#;
+    const EMINENCE: &str = "Eminence — Whenever you cast another Vampire spell, if ~ is in the command zone or on the battlefield, create a 1/1 black Vampire creature token.";
+    const LENS: &str = "You may look at the top card of your library and at face-down creatures you don't control any time.";
+
+    fn ability(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap_or_else(|error| panic!("{error}"))
+    }
+
+    fn vampire(from: &str) -> String {
+        format!(r#"{{"Triggered":{{{VAMPIRE}{from}}}}}"#)
+    }
+
+    #[rstest]
+    #[case::eminence(vampire(""), vampire(r#","from":"Command""#), Some(EMINENCE))]
+    #[case::two_looks(TOP.to_owned(), FACE_DOWN.to_owned(), Some(LENS))]
+    #[case::the_same_ability_twice(vampire(""), vampire(""), None)]
+    #[case::nothing_in_common(TOP.to_owned(), vampire(""), None)]
+    fn two_abilities_share_a_sentence(
+        #[case] first: String,
+        #[case] second: String,
+        #[case] shared: Option<&str>,
+    ) {
+        let found = shared_texts(&ability(&first), &ability(&second));
+        match shared {
+            Some(text) => assert!(found.iter().any(|found| found == text), "{found:?}"),
+            None => assert!(found.is_empty(), "{found:?}"),
+        }
     }
 }
 
