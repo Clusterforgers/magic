@@ -2,6 +2,7 @@ Abbot of Keral Keep
 Aberrant
 Abomination, World Ravager
 Aboroth
+Absolver Thrull
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -144,6 +145,7 @@ Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
+Belfry Spirit
 Belisarius Cawl
 Bespoke Battlewagon
 Big Mother Mouser
@@ -175,6 +177,7 @@ Blessed Breath
 Blight Mamba
 Blight Pile
 Blightwidow
+Blind Hunter
 Blood Feud
 Blood Moon
 Blood Reckoning
@@ -534,6 +537,7 @@ Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
+Eivor, Battle-Ready
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
@@ -588,6 +592,7 @@ Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Excise the Imperfect
+Exhumer Thrull
 Exocrine
 Exotic Disease
 Exotic Orchard
@@ -767,6 +772,7 @@ Grasp of Fate
 Graveblade Marauder
 Gravecrawler
 Graven Cairns
+Graven Dominator
 Graveshifter
 Gravitational Shift
 Greater Good
@@ -1241,6 +1247,7 @@ Origin of the Hulk
 Orochi Hatchery
 Orzhov Enforcer
 Orzhov Locket
+Orzhov Pontiff
 Orzhov Racketeers
 Ostracize
 Otherworldly Gaze
@@ -1561,6 +1568,7 @@ Silvar, Devourer of the Free
 Silver Shroud Costume
 Silversmote Ghoul
 Silverwing Squadron
+Singe-Mind Ogre
 Sinister Sabotage
 Sinister Starfish
 Sinking Feeling
@@ -1610,6 +1618,7 @@ Soul Shepherd
 Soul of New Phyrexia
 Soul of Zendikar
 Soul's Attendant
+Soulblade Corrupter
 Souldrinker
 Soulless Revival
 Soultether Golem
@@ -1806,6 +1815,7 @@ Thornvault Forager
 Thought Erasure
 Thought Monitor
 Thought Reflection
+Thought-Knot Seer
 Thoughtcast
 Thoughtseize
 Thrashing Mossdog

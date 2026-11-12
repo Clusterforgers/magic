@@ -341,6 +341,7 @@ mod if_sentence;
 mod impulse;
 mod instead_pairs;
 mod keyword_macros;
+mod l292_reads;
 mod land_types;
 mod lands;
 mod leave_combat;

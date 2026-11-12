@@ -15,14 +15,14 @@
               {
                 "ChooseAtRandom": {
                   "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
-                  "as": "card"
+                  "as": "picked"
                 }
               },
-              { "Reveal": { "what": { "Bound": "card" } } },
+              { "Reveal": { "what": { "Bound": "picked" } } },
               {
                 "LoseLife": {
                   "who": { "Target": 0 },
-                  "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                  "amount": { "Stat": { "of": { "Bound": "picked" }, "stat": "ManaValue" } }
                 }
               }
             ]

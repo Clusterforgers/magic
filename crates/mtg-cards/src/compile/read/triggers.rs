@@ -214,6 +214,9 @@ const NEWER_STEPS: [(Step, &str); 2] = [
 /// "At the beginning of your upkeep", and two events of one ability: "When ~ enters and whenever one or more creature
 /// tokens you control deal combat damage to a player".
 pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    if let Some(found) = r.attempt(super::l292_haunt::l292_haunt_head) {
+        return Some(found);
+    }
     let first = single_event(r)?;
     let second = r.attempt(|r| {
         r.word("and").then_some(())?;
@@ -1706,7 +1709,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
                 .or_else(|| group_attacks_text(what, *at_least))
         }
-        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::l292_haunt::l292_haunt_text(patterns)
+            .or_else(|| super::g9c_blocks::g9c_shared_text(patterns))
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))

@@ -579,6 +579,8 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // A target with a morph ability and a skip of each opponent read as a twin's words; no twin has the shape left.
+    super::l292_twins::l292_twin_wordings(ability, written_variants, &mut texts);
     // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
     if let Some(joined) = super::r7c_when::r7c_instead(ability) {
         for text in written_variants(&joined) {
@@ -1408,6 +1410,7 @@ fn written(
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.rmt0_hand_pick(&effects[start..]))
+            .or_else(|| writer.l292_hand(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -3671,6 +3674,14 @@ impl Writer<'_> {
     /// A player's hand revealed and the card you choose from it for them to discard, which name the target player.
     fn rmt0_hand_pick(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let (text, used) = super::rmt0_hand_pick::rmt0_sequence(effects, self.targets)?;
+        self.named = true;
+        Some((vec![text], used))
+    }
+
+    /// A target player's hand revealed and the card you exile from it, or a card of it revealed at random and its mana
+    /// value lost as life.
+    fn l292_hand(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        let (text, used) = super::l292_hand_reads::l292_hand_text(effects, self.targets)?;
         self.named = true;
         Some((vec![text], used))
     }

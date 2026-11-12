@@ -2400,7 +2400,7 @@ fn object_triggers(
                 when,
                 TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if *what == Selector::this()
             );
-        if *from != zone && !from_anywhere {
+        if *from != zone && !from_anywhere && !crate::l292_haunt::works_here_too(&rules, zone) {
             continue;
         }
         let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
