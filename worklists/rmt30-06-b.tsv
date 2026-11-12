@@ -1,0 +1,37 @@
+Forgotten Ancient	triggered: At the beginning of your upkeep, you may move any number of +N/+N counters from this creature onto other creatures.	partial
+Sanctum of All	triggered: At the beginning of your upkeep, you may search your library and/or graveyard for a Shrine card and put it onto the battlefield. If you search your library this way, shuffle.	partial
+Curse of Misfortunes	triggered: At the beginning of your upkeep, you may search your library for a Curse card that doesn't have the same name as a Curse attached to enchanted player, put it onto the battlefield attached to that player, then shuffle.	partial
+Quistis Trepe	triggered: Blue Magic — When ~ enters, you may cast target instant or sorcery card from a graveyard, and mana of any type can be spent to cast that spell. If that spell would be put into a graveyard, exile it instead.	manual
+Goliath Hatchery	triggered: Corrupted — At the beginning of your upkeep, if an opponent has N or more poison counters, choose a creature you control, then draw cards equal to its total toxic value.	partial
+Mog, Moogle Warrior	triggered: Dance — At the beginning of your end step, each player may discard a card. Each player who discarded a card this way draws a card. If a creature card was discarded this way, you create a N/N white Moogle creature token with lifelink. Then if a noncreature card was discarded this way, put a +N/+N counter on each Moogle you control.	partial
+Draco	triggered: Domain — At the beginning of your upkeep, sacrifice this creature unless you pay {M}. This cost is reduced by {M} for each basic land type among lands you control.	partial
+Taigam, Master Opportunist	triggered: Flurry — Whenever you cast your second spell each turn, copy it, then exile the spell you cast with N time counters on it. If it doesn't have suspend, it gains suspend.	manual
+King Narfi's Betrayal	triggered: I — Each player mills N cards. Then you may exile a creature or planeswalker card from each graveyard.	manual
+Summon: Esper Valigarmanda	triggered: I — Exile an instant or sorcery card from each graveyard.	partial
+The Parting of the Ways	triggered: I — Exile the top N cards of your library. For each nonland card exiled this way, put a number of time counters on that card equal to its mana value. If it doesn't have suspend, it gains suspend.	partial
+The Curse of Fenric	triggered: I — For each player, destroy up to N target creature that player controls. For each creature destroyed this way, its controller creates a N/N green Mutant creature token with deathtouch.	manual
+Medomai's Prophecy	triggered: II — Choose a card name.	partial
+The Rise of Sozin // Fire Lord Sozin	triggered: II — Choose a card name. Search target opponent's graveyard, hand, and library for up to N cards with that name and exile them. Then that player shuffles.	partial
+The Phasing of Zhalfir	triggered: I, II — Another target nonland permanent phases out. It can't phase in for as long as you control this Saga.	partial
+Battle for Bretagard	triggered: III — Choose any number of artifact tokens and/or creature tokens you control with different names. For each of them, create a token that's a copy of it.	partial
+The Apprentice's Folly	triggered: I, II — Choose target nontoken creature you control that doesn't have the same name as a token you control. Create a token that's a copy of it, except it isn't legendary, is a Reflection in addition to its other types, and has haste.	manual
+Vault 11: Voter's Dilemma	triggered: II, III — Each player secretly votes for up to N creature, then those votes are revealed. If no creature got votes, each player draws a card. Otherwise, destroy each creature with the most votes or tied for most votes.	partial
+The Caves of Androzani	triggered: II, III — For each non-Saga permanent, choose a counter on it. You may put an additional counter of that kind on that permanent.	partial
+Terra, Magical Adept // Esper Terra	triggered: I, II, III — Create a token that's a copy of target nonlegendary enchantment you control. It gains haste. If it's a Saga, put up to N lore counters on it. Sacrifice it at the beginning of your next end step.	partial
+Long List of the Ents	triggered: I, II, III, IV, V, VI — Note a creature type that hasn't been noted for this Saga. When you next cast a creature spell of that type this turn, that creature enters with an additional +N/+N counter on it.	manual
+The Tale of Tamiyo	triggered: I, II, III — Mill N cards. If N cards that share a card type were milled this way, draw a card and repeat this process.	manual
+Vault 21: House Gambit	triggered: III — Reveal up to N nonland cards from your hand. For each of those cards that has the same mana value as another card revealed this way, create a Treasure token.	partial
+Vault 112: Sadistic Simulation	triggered: I, II — Tap up to N target creature and put a stun counter on it. You get {E}{E}.	manual
+Jin-Gitaxias // The Great Synthesis	triggered: III — You may cast any number of spells from your hand without paying their mana costs. Exile this Saga, then return it to the battlefield.	partial
+Yotia Declares War	triggered: II — Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.	partial
+Huatli, Poet of Unity // Roar of the Fifth People	triggered: II — This Saga gains "Creatures you control have '{T}: Add {M}, {M}, or {M}.'"	partial
+Ral and the Implicit Maze	triggered: II — You may discard a card. If you do, exile the top N cards of your library. You may play them until the end of your next turn.	partial
+The Trickster-God's Heist	triggered: II — You may exchange control of N target nonbasic, noncreature permanents that share a card type.	partial
+Vorinclex // The Grand Evolution	triggered: I — Mill N cards. Put up to N creature cards from among the milled cards onto the battlefield.	partial
+Kraven's Last Hunt	triggered: I — Mill N cards. When you do, this Saga deals damage equal to the greatest power among creature cards in your graveyard to target creature.	partial
+The Ninth Doctor	triggered: Into the TARDIS — Whenever ~ becomes untapped during your untap step, you get an additional upkeep step after this step.	partial
+Urza Assembles the Titans	triggered: I — Scry N, then you may reveal the top card of your library. If a planeswalker card is revealed this way, put it into your hand.	partial
+Roads Go Ever, Ever On	triggered: I — Search your library for up to N basic Plains cards, exile them, then shuffle. You gain N life.	manual
+The Legend of Yangchen // Avatar Yangchen	triggered: I — Starting with you, each player chooses up to N permanent with mana value N or greater from among permanents your opponents control. Exile those permanents.	partial
+Tamiyo Meets the Story Circle	triggered: I — Until your next turn, whenever a creature attacks you or a planeswalker you control, it gets -N/-N until end of turn.	partial
+Genesis of the Daleks	triggered: IV — Target opponent faces a villainous choice — Destroy all Dalek creatures and each of your opponents loses life equal to the total power of Daleks that died this turn, or destroy all non-Dalek creatures.	partial

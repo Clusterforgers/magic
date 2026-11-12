@@ -1,0 +1,54 @@
+Cruel Entertainment	spell: Choose target player and another target player. The first player controls the second player during the second player's next turn, and the second player controls the first player during the first player's next turn.	manual
+Wyll's Reversal	spell: Choose target spell or ability with N or more targets. Roll a dN and add the greatest power among creatures you control.	manual
+Invert Polarity	spell: Choose target spell, then flip a coin. If you win the flip, gain control of that spell and you may choose new targets for it. If you lose the flip, counter that spell.	manual
+Glyph of Doom	spell: Choose target Wall creature. At this turn's next end of combat, destroy all creatures that were blocked by that creature this turn.	manual
+Glyph of Life	spell: Choose target Wall creature. Whenever that creature is dealt damage by an attacking creature this turn, you gain that much life.	manual
+Display of Power	spell: Copy any number of target instant and/or sorcery spells. You may choose new targets for the copies.	manual
+Interdict	spell: Counter target activated ability from an artifact, creature, enchantment, or land. That permanent's activated abilities can't be activated this turn.	manual
+Rust	spell: Counter target activated ability from an artifact source.	manual
+Trickbind	spell: Counter target activated or triggered ability. If a permanent's ability is countered this way, activated abilities of that permanent can't be activated this turn.	partial
+Spellshift	spell: Counter target instant or sorcery spell. Its controller reveals cards from the top of their library until they reveal an instant or sorcery card. That player may cast that card without paying its mana cost. Then the player shuffles.	manual
+Quash	spell: Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for all cards with the same name as that spell and exile them. Then that player shuffles.	manual
+Test of Talents	spell: Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for any number of cards with the same name as that spell and exile them. That player shuffles, then draws a card for each card exiled from their hand this way.	manual
+Desertion	spell: Counter target spell. If an artifact or creature spell is countered this way, put that card onto the battlefield under your control instead of into its owner's graveyard.	manual
+Disrupting Shoal	spell: Counter target spell if its mana value is X.	manual
+Delay	spell: Counter target spell. If the spell is countered this way, exile it with N time counters on it instead of putting it into its owner's graveyard. If it doesn't have suspend, it gains suspend.	manual
+Teferi's Response	spell: Counter target spell or ability an opponent controls that targets a land you control. If a permanent's ability is countered this way, destroy that permanent.	manual
+Minamo's Meddling	spell: Counter target spell. That spell's controller reveals their hand, then discards each card with the same name as a card spliced onto that spell.	manual
+Curse of the Werefox	spell: Create a Monster Role token attached to target creature you control. When you do, that creature fights up to N target creature you don't control.	manual
+Flash Foliage	spell: Create a N/N green Saproling creature token that's blocking target creature attacking you.	partial
+Research // Development	spell: Create a N/N red Elemental creature token unless any opponent has you draw a card. Repeat this process N more times.	manual
+Grenzo's Rebuttal	spell: Create a N/N red Ogre creature token. Starting with you, each player chooses an artifact, a creature, and a land from among the permanents controlled by the player to their left. Destroy each permanent chosen this way.	manual
+Exotic Pets	spell: Create N N/N blue Fish creature tokens with "This token can't be blocked." Then for each kind of counter among creatures you control, put a counter of that kind on either of those tokens.	manual
+Firecat Blitz	spell: Create X N/N red Elemental Cat creature tokens with haste. Exile them at the beginning of the next end step.	manual
+Close Encounter	spell: ~ deals damage equal to the power of the chosen creature or card to target creature.	manual
+Soulblast	spell: ~ deals damage to any target equal to the total power of the sacrificed creatures.	manual
+Call Forth the Tempest	spell: ~ deals damage to each creature your opponents control equal to the total mana value of other spells you've cast this turn.	partial
+Reckless Blaze	spell: ~ deals N damage to each creature. Whenever a creature you control dealt damage this way dies this turn, add {M}.	manual
+Serpentine Spike	spell: ~ deals N damage to target creature, N damage to another target creature, and N damage to a third target creature. If a creature dealt damage this way would die this turn, exile it instead.	partial
+Dragon's Fire	spell: ~ deals N damage to target creature or planeswalker. If you revealed a Dragon card or chose a Dragon as you cast this spell, ~ deals damage equal to the power of that card or creature instead.	manual
+Nahiri's Sacrifice	spell: ~ deals X damage divided as you choose among any number of target creatures.	manual
+Impact Resonance	spell: ~ deals X damage divided as you choose among any number of target creatures, where X is the greatest amount of damage dealt by a source to a permanent or player this turn.	manual
+Soul Immolation	spell: ~ deals X damage to each opponent and each creature they control.	manual
+Liquid Fire	spell: ~ deals X damage to target creature and N minus X damage to that creature's controller, where X is the chosen number.	manual
+Invasive Surgery	spell: Delirium — If there are N or more card types among cards in your graveyard, search the graveyard, hand, and library of that spell's controller for any number of cards with the same name as that spell, exile those cards, then that player shuffles.	manual
+Deadly Cover-Up	spell: Destroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way.	manual
+Glyph of Reincarnation	spell: Destroy all creatures that were blocked by target Wall this turn. They can't be regenerated. For each creature that died this way, put a creature card from the graveyard of the player who controlled that creature the last time it became blocked by that Wall onto the battlefield under its owner's control.	manual
+Primitive Justice	spell: Destroy target artifact. For each additional {M} you paid, destroy another target artifact. For each additional {M} you paid, destroy another target artifact, and you gain N life.	manual
+Black Hole	spell: Destroy target creature and up to X other target creatures, where X is the number of Attractions you've visited this turn.	manual
+You Cannot Pass!	spell: Destroy target creature that blocked or was blocked by a legendary creature this turn.	manual
+Regicide	spell: Destroy target creature that's N or more of the colors chosen as you drafted cards named ~.	manual
+Break the Ice	spell: Destroy target land that is snow or could produce {M}.	partial
+Volcanic Offering	spell: Destroy target nonbasic land you don't control and target nonbasic land of an opponent's choice you don't control.	manual
+Premature Burial	spell: Destroy target nonblack creature that entered since your last turn ended.	manual
+Bounty of the Hunt	spell: Distribute N +N/+N counters among N, N, or N target creatures. For each +N/+N counter you put on a creature this way, remove a +N/+N counter from that creature at the beginning of the next cleanup step.	partial
+Spoils of War	spell: Distribute X +N/+N counters among any number of target creatures.	manual
+Suffocation	spell: Draw a card at the beginning of the next turn's upkeep.	manual
+Hurkyl's Final Meditation	spell: During turns other than yours, this spell costs {M} more to cast.	manual
+Sphinx's Decree	spell: Each opponent can't cast instant or sorcery spells during that player's next turn.	manual
+Tasha's Hideous Laughter	spell: Each opponent exiles cards from the top of their library until that player has exiled cards with total mana value N or greater.	manual
+Dream Harvest	spell: Each opponent exiles cards from the top of their library until they have exiled cards with total mana value N or greater this way. Until end of turn, you may cast cards exiled this way without paying their mana costs.	manual
+Prisoner's Dilemma	spell: Each opponent secretly chooses silence or snitch, then the choices are revealed. If each opponent chose silence, ~ deals N damage to each of them. If each opponent chose snitch, ~ deals N damage to each of them. Otherwise, ~ deals N damage to each opponent who chose silence.	partial
+Selective Obliteration	spell: Each player chooses a color. Then exile each permanent unless it's colorless or it's only the color its controller chose.	manual
+Patriarch's Bidding	spell: Each player chooses a creature type. Each player returns all creature cards of a type chosen this way from their graveyard to the battlefield.	manual
+Restore Balance	spell: Each player chooses a number of lands they control equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players sacrifice creatures and discard cards the same way.	partial

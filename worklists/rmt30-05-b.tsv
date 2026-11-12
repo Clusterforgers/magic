@@ -1,0 +1,71 @@
+Keranos, God of Storms	static: Reveal the first card you draw on each of your turns. Whenever you reveal a land card this way, draw a card. Whenever you reveal a nonland card this way, ~ deals N damage to any target.	partial
+Lore Seeker	static: Reveal this card as you draft it. After you draft this card, you may add a booster pack to the draft.	manual
+Lurking Automaton	static: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	manual
+Pyretic Hunter	static: Reveal this card as you draft it and note how many cards you've drafted this draft round, including this card.	partial
+Cogwork Tracker	static: Reveal this card as you draft it and note the player who passed it to you.	partial
+Aether Searcher	static: Reveal this card as you draft it. Reveal the next card you draft and note its name.	manual
+Spire Phantasm	static: Reveal this card as you draft it. The next time a player drafts a card from this booster pack, guess that card's name. Then that player reveals the drafted card.	partial
+Aether Revolt	static: Revolt — As long as a permanent left the battlefield under your control this turn, if a source you control would deal noncombat damage to an opponent or a permanent an opponent controls, it deals that much damage plus N instead.	manual
+Hama Pashar, Ruin Seeker	static: Room abilities of dungeons you own trigger an additional time.	manual
+Verdeloth the Ancient	static: Saproling creatures and other Treefolk creatures get +N/+N.	partial
+Scarlet Spider, Ben Reilly	static: Sensational Save — If ~ was cast using web-slinging, he enters with X +N/+N counters on him, where X is the mana value of the returned creature.	partial
+Rukarumel, Biologist	static: Slivers you control and nontoken creatures you control are the chosen type in addition to their other creature types. The same is true for creature spells you control and creature cards you own that aren't on the battlefield.	partial
+Case of the Gorgon's Kiss	static: Solved — This Case is a N/N Gorgon creature with deathtouch and lifelink in addition to its other types.	manual
+Case of the Locked Hothouse	static: Solved — You may look at the top card of your library any time, and you may play lands and cast creature and enchantment spells from the top of your library.	partial
+Ashiok, Dream Render	static: Spells and abilities your opponents control can't cause their controller to search their library.	partial
+Cemetery Prowler	static: Spells you cast cost {M} less to cast for each card type they share with cards exiled with this creature.	partial
+Locket of Yesterdays	static: Spells you cast cost {M} less to cast for each card with the same name as that spell in your graveyard.	manual
+Heliod, the Radiant Dawn // Heliod, the Warped Eclipse	static: Spells you cast cost {M} less to cast for each card your opponents have drawn this turn.	partial
+Hinata, Dawn-Crowned	static: Spells you cast cost {M} less to cast for each target.	partial
+Accursed Witch // Infectious Curse	static: Spells you cast that target enchanted player cost {M} less to cast.	partial
+Aven Interrupter	static: Spells your opponents cast from graveyards or from exile cost {M} more to cast.	partial
+Imperiosaur	static: Spend only mana produced by basic lands to cast this spell.	manual
+Myr Superion	static: Spend only mana produced by creatures to cast this spell.	manual
+Fungal Behemoth	static: ~'s power and toughness are each equal to the number of +N/+N counters on creatures you control.	partial
+Roxi, Publicist to the Stars	static: ~'s power is equal to the number of permanents you control with an art sticker plus the number of cards in your graveyard with an art sticker.	partial
+Yavimaya Kavu	static: ~'s power is equal to the number of red creatures on the battlefield.	manual
+Fear of Sleep Paralysis	static: Stun counters can't be removed from permanents your opponents control.	partial
+Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel	static: Super Nova — As this creature transforms into ~, you get an emblem with "Whenever a creature dies, target opponent loses N life and you gain N life."	partial
+Invasion Plans	static: The attacking player chooses how each creature blocks each combat.	partial
+Tezzeret, Betrayer of Flesh	static: The first activated ability of an artifact you activate each turn costs {M} less to activate.	partial
+Professor Hojo	static: The first activated ability you activate during your turn that targets a creature you control costs {M} less to activate.	manual
+Ranar the Ever-Watchful	static: The first card you foretell each turn costs {M} to foretell.	partial
+Eluge, the Shoreless Sea	static: The first instant or sorcery spell you cast each turn costs {M} less to cast for each land you control with a flood counter on it.	partial
+Vine Gecko	static: The first kicked spell you cast each turn costs {M} less to cast.	partial
+Weftwalking	static: The first spell each player casts during each of their turns may be cast without paying its mana cost.	partial
+Esix, Fractal Bloom	static: The first time you would create N or more tokens during each of your turns, you may instead choose a creature other than ~ and create that many tokens that are copies of that creature.	partial
+Moonlit Meditation	static: The first time you would create N or more tokens each turn, you may instead create that many tokens that are copies of enchanted permanent.	partial
+Reed Richards, Smartest Man	static: The first time you would draw a card each turn except the first card you draw during each of your draw steps, you draw N cards instead.	partial
+The Master, Multiplied	static: The "legend rule" doesn't apply to creature tokens you control.	partial
+Spider-Verse	static: The "legend rule" doesn't apply to Spiders you control.	manual
+Fblthp, Lost on the Range	static: The top card of your library has plot. The plot cost is equal to its mana cost.	partial
+Agent's Toolkit	static: This artifact enters with a +N/+N counter, a flying counter, a deathtouch counter, and a shield counter on it.	partial
+Manascape Refractor	static: This artifact has all activated abilities of all lands on the battlefield.	partial
+Chaos Lord	static: This creature can attack as though it had haste unless it entered this turn.	partial
+Weathered Sentinels	static: This creature can attack players who attacked you during their last turn as though it didn't have defender.	partial
+Giant Turtle	static: This creature can't attack if it attacked during your last turn.	manual
+Hollow Warrior	static: This creature can't attack or block unless you tap an untapped creature you control not declared as an attacking or blocking creature this combat.	manual
+Floodtide Serpent	static: This creature can't attack unless you return an enchantment you control to its owner's hand.	manual
+Exalted Dragon	static: This creature can't attack unless you sacrifice a land.	partial
+Leviathan	static: This creature can't attack unless you sacrifice N Islands.	partial
+Pompous Gadabout	static: This creature can't be blocked by creatures that don't have a name.	partial
+Ogre Enforcer	static: This creature can't be destroyed by lethal damage unless lethal damage dealt by a single source is marked on it.	manual
+Wall of Shadows	static: This creature can't be the target of spells that can target only Walls or of abilities that can target only Walls.	partial
+Goblin Rock Sled	static: This creature doesn't untap during your untap step if it attacked during your last turn.	partial
+Embodiment of Agonies	static: This creature enters with a +N/+N counter on it for each different mana cost among nonland cards in your graveyard.	partial
+Nine-Lives Familiar	static: This creature enters with N revival counters on it if you cast it.	manual
+Grimdancer	static: This creature enters with your choice of N different counters on it from among menace, deathtouch, and lifelink.	manual
+Pharika's Spawn	static: This creature escapes with N +N/+N counters on it. When it enters this way, each opponent sacrifices a non-Gorgon creature of their choice.	partial
+Rampant Frogantua	static: This creature gets +N/+N for each player who has lost the game.	partial
+Centaur of Attention	static: This creature gets +X/+X, where X is the greatest number of stored results on it of the same value.	manual
+Volcano Hellion	static: This creature has echo {M}, where X is your life total.	manual
+Altar of the Wretched // Wretched Bonemass	static: This creature has flying as long as an exiled card used to craft it has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance.	partial
+Karakyk Guardian	static: This creature has hexproof as long as it hasn't dealt damage yet.	partial
+Nacatl War-Pride	static: This creature must be blocked by exactly N creature if able.	partial
+Korvold, Gleeful Glutton	static: This spell costs {M} less to cast for each card type among permanents you've sacrificed this turn.	partial
+Lumbering Megasloth	static: This spell costs {M} less to cast for each counter among players and permanents.	partial
+Valiant Changeling	static: This spell costs {M} less to cast for each creature type among creatures you control. This effect can't reduce the amount of mana this spell costs by more than {M}.	partial
+Blaster Hulk	static: This spell costs {M} less to cast for each {E} you've paid or lost this turn.	partial
+Obsidian Charmaw	static: This spell costs {M} less to cast for each land your opponents control that could produce {M}.	partial
+Avenge	static: This spell costs {M} less to cast if a player attacked you during their last turn.	partial
+Chandra's Incinerator	static: This spell costs {M} less to cast, where X is the total amount of noncombat damage dealt to your opponents this turn.	partial

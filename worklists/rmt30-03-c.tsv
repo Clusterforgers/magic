@@ -1,0 +1,61 @@
+Kaervek's Spite	static: As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand.	partial
+Tectonic Split	static: As an additional cost to cast this spell, sacrifice half the lands you control, rounded up.	partial
+Dargo, the Shipwrecker	static: As an additional cost to cast this spell, you may sacrifice any number of artifacts and/or creatures. This spell costs {M} less to cast for each permanent sacrificed this way and {M} less to cast for each other artifact or creature you've sacrificed this turn.	partial
+Plumb the Forbidden	static: As an additional cost to cast this spell, you may sacrifice N or more creatures. When you do, copy this spell for each creature sacrificed this way.	partial
+Pramikon, Sky Rampart	static: As ~ enters, choose left or right.	partial
+Greymond, Avacyn's Stalwart	static: As ~ enters, choose N abilities from among first strike, vigilance, and lifelink.	partial
+Haktos the Unscarred	static: As ~ enters, choose N, N, or N at random.	partial
+Indominus Rex, Alpha	static: As ~ enters, discard any number of creature cards. It enters with a flying counter on it if a card discarded this way has flying. The same is true for first strike, double strike, deathtouch, hexproof, haste, indestructible, lifelink, menace, reach, trample, and vigilance.	partial
+Alhammarret, High Arbiter	static: As ~ enters, each opponent reveals their hand. You choose the name of a nonland card revealed this way.	partial
+Arachne, Psionic Weaver	static: As ~ enters, look at an opponent's hand, then choose a card type other than creature.	partial
+Sin, Unending Cataclysm	static: As ~ enters, remove all counters from any number of artifacts, creatures, and enchantments. ~ enters with X +N/+N counters on it, where X is twice the number of counters removed this way.	partial
+Deadpool, Trading Card	static: As ~ enters, you may exchange his text box and another creature's.	partial
+The Mimeoplasm	static: As ~ enters, you may exile N creature cards from graveyards. If you do, it enters as a copy of N of those cards with a number of additional +N/+N counters on it equal to the power of the other card.	manual
+Eater of Virtue	static: As long as a card exiled with ~ has flying, equipped creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance.	partial
+Death-Mask Duplicant	static: As long as a card exiled with this creature has flying, this creature has flying. The same is true for fear, first strike, double strike, haste, landwalk, protection, and trample.	partial
+Duplicant	static: As long as a card exiled with this creature is a creature card, this creature has the power, toughness, and creature types of the last creature card exiled with it. It's still a Shapeshifter.	partial
+Sanwell, Avenger Ace	static: As long as an artifact creature you control is attacking, prevent all damage that would be dealt to ~.	manual
+Ace's Baseball Bat	static: As long as equipped creature is attacking, it has first strike and must be blocked by a Dalek if able.	partial
+The Masamune	static: As long as equipped creature is attacking, it has first strike and must be blocked if able.	partial
+Ratonhnhaké꞉ton	static: As long as ~ hasn't dealt damage yet, it has hexproof and can't be blocked.	manual
+Enkira, Hostile Scavenger	static: As long as ~ is equipped, it must be blocked if able.	manual
+Archelos, Lagoon Mystic	static: As long as ~ is tapped, other permanents enter tapped.	manual
+Hundred-Battle Veteran	static: As long as there are N or more different kinds of counters among creatures you control, this creature gets +N/+N.	manual
+Volrath's Shapeshifter	static: As long as the top card of your graveyard is a creature card, this creature has the full text of that card and has the text "{M}: Discard a card."	partial
+Storage Matrix	static: As long as this artifact is untapped, each player chooses artifact, creature, or land during their untap step. That player can untap only permanents of the chosen type this step.	manual
+Retriever Phoenix	static: As long as this card is in your graveyard, if you would learn, you may instead return this card to the battlefield.	partial
+Camel	static: As long as this creature is attacking, prevent all damage Deserts would deal to this creature and to creatures banded with this creature.	partial
+Guardian Beast	static: As long as this creature is untapped, noncreature artifacts you control can't be enchanted, they have indestructible, and other players can't gain control of them. This effect doesn't remove Auras already attached to those artifacts.	manual
+Mirrormind Crown	static: As long as this Equipment is attached to a creature, the first time you would create N or more tokens each turn, you may instead create that many tokens that are copies of equipped creature.	partial
+Pact Weapon	static: As long as this Equipment is attached to a creature, you don't lose the game for having N or less life.	partial
+Deification	static: As long as you control a creature, if damage dealt to a planeswalker you control of the chosen type would result in all loyalty counters on it being removed, instead all but N of those counters are removed.	partial
+Bronze Horse	static: As long as you control another creature, prevent all damage that would be dealt to this creature by spells that target it.	partial
+Noble Banneret	static: As long as you control N or more creatures with a name you noted for cards named ~, this creature and those creatures get +N/+N and have lifelink.	manual
+Kíli the Resourceful	static: As long as you have an enduring story, you may pay {M} rather than pay the equip cost of the first equip ability you activate each turn.	partial
+Quantum Riddler	static: As long as you have N or fewer cards in hand, if you would draw N or more cards, you draw that many cards plus N instead.	partial
+Phyrexian Unlife	static: As long as you have N or less life, all damage is dealt to you as though its source had infect.	partial
+New Perspectives	static: As long as you have N or more cards in hand, you may pay {M} rather than pay cycling costs.	partial
+Ezio Auditore da Firenze	static: Assassin spells you cast have freerunning {M}.	partial
+Booby Trap	static: As this artifact enters, choose an opponent and a card name other than a basic land card name.	manual
+Seal of the Guildpact	static: As this artifact enters, choose N colors.	manual
+Tablet of the Guilds	static: As this artifact enters, choose N colors.	manual
+Metamorphic Alteration	static: As this Aura enters, choose a creature.	partial
+Gift of Doom	static: As this Aura is turned face up, you may attach it to a creature.	partial
+Council of the Absolute	static: As this creature enters, choose a noncreature, nonland card name.	manual
+Tyrannical Pitlord	static: As this creature enters, choose another creature you control.	partial
+Shapeshifter	static: As this creature enters, choose a number between N and N.	manual
+Sower of Discord	static: As this creature enters, choose N players.	partial
+Archangel of Strife	static: As this creature enters, each player chooses war or peace.	partial
+Living Lore	static: As this creature enters, exile an instant or sorcery card from your graveyard.	manual
+Sutured Ghoul	static: As this creature enters, exile any number of creature cards from your graveyard.	partial
+Frankenstein's Monster	static: As this creature enters, exile X creature cards from your graveyard. If you can't, put this creature into its owner's graveyard instead of onto the battlefield. For each creature card exiled this way, this creature enters with a +N/+N, +N/+N, or +N/+N counter on it.	manual
+Molten Sentry	static: As this creature enters, flip a coin. If the coin comes up heads, this creature enters as a N/N creature with haste. If it comes up tails, this creature enters as a N/N creature with defender.	manual
+Monstrous War-Leech	static: As this creature enters, if it was kicked, mill N cards.	partial
+Primal Clay	static: As this creature enters, it becomes your choice of a N/N artifact creature, a N/N artifact creature with flying, or a N/N Wall artifact creature with defender in addition to its other types.	manual
+Primal Plasma	static: As this creature enters, it becomes your choice of a N/N creature, a N/N creature with flying, or a N/N creature with defender.	manual
+Corrupted Shapeshifter	static: As this creature enters, it becomes your choice of a N/N creature with flying, a N/N creature with vigilance, or a N/N creature with defender.	partial
+Urborg Lhurgoyf	static: As this creature enters, mill N cards for each time it was kicked.	partial
+Aquamorph Entity	static: As this creature enters or is turned face up, it becomes your choice of N/N or N/N.	partial
+Vesuvan Shapeshifter	static: As this creature enters or is turned face up, you may choose another creature on the battlefield. If you do, until this creature is turned face down, it becomes a copy of that creature, except it has "At the beginning of your upkeep, you may turn this creature face down."	partial
+Minion of the Wastes	static: As this creature enters, pay any amount of life.	partial
+Nameless Race	static: As this creature enters, pay any amount of life. The amount you pay can't be more than the total number of white nontoken permanents your opponents control plus the total number of white cards in their graveyards.	partial

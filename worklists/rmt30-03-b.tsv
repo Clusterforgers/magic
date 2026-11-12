@@ -1,0 +1,61 @@
+Tempt with Bunnies	spell: Tempting Offer — Draw a card and create a N/N white Rabbit creature token. Then each opponent may draw a card and create a N/N white Rabbit creature token. For each opponent who does, you draw a card and you create a N/N white Rabbit creature token.	manual
+Tempt with Discovery	spell: Tempting offer — Search your library for a land card and put it onto the battlefield. Each opponent may search their library for a land card and put it onto the battlefield. For each opponent who searches a library this way, search your library for a land card and put it onto the battlefield. Then each player who searched a library this way shuffles.	manual
+Shining Shoal	spell: The next X damage that a source of your choice would deal to you and/or creatures you control this turn is dealt to any target instead.	manual
+Captain's Maneuver	spell: The next X damage that would be dealt to target creature, planeswalker, or player this turn is dealt to another target creature, planeswalker, or player instead.	manual
+Camouflage	spell: This turn, instead of declaring blockers, each defending player chooses any number of creatures they control and divides them into a number of piles equal to the number of attacking creatures for whom that player is the defending player. Creatures those players control that can block additional creatures may likewise be put into additional piles. Assign each pile to a different N of those attacking creatures at random. Each creature in a pile that can block the creature that pile is assigned to does so.	manual
+Harsh Justice	spell: This turn, whenever an attacking creature deals combat damage to you, it deals that much damage to its controller.	manual
+Cyber Conversion	spell: Turn target creature face down. It's a N/N Cyberman artifact creature.	manual
+Yavimaya Bloomsage // Channel	spell: Until end of turn, any time you could activate a mana ability, you may pay N life. If you do, add {M}.	manual
+Blood of the Martyr	spell: Until end of turn, if damage would be dealt to any creature, you may have that damage dealt to you instead.	manual
+Don't Blink	spell: Until end of turn, if N or more creatures would enter from exile or after being cast from exile, their owners shuffle them into their libraries instead.	partial
+Plagiarize	spell: Until end of turn, if target player would draw a card, instead that player skips that draw and you draw a card.	manual
+Hellish Rebuke	spell: Until end of turn, permanents your opponents control gain "When this permanent deals damage to the player who cast ~, sacrifice this permanent. You lose N life."	manual
+False Dawn	spell: Until end of turn, spells and abilities you control that would add colored mana instead add that much white mana. Until end of turn, you may spend white mana as though it were mana of any color.	manual
+Not Dead After All	spell: Until end of turn, target creature you control gains "When this creature dies, return it to the battlefield tapped under its owner's control, then create a Wicked Role token attached to it."	manual
+Embiggen	spell: Until end of turn, target non-Brushwagg creature gets +N/+N for each supertype, card type, and subtype it has.	manual
+Piracy	spell: Until end of turn, you may tap lands you don't control for mana. Spend this mana only to cast spells.	manual
+Pure Intentions	spell: Whenever a spell or ability an opponent controls causes you to discard cards this turn, return those cards from your graveyard to your hand.	manual
+Open the Way	spell: X can't be greater than the number of players in the game.	manual
+Mana Clash	spell: You and target opponent each flip a coin. ~ deals N damage to each player whose coin comes up tails. Repeat this process until both players' coins come up heads on the same flip.	manual
+Mages' Contest	spell: You and target spell's controller bid life. You start the bidding with a bid of N. In turn order, each player may top the high bid. The bidding ends if the high bid stands. The high bidder loses life equal to the high bid. If you win the bidding, counter that spell.	manual
+Illusion of Choice	spell: You choose how each player votes this turn.	manual
+Master Warcraft	spell: You choose which creatures attack this turn.	manual
+Melee	spell: You choose which creatures block this combat and how those creatures block.	manual
+Secret of Bloodbending	spell: You control target opponent during their next combat phase. If this spell's additional cost was paid, you control that player during their next turn instead.	manual
+Reverse Polarity	spell: You gain X life, where X is twice the damage dealt to you so far this turn by artifacts.	manual
+Eelectrocute	spell: You may cast this card from your graveyard as long as you've rolled a N this turn. If you cast it this way and it would be put into your graveyard, exile it instead.	manual
+Providence	spell: You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, your life total becomes N.	manual
+Coalition Victory	spell: You win the game if you control a land of each basic land type and a creature of each color.	manual
+Drought	static: Activated abilities cost an additional "Sacrifice a Swamp" to activate for each black mana symbol in their activation costs.	partial
+Brutal Suppression	static: Activated abilities of nontoken Rebels cost an additional "Sacrifice a land" to activate.	manual
+Petrified Hamlet	static: Activated abilities of sources with the chosen name can't be activated unless they're mana abilities.	partial
+Sorcerous Spyglass	static: Activated abilities of sources with the chosen name can't be activated unless they're mana abilities.	manual
+Anointed Peacekeeper	static: Activated abilities of sources with the chosen name cost {M} more to activate unless they're mana abilities.	partial
+Scheming Fence	static: Activated abilities of the chosen permanent can't be activated.	manual
+Night Shift of the Living Dead	static: After you roll a die, you may pay N life. If you do, increase or decrease the result by N. Do this only once each turn.	manual
+Xenosquirrels	static: After you roll a die, you may remove a +N/+N counter from this creature. If you do, increase or decrease the result by N.	partial
+Mycosynth Lattice	static: All cards that aren't on the battlefield, spells, and permanents are colorless.	manual
+Painter's Servant	static: All cards that aren't on the battlefield, spells, and permanents are the chosen color in addition to their other colors.	partial
+Frenzied Saddlebrute	static: All creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste.	partial
+Everlasting Torment	static: All damage is dealt as though its source had wither.	partial
+Ancient Adamantoise	static: All damage that would be dealt to you and other permanents you control is dealt to this creature instead.	partial
+Pariah's Shield	static: All damage that would be dealt to you is dealt to equipped creature instead.	partial
+Life and Limb	static: All Forests and all Saprolings are N/N green Saproling creatures and Forest lands in addition to their other types.	manual
+Swirl the Mists	static: All instances of color words in the text of spells and permanents are changed to the chosen color word.	manual
+Blood Sun	static: All lands lose all abilities except mana abilities.	partial
+Exiled Doomsayer	static: All morph costs cost {M} more.	manual
+Lymph Sliver	static: All Sliver creatures have absorb N.	manual
+Pulmonic Sliver	static: All Slivers have "If this permanent would be put into a graveyard, you may put it on top of its owner's library instead."	partial
+Mistform Sliver	static: All Slivers have "{M}: This permanent becomes the creature type of your choice in addition to its other types until end of turn."	manual
+Seeker of Slaanesh	static: Allure of Slaanesh — Each opponent must attack with at least N creature each combat if able.	partial
+Marble Priest	static: All Walls able to block this creature do so.	manual
+Henry Wu, InGen Geneticist	static: ~ and other Human creatures you control have exploit.	manual
+Serum Powder	static: Any time you could mulligan and this card is in your hand, you may exile all the cards from your hand, then draw that many cards.	partial
+Yurlok of Scorch Thrash	static: A player losing unspent mana causes that player to lose that much life.	partial
+The Golden Throne	static: Arcane Life-support — If you would lose the game, instead exile ~ and your life total becomes N.	partial
+Tannuk, Steadfast Second	static: Artifact cards and red creature cards in your hand have warp {M}.	partial
+Rebbec, Architect of Ascension	static: Artifacts you control have protection from each mana value among artifacts you control.	partial
+Displaced Dinosaurs	static: As a historic permanent you control enters, it becomes a N/N Dinosaur creature in addition to its other types.	manual
+Chorus of the Conclave	static: As an additional cost to cast creature spells, you may pay any amount of mana. If you do, that creature enters with that many additional +N/+N counters on it.	partial
+Caller of the Hunt	static: As an additional cost to cast this spell, choose a creature type.	partial
+Urgent Necropsy	static: As an additional cost to cast this spell, collect evidence X, where X is the total mana value of the permanents this spell targets.	partial

@@ -1,0 +1,67 @@
+Qarsi Deceiver	activated: {T}: Add {M}. Spend this mana only to cast a face-down creature spell, pay a mana cost to turn a manifested creature face up, or pay a morph cost.	manual
+Freya Crescent	activated: {T}: Add {M}. Spend this mana only to cast an Equipment spell or activate an equip ability.	partial
+Jasmine Boreal of the Seven	activated: {T}: Add {M}. Spend this mana only to cast creature spells with no abilities.	partial
+Unblinking Observer	activated: {T}: Add {M}. Spend this mana only to pay a disturb cost or cast an instant or sorcery spell.	manual
+Jegantha, the Wellspring	activated: {T}: Add {M}. This mana can't be spent to pay generic mana costs.	manual
+Brass Infiniscope	activated: {T}: Add {M}. When you next cast a spell with {M} in its mana cost this turn, you draw a card and gain half X life, rounded down.	manual
+Paliano, the High City	activated: {T}: Add N mana of any color chosen as you drafted cards named ~.	manual
+Animal Attendant	activated: {T}: Add N mana of any color. If that mana is spent to cast a non-Human creature spell, that creature enters with an additional +N/+N counter on it.	manual
+Brotherhood Headquarters	activated: {T}: Add N mana of any color. Spend this mana only to cast an Assassin spell or a spell that has freerunning, or to activate an ability of an Assassin source.	partial
+Cryptic Spires	activated: {T}: Add N mana of either of the circled colors.	partial
+Brigid, Clachan's Heart // Brigid, Doun's Mind	activated: {T}: Add X {M} or X {M}, where X is the number of other creatures you control.	partial
+Keldon Battlewagon	activated: Tap an untapped creature you control: This creature gets +X/+N until end of turn, where X is the power of the creature tapped this way.	partial
+Dermotaxi	activated: Tap N untapped creatures you control: Until end of turn, this Vehicle becomes a copy of the exiled card, except it's a Vehicle artifact in addition to its other types.	manual
+Cryptic Gateway	activated: Tap N untapped creatures you control: You may put a creature card from your hand that shares a creature type with each creature tapped this way onto the battlefield.	manual
+Balduvian Shaman	activated: {T}: Change the text of target white enchantment you control that doesn't have cumulative upkeep by replacing all instances of N color word with another. That enchantment gains "Cumulative upkeep {M}."	manual
+Garth One-Eye	activated: {T}: Choose a card name that hasn't been chosen from among Disenchant, Braingeyser, Terror, Shivan Dragon, Regrowth, and Black Lotus. Create a copy of the card with the chosen name. You may cast the copy.	manual
+General Jarkeld	activated: {T}: Choose N target blocked attacking creatures. If each of those creatures could be blocked by all creatures that the other is blocked by, each creature that's blocking exactly N of those attacking creatures stops blocking it and is blocking the other attacking creature. Activate only during the declare blockers step.	manual
+Sorrow's Path	activated: {T}: Choose N target blocking creatures controlled by the same opponent. If each of those creatures could block all creatures that the other is blocking, remove both of them from combat. Each N then blocks all creatures the other was blocking.	partial
+Portent Tracker	activated: {T}: Choose target battle. If an opponent protects it, remove a defense counter from it. Otherwise, put a defense counter on it. Activate only as a sorcery.	partial
+Conduit of Worlds	activated: {T}: Choose target nonland permanent card in your graveyard. If you haven't cast a spell this turn, you may cast that card. If you do, you can't cast additional spells this turn. Activate only as a sorcery.	partial
+Norritt	activated: {T}: Choose target non-Wall creature the active player has controlled continuously since the beginning of the turn. That creature attacks this turn if able. Destroy it at the beginning of the next end step if it didn't attack this turn. Activate only before attackers are declared.	partial
+Ayesha Tanaka	activated: {T}: Counter target activated ability from an artifact source unless that ability's controller pays {M}.	partial
+Boxing Ring	activated: {T}: Create a Treasure token. Activate only if you control a creature that fought this turn.	manual
+Chandra, Fire of Kaladesh // Chandra, Roaring Flame	activated: {T}: ~ deals N damage to target player or planeswalker. If ~ has dealt N or more damage this turn, exile her, then return her to the battlefield transformed under her owner's control.	partial
+Izzet Generatorium	activated: {T}: Draw a card. Activate only if you've paid or lost N or more {E} this turn.	manual
+Tree of Redemption	activated: {T}: Exchange your life total with this creature's toughness.	partial
+The Book of Vile Darkness	activated: {T}, Exile ~ and artifacts you control named Eye of Vecna and Hand of Vecna: Create Vecna, a legendary N/N black Zombie God creature token with indestructible and all triggered abilities of the exiled cards.	manual
+Agatha's Soul Cauldron	activated: {T}: Exile target card from a graveyard. When a creature card is exiled this way, put a +N/+N counter on target creature you control.	manual
+Aeon Engine	activated: {T}, Exile this artifact: Reverse the game's turn order.	partial
+Preacher	activated: {T}: For as long as this creature remains tapped, gain control of target creature of an opponent's choice they control.	partial
+Giant Oyster	activated: {T}: For as long as this creature remains tapped, target tapped creature doesn't untap during its controller's untap step, and at the beginning of each of your draw steps, put a -N/-N counter on that creature. When this creature leaves the battlefield or becomes untapped, remove all -N/-N counters from the creature.	partial
+Rootwater Matriarch	activated: {T}: Gain control of target creature for as long as that creature is enchanted.	manual
+Rubinia Soulsinger	activated: {T}: Gain control of target creature for as long as you control ~ and ~ remains tapped.	partial
+Callous Oppressor	activated: {T}: Gain control of target creature that isn't of the chosen type for as long as this creature remains tapped.	manual
+Seasinger	activated: {T}: Gain control of target creature whose controller controls an Island for as long as you control this creature and this creature remains tapped.	partial
+Old Man of the Sea	activated: {T}: Gain control of target creature with power less than or equal to this creature's power for as long as this creature remains tapped and that creature's power remains less than or equal to this creature's power.	partial
+Hivis of the Scale	activated: {T}: Gain control of target Dragon for as long as you control ~ and ~ remains tapped.	partial
+Willow Satyr	activated: {T}: Gain control of target legendary creature for as long as you control this creature and this creature remains tapped.	partial
+Scroll of Fate	activated: {T}: Manifest a card from your hand.	manual
+Charmed Pendant	activated: {T}, Mill a card: For each colored mana symbol in the milled card's mana cost, add N mana of that color.	manual
+Musician	activated: {T}: Put a music counter on target creature. If it doesn't have "At the beginning of your upkeep, destroy this creature unless you pay {M} for each music counter on it," it gains that ability.	partial
+Braided Net // Braided Quipu	activated: {T}, Remove a net counter from this artifact: Tap another target nonland permanent. Its activated abilities can't be activated for as long as it remains tapped.	partial
+Vexing Puzzlebox	activated: {T}, Remove N charge counters from this artifact: Search your library for an artifact card, put that card onto the battlefield, then shuffle.	partial
+Rasputin, the Oneiromancer	activated: {T}, Remove N or more dream counters from ~: Add that much {M}.	partial
+Balduvian Warlord	activated: {T}: Remove target blocking creature from combat. Creatures it was blocking that hadn't become blocked by another creature this combat become unblocked, then it blocks an attacking creature of your choice. Activate only during the declare blockers step.	manual
+Metalworker	activated: {T}: Reveal any number of artifact cards in your hand. Add {M} for each card revealed this way.	manual
+Rosheen, Roaring Prophet	activated: {T}: Reveal any number of cards with {M} in their mana cost in your hand. Add {M} for each card revealed this way. Spend this mana only on costs that contain {M}.	manual
+Sacellum Godspeaker	activated: {T}: Reveal any number of creature cards with power N or greater from your hand. Add {M} for each card revealed this way.	manual
+Fractured Powerstone	activated: {T}: Roll the planar die. Activate only as a sorcery.	partial
+Sword of the Ages	activated: {T}, Sacrifice this artifact and any number of creatures you control: This artifact deals X damage to any target, where X is the total power of the creatures sacrificed this way, then exile this artifact and those creature cards.	partial
+Urza's Bauble	activated: {T}, Sacrifice this artifact: Look at a card at random in target player's hand. You draw a card at the beginning of the next turn's upkeep.	manual
+Dark Sphere	activated: {T}, Sacrifice this artifact: The next time a source of your choice would deal damage to you this turn, prevent half that damage, rounded down.	manual
+Baba Lysaga, Night Witch	activated: {T}, Sacrifice up to N permanents: If there were N or more card types among the sacrificed permanents, each opponent loses N life, you gain N life, and you draw N cards.	manual
+Rowan, Scion of War	activated: {T}: Spells you cast this turn that are black and/or red cost {M} less to cast, where X is the amount of life you lost this turn. Activate only as a sorcery.	partial
+Will, Scion of Peace	activated: {T}: Spells you cast this turn that are white and/or blue cost {M} less to cast, where X is the amount of life you gained this turn. Activate only as a sorcery.	partial
+Shelkin Brownie	activated: {T}: Target creature loses all "bands with other" abilities until end of turn.	manual
+Tolaria	activated: {T}: Target creature loses banding and all "bands with other" abilities until end of turn. Activate only during any upkeep step.	partial
+Dralnu, Lich Lord	activated: {T}: Target instant or sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost.	manual
+Vodalian Mystic	activated: {T}: Target instant or sorcery spell becomes the color of your choice.	manual
+Gaea's Liege	activated: {T}: Target land becomes a Forest until this creature leaves the battlefield.	manual
+Orcish Farmer	activated: {T}: Target land becomes a Swamp until its controller's next untap step.	manual
+Vazi, Keen Negotiator	activated: {T}: Target opponent creates X Treasure tokens, where X is the number of Treasure tokens you created this turn.	partial
+Eye of Ojer Taq // Apex Observatory	activated: {T}: The next spell you cast this turn of the chosen type can be cast without paying its mana cost.	partial
+Biomancer's Familiar	activated: {T}: The next time target creature adapts this turn, it adapts as though it had no +N/+N counters on it.	manual
+Benthic Explorers	activated: {T}, Untap a tapped land an opponent controls: Add N mana of any type that land could produce.	manual
+Navigator's Compass	activated: {T}: Until end of turn, target land you control becomes the basic land type of your choice in addition to its other types.	partial
+Osteomancer Adept	activated: {T}: Until end of turn, you may cast creature spells from your graveyard by foraging in addition to paying their other costs. If you cast a spell this way, that creature enters with a finality counter on it.	partial

@@ -1,0 +1,73 @@
+Magnigoth Treefolk	static: Domain — For each basic land type among lands you control, this creature has landwalk of that type.	manual
+Agent of Acquisitions	static: Draft this card face up.	manual
+Illusionary Informant	static: Draft this card face up.	partial
+Whispergear Sneak	static: Draft this card face up.	manual
+Elvish Refueler	static: During your turn, as long as you haven't activated an exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.	partial
+Leonardo, Sewer Samurai	static: During your turn, you may cast creature spells with power or toughness N or less from your graveyard. If you cast a spell this way, that creature enters with a finality counter on it.	partial
+The Temporal Anchor	static: During your turn, you may play cards exiled with ~.	partial
+Hum of the Radix	static: Each artifact spell costs {M} more to cast for each artifact its controller controls.	manual
+Satoru Umezawa	static: Each creature card in your hand has ninjutsu {M}.	manual
+Herigast, Erupting Nullkite	static: Each creature spell you cast has emerge. The emerge cost is equal to its mana cost.	partial
+Nils, Discipline Enforcer	static: Each creature with N or more counters on it can't attack you or planeswalkers you control unless its controller pays {M}, where X is the number of counters on that creature.	manual
+Coin of Mastery	static: Each creature you control enters with an additional +N/+N counter on it for each mana from an artifact source spent to cast it.	partial
+Tyvar the Bellicose	static: Each creature you control has "Whenever a mana ability of this creature resolves, put a number of +N/+N counters on it equal to the amount of mana this creature produced. This ability triggers only once each turn."	manual
+Tapestry Warden	static: Each creature you control with toughness greater than its power stations permanents using its toughness rather than its power.	partial
+Aminatou, Veil Piercer	static: Each enchantment card in your hand has miracle. Its miracle cost is equal to its mana cost reduced by {M}.	partial
+Battlefield Thaumaturge	static: Each instant and sorcery spell you cast costs {M} less to cast for each creature it targets.	partial
+Djinn Illuminatus	static: Each instant and sorcery spell you cast has replicate. The replicate cost is equal to its mana cost.	partial
+Peter Parker // Amazing Spider-Man	static: Each legendary spell you cast that's N or more colors has web-slinging {M}.	partial
+Bludgeon Brawl	static: Each noncreature, non-Equipment artifact is an Equipment with equip {M} and "Equipped creature gets +X/+N," where X is that artifact's mana value.	manual
+Diligent Zookeeper	static: Each non-Human creature you control gets +N/+N for each of its creature types, to a maximum of N.	manual
+Bohn, Beguiling Balladeer	static: Each nonland card in your hand without foretell has foretell. Its foretell cost is equal to its mana cost reduced by {M}.	partial
+Dream Devourer	static: Each nonland card in your hand without foretell has foretell. Its foretell cost is equal to its mana cost reduced by {M}.	manual
+Keen-Eared Sentry	static: Each opponent can't venture into the dungeon more than once each turn.	partial
+Trove of Temptation	static: Each opponent must attack you or a planeswalker you control with at least N creature each combat if able.	partial
+Unstable Glyphbridge // Sandswirl Wanderglyph	static: Each opponent who attacked you or a planeswalker you control this turn can't cast spells.	partial
+Tam, Mindful First-Year	static: Each other creature you control has hexproof from each of its colors.	partial
+Takeno, Samurai General	static: Each other Samurai creature you control gets +N/+N for each point of bushido it has.	partial
+Mystic Barrier	static: Each player may attack only the nearest opponent in the last chosen direction and planeswalkers controlled by that opponent.	manual
+Shared Fate	static: Each player may look at cards they exiled with this enchantment, and they may play lands and cast spells from among those cards.	manual
+Uba Mask	static: Each player may play lands and cast spells from among cards they exiled with this artifact this turn.	manual
+Sands of Time	static: Each player skips their untap step.	manual
+Wonder Man, Hollywood Hero	static: Each power-up ability of permanents you control can be activated an additional time.	partial
+Hatchery Sliver	static: Each Sliver spell you cast has replicate. The replicate cost is equal to its mana cost.	partial
+Damping Sphere	static: Each spell a player casts costs {M} more to cast for each other spell that player has cast this turn.	manual
+Lost in Thought	static: Enchanted creature can't attack or block, and its activated abilities can't be activated. Its controller may exile N cards from their graveyard for that player to ignore this effect until end of turn.	partial
+Volrath's Curse	static: Enchanted creature can't attack or block, and its activated abilities can't be activated. That creature's controller may sacrifice a permanent of their choice for that player to ignore this effect until end of turn.	partial
+Errantry	static: Enchanted creature gets +N/+N and can only attack alone.	partial
+Become the Pilot	static: Enchanted creature gets +N/+N and can't be blocked unless it's attacking its owner or a permanent its owner controls.	partial
+Airtight Alibi	static: Enchanted creature gets +N/+N and can't become suspected.	partial
+Dance of the Dead	static: Enchanted creature gets +N/+N and doesn't untap during its controller's untap step.	partial
+Last Voyage of the _____	static: Enchanted creature gets +N/+N for each name sticker on this Aura with N or fewer letters.	manual
+Fight the _____ Fight	static: Enchanted creature gets +N/+N for each name sticker on this Aura with N or more letters.	partial
+Bewitching Leechcraft	static: Enchanted creature has "If this creature would untap during your untap step, remove a +N/+N counter from it instead. If you do, untap it."	partial
+Coalition Flag	static: Enchanted creature is a Flagbearer.	partial
+Witness Protection	static: Enchanted creature loses all abilities and is a green and white Citizen creature with base power and toughness N/N named Legitimate Businessperson.	partial
+Equinox	static: Enchanted land has "{T}: Counter target spell if it would destroy a land you control."	partial
+Bound in Gold	static: Enchanted permanent can't attack, block, or crew Vehicles, and its activated abilities can't be activated unless they're mana abilities.	partial
+Bigger on the Inside	static: Enchanted permanent has "{T}: Target player adds N mana of any N color. The next spell they cast this turn has cascade."	partial
+Teferi's Talent	static: Enchanted planeswalker has "[−N]: You get an emblem with 'You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.'"	partial
+Ulamog, the Defiler	static: ~ enters with a number of +N/+N counters on it equal to the greatest mana value among cards in exile.	partial
+Polukranos, Unchained	static: ~ enters with N +N/+N counters on it. It escapes with twelve +N/+N counters on it instead.	partial
+Denry Klin, Editor in Chief	static: ~ enters with your choice of a +N/+N, first strike, or vigilance counter on it.	manual
+Pin Collection	static: Equipped creature gets +N/+N and has all abilities of ability stickers on this Equipment.	partial
+Spy Kit	static: Equipped creature gets +N/+N and has all names of nonlegendary creature cards in addition to its name.	partial
+The Dominion Bracelet	static: Equipped creature gets +N/+N and has "{M}, Exile ~: You control target opponent during their next turn. This ability costs {M} less to activate, where X is this creature's power. Activate only as a sorcery."	partial
+Slayer's Cleaver	static: Equipped creature gets +N/+N and must be blocked by an Eldrazi if able.	partial
+Toralf, God of Fury // Toralf's Hammer	static: Equipped creature has "{M}, {T}, Unattach ~: It deals N damage to any target. Return ~ to its owner's hand."	partial
+Boom Scholar	static: Exhaust abilities of other permanents you control cost {M} less to activate.	partial
+Etrata, Deadly Fugitive	static: Face-down creatures you control have "{M}: Turn this creature face up. If you can't, exile it, then you may cast the exiled card without paying its mana cost."	partial
+Blue, Loyal Raptor	static: For each kind of counter on ~, each other Dinosaur you control enters with a counter of that kind on it.	partial
+Rock Hydra	static: For each N damage that would be dealt to this creature, if it has a +N/+N counter on it, remove a +N/+N counter from it and prevent that N damage.	partial
+Cosmos Charger	static: Foretelling cards from your hand costs {M} less and can be done on any player's turn.	partial
+Alrund, God of the Cosmos // Hakka, Whispering Raven	static: ~ gets +N/+N for each card in your hand and each foretold card you own in exile.	partial
+Flooded Woodlands	static: Green creatures can't attack unless their controller sacrifices a land of their choice for each green creature they control that's attacking.	manual
+Clandestine Chameleon	static: ~ has all abilities of ability stickers on other permanents you own and cards in your graveyard.	partial
+Kodama of the Center Tree	static: ~ has soulshift X, where X is the number of Spirits you control.	partial
+The Space Family Goblinson	static: ~ has trample as long as you've rolled N or more dice this turn.	manual
+Minthara, Merciless Soul	static: ~ has ward {M}, where X is the number of experience counters you have.	partial
+Anthem of Rakdos	static: Hellbent — As long as you have no cards in hand, if a source you control would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.	manual
+The Eleventh Doctor	static: I. AM. TALKING! — Whenever ~ deals combat damage to a player, you may exile a card from your hand with a number of time counters on it equal to its mana value. If it doesn't have suspend, it gains suspend.	partial
+Pulse of Llanowar	static: If a basic land you control is tapped for mana, it produces mana of a color of your choice instead of any other type.	manual
+Abandoned Sarcophagus	static: If a card that has a cycling ability would be put into your graveyard from anywhere and it wasn't cycled, exile it instead.	manual
+Forbidden Crypt	static: If a card would be put into your graveyard from anywhere, exile that card instead.	manual

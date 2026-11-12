@@ -1,0 +1,73 @@
+War's Toll	static: If a creature an opponent controls attacks, all creatures that opponent controls attack if able.	partial
+Soulflayer	static: If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, reach, trample, and vigilance.	partial
+Kumano Faces Kakkazan // Etching of Kumano	static: If a creature dealt damage this turn by a source you controlled would die, exile it instead.	partial
+Magnetic Web	static: If a creature with a magnet counter on it attacks, all creatures with magnet counters on them attack if able.	partial
+Cover of Winter	static: If a creature would deal combat damage to you and/or N or more creatures you control, prevent X of that damage, where X is the number of age counters on this enchantment.	partial
+Ekundu Cyclops	static: If a creature you control attacks, this creature also attacks if able.	manual
+Leader, Super-Genius	static: If a creature you control would connive, instead you draw a card, then that creature connives.	partial
+Topography Tracker	static: If a creature you control would explore, instead it explores, then it explores again.	partial
+Twists and Turns // Mycoid Maze	static: If a creature you control would explore, instead you scry N, then that creature explores.	partial
+Unpredictable Cyclone	static: If a cycling ability of another nonland card would cause you to draw a card, instead exile cards from the top of your library until you exile a card that shares a card type with the cycled card. You may cast that card without paying its mana cost. Then put the exiled cards that weren't cast this way on the bottom of your library in a random order.	partial
+Zabaz, the Glimmerwasp	static: If a modular triggered ability would put N or more +N/+N counters on a creature you control, that many plus N +N/+N counters are put on it instead.	partial
+Library of Leng	static: If an effect causes you to discard a card, discard it, but you may put it on top of your library instead of into your graveyard.	partial
+Harsh Judgment	static: If an instant or sorcery spell of the chosen color would deal damage to you, it deals that damage to its controller instead.	partial
+Invasion of Regatha // Disciples of the Inferno	static: If a noncreature source you control would deal damage to a creature, battle, or opponent, it deals that much damage plus N instead.	partial
+Valentin, Dean of the Vein // Lisette, Dean of the Root	static: If a nontoken creature an opponent controls would die, exile it instead. When you do, you may pay {M}. If you do, create a N/N black and green Pest creature token with "When this token dies, you gain N life."	partial
+Land Equilibrium	static: If an opponent who controls at least as many lands as you do would put a land onto the battlefield, that player instead puts that land onto the battlefield then sacrifices a land of their choice.	manual
+Alms Collector	static: If an opponent would draw N or more cards, instead you and that player each draw a card.	partial
+The Valeyard	static: If an opponent would face a villainous choice, they face that choice an additional time.	partial
+Bloodletter of Aclazotz	static: If an opponent would lose life during your turn, they lose twice that much life instead.	partial
+Aven Mindcensor	static: If an opponent would search a library, that player searches the top N cards of that library instead.	partial
+Freyalise's Winds	static: If a permanent with a wind counter on it would untap during its controller's untap step, remove all wind counters from it instead.	partial
+Breathstealer's Crypt	static: If a player would draw a card, instead they draw a card and reveal it. If it's a creature card, that player discards it unless they pay N life.	manual
+Zur's Weirding	static: If a player would draw a card, they reveal it instead. Then any other player may pay N life. If a player does, put that card into its owner's graveyard. Otherwise, that player draws a card.	partial
+Steamflogger Boss	static: If a Rigger you control would assemble a Contraption, it assembles N Contraptions instead.	partial
+Battletide Alchemist	static: If a source would deal damage to a player, you may prevent X of that damage, where X is the number of Clerics you control.	manual
+Shield of the Avatar	static: If a source would deal damage to equipped creature, prevent X of that damage, where X is the number of creatures you control.	partial
+Swans of Bryn Argoll	static: If a source would deal damage to this creature, prevent that damage. The source's controller draws cards equal to the damage prevented this way.	partial
+Callous Giant	static: If a source would deal N or less damage to this creature, prevent that damage.	manual
+Fated Firepower	static: If a source you control would deal damage to an opponent or a permanent an opponent controls, it deals that much damage plus an amount of damage equal to the number of fire counters on this enchantment instead.	partial
+The Mindskinner	static: If a source you control would deal damage to an opponent, prevent that damage and each opponent mills that many cards.	partial
+Hawkeye, Young Avenger	static: If a source you control would deal noncombat damage to an opponent or a permanent an opponent controls, instead it deals that much damage plus X, where X is ~'s power.	partial
+Nephalia Academy	static: If a spell or ability an opponent controls causes you to discard a card, you may reveal that card and put it on top of your library instead of putting it anywhere else.	partial
+Rain of Gore	static: If a spell or ability would cause its controller to gain life, that player loses that much life instead.	manual
+Guile	static: If a spell or ability you control would counter a spell, instead exile that spell and you may play that card without paying its mana cost.	partial
+Undead Alchemist	static: If a Zombie you control would deal combat damage to a player, instead that player mills that many cards.	manual
+Gloom Surgeon	static: If combat damage would be dealt to this creature, prevent that damage and exile that many cards from the top of your library.	manual
+Crumbling Sanctuary	static: If damage would be dealt to a player, that player exiles that many cards from the top of their library instead.	manual
+Wolverine, Fierce Fighter	static: If damage would be dealt to ~, instead that damage is dealt, but all other damage already dealt to him is healed.	partial
+Magma Pummeler	static: If damage would be dealt to this creature while it has a +N/+N counter on it, prevent that damage and remove that many +N/+N counters from it. When N or more counters are removed from this creature this way, it deals that much damage to any target.	partial
+Nefarious Lich	static: If damage would be dealt to you, exile that many cards from your graveyard instead. If you can't, you lose the game.	manual
+Faceless One	static: If ~ is your commander, choose a color before the game begins. ~ is the chosen color.	partial
+The Prismatic Piper	static: If ~ is your commander, choose a color before the game begins. ~ is the chosen color.	partial
+Pir, Imaginative Rascal	static: If N or more counters would be put on a permanent your team controls, that many plus N of each of those kinds of counters are put on that permanent instead.	partial
+Vizier of Remedies	static: If N or more -N/-N counters would be put on a creature you control, that many -N/-N counters minus N are put on it instead.	manual
+Loot, the Anomaly	static: If ~'s power is negative, he assigns combat damage as though his power were positive.	partial
+Pardic Firecat	static: If this card is in a graveyard, effects from spells named Flame Burst count it as a card named Flame Burst.	partial
+Diligent Farmhand	static: If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.	partial
+Cunning Giant	static: If this creature is unblocked, you may have it assign its combat damage to a creature defending player controls.	manual
+Dralnu's Pet	static: If this creature was kicked, it enters with flying and with X +N/+N counters on it, where X is the discarded card's mana value.	partial
+Voidpouncer	static: If this creature was kicked, it enters with N +N/+N counters and a trample counter on it and with haste.	partial
+Emblazoned Golem	static: If this creature was kicked, it enters with X +N/+N counters on it.	partial
+Weeping Angel	static: If this creature would deal combat damage to a creature, prevent that damage and that creature's owner shuffles it into their library.	partial
+Firestorm Phoenix	static: If this creature would die, return it to its owner's hand instead. Until that player's next turn, that player plays with that card revealed in their hand and can't play it.	partial
+Primeval Spawn	static: If this creature would enter and it wasn't cast or no mana was spent to cast it, exile it instead.	partial
+Invigorate	static: If you control a Forest, rather than pay this spell's mana cost, you may have an opponent gain N life.	partial
+Dust Animus	static: If you control N or more untapped lands, this creature enters with N +N/+N counters and a lifelink counter on it.	partial
+Land Grant	static: If you have no land cards in hand, you may reveal your hand rather than pay this spell's mana cost.	partial
+Enduring Angel // Angelic Enforcer	static: If your life total would be reduced to N or less, instead transform this creature and your life total becomes N. Then if this creature didn't transform this way, you lose the game.	partial
+Fasting	static: If you would begin your draw step, you may skip that step instead. If you do, you gain N life.	partial
+Twinning Staff	static: If you would copy a spell N or more times, instead copy it that many times plus an additional time. You may choose new targets for the additional copy.	partial
+Jinnie Fay, Jetmir's Second	static: If you would create N or more tokens, you may instead create that many N/N green Cat creature tokens with haste or that many N/N green Dog creature tokens with vigilance.	manual
+Island Sanctuary	static: If you would draw a card during your draw step, instead you may skip that draw. If you do, until your next turn, you can't be attacked except by creatures with flying and/or islandwalk.	manual
+Enduring Renewal	static: If you would draw a card, reveal the top card of your library instead. If it's a creature card, put it into your graveyard. Otherwise, draw a card.	partial
+Parallel Thoughts	static: If you would draw a card, you may instead put the top card of the pile you exiled into your hand.	manual
+Obstinate Familiar	static: If you would draw a card, you may skip that draw instead.	manual
+Omnath, Locus of All	static: If you would lose unspent mana, that mana becomes black instead.	manual
+Susan Foreman	static: If you would planeswalk, instead look at the top N cards of your planar deck, put N on the bottom of your planar deck and the other on top, then planeswalk.	partial
+Tekuthal, Inquiry Dominus	static: If you would proliferate, proliferate twice instead.	partial
+Lae'zel, Vlaakith's Champion	static: If you would put N or more counters on a creature or planeswalker you control or on yourself, put that many plus N of each of those kinds of counters on that permanent or player instead.	partial
+Ichor Elixir	static: If you would roll N or more planar dice, instead roll that many planar dice plus N and ignore N.	partial
+Eligeth, Crossroads Augur	static: If you would scry a number of cards, draw that many cards instead.	partial
+Clara Oswald	static: Impossible Girl — If ~ is your commander, choose a color before the game begins. ~ is the chosen color.	partial
+Galactus, Devourer of Worlds	static: Insatiable Hunger — ~ attacks an opponent with the most life among your opponents each combat if able unless you control a creature named Silver Surfer, ~'s Herald.	partial

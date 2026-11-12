@@ -1,0 +1,52 @@
+Forcefield	activated: {M}: The next time an unblocked creature of your choice would deal combat damage to you this turn, prevent all but N of that damage.	manual
+Soulfire Grand Master	activated: {M}: The next time you cast an instant or sorcery spell from your hand this turn, put that card into your hand instead of into your graveyard as it resolves.	partial
+Mangara's Tome	activated: {M}: The next time you would draw a card this turn, instead put the top card of the exiled pile into its owner's hand.	manual
+Words of War	activated: {M}: The next time you would draw a card this turn, this enchantment deals N damage to any target instead.	manual
+Clergy of the Holy Nimbus	activated: {M}: This creature can't be regenerated this turn. Only your opponents may activate this ability.	manual
+Quicksilver Elemental	activated: {M}: This creature gains all activated abilities of target creature until end of turn.	manual
+Urza's Avenger	activated: {M}: This creature gets -N/-N and gains your choice of banding, flying, first strike, or trample until end of turn.	manual
+_____ _____ _____ Trespasser	activated: {M}: This creature gets +N/+N until end of turn for each name sticker on it. It can't be blocked this turn.	manual
+Paragon of Modernity	activated: {M}: This creature gets +N/+N until end of turn. If exactly N colors of mana were spent to activate this ability, put a +N/+N counter on it instead.	partial
+Jetmir's Fixer	activated: {M}: This creature gets +N/+N until end of turn. If mana from a Treasure was spent to activate this ability, put a +N/+N counter on this creature instead.	manual
+Nalathni Dragon	activated: {M}: This creature gets +N/+N until end of turn. If this ability has been activated N or more times this turn, sacrifice this creature at the beginning of the next end step.	partial
+Withering Wisps	activated: {M}: This enchantment deals N damage to each creature and each player. Activate no more times each turn than the number of snow Swamps you control.	partial
+Taii Wakeen, Perfect Shot	activated: {M}, {T}: If a source you control would deal noncombat damage to a permanent or player this turn, it deals that much damage plus X instead.	manual
+Hanweir Battlements	activated: {M}, {T}: If you both own and control this land and a creature named Hanweir Garrison, exile them, then meld them into Hanweir, the Writhing Township.	partial
+Scrying Sheets	activated: {M}, {T}: Look at the top card of your library. If that card is snow, you may reveal it and put it into your hand.	partial
+Orcish Librarian	activated: {M}, {T}: Look at the top N cards of your library. Exile N of them at random, then put the rest on top of your library in any order.	manual
+Tazri, Stalwart Survivor	activated: {M}, {T}: Mill N cards. Put all creature cards with activated abilities that aren't mana abilities from among the milled cards into your hand.	manual
+Goldberry, River-Daughter	activated: {M}, {T}: Move N or more counters from ~ onto another target permanent you control. If you do, draw a card.	manual
+Blaster, Combat DJ // Blaster, Morale Booster	activated: {M}, {T}: Move X +N/+N counters from ~ onto another target artifact. That artifact gains haste until end of turn. If ~ has no +N/+N counters on it, convert it. Activate only as a sorcery.	partial
+Pearl Shard	activated: {M}, {T} or {M}, {T}: Prevent the next N damage that would be dealt to any target this turn.	manual
+Skeleton Shard	activated: {M}, {T} or {M}, {T}: Return target artifact creature card from your graveyard to your hand.	manual
+Crystal Shard	activated: {M}, {T} or {M}, {T}: Return target creature to its owner's hand unless its controller pays {M}.	manual
+Heartwood Shard	activated: {M}, {T} or {M}, {T}: Target creature gains trample until end of turn.	manual
+Granite Shard	activated: {M}, {T} or {M}, {T}: This artifact deals N damage to any target.	manual
+Tam, the Possibility	activated: {M}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control.	partial
+Jeweled Amulet	activated: {M}, {T}: Put a charge counter on this artifact. Note the type of mana spent to pay this activation cost. Activate only if there are no charge counters on this artifact.	manual
+Cyclopean Tomb	activated: {M}, {T}: Put a mire counter on target non-Swamp land. That land is a Swamp for as long as it has a mire counter on it. Activate only during your upkeep.	manual
+Sword-Swallowing Seraph	activated: {M}, {T}: Put a +N/+N counter on another target creature with a name sticker on it. Activate only as a sorcery.	partial
+Clockwork Avian	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Beast	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Steed	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Clockwork Swarm	activated: {M}, {T}: Put up to X +N/+N counters on this creature. This ability can't cause the total number of +N/+N counters on this creature to be greater than N. Activate only during your upkeep.	partial
+Marshland Bloodcaster	activated: {M}, {T}: Rather than pay the mana cost of the next spell you cast this turn, you may pay life equal to that spell's mana value.	partial
+Rhys, the Evermore	activated: {M}, {T}: Remove any number of counters from target creature you control. Activate only as a sorcery.	partial
+Plargg, Dean of Chaos // Augusta, Dean of Order	activated: {M}, {T}: Reveal cards from the top of your library until you reveal a nonlegendary, nonland card with mana value N or less. You may cast that card without paying its mana cost. Put all revealed cards not cast this way on the bottom of your library in a random order.	partial
+Illuminated Folio	activated: {M}, {T}, Reveal N cards from your hand that share a color: Draw a card.	manual
+Bucknard's Everfull Purse	activated: {M}, {T}: Roll a dN and create a number of Treasure tokens equal to the result. The player to your right gains control of this artifact.	manual
+Mr. House, President and CEO	activated: {M}, {T}: Roll a N-sided die plus an additional N-sided die for each mana from Treasures spent to activate this ability.	manual
+Luck Bobblehead	activated: {M}, {T}: Roll X N-sided dice, where X is the number of Bobbleheads you control. Create a tapped Treasure token for each even result. If you rolled N exactly N times, you win the game.	partial
+Helm of Possession	activated: {M}, {T}, Sacrifice a creature: Gain control of target creature for as long as you control this artifact and this artifact remains tapped.	partial
+Tomb of Urami	activated: {M}, {T}, Sacrifice all lands you control: Create Urami, a legendary N/N black Demon Spirit creature token with flying.	manual
+Bullseye, Death Dealer	activated: {M}, {T}, Sacrifice an artifact or discard a nonland card: ~ deals N damage to any target.	manual
+Smelting Vat	activated: {M}, {T}, Sacrifice another artifact: Reveal the top N cards of your library. Put up to N noncreature artifact cards with total mana value less than or equal to the sacrificed artifact's mana value from among them onto the battlefield and the rest on the bottom of your library in a random order.	manual
+Behemoth's Herald	activated: {M}, {T}, Sacrifice a red creature, a green creature, and a white creature: Search your library for a card named Godsire, put it onto the battlefield, then shuffle.	manual
+Quintorius, Loremaster	activated: {M}, {T}, Sacrifice a Spirit: Choose target card exiled with ~. You may cast that card this turn without paying its mana cost. If that spell would be put into a graveyard, put it on the bottom of its owner's library instead.	partial
+Sphinx's Herald	activated: {M}, {T}, Sacrifice a white creature, a blue creature, and a black creature: Search your library for a card named Sphinx Sovereign, put it onto the battlefield, then shuffle.	manual
+Transmutation Font	activated: {M}, {T}, Sacrifice N artifact tokens with different names: Search your library for an artifact card, put it onto the battlefield, then shuffle. Activate only as a sorcery.	partial
+Apocalypse Chime	activated: {M}, {T}, Sacrifice this artifact: Destroy all nontoken permanents with a name originally printed in the Homelands expansion. They can't be regenerated.	manual
+Moonsilver Key	activated: {M}, {T}, Sacrifice this artifact: Search your library for an artifact card with a mana ability or a basic land card, reveal it, put it into your hand, then shuffle.	manual
+Rod of Absorption	activated: {M}, {T}, Sacrifice this artifact: You may cast any number of spells from among cards exiled with this artifact with total mana value X or less without paying their mana costs.	manual
+Heart-Shaped Herb	activated: {M}, {T}, Sacrifice this artifact: You may sacrifice a creature. If you do, return that card to the battlefield under its owner's control with N +N/+N counters on it and you become the monarch.	partial
+Magus of the Balance	activated: {M}, {T}, Sacrifice this creature: Each player chooses a number of lands they control equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players discard cards and sacrifice creatures the same way.	manual

@@ -1,0 +1,66 @@
+The Animus	activated: {T}: Until your next turn, target legendary creature you control becomes a copy of target creature card in exile with a memory counter on it. Activate only as a sorcery.	manual
+Dynaheir, Invoker Adept	activated: {T}: When you next activate an ability that isn't a mana ability this turn by spending N or more mana to activate it, copy that ability. You may choose new targets for the copy.	partial
+Tarrian's Journal // The Tomb of Aclazotz	activated: {T}: You may cast a creature spell from your graveyard this turn. If you do, it enters with a finality counter on it and is a Vampire in addition to its other types.	partial
+The Face of Boe	activated: {T}: You may cast a spell with suspend from your hand. If you do, pay its suspend cost rather than its mana cost. Activate only as a sorcery.	manual
+Uvilda, Dean of Perfection // Nassari, Dean of Expression	activated: {T}: You may exile an instant or sorcery card from your hand and put N refine counters on it. It gains "At the beginning of your upkeep, if this card is exiled, remove a refine counter from it" and "When the last refine counter is removed from this card, if it's exiled, you may cast it. It costs {M} less to cast this way."	manual
+Jorn, God of Winter // Kaldring, the Rimestaff	activated: {T}: You may play target snow permanent card from your graveyard this turn. If you do, it enters tapped.	partial
+Noctis, Heir Apparent	activated: Warp-Strike — {M}: Exile ~. Return it to the battlefield under its owner's control tapped and attacking at the beginning of that player's next declare attackers step. It can't be blocked that combat.	manual
+Katara, Water Tribe's Hope	activated: Waterbend {M}: Creatures you control have base power and toughness X/X until end of turn. X can't be N. Activate only during your turn.	partial
+Blazing Shoal	engine: Amount.X.Elsewhere	partial
+Conflagrate	engine: Amount.X.Elsewhere	partial
+Nourishing Shoal	engine: Amount.X.Elsewhere	partial
+Sickening Shoal	engine: Amount.X.Elsewhere	partial
+Invasion of Amonkhet // Lazotep Convert	engine: Copy.Except.AddColors	partial
+Icebreaker Kraken	keyword: Affinity for snow lands	partial
+Blast-Furnace Hellkite	keyword: Artifact offering	partial
+Arcanum Wings	keyword: Aura swap {M}	partial
+Henzie "Toolbox" Torre	keyword: Blitz costs you pay cost {M} less for each time you've cast your commander from the command zone this game.	manual
+Indoraptor, the Perfect Hybrid	keyword: Bloodthirst X	partial
+Petrified Wood-Kin	keyword: Bloodthirst X	partial
+Memory Crystal	keyword: Buyback costs cost {M} less.	manual
+Alchemist's Gambit	keyword: Cleave {M}	manual
+Yuriko, the Tiger's Shadow	keyword: Commander ninjutsu {M}	manual
+Umori, the Collector	keyword: Companion — Each nonland card in your starting deck shares a card type.	partial
+Gyruda, Doom of Depths	keyword: Companion — Your starting deck contains only cards with even mana values.	manual
+Obosh, the Preypiercer	keyword: Companion — Your starting deck contains only cards with odd mana values and land cards.	manual
+Vraska, Betrayal's Sting	keyword: Compleated	partial
+Throne of the Grim Captain // The Grim Captain	keyword: Craft with a Dinosaur, a Merfolk, a Pirate, and a Vampire {M}	partial
+The Enigma Jewel // Locus of Enlightenment	keyword: Craft with N or more nonlands with activated abilities {M}	partial
+Jötun Grunt	keyword: Cumulative upkeep—Put N cards from a single graveyard on the bottom of their owner's library.	manual
+Warbringer	keyword: Dash costs you pay cost {M} less.	partial
+Thromok the Insatiable	keyword: Devour X, where X is the number of creatures devoured this way	manual
+Crabomination	keyword: Emerge from artifact {M}	manual
+Hand of Vecna	keyword: Equip—Pay N life for each card in your hand.	partial
+Nethergoyf	keyword: Escape—{M}, Exile any number of other cards from your graveyard with N or more card types among them.	partial
+Catalyst Stone	keyword: Flashback costs you pay cost {M} less.	manual
+Light Up the Night	keyword: Flashback—{M}, Remove X loyalty counters from among planeswalkers you control. If you cast this spell this way, X can't be N.	manual
+Visions of Dominance	keyword: Flashback {M}. This spell costs {M} less to cast this way, where X is the greatest mana value of a commander you own on the battlefield or in the command zone.	partial
+Visions of Dread	keyword: Flashback {M}. This spell costs {M} less to cast this way, where X is the greatest mana value of a commander you own on the battlefield or in the command zone.	partial
+Visions of Duplicity	keyword: Flashback {M}. This spell costs {M} less to cast this way, where X is the greatest mana value of a commander you own on the battlefield or in the command zone.	partial
+Visions of Glory	keyword: Flashback {M}. This spell costs {M} less to cast this way, where X is the greatest mana value of a commander you own on the battlefield or in the command zone.	partial
+Paladin of Prahv	keyword: Forecast — {M}, Reveal this card from your hand: Whenever target creature deals damage this turn, you gain that much life.	partial
+C.A.M.P.	keyword: Fortify {M}	manual
+Darksteel Garrison	keyword: Fortify {M}	manual
+Patron of the Kitsune	keyword: Fox offering	partial
+Dark Apostle	keyword: Gift of Chaos — {M}, {T}: The next noncreature spell you cast this turn has cascade.	manual
+Patron of the Akki	keyword: Goblin offering	partial
+Volatile Stormdrake	keyword: hexproof from activated and triggered abilities	partial
+Thieving Skydiver	keyword: Kicker {M}. X can't be N.	partial
+Oscorp Industries	keyword: Mayhem	partial
+Patron of the Moon	keyword: Moonfolk offering	partial
+Silver-Fur Master	keyword: Ninjutsu abilities you activate cost {M} less to activate.	partial
+Icewind Stalwart	keyword: Protection Fighting Style — When this creature enters, exile up to N target non-Warrior creature you control, then return it to the battlefield under its owner's control.	manual
+Patron of the Nezumi	keyword: Rat offering	partial
+Garza's Assassin	keyword: Recover—Pay half your life, rounded up.	partial
+Space Beleren	keyword: ~ sculptor	manual
+Patron of the Orochi	keyword: Snake offering	partial
+Roar of Jukai	keyword: Splice onto Arcane—An opponent gains N life.	manual
+Fall of the Titans	keyword: Surge {M}	partial
+Thrasta, Tempest's Roar	keyword: Trample over planeswalkers	partial
+Fleshwrither	keyword: Transfigure {M}	manual
+The Serpent Society	keyword: Ward—Get N poison counters.	partial
+Broodguard Elite	keyword: Warp {M}	partial
+Timeline Culler	keyword: Warp—{M}, Pay N life.	partial
+Oko, Lorwyn Liege // Oko, Shadowmoor Scion	loyalty: −N: Choose a creature type. You get an emblem with "Creatures you control of the chosen type get +N/+N and have vigilance and hexproof."	partial
+Tamiyo, Collector of Tales	loyalty: +N: Choose a nonland card name, then reveal the top N cards of your library. Put all cards with the chosen name from among them into your hand and the rest into your graveyard.	partial
+Aminatou, the Fateshifter	loyalty: −N: Choose left or right. Each player gains control of all nonland permanents other than ~ controlled by the next player in the chosen direction.	partial

@@ -1,0 +1,54 @@
+Destined Confrontation	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.	manual
+Slaughter the Strong	spell: Each player chooses any number of creatures they control with total power N or less, then sacrifices all other creatures they control.	manual
+Goblin Game	spell: Each player hides at least N item, then all players reveal them simultaneously. Each player loses life equal to the number of items they revealed. The player who revealed the fewest items then loses half their life, rounded up. If N or more players are tied for fewest, each loses half their life, rounded up.	manual
+Wandering Archaic // Explore the Vastlands	spell: Each player looks at the top N cards of their library and may reveal a land card and/or an instant or sorcery card from among them. Each player puts the cards they revealed this way into their hand and the rest on the bottom of their library in a random order. Each player gains N life.	manual
+Illicit Auction	spell: Each player may bid life for control of target creature. You start the bidding with a bid of N. In turn order, each player may top the high bid. The bidding ends if the high bid stands. The high bidder loses life equal to the high bid and gains control of the creature.	manual
+Mind Bomb	spell: Each player may discard up to N cards. ~ deals damage to each player equal to N minus the number of cards they discarded this way.	manual
+Catch // Release	spell: Each player sacrifices an artifact, a creature, an enchantment, a land, and a planeswalker of their choice.	partial
+Tariff	spell: Each player sacrifices the creature they control with the greatest mana value unless they pay that creature's mana cost. If N or more creatures a player controls are tied for greatest, that player chooses N.	manual
+Overblaze	spell: Each time target permanent would deal damage to a permanent or player this turn, it deals double that damage to that permanent or player instead.	partial
+Earth Rumble	spell: Earthbend N. When you do, up to N target creature you control fights target creature an opponent controls.	manual
+Bilbo, Luckwearer // Burglar's Plot	spell: Exchange control of N target nonland permanents that share a card type.	partial
+Shifting Loyalties	spell: Exchange control of N target permanents that share a card type.	manual
+Role Reversal	spell: Exchange control of N target permanents that share a permanent type.	manual
+Legerdemain	spell: Exchange control of target artifact or creature and another target permanent that shares N of those types with it.	manual
+Ghastly Conscription	spell: Exile all creature cards from target player's graveyard in a face-down pile, shuffle that pile, then manifest those cards.	manual
+Time to Reflect	spell: Exile target creature that blocked or was blocked by a Zombie this turn.	manual
+Vanish into Memory	spell: Exile target creature. You draw cards equal to that creature's power. At the beginning of your next upkeep, return that card to the battlefield under its owner's control. If you do, discard cards equal to that creature's toughness.	manual
+Spelltwine	spell: Exile target instant or sorcery card from your graveyard and target instant or sorcery card from an opponent's graveyard. Copy those cards. Cast the copies if able without paying their mana costs. Exile ~.	manual
+Sowing Salt	spell: Exile target nonbasic land. Search its controller's graveyard, hand, and library for all cards with the same name as that land and exile them. Then that player shuffles.	manual
+Crumble to Dust	spell: Exile target nonbasic land. Search its controller's graveyard, hand, and library for any number of cards with the same name as that land and exile them. Then that player shuffles.	partial
+Reenact the Crime	spell: Exile target nonland card in a graveyard that was put there from anywhere this turn. Copy it. You may cast the copy without paying its mana cost.	manual
+Suspend Aggression	spell: Exile target nonland permanent and the top card of your library. For each of those cards, its owner may play it until the end of their next turn.	manual
+Become Anonymous	spell: Exile target nontoken creature you own and the top N cards of your library in a face-down pile, shuffle that pile, then cloak those cards. They enter tapped.	manual
+Teferi's Time Twist	spell: Exile target permanent you control. Return that card to the battlefield under its owner's control at the beginning of the next end step. If it enters as a creature, it enters with an additional +N/+N counter on it.	manual
+Tainted Pact	spell: Exile the top card of your library. You may put that card into your hand unless it has the same name as another card exiled this way. Repeat this process until you put a card into your hand or you exile N cards with the same name, whichever comes first.	manual
+Meeting of the Five	spell: Exile the top N cards of your library. You may cast spells with exactly N colors from among them this turn. Add {M}. Spend this mana only to cast spells with exactly N colors.	manual
+Foggy Swamp Visions	spell: Exile X target creature cards from graveyards. For each creature card exiled this way, create a token that's a copy of it. At the beginning of your next end step, sacrifice those tokens.	manual
+Waterbender's Restoration	spell: Exile X target creatures you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step.	manual
+Game of Chaos	spell: Flip a coin. If you win the flip, you gain N life and target opponent loses N life, and you decide whether to flip again. If you lose the flip, you lose N life and that opponent gains N life, and that player decides whether to flip again. Double the life stakes with each flip.	manual
+Mirror Match	spell: For each creature attacking you or a planeswalker you control, create a token that's a copy of that creature and that's blocking that creature. Exile those tokens at end of combat.	partial
+Killing Wave	spell: For each creature, its controller sacrifices it unless they pay X life.	manual
+Virtus's Maneuver	spell: For each player, choose friend or foe. Each friend returns a creature card from their graveyard to their hand. Each foe sacrifices a creature of their choice.	manual
+Pir's Whim	spell: For each player, choose friend or foe. Each friend searches their library for a land card, puts it onto the battlefield tapped, then shuffles. Each foe sacrifices an artifact or enchantment of their choice.	manual
+Unexplained Absence	spell: For each player, exile up to N target nonland permanent that player controls. For each permanent exiled this way, its controller cloaks the top card of their library.	manual
+Aura Graft	spell: Gain control of target Aura that's attached to a permanent. Attach it to another permanent it can enchant.	manual
+New Blood	spell: Gain control of target creature. Change the text of that creature by replacing all instances of N creature type with Vampire.	partial
+Chef's Kiss	spell: Gain control of target spell that targets only a single permanent or player. Copy it, then reselect the targets at random for the spell and the copy. The new targets can't be you or a permanent you control.	manual
+Gather Specimens	spell: If a creature would enter the battlefield under an opponent's control this turn, it enters under your control instead.	manual
+Equal Treatment	spell: If any source would deal N or more damage to a permanent or player this turn, it deals N damage to that permanent or player instead.	manual
+Cosmic Intervention	spell: If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. Return it to the battlefield under its owner's control at the beginning of the next end step.	partial
+Once Upon a Time	spell: If this spell is the first spell you've cast this game, you may cast it without paying its mana cost.	manual
+Approach of the Second Sun	spell: If this spell was cast from your hand and you've cast another spell named ~ this game, you win the game. Otherwise, put ~ into its owner's library seventh from the top and you gain N life.	manual
+Molten Disaster	spell: If this spell was kicked, it has split second.	partial
+Banefire	spell: If X is N or more, this spell can't be countered and the damage can't be prevented.	manual
+Horobi's Whisper	spell: If you control a Swamp, destroy target nonblack creature.	partial
+Dragonlord's Prerogative	spell: If you revealed a Dragon card or controlled a Dragon as you cast this spell, this spell can't be countered.	partial
+Michelangelo's Technique	spell: Look at the top N cards of your library. Put up to N creature cards with total mana value N or less from among them onto the battlefield and the rest on the bottom of your library in a random order.	partial
+Make Your Own Luck	spell: Look at the top N cards of your library. You may exile a nonland card from among them. If you do, it becomes plotted. Put the rest into your hand.	manual
+Flash of Insight	spell: Look at the top X cards of your library. Put N of them into your hand and the rest on the bottom of your library in any order.	manual
+Rejoin the Fight	spell: Mill N cards. Then starting with the next opponent in turn order, each opponent chooses a creature card in your graveyard that hasn't been chosen. Return each card chosen this way to the battlefield under your control.	manual
+Berserker's Frenzy	spell: N—N | Choose any number of creatures. They block this turn if able.	manual
+Revealing Wind	spell: Prevent all combat damage that would be dealt this turn. You may look at each face-down creature that's attacking or blocking.	manual
+Refraction Trap	spell: Prevent the next N damage that a source of your choice would deal to you and/or permanents you control this turn. If damage is prevented this way, ~ deals that much damage to any target.	partial
+Scars of the Veteran	spell: Prevent the next N damage that would be dealt to any target this turn. If it's a creature, put a +N/+N counter on it for each N damage prevented this way at the beginning of the next end step.	partial
