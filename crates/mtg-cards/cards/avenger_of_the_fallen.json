@@ -7,25 +7,13 @@
       "name": "Avenger of the Fallen",
       "oracle_fingerprint": "5a63272f2a51ed5508852ca97e4aa6e3",
       "abilities": [
-        {
-          "Keyword": "Deathtouch"
-        },
+        { "Keyword": "Deathtouch" },
         {
           "Keyword": {
             "MacroX": {
               "name": "mobilize",
               "x": {
-                "Count": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "In": "Graveyard"
-                  },
-                  {
-                    "OwnedBy": "You"
-                  }
-                ]
+                "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
               }
             }
           }
