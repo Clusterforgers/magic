@@ -95,6 +95,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - Values (`Ref`, `Selector`, `Amount`, `Condition`) are evaluated when an effect runs or a pattern is matched and produce no events.
 - One reader and one writer turn every object phrase into a `Selector` and back (`selectors::phrase` and `selectors::phrase_text`); every effect, trigger, condition and static reader calls this pair rather than a template of its own, so an atom added to it works in all of them at once.
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.
+- A keyword action that abilities wait for ("whenever you investigate", "discover", "manifest dread", "give a gift") is logged by `Effect::Performed` after its steps: the reader adds it after an investigation's Clue tokens, `effect::discover` and the steps of manifest dread end with it, and gift's steps end with it in the engine. The engine logs `Investigated`, `Discovered` (value and card), `DreadManifested` (the card put into the graveyard) and `GiftGiven` (to whom), read as `TriggerPattern::Did`. The writers word the steps; an investigation's log is dropped before its Clue tokens are worded.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

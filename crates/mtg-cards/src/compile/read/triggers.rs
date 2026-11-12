@@ -236,6 +236,12 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(super::w9d_exert::w9d_event) {
         return Some(found);
     }
+    if let Some(found) = r
+        .attempt(super::l31a_events::l31a_targeted)
+        .or_else(|| r.attempt(super::l31a_events::l31a_action))
+    {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(player_event) {
         return Some(found);
     }
@@ -1737,7 +1743,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             super::g13d_attacked::g13d_attacked_text(&what.0, *at_least)
                 .or_else(|| group_attacks_text(what, *at_least))
         }
-        TriggerPattern::AnyOf(patterns) => super::g9c_blocks::g9c_shared_text(patterns)
+        TriggerPattern::AnyOf(patterns) => super::l31a_events::l31a_targeted_text(patterns)
+            .or_else(|| super::g9c_blocks::g9c_shared_text(patterns))
             .or_else(|| super::w2e_copied::w2e_cast_or_copy_text(patterns))
             .or_else(|| any_of_text(patterns))
             .or_else(|| super::w6e_control::w6e_joined_step(patterns))
@@ -1858,6 +1865,12 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         | TriggerPattern::LifeLost { .. }
         | TriggerPattern::Cycled { .. }
         | TriggerPattern::Surveilled { .. } => {
+            let counted = pattern_text(event)?;
+            return Some(format!("{counted} for the {ordinal} time each turn"));
+        }
+        TriggerPattern::Did { action, what, .. }
+            if what.is_empty() && super::l31a_events::l31a_counted(*action) =>
+        {
             let counted = pattern_text(event)?;
             return Some(format!("{counted} for the {ordinal} time each turn"));
         }

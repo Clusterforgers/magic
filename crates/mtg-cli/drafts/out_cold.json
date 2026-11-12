@@ -16,7 +16,8 @@
             "effects": [
               { "Tap": { "what": { "Target": 0 } } },
               { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         }

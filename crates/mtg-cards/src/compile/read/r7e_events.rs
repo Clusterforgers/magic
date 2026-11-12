@@ -162,6 +162,9 @@ fn as_pattern(action: Action, what: &Selector) -> Option<TriggerPattern> {
 /// The verb of an action a player takes alone, with no object: "you scry", "an opponent shuffles their library".
 fn player_action(action: Action, who: &Ref) -> Option<String> {
     Some(match action {
+        Action::Investigated | Action::Discovered | Action::ManifestedDread | Action::GaveGift => {
+            super::l31a_events::l31a_action_text(action, who)?
+        }
         Action::Scried => player_verb(who, "scry")?,
         Action::Surveilled => player_verb(who, "surveil")?,
         Action::Proliferated => player_verb(who, "proliferate")?,

@@ -343,6 +343,7 @@ mod instead_pairs;
 mod keyword_macros;
 mod l291_dice;
 mod l291_nth_counter;
+mod l31a_events;
 mod land_types;
 mod lands;
 mod leave_combat;

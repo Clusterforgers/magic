@@ -31,6 +31,7 @@ mod copy_card;
 mod copy_spell;
 mod crewed;
 mod join_attack;
+mod l31a_performed;
 mod let_amount;
 mod r282_plot;
 mod retarget;
@@ -290,6 +291,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Bolster { .. } => bolster::run(cx, effect),
         Effect::Fabricate { .. } => fabricate::run(cx, effect),
         Effect::Learn { .. } => learn::run(cx, effect),
+        Effect::Performed { .. } => l31a_performed::run(cx, effect),
         Effect::Crewed { .. } => crewed::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),
         Effect::Connive { .. } => connive::run(cx, effect),

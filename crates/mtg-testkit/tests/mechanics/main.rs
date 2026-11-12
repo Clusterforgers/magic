@@ -82,6 +82,7 @@ mod graft;
 mod if_effects;
 mod it_that_betrays;
 mod kt28_krarks_thumb;
+mod l31a_keyword_actions;
 mod lifted_gates;
 mod macro_combat;
 mod macro_keywords;

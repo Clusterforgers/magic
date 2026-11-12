@@ -177,6 +177,21 @@ pub(super) fn did_happened(
         Event::EvidenceCollected { player } => {
             found.push(did(Action::CollectedEvidence, Some(*player), None));
         }
+        Event::Discovered {
+            player,
+            value,
+            card,
+        } => found.push(Happened::Did {
+            action: Action::Discovered,
+            player: Some(*player),
+            object: *card,
+            ability: None,
+            amount: *value,
+        }),
+        Event::DreadManifested { player, card } => {
+            found.push(did(Action::ManifestedDread, Some(*player), *card));
+        }
+        Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));
@@ -214,6 +229,14 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
                 }
             }
             Happened::Created { object, .. } => found.push(of(Action::TokenCreated, *object)),
+            // The amount of an investigation is which time of the turn it is, which "for the first time" reads.
+            Happened::Investigated { player, nth } => found.push(Happened::Did {
+                action: Action::Investigated,
+                player: Some(*player),
+                object: None,
+                ability: None,
+                amount: *nth,
+            }),
             Happened::Proliferated { player } => {
                 found.push(did(Action::Proliferated, Some(*player), None));
             }

@@ -10,7 +10,10 @@
         {
           "Triggered": {
             "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } },
+              { "Performed": { "action": "Investigated", "times": "Triggering" } }
+            ]
           }
         },
         {

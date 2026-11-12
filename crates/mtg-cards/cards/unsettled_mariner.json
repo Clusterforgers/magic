@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e4d1ce3-92f0-4acc-962b-8073d41d3673",
   "name": "Unsettled Mariner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Unsettled Mariner",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Keyword": "Changeling" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 47, "end": 211 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PlayerBecomesTarget": { "who": "You", "by": [{ "ControlledBy": "Opponents" }] } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "by": [{ "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
           }
         }
       ]

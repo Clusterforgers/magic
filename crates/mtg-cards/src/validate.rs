@@ -2621,6 +2621,12 @@ impl Walker<'_> {
             | TriggerPattern::BecomesSaddled { .. }
             // The counters put on an object, of any kind.
             | TriggerPattern::CountersPut { counter: None, .. } => true,
+            // The investigations of the player.
+            TriggerPattern::Did {
+                action: crate::did::Action::Investigated,
+                what,
+                ..
+            } => what.is_empty(),
             // Every cycling of the player, whatever the card.
             TriggerPattern::Cycled { what, .. } => what.0.iter().all(|p| *p == Pred::Other),
             // Tokens under the player's control, from no zone.
@@ -2652,7 +2658,7 @@ impl Walker<'_> {
         };
         if !counted {
             self.problem(
-                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
+                "only cards drawn, spells cast, life gained or lost, cards cycled, surveils, investigations, tokens you create, attacks, counters put on an object, becoming crewed or saddled, becoming a target of what anyone or you control and damage dealt to an object from any source or a player's first discards are counted in a turn",
             );
         }
         self.at("event", |w| w.trigger_pattern(event));
@@ -3678,6 +3684,14 @@ impl Walker<'_> {
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
+            Effect::Performed {
+                action,
+                who,
+                times,
+                card,
+                value,
+                to,
+            } => w.l31a_performed(*action, who, times, (card.as_ref(), value.as_ref(), to.as_ref())),
             Effect::Pair { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -7904,5 +7918,41 @@ mod printed_keywords {
                 "the imported card has the keyword `Flying` but no face has it",
             ]
         );
+    }
+}
+
+impl Walker<'_> {
+    /// A logged keyword action: one of the actions a step performs, with the parts that action has and no others.
+    fn l31a_performed(
+        &mut self,
+        action: crate::did::Action,
+        who: &Ref,
+        times: &Amount,
+        (card, value, to): (Option<&Ref>, Option<&Amount>, Option<&Ref>),
+    ) {
+        use crate::did::Action;
+        self.at("who", |w| w.reference(who, Kind::Player));
+        self.at("times", |w| w.amount(times));
+        if let Some(card) = card {
+            self.at("card", |w| w.reference(card, Kind::Object));
+        }
+        if let Some(value) = value {
+            self.at("value", |w| w.amount(value));
+        }
+        if let Some(to) = to {
+            self.at("to", |w| w.reference(to, Kind::Player));
+        }
+        let fits = match action {
+            Action::Investigated => card.is_none() && value.is_none() && to.is_none(),
+            Action::Discovered => value.is_some() && to.is_none(),
+            Action::ManifestedDread => value.is_none() && to.is_none(),
+            Action::GaveGift => card.is_none() && value.is_none() && to.is_some(),
+            _ => false,
+        };
+        if !fits {
+            self.problem(format!(
+                "`Performed` logs investigate, discover (with a value), manifest dread or a gift (to a player), not {action:?} with these parts"
+            ));
+        }
     }
 }

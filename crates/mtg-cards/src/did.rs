@@ -98,6 +98,14 @@ pub enum Action {
     ActivatedExhaust,
     /// A boast ability was activated (CR 702.142); `what` is its source.
     ActivatedBoast,
+    /// A player investigated (CR 701.16a), once for each Clue token the investigation made.
+    Investigated,
+    /// A player discovered (CR 701.57); `what` is the card discovered and the amount the discover value.
+    Discovered,
+    /// A player manifested dread (CR 701.62); `what` is the card they put into their graveyard this way.
+    ManifestedDread,
+    /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
+    GaveGift,
 }
 
 impl Action {
@@ -188,6 +196,10 @@ impl Action {
                 "activates an exhaust ability",
             ),
             Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
+            Action::Investigated => ("investigate", "investigates"),
+            Action::Discovered => ("discover", "discovers"),
+            Action::ManifestedDread => ("manifest dread", "manifests dread"),
+            Action::GaveGift => ("give a gift", "gives a gift"),
         }
     }
 
