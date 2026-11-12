@@ -1,22 +1,50 @@
 {
   "oracle_id": "bc2c02f6-2b6b-4016-b006-12ce0a1a2450",
   "name": "Pact Weapon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pact Weapon",
       "oracle_fingerprint": "16c8488fcd5741d9702d5099545cbe4c",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 103 }
+          "Rule": {
+            "rule": { "CantLoseGame": { "who": "You", "life_only": true } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "HasAttached": ["This"] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 104, "end": 264 }
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "Draw": { "as": "card" } },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Equip": [{ "Discard": {} }] } }

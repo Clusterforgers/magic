@@ -1,7 +1,7 @@
 {
   "oracle_id": "5c4cbf1c-95ee-4555-8351-ea962e17ae1f",
   "name": "Corrupted Shapeshifter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Corrupted Shapeshifter",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Keyword": "Devoid" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 33, "end": 176 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "BecomesChoice": [
+                [
+                  { "SetPT": { "power": 3, "toughness": 3 } },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Flying" }
+                ],
+                [
+                  { "SetPT": { "power": 2, "toughness": 5 } },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Vigilance" }
+                ],
+                [
+                  { "SetPT": { "power": 0, "toughness": 12 } },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Defender" }
+                ]
+              ]
+            }
           }
         }
       ]

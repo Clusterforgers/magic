@@ -1,7 +1,7 @@
 {
   "oracle_id": "4d19ea6d-cabe-4a25-a911-dd744517dd73",
   "name": "Portal Mage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Portal Mage",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 203 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "AtTrigger": { "Step": "DeclareAttackers" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Reattack": { "what": { "Target": 0 } } }]
           }
         }
       ]

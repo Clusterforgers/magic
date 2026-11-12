@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cca33482-0bc5-4fe4-89dc-ba33b2e93831",
+  "name": "Feasting Hobbit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feasting Hobbit",
+      "oracle_fingerprint": "3c4113828b8bf8760f41ef95e1fd1914",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 3, "of": [{ "Subtype": "Food" }] } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Lt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

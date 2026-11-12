@@ -8,8 +8,9 @@
 use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::cost::CostItem;
 use mtg_cards::value::{Amount, CastWay, CounterKind};
+use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::{ManaCost, ManaSymbol};
+use mtg_core::mana::ManaCost;
 
 use super::{Ctx, Next, What, Work, cheapest, parts, required, targets, total};
 use crate::choose::{Choices, NumberOptions, enough_modes, modal_of, reads_x, targets_met};
@@ -195,11 +196,12 @@ pub(crate) fn payable(
     let symbols = state
         .object(id)
         .map_or(0, |card| u32::from(card.card().x_in_cost));
+    let color = state
+        .object(id)
+        .and_then(|card| crate::price::spell_x_color(card.card()));
     let most = if fixed || symbols == 0 { 0 } else { MOST_X };
     for x in 0..=most {
-        let total = cost
-            .clone()
-            .with(ManaSymbol::Generic(x.saturating_mul(symbols)));
+        let total = crate::price::with_x(cost.clone(), x.saturating_mul(symbols), color);
         if !pays(&cheapest(state, player, id, way, &total)) {
             return false;
         }
@@ -353,17 +355,28 @@ fn alternative_symbols(ctx: &Ctx<'_>, way: Option<CastWay>) -> Option<u32> {
         .then(|| ways::alternative_x(ctx.state, *spell, way))
 }
 
-/// `mana` with X paid: X generic mana for each `{X}` of the cost.
+/// The color "Spend only black mana on X" asks of the mana paid for X, if any: a part of the cost of an activated
+/// ability, or of the required additional costs of a spell.
+fn x_color(ctx: &Ctx<'_>) -> Option<Color> {
+    match (ctx.what, ctx.ability) {
+        (What::Spell(spell), _) => crate::price::spell_x_color(ctx.state.object(*spell)?.card()),
+        (What::Ability(_), Some(Ability::Activated { cost, .. })) => crate::price::x_color_of(cost),
+        _ => None,
+    }
+}
+
+/// `mana` with X paid: X generic mana for each `{X}` of the cost, or X mana of the color the cost asks.
 pub(super) fn add(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
     let Some(XCost::Mana { symbols }) = &ctx.needs.x else {
         return mana;
     };
     let symbols = alternative_symbols(ctx, choices.way).unwrap_or(*symbols);
-    let generic = choices.x.unwrap_or(0).saturating_mul(symbols);
-    Some(
-        mana.unwrap_or(ManaCost::ZERO)
-            .with(ManaSymbol::Generic(generic)),
-    )
+    let amount = choices.x.unwrap_or(0).saturating_mul(symbols);
+    Some(crate::price::with_x(
+        mana.unwrap_or(ManaCost::ZERO),
+        amount,
+        x_color(ctx),
+    ))
 }
 
 /// The largest X the player can announce, or `None` when not even X = 0 can be paid.
