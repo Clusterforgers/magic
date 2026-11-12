@@ -57,6 +57,7 @@ impl Pass<'_> {
             Item::One(_) => 0,
         };
         Cause {
+            dealers: Vec::new(),
             subjects: subject.into_iter().collect(),
             snapshots: Vec::new(),
             amount,

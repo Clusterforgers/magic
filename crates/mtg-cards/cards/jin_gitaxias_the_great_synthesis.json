@@ -110,7 +110,7 @@
                     },
                     { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
                   ],
-                  "most": 1000,
+                  "most": 100,
                   "ask": "You"
                 }
               },

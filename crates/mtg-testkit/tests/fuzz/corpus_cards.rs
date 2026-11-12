@@ -33,6 +33,15 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
     ("Kaervek's Spite", Partial, 1),
     ("Plagiarize", Manual, 0),
+    ("Blazing Shoal", Partial, 1),
+    ("Conflagrate", Partial, 1),
+    ("Disrupting Shoal", Partial, 1),
+    ("Firecat Blitz", Partial, 1),
+    ("Flash of Insight", Partial, 1),
+    ("Nourishing Shoal", Partial, 1),
+    ("Shining Shoal", Partial, 1),
+    ("Sickening Shoal", Partial, 1),
+    ("Soulblast", Partial, 1),
     ("Vexing Puzzlebox", Partial, 2),
 ];
 

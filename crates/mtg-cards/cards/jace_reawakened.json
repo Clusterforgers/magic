@@ -1,16 +1,20 @@
 {
   "oracle_id": "cbd483b5-5554-43ed-a729-535d01b0d5d3",
   "name": "Jace Reawakened",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jace Reawakened",
       "oracle_fingerprint": "66f0b0c2b5bc202fcf0a43ff087e3df6",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 85 }
+          "CastOnly": {
+            "condition": {
+              "Any": [
+                { "Not": "YourTurn" },
+                { "Compare": { "left": { "TurnsTaken": "You" }, "op": "Ge", "right": 4 } }
+              ]
+            }
           }
         },
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }, { "Discard": {} }] } },
@@ -42,9 +46,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 230, "end": 329 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
           }
         }
       ]

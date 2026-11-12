@@ -1,0 +1,57 @@
+{
+  "oracle_id": "4b473a42-a0c5-43d5-93f9-c599e963a06b",
+  "name": "Season of Weaving",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Season of Weaving",
+      "oracle_fingerprint": "6c4f8a8003ff64a59aa07217b7184a58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 5 },
+                  "repeat": true,
+                  "pawprints": [1, 2, 3],
+                  "modes": [
+                    { "effects": [{ "Draw": {} }] },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "as": "chosen"
+                          }
+                        },
+                        {
+                          "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "chosen" } } } }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Each": [{ "Not": { "Type": "Land" } }, { "Not": "Token" }] },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

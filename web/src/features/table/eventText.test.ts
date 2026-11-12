@@ -1145,8 +1145,12 @@ describe('events with more than one shape', () => {
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
-    [ruleEffect('ManaBurn', 'Forever'), 'A player losing unspent mana loses that much life'],
     [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
+    [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
+    [
+      ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
+      'Creatures can attack Bo as though they had haste',
+    ],
     [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
     [
       ruleEffect({ CantLoseGame: { who: [0], winless: [], life_only: true } }, 'Forever'),

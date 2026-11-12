@@ -1,0 +1,68 @@
+{
+  "oracle_id": "5fe29c25-a7ad-4c79-a5a5-da1bbc832141",
+  "name": "Season of the Bold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Season of the Bold",
+      "oracle_fingerprint": "5a86bb1695231816fd9e77ac3905285c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 5 },
+                  "repeat": true,
+                  "pawprints": [1, 2, 3],
+                  "modes": [
+                    {
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "exiled" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": { "SpellCast": { "by": "You" } },
+                            "once": false,
+                            "until": "UntilEndOfYourNextTurn",
+                            "targets": [
+                              {
+                                "what": { "Object": [{ "Type": "Creature" }] },
+                                "bounds": { "min": 0, "max": 1 }
+                              }
+                            ],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

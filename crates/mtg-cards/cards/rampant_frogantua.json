@@ -1,7 +1,7 @@
 {
   "oracle_id": "a08393b5-603b-41c4-aa03-2ae9c74884a7",
   "name": "Rampant Frogantua",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rampant Frogantua",
@@ -14,17 +14,44 @@
             "mods": [
               {
                 "ModifyPT": {
-                  "power": { "Times": { "by": 10, "of": "LostPlayers" } },
-                  "toughness": { "Times": { "by": 10, "of": "LostPlayers" } }
+                  "power": { "Times": { "by": 10, "of": "PlayersLost" } },
+                  "toughness": { "Times": { "by": 10, "of": "PlayersLost" } }
                 }
               }
             ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 74, "end": 233 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Mill": { "count": "Triggering", "as": "milled" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "Is": { "Bound": "milled" } },
+                            { "Type": "Land" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "lands"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "lands" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

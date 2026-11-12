@@ -24,8 +24,8 @@
                       "except": [
                         { "SetPT": { "power": 1, "toughness": 1 } },
                         { "AddColors": ["Red"] },
-                        { "AddType": "Creature" },
                         { "AddSubtype": "Balloon" },
+                        { "AddType": "Creature" },
                         { "AddKeyword": "Flying" },
                         { "AddKeyword": "Haste" }
                       ]

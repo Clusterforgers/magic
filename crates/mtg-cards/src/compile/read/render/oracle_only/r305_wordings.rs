@@ -149,7 +149,7 @@ fn per_lost_player(value: &Value) -> Option<String> {
     let pump = statik.get("mods")?.pointer("/0/ModifyPT")?;
     let times = |key: &str| {
         let times = pump.get(key)?.get("Times")?;
-        (times.get("of")? == "LostPlayers").then(|| times.get("by")?.as_i64())?
+        (times.get("of")? == "PlayersLost").then(|| times.get("by")?.as_i64())?
     };
     let (power, toughness) = (times("power")?, times("toughness")?);
     let shaped = statik.len() == 2

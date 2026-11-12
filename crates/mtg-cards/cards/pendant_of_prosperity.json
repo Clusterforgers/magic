@@ -23,10 +23,10 @@
                         "from": {
                           "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
                         },
-                        "as": "a"
+                        "as": "card"
                       }
                     },
-                    { "Move": { "what": { "Bound": "a" }, "to": { "Battlefield": {} } } }
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               },
@@ -45,10 +45,10 @@
                             { "Type": "Land" }
                           ]
                         },
-                        "as": "b"
+                        "as": "owners_land"
                       }
                     },
-                    { "Move": { "what": { "Bound": "b" }, "to": { "Battlefield": {} } } }
+                    { "Move": { "what": { "Bound": "owners_land" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               }

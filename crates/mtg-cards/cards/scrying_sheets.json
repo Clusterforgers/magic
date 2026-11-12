@@ -19,25 +19,20 @@
             "effects": [
               { "LookAtTop": { "as": "top" } },
               {
-                "If": {
-                  "condition": {
-                    "Matches": {
-                      "subject": { "Bound": "top" },
-                      "selector": [{ "Supertype": "Snow" }]
-                    }
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      { "Supertype": "Snow" }
+                    ]
                   },
-                  "then": [
-                    {
-                      "May": {
-                        "effects": [
-                          { "Reveal": { "what": { "Bound": "top" } } },
-                          { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
-                        ]
-                      }
-                    }
-                  ]
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
                 }
-              }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
             ]
           }
         }

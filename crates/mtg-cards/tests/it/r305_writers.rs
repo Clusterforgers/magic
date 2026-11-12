@@ -160,7 +160,7 @@ fn draft(rule: &str) -> String {
     false
 )]
 #[case::lost_players(
-    per(r#""LostPlayers""#),
+    per(r#""PlayersLost""#),
     "~ gets +10/+10 for each player who has lost the game.",
     true
 )]

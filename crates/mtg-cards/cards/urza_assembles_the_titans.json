@@ -19,21 +19,18 @@
                     {
                       "Bind": {
                         "what": {
-                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                          "Each": ["TopOfLibrary", { "OwnedBy": "You" }, { "In": "Library" }]
                         },
                         "as": "top"
                       }
                     },
                     { "Reveal": { "what": { "Bound": "top" } } },
                     {
-                      "If": {
-                        "condition": {
-                          "Matches": {
-                            "subject": { "Bound": "top" },
-                            "selector": [{ "Type": "Planeswalker" }]
-                          }
+                      "Move": {
+                        "what": {
+                          "Each": [{ "Is": { "Bound": "top" } }, { "Type": "Planeswalker" }]
                         },
-                        "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                        "to": "Hand"
                       }
                     }
                   ]

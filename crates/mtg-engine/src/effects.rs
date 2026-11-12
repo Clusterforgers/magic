@@ -501,14 +501,13 @@ pub(crate) fn lasts(
             })
         }
         Duration::WhileYouControlSourceTapped => {
-            lasts(state, &Duration::WhileSourceTapped, began, controller, source)
-                && lasts(
-                    state,
-                    &Duration::WhileYouControlSource,
-                    began,
-                    controller,
-                    source,
-                )
+            lasts(
+                state,
+                &Duration::WhileYouControlSource,
+                began,
+                controller,
+                source,
+            ) && lasts(state, &Duration::WhileSourceTapped, began, controller, source)
         }
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.

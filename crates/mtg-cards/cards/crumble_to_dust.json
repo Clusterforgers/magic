@@ -1,0 +1,62 @@
+{
+  "oracle_id": "c13da0f4-917f-4e07-b484-21cb4bec4da6",
+  "name": "Crumble to Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crumble to Dust",
+      "oracle_fingerprint": "d9c4be507b7c544f47d314527e8d4c5d",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "named" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "grave"
+                }
+              },
+              { "Exile": { "what": { "Bound": "grave" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "hand"
+                }
+              },
+              { "Exile": { "what": { "Bound": "hand" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "named" } }],
+                  "count": { "min": 0, "max": null },
+                  "as": "library"
+                }
+              },
+              { "Exile": { "what": { "Bound": "library" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

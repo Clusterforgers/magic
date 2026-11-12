@@ -1,7 +1,7 @@
 {
   "oracle_id": "cecd2f49-8ccb-472d-9cf1-fd0f4d93546d",
   "name": "Summon: Esper Valigarmanda",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Summon: Esper Valigarmanda",
@@ -36,9 +36,81 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 146, "end": 320 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "spend_as": "AnyType" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "spend_as": "AnyType" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "lore" } } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "ExiledWith": "This" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "spend_as": "AnyType" } }
+            ]
           }
         },
         { "Keyword": "Flying" },

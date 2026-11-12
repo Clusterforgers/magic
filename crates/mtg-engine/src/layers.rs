@@ -754,7 +754,9 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
-        Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
+        Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) if defining => {
+            Layer::PtCharacteristicDefining
+        }
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) => Layer::PtSet,
         Wanted::ModifyPT { .. } => Layer::PtModify,
         Wanted::SwitchPT => Layer::PtSwitch,

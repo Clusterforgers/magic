@@ -1,7 +1,7 @@
 {
   "oracle_id": "9110339d-72ba-4132-801f-cd2fd738b71d",
   "name": "Augmenter Pugilist // Echoing Equation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Augmenter Pugilist",
@@ -28,9 +28,26 @@
       "oracle_fingerprint": "b5d962d237bda2ea67c7bd507c7faa00",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 148 }
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "of": { "Target": 0 },
+                  "except": [{ "RemoveSupertype": "Legendary" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

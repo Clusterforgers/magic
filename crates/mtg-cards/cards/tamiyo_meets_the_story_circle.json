@@ -28,24 +28,10 @@
                 "CreateToken": {
                   "token": { "Named": "clue" },
                   "count": {
-                    "Times": {
-                      "by": 2,
-                      "of": {
-                        "Count": [
-                          { "Is": { "Bound": "discarded" } },
-                          {
-                            "AnyOf": [
-                              { "In": "Battlefield" },
-                              { "In": "Hand" },
-                              { "In": "Library" },
-                              { "In": "Graveyard" },
-                              { "In": "Exile" },
-                              { "In": "Stack" }
-                            ]
-                          }
-                        ]
-                      }
-                    }
+                    "Product": [
+                      { "Count": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }] },
+                      2
+                    ]
                   }
                 }
               }

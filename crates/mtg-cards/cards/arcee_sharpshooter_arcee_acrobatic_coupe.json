@@ -18,7 +18,7 @@
             ],
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              { "DealDamage": { "to": { "Target": 0 }, "amount": { "RemovedThisWay": "+1/+1" } } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
               { "Transform": { "what": "This" } }
             ]
           }
@@ -32,7 +32,7 @@
         { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         {
           "Manual": {
-            "reason": "you apply this clause by hand",
+            "reason": "you apply this triggered ability by hand",
             "span": { "start": 66, "end": 205 }
           }
         }

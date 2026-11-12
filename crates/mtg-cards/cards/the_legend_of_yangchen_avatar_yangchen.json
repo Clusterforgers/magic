@@ -18,14 +18,8 @@
             "when": { "Chapter": { "number": 2 } },
             "targets": [{ "what": "Opponent" }],
             "effects": [
-              {
-                "May": {
-                  "effects": [
-                    { "Draw": { "who": { "Target": 0 }, "count": 3 } },
-                    { "Draw": { "count": 3 } }
-                  ]
-                }
-              }
+              { "May": { "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }] } },
+              { "If": { "condition": "Performed", "then": [{ "Draw": { "count": 3 } }] } }
             ]
           }
         },

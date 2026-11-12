@@ -1,0 +1,24 @@
+{
+  "oracle_id": "79770e65-740a-44c7-bea2-a24e6a722c22",
+  "name": "Vizier of Remedies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vizier of Remedies",
+      "oracle_fingerprint": "932867c9d84e09c195853943a72af3d8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "-1/-1"
+              }
+            },
+            "by": { "Subtract": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

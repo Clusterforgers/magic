@@ -10,7 +10,7 @@
         {
           "Static": {
             "affected": "This",
-            "mods": [{ "SetPower": { "Count": [{ "Type": "Creature" }, { "Color": "Red" }] } }],
+            "mods": [{ "SetPower": { "Count": [{ "Color": "Red" }, { "Type": "Creature" }] } }],
             "defining": true
           }
         },
@@ -18,7 +18,7 @@
           "Static": {
             "affected": "This",
             "mods": [
-              { "SetToughness": { "Count": [{ "Type": "Creature" }, { "Color": "Green" }] } }
+              { "SetToughness": { "Count": [{ "Color": "Green" }, { "Type": "Creature" }] } }
             ],
             "defining": true
           }

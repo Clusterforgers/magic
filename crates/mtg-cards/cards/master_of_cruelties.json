@@ -1,7 +1,7 @@
 {
   "oracle_id": "d135c457-9be5-4a6e-a6fb-5b35cfb70cb0",
   "name": "Master of Cruelties",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Master of Cruelties",
@@ -11,9 +11,17 @@
         { "Keyword": "Deathtouch" },
         { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "AttackAlone" } } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 62, "end": 208 }
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This", { "AttackingPlayer": "EachPlayer" }] } },
+            "effects": [
+              { "SetLife": { "who": "Defending", "amount": 1 } },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
           }
         }
       ]

@@ -107,6 +107,16 @@ fn plain(who: &Ref, action: &Prohibited) -> Option<String> {
         Prohibited::PutCounterOf(CounterKind::Poison) if *who == Ref::You => {
             Some("You can't get poison counters".to_owned())
         }
+        Prohibited::RemoveCounterOf(kind) => {
+            let Ref::Each(of) = who else {
+                return None;
+            };
+            Some(format!(
+                "{} counters can't be removed from {}",
+                capitalize(counters::kind_text(kind)?),
+                super::selectors::phrase_text(of, super::selectors::Form::All)?
+            ))
+        }
         Prohibited::PutCounterOf(kind) => {
             let group = group(who)?;
             Some(format!(

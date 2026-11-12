@@ -945,6 +945,29 @@ impl RulesInForce {
         let (free, flash) = match benefit {
             SpellBenefit::Free => (true, false),
             SpellBenefit::Flash => (false, true),
+            // "Rather than pay the mana cost of the next spell you cast this turn, you may pay ...": a cast for that cost.
+            SpellBenefit::Rather(cost) => {
+                if let Some(source) = source {
+                    self.casts.push(Cast {
+                        controller,
+                        source,
+                        who: vec![controller],
+                        what: what.clone(),
+                        from: None,
+                        free: false,
+                        flash: false,
+                        only: None,
+                        play: false,
+                        once: false,
+                        additional: None,
+                        spend_as: SpendAs::Normal,
+                        when: None,
+                        rather: None,
+                        instead: Some(cost.clone()),
+                    });
+                }
+                return;
+            }
             SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
                 return;
             }
@@ -1505,6 +1528,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::DamageAsWither => Rule::DamageAsWither,
         GameRule::ManaBurn => Rule::ManaBurn,
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
+        // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
+        GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }

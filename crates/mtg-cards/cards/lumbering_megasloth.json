@@ -12,7 +12,7 @@
             "applies_to": ["This"],
             "change": "Reduce",
             "mana": "{1}",
-            "per": { "Sum": [{ "AnyCounters": "EachPlayer" }, { "AnyCounters": { "Each": [] } }] }
+            "per": { "AnyCounters": { "Union": ["EachPlayer", { "Each": [] }] } }
           }
         },
         { "Keyword": "Trample" },

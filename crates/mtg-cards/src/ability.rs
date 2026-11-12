@@ -42,6 +42,8 @@ pub enum Activators {
     Anyone,
     /// The opponents of its controller.
     Opponents,
+    /// Its owner, whoever controls it ("Only this creature's owner may activate this ability").
+    Owner,
 }
 
 impl Activators {

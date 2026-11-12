@@ -63,12 +63,13 @@ fn labelled(subset: &[ZoneKind]) -> String {
 /// chooses between `count.min` and `count.max` of them among all of those zones; a library or a hand does not have to
 /// give up what it holds (CR 701.23b), so the fewest is then 0. Each zone searched is one `CardsFound` for the
 /// searcher, also when it held nothing that matches, and the cards found are bound to the name. A player who has just
-/// one zone to search is not asked which. Nothing matching is no question.
+/// one zone to search is not asked which. Nothing matching is no question. The zones of another player (`of`) are all
+/// searched, with no choice among them.
 #[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
-        of: _,
+        of,
         zone,
         also,
         filter,
@@ -81,6 +82,21 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Search"));
     };
     let state = cx.state();
+    // Another player's zones ("search its controller's graveyard, hand, and library"): every zone named is searched, so
+    // nobody chooses among them; nobody left to name is nothing to search.
+    let owner = match of {
+        None => None,
+        Some(reference) => match cx
+            .scope
+            .players(reference)?
+            .first()
+            .copied()
+            .filter(|player| state.is_alive(*player))
+        {
+            Some(player) => Some(player),
+            None => return Ok(Run::events(Vec::new())),
+        },
+    };
     let most = match &count.max {
         None => usize::MAX,
         Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX),
@@ -102,14 +118,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if named.is_empty() {
             continue;
         }
-        let searched = match zones_searched(&mut asked, player, &named) {
-            Ok(searched) => searched,
-            Err(stop) => return Stop::settle(Err(stop)),
+        let searched = if owner.is_some() {
+            named
+        } else {
+            match zones_searched(&mut asked, player, &named) {
+                Ok(searched) => searched,
+                Err(stop) => return Stop::settle(Err(stop)),
+            }
         };
         let mut places = Vec::new();
         let mut matches: Vec<ObjectId> = Vec::new();
         for kind in &searched {
-            let place = zone_of(*kind, player)?;
+            let place = zone_of(*kind, owner.unwrap_or(player))?;
             places.push(place);
             for id in state.zone(place) {
                 if let Some(card) = state.object(*id)

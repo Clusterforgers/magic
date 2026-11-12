@@ -52,6 +52,7 @@ fn steps(effects: &[Effect], held: &Ref) -> Option<String> {
         [
             Effect::CastFromZone {
                 rather: None,
+                spend_as: crate::modify::SpendAs::Normal,
                 who: Ref::You,
                 what,
                 free: true,

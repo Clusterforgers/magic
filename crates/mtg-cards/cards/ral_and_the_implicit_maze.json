@@ -29,17 +29,18 @@
           "Triggered": {
             "when": { "Chapter": { "number": 2 } },
             "effects": [
+              { "May": { "effects": [{ "Discard": {} }] } },
               {
-                "Pay": {
-                  "cost": [{ "Discard": {} }],
-                  "paid": [
-                    { "ExileTop": { "count": 2, "as": "impulse" } },
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "ExileTop": { "count": 2, "as": "exiled" } },
                     {
                       "Rule": {
                         "rule": {
                           "MayCast": {
                             "from": "Exile",
-                            "only": { "Bound": "impulse" },
+                            "only": { "Bound": "exiled" },
                             "play": true
                           }
                         },

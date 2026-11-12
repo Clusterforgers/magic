@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8b34b211-985b-4934-bb3b-8e6672685ac2",
+  "name": "Forbidden Crypt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forbidden Crypt",
+      "oracle_fingerprint": "4781a3f84d778dadfe6cdcafc2f743f6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                {
+                  "If": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": [
+                      {
+                        "Choose": {
+                          "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                          "as": "card"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                    ],
+                    "otherwise": [{ "LoseGame": {} }]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "OwnedBy": "You" }, { "Not": "Token" }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

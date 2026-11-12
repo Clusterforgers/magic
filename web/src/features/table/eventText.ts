@@ -299,13 +299,12 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     joinWords(objects.map((object) => n.card(object.id)))
   const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
   let what: string
-  if (typeof rule === 'string') {
-    what = {
-      GraveyardCardsUntargetable: "Cards in graveyards can't be targeted",
-      DamageAsWither: 'Damage is dealt as though its source had wither',
-      ManaBurn: 'A player losing unspent mana loses that much life',
-    }[rule]
-  } else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
+  if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
+  else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
+  else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if ('AttackAsThoughHasteAt' in rule)
+    what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
+  else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
   else if ('MustAttackPlayers' in rule)
     what = rule.MustAttackPlayers.map(
       ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,

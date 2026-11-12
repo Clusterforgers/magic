@@ -399,10 +399,6 @@ fn an_event_word_outside_a_trigger_is_refused(#[case] json: &str) {
     r#"{"Triggered":{"when":{"Batch":{"Surveilled":{"who":"You"}}},"effects":[{"Draw":{}}]}}"#,
     "a batch is of one event"
 )]
-#[case::c6_gap_a_batch_of_moves_one_from_the_battlefield(
-    r#"{"Triggered":{"when":{"Batch":{"AnyOf":[{"ZoneChange":{"what":[],"from":"Library","to":"Exile"}},{"ZoneChange":{"what":[],"from":"Battlefield","to":"Exile"}}]}},"effects":[{"Draw":{}}]}}"#,
-    "a batch is of one event"
-)]
 #[case::c6_gap_a_batch_of_moves_from_anywhere(
     r#"{"Triggered":{"when":{"Batch":{"AnyOf":[{"ZoneChange":{"what":[],"from":"Library","to":"Exile"}},{"ZoneChange":{"what":[],"to":"Exile"}}]}},"effects":[{"Draw":{}}]}}"#,
     "a batch is of one event"

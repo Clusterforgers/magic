@@ -264,7 +264,8 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
-    /// While you control the source and it stays tapped.
+    /// For as long as the controller of the effect controls the source and the source stays tapped ("for as long as you
+    /// control ~ and ~ remains tapped", CR 611.2b): it ends when either stops. Only a continuous effect lasts this long.
     WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
@@ -480,6 +481,10 @@ pub enum Prohibited {
     PutCounter,
     /// Have counters of one kind put on them (CR 122).
     PutCounterOf(crate::value::CounterKind),
+    /// Have counters of one kind removed from them (CR 122): "Stun counters can't be removed from permanents your
+    /// opponents control."; a stun counter that would be removed in place of an untap stays and the permanent stays
+    /// tapped.
+    RemoveCounterOf(crate::value::CounterKind),
     /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
     Trigger(TriggerPattern),
     /// Become attached, or have anything attached to them (CR 701.3).
@@ -499,6 +504,8 @@ pub enum Prohibited {
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
     Crew,
+    /// Become suspected (CR 701.60): an effect that would suspect it does nothing to it.
+    BecomeSuspected,
     /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
     EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
@@ -559,6 +566,10 @@ pub enum SpellBenefit {
     /// It can't be countered (CR 101.2) for as long as it is on the stack: "the next spell you cast this turn can't be
     /// countered".
     Uncounterable,
+    /// It may be cast by paying this cost rather than its mana cost (CR 118.9): "Rather than pay the mana cost of the next
+    /// spell you cast this turn, you may pay life equal to that spell's mana value"; an amount in it counts the card cast
+    /// as `This`.
+    Rather(crate::cost::Cost),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -820,6 +831,8 @@ pub enum GameRule {
     UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
+    CantBeCopied,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).

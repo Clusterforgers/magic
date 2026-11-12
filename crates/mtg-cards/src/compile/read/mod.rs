@@ -188,11 +188,18 @@ mod r284_rules;
 mod r285_writers;
 mod r287_facts;
 mod r289_writers;
+mod r300b_writers;
+mod r300c_cost_pairs;
+mod r300c_writers;
+mod r302c_writers;
 mod r303_forms;
 mod r303b_statics;
 mod r303b_writers;
 mod r304_as_enters;
 mod r304_damage;
+mod r304b_writers;
+mod r305b_writers;
+mod r307c_events;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -339,6 +346,7 @@ pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use r303_forms::form_text;
+pub use r304b_writers::r304b_triple_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -570,6 +578,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r304b_writers::r304b_tapped_read(text)
     {
         return Some(found);
     }

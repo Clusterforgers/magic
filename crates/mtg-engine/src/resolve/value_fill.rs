@@ -17,17 +17,6 @@ use crate::rng::GameRng;
 const RANDOM_AMOUNT: u64 = 1 << 63;
 
 impl Scope<'_> {
-    /// How many players have lost the game (`Amount::LostPlayers`).
-    pub(super) fn lost_players(&self) -> i64 {
-        let lost = self
-            .state
-            .players()
-            .iter()
-            .filter(|player| !player.is_in_game())
-            .count();
-        i64::try_from(lost).unwrap_or(i64::MAX)
-    }
-
     /// The amounts of this file; `amount_of` hands them over.
     pub(super) fn fill_amount(
         &self,

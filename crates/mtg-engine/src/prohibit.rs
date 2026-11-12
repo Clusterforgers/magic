@@ -66,6 +66,8 @@ pub(crate) enum Doing {
     },
     /// `object` is tapped to pay a crew cost.
     Crew { object: ObjectId },
+    /// `object` becomes suspected.
+    BecomeSuspected { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -74,6 +76,8 @@ pub(crate) enum Doing {
     Sacrifice { player: PlayerId, object: ObjectId },
     /// Counters are put on `on`.
     PutCounter { on: Target, counter: CounterKind },
+    /// Counters of `counter` are removed from `on`.
+    RemoveCounter { on: Target, counter: CounterKind },
     /// `object` becomes attached to `to`.
     Attach { object: ObjectId, to: Target },
     /// `player` discards `object`.
@@ -188,7 +192,8 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             covers(who, Some(player), Some(object))
         }
         (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(state, who, on),
-        (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
+        (Prohibited::RemoveCounterOf(kind), Doing::RemoveCounter { on, counter })
+        | (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
             *kind == counter && counters_on(state, who, on)
         }
         (Prohibited::Attach, Doing::Attach { object, to }) => {
@@ -216,6 +221,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         | (Prohibited::PhaseOut, Doing::PhaseOut { object })
         | (Prohibited::Untap, Doing::Untap { object })
         | (Prohibited::Crew, Doing::Crew { object })
+        | (Prohibited::BecomeSuspected, Doing::BecomeSuspected { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
             covers(who, holder(state, object), Some(object))
         }
@@ -452,6 +458,12 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
                 counter: changed.counter.clone(),
             });
         }
+        Event::CountersChanged(changed) if changed.delta < 0 => {
+            found.push(Doing::RemoveCounter {
+                on: changed.on,
+                counter: changed.counter.clone(),
+            });
+        }
         Event::Attached { object, to } => {
             if let Some(host) = state.object(*to) {
                 found.push(Doing::Attach {
@@ -473,6 +485,7 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             ..
         } => found.push(Doing::PhaseOut { object: *object }),
         Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
+        Event::Suspected { object } => found.push(Doing::BecomeSuspected { object: *object }),
         _ => {}
     }
     found
@@ -495,20 +508,16 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
                 false
             }
             _ => {
-                let banned = doings(state, event)
-                    .into_iter()
-                    .any(|doing| forbidden(state, doing));
-                if banned
-                    && let Event::ZoneChanged {
-                        object,
-                        to: Zone::Battlefield,
-                        ..
-                    } = event
-                {
-                    stays.push(*object);
-                }
-                if banned && let Event::PermanentPhasedOut { object, .. } = event {
-                    stayed.push(*object);
+                let doings = doings(state, event);
+                let banned = doings.iter().any(|doing| forbidden(state, doing.clone()));
+                if banned {
+                    stays.extend(doings.iter().filter_map(|doing| match doing {
+                        Doing::EnterBattlefield { object } => Some(*object),
+                        _ => None,
+                    }));
+                    if let Event::PermanentPhasedOut { object, .. } = event {
+                        stayed.push(*object);
+                    }
                 }
                 !banned
             }

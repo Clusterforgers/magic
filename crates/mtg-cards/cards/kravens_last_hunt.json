@@ -22,9 +22,9 @@
                         "amount": {
                           "Greatest": {
                             "of": [
+                              { "Type": "Creature" },
                               { "In": "Graveyard" },
-                              { "OwnedBy": "You" },
-                              { "Type": "Creature" }
+                              { "OwnedBy": "You" }
                             ],
                             "stat": "Power"
                           }

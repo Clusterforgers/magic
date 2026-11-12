@@ -1,0 +1,71 @@
+{
+  "oracle_id": "3ea060d8-449c-4a5e-8883-b45bd7707b5b",
+  "name": "Season of Gathering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Season of Gathering",
+      "oracle_fingerprint": "3bd2870a627c9af4f72a04d173893dee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 5 },
+                  "repeat": true,
+                  "pawprints": [1, 2, 3],
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "creature"
+                          }
+                        },
+                        { "PutCounters": { "on": { "Bound": "creature" }, "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "creature" },
+                            "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "kind": { "CardTypeOf": ["Artifact", "Enchantment"] },
+                            "as": "type"
+                          }
+                        },
+                        { "Destroy": { "what": { "Each": [{ "ChosenAs": "type" }] } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Draw": {
+                            "count": {
+                              "Greatest": {
+                                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

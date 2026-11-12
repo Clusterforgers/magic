@@ -12,56 +12,61 @@
             "cost": "{0}",
             "effects": [
               {
-                "OneOf": {
-                  "options": [
-                    [
-                      {
-                        "Continuous": {
-                          "affected": "This",
-                          "mods": [
-                            { "ModifyPT": { "power": -1, "toughness": -1 } },
-                            { "AddKeyword": "Banding" }
-                          ],
-                          "duration": "UntilEndOfTurn"
-                        }
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Banding" }],
+                        "duration": "UntilEndOfTurn"
                       }
-                    ],
-                    [
-                      {
-                        "Continuous": {
-                          "affected": "This",
-                          "mods": [
-                            { "ModifyPT": { "power": -1, "toughness": -1 } },
-                            { "AddKeyword": "Flying" }
-                          ],
-                          "duration": "UntilEndOfTurn"
-                        }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Flying" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "FirstStrike" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "Continuous": {
+                                    "affected": "This",
+                                    "mods": [{ "AddKeyword": "Trample" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
-                    ],
-                    [
-                      {
-                        "Continuous": {
-                          "affected": "This",
-                          "mods": [
-                            { "ModifyPT": { "power": -1, "toughness": -1 } },
-                            { "AddKeyword": "FirstStrike" }
-                          ],
-                          "duration": "UntilEndOfTurn"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Continuous": {
-                          "affected": "This",
-                          "mods": [
-                            { "ModifyPT": { "power": -1, "toughness": -1 } },
-                            { "AddKeyword": "Trample" }
-                          ],
-                          "duration": "UntilEndOfTurn"
-                        }
-                      }
-                    ]
+                    }
                   ]
                 }
               }

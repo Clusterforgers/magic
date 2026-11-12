@@ -1164,6 +1164,15 @@ pub enum ReplaceBy {
         /// How many, read after the effects.
         count: Amount,
     },
+    /// The number in the event is increased by an amount worked out as the event happens ("it deals that much damage
+    /// plus X instead, where X is ~'s power"; `r304c_amounts`).
+    AddAmount(Amount),
+    /// Up to an amount worked out as the event happens of the damage is prevented ("prevent X of that damage, where X
+    /// is the number of creatures you control"); only a static ability uses it.
+    PreventAmount(Amount),
+    /// All of the damage is prevented when it is this much or less ("If a source would deal 3 or less damage to ~,
+    /// prevent that damage"); only a static ability uses it.
+    PreventAtMost(u32),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1231,6 +1240,10 @@ impl ShieldShape {
             | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped | ReplaceBy::WithCounters { .. })
                 if !names_objects(what) =>
             {
+                Some(Self::Class)
+            }
+            // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
+            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
                 Some(Self::Class)
             }
             (

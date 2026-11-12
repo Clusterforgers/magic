@@ -1,0 +1,36 @@
+{
+  "oracle_id": "70b9497f-0dd6-4b66-9675-57c7041fe3c0",
+  "name": "Dream Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Harvest",
+      "oracle_fingerprint": "7b08bc87e74d4560ac535eee9ecace58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": "Opponents",
+                  "filter": [],
+                  "total": 5,
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "free": true, "only": { "Bound": "exiled" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

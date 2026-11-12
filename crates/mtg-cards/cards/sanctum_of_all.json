@@ -17,7 +17,7 @@
                     {
                       "Search": {
                         "also": ["Graveyard"],
-                        "filter": [{ "Subtype": "Shrine" }],
+                        "filter": [{ "OwnedBy": "You" }, { "Subtype": "Shrine" }],
                         "as": "found"
                       }
                     },

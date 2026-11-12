@@ -1,7 +1,7 @@
 {
   "oracle_id": "3807e6fe-0555-4b09-aef2-efd58abaf669",
   "name": "Undead Alchemist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Undead Alchemist",
@@ -20,9 +20,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 247 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "OwnedBy": "Opponents" }],
+                "from": "Library",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
