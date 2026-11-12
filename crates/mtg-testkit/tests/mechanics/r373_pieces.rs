@@ -48,7 +48,7 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
 #[rstest]
 #[case::a_player_with_more_life("player", 20, 5)]
 #[case::a_player_with_less_life("player", 3, 3)]
-#[case::a_creature_of_toughness_two("Bear", 20, 2)]
+#[case::a_creature_of_toughness_two("Grizzly Bears", 20, 2)]
 #[case::a_planeswalker_of_loyalty_three("Walker", 20, 3)]
 fn the_life_gained_is_the_damage_up_to_what_the_recipient_had(
     #[case] target: &str,
@@ -142,7 +142,7 @@ fn a_permanent_has_the_named_keywords_of_other_cards(
     #[case] expected: Vec<Keyword>,
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let donor = keyworded_creature("Donor", 1, 1, &held);
+    let donor = keyworded_creature("Donor", 1, &[], 1, 1, &held);
     let driver = Driver::from_scenario(
         Scenario::new(seats)
             .battlefield(0, [ready(borrower(names))])

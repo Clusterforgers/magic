@@ -76,6 +76,17 @@ pub(crate) fn timing(state: &GameState, player: PlayerId) -> bool {
     sorcery_timing(state, player) || crate::rules::loyalty_as_instant(state, player)
 }
 
+/// How many loyalty abilities of each planeswalker `player` controls they may activate this turn under the rules in
+/// force (CR 606.3).
+pub fn activations_allowed(state: &GameState, player: PlayerId) -> u32 {
+    crate::rules::loyalty_activations(state, player)
+}
+
+/// Whether a rule lets `player` activate loyalty abilities any time they could cast an instant.
+pub fn any_time(state: &GameState, player: PlayerId) -> bool {
+    crate::rules::loyalty_as_instant(state, player)
+}
+
 /// The change of loyalty counters paying `cost` makes, with the X announced for a `-X` and the `plus` counters rules
 /// add to it, as one change (CR 606.4); `None` for a `-X` that has none yet.
 pub(crate) fn paid_change(cost: LoyaltyCost, x: Option<u32>, plus: u32) -> Option<i32> {

@@ -54,7 +54,9 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
 }
 
 fn loyalty(driver: &Driver) -> u32 {
-    let walker = driver.id_of("Walker").unwrap();
+    let Ok(walker) = driver.id_of("Walker") else {
+        return 0;
+    };
     driver
         .state()
         .object(walker)

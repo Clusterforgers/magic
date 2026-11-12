@@ -3681,10 +3681,9 @@ impl Writer<'_> {
             }
             Amount::LifeLostThisWay => "life equal to the life lost this way".to_owned(),
             Amount::DamageDealtThisWay => "life equal to the damage dealt this way".to_owned(),
-            Amount::DealtUpToHealth => format!(
-                "life equal to {}",
-                super::r373_loyalty::UP_TO_HEALTH
-            ),
+            Amount::DealtUpToHealth => {
+                format!("life equal to {}", super::r373_loyalty::UP_TO_HEALTH)
+            }
             Amount::Tallied {
                 who: Ref::Target(0),
                 what: crate::value::TurnTally::DamageTaken,

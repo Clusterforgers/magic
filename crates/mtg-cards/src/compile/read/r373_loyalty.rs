@@ -12,8 +12,7 @@ use mtg_core::card::Subtype;
 /// Drain Life's gain: "life equal to" this.
 pub(super) const UP_TO_HEALTH: &str = "the damage dealt, but not more life than the player's life total before the damage was dealt, the planeswalker's loyalty before the damage was dealt, or the creature's toughness";
 const FLAG: &str = "While an opponent is choosing targets as part of casting a spell they control or activating an ability they control, that player must choose at least one Flagbearer on the battlefield if able";
-const TWICE: &str =
-    "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
+const TWICE: &str = "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
 const AS_INSTANT: &str = "You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant";
 const ONCE_MORE: &str = "for each planeswalker you control, you may activate one of its loyalty abilities once this turn as though none of its loyalty abilities have been activated this turn";
 
@@ -55,10 +54,16 @@ pub(super) fn r373_rule(r: &mut Reader<'_>) -> Option<GameRule> {
             what: flagbearer(),
         });
     }
-    text(r, "Planeswalkers' loyalty abilities you activate cost an additional [+")?;
+    text(
+        r,
+        "Planeswalkers' loyalty abilities you activate cost an additional [+",
+    )?;
     let plus = r.number().filter(|plus| *plus > 0)?;
     text(r, "] to activate")?;
-    Some(GameRule::LoyaltyCostMore { who: Ref::You, plus })
+    Some(GameRule::LoyaltyCostMore {
+        who: Ref::You,
+        plus,
+    })
 }
 
 /// The Chain Veil's effect, written.
@@ -85,13 +90,15 @@ pub(super) fn r373_once_more(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// Reads the tokens of `wording`, punctuation included, all or none.
 pub(super) fn text(r: &mut Reader<'_>, wording: &str) -> Option<()> {
     r.attempt(|r| {
-        tokenize(wording).iter().all(|token| match token {
-            Token::Word(word) => r.word(word),
-            Token::Punct(mark) => r.punct(*mark),
-            Token::Number(number) => r.number() == Some(*number),
-            Token::Name(name) => r.name() == Some(name.as_str()),
-            Token::Symbol(_) | Token::Source => false,
-        })
-        .then_some(())
+        tokenize(wording)
+            .iter()
+            .all(|token| match token {
+                Token::Word(word) => r.word(word),
+                Token::Punct(mark) => r.punct(*mark),
+                Token::Number(number) => r.number() == Some(*number),
+                Token::Name(name) => r.name() == Some(name.as_str()),
+                Token::Symbol(_) | Token::Source => false,
+            })
+            .then_some(())
     })
 }

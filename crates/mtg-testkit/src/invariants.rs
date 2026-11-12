@@ -700,7 +700,7 @@ pub struct InvariantChecker {
     expected_enchanted: BTreeMap<ObjectId, PlayerId>,
     /// What the table was shown or told by hand, checked against the state.
     shown: ShownByHand,
-    loyalty_turns: BTreeMap<ObjectRef, u32>,
+    loyalty_turns: BTreeMap<ObjectRef, (u32, u32)>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
     full_every: usize,
@@ -1361,9 +1361,11 @@ impl InvariantChecker {
             return Ok(());
         }
         let turn = self.shadow.turn();
-        if !self.shadow.is_active(player)
-            || !turn.step().is_main()
-            || !self.shadow.stack().is_empty()
+        let any_time = loyalty && mtg_engine::loyalty::any_time(&self.shadow, player);
+        if !any_time
+            && (!self.shadow.is_active(player)
+                || !turn.step().is_main()
+                || !self.shadow.stack().is_empty())
         {
             return Err(Violation::Bookkeeping(format!(
                 "{player:?} activated a sorcery-speed ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
@@ -1376,9 +1378,15 @@ impl InvariantChecker {
             return Ok(());
         }
         let number = turn.number();
-        if self.loyalty_turns.insert(source, number) == Some(number) {
+        let allowed = mtg_engine::loyalty::activations_allowed(&self.shadow, player);
+        let used = match self.loyalty_turns.get(&source) {
+            Some((turn, used)) if *turn == number => used + 1,
+            _ => 1,
+        };
+        self.loyalty_turns.insert(source, (number, used));
+        if used > allowed {
             return Err(Violation::Bookkeeping(format!(
-                "{source:?} had a second loyalty ability activated in turn {number}"
+                "{source:?} had loyalty ability {used} activated in turn {number}, past the {allowed} allowed"
             )));
         }
         Ok(())

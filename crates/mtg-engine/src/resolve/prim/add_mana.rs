@@ -377,7 +377,9 @@ fn r373_cost_lists(cx: &Cx<'_>, of: &mtg_cards::refs::Ref) -> Result<Vec<Vec<Man
             ManaSymbol::ColorlessHybrid(color) => {
                 vec![vec![ManaType::Colorless], vec![mana_of(color)]]
             }
-            ManaSymbol::Snow => return unsupported("Effect.AddMana.ManaCostOf.Snow"),
+            ManaSymbol::Snow => {
+                return Err(ResolveError::Unsupported("Effect.AddMana.ManaCostOf.Snow"));
+            }
         };
         let mut next = Vec::new();
         for list in &lists {

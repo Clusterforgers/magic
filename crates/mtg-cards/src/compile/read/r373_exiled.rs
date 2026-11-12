@@ -73,7 +73,8 @@ pub(super) fn r373_exiled_wordings(ability: &Ability, texts: &mut Vec<String>) {
     };
     let first = first.to_lowercase();
     let rest: Vec<String> = rest.iter().map(|name| name.to_lowercase()).collect();
-    let mut sentence = format!("As long as a card exiled with ~ has {first}, {subject} has {first}.");
+    let mut sentence =
+        format!("As long as a card exiled with ~ has {first}, {subject} has {first}.");
     if !rest.is_empty() {
         let listed = match rest.as_slice() {
             [one] => one.clone(),
