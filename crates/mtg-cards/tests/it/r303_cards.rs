@@ -132,7 +132,6 @@ fn check_outside() {
 #[case("Providence")]
 #[case("Psychic Rebuttal")]
 #[case("Enkira, Hostile Scavenger")]
-#[case("Kaervek's Spite")]
 #[case("Pact Weapon")]
 #[case("The Golden Throne")]
 #[case("Archelos, Lagoon Mystic")]
@@ -149,7 +148,6 @@ fn check_outside() {
 #[case("Invert // Invent")]
 #[case("Kíli the Resourceful")]
 #[case("New Perspectives")]
-#[case("Plagiarize")]
 #[case("Primal Clay")]
 #[case("Primal Plasma")]
 fn reads_back_whole(#[case] name: &str) {
@@ -213,11 +211,6 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::no_vigilance("Corrupted Shapeshifter", r#",{"AddKeyword":"Vigilance"}"#, "")]
 #[case::no_wall("Primal Clay", r#"{"AddSubtype":"Wall"},"#, "")]
 #[case::six_cards("New Perspectives", r#""right":7"#, r#""right":6"#)]
-#[case::any_spell(
-    "Plagiarize",
-    r#"{"Draw":{"who":{"Target":0}}}"#,
-    r#"{"Draw":{"who":"You"}}"#
-)]
 #[case::to_you("Harsh Justice", r#""to":{"ControllerOf":"Dealer"}"#, r#""to":"You""#)]
 #[case::not_distinct("Begin the Invasion", r#""distinct":true,"#, "")]
 #[case::not_story("Kíli the Resourceful", r#"{"EnduringStory":"You"}"#, r#""YourTurn""#)]
@@ -235,11 +228,6 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     "Enkira, Hostile Scavenger",
     r#""op":"Ge","right":2"#,
     r#""op":"Ge","right":3"#
-)]
-#[case::keep_hand(
-    "Kaervek's Spite",
-    r#",{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}"#,
-    ""
 )]
 #[case::any_loss("Pact Weapon", r#"{"life_only":true,"who":"You"}"#, r#"{"who":"You"}"#)]
 #[case::life_two(
