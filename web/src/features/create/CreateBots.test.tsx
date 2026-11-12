@@ -7,7 +7,16 @@ import { DECKS } from '@/test-utils/decks'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { openCreateForm, typeSeats } from '@/test-utils/createForm'
 import { MADE_GAME } from '@/test-utils/fakeServer'
-import { botsOf, chooseBotLevel, chooseBots, chooseLinks, defaultDraft, pickBotPrecons, resizeSeats, toRequest } from './form'
+import {
+  botsOf,
+  chooseBotLevel,
+  chooseBots,
+  chooseLinks,
+  defaultDraft,
+  pickBotPrecons,
+  resizeSeats,
+  toRequest,
+} from './form'
 
 const bots = () => screen.getByLabelText('Bots')
 const create = () => screen.getByRole('button', { name: 'Create game' })
@@ -39,7 +48,10 @@ describe('the bots of the form', () => {
   })
 
   it.each(['easy', 'normal', 'hard'] as const)('sends every bot at level %s', (level) => {
-    const draft = chooseBotLevel(chooseBots(resizeSeats(defaultDraft(DECKS, undefined, 'normal'), DECKS, 3), 2), level)
+    const draft = chooseBotLevel(
+      chooseBots(resizeSeats(defaultDraft(DECKS, undefined, 'normal'), DECKS, 3), 2),
+      level,
+    )
     const request = toRequest(draft)
     expect(request.seats.map((seat) => seat.level)).toEqual([undefined, level, level])
   })
