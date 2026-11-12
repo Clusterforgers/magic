@@ -262,6 +262,9 @@ pub enum Pred {
     SharesType(Ref),
     /// Shares a color with one of the objects the reference names ("that shares a color with it").
     SharesColor(Ref),
+    /// Has the mana value of one of the objects the reference names ("protection from each mana value among artifacts you
+    /// control").
+    SharesManaValue(Ref),
     /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
     CanEnchantSource,
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
@@ -593,6 +596,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// They all have one toughness ("with equal toughness").
+    SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").
     TotalManaValueAtMost(Amount),
     /// Their powers add up to at most this ("with total power 10 or less").

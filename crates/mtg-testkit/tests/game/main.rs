@@ -83,6 +83,7 @@ mod r2a_adventure;
 mod r301_control_tapped;
 mod r301b_control_tapped;
 mod r376_cards;
+mod r377_skips;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

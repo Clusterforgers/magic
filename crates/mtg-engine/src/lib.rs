@@ -68,6 +68,7 @@ mod price;
 mod r303b_blocked_by;
 mod r303b_haste_at;
 mod r372_suspend;
+mod r377_skips;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

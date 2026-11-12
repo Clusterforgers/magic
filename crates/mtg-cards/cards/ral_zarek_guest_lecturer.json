@@ -1,7 +1,7 @@
 {
   "oracle_id": "0dc76b7f-6405-44a1-8c55-31fa480ff70b",
   "name": "Ral Zarek, Guest Lecturer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ral Zarek, Guest Lecturer",
@@ -34,9 +34,76 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 167, "end": 280 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipTurn" } },
+                        "duration": "UntilTurnSkipped"
+                      }
+                    }
+                  ],
+                  "heads": true
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipTurn" } },
+                        "duration": "UntilTurnSkipped"
+                      }
+                    }
+                  ],
+                  "heads": true
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipTurn" } },
+                        "duration": "UntilTurnSkipped"
+                      }
+                    }
+                  ],
+                  "heads": true
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipTurn" } },
+                        "duration": "UntilTurnSkipped"
+                      }
+                    }
+                  ],
+                  "heads": true
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipTurn" } },
+                        "duration": "UntilTurnSkipped"
+                      }
+                    }
+                  ],
+                  "heads": true
+                }
+              }
+            ]
           }
         }
       ]

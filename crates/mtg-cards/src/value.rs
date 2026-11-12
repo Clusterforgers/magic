@@ -507,6 +507,8 @@ pub enum Amount {
         /// The amount multiplied.
         of: Box<Amount>,
     },
+    /// Two to the power of the amount ("draws 2ˣ cards"); a negative power is 0.
+    TwoToThe(Box<Amount>),
     /// The amount, but no more than `most` ("This effect can't reduce the amount of mana this spell costs by more than
     /// {5}" over a reduction of {1} for each).
     AtMost {
@@ -844,6 +846,7 @@ enum Tagged {
         by: i32,
         of: Box<Amount>,
     },
+    TwoToThe(Box<Amount>),
     AtMost {
         of: Box<Amount>,
         most: i32,
@@ -1002,6 +1005,7 @@ enum TaggedRef<'a> {
         by: i32,
         of: &'a Amount,
     },
+    TwoToThe(&'a Amount),
     AtMost {
         of: &'a Amount,
         most: i32,
@@ -1151,6 +1155,7 @@ impl From<Tagged> for Amount {
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
+            Tagged::TwoToThe(of) => Amount::TwoToThe(of),
             Tagged::AtMost { of, most } => Amount::AtMost { of, most },
             Tagged::Half { of, up } => Amount::Half { of, up },
             Tagged::Divided => Amount::Divided,
@@ -1250,6 +1255,7 @@ impl Serialize for Amount {
             Amount::AnyCounters(on) => TaggedRef::AnyCounters(on).serialize(serializer),
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
+            Amount::TwoToThe(of) => TaggedRef::TwoToThe(of).serialize(serializer),
             Amount::AtMost { of, most } => {
                 TaggedRef::AtMost { of, most: *most }.serialize(serializer)
             }

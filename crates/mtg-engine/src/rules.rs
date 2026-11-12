@@ -434,6 +434,24 @@ pub enum Rule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness (CR 510.1a).
     ToughnessAssignsDamage(Vec<PlayerId>),
+    /// Lethal damage to each creature the players control is determined by its power (CR 704.5g): `GameRule::LethalByPower`.
+    LethalByPower(Vec<PlayerId>),
+    /// All damage dealt to the players is dealt as though its source had infect: `GameRule::DamageAsInfect`.
+    DamageAsInfect(Vec<PlayerId>),
+    /// The players can't venture more than `per_turn` times each turn: `GameRule::VentureLimit`.
+    VentureLimit {
+        /// Who is limited.
+        who: Vec<PlayerId>,
+        /// The ventures each turn.
+        per_turn: u32,
+    },
+    /// The players' devotion is greater by `by`: `GameRule::DevotionIncreased`.
+    DevotionIncreased {
+        /// Whose devotion.
+        who: Vec<PlayerId>,
+        /// By how much.
+        by: u32,
+    },
     /// The players and objects can't do the action (CR 101.2): `GameRule::Cant`.
     Cant {
         /// The players and objects it is about.
@@ -1267,7 +1285,11 @@ impl RulesInForce {
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
-            | Rule::ToughnessAssignsDamage(_) => self.w17b.w17b_put(rule, source),
+            | Rule::ToughnessAssignsDamage(_)
+            | Rule::LethalByPower(_)
+            | Rule::DevotionIncreased { .. }
+            | Rule::DamageAsInfect(_)
+            | Rule::VentureLimit { .. } => self.w17b.w17b_put(rule, source),
         }
     }
 }
@@ -1575,6 +1597,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
         | GameRule::ToughnessAssignsDamage(_)
+        | GameRule::LethalByPower(_)
+        | GameRule::DevotionIncreased { .. }
+        | GameRule::DamageAsInfect(_)
+        | GameRule::VentureLimit { .. }
         | GameRule::CountersRemain => crate::w17b_statics::w17b_lower(scope, wanted)?,
     })
 }
@@ -1709,7 +1735,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
-        | Rule::ToughnessAssignsDamage(_) => crate::w17b_statics::w17b_names_nothing(rule),
+        | Rule::ToughnessAssignsDamage(_)
+        | Rule::LethalByPower(_)
+        | Rule::DevotionIncreased { .. }
+        | Rule::DamageAsInfect(_)
+        | Rule::VentureLimit { .. } => crate::w17b_statics::w17b_names_nothing(rule),
     }
 }
 
@@ -1740,7 +1770,7 @@ fn gather(state: &GameState) -> RulesInForce {
     for effect in state
         .rule_effects()
         .iter()
-        .filter(|effect| effect.is_active(state))
+        .filter(|effect| effect.is_active(state) && !crate::r377_skips::r377_waits(state, effect))
     {
         found.put(&effect.rule, effect.controller, effect.source);
     }

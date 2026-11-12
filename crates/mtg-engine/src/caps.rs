@@ -469,6 +469,10 @@ const RUNS: &[&str] = &[
     "Rule.CantLoseGame",
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
+    "Rule.LethalByPower",
+    "Rule.DevotionIncreased",
+    "Rule.DamageAsInfect",
+    "Rule.VentureLimit",
     "Rule.DamageAsWither",
     "Rule.ManaBurn",
     "Rule.AttackAsThoughHasteAt",
@@ -476,6 +480,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant",
     "Rule.Cant.Activate",
     "Rule.Cant.BeTargeted",
+    "Rule.Cant.BeTargetedByWallsOnly",
     "Rule.Cant.PlayLand",
     "Rule.Cant.Sacrifice",
     "Rule.Cant.PutCounter",
@@ -551,6 +556,7 @@ const RUNS: &[&str] = &[
     "Mod.CanBlockOnly",
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
+    "Mod.BlockedByAll",
     "Mod.BlocksAdditional",
     "Mod.BlocksAdditionalPer",
     "Mod.Goaded",
@@ -1357,6 +1363,7 @@ mod tests {
     #[case::ending_the_turn("Effect.EndTurn", true)]
     #[case::cant_activate("Rule.Cant.Activate", true)]
     #[case::cant_be_targeted("Rule.Cant.BeTargeted", true)]
+    #[case::r377_cant_be_targeted_by_walls_only("Rule.Cant.BeTargetedByWallsOnly", true)]
     #[case::cant_play_land("Rule.Cant.PlayLand", true)]
     #[case::cant_sacrifice("Rule.Cant.Sacrifice", true)]
     #[case::cant_put_counter("Rule.Cant.PutCounter", true)]
@@ -1478,6 +1485,7 @@ mod tests {
     #[case::creatures_that_can_block_only_some("Mod.CanBlockOnly", true)]
     #[case::creatures_that_need_several_blockers("Mod.MinBlockers", true)]
     #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
+    #[case::r377_blocked_by_all("Mod.BlockedByAll", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::looking_at_face_down_cards_in_exile("Rule.LookAtExiled", true)]
@@ -1489,6 +1497,10 @@ mod tests {
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
     #[case::w17b_toughness_damage("Rule.ToughnessAssignsDamage", true)]
+    #[case::r377_lethal_by_power("Rule.LethalByPower", true)]
+    #[case::r377_devotion_increased("Rule.DevotionIncreased", true)]
+    #[case::r377_damage_as_infect("Rule.DamageAsInfect", true)]
+    #[case::r377_venture_limit("Rule.VentureLimit", true)]
     #[case::w17b_counters_remain("Rule.CountersRemain", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]

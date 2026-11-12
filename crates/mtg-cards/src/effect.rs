@@ -1536,6 +1536,10 @@ pub enum Effect {
         /// you won".
         #[serde(default, skip_serializing_if = "Option::is_none")]
         won_as: Option<String>,
+        /// Nobody calls the coin: `win` is done when it comes up heads, `lose` when tails ("the number of coins that came
+        /// up heads").
+        #[serde(default, skip_serializing_if = "is_false")]
+        heads: bool,
     },
     /// The player clashes with an opponent they choose (CR 701.23): each reveals the top card of their library and puts it
     /// on the top or the bottom; `win` is done when the player's card had the greater mana value, `lose` otherwise. Both
@@ -2293,11 +2297,11 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None, heads: false },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
-        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None },
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None, heads: false },
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(

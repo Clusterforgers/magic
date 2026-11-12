@@ -428,6 +428,30 @@ pub(crate) fn blocker_limits(state: &GameState, id: ObjectId) -> (usize, Option<
     (least, most)
 }
 
+/// The fewest creatures that may block the attacker `id` when it can't be blocked unless all creatures the defending
+/// player controls block it: every creature that player controls, tapped or not; 1 otherwise.
+pub(crate) fn r377_blocked_by_all(state: &GameState, id: ObjectId) -> usize {
+    if !restricted(state, id, |m| matches!(m, Modification::BlockedByAll)) {
+        return 1;
+    }
+    let Some(defender) = state
+        .combat()
+        .attackers()
+        .iter()
+        .find(|attacker| attacker.object() == id)
+        .and_then(|attacker| attacker.defender(state))
+    else {
+        return 1;
+    };
+    state
+        .objects()
+        .filter(|o| o.zone() == Zone::Battlefield)
+        .filter(|o| controller_of(state, o.id()) == Some(defender))
+        .filter(|o| characteristics(state, o.id()).is_some_and(|c| c.is_creature()))
+        .count()
+        .max(1)
+}
+
 /// Whether a modification that `is` applies to the permanent `id` once the layers are through with it.
 fn restricted(state: &GameState, id: ObjectId, is: impl Fn(&Modification) -> bool) -> bool {
     state

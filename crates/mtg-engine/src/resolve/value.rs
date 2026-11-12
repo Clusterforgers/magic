@@ -1801,6 +1801,7 @@ impl<'a> Scope<'a> {
             Pred::SharesName(_)
             | Pred::SharesType(_)
             | Pred::SharesColor(_)
+            | Pred::SharesManaValue(_)
             | Pred::XInCost
             | Pred::GenericCost(_)
             | Pred::Goaded
@@ -2141,6 +2142,11 @@ impl<'a> Scope<'a> {
                 sum
             }
             Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
+            // Past 2^62 the number is past any count a game can use.
+            Amount::TwoToThe(of) => match self.amount_of(of, share)? {
+                power if power < 0 => 0,
+                power => 1i64 << power.min(62),
+            },
             Amount::AtMost { of, most } => self.amount_of(of, share)?.min(i64::from(*most)),
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
@@ -2443,7 +2449,11 @@ impl<'a> Scope<'a> {
                 .count();
             total += i64::try_from(counted).unwrap_or(i64::MAX);
         }
-        Ok(total)
+        Ok(total
+            + i64::from(crate::w17b_statics::r377_devotion_bonus(
+                self.state,
+                self.controller,
+            )))
     }
 
     /// The mana symbols of `color` in the mana costs of the objects `of` names (chroma): a hybrid symbol counts once.

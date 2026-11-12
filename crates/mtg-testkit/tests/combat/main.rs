@@ -60,6 +60,7 @@ mod r306c_cards;
 mod r307c_cards;
 mod r374_rapid_fire;
 mod r371_owner_combat;
+mod r377_blocks;
 mod r4a_champion;
 mod r4a_tribute;
 mod riot;

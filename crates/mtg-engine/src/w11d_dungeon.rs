@@ -149,6 +149,7 @@ pub(crate) fn w11d_fold_ventured(
             event.player, event.object
         )));
     }
+    state.tally(event.player, crate::state::Tally::R377Ventured);
     state.w11d.at.insert(
         event.player,
         W11dMarker {

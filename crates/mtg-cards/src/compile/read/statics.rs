@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 50] = [
+const TEMPLATES: [Template; 51] = [
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
     super::r376_nearest::r376_side_entering,
@@ -88,6 +88,7 @@ const TEMPLATES: [Template; 50] = [
     evasion::cannot_block,
     super::untap_rules::doesnt_untap,
     evasion::block_only,
+    evasion::r377_blocked_by_all,
     free_cast,
     super::w14c_alt_costs::w14c_alt_cost,
     super::t15a_alt_costs::t15a_alt_cost,
@@ -1872,6 +1873,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::LethalByPower(_)
+            | GameRule::DevotionIncreased { .. }
+            | GameRule::DamageAsInfect(_)
+            | GameRule::VentureLimit { .. }
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
@@ -2312,6 +2317,9 @@ pub(super) fn predicate(
         }
         [Modification::MaxBlockers(1)] => {
             return Some("can't be blocked by more than one creature".to_owned());
+        }
+        [Modification::BlockedByAll] if !plural => {
+            return Some(evasion::R377_BLOCKED_BY_ALL.to_owned());
         }
         [more @ Modification::BlocksAdditional(_)] => {
             return super::w14c_block_capacity::w14c_blocks_additional_text(more);

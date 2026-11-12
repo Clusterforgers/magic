@@ -224,6 +224,9 @@ pub enum Modification {
     /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
     /// block rules read.
     MaxBlockers(u32),
+    /// The object can't be blocked unless every creature the defending player controls blocks it: a restriction with no
+    /// layer that the block rules read beside menace.
+    BlockedByAll,
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
@@ -297,6 +300,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => return None,
         })
@@ -402,6 +406,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. }
             // The plain mana abilities in `abilities` are all mana abilities, so they stay.
@@ -467,7 +472,10 @@ pub(crate) fn lasts(
         | Duration::UntilTurnSkipped
         // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
         | Duration::UntilSkipped
-        | Duration::UntilSkippedThisTurn => true,
+        | Duration::UntilSkippedThisTurn
+        // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
+        // later turn on (`r377_waits`).
+        | Duration::TheirNextTurn => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)

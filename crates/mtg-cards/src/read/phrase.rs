@@ -205,6 +205,7 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::DifferentControllers => "controlled by different players".to_owned(),
                 TargetSet::DifferentNames => "with different names".to_owned(),
                 TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::SameToughness => "with equal toughness".to_owned(),
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
                 }
@@ -507,6 +508,7 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
         Amount::AnyCounters(on) => format!("the number of counters on {}", who(ctx, on)),
         Amount::Sum(parts) => sum(ctx, parts),
         Amount::Times { by, of } => format!("{by} times {}", amount(ctx, of)),
+        Amount::TwoToThe(of) => format!("2 to the power of {}", amount(ctx, of)),
         Amount::Half { of, up } => {
             format!(
                 "half of {}, rounded {}",
@@ -628,6 +630,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
         Duration::UntilSkipped => "until it is skipped".to_owned(),
         Duration::UntilSkippedThisTurn => "until it is skipped this turn".to_owned(),
+        Duration::TheirNextTurn => "during their next turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))

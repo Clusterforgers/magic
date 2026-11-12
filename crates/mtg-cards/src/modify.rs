@@ -162,6 +162,8 @@ pub enum Modification {
     MinBlockers(u32),
     /// The object can't be blocked by more than this many creatures (a restriction, no layer).
     MaxBlockers(u32),
+    /// The object can't be blocked unless all creatures the defending player controls block it (a restriction, no layer).
+    BlockedByAll,
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
@@ -239,6 +241,7 @@ impl Modification {
             | Modification::CanBlockOnly(_)
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::BlocksAdditionalPer(_)
             | Modification::Goaded => None,
@@ -298,6 +301,10 @@ pub enum Duration {
     UntilSkipped,
     /// As `UntilSkipped`, and it also ends with the turn ("skips their next combat phase this turn").
     UntilSkippedThisTurn,
+    /// During the next turn of the player the rule names, begun after this one: it applies from that turn's start and ends
+    /// with it ("skips all combat phases of their next turn", CR 614.10); only the rule that a player skips steps or combat
+    /// lasts this way.
+    TheirNextTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -460,6 +467,8 @@ pub enum CombatQuirk {
     AssignsAsUnblocked,
     /// They assign combat damage equal to their toughness rather than their power (CR 510.1a).
     AssignsByToughness,
+    /// While their power is negative, they assign combat damage as though it were positive (its absolute value).
+    AssignsAsThoughPositive,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
@@ -499,6 +508,9 @@ pub enum Prohibited {
     Activate(Selector),
     /// Be the target of spells and abilities from the sources the selector picks (CR 115); every source when empty.
     BeTargeted(Selector),
+    /// Be the target of spells or abilities that can target only Walls: a specification whose every kind of object is a
+    /// Wall.
+    BeTargetedByWallsOnly,
     /// Play lands as the special action (CR 305.1).
     PlayLand,
     /// Sacrifice permanents, or be sacrificed (CR 701.21).
@@ -930,6 +942,25 @@ pub enum GameRule {
     },
     /// Each creature the players control assigns combat damage equal to its toughness rather than its power (CR 510.1a).
     ToughnessAssignsDamage(Ref),
+    /// Lethal damage dealt to each creature the players control is determined by its power rather than its toughness
+    /// (CR 704.5g, 120.6): damage marked at least equal to its power destroys it.
+    LethalByPower(Ref),
+    /// While it applies, all damage dealt to the players is dealt as though its source had infect (CR 702.90b).
+    DamageAsInfect(Ref),
+    /// The players can't venture into the dungeon more than this many times each turn (CR 701.49).
+    VentureLimit {
+        /// Who is limited.
+        who: Ref,
+        /// The ventures each turn.
+        per_turn: u32,
+    },
+    /// The players' devotion to each color and each combination of colors is greater by this much (CR 700.5).
+    DevotionIncreased {
+        /// Whose devotion.
+        who: Ref,
+        /// By how much.
+        by: u32,
+    },
     /// Counters remain on the card as it moves to any zone other than a hand or a library (CR 122.2); the card reads it
     /// in every zone, so the rule is written without `from`.
     CountersRemain,
