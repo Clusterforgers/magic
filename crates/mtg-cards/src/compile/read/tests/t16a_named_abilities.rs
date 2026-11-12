@@ -88,7 +88,7 @@ fn a_flavour_name_is_left_out_of_the_reading(
 #[case::forty_one_characters("Abcdefghijklmnopqrstuvwxyzabcdefghijklmno")]
 #[case::lower_case("heavy rock cutter")]
 #[case::a_modal_lead("Choose one")]
-#[case::a_sentence_with_a_period("I. AM. TALKING!")]
+#[case::a_sentence_with_a_period("Flying. Haste")]
 #[case::a_cost("Prototype {2}{R}")]
 #[case::a_bullet("\u{2022} Disarm")]
 #[case::a_number("Stage 1")]
