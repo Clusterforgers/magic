@@ -901,6 +901,7 @@ Intrepid Stablemaster
 Invading Manticore
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
+Invasion of Theros // Ephara, Ever-Sheltering
 Invasion of Vryn // Overloaded Mage-Ring
 Invisible Force Field
 Invisible Stalker
@@ -1732,6 +1733,7 @@ Surreal Memoir
 Survivor's Med Kit
 Susurian Dirgecraft
 Suture Priest
+Svyelun of Sea and Sky
 Swarm Intelligence
 Swarm, Being of Bees
 Sweet-Gum Recluse
