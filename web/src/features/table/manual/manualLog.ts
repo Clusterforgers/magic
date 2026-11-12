@@ -166,7 +166,6 @@ export function remember(
   return { ...names, card: (id) => remembered[id] ?? names.card(id) }
 }
 
-
 /** The card an event puts in front of the table, and whether it is cast and still to resolve; null for any other event. */
 function momentOf(event: EventView): { id: ObjectId; cast: boolean } | null {
   if (!('Public' in event) || typeof event.Public === 'string') return null

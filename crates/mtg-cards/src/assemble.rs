@@ -156,7 +156,7 @@ fn manual_clauses(
         .get(index)
         .map_or("", |face| face.oracle_text.as_str());
     let named = || record.clauses.iter().filter(|clause| clause.face == index);
-    let names = printed
+    let own_names = printed
         .faces
         .get(index)
         .map(crate::compile::own_names)
@@ -170,14 +170,14 @@ fn manual_clauses(
             |clause| clause.reason.clone(),
         );
         return crate::support::has_rules_text(text)
-            .then(|| ManualClause::new(text, reason).reading_when(&names))
+            .then(|| ManualClause::new(text, reason).reading_when(&own_names))
             .into_iter()
             .collect();
     }
     named()
         .filter_map(|clause| {
             clause.span.slice(text).map(|clause_text| {
-                ManualClause::new(clause_text, clause.reason.clone()).reading_when(&names)
+                ManualClause::new(clause_text, clause.reason.clone()).reading_when(&own_names)
             })
         })
         .collect()

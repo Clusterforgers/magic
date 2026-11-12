@@ -364,7 +364,9 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Jace Beleren's ability could not be run by the game: apply its text by hand",
   ],
   ByHandDue: [
-    { ByHandDue: { source: { id: 6, counter: 0 }, controller: 0, text: 'Whenever a creature dies, juggle.' } },
+    {
+      ByHandDue: { source: { id: 6, counter: 0 }, controller: 0, text: 'Whenever a creature dies, juggle.' },
+    },
     'Jace Beleren has a line to apply by hand now: “Whenever a creature dies, juggle.”',
   ],
   ZoneChanged: [

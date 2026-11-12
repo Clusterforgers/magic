@@ -187,7 +187,13 @@ describe('an ability the game left to the table', () => {
 
 describe('a by-hand line that came due', () => {
   const due = (source: ObjectId, controller: number): EventView =>
-    pub({ ByHandDue: { source: { id: source, counter: 0 }, controller, text: 'Whenever a creature dies, juggle.' } })
+    pub({
+      ByHandDue: {
+        source: { id: source, counter: 0 },
+        controller,
+        text: 'Whenever a creature dies, juggle.',
+      },
+    })
 
   it.each<[string, string | null, EventView[], string | null]>([
     ['its own', null, [due(mine.id, 0)], mine.name],
