@@ -27,6 +27,7 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r305b_amounts;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -321,6 +322,8 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
 
 #[cfg(test)]
 mod ep31_held_tests;
+#[cfg(test)]
+mod r305b_tallies;
 
 /// Whether `seen` is an ability on the stack of this kind.
 fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
@@ -522,8 +525,12 @@ impl<'a> Scope<'a> {
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
             | TurnTally::PlayedFromExile
-            | TurnTally::CardsLeftGraveyard => {
+            | TurnTally::CardsLeftGraveyard
+            | TurnTally::CardsDrawnTotal
+            | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
+                    TurnTally::CardsDrawnTotal => Tally::Drawn,
+                    TurnTally::NoncombatDamageTakenTotal => Tally::E16aNoncombatHurt,
                     TurnTally::CardsExiled => Tally::R287Exiled,
                     TurnTally::PermanentsToHand => Tally::R287ToHand,
                     TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
@@ -2026,6 +2033,7 @@ impl<'a> Scope<'a> {
                 sum
             }
             Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
+            Amount::AtMost { of, most } => self.amount_of(of, share)?.min(i64::from(*most)),
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
@@ -2116,6 +2124,8 @@ impl<'a> Scope<'a> {
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
             Amount::TriggeringTargets => self.triggering_targets()?,
+            Amount::PlayersLost => self.r305b_players_lost(),
+            Amount::CastTargets => self.r305b_cast_targets()?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
             | Amount::ManaColors(_)
@@ -2670,6 +2680,9 @@ impl<'a> Scope<'a> {
         match kind {
             ZoneKind::Hand => spell.cast_from_hand(),
             ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            ZoneKind::Exile => spell
+                .cast_record()
+                .is_some_and(|(zone, _)| zone == ZoneKind::Exile),
             _ => false,
         }
     }
@@ -2797,6 +2810,7 @@ impl<'a> Scope<'a> {
             Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
+            Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)

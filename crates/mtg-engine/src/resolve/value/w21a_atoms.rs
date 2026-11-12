@@ -43,6 +43,9 @@ impl Scope<'_> {
             }
             Pred::TargetsPlayer(who) => {
                 let players = self.players(who)?;
+                if let Some(found) = self.r305b_casting_targets_player(reference, &players) {
+                    return Ok(found);
+                }
                 seen.zone == Zone::Stack
                     && seen.card.is_some_and(|card| {
                         card.choices()

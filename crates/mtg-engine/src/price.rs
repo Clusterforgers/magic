@@ -104,9 +104,10 @@ fn builds_on_x(amount: &Amount) -> bool {
     match amount {
         Amount::X => true,
         Amount::Sum(parts) | Amount::Product(parts) => parts.iter().any(builds_on_x),
-        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::EvenShare(of) => {
-            builds_on_x(of)
-        }
+        Amount::Times { of, .. }
+        | Amount::Half { of, .. }
+        | Amount::AtMost { of, .. }
+        | Amount::EvenShare(of) => builds_on_x(of),
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             builds_on_x(of) || builds_on_x(by)
         }

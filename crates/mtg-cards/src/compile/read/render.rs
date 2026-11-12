@@ -550,6 +550,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r305b_writers::r305b_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));

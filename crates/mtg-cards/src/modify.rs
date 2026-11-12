@@ -463,6 +463,10 @@ pub enum Prohibited {
     PutCounter,
     /// Have counters of one kind put on them (CR 122).
     PutCounterOf(crate::value::CounterKind),
+    /// Have counters of one kind removed from them (CR 122): "Stun counters can't be removed from permanents your
+    /// opponents control."; a stun counter that would be removed in place of an untap stays and the permanent stays
+    /// tapped.
+    RemoveCounterOf(crate::value::CounterKind),
     /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
     Trigger(TriggerPattern),
     /// Become attached, or have anything attached to them (CR 701.3).

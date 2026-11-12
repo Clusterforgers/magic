@@ -413,6 +413,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::ManaInPool(_)
         | Amount::Random { .. }
         | Amount::TriggeringTargets
+        | Amount::PlayersLost
+        | Amount::CastTargets
         | Amount::Chosen
         | Amount::ChosenAs(_)
         | Amount::Triggering => Traits::NONE,
@@ -442,7 +444,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
-        Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
+            reads_of_amount(of)
+        }
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))
         }
@@ -516,6 +520,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
+        | Condition::AttackedYouLastTurn(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
