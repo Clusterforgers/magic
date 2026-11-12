@@ -1618,6 +1618,9 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 #[allow(clippy::too_many_lines)] // one arm for each pattern
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
+        TriggerPattern::PlayerBecomesTarget { .. } => {
+            super::l290_writers::l290_player_targeted_text(pattern)
+        }
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
         TriggerPattern::BecomesBlocked {
             by, once: false, ..

@@ -92,9 +92,39 @@ pub enum Action {
     Rolled,
     /// A player collected evidence (CR 701.59).
     CollectedEvidence,
+    /// An exhaust ability was activated (CR 702.177); `what` is its source.
+    ActivatedExhaust,
+    /// A boast ability was activated (CR 702.142); `what` is its source.
+    ActivatedBoast,
 }
 
 impl Action {
+    /// The keyword kinds an activation of the ability also is: exhaust, once each game (CR 702.177), and boast, only
+    /// if the source attacked this turn and only once each turn (CR 702.142).
+    #[must_use]
+    pub fn activation_kinds(ability: &crate::ability::Ability) -> Vec<Action> {
+        use crate::ability::{Ability, Limit};
+        use crate::refs::{Pred, Ref, Selector};
+        use crate::value::Condition;
+        let Ability::Activated {
+            limit, condition, ..
+        } = ability
+        else {
+            return Vec::new();
+        };
+        let attacked = Condition::Matches {
+            subject: Ref::This,
+            selector: Selector(vec![Pred::AttackedThisTurn]),
+        };
+        match (limit, condition) {
+            (Some(Limit::OncePerGame), _) => vec![Action::ActivatedExhaust],
+            (Some(Limit::OncePerTurn), Some(held)) if *held == attacked => {
+                vec![Action::ActivatedBoast]
+            }
+            _ => Vec::new(),
+        }
+    }
+
     /// The verb phrase of the action for the subject "you" (first) and for a third person (second).
     #[must_use]
     pub const fn verbs(self) -> (&'static str, &'static str) {
@@ -150,6 +180,11 @@ impl Action {
             Action::Learned => ("learn", "learns"),
             Action::Rolled => ("roll a die", "rolls a die"),
             Action::CollectedEvidence => ("collect evidence", "collects evidence"),
+            Action::ActivatedExhaust => (
+                "activate an exhaust ability",
+                "activates an exhaust ability",
+            ),
+            Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
         }
     }
 
@@ -160,6 +195,8 @@ impl Action {
             self,
             Action::Activated
                 | Action::ActivatedLoyalty
+                | Action::ActivatedExhaust
+                | Action::ActivatedBoast
                 | Action::Destroyed
                 | Action::Exiled
                 | Action::Sacrificed

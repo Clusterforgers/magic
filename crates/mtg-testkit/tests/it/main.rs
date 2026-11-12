@@ -782,6 +782,7 @@ mod g14t_players;
 mod g20e_mana_spent_over_power;
 mod g20e_unique_name;
 mod g9c_shadow;
+mod l290_triggers;
 mod loyalty_activations;
 mod mana_any_shape;
 mod mana_ban;

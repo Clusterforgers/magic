@@ -138,6 +138,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         by: Selector,
     },
+    /// A player the reference names becomes the target of a spell or ability matching `by` ("whenever you become the
+    /// target of a spell or ability an opponent controls"). `Triggering` is the spell or ability, and as a player its
+    /// controller.
+    PlayerBecomesTarget {
+        /// The player targeted.
+        who: Ref,
+        /// The spell or ability that targets them; anything when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        by: Selector,
+    },
     /// A spell matching the selector is cast.
     SpellCast {
         /// The spell; any spell when empty.

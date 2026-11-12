@@ -547,6 +547,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
+    super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

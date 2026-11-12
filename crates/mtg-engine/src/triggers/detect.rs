@@ -1558,6 +1558,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 target, by: caster, ..
             },
         ) => becomes_target((what, by), (target, *caster), scope),
+        (
+            TriggerPattern::PlayerBecomesTarget { who, by },
+            Happened::Targeted {
+                target: Target::Player(targeted),
+                by: caster,
+                ..
+            },
+        ) => player_targeted((who, by), (*targeted, *caster), scope),
         _ => matching_event(pattern, happened, scope),
     }
 }
@@ -1583,6 +1591,28 @@ fn becomes_target(
         source: Some(targeting),
         ..cause(state, subjects)
     })
+}
+
+/// A player (`targeted`) chosen as a target of the spell or ability `caster`, judged against the players the pattern
+/// names (`who`) and what it says targets them (`by`). The subjects of the cause are what targets the player and its
+/// controller, so "that spell or ability" and "its controller" name them.
+fn player_targeted(
+    (who, by): (&Ref, &Selector),
+    (targeted, caster): (PlayerId, ObjectId),
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let targeting = state.object(caster).map(GameObject::reference)?;
+    let subjects = vec![
+        Target::Object(targeting),
+        Target::Player(controller_of(state, caster)?),
+    ];
+    (scope.players(who).ok()?.contains(&targeted) && scope.selects(by, targeting).ok()?).then(
+        || Cause {
+            source: Some(targeting),
+            ..cause(state, subjects)
+        },
+    )
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.

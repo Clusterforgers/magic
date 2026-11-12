@@ -43,6 +43,7 @@ const RUNS: &[&str] = &[
     "Trigger.Milled",
     "Trigger.StepBegins",
     "Trigger.BecomesTarget",
+    "Trigger.PlayerBecomesTarget",
     "Trigger.AnyOf",
     "Trigger.DealsDamage",
     "Trigger.LifeGained",

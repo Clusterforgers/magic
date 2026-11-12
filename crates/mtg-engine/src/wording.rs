@@ -459,6 +459,19 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
+        TriggerPattern::PlayerBecomesTarget { who: player, by } => {
+            let (name, _) = who(player);
+            let whose = match by.0.as_slice() {
+                [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
+                [Pred::ControlledBy(Ref::You)] => " you control",
+                _ => "",
+            };
+            let verb = if name == "you" { "become" } else { "becomes" };
+            (
+                format!("{name} {verb} the target of a spell or ability{whose}"),
+                false,
+            )
+        }
         TriggerPattern::SpellCast { what, by } | TriggerPattern::SpellCopied { what, by } => {
             let (who, s) = who(by);
             let spell = if what.is_empty() {
