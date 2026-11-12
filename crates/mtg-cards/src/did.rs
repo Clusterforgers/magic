@@ -98,6 +98,8 @@ pub enum Action {
     ActivatedExhaust,
     /// A boast ability was activated (CR 702.142); `what` is its source.
     ActivatedBoast,
+    /// A player clashed (CR 701.23), won or lost; `Amount::Triggering` is 1 when they won and 0 when they lost.
+    Clashed,
 }
 
 impl Action {
@@ -188,6 +190,7 @@ impl Action {
                 "activates an exhaust ability",
             ),
             Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
+            Action::Clashed => ("clash", "clashes"),
         }
     }
 

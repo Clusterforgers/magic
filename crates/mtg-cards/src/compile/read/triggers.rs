@@ -661,7 +661,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         draw_event(r, by, whose)
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {
-            return super::dk27_batches::dk27_discarded_batch(r, by);
+            let batch = super::dk27_batches::dk27_discarded_batch(r, by)?;
+            return Some(l293_first(r, batch));
         }
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
@@ -701,6 +702,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "clashes" } else { "clash" } {
+        Some(super::l293_events::l293_clashed(r, by))
     } else if verb == if third { "wins" } else { "win" } {
         if r.words("a clash") {
             return Some(TriggerPattern::W15cClashWon { who: by });
@@ -1990,4 +1993,12 @@ fn spell_cast_text(pattern: &TriggerPattern, what: &Selector, by: &Ref) -> Optio
     super::r7e_events::r7e_cast_text(pattern)
         .or_else(|| super::c4_cast_hand::cast_text(what, by))
         .or_else(|| super::r9w_players::r9w_cast_text(what, by))
+}
+
+/// A batch of discards, or the first of the turn when "for the first time each turn" follows (only the first is counted).
+fn l293_first(r: &mut Reader<'_>, batch: TriggerPattern) -> TriggerPattern {
+    match first_time(r, batch.clone()) {
+        counted @ TriggerPattern::Nth { nth: 1, .. } => counted,
+        _ => batch,
+    }
 }

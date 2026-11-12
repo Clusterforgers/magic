@@ -714,6 +714,7 @@ fn w13b_tally_milled(state: &mut GameState, id: ObjectId) {
 /// the player's discards, wherever the card is later.
 fn tally_discard(state: &mut GameState, player: PlayerId, id: ObjectId) {
     state.tally(player, Tally::Discarded);
+    state.log_event(mtg_cards::value::TallyEvent::Discarded, player, id);
     let lies_there = state
         .object(id)
         .filter(|card| matches!(card.zone(), Zone::Graveyard(_)))

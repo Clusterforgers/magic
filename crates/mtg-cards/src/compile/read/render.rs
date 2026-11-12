@@ -660,6 +660,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         }
     }
     super::wf27_writers::wf25_to_wf27_wordings(ability, written_variants, &mut texts);
+    super::l293_events::l293_won_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -779,6 +780,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e16c_attacks::add(ability, &mut texts);
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
+    super::l293_events::l293_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }

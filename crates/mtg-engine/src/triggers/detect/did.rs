@@ -28,6 +28,17 @@ const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>)
     }
 }
 
+/// A clash of `player`, its amount 1 when they won and 0 when they lost.
+const fn clashed(player: PlayerId, won: bool) -> Happened {
+    Happened::Did {
+        action: Action::Clashed,
+        player: Some(player),
+        object: None,
+        ability: None,
+        amount: if won { 1 } else { 0 },
+    }
+}
+
 /// The ability the activation of the `index`th ability of `source` from `origin` put on the stack: the newest such ability
 /// object on the stack after the batch.
 fn activated_on_stack(
@@ -177,6 +188,7 @@ pub(super) fn did_happened(
         Event::EvidenceCollected { player } => {
             found.push(did(Action::CollectedEvidence, Some(*player), None));
         }
+        Event::Clashed { player, won, .. } => found.push(clashed(*player, *won)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));

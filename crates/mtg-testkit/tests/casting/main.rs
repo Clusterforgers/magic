@@ -103,6 +103,7 @@ mod l290_triggers;
 mod l291_cards;
 mod l291_dice;
 mod l291_nth_counter;
+mod l293_triggers;
 mod let_and_modal_who;
 mod loyalty_activations;
 mod madness;
