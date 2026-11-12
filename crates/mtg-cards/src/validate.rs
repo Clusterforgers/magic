@@ -6045,6 +6045,8 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
                         || (keyword.eq_ignore_ascii_case("Typecycling")
                             && names_typecycling(clause))
                         || (keyword.eq_ignore_ascii_case("Landwalk") && names_landwalk(clause))
+                        // Scryfall lists `Plot` for a card that makes another one plotted (CR 702.170).
+                        || (keyword.eq_ignore_ascii_case("Plot") && names_keyword(clause, "plotted"))
                 }),
             _ => false,
         })
@@ -7970,6 +7972,12 @@ mod printed_keywords {
         "Partial",
         &[(BIRD, "Flashback and flash", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
         &["Flash"],
+        &[]
+    )]
+    #[case::becomes_plotted_names_plot(
+        "Partial",
+        &[(BIRD, "Exile target spell. It becomes plotted.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":39}}}"#)],
+        &["Plot"],
         &[]
     )]
     #[case::enchanted_is_not_enchant(
