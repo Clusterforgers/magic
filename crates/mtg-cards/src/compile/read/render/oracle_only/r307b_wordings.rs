@@ -10,14 +10,15 @@
 //! spell cast with no colored mana countered, and a draw for a Ring-bearer after the Ring tempted you often enough, and
 //! the cost of every activated ability of a group changed ("Activated abilities of Foods you control cost {1} less to
 //! activate."), and a land that loses its types and abilities while it has a counter ("For as long as that land has a
-//! blight counter on it, it loses all land types and abilities and has \"{T}: Add {C}.\"").
+//! blight counter on it, it loses all land types and abilities and has \"{T}: Add {C}.\""), and a conversion followed by
+//! an additional beginning phase if it happened.
 
 use super::super::super::selectors::{Form, phrase_text};
 use super::super::super::triggers::{article, condition_text};
 use super::r288_wordings::r288_heads;
 use crate::ability::{Ability, ActivationKind, CostChange};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect};
+use crate::effect::{Destination, Effect, PhaseKind};
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
@@ -41,6 +42,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(ring_tempted_times(ability))
         .chain(activated_abilities_of(ability))
         .chain(while_counter_loses_all(ability))
+        .chain(convert_then_beginning(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -829,6 +831,36 @@ fn while_counter_loses_all(ability: &Ability) -> Vec<String> {
             format!(
                 "{head} put a {kind} counter on target land. For as long as that land has a {kind} counter on it, it loses all land types and abilities and has \"{has}\""
             )
+        })
+        .collect()
+}
+
+/// "convert it. If you do, there is an additional beginning phase after this phase.": the source converts, and when it
+/// did a beginning phase follows this one.
+fn convert_then_beginning(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        targets, effects, ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let expected = [
+        Effect::Transform { what: Ref::This },
+        Effect::If {
+            condition: Condition::Performed,
+            then: vec![Effect::AddPhase {
+                phases: vec![PhaseKind::Beginning],
+            }],
+            otherwise: Vec::new(),
+        },
+    ];
+    if !targets.is_empty() || *effects != expected {
+        return Vec::new();
+    }
+    r288_heads(ability)
+        .into_iter()
+        .map(|head| {
+            format!("{head} convert it. If you do, there is an additional beginning phase after this phase.")
         })
         .collect()
 }

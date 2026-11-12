@@ -127,6 +127,7 @@ fn every_card_of_the_pack_is_verified() {
         "Archnemesis",
         "Combustion Man",
         "Crag Saurian",
+        "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
         "Deathmist Raptor",
         "Elbrus, the Binding Blade // Withengar Unbound",
         "Heartwood Storyteller",

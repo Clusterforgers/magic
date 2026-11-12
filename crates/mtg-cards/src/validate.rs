@@ -1266,7 +1266,7 @@ impl<'a> Walker<'a> {
     /// `Performed`: "if you do" of the effect just before its `If`.
     fn performed(&mut self) {
         self.uses("Condition", "Performed");
-        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card and whether a `Sacrifice`, an `Exile` or a `RemoveCounters` took something; any other effect before it waits.
+        // The engine knows whether a `May` was accepted, whether a `CastFromZone` cast or played the card, whether a `Sacrifice`, an `Exile` or a `RemoveCounters` took something and whether a `Transform` turned the permanent over; any other effect before it waits.
         if !self.after_may {
             self.uses("Condition", "Performed.Other");
         }
@@ -3147,6 +3147,7 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            | Effect::Transform { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));

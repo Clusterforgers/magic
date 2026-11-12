@@ -89,11 +89,12 @@ fn wordings() {
 }
 
 /// The cards of the pack that play whole.
-const WHOLE: [&str; 18] = [
+const WHOLE: [&str; 19] = [
     "Archfiend of Spite",
     "Archnemesis",
     "Combustion Man",
     "Crag Saurian",
+    "Cyclonus, the Saboteur // Cyclonus, Cybertronian Fighter",
     "Deathmist Raptor",
     "Elbrus, the Binding Blade // Withengar Unbound",
     "Frodo, Adventurous Hobbit",
@@ -141,6 +142,7 @@ const MIRROR: &str = r#"{"Triggered":{"when":{"SpellCast":{}},"if":{"Compare":{"
 const FRODO: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"RingTempts":{}},{"If":{"condition":{"All":[{"Matches":{"subject":"This","selector":["RingBearer"]}},{"Compare":{"left":{"RingTempted":"You"},"op":"Ge","right":2}}]},"then":[{"Draw":{}}]}}]}}"#;
 const FOODS: &str = r#"{"CostModifier":{"applies_to":[{"Subtype":"Food"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","activating":"Every"}}"#;
 const BLIGHT: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"blight"}}},{"Continuous":{"affected":{"Target":0},"mods":[{"SetLandTypes":[]},"LoseAbilities",{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}}],"duration":{"WhileHasCounter":{"Other":"blight"}}}}]}}"#;
+const CONVERT: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Transform":{"what":"This"}},{"If":{"condition":"Performed","then":[{"AddPhase":{"phases":["Beginning"]}}]}}]}}"#;
 const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"CounterKinds"}}"#;
 
 /// Each wording appears for its exact shape and disappears when one part changes.
@@ -306,6 +308,9 @@ const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"Counte
 #[case::blighted_land(BLIGHT.to_owned(), "put a blight counter on target land. For as long as that land has a blight counter on it, it loses all land types and abilities and has", true)]
 #[case::blighted_land_for_good(BLIGHT.replace(r#""duration":{"WhileHasCounter":{"Other":"blight"}}"#, r#""duration":"Forever""#), "For as long as that land has", false)]
 #[case::blighted_land_keeps_abilities(BLIGHT.replace(r#""LoseAbilities","#, ""), "loses all land types and abilities", false)]
+#[case::convert_then_beginning(CONVERT.to_owned(), "convert it. If you do, there is an additional beginning phase after this phase.", true)]
+#[case::convert_then_combat(CONVERT.replace(r#"["Beginning"]"#, r#"["Combat"]"#), "additional beginning phase", false)]
+#[case::beginning_whatever_happens(CONVERT.replace(r#""condition":"Performed""#, r#""condition":{"All":[]}"#), "If you do, there is an additional beginning phase", false)]
 fn a_wording_is_written_for_its_shape_alone(
     #[case] json: String,
     #[case] words: &str,
@@ -390,4 +395,17 @@ fn a_choice_instead_needs_a_pick_at_random() {
     .map(|e| format!("{e:?}"))
     .unwrap_or_default();
     assert!(problems.contains("needs a pick at random"), "{problems}");
+}
+
+/// "If you do" after a conversion runs: the engine knows whether the permanent was turned over.
+#[rstest]
+#[case::after_a_conversion(r#"{"Transform":{"what":"This"}}"#, false)]
+#[case::after_a_draw(r#"{"Draw":{}}"#, true)]
+fn if_you_do_after_a_conversion_runs(#[case] first: &str, #[case] waits: bool) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{first},{{"If":{{"condition":"Performed","then":[{{"Draw":{{}}}}]}}}}]}}}}"#
+    );
+    let ability: Ability = mtg_cards::load::parse_json("ability", &json).unwrap();
+    let used = mtg_cards::validate::used_primitives(&ability);
+    assert_eq!(used.iter().any(|p| p == "Condition.Performed.Other"), waits, "{used:?}");
 }
