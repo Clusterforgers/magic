@@ -117,9 +117,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = spells_taken(cx, &named, mods)?;
     // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
     // order of its list (CR 613.1f).
-    let (lost, kept): (Vec<_>, Vec<_>) = mods
-        .iter()
-        .partition(|wanted| {
+    let (lost, kept): (Vec<_>, Vec<_>) = mods.iter().partition(|wanted| {
         matches!(
             wanted,
             Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana

@@ -1842,24 +1842,24 @@ mod tests {
     )]
     #[case::r301_companion_shares_a_card_type(
         "Companion \u{2014} Each nonland card in your starting deck shares a card type.",
-        Keyword::companion(DeckCondition::ShareCardType {
+        Keyword::companion(DeckCondition::SharedType {
             of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
         })
     )]
     #[case::r301_companion_even(
         "Companion \u{2014} Your starting deck contains only cards with even mana values.",
-        Keyword::companion(DeckCondition::ManaValueParity { of: Selector::default(), even: true })
+        Keyword::companion(DeckCondition::Has { of: Selector::default(), fact: CardFact::EvenManaValue })
     )]
     #[case::r301_companion_odd_and_lands(
         "Companion \u{2014} Your starting deck contains only cards with odd mana values and land cards.",
-        Keyword::companion(DeckCondition::ManaValueParity {
+        Keyword::companion(DeckCondition::Has {
             of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]),
-            even: false
+            fact: CardFact::OddManaValue
         })
     )]
     #[case::r301_companion_no_repeated_symbol(
         "Companion \u{2014} No card in your starting deck has more than one of the same mana symbol in its mana cost.",
-        Keyword::companion(DeckCondition::NoRepeatedSymbol)
+        Keyword::companion(DeckCondition::Has { of: Selector::default(), fact: CardFact::NoRepeatedSymbol })
     )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
