@@ -495,7 +495,10 @@ pub(crate) fn lasts(
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
         // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
-        Duration::UntilOpponentBecomesMonarch | Duration::WhileHasCounter(_) => false,
+        // Only a copy effect lasts while its source stays attached (`copies::C10XpCopyEnds::Unattached`).
+        Duration::UntilOpponentBecomesMonarch
+        | Duration::WhileHasCounter(_)
+        | Duration::WhileSourceAttached => false,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
 }

@@ -247,6 +247,9 @@ pub enum Duration {
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
+    /// For as long as the source stays attached to the permanent the effect changes ("for as long as this Equipment
+    /// remains attached to it", CR 611.2b): only a copy effect lasts this long.
+    WhileSourceAttached,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
     WhileYouControlSource,
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves

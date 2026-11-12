@@ -68,8 +68,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Duration::UntilEndOfTurn => (true, None),
         Duration::Forever => (false, None),
         Duration::UntilYourNextTurn => (false, Some(cx.controller())),
+        Duration::WhileSourceAttached => (false, None),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
+    // "For as long as this Equipment remains attached to it": a permanent it is no longer attached to is not changed.
+    let attached_by = (*duration == Duration::WhileSourceAttached).then_some(cx.scope.source);
     let mut events = Vec::new();
     if let Some(original) = cx.scope.objects(of)?.into_iter().next()
         && let Some(values) = copiable_values(state, original, cx.scope.snapshot_of(original))
@@ -92,13 +95,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         let definition = Arc::new(definition);
         for permanent in cx.scope.live_objects(what)? {
-            if permanent.zone() == Zone::Battlefield {
+            let held = attached_by.is_none_or(|by| {
+                state
+                    .object(by.id)
+                    .is_some_and(|source| source.counter() == by.counter)
+                    && state.host_of(by.id) == Some(permanent.id())
+            });
+            if permanent.zone() == Zone::Battlefield && held {
                 events.push(Event::BecameCopy(BecameCopy {
                     object: permanent.id(),
                     of: original,
                     definition: Arc::clone(&definition),
                     until_end_of_turn,
                     until_next_turn_of,
+                    attached_by,
                 }));
             }
         }

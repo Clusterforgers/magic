@@ -44,7 +44,7 @@ pub(crate) fn run_inline(
         player,
         source: source.reference(),
     };
-    match drive(&base, source.id, effects, &mut || None)? {
+    match drive(&base, source.id, effects, &mut || None, &[])? {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
         Inline::Ask(_) => Err(ResolveError::Invalid(
@@ -72,7 +72,25 @@ pub(crate) fn w5d_run_instead(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer)
+    drive(&base, source.id, effects, answer, &[])
+}
+
+/// `w5d_run_instead` with names bound before the first step: the targets a damage shield fixed as it began.
+pub(crate) fn r370_run_instead_bound(
+    state: &GameState,
+    (player, source): (PlayerId, ObjectRef),
+    cause: &Cause,
+    effects: &[Effect],
+    bound: &[(String, Vec<crate::choose::Target>)],
+    answer: Answers<'_>,
+) -> Result<Inline, ResolveError> {
+    let base = Base::Instead {
+        state,
+        player,
+        source,
+        cause,
+    };
+    drive(&base, source.id, effects, answer, bound)
 }
 
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
@@ -86,8 +104,10 @@ fn drive(
     object: ObjectId,
     effects: &[Effect],
     answer: Answers<'_>,
+    bound: &[(String, Vec<crate::choose::Target>)],
 ) -> Result<Inline, ResolveError> {
     let mut resolving = Resolving::begin(object);
+    resolving.bindings.extend(bound.iter().cloned());
     let mut events = Vec::new();
     let mut steps = 0_usize;
     let mut moved = std::collections::BTreeSet::new();

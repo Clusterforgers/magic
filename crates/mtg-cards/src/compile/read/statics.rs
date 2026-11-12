@@ -1556,6 +1556,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except,
                 tapped,
                 until_end_of_turn,
+                must: false,
             },
             None,
         ) => copies::enters_texts(of, except, *tapped, *until_end_of_turn),

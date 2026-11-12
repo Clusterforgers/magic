@@ -598,6 +598,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
+        Duration::WhileSourceAttached => "while this stays attached to it".to_owned(),
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),

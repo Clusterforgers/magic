@@ -1412,6 +1412,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             except,
                             tapped,
                             until_end_of_turn,
+                            must: false,
                         }
                     }),
             ],

@@ -760,6 +760,7 @@ impl<'a> Walker<'a> {
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
+            | Pred::ProtectedBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
             | Pred::AttackingPlayerOrPlaneswalker(r) => {
@@ -3745,6 +3746,11 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::Balance { what } => {
+                if let crate::effect::Balanced::Permanents(filter) = what {
+                    w.at("what", |w| w.selector(filter));
+                }
+            }
             Effect::DealDamage { source, to, amount, excess, unpreventable } => {
                 if *unpreventable {
                     w.uses("Effect", "DealDamage.Unpreventable");
@@ -4063,6 +4069,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
+                }
+                if *duration == Duration::WhileSourceAttached {
+                    w.problem("only a copy effect lasts while its source stays attached");
                 }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.uses("Duration", "UntilPaid");
@@ -5323,10 +5332,7 @@ impl Walker<'_> {
                 if matches!(when, ReplaceWhen::Damage { .. }) =>
             {
                 self.at("most", |w| w.amount(most));
-                // The effects run as each damage event is lessened, where no target of the spell is read.
-                if serde_json::to_string(effects).is_ok_and(|json| json.contains("\"Target\"")) {
-                    self.problem("the effects of a counted prevention read no target; `Triggering` is the damaged one");
-                }
+                // The effects run as each damage event is lessened, reading the targets fixed as the shield began.
                 self.w9c_prevent_and(when, effects);
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),

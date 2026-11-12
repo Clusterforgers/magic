@@ -804,6 +804,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         next_turn_of: Option<PlayerId>,
+        /// The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        attached_by: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {

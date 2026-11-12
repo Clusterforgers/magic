@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9d105f83-583d-438b-8f26-b39e818ed295",
+  "name": "Essence of the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence of the Wild",
+      "oracle_fingerprint": "6bb392a6a8ff24963dafff1317b95305",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": { "AsCopy": { "of": ["This"], "must": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -538,6 +538,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .map(|o| Event::CopyEnded {
                 object: o.id(),
                 next_turn_of: None,
+                attached_by: None,
             }),
     );
     events.extend(pool_emptying(state, ManaLasts::Turn));

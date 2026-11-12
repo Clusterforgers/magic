@@ -34,6 +34,8 @@ mod join_attack;
 mod l31a_performed;
 mod let_amount;
 mod r282_plot;
+mod r370_balance;
+mod r370_bound;
 mod retarget;
 mod ring_tempts;
 mod rmt2_shares;
@@ -192,6 +194,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
+        Effect::Balance { .. } => r370_balance::run(cx, effect),
         Effect::LookAtHand { .. } => look_at_hand::run(cx, effect),
         Effect::Let { .. } => let_amount::run(cx, effect),
         Effect::Bind { .. } => bind_ref::run(cx, effect),
@@ -375,7 +378,7 @@ mod tests {
         {"Draw":{}}, {"Discard":{}}, {"Mill":{}}, {"Scry":{}}, {"LookAtTop":{"as":"top"}}, {"LookAtHand":{"of":"You"}},
         {"Reveal":{"what":"This"}}, {"Search":{"filter":[],"as":"found"}},
         {"Choose":{"from":"This","as":"chosen"}}, {"ChooseAtRandom":{"from":"This","as":"picked"}}, {"ChooseValue":{"kind":"Color","as":"hue"}}, {"Shuffle":{}}, {"Move":{"what":"This","to":"Hand"}},
-        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}},
+        {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}}, {"SacrificeUpTo":{"filter":[],"count":2}}, {"Balance":{"what":"Hand"}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
@@ -426,7 +429,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 129, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 130, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -478,6 +481,7 @@ mod tests {
         "Effect.Exile",
         "Effect.Sacrifice",
         "Effect.SacrificeUpTo",
+        "Effect.Balance",
         "Effect.Counter",
         "Effect.DealDamage",
         "Effect.GainLife",

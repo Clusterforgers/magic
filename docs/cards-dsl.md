@@ -97,6 +97,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.
 - A keyword action that abilities wait for ("whenever you investigate", "discover", "manifest dread", "give a gift") is logged by `Effect::Performed` after its steps: the reader adds it after an investigation's Clue tokens, `effect::discover` and the steps of manifest dread end with it, and gift's steps end with it in the engine. The engine logs `Investigated`, `Discovered` (value and card), `DreadManifested` (the card put into the graveyard) and `GiftGiven` (to whom), read as `TriggerPattern::Did`. The writers word the steps; an investigation's log is dropped before its Clue tokens are worded.
 - "Sacrifice any number of ..." is a `SacrificeUpTo` of every match and "discard any number of ..." an optional `Discard` of the hand, each bound by name; `Bound("<name>~moved")` is how many it took ("that many", "for each permanent sacrificed this way").
+- "Each player chooses a number of lands they control equal to the number ... the fewest, then sacrifices the rest" is `Effect::Balance` (lands, creatures, a hand): every player chooses what they keep in turn order, then the rest go together.
+- "If an opponent protects it" is `Pred::ProtectedBy` on a battle; "choose a nonbasic land type" is `ValueKind::NonbasicLandType`, read by `Pred::ChosenAs`.
 - "Spend only black mana on X." is `CostItem::XColor`: the X of the cost is paid with mana of that color; a spell holds it as a required `AdditionalCost` that pays nothing.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 

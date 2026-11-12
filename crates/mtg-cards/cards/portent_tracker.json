@@ -1,7 +1,7 @@
 {
   "oracle_id": "ca49d6ad-97b1-4fd4-b1cf-fecd9cafee6d",
   "name": "Portent Tracker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Portent Tracker",
@@ -15,9 +15,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 24, "end": 180 }
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Battle" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "ProtectedBy": "Opponents" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": { "Target": 0 },
+                        "counter": { "Other": "defense" }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "defense" } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

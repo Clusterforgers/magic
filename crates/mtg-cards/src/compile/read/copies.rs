@@ -541,6 +541,7 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
             except,
             tapped,
             until_end_of_turn,
+            must: false,
         },
         condition: None,
         from: ZoneKind::Battlefield,

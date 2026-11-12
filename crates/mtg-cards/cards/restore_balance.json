@@ -1,7 +1,7 @@
 {
   "oracle_id": "ca79d130-6387-47b0-bde8-f45dd93f9221",
   "name": "Restore Balance",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Restore Balance",
@@ -9,9 +9,12 @@
       "abilities": [
         { "Keyword": { "Suspend": { "time": 6, "cost": "{W}" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 229 }
+          "Spell": {
+            "effects": [
+              { "Balance": { "what": { "Permanents": [{ "Type": "Land" }] } } },
+              { "Balance": { "what": { "Permanents": [{ "Type": "Creature" }] } } },
+              { "Balance": { "what": "Hand" } }
+            ]
           }
         }
       ]

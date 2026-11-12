@@ -1106,6 +1106,10 @@ pub enum ReplaceBy {
         /// It is a copy until the end of the turn only ("becomes a copy ... until end of turn").
         #[serde(default, skip_serializing_if = "is_false")]
         until_end_of_turn: bool,
+        /// It enters as a copy with no choice to decline whenever there is something to copy ("creatures you control
+        /// enter as a copy of this creature").
+        #[serde(default, skip_serializing_if = "is_false")]
+        must: bool,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

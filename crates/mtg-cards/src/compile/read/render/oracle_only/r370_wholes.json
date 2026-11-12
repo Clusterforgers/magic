@@ -1,0 +1,799 @@
+[
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Shield": {
+       "by": {
+        "PreventCountedAnd": {
+         "effects": [
+          {
+           "DealDamage": {
+            "amount": "Triggering",
+            "to": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "most": "X"
+        }
+       },
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": {
+          "Union": [
+           "You",
+           {
+            "Each": [
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ]
+   }
+  },
+  "Prevent the next X damage that would be dealt to you and/or permanents you control this turn. If damage is prevented this way, ~ deals that much damage to any target."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Shield": {
+       "by": {
+        "PreventCountedAnd": {
+         "effects": [
+          {
+           "DealDamage": {
+            "amount": "Triggering",
+            "to": {
+             "Target": 1
+            }
+           }
+          }
+         ],
+         "most": {
+          "Devotion": [
+           "White"
+          ]
+         }
+        }
+       },
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     },
+     {
+      "what": "AnyTarget"
+     }
+    ]
+   }
+  },
+  "Prevent the next X damage that would be dealt to target creature this turn, where X is your devotion to white. If damage is prevented this way, ~ deals that much damage to any target."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "source",
+       "from": {
+        "Each": [
+         {
+          "AnyOf": [
+           {
+            "In": "Battlefield"
+           },
+           {
+            "In": "Stack"
+           },
+           {
+            "In": "Command"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Shield": {
+       "by": {
+        "PreventCountedAnd": {
+         "effects": [
+          {
+           "DealDamage": {
+            "amount": "Triggering",
+            "to": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "most": 3
+        }
+       },
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "source": [
+          {
+           "Is": {
+            "Bound": "source"
+           }
+          }
+         ],
+         "to": {
+          "Union": [
+           "You",
+           {
+            "Each": [
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ]
+   }
+  },
+  "Prevent the next 3 damage that a source of your choice would deal to you and/or permanents you control this turn. If damage is prevented this way, ~ deals that much damage to any target."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{X}",
+    "effects": [
+     {
+      "Shield": {
+       "by": {
+        "PreventCountedAnd": {
+         "effects": [
+          {
+           "DealDamage": {
+            "amount": "Triggering",
+            "to": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "most": "X"
+        }
+       },
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": "You"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Either": [
+        "Player",
+        {
+         "Object": [
+          {
+           "Type": "Planeswalker"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{X}: Prevent the next X damage that would be dealt to you this turn. If damage is prevented this way, this creature deals that much damage to target player or planeswalker."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Balance": {
+       "what": {
+        "Permanents": [
+         {
+          "Type": "Land"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Balance": {
+       "what": {
+        "Permanents": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Balance": {
+       "what": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "Each player chooses a number of lands they control equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players sacrifice creatures and discard cards the same way."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{4}{W}"
+     },
+     "Tap",
+     "SacrificeSelf"
+    ],
+    "effects": [
+     {
+      "Balance": {
+       "what": {
+        "Permanents": [
+         {
+          "Type": "Land"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Balance": {
+       "what": "Hand"
+      }
+     },
+     {
+      "Balance": {
+       "what": {
+        "Permanents": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{4}{W}, {T}, Sacrifice this creature: Each player chooses a number of lands they control equal to the number of lands controlled by the player who controls the fewest, then sacrifices the rest. Players discard cards and sacrifice creatures the same way."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "ProtectedBy": "Opponents"
+          }
+         ],
+         "subject": {
+          "Target": 0
+         }
+        }
+       },
+       "otherwise": [
+        {
+         "PutCounters": {
+          "counter": {
+           "Other": "defense"
+          },
+          "on": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "then": [
+        {
+         "RemoveCounters": {
+          "counter": {
+           "Other": "defense"
+          },
+          "from": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Battle"
+        }
+       ]
+      }
+     }
+    ],
+    "timing": "Sorcery"
+   }
+  },
+  "{T}: Choose target battle. If an opponent protects it, remove a defense counter from it. Otherwise, put a defense counter on it. Activate only as a sorcery."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Modal": {
+       "modes": [
+        {
+         "effects": [
+          {
+           "LoseLife": {
+            "amount": 2,
+            "who": {
+             "Target": 0
+            }
+           }
+          },
+          {
+           "GainLife": {
+            "amount": 2
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": "Opponent"
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "If": {
+            "condition": {
+             "Matches": {
+              "selector": [
+               {
+                "ProtectedBy": "Opponents"
+               }
+              ],
+              "subject": {
+               "Target": 0
+              }
+             }
+            },
+            "otherwise": [
+             {
+              "PutCounters": {
+               "count": 3,
+               "counter": {
+                "Other": "defense"
+               },
+               "on": {
+                "Target": 0
+               }
+              }
+             }
+            ],
+            "then": [
+             {
+              "RemoveCounters": {
+               "count": 3,
+               "counter": {
+                "Other": "defense"
+               },
+               "from": {
+                "Target": 0
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Battle"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When this creature enters, choose one \u2014\n\u2022 Target opponent loses 2 life and you gain 2 life.\n\u2022 Choose target battle. If an opponent protects it, remove three defense counters from it. Otherwise, put three defense counters on it."
+ ],
+ [
+  {
+   "Replacement": {
+    "by": {
+     "AsCopy": {
+      "must": true,
+      "of": [
+       "This"
+      ]
+     }
+    },
+    "when": {
+     "Enters": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "Creatures you control enter as a copy of this creature."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChooseValue": {
+       "as": "type",
+       "kind": "NonbasicLandType"
+      }
+     },
+     {
+      "Bind": {
+       "as": "lands",
+       "what": {
+        "Each": [
+         {
+          "Type": "Land"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "ChosenAs": "type"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "BecomeCopy": {
+       "duration": "UntilEndOfTurn",
+       "of": {
+        "Target": 0
+       },
+       "what": {
+        "Bound": "lands"
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "lands"
+       },
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Haste"
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose a nonbasic land type. Each land you control of that type becomes a copy of target creature you control until end of turn and gains haste until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "BecomeCopy": {
+       "duration": "WhileSourceAttached",
+       "of": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ExiledWith": "This"
+         }
+        ]
+       },
+       "what": "Triggering"
+      }
+     }
+    ],
+    "when": {
+     "Attached": {
+      "to": [
+       {
+        "Type": "Creature"
+       }
+      ],
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever this Equipment becomes attached to a creature, for as long as this Equipment remains attached to it, that creature becomes a copy of a creature card exiled with this Equipment."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "BecomeCopy": {
+          "duration": "WhileSourceAttached",
+          "of": {
+           "Target": 0
+          },
+          "what": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Not": {
+          "Is": "Triggering"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "Attached": {
+      "to": [
+       {
+        "Type": "Creature"
+       }
+      ],
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever this Equipment becomes attached to a creature, for as long as this Equipment remains attached to it, you may have that creature become a copy of another target creature you control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Together": {
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Target": 0
+          }
+         }
+        },
+        {
+         "Destroy": {
+          "what": {
+           "Target": 1
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     },
+     {
+      "bounds": {
+       "max": {
+        "Tallied": {
+         "what": "AttractionsVisited",
+         "who": "You"
+        }
+       },
+       "min": 0
+      },
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Destroy target creature and up to X other target creatures, where X is the number of Attractions you've visited this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Exile": {
+       "as": "airbent",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Rule": {
+       "duration": "Forever",
+       "rule": {
+        "MayCastRather": {
+         "cost": "{2}",
+         "only": {
+          "Bound": "airbent"
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": 1,
+       "min": 0
+      },
+      "what": {
+       "Either": [
+        {
+         "Object": [
+          {
+           "Type": "Creature"
+          },
+          "Other"
+         ]
+        },
+        {
+         "Object": [
+          "Spell"
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, airbend up to one other target creature or spell."
+ ]
+]
