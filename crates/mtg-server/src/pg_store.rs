@@ -64,6 +64,17 @@ impl PgEventStore {
         from_seq: u64,
         events: &[Event],
     ) -> Result<(), StoreError> {
+        self.write(game, from_seq, events, false).await
+    }
+
+    /// Appends `events` at `from_seq`; with `cut`, first deletes the rows from `from_seq` on, which must exist up to there.
+    async fn write(
+        &self,
+        game: GameId,
+        from_seq: u64,
+        events: &[Event],
+        cut: bool,
+    ) -> Result<(), StoreError> {
         let payload = events
             .iter()
             .map(serde_json::to_value)
@@ -86,8 +97,17 @@ impl PgEventStore {
         .fetch_one(&mut *tx)
         .await?;
         let stored = u64::try_from(stored).unwrap_or(u64::MAX);
-        if stored != from_seq {
+        if stored != from_seq && !(cut && stored > from_seq) {
             return Err(StoreError::OutOfOrder { from_seq, stored });
+        }
+        if cut {
+            let start = i64::try_from(from_seq).unwrap_or(i64::MAX);
+            // A runtime query: a take-back is the only delete, and it needs no entry in the offline cache.
+            sqlx::query("DELETE FROM game_events WHERE game_id = $1 AND seq >= $2")
+                .bind(game.uuid())
+                .bind(start)
+                .execute(&mut *tx)
+                .await?;
         }
 
         if !payload.is_empty() {
@@ -126,5 +146,9 @@ impl EventStore for PgEventStore {
 
     async fn load(&self, game: GameId) -> Result<Vec<Event>, StoreError> {
         self.read_from(game, 0).await
+    }
+
+    async fn rewind(&self, game: GameId, keep: u64, events: &[Event]) -> Result<(), StoreError> {
+        self.write(game, keep, events, true).await
     }
 }

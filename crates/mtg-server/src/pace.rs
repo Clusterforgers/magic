@@ -379,9 +379,13 @@ pub(crate) fn is_removal(answer: &Answer) -> bool {
 impl<S: EventStore> GameActor<S> {
     /// When the pending decision's clock runs out, if it has one.
     pub(crate) fn due(&self) -> Option<Instant> {
-        match &self.phase {
+        let clock = match &self.phase {
             Phase::Running(running) => running.due(),
             Phase::Lobby { .. } => None,
+        };
+        match (clock, self.take_back_due()) {
+            (Some(clock), Some(take_back)) => Some(clock.min(take_back)),
+            (clock, take_back) => clock.or(take_back),
         }
     }
 
@@ -390,6 +394,9 @@ impl<S: EventStore> GameActor<S> {
     /// a seat that cannot act once its dwell is over: the decision was never sent, and the pass is saved, projected and
     /// sent like the seat's own, as a batch of its own.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
+        if self.take_back_expired() {
+            return Ok(());
+        }
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };

@@ -203,6 +203,10 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Presence { .. } => "presence".into(),
         ServerMessage::Deciding { .. } => "deciding".into(),
         ServerMessage::Spectators { .. } => "spectators".into(),
+        ServerMessage::TakeBackOffer { .. }
+        | ServerMessage::TakeBackAsked { .. }
+        | ServerMessage::TakeBackEnded { .. }
+        | ServerMessage::TakeBackRefused { .. } => "take-back".into(),
     }
 }
 

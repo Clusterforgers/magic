@@ -35,6 +35,7 @@ use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::spend::Spend;
 use mtg_engine::state::GameResult;
+use mtg_engine::take_back::{TakeBackKind, TakeBackOffer, TakeBackRefusal};
 use mtg_engine::tokens::TokenCreated;
 use mtg_engine::triggers::{DelayedId, Triggered};
 use mtg_engine::turn::Step;
@@ -43,7 +44,8 @@ use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
     ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION,
-    ServerMessage, StateView, Stop, StopSide, TriggerKey, YieldUntil, project_events,
+    ServerMessage, StateView, Stop, StopSide, TakeBackOutcome, TriggerKey, YieldUntil,
+    project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -52,8 +54,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 21;
-const SERVER_VARIANTS: usize = 20;
+const CLIENT_VARIANTS: usize = 23;
+const SERVER_VARIANTS: usize = 24;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -112,6 +114,8 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::LoadAutoYields { .. } => 18,
         ClientMessage::AutoSkip { .. } => 19,
         ClientMessage::CancelAutoSkip { .. } => 20,
+        ClientMessage::TakeBack => 21,
+        ClientMessage::TakeBackVote { .. } => 22,
     }
 }
 
@@ -138,6 +142,10 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Deciding { .. } => 17,
         ServerMessage::AutoSkips { .. } => 18,
         ServerMessage::Spectators { .. } => 19,
+        ServerMessage::TakeBackOffer { .. } => 20,
+        ServerMessage::TakeBackAsked { .. } => 21,
+        ServerMessage::TakeBackEnded { .. } => 22,
+        ServerMessage::TakeBackRefused { .. } => 23,
     }
 }
 
@@ -604,6 +612,9 @@ fn manual_samples() -> Vec<ManualAction> {
 
 fn client_samples() -> Vec<ClientMessage> {
     let mut out = vec![
+        ClientMessage::TakeBack,
+        ClientMessage::TakeBackVote { approve: true },
+        ClientMessage::TakeBackVote { approve: false },
         ClientMessage::Join {
             protocol_version: PROTOCOL_VERSION,
             game: "table-1".into(),
@@ -768,6 +779,7 @@ fn server_samples() -> Vec<ServerMessage> {
             log: Vec::new(),
             names: Vec::new(),
             hosts: Vec::new(),
+            rewound: false,
         },
         ServerMessage::Chat {
             from: PlayerId(2),
@@ -834,6 +846,35 @@ fn server_samples() -> Vec<ServerMessage> {
     out.push(ServerMessage::Deciding { seats: Vec::new() });
     out.push(ServerMessage::Spectators { count: 0 });
     out.push(ServerMessage::Spectators { count: 3 });
+    let offer = TakeBackOffer {
+        player: PlayerId(1),
+        kind: TakeBackKind::Cast,
+        name: "Shock".into(),
+        at: 40,
+    };
+    out.push(ServerMessage::TakeBackOffer { offer: None });
+    out.push(ServerMessage::TakeBackOffer {
+        offer: Some(offer.clone()),
+    });
+    out.push(ServerMessage::TakeBackAsked {
+        offer: offer.clone(),
+        waiting: vec![PlayerId(0), PlayerId(2)],
+        deadline_ms: 15_000,
+    });
+    for outcome in [
+        TakeBackOutcome::Approved,
+        TakeBackOutcome::Declined { by: PlayerId(0) },
+        TakeBackOutcome::TimedOut { by: PlayerId(2) },
+        TakeBackOutcome::Withdrawn,
+    ] {
+        out.push(ServerMessage::TakeBackEnded {
+            offer: offer.clone(),
+            outcome,
+        });
+    }
+    out.push(ServerMessage::TakeBackRefused {
+        reason: TakeBackRefusal::CardDrawn,
+    });
     out.push(ServerMessage::Deciding {
         seats: vec![
             DecidingView {
@@ -1386,6 +1427,7 @@ fn snapshots_stay_one_flat_object_with_the_same_table_fields_as_a_batch() {
         log: Vec::new(),
         names: Vec::new(),
         hosts: Vec::new(),
+        rewound: false,
     };
     let value = serde_json::to_value(snapshot).unwrap();
     let state = value["state"].as_object().unwrap();

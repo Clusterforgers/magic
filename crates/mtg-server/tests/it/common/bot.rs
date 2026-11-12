@@ -189,7 +189,11 @@ impl Bot {
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. }
             | ServerMessage::Deciding { .. }
-            | ServerMessage::Spectators { .. } => {}
+            | ServerMessage::Spectators { .. }
+            | ServerMessage::TakeBackOffer { .. }
+            | ServerMessage::TakeBackAsked { .. }
+            | ServerMessage::TakeBackEnded { .. }
+            | ServerMessage::TakeBackRefused { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

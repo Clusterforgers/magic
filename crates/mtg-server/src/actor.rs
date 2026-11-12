@@ -216,6 +216,7 @@ fn launch<S: EventStore>(
         closing: false,
         recorder,
         decks,
+        take_backs: crate::take_backs::TakeBacks::default(),
     };
     tokio::spawn(actor.run(inbox));
     GameHandle::new(id, commands)
@@ -261,6 +262,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) decks: Option<SeatDecks>,
     /// Which seats the table was last told have a live client (see [`Presence`]).
     pub(crate) presence: Presence,
+    /// The open take-back request and what each seat may take back.
+    pub(crate) take_backs: crate::take_backs::TakeBacks,
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -463,6 +466,7 @@ impl<S: EventStore> GameActor<S> {
                 }
                 self.seats.send(seat, message);
             }
+            self.take_back_sync(seat);
         }
     }
 
@@ -517,6 +521,10 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::CancelAutoSkip { rule } => {
                 return self.cancel_auto_skip(seat, rule).await;
+            }
+            ClientMessage::TakeBack => return self.ask_take_back(seat).await,
+            ClientMessage::TakeBackVote { approve } => {
+                return self.vote_take_back(seat, approve).await;
             }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

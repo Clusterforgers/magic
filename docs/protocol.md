@@ -45,7 +45,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
   - Whole only when the card they are about is visible: `AbilityTriggered`, `AbilityPutOnStack` of a triggered ability, `TriggerRemoved`, `DelayedTriggerCreated`, `AbilityLeftToTable`. A trigger whose source names a card in a zone the viewer cannot see becomes a `HiddenEvent`.
   - An ability whose source is a card in a hand or library names that card to every seat when it goes on the stack, as at a table; `tests/it/hidden_info.rs` allows those cards and no other hidden one.
   - `ManualAction` is public as logged, except a `Move` between places the viewer cannot see into (`HiddenEvent::ManualMove`); an `ArrangeTop` and a `Tutor` name cards only their seat knows (`ManualArrange`, `ManualTutor`); a `Reveal` and a `Note` name what every seat may know.
-  - Public as logged: the other ability and resolution events, life, counters, tokens, `Entered`, `Attached`, `Paired`, mana events, `Revealed`, `Crewed`, and the like.
+  - Public as logged: `TookBack` (a card name, no id), the other ability and resolution events, life, counters, tokens, `Entered`, `Attached`, `Paired`, mana events, `Revealed`, `Crewed`, and the like.
 - A seat that controls another (CR 722) sees what that seat sees while the control lasts: its hand (`zone_is_visible_in`), its face-down cards and the cards shown or offered to it (`GameState::sees_for`); a seat that controls its opponents while they search sees the cards of that search. `TurnView.controlled_by` names the seat that controls the active player, public like the turn.
 - A card a reveal named is known to every seat, so a choice among revealed cards reaches them whole.
 - A keyword a static ability grants to a card in a hand is read in that card's `keywords` for its owner alone; the ability it adds names its source card when it goes on the stack, as a printed one does.
@@ -80,7 +80,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 ## Decisions
 
 - Every decision of a spell or ability carries `source`, the object that asks, and has an `Answer` of the same name. Prompt text (`text`, `wording`) is in the words of a card, written by the server; the web has prompts for each kind and the server has their clocks.
-- A `Cancel` answer backs out of a cast with no event and needs `can_cancel`; a triggered ability cannot be backed out of, and its `ChooseTargets` answers `Remove` instead (CR 603.3d). A cancelled payment sends no `Events` batch, only the caster's `Priority` decision again with a fresh id. The log never records a cast that was not paid.
+- A `Cancel` answer backs out of a cast with no event and needs `can_cancel`; when the caster activated mana abilities at priority just before it, they are undone too and the seat gets a `rewound` `Snapshot` (Take-backs); a triggered ability cannot be backed out of, and its `ChooseTargets` answers `Remove` instead (CR 603.3d). A cancelled payment sends no `Events` batch, only the caster's `Priority` decision again with a fresh id. The log never records a cast that was not paid.
 - `Decision.player` is the seat that answers: the controller of a controlled player (CR 722) answers that player's decisions, whose options are the controlled player's; the engine keeps the player the decision is about (`Engine::decision_owned`).
 - `ChooseReplacement` goes to the player an event happens to when two or more replacement effects apply; the answer is not an event, and a replaced event is never in the log.
 - `PriorityOptions.unplayable` lists, for the holder's own hand and command zone, each card the offer leaves out with a reason and its detail (`why`); `PriorityOptions.inactive` does the same for the activated abilities of the holder's permanents. Only the holder gets options, so they tell nothing of another seat; a detail names only public objects (a face-up permanent, a spell on the stack).
@@ -93,6 +93,11 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - A seat that holds an extension spends it at the deadline instead of being answered for: it is sent the same `Decision` again (same `id`) with the new `deadline_ms`, and every seat is sent `Bank { seat, bank }`. `PlayerView.bank` is public; the engine does not know it, the server writes it into every table.
 - `PlayerView.turn_time_ms` (public) is the wall time a seat has used on its own turns, the running turn up to the send included; `turn_time_running` marks the one seat whose figure keeps growing from the moment the table arrives. Like the bank, the server writes them into every table.
 - `PlayerView.connected` is public and never stored, hashed or put in the event log, so replays do not see it. The server writes it into every snapshot and batch and sends the other seats `Presence { seat, connected, deadline_ms? }` when a seat gains its first connection or loses its last, and again for an away seat when it is issued a decision or its clock is extended. A seat is never told of itself.
+
+### Take-backs
+
+- `TakeBack` asks the table to undo the seat's last cast, activation or land play; `TakeBackOffer {offer}` says what that would be (a `TakeBackOffer`: kind, card name, log position `at`; `None` while nothing can be). `TakeBackAsked {offer, waiting, deadline_ms}` goes to every viewer while the request is open; each waiting seat answers `TakeBackVote {approve}`. `TakeBackEnded {offer, outcome}` closes it: `Approved`, `Declined {by}`, `TimedOut {by}` or `Withdrawn`. `TakeBackRefused {reason}` is a `TakeBackRefusal` ([engine.md](engine.md), Take-backs).
+- An approved take-back cuts the log: every viewer gets a `Snapshot` with `rewound`, whose log replaces what the client holds from its first position on, then `TookBack {player, kind, name}` is the log line. `TookBack` is public and names the card, never an object id, so a card back in a hand stays unidentified.
 
 ### Payments
 

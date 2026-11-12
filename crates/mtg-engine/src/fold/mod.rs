@@ -482,6 +482,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
+        | Event::TookBack { .. }
         | Event::ManaBurned { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }

@@ -47,6 +47,7 @@ import type { SpellCopy } from "./SpellCopy";
 import type { SpendOn } from "./SpendOn";
 import type { Step } from "./Step";
 import type { Surveilled } from "./Surveilled";
+import type { TakeBackKind } from "./TakeBackKind";
 import type { Target } from "./Target";
 import type { TargetsChanged } from "./TargetsChanged";
 import type { TokenCreated } from "./TokenCreated";
@@ -201,7 +202,19 @@ reason: Unplayable,
 /**
  * The detail of the reason, when the engine can name it.
  */
-why?: Why, } } | { "PriorityGranted": { 
+why?: Why, } } | { "TookBack": { 
+/**
+ * Who took it back.
+ */
+player: PlayerId, 
+/**
+ * What they took back.
+ */
+kind: TakeBackKind, 
+/**
+ * The card cast or played, or the source of the ability.
+ */
+name: string, } } | { "PriorityGranted": { 
 /**
  * Who has priority.
  */

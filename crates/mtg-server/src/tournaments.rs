@@ -231,6 +231,14 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
     Ok(())
 }
 
+/// The house rules of a tournament game: the format's own, without take-backs.
+pub(crate) fn tournament_rules() -> mtg_core::house::HouseRules {
+    mtg_core::house::HouseRules {
+        take_backs: Some(false),
+        ..mtg_core::house::HouseRules::default()
+    }
+}
+
 /// Makes the game of every match of the current round that has none; a game that cannot be made
 /// is logged and left for the organiser's retry.
 async fn make_games(app: &AppState, tournament: &mut Tournament) -> Result<(), ApiError> {
@@ -252,6 +260,7 @@ async fn make_games(app: &AppState, tournament: &mut Tournament) -> Result<(), A
             format: FormatKind::Commander,
             visibility: Visibility::Invite,
             accounts: users.into_iter().map(Some).collect(),
+            house_rules: tournament_rules(),
             ..GameOptions::default()
         };
         let decks = vec![None; names.len()];

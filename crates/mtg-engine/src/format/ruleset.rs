@@ -208,6 +208,11 @@ impl<'a> RuleSet<'a> {
         self.house.mana_burn.unwrap_or(false)
     }
 
+    /// Whether a player may ask the table to take back their last action (`Engine::take_back`).
+    pub fn take_backs(&self) -> bool {
+        self.house.take_backs.unwrap_or(true)
+    }
+
     /// What a draw from an empty library does.
     pub fn empty_library(&self) -> EmptyLibrary {
         self.house.empty_library.unwrap_or(EmptyLibrary::Lose)
@@ -461,6 +466,7 @@ mod tests {
         assert_eq!(rules.draw_step_cards(), 1);
         assert_eq!(rules.land_plays_per_turn(), 1);
         assert!(!rules.mana_burn());
+        assert!(rules.take_backs());
         assert_eq!(rules.empty_library(), EmptyLibrary::Lose);
         assert_eq!((rules.turn_limit(), rules.winning_life()), (None, None));
         assert_eq!(rules.poison_threshold(), 10);
@@ -492,6 +498,7 @@ mod tests {
     fn the_switches_follow_the_house() {
         let house = HouseRules {
             mana_burn: Some(true),
+            take_backs: Some(false),
             empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
             turn_limit: Some(8),
             winning_life: Some(40),
@@ -499,6 +506,7 @@ mod tests {
         };
         let rules = normal(&house);
         assert!(rules.mana_burn());
+        assert!(!rules.take_backs());
         assert_eq!(rules.empty_library(), EmptyLibrary::ReshuffleGraveyard);
         assert_eq!(
             (rules.turn_limit(), rules.winning_life()),

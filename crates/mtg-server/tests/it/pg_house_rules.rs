@@ -58,6 +58,7 @@ fn some_rules() -> HouseRules {
         max_hand_size: Some(HandLimit::Cards(5)),
         draw_step_cards: Some(2),
         land_plays_per_turn: Some(2),
+        take_backs: Some(false),
         mana_burn: Some(true),
         empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
         turn_limit: Some(30),
