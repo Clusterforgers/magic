@@ -147,11 +147,15 @@ pub(super) fn rmt3_next_cast_text(effect: &Effect) -> Option<String> {
         when: when @ TriggerPattern::SpellCast { by: Ref::You, .. },
         once: true,
         this_turn: true,
+        targets: delayed_targets,
         effects,
     } = effect
     else {
         return None;
     };
+    if !delayed_targets.is_empty() {
+        return None;
+    }
     let [enters] = effects.as_slice() else {
         return None;
     };

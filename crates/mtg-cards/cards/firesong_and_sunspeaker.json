@@ -1,7 +1,7 @@
 {
   "oracle_id": "fffaa634-42a0-4038-b027-24f28754fec7",
   "name": "Firesong and Sunspeaker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Firesong and Sunspeaker",
@@ -21,9 +21,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 58, "end": 193 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "LifeGained": { "who": "You" } },
+                "source": [
+                  { "Color": "White" },
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                ]
+              }
+            },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Creature" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
           }
         }
       ]

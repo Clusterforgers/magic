@@ -141,6 +141,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 },
                 once: true,
                 this_turn: false,
+                targets: Vec::new(),
                 effects: exile_then_cast,
             },
         ],

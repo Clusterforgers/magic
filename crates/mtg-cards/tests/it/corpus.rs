@@ -482,8 +482,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             "If an opponent would search a library, that player searches the top four cards of that library instead.",
         ),
         (
-            "Bebop, Skull & Crossbones",
-            "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
+            "Yotia Declares War",
+            "II \u{2014} Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.",
         ),
     ];
     for (name, clause) in expected {

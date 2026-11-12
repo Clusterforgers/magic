@@ -1314,6 +1314,7 @@ Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
+Pippin, Warden of Isengard
 Pit Fight
 Pixie Guide
 Plague Drone
@@ -1858,6 +1859,7 @@ Time Walk
 Time Warp
 Timeless Lotus
 Timeless Witness
+Timin, Youthful Geist
 Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -1906,6 +1908,7 @@ Two-Headed Giant of Foriys
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar
+Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
 Ulamog's Dreadsire

@@ -1217,6 +1217,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     when,
                     once,
                     this_turn: false,
+                    targets: Vec::new(),
                     effects,
                 }
             }),

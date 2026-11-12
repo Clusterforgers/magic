@@ -32,12 +32,16 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 },
             once: true,
             this_turn: false,
+            targets: delayed_targets,
             effects: later,
         },
     ] = effects.as_slice()
     else {
         return;
     };
+    if !delayed_targets.is_empty() {
+        return;
+    }
     let exiles_it = matches!(
         later.as_slice(),
         [Effect::Exile { what: Ref::Bound(bound), bind: None, duration: None }] if bound == name

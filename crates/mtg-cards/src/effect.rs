@@ -1698,6 +1698,11 @@ pub enum Effect {
         /// It waits until this runs out instead ("until your next turn, whenever ..."), also when it triggers once.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         until: Option<Duration>,
+        /// Targets of its own, chosen each time it goes on the stack ("whenever you cast a spell this turn, put a
+        /// +1/+1 counter on target creature you control"); `Target(i)` in its effects names them. Without any, its
+        /// effects name the targets of the ability that set it up.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
     },

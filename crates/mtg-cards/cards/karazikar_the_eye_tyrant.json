@@ -1,7 +1,7 @@
 {
   "oracle_id": "47fde936-be71-4550-826b-b98d139cc57a",
   "name": "Karazikar, the Eye Tyrant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Karazikar, the Eye Tyrant",
@@ -25,9 +25,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 195, "end": 317 }
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "Opponents", "at": "Opponents" } },
+            "effects": [
+              { "Draw": {} },
+              { "Draw": { "who": "Triggering" } },
+              { "LoseLife": { "amount": 1 } },
+              { "LoseLife": { "who": "Triggering", "amount": 1 } }
+            ]
           }
         }
       ]

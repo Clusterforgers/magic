@@ -368,6 +368,15 @@ pub enum TriggerPattern {
         /// The chapter number.
         number: u32,
     },
+    /// The final chapter ability of a Saga matching the selector triggers or, with `resolves`, resolves (CR 714.2c):
+    /// the chapter ability with the greatest number the Saga has. `Triggering` is the Saga.
+    FinalChapter {
+        /// The Saga.
+        what: Selector,
+        /// It resolves; it triggers when false.
+        #[serde(default, skip_serializing_if = "is_false")]
+        resolves: bool,
+    },
     /// An Aura, Equipment or Fortification becomes attached to a permanent.
     Attached {
         /// The attachment; any when empty.

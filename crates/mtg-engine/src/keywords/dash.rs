@@ -83,6 +83,7 @@ pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Abil
                 },
                 once: true,
                 this_turn: false,
+                targets: Vec::new(),
                 effects: vec![effect],
             },
         ],

@@ -82,6 +82,7 @@ const RUNS: &[&str] = &[
     "Trigger.Exploits",
     "Trigger.BecomesCrewed",
     "Trigger.BecomesSaddled",
+    "Trigger.FinalChapter",
     "Trigger.BecomesLevel",
     "Trigger.TurnedFaceUp",
     "Trigger.Mutates",
@@ -1351,6 +1352,7 @@ mod tests {
     #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
     #[case::becoming_crewed_triggers("Trigger.BecomesCrewed", true)]
     #[case::becoming_saddled_triggers("Trigger.BecomesSaddled", true)]
+    #[case::r288_final_chapter_triggers("Trigger.FinalChapter", true)]
     #[case::becoming_a_level_triggers("Trigger.BecomesLevel", true)]
     #[case::turning_face_up_triggers("Trigger.TurnedFaceUp", true)]
     #[case::adapting_triggers("Trigger.Adapted", true)]

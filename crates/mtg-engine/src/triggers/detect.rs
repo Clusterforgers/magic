@@ -17,6 +17,7 @@ use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 mod did;
+mod r288_final_chapter;
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
@@ -267,6 +268,8 @@ enum Happened {
     Renowned { object: ObjectId, player: PlayerId },
     /// A creature exploited a creature; judged against the battlefield before the sacrifice.
     Exploited { object: ObjectId, player: PlayerId },
+    /// The final chapter ability of a Saga triggered or resolved.
+    FinalChapter { saga: ObjectId, resolved: bool },
     /// A Vehicle became crewed, the `nth` time of the turn.
     Crewed {
         object: ObjectId,
@@ -316,6 +319,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::FinalChapter { resolved: true, .. }
                 | Happened::PhasedOut { .. }
                 | Happened::Unattached { left: true, .. }
         ) || matches!(self, Happened::Did { action, .. } if action.looks_back())
@@ -553,6 +557,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         found.extend(moved(pre, event, post));
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
         found.extend(dk26_unattached(pre, event));
+        found.extend(r288_final_chapter::r288_happened(pre, event, post));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -1795,7 +1800,8 @@ fn matching_event(
         ) => (from != to && wanted.is_none_or(|wanted| wanted == *to))
             .then(|| cause(state, Vec::new())),
         _ => matching_player_action(pattern, happened, scope)
-            .or_else(|| matching_permanents(pattern, happened, scope)),
+            .or_else(|| matching_permanents(pattern, happened, scope))
+            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope)),
     }
 }
 

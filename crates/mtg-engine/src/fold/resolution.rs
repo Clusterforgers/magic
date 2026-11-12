@@ -345,6 +345,14 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
     let keeps = crate::r281_mana_at_priority::r281_keeps_priority(state, id);
     match (kind, outcome) {
         (ObjectKind::Ability, _) => {
+            state.r288_resolved_chapter = state
+                .objects
+                .get(&id)
+                .and_then(GameObject::ability)
+                .filter(|_| outcome == ResolutionOutcome::Resolved && resolving_it)
+                .and_then(|put| {
+                    crate::saga::r288_chapter_number(put.rules()).map(|n| (id, put.source(), n))
+                });
             state.objects.remove(&id);
             state.zones.remove(Zone::Stack, id);
         }

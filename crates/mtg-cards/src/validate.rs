@@ -2434,7 +2434,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Unblocked { what }
             | TriggerPattern::CountersPut { what, .. }
-            | TriggerPattern::CountersRemoved { what, .. } => {
+            | TriggerPattern::CountersRemoved { what, .. }
+            | TriggerPattern::FinalChapter { what, .. } => {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::Blocks { what, blocking } => {
@@ -4142,6 +4143,22 @@ impl Walker<'_> {
                 if ShieldShape::of(when, by).is_none() {
                     w.uses("Effect", &format!("Shield.{}", tag_of(when)));
                 }
+            }
+            Effect::DelayedTrigger {
+                when,
+                effects,
+                targets,
+                ..
+            } if !targets.is_empty() => {
+                w.at("when", |w| w.trigger_pattern(when));
+                // Targets of its own, as a reflexive trigger has: its effects name them and see the bound names.
+                let mut inner = Scope::new(targets, true);
+                inner.names.clone_from(&w.scope.names);
+                inner.numbers.clone_from(&w.scope.numbers);
+                inner.dealer = true;
+                let saved = std::mem::replace(&mut w.scope, inner);
+                w.body_checks(targets, effects, true);
+                w.scope = saved;
             }
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));

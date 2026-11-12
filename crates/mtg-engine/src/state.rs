@@ -293,6 +293,9 @@ pub struct GameState {
     pub(crate) next_timestamp: u64,
     pub(crate) next_object: u64,
     pub(crate) resolving: Option<Resolving>,
+    /// The last chapter ability that resolved (the ability, its Saga and its chapter number), for the final chapter
+    /// triggers; the fold sets it again from the log, so the fingerprint leaves it out.
+    pub(crate) r288_resolved_chapter: Option<(ObjectId, ObjectRef, u32)>,
     pub(crate) pending_triggers: Vec<PendingTrigger>,
     pub(crate) trigger_round: u32,
     pub(crate) delayed: Vec<Delayed>,

@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "6ee4fda8-07cd-4091-8850-a6925080b464",
+  "oracle_id": "ccfc74f7-bf32-4201-ad8f-f552ed7f96f8",
+  "multiverse_ids": [
+    658632
+  ],
+  "mtgo_id": 124835,
+  "tcgplayer_id": 545185,
+  "cardmarket_id": 764659,
+  "name": "Cazur, Ruthless Stalker",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/6ee4fda8-07cd-4091-8850-a6925080b464",
+  "scryfall_uri": "https://scryfall.com/card/otc/188/cazur-ruthless-stalker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:05:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912",
+    "normal": "https://cards.scryfall.io/normal/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912",
+    "large": "https://cards.scryfall.io/large/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912",
+    "png": "https://cards.scryfall.io/png/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.png?1783911912",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.webp?1783911912",
+    "grid": "https://cards.scryfall.io/grid/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.webp?1783911912",
+    "display": "https://cards.scryfall.io/display/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.webp?1783911912",
+    "art": "https://cards.scryfall.io/art/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.webp?1783911912",
+    "crop": "https://cards.scryfall.io/crop/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.webp?1783911912",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/e/6ee4fda8-07cd-4091-8850-a6925080b464.jpg?1783911912"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Partner with Ukkima, Stalking Shadow (When this creature enters, target player may put Ukkima into their hand from their library, then shuffle.)\nWhenever a creature you control deals combat damage to a player, put a +1/+1 counter on that creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c66b452b-9c49-4c58-9966-6bafbfa34c36",
+      "component": "combo_piece",
+      "name": "Ukkima, Stalking Shadow",
+      "type_line": "Legendary Creature — Whale Wolf",
+      "uri": "https://api.scryfall.com/cards/c66b452b-9c49-4c58-9966-6bafbfa34c36"
+    },
+    {
+      "object": "related_card",
+      "id": "6ee4fda8-07cd-4091-8850-a6925080b464",
+      "component": "combo_piece",
+      "name": "Cazur, Ruthless Stalker",
+      "type_line": "Legendary Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/6ee4fda8-07cd-4091-8850-a6925080b464"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6ee4fda8-07cd-4091-8850-a6925080b464/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Accfc74f7-bf32-4201-ad8f-f552ed7f96f8&unique=prints",
+  "collector_number": "188",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "237a55b4-ce45-4180-8783-3b434adee33f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8543,
+  "prices": {
+    "usd": "0.71",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": null,
+    "tix": "1.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658632&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCazur%252C%2BRuthless%2BStalker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCazur%252C%2BRuthless%2BStalker",
+    "edhrec": "https://edhrec.com/route/?cc=Cazur%2C+Ruthless+Stalker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545185%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764659&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124835?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

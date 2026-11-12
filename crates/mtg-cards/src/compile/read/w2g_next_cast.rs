@@ -24,6 +24,7 @@ pub fn w2g_next_cast(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         when: TriggerPattern::SpellCast { what, by: Ref::You },
         once: true,
         this_turn,
+        targets: Vec::new(),
         effects: effects?,
     }])
 }
@@ -35,11 +36,15 @@ pub(super) fn w2g_next_cast_text(effect: &Effect) -> Option<String> {
         when: when @ TriggerPattern::SpellCast { by: Ref::You, .. },
         once: true,
         this_turn,
+        targets: delayed_targets,
         effects,
     } = effect
     else {
         return None;
     };
+    if !delayed_targets.is_empty() {
+        return None;
+    }
     let [copy] = effects.as_slice() else {
         return None;
     };

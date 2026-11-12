@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3579e40c-6ec5-4927-8252-5a188db400ab",
+  "name": "Rhoda, Geist Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhoda, Geist Avenger",
+      "oracle_fingerprint": "b5764c0f09d91c8822c9a3e51841b58e",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Timin, Youthful Geist" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "TappedNotAttacking": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

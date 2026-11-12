@@ -1,7 +1,7 @@
 {
   "oracle_id": "ce1e6ae2-78c1-4bc6-bb73-bb025dd67a90",
   "name": "Historian's Boon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Historian's Boon",
@@ -44,9 +44,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 121, "end": 254 }
+          "Triggered": {
+            "when": {
+              "FinalChapter": { "what": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

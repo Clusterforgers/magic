@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1b600345-2b89-45bc-98c8-609fdd08a5fd",
+  "name": "Merry, Warden of Isengard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merry, Warden of Isengard",
+      "oracle_fingerprint": "3c86a5dd46031084a6adc521735ba124",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Pippin, Warden of Isengard" } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

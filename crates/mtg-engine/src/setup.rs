@@ -539,6 +539,7 @@ impl GameState {
             next_timestamp: 1,
             next_object: next_id,
             resolving: None,
+            r288_resolved_chapter: None,
             pending_triggers: Vec::new(),
             trigger_round: 0,
             delayed: Vec::new(),

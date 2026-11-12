@@ -80,6 +80,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         once,
         this_turn,
         until,
+        targets,
         effects,
     } = effect
     else {
@@ -104,8 +105,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             once: *once,
             this_turn: *this_turn,
             until: until.clone(),
-            effects: fixed_target_stats(cx, effects)?,
-            targets: Vec::new(),
+            // With targets of its own, `Target(i)` in its effects names them, not the targets of this resolution.
+            effects: if targets.is_empty() {
+                fixed_target_stats(cx, effects)?
+            } else {
+                effects.clone()
+            },
+            targets: targets.clone(),
             bindings,
             kept: kept(cx, effects),
         },

@@ -90,6 +90,7 @@ fn activation(cost: &Cost) -> Ability {
                         },
                         once: true,
                         this_turn: false,
+                        targets: Vec::new(),
                         effects: vec![Effect::Exile {
                             what: unearthed(),
                             bind: None,

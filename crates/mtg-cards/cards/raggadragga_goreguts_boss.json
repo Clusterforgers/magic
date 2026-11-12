@@ -1,7 +1,7 @@
 {
   "oracle_id": "a7641ee0-9c0d-4201-9827-a775ed03797c",
   "name": "Raggadragga, Goreguts Boss",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Raggadragga, Goreguts Boss",
@@ -16,9 +16,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 58, "end": 128 }
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasAbility": "Mana" }
+                ]
+              }
+            },
+            "effects": [{ "Untap": { "what": "Triggering" } }]
           }
         },
         {

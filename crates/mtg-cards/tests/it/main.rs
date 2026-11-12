@@ -42,6 +42,8 @@ mod r283_cards;
 mod r284_writers;
 mod r286_cards;
 mod r287_writers;
+mod r288_probe;
+mod r288_wordings;
 mod r6e;
 mod read_sheet;
 mod read_tier;

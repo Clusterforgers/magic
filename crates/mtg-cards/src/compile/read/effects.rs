@@ -1009,6 +1009,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             },
             once: true,
             this_turn: false,
+            targets: Vec::new(),
             effects: vec![Effect::Move {
                 what: Ref::Bound(LATER.to_owned()),
                 to: Destination::Hand,

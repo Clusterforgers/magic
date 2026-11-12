@@ -515,6 +515,8 @@ mod r286_mechanics;
 mod r287_face_down;
 mod r287_graveyard_order;
 mod r287_tallies;
+mod r288_delayed_targets;
+mod r288_final_chapter;
 mod r2e_cost_parts;
 mod r4_audit;
 mod r4a_amplify;
