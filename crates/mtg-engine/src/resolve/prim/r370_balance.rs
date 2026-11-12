@@ -76,7 +76,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         for object in objects.iter().copied().filter(|id| !keep.contains(id)) {
             match what {
                 Balanced::Permanents(_) => {
-                    let Some(owner) = state.object(object).map(crate::object::GameObject::owner)
+                    let Some(graveyard_of) =
+                        state.object(object).map(crate::object::GameObject::owner)
                     else {
                         continue;
                     };
@@ -87,7 +88,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     events.push(Event::ZoneChanged {
                         object,
                         from: Zone::Battlefield,
-                        to: Zone::Graveyard(owner),
+                        to: Zone::Graveyard(graveyard_of),
                         cause: ZoneCause::Sacrificed,
                     });
                 }

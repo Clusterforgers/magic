@@ -136,7 +136,7 @@ fn r370_every_player_keeps_the_fewest(#[values(2, 3, 4)] seats: usize) -> Result
         .sum();
     // The lands, creatures and cards over the fewest, and Restore Balance itself.
     let over: usize = (1..seats)
-        .map(|seat| seat + if seat == seats - 1 { 0 } else { 1 } + 2)
+        .map(|seat| seat + usize::from(seat != seats - 1) + 2)
         .sum::<usize>()
         + 2
         + 1;
