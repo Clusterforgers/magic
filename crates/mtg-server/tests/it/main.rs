@@ -40,6 +40,7 @@ mod pg_accounts;
 mod pg_admin;
 mod pg_admin_manage;
 mod pg_admins;
+mod pg_art;
 mod pg_bot_seats;
 mod pg_bulk_reads;
 mod pg_card_decks;
