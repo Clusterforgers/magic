@@ -523,6 +523,9 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
         }
         Modification::AddSubtype(kind) => format!("is also a {}", kind.0),
         Modification::LoseAbilities => "loses all abilities".to_owned(),
+        Modification::LoseAbilitiesExceptMana => {
+            "loses all abilities except mana abilities".to_owned()
+        }
         Modification::CantAttack => "can't attack".to_owned(),
         Modification::CantBlock => "can't block".to_owned(),
         Modification::CantBeBlocked => "can't be blocked".to_owned(),
@@ -694,6 +697,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         }
         CombatQuirk::MustBeBlocked(Blocking::Every) => {
             format!("all creatures able to block {who} do so")
+        }
+        CombatQuirk::MustBeBlockedBy(_) => {
+            format!("the creatures it names that are able to block {who} do so")
         }
         CombatQuirk::IgnoreLandwalk(_) | CombatQuirk::IgnoreAllLandwalk => {
             format!("{who} can be blocked as though they didn't have landwalk")

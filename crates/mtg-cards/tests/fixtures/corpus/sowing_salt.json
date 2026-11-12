@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "bd243ce5-152b-4d9c-991e-be56b6731d99",
+  "oracle_id": "131d2b70-959d-4814-b0c8-38031f141718",
+  "multiverse_ids": [
+    74623
+  ],
+  "mtgo_id": 21863,
+  "mtgo_foil_id": 21864,
+  "tcgplayer_id": 12360,
+  "cardmarket_id": 12918,
+  "name": "Sowing Salt",
+  "lang": "en",
+  "released_at": "2005-02-04",
+  "uri": "https://api.scryfall.com/cards/bd243ce5-152b-4d9c-991e-be56b6731d99",
+  "scryfall_uri": "https://scryfall.com/card/bok/118/sowing-salt?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:03:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187",
+    "normal": "https://cards.scryfall.io/normal/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187",
+    "large": "https://cards.scryfall.io/large/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187",
+    "png": "https://cards.scryfall.io/png/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.png?1783944187",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.webp?1783944187",
+    "grid": "https://cards.scryfall.io/grid/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.webp?1783944187",
+    "display": "https://cards.scryfall.io/display/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.webp?1783944187",
+    "art": "https://cards.scryfall.io/art/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.webp?1783944187",
+    "crop": "https://cards.scryfall.io/crop/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.webp?1783944187",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/d/bd243ce5-152b-4d9c-991e-be56b6731d99.jpg?1783944187"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile target nonbasic land. Search its controller's graveyard, hand, and library for all cards with the same name as that land and exile them. Then that player shuffles.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set": "bok",
+  "set_name": "Betrayers of Kamigawa",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d4b88587-a1f5-4b47-9e24-78ec9e57bd0e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abok&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bok?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bd243ce5-152b-4d9c-991e-be56b6731d99/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A131d2b70-959d-4814-b0c8-38031f141718&unique=prints",
+  "collector_number": "118",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Hideaki Takamura",
+  "artist_ids": [
+    "49b6270b-1b28-4e03-b503-522f97dc3a78"
+  ],
+  "illustration_id": "414298c9-2d25-4f21-900d-6eea50b818e8",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30929,
+  "penny_rank": 5868,
+  "prices": {
+    "usd": "0.11",
+    "usd_foil": "0.50",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "1.11",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=74623&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSowing%2BSalt",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSowing%2BSalt",
+    "edhrec": "https://edhrec.com/route/?cc=Sowing+Salt"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F12360%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=12918&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/21863?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

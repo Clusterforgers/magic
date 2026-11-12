@@ -1,7 +1,7 @@
 {
   "oracle_id": "1a89c623-c9c3-443c-bbd3-834767b6bdb8",
   "name": "Weeping Angel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Weeping Angel",
@@ -25,9 +25,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 125, "end": 259 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "source": ["This"],
+                "combat": true
+              }
+            },
+            "by": {
+              "PreventAnd": [
+                { "Move": { "what": "Triggering", "to": { "Library": { "place": "Shuffled" } } } }
+              ]
+            }
           }
         }
       ]

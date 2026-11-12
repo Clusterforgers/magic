@@ -1952,6 +1952,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             Targetable::AnyTarget => "any target".to_owned(),
             Targetable::Player => "target player".to_owned(),
             Targetable::Opponent => "target opponent".to_owned(),
+            Targetable::Either(kinds) if super::r303b_writers::r303b_three_kinds(kinds) => {
+                "target creature, planeswalker, or player".to_owned()
+            }
             Targetable::Either(kinds) => match kinds.as_slice() {
                 [Targetable::Player, Targetable::Object(planeswalker)]
                     if planeswalker.0 == [Pred::Type(CardType::Planeswalker)] =>

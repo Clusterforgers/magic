@@ -81,6 +81,9 @@ pub enum Modification {
     /// Makes the creature type the resolution chose under this name the only creature type (layer 4): "becomes the
     /// creature type of your choice". Only an effect of a spell or ability has it.
     SetCreatureTypesChosen(String),
+    /// Adds the creature type the resolution chose under this name (layer 4): "becomes the creature type of your choice
+    /// in addition to its other types". Only an effect of a spell or ability has it.
+    AddCreatureTypeChosen(String),
     /// Changes the text (layer 3, CR 612): every instance of the word the resolution chose under `from` becomes the word it
     /// chose under `to` ("replacing all instances of one color word with another"). Only an effect of a spell or ability
     /// has it.
@@ -118,6 +121,9 @@ pub enum Modification {
     GainAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
+    /// The object loses all its abilities except mana abilities (layer 6, CR 605): "lose all abilities except mana
+    /// abilities"; abilities granted after it still count.
+    LoseAbilitiesExceptMana,
     /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
     /// effect of an activated ability has it, never a static ability.
     LoseThisAbility,
@@ -191,6 +197,7 @@ impl Modification {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddCreatureTypeChosen(_)
             | Modification::AddChosenSubtype
             | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_)
@@ -207,7 +214,8 @@ impl Modification {
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
-            | Modification::LoseAbilities => Some("6"),
+            | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana => Some("6"),
             Modification::SetPT { .. }
             | Modification::SetPower(_)
             | Modification::SetToughness(_) => Some("7b"),
@@ -255,6 +263,9 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
+    /// For as long as the controller of the effect controls the source and the source stays tapped ("for as long as you
+    /// control ~ and ~ remains tapped", CR 611.2b): it ends when either stops. Only a continuous effect lasts this long.
+    WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -430,6 +441,9 @@ pub enum CombatQuirk {
     AssignsAsThoughPositive,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
+    /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
+    /// "All Walls able to block ~ do so."
+    MustBeBlockedBy(Selector),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.
@@ -472,6 +486,10 @@ pub enum Prohibited {
     PutCounter,
     /// Have counters of one kind put on them (CR 122).
     PutCounterOf(crate::value::CounterKind),
+    /// Have counters of one kind removed from them (CR 122): "Stun counters can't be removed from permanents your
+    /// opponents control."; a stun counter that would be removed in place of an untap stays and the permanent stays
+    /// tapped.
+    RemoveCounterOf(crate::value::CounterKind),
     /// Have triggered abilities of the subjects' permanents trigger from the event the pattern describes (CR 603).
     Trigger(TriggerPattern),
     /// Become attached, or have anything attached to them (CR 701.3).
@@ -489,6 +507,8 @@ pub enum Prohibited {
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
     Crew,
+    /// Become suspected (CR 701.60): an effect that would suspect it does nothing to it.
+    BecomeSuspected,
     /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
     EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
@@ -549,6 +569,10 @@ pub enum SpellBenefit {
     /// It can't be countered (CR 101.2) for as long as it is on the stack: "the next spell you cast this turn can't be
     /// countered".
     Uncounterable,
+    /// It may be cast by paying this cost rather than its mana cost (CR 118.9): "Rather than pay the mana cost of the next
+    /// spell you cast this turn, you may pay life equal to that spell's mana value"; an amount in it counts the card cast
+    /// as `This`.
+    Rather(crate::cost::Cost),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -810,6 +834,8 @@ pub enum GameRule {
     UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
+    CantBeCopied,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -843,6 +869,15 @@ pub enum GameRule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
+    /// counters.
+    DamageAsWither,
+    /// A player losing unspent mana loses that much life (mana burn): "A player losing unspent mana causes that player to
+    /// lose that much life."
+    ManaBurn,
+    /// Every creature can attack the players and the planeswalkers they control as though it had haste (CR 302.6): "All
+    /// creatures can attack your opponents and planeswalkers your opponents control as though those creatures had haste."
+    AttackAsThoughHasteAt(Ref),
     /// The players can't lose the game (CR 104.3), and with `opponents_cant_win` their opponents can't win it.
     CantLoseGame {
         /// The players who can't lose.

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c3469de8-4bdb-42d4-9fc0-75fe31c3f6e5",
+  "name": "Lymph Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lymph Sliver",
+      "oracle_fingerprint": "a262cf24a92e5e3e1f95da66d386aab9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "absorb", "amount": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

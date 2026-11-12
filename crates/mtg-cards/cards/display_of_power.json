@@ -1,0 +1,27 @@
+{
+  "oracle_id": "99140891-face-4015-aacd-1309e87d8f9f",
+  "name": "Display of Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Display of Power",
+      "oracle_fingerprint": "6db8f39fe49efa9632058cfeb1d2a50b",
+      "abilities": [
+        { "Rule": { "rule": "CantBeCopied" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

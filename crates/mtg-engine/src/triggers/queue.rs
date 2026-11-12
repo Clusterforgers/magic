@@ -391,6 +391,7 @@ mod tests {
             ability,
             controller: object.controller(),
             cause: Cause {
+                dealers: Vec::new(),
                 subjects: vec![crate::choose::Target::Player(subject)],
                 snapshots: Vec::new(),
                 amount: 0,

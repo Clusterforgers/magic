@@ -1,7 +1,7 @@
 {
   "oracle_id": "166e5680-b8cf-47da-bcae-3591367c5fb4",
   "name": "Vorinclex // The Grand Evolution",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vorinclex",
@@ -48,9 +48,25 @@
       "oracle_fingerprint": "d2decdd554f40064d171378146e313f1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 68, "end": 166 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 10, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": { "Battlefield": {} } } }
+            ]
           }
         },
         {
@@ -69,9 +85,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 254, "end": 436 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{1}",
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "ControlledBy": "You" } }
+                                ]
+                              }
+                            }
+                          ],
+                          "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

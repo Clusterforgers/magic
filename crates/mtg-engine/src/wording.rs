@@ -41,6 +41,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::Subtypes => "subtypes",
     }
 }
 

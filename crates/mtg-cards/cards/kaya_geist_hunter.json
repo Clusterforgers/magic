@@ -1,7 +1,7 @@
 {
   "oracle_id": "e0edb2fc-2533-407c-85e5-4337f4233f05",
   "name": "Kaya, Geist Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kaya, Geist Hunter",
@@ -29,9 +29,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 129, "end": 263 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "TokenCreation": {} },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

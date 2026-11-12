@@ -92,6 +92,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::Instead(_)
         | ReplaceBy::InsteadNext(_)
         | ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
         | ReplaceBy::Redirect { .. },
     ) = (when, by)
     else {
@@ -130,13 +131,17 @@ pub(super) fn damage_shield(
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::Redirect { .. } => Some(by.clone()),
         ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
+        ReplaceBy::RedirectCounted { most, to } => Some(ReplaceBy::RedirectUpTo {
+            most: u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX),
+            to: to.clone(),
+        }),
         _ => None,
     };
     let (left, then) = match by {
         ReplaceBy::PreventUpTo(most) | ReplaceBy::RedirectUpTo { most, .. } => {
             (Some(*most), Vec::new())
         }
-        ReplaceBy::PreventCounted(amount) => {
+        ReplaceBy::PreventCounted(amount) | ReplaceBy::RedirectCounted { most: amount, .. } => {
             let most = u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX);
             (Some(most), Vec::new())
         }
@@ -170,12 +175,12 @@ pub(super) fn damage_shield(
     };
     // The new recipient of redirected damage is fixed as the shield begins (CR 611.2c); naming none, it redirects nothing.
     let redirect = match by {
-        ReplaceBy::RedirectUpTo { to: named, .. } | ReplaceBy::Redirect { to: named, .. } => {
-            match cx.scope.refs(named)?.first() {
-                Some(target) => Some(*target),
-                None => return Ok(None),
-            }
-        }
+        ReplaceBy::RedirectUpTo { to: named, .. }
+        | ReplaceBy::RedirectCounted { to: named, .. }
+        | ReplaceBy::Redirect { to: named, .. } => match cx.scope.refs(named)?.first() {
+            Some(target) => Some(*target),
+            None => return Ok(None),
+        },
         _ => None,
     };
     let chosen = Selector(

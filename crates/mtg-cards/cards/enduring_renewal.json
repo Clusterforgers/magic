@@ -1,7 +1,7 @@
 {
   "oracle_id": "47a080c4-ff04-4f52-aca0-2b8e4f4d931e",
   "name": "Enduring Renewal",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Enduring Renewal",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Rule": { "rule": { "RevealHand": "You" } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 30, "end": 177 }
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "LookAtTop": { "as": "top" } },
+                { "Reveal": { "what": { "Bound": "top" } } },
+                {
+                  "If": {
+                    "condition": {
+                      "Matches": {
+                        "subject": { "Bound": "top" },
+                        "selector": [{ "Type": "Creature" }]
+                      }
+                    },
+                    "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }],
+                    "otherwise": [{ "Draw": {} }]
+                  }
+                }
+              ]
+            }
           }
         },
         {
