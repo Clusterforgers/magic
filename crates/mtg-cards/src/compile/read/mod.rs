@@ -151,6 +151,7 @@ mod l292_hand_reads;
 mod l292_haunt;
 mod l292_twins;
 mod l293_events;
+mod l32a_paid;
 mod land_types;
 mod lands;
 mod leave_combat;
@@ -495,6 +496,24 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            l32a_paid::l32a_times_read(text, |twin| clause_with(twin, kind, x_free, own))
+                .or_else(|| {
+                    l32a_paid::l32a_still_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+                .or_else(|| {
+                    l32a_paid::l32a_reattack_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+                .or_else(|| {
+                    l32a_paid::l32a_exchange_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

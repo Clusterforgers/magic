@@ -27,6 +27,7 @@ mod generated;
 mod hand_written;
 mod l290_writers;
 mod l293_cards;
+mod l32a_cards;
 mod linked_exile;
 mod partial;
 mod partial_draft;

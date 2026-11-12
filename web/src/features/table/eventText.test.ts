@@ -73,6 +73,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Paired: [{ Paired: { object: 3, with: 1 } }, 'Forest is paired with Grizzly Bears'],
   Unpaired: [{ Unpaired: { object: 3, with: 1 } }, 'Forest is no longer paired with Grizzly Bears'],
   JoinedAttack: [{ JoinedAttack: { object: 3, target: { Player: 0 } } }, 'Forest enters attacking Ana'],
+  AttackRedirected: [{ AttackRedirected: { object: 3, target: { Player: 0 } } }, 'Forest now attacks Ana'],
   RemovedFromCombat: [{ RemovedFromCombat: { object: 3 } }, 'Forest is removed from combat'],
   AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
   ManualAction: [

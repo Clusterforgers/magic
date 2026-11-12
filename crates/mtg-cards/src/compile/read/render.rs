@@ -663,6 +663,10 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     }
     super::wf27_writers::wf25_to_wf27_wordings(ability, written_variants, &mut texts);
     super::l293_events::l293_won_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_times_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_still_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {

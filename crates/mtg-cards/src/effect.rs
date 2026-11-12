@@ -1775,6 +1775,30 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         unpaid: Vec<Effect>,
     },
+    /// The player may pay the cost any number of times: they choose how many, from none to the most they can pay, and
+    /// pay it that many times at once ("you may pay {1}{G} any number of times"). A `Reflexive` right after it ("When you
+    /// pay this cost one or more times") triggers only when it was paid, with the number of payments as its
+    /// `Amount::Triggering` ("that many").
+    PayAnyTimes {
+        /// Who may pay.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cost of one payment.
+        cost: Cost,
+    },
+    /// The ability resolves even when every target it chose became illegal, so CR 608.2b does not stop it ("This ability
+    /// still resolves if its target becomes illegal."); as a step it does nothing.
+    StillResolves,
+    /// For each attacking creature `what` names, the controller may choose again what it attacks, among the players,
+    /// planeswalkers and battles its controller could attack ("you may reselect which player or permanent target
+    /// attacking creature is attacking"); it stays an attacking creature that was declared (CR 506.4 does not apply).
+    Reattack {
+        /// The attacking creatures.
+        what: Ref,
+        /// Only players are offered ("reselect which player ~ is attacking").
+        #[serde(default, skip_serializing_if = "is_false")]
+        players: bool,
+    },
     /// Binds the players or objects `what` names now under the name, so the steps after it (and a delayed trigger this
     /// resolution sets up) read the same ones however the game changes ("its controller" of a spell about to be countered).
     Bind {

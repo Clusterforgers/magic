@@ -3112,6 +3112,9 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
+                            | Effect::ExchangeControl { .. }
+                            | Effect::PayAnyTimes { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
@@ -3652,7 +3655,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::Unattach { what } | Effect::JoinAttack { what } => {
+            Effect::Unattach { what } | Effect::JoinAttack { what } | Effect::Reattack { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::MyriadCopies { of, bind } => {
@@ -4117,6 +4120,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::StillResolves
             | Effect::Forget { .. }
             | Effect::DrawGame {}
             | Effect::Crewed { .. }
@@ -4225,6 +4229,17 @@ impl Walker<'_> {
             Effect::May { who, effects } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.effect_list("effects", effects, false);
+            }
+            Effect::PayAnyTimes { who, cost } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                if cost
+                    .0
+                    .iter()
+                    .any(|item| matches!(item, CostItem::SacrificeSelf | CostItem::ExileSelf))
+                {
+                    w.problem("a cost paid any number of times cannot take its source");
+                }
             }
             Effect::Pay {
                 who,

@@ -734,6 +734,7 @@ Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
+Gilded Drake
 Gilded Goose
 Gilded Lotus
 Gilt-Leaf Palace
@@ -918,6 +919,7 @@ Inspirit
 Intelligence Bobblehead
 Into the Roil
 Into the Time Vortex
+Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
@@ -1165,6 +1167,7 @@ Mirrorweave
 Misery Charm
 Mishra's Workshop
 Mishra, Excavation Prodigy
+Misleading Signpost
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
@@ -1344,6 +1347,7 @@ Pongify
 Pontiff of Blight
 Pop Quiz
 Porcuparrot
+Portal Mage
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
@@ -1778,6 +1782,7 @@ Syphon Life
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
+Tainted Adversary
 Tainted Isle
 Tainted Remedy
 Tamiyo's Logbook
@@ -2058,6 +2063,7 @@ Windbrisk Heights
 Windfall
 Winds of Qal Sisma
 Winds of Rath
+Windshaper Planetar
 Winged Boots
 Winged Hive Tyrant
 Winged Portent

@@ -1090,6 +1090,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, target } = event.JoinedAttack
     return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)
   }
+  if ('AttackRedirected' in event) {
+    const { object, target } = event.AttackRedirected
+    return line(`${n.card(object)} now attacks ${attackTarget(target, n)}`)
+  }
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
   }
