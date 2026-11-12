@@ -9,7 +9,9 @@
       "abilities": [
         {
           "CastOnly": {
-            "condition": { "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }] }
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
           }
         },
         {
