@@ -153,7 +153,7 @@ function ReplayTable({ game, replay, options }: { game: string; replay: Replay; 
           role="toolbar"
           aria-label="Replay"
           data-slot="replay-controls"
-          className="fixed top-14 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-wrap items-center gap-1 rounded-lg border bg-background/95 px-2 py-1 shadow-md"
+          className="fixed right-2 bottom-2 left-2 z-50 flex flex-wrap items-center justify-center gap-1 rounded-lg border bg-background/95 px-2 py-1 shadow-md sm:left-auto sm:max-w-[34rem]"
         >
           <Button
             size="icon-sm"

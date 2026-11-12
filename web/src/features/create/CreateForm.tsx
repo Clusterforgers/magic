@@ -237,8 +237,6 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
               onCount={(count) => setDraft((current) => resizeSeats(current, decks, count))}
             />
           )}
-        </div>
-        <div className="grid content-start gap-4" data-slot="create-options-column">
           {draft.links ? null : (
             <BotsField
               value={botsOf(draft)}
@@ -246,6 +244,8 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
               onChange={(count) => setDraft((current) => chooseBots(current, count))}
             />
           )}
+        </div>
+        <div className="grid content-start gap-4" data-slot="create-options-column">
           {draft.links ? null : (
             <VisibilityField
               value={draft.visibility}
