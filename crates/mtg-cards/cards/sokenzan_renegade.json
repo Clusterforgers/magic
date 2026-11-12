@@ -1,7 +1,7 @@
 {
   "oracle_id": "63f414ed-01f4-428a-b65f-5c640679d5ef",
   "name": "Sokenzan Renegade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sokenzan Renegade",
@@ -9,9 +9,62 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 95, "end": 260 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                          "op": "Eq",
+                          "right": {
+                            "Largest": {
+                              "who": "EachPlayer",
+                              "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetController": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                              "op": "Eq",
+                              "right": {
+                                "Largest": {
+                                  "who": "EachPlayer",
+                                  "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

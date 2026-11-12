@@ -1,7 +1,7 @@
 {
   "oracle_id": "992e6845-1c6c-4b74-839c-317823bde15b",
   "name": "Critical Hit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Critical Hit",
@@ -22,9 +22,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 187 }
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [20], "natural": true } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
           }
         }
       ]

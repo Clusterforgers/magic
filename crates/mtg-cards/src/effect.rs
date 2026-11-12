@@ -1167,6 +1167,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The source creature enlists the creatures `what` names (CR 702.154a): each untapped one becomes tapped, and the
+    /// source has enlisted it.
+    Enlist {
+        /// The creatures enlisted.
+        what: Ref,
+    },
     /// Two creatures become paired (CR 702.95): `what` and the creature `with` names; nothing happens unless both are
     /// unpaired creatures on the battlefield under one controller who is the player that resolves it.
     Pair {
@@ -1369,6 +1375,12 @@ pub enum Effect {
     AddPhase {
         /// The phases added.
         phases: Vec<PhaseKind>,
+    },
+    /// A step is added right after the current step, before any step added earlier ("you get an additional upkeep step
+    /// after this step", "there is an additional end step after this step"); nothing is added before the first turn.
+    AddStep {
+        /// The step added.
+        step: crate::trigger::Step,
     },
     /// The player wins the game.
     WinGame {

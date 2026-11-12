@@ -68,7 +68,7 @@ impl Registry {
         .await
     }
 
-    /// The running games of either visibility, which any signed-in visitor may watch, newest first, at most
+    /// The running games of either visibility, which any signed-in visitor may watch (and only a signed-in visitor is shown), newest first, at most
     /// [`MAX_LISTED_LOBBIES`]. Lobbies, ended games, tutorials and games whose actor is gone are never in it.
     pub async fn running(&self) -> Vec<ListedGame> {
         self.listed(|_, status| (status.started && status.result.is_none()).then_some(true))

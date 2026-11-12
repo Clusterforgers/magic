@@ -596,6 +596,35 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
         } else {
             lines.iter().map(|line| (*line).to_owned()).collect()
         };
+        // A rule about the cost of a keyword or an activated ability may follow it in one clause ("Flashback {8}{W}{W}.
+        // This spell costs {X} less to cast this way, ...", "{2}, {T}: Tap target creature. This ability costs {1} less
+        // to activate if ...").
+        // The activated ability itself is the clause before that sentence.
+        if matches!(ability, Ability::Activated { .. }) {
+            wanted.extend(
+                compiled
+                    .clauses
+                    .iter()
+                    .filter(|clause| clause.face == face && clause.kind == ClauseKind::Activated)
+                    .filter_map(|clause| {
+                        let end = clause.text.find(". This ability costs ")?;
+                        Some(clause.text[..=end].to_owned())
+                    }),
+            );
+        }
+        if matches!(ability, Ability::CostModifier { .. }) {
+            for clause in compiled.clauses.iter().filter(|clause| clause.face == face) {
+                let rule = match clause.kind {
+                    ClauseKind::Keyword => clause.text.split_once(". ").map(|(_, rule)| rule),
+                    ClauseKind::Activated => clause
+                        .text
+                        .find(". This ability costs ")
+                        .map(|end| &clause.text[end + 2..]),
+                    _ => None,
+                };
+                wanted.extend(rule.map(str::to_owned));
+            }
+        }
         // The checker reads "if evidence was collected" as the paid additional cost of the face, as written.
         let paid: Vec<String> = wanted
             .iter()

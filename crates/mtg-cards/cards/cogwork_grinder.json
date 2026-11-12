@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f10898a5-87ec-4a30-a383-9f9bcba3e4d0",
+  "name": "Cogwork Grinder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cogwork Grinder",
+      "oracle_fingerprint": "a611ca0765af7e17a3c6206e724dfed2",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": { "RemoveDrafted": { "face_up": false } } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

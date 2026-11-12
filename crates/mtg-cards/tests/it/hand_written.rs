@@ -10,15 +10,18 @@ use rstest::rstest;
 
 use crate::common::{self, Corpus, UPDATE};
 
-/// The lowercase names of the cards and their faces: what a rule may name.
+/// The lowercase names of the cards, their faces and the drafts: what a rule may name.
 fn names_of(cards: &[PrintedCard]) -> BTreeSet<String> {
-    cards
-        .iter()
-        .flat_map(|card| {
-            std::iter::once(&card.name).chain(card.faces.iter().map(|face| &face.name))
-        })
-        .map(|name| name.to_lowercase())
-        .collect()
+    let mut names = common::draft_names();
+    names.extend(
+        cards
+            .iter()
+            .flat_map(|card| {
+                std::iter::once(&card.name).chain(card.faces.iter().map(|face| &face.name))
+            })
+            .map(|name| name.to_lowercase()),
+    );
+    names
 }
 
 /// The problems of the file of `card` against `shown`, each with the card's name; none when it is valid.
@@ -43,7 +46,9 @@ fn problems_of_card(
 
 /// The problems of every file of the library against the records.
 fn problems(library: &Library, records: &[PrintedCard]) -> Vec<String> {
-    let names = names_of(records);
+    let mut names = names_of(records);
+    // A search by name may name a card a draft holds (`Library::check_printed_naming`).
+    names.extend(common::draft_names());
     let by_id: BTreeMap<&str, &PrintedCard> = records
         .iter()
         .map(|record| (record.oracle_id.as_str(), record))

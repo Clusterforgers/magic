@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a6a7bf77-0560-4572-a826-3bc9df1f78d1",
+  "name": "Y'shtola Rhul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Y'shtola Rhul",
+      "oracle_fingerprint": "1dc288d1e01d3a2245cedfbf8eb2984b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              { "If": { "condition": "FirstStep", "then": [{ "AddStep": { "step": "End" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

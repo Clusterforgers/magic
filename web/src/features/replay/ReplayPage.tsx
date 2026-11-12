@@ -67,7 +67,13 @@ export function ReplayPage({ game, fetch, options }: ReplayPageProps) {
       <PageShell width="narrow" className="sm:pt-12">
         <EmptyState
           as="h1"
-          title={load.reason === 'not_found' ? 'No replay for this game' : 'The replay could not be loaded'}
+          title={
+            load.reason === 'not_found'
+              ? 'No replay for this game'
+              : load.reason === 'signed_out'
+                ? 'Sign in to watch replays'
+                : 'The replay could not be loaded'
+          }
           action={
             <Link to="/games" className={cn(buttonVariants({ size: 'lg' }))}>
               My games
@@ -76,9 +82,11 @@ export function ReplayPage({ game, fetch, options }: ReplayPageProps) {
         >
           {load.reason === 'not_found'
             ? 'A game has a replay once it has ended.'
-            : load.reason === 'network'
-              ? 'Could not reach the server. Check your connection and try again.'
-              : 'Something went wrong on the server. Try again later.'}
+            : load.reason === 'signed_out'
+              ? 'Replays are for signed-in players, like watching a running game.'
+              : load.reason === 'network'
+                ? 'Could not reach the server. Check your connection and try again.'
+                : 'Something went wrong on the server. Try again later.'}
         </EmptyState>
       </PageShell>
     )

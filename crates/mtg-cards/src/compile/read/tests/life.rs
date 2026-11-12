@@ -75,8 +75,6 @@ fn winning_reads_in_a_spell(#[case] text: &str) {
 #[case::a_variable(
     "At the beginning of your upkeep, if you have X or more life, you win the game."
 )]
-#[case::losing("At the beginning of your upkeep, you lose the game.")]
-#[case::an_opponent_loses("At the beginning of your upkeep, each opponent loses the game.")]
 #[case::wins_with_a_count("At the beginning of your upkeep, you win the game twice.")]
 #[case::win_a_coin_flip("At the beginning of your upkeep, you win the flip.")]
 #[case::if_after_the_effect(

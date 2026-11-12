@@ -77,6 +77,7 @@ describe('the replay page', () => {
 
   it.each([
     [() => jsonResponse(404, { error: 'not_found', message: 'no such resource' }), 'No replay for this game'],
+    [() => jsonResponse(401, { error: 'unauthenticated', message: 'sign in' }), 'Sign in to watch replays'],
     [() => jsonResponse(500, { error: 'internal', message: 'x' }), 'The replay could not be loaded'],
     [() => jsonResponse(200, { names: [], steps: [] }), 'The replay could not be loaded'],
     [() => Promise.reject(new TypeError('offline')), 'The replay could not be loaded'],

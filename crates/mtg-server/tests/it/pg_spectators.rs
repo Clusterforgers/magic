@@ -1,4 +1,4 @@
-//! Goal: any signed-in user watches any running game, public or invite, through `GET /ws/{game}/watch`: the socket holds no seat, is welcomed as the spectator viewer and gets the spectator's snapshot (no hand listed), batches and result, never changes the game (a message is refused, a resync reconnects); the seats are told how many watch as it changes and on joining; nobody signed out, no unknown game and no game not yet started is watched; and the game browser lists running games of either visibility as running after the public lobbies.
+//! Goal: any signed-in user watches any running game, public or invite, through `GET /ws/{game}/watch`: the socket holds no seat, is welcomed as the spectator viewer and gets the spectator's snapshot (no hand listed), batches and result, never changes the game (a message is refused, a resync reconnects); the seats are told how many watch as it changes and on joining; nobody signed out, no unknown game and no game not yet started is watched; and the game browser lists running games of either visibility as running after the public lobbies, to signed-in visitors only.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -206,7 +206,7 @@ async fn nobody_signed_out_no_unknown_game_and_no_lobby_is_watched(pool: PgPool)
 }
 
 #[sqlx::test(migrations = false)]
-async fn the_game_browser_lists_running_games_of_either_visibility_beside_public_lobbies(
+async fn the_game_browser_lists_running_games_of_either_visibility_beside_public_lobbies_to_the_signed_in(
     pool: PgPool,
 ) {
     let server = start(&pool).await;
@@ -221,7 +221,22 @@ async fn the_game_browser_lists_running_games_of_either_visibility_beside_public
         .unwrap();
     assert!(ended_handle.status().await.unwrap().result.is_some());
     drop(handle);
-    let reply = net::get(server.addr, "/api/lobbies").await;
+    let guest = net::get(server.addr, "/api/lobbies").await;
+    assert_eq!(guest.status, 200, "{}", guest.text());
+    let shown = guest.json();
+    let guest_rows: Vec<String> = shown["games"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|row| row["game"].as_str().unwrap().to_owned())
+        .collect();
+    assert!(guest_rows.contains(&public_lobby));
+    assert!(
+        !guest_rows.contains(&public_running) && !guest_rows.contains(&invite_running),
+        "a guest, who may not watch, is not shown who plays a running game"
+    );
+    let reader = register(server.addr, "Watcher", PASSWORD).await;
+    let reply = reader.get(server.addr, "/api/lobbies").await;
     assert_eq!(reply.status, 200, "{}", reply.text());
     let rows: Vec<(String, bool)> = reply.json()["games"]
         .as_array()

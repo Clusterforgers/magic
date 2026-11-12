@@ -1,7 +1,7 @@
 {
   "oracle_id": "02f46271-c90d-4318-9004-74e7bee64a89",
   "name": "Angel of Destiny",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Angel of Destiny",
@@ -25,9 +25,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 133, "end": 293 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Ge",
+                "right": { "Sum": [{ "StartingLife": "You" }, 15] }
+              }
+            },
+            "effects": [
+              {
+                "LoseGame": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "DidThisTurn": { "event": "Attacked", "to": "You" } }]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

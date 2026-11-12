@@ -24,6 +24,7 @@ pub fn g13g_activation_texts(
     let word = match kind {
         ActivationKind::Equip => "Equip",
         ActivationKind::Cycling => "Cycling",
+        ActivationKind::Ninjutsu => "Ninjutsu",
         _ => return Vec::new(),
     };
     let more = match change {

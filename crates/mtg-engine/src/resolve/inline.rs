@@ -44,7 +44,7 @@ pub(crate) fn run_inline(
         player,
         source: source.reference(),
     };
-    match drive(&base, source.id, effects, &mut || None)? {
+    match drive(&base, source.id, effects, &mut || None, None)?.0 {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
         Inline::Ask(_) => Err(ResolveError::Invalid(
@@ -72,7 +72,26 @@ pub(crate) fn w5d_run_instead(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer)
+    drive(&base, source.id, effects, answer, None).map(|(ran, _)| ran)
+}
+
+/// [`w5d_run_instead`] that also works out `count` once the effects have run, in the scope their steps leave (the names
+/// they bound, the state they left): "As ~ enters, ... ~ enters with a +1/+1 counter on it for each ...".
+pub(crate) fn r304_run_then_count(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectRef,
+    cause: &Cause,
+    (effects, count): (&[Effect], &mtg_cards::value::Amount),
+    answer: Answers<'_>,
+) -> Result<(Inline, i64), ResolveError> {
+    let base = Base::Instead {
+        state,
+        player,
+        source,
+        cause,
+    };
+    drive(&base, source.id, effects, answer, Some(count))
 }
 
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
@@ -86,7 +105,8 @@ fn drive(
     object: ObjectId,
     effects: &[Effect],
     answer: Answers<'_>,
-) -> Result<Inline, ResolveError> {
+    count: Option<&mtg_cards::value::Amount>,
+) -> Result<(Inline, i64), ResolveError> {
     let mut resolving = Resolving::begin(object);
     let mut events = Vec::new();
     let mut steps = 0_usize;
@@ -102,7 +122,7 @@ fn drive(
         match step(base, after.as_ref(), &resolving, effect)? {
             Run::Ask(decision) => match answer() {
                 Some(given) => resolving.journal.push(given),
-                None => return Ok(Inline::Ask(decision)),
+                None => return Ok((Inline::Ask(decision), 0)),
             },
             Run::Cast(_) => {
                 return Err(ResolveError::Invalid(
@@ -125,7 +145,7 @@ fn drive(
                     && next == Next::Sibling
                     && matches!(effects, [Effect::May { .. }])
                 {
-                    return Ok(Inline::Declined);
+                    return Ok((Inline::Declined, 0));
                 }
                 // An object an earlier step moved is a new object (CR 400.7): a later step's move of it finds nothing.
                 // A step that read the folded state found it as the new object it is, which it may move.
@@ -147,7 +167,11 @@ fn drive(
             }
         }
     }
-    Ok(Inline::Events(events))
+    let counted = match count {
+        Some(amount) => base.scope(after.as_ref(), &resolving).amount(amount)?,
+        None => 0,
+    };
+    Ok((Inline::Events(events), counted))
 }
 
 /// Where effects run inline read their scope from.

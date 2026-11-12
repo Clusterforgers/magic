@@ -1,39 +1,38 @@
 {
   "object": "card",
-  "id": "86572747-8faa-4242-b059-07d11e6be1cd",
+  "id": "08628e78-a8c5-48bb-a865-bfd33be6f008",
   "oracle_id": "6798163a-864f-4844-96b1-77585a7e7ab4",
   "multiverse_ids": [
-    491796
+    684297
   ],
-  "mtgo_id": 83285,
-  "arena_id": 73357,
-  "tcgplayer_id": 222015,
-  "cardmarket_id": 495890,
+  "arena_id": 93418,
+  "tcgplayer_id": 590194,
+  "cardmarket_id": 796746,
   "name": "Roil Eruption",
   "lang": "en",
-  "released_at": "2020-09-25",
-  "uri": "https://api.scryfall.com/cards/86572747-8faa-4242-b059-07d11e6be1cd",
-  "scryfall_uri": "https://scryfall.com/card/znr/155/roil-eruption?utm_source=api",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/08628e78-a8c5-48bb-a865-bfd33be6f008",
+  "scryfall_uri": "https://scryfall.com/card/j25/592/roil-eruption?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T07:55:55Z",
+  "image_updated_at": "2026-07-13T02:11:10Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355",
-    "normal": "https://cards.scryfall.io/normal/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355",
-    "large": "https://cards.scryfall.io/large/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355",
-    "png": "https://cards.scryfall.io/png/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.png?1783929355",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355",
-    "thumb": "https://cards.scryfall.io/thumb/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.webp?1783929355",
-    "grid": "https://cards.scryfall.io/grid/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.webp?1783929355",
-    "display": "https://cards.scryfall.io/display/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.webp?1783929355",
-    "art": "https://cards.scryfall.io/art/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.webp?1783929355",
-    "crop": "https://cards.scryfall.io/crop/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.webp?1783929355",
-    "jpeg": "https://cards.scryfall.io/normal/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1783929355"
+    "small": "https://cards.scryfall.io/small/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670",
+    "normal": "https://cards.scryfall.io/normal/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670",
+    "large": "https://cards.scryfall.io/large/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670",
+    "png": "https://cards.scryfall.io/png/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.png?1783908670",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.webp?1783908670",
+    "grid": "https://cards.scryfall.io/grid/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.webp?1783908670",
+    "display": "https://cards.scryfall.io/display/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.webp?1783908670",
+    "art": "https://cards.scryfall.io/art/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.webp?1783908670",
+    "crop": "https://cards.scryfall.io/crop/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.webp?1783908670",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/8/08628e78-a8c5-48bb-a865-bfd33be6f008.jpg?1783908670"
   },
   "mana_cost": "{1}{R}",
-  "cmc": 2.0,
+  "cmc": 2,
   "type_line": "Sorcery",
   "oracle_text": "Kicker {5} (You may pay an additional {5} as you cast this spell.)\nRoil Eruption deals 3 damage to any target. If this spell was kicked, it deals 5 damage instead.",
   "colors": [
@@ -71,32 +70,30 @@
     "tlr": "legal"
   },
   "games": [
-    "arena",
     "paper",
-    "mtgo"
+    "arena"
   ],
   "reserved": false,
   "game_changer": false,
-  "foil": true,
+  "foil": false,
   "nonfoil": true,
   "finishes": [
-    "nonfoil",
-    "foil"
+    "nonfoil"
   ],
   "oversized": false,
   "promo": false,
-  "reprint": false,
+  "reprint": true,
   "variation": false,
-  "set_id": "f4e01fa7-b254-42dd-849f-69b58027a8c4",
-  "set": "znr",
-  "set_name": "Zendikar Rising",
-  "set_type": "expansion",
-  "set_uri": "https://api.scryfall.com/sets/f4e01fa7-b254-42dd-849f-69b58027a8c4",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznr&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/znr?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/86572747-8faa-4242-b059-07d11e6be1cd/rulings",
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/08628e78-a8c5-48bb-a865-bfd33be6f008/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6798163a-864f-4844-96b1-77585a7e7ab4&unique=prints",
-  "collector_number": "155",
+  "collector_number": "592",
   "digital": false,
   "rarity": "common",
   "flavor_text": "\"Our feeble villages and tiny encampments stand only at the whim of the Roil.\"\n—*The Invokers' Tales*",
@@ -110,32 +107,27 @@
   "frame": "2015",
   "full_art": false,
   "textless": false,
-  "booster": true,
+  "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 21288,
-  "penny_rank": 8837,
-  "preview": {
-    "source": "Anna Hollinrake",
-    "source_uri": "https://twitter.com/AnnaHollinrake/status/1301856022102003714",
-    "previewed_at": "2020-09-04"
-  },
+  "edhrec_rank": 21435,
+  "penny_rank": 8851,
   "prices": {
-    "usd": "0.09",
-    "usd_foil": "0.23",
+    "usd": "0.29",
+    "usd_foil": null,
     "usd_etched": null,
-    "eur": "0.05",
-    "eur_foil": "0.15",
-    "tix": "0.03"
+    "eur": "0.08",
+    "eur_foil": null,
+    "tix": null
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=491796&printed=false",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=684297&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRoil%2BEruption",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRoil%2BEruption",
     "edhrec": "https://edhrec.com/route/?cc=Roil+Eruption"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F222015%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=495890&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/83285?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590194%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=796746&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Roil+Eruption&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

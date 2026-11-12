@@ -129,6 +129,45 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
         .min()
 }
 
+/// The values of X from `min` to `max` that leave a part picking by X ("a red card with mana value X") too little to
+/// take, so they are not offered.
+pub(super) fn r301_x_without_picks(
+    ctx: &Ctx<'_>,
+    choices: &Choices,
+    min: u32,
+    max: u32,
+) -> Vec<u32> {
+    let Some(price) = price_of(ctx, choices) else {
+        return Vec::new();
+    };
+    let reading: Vec<&Part> = price
+        .parts
+        .iter()
+        .filter(|part| part.r301_picks_by_x())
+        .collect();
+    if reading.is_empty() {
+        return Vec::new();
+    }
+    (min..=max)
+        .filter(|x| {
+            reading.iter().any(|part| {
+                let Part::Pick(pick) = part.at(*x) else {
+                    return false;
+                };
+                let barred = price.barred(part, ctx.source, choices.cost_picks());
+                let candidates = pick.candidates(&Payer {
+                    state: ctx.state,
+                    player: ctx.player,
+                    source: ctx.source,
+                    barred: &barred,
+                    granter: price.granter,
+                });
+                pick.short(ctx.state, &candidates)
+            })
+        })
+        .collect()
+}
+
 /// The power the next pick of the cost needs and the power of `cards`, when the part takes tapped creatures for their
 /// total power and `cards` fall short of it.
 pub(super) fn weak(

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "8fedb2c2-fb13-4af1-b85e-714832562da7",
+  "name": "Leovold's Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leovold's Operative",
+      "oracle_fingerprint": "7b60b3d10b6911d237843eb05a2f9ff5",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "DraftAdditionalPassNext" } } }
+      ]
+    }
+  ]
+}
