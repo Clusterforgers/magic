@@ -420,6 +420,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::CommanderCasts(who)
+        | Amount::CastsFromCommand(who)
         | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)

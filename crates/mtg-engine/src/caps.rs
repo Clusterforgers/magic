@@ -661,6 +661,7 @@ const RUNS: &[&str] = &[
     "Amount.ColorsSpent",
     "Amount.PermanentsGraved",
     "Amount.CommanderCasts",
+    "Amount.CastsFromCommand",
     "Amount.Speed",
     "Amount.Tallied",
     "Amount.Largest",

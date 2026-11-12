@@ -2011,6 +2011,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
+            Amount::CastsFromCommand(what) => self.r300b_casts_from_command(what)?,
             Amount::Speed(who) => self
                 .players(who)?
                 .into_iter()

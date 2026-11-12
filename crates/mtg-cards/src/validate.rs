@@ -985,6 +985,7 @@ impl<'a> Walker<'a> {
         self.at("by", |w| w.amount(by));
     }
 
+    #[allow(clippy::too_many_lines)]
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -1003,7 +1004,9 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::Stat { of, .. } | Amount::CastsFromCommand(of) => {
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
@@ -1187,6 +1190,7 @@ impl<'a> Walker<'a> {
             | Amount::Stat { .. }
             | Amount::Life(_)
             | Amount::CommanderCasts(_)
+            | Amount::CastsFromCommand(_)
             | Amount::Counters { .. }
             | Amount::AnyCounters(_)
             | Amount::Sum(_)

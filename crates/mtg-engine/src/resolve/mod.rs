@@ -10,6 +10,7 @@ mod inline;
 mod left;
 pub(crate) mod prim;
 mod r285_attacked;
+mod r300b_value;
 mod share;
 mod tree;
 mod value;

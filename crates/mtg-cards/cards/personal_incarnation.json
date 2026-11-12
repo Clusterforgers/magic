@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6e49a5b8-6bc4-4c7b-82c1-957f1fb0ca5f",
+  "name": "Personal Incarnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Personal Incarnation",
+      "oracle_fingerprint": "da8e70417bee4ee45be11e4138e40ebd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "by": "Owner",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "OwnerOf": "This" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "OwnerOf": "This" },
+                  "amount": { "Half": { "of": { "Life": { "OwnerOf": "This" } }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

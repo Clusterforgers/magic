@@ -433,6 +433,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
                 Activators::Controller => controller == player,
                 Activators::Anyone => true,
                 Activators::Opponents => controller != player,
+                Activators::Owner => object.owner() == player,
             };
             if allowed && can_activate(state, player, object, address, &rules) {
                 found.push(address);

@@ -1,7 +1,7 @@
 {
   "oracle_id": "46fbcbdf-73d0-4fa2-8db7-3b19bfc7ac22",
   "name": "Ashen Ghoul",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashen Ghoul",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 162 }
+          "Activated": {
+            "cost": "{B}",
+            "condition": {
+              "All": [
+                "YourTurn",
+                { "Step": "Upkeep" },
+                {
+                  "Compare": {
+                    "left": { "CardsAbove": { "filter": [{ "Type": "Creature" }] } },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
           }
         }
       ]
