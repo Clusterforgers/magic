@@ -357,6 +357,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::GameRestarted { .. }
         | Event::SpellControlGained { .. }
         | Event::PhasesAdded { .. }
+        | Event::StepAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
@@ -445,6 +446,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::RingBearerLost { .. }
         | Event::Learned { .. }
         | Event::EvidenceCollected { .. }
+        | Event::Foraged { .. }
         | Event::DieRolled { .. }
         | Event::RolledToVisit { .. }
         | Event::PrizeClaimed { .. }

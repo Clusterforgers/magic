@@ -167,7 +167,11 @@ kept: Array<ObjectId>, } } | { "PhasesAdded": {
 /**
  * The first step of each added phase.
  */
-steps: Array<Step>, } } | { "StepBegan": { 
+steps: Array<Step>, } } | { "StepAdded": { 
+/**
+ * The step added.
+ */
+step: Step, } } | { "StepBegan": { 
 /**
  * The step.
  */
@@ -809,6 +813,10 @@ object: ObjectId, } } | { "Learned": {
 player: PlayerId, } } | { "EvidenceCollected": { 
 /**
  * Who collected it.
+ */
+player: PlayerId, } } | { "Foraged": { 
+/**
+ * Who foraged.
  */
 player: PlayerId, } } | { "DieRolled": { 
 /**

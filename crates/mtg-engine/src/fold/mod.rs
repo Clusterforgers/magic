@@ -364,6 +364,9 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.r306_steps.clear();
+    state.turn.r306_seen = 0;
+    state.turn.r306_again = 0;
     state.turn.ending = false;
     crate::player_control::turn_began(state, number, active);
     if !extra && (before == 0 || state.opens_round(previous, active)) {
@@ -412,7 +415,13 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::PhasesAdded { steps } => add_phases(state, steps)?,
+        Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
+            // A step added after the one that ends begins next, and its entry is spent.
+            if state.turn.r306_steps.first() == Some(step) {
+                state.turn.r306_steps.remove(0);
+            }
+            state.turn.r306_note_step(*step);
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.ahead.remove(0);
@@ -451,6 +460,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::PlayerControlGained { .. }
         | Event::ExtraTurnSkipped { .. }
         | Event::PhasesAdded { .. }
+        | Event::StepAdded { .. }
         | Event::StepBegan { .. } => apply_turn(state, event)?,
         Event::SpellControlGained { object, player } => {
             let spell = state
@@ -471,6 +481,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::EvidenceCollected { .. }
+        | Event::Foraged { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }

@@ -216,6 +216,9 @@ pub enum CostItem {
     Waterbend(u32),
     /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
     XAtLeast(u32),
+    /// The X announced for the cost is at most this amount, read as the payment is asked ("X can't be greater than the
+    /// amount of life you gained this turn"); pays nothing itself. Only a payment an effect asks for (`Effect::Pay`) reads it.
+    XAtMost(crate::value::Amount),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

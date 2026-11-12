@@ -92,6 +92,8 @@ pub enum Action {
     Rolled,
     /// A player collected evidence (CR 701.59).
     CollectedEvidence,
+    /// A player foraged (CR 701.61): exiled three cards from their graveyard or sacrificed a Food.
+    Foraged,
     /// A card became plotted (CR 702.170a): its owner exiled it face up with plot.
     Plotted,
 }
@@ -152,6 +154,7 @@ impl Action {
             Action::Learned => ("learn", "learns"),
             Action::Rolled => ("roll a die", "rolls a die"),
             Action::CollectedEvidence => ("collect evidence", "collects evidence"),
+            Action::Foraged => ("forage", "forages"),
             Action::Plotted => ("plot a card", "plots a card"),
         }
     }

@@ -261,6 +261,9 @@ pub enum TriggerPattern {
     Untapped {
         /// The permanent.
         what: Selector,
+        /// Only in the untap step of the turn of the ability's controller ("becomes untapped during your untap step").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        untap_step: bool,
     },
     /// A permanent matching the selector phases out (CR 702.26); judged as it was before it phased out.
     PhasedOut {

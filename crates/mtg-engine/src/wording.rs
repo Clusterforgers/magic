@@ -739,8 +739,16 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} phases in", subject(what)),
             what.0 == [Pred::This],
         ),
-        TriggerPattern::Untapped { what } => (
-            format!("{} becomes untapped", subject(what)),
+        TriggerPattern::Untapped { what, untap_step } => (
+            format!(
+                "{} becomes untapped{}",
+                subject(what),
+                if *untap_step {
+                    " during your untap step"
+                } else {
+                    ""
+                }
+            ),
             what.0 == [Pred::This],
         ),
         TriggerPattern::Explored { what } => (

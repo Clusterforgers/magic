@@ -1,0 +1,720 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Life": "You"
+      },
+      "op": "Ge",
+      "right": {
+       "Sum": [
+        {
+         "StartingLife": "You"
+        },
+        15
+       ]
+      }
+     }
+    },
+    "effects": [
+     {
+      "LoseGame": {
+       "who": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Matches": {
+           "subject": "This",
+           "selector": [
+            {
+             "DidThisTurn": {
+              "event": "Attacked",
+              "to": "You"
+             }
+            }
+           ]
+          }
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, if you have at least 15 life more than your starting life total, each player this creature attacked this turn loses the game."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        "Forage"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, you may forage."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "Is": {
+             "Bound": "graved"
+            }
+           },
+           {
+            "In": "Graveyard"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "effects": [
+        {
+         "Bind": {
+          "what": {
+           "Each": [
+            {
+             "In": "Library"
+            },
+            {
+             "OwnedBy": "You"
+            },
+            "TopOfLibrary"
+           ]
+          },
+          "as": "top"
+         }
+        },
+        {
+         "Reveal": {
+          "what": {
+           "Bound": "top"
+          }
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Matches": {
+            "subject": {
+             "Bound": "top"
+            },
+            "selector": [
+             {
+              "Type": "Land"
+             }
+            ]
+           }
+          },
+          "then": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "top"
+             },
+             "to": "Graveyard",
+             "as": "graved"
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "most": 1000,
+       "at_least_once": true
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, reveal the top card of your library. If it's a land card, put it into your graveyard and repeat this process."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "CollectEvidence": 4
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, you may collect evidence 4."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": "EachPlayer",
+       "as": "first"
+      }
+     },
+     {
+      "Choose": {
+       "who": {
+        "Bound": "first"
+       },
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": {
+           "Bound": "first"
+          }
+         }
+        ]
+       },
+       "as": "creature"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "creature"
+       },
+       "counter": "+1/+1",
+       "count": 2
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Not": {
+           "Among": {
+            "Bound": "first"
+           }
+          }
+         }
+        }
+       },
+       "as": "second"
+      }
+     },
+     {
+      "Draw": {
+       "who": {
+        "Bound": "second"
+       }
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Not": {
+           "Any": [
+            {
+             "Among": {
+              "Bound": "first"
+             }
+            },
+            {
+             "Among": {
+              "Bound": "second"
+             }
+            }
+           ]
+          }
+         }
+        }
+       },
+       "as": "third"
+      }
+     },
+     {
+      "CreateToken": {
+       "who": {
+        "Bound": "third"
+       },
+       "token": {
+        "Named": "treasure"
+       },
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, choose a player. They put two +1/+1 counters on a creature they control. Choose a second player to draw a card. Then choose a third player to create two Treasure tokens."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "who": "Opponents",
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Chooser"
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "chosen"
+      }
+     },
+     {
+      "Sacrifice": {
+       "who": "Opponents",
+       "filter": [
+        {
+         "Is": {
+          "Bound": "chosen"
+         }
+        }
+       ],
+       "as": "sacrificed"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CountOf": {
+           "of": {
+            "Bound": "sacrificed"
+           },
+           "filter": []
+          }
+         },
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "then": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, any opponent may sacrifice a creature of their choice. If no one does, transform this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     },
+     {
+      "Choose": {
+       "who": "EachPlayer",
+       "from": {
+        "Each": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "Chooser"
+         },
+         {
+          "Type": "Land"
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "lands"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "lands"
+       },
+       "to": {
+        "Battlefield": {}
+       },
+       "as": "put"
+      }
+     },
+     {
+      "Draw": {
+       "who": {
+        "PlayersWhere": {
+         "who": "Opponents",
+         "test": {
+          "Compare": {
+           "left": {
+            "Count": [
+             {
+              "Is": {
+               "Bound": "put"
+              }
+             },
+             {
+              "OwnedBy": "You"
+             }
+            ]
+           },
+           "op": "Eq",
+           "right": 0
+          }
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, draw a card. Each player may put a land card from their hand onto the battlefield, then each opponent who didn't draws a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "AttachedPlayer"
+     }
+    },
+    "if": "FirstStep",
+    "effects": [
+     {
+      "AddStep": {
+       "step": "Upkeep"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of enchanted player's first upkeep each turn, that player gets an additional upkeep step after this step."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Tallied": {
+        "who": "You",
+        "what": "LifeGained"
+       }
+      },
+      "op": "Gt",
+      "right": 0
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Warrior",
+         "colors": [
+          "White"
+         ],
+         "types": [
+          "Creature"
+         ],
+         "subtypes": [
+          "Warrior"
+         ],
+         "power": 1,
+         "toughness": 1
+        }
+       },
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of each end step, if your team gained life this turn, create two 1/1 white Warrior creature tokens."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "Mana": "{X}"
+        },
+        {
+         "XAtMost": {
+          "Tallied": {
+           "who": "You",
+           "what": "LifeGainedTotal"
+          }
+         }
+        }
+       ],
+       "paid": [
+        {
+         "Draw": {
+          "count": "X"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, you may pay {X}. If you do, draw X cards. X can't be greater than the amount of life you gained this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Players": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Compare": {
+           "left": {
+            "Count": [
+             {
+              "In": "Hand"
+             },
+             {
+              "OwnedBy": "You"
+             }
+            ]
+           },
+           "op": "Eq",
+           "right": {
+            "Largest": {
+             "who": "EachPlayer",
+             "of": [
+              {
+               "In": "Hand"
+              },
+              {
+               "OwnedBy": "You"
+              }
+             ]
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      "op": "Eq",
+      "right": 1
+     }
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "SetController": {
+          "PlayersWhere": {
+           "who": "EachPlayer",
+           "test": {
+            "Compare": {
+             "left": {
+              "Count": [
+               {
+                "In": "Hand"
+               },
+               {
+                "OwnedBy": "You"
+               }
+              ]
+             },
+             "op": "Eq",
+             "right": {
+              "Largest": {
+               "who": "EachPlayer",
+               "of": [
+                {
+                 "In": "Hand"
+                },
+                {
+                 "OwnedBy": "You"
+                }
+               ]
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, if a player has more cards in hand than each other player, the player who has the most cards in hand gains control of this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": "FirstStep",
+       "then": [
+        {
+         "AddStep": {
+          "step": "End"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, exile target creature you control, then return it to the battlefield under its owner's control. Then if it's the first end step of the turn, there is an additional end step after this step."
+ ]
+]

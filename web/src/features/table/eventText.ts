@@ -965,6 +965,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
+  if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
@@ -1126,6 +1127,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
   }
+  if ('StepAdded' in event) return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
   if ('AnnouncementRewound' in event) {
     const { player, object, reason } = event.AnnouncementRewound

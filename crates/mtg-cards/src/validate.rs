@@ -392,6 +392,8 @@ struct Walker<'a> {
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
+    /// Whether the cost walked is the cost of a payment an effect asks (`Effect::Pay`), the one place an `XAtMost` is read.
+    r306_paying: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -434,6 +436,7 @@ impl<'a> Walker<'a> {
             x_now: false,
             choosing: false,
             r281_paying: false,
+            r306_paying: false,
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
@@ -1351,6 +1354,7 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::FirstStep => self.uses("Condition", "FirstStep"),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
@@ -1514,6 +1518,13 @@ impl<'a> Walker<'a> {
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::Forage => {}
+                    CostItem::XAtMost(most) => {
+                        // The most X is read where an effect asks the payment and announces its X.
+                        if !w.r306_paying || !w.x_free {
+                            w.uses("Cost", "XAtMost.Elsewhere");
+                        }
+                        w.at("XAtMost", |w| w.amount(most));
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
@@ -2429,7 +2440,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
-            | TriggerPattern::Untapped { what }
+            | TriggerPattern::Untapped { what, .. }
             | TriggerPattern::PhasedOut { what }
             | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Unblocked { what }
@@ -4095,6 +4106,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::AddStep { .. }
             | Effect::Forget { .. }
             | Effect::DrawGame {}
             | Effect::Crewed { .. }
@@ -4216,7 +4228,9 @@ impl Walker<'_> {
                 w.x_free |= announces_x(cost);
                 w.r281_paying = *times == Amount::one()
                     && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
+                w.r306_paying = true;
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r306_paying = false;
                 w.r281_paying = false;
                 w.x_free = saved;
                 w.at("times", |w| w.amount(times));

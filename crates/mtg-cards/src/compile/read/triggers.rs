@@ -78,7 +78,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::TappedNotAttacking { what }
-        | TriggerPattern::Untapped { what }
+        | TriggerPattern::Untapped { what, .. }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
         | TriggerPattern::ZoneChange {
@@ -913,7 +913,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("phases in") || r.words("phase in") {
         return Some(TriggerPattern::PhasedIn { what: what.clone() });
     } else if r.words("becomes untapped") {
-        return Some(TriggerPattern::Untapped { what: what.clone() });
+        let untap_step = r.words("during your untap step");
+        return Some(TriggerPattern::Untapped {
+            what: what.clone(),
+            untap_step,
+        });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
     } else if r.words("becomes crewed") {
@@ -1452,7 +1456,14 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
-        TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::Untapped {
+            what,
+            untap_step: false,
+        } => said(what, "becomes untapped"),
+        TriggerPattern::Untapped {
+            what,
+            untap_step: true,
+        } => said(what, "becomes untapped during your untap step"),
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
         TriggerPattern::Explored { what } => said(what, "explores"),

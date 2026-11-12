@@ -112,6 +112,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
+  Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -192,6 +193,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
     '2 additional phase(s) follow this phase',
   ],
+  StepAdded: [{ StepAdded: { step: 'Upkeep' } }, 'An additional upkeep follows this step'],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
   NothingToDo: [{ NothingToDo: { player: 0, kind: 'Attack' } }, 'Ana has no possible attackers'],
   AnnouncementRewound: [

@@ -170,6 +170,11 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
             Ref::Opponents => "an opponent collects evidence".to_owned(),
             _ => return None,
         },
+        Action::Foraged => match who {
+            Ref::You => "you forage".to_owned(),
+            Ref::Opponents => "an opponent forages".to_owned(),
+            _ => return None,
+        },
         Action::Shuffled => match who {
             Ref::You => "you shuffle your library".to_owned(),
             _ => format!("{} their library", player_verb(who, "shuffle")?),

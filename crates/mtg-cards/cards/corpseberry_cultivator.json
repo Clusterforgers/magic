@@ -1,7 +1,7 @@
 {
   "oracle_id": "5ded56df-c7d5-4043-85df-410f47219faa",
   "name": "Corpseberry Cultivator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Corpseberry Cultivator",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 118, "end": 176 }
+          "Triggered": {
+            "when": { "Did": { "action": "Foraged", "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         }
       ]
