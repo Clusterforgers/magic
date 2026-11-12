@@ -34,6 +34,7 @@ import { REASON_WORDS } from './handReason'
 import { rollSentence } from './manual/panel/roll'
 import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
+import { takeBackAction } from './takeBackText'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
 export interface EventNames {
@@ -1294,6 +1295,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ManualRolled' in event) {
     const { player, kind, result } = event.ManualRolled
     return line(rollSentence(n.seat(player), kind, result))
+  }
+  if ('TookBack' in event) {
+    const { player, kind, name } = event.TookBack
+    return line(`${n.seat(player)} took back ${takeBackAction(kind, name)}`)
   }
   const unhandled: never = event
   return line(String(unhandled))
