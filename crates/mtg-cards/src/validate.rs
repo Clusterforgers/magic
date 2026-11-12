@@ -1390,8 +1390,8 @@ impl<'a> Walker<'a> {
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
-    /// count another payer would read differently ("unless its controller discards their hand") stays unpaid. Every other
-    /// part is named as in any cost.
+    /// count another payer would read differently ("unless its controller discards their hand") stays unpaid; damage equal
+    /// to a stat of an object is counted too. Every other part is named as in any cost.
     fn c6_eg_paid_cost(&mut self, cost: &Cost, who: &Ref) {
         let counted: Vec<(usize, &Amount)> = cost
             .0
@@ -1413,6 +1413,9 @@ impl<'a> Walker<'a> {
                 {
                     Some((i, count))
                 }
+                // Damage equal to a stat of an object reads the same whoever pays ("has ~ deal damage to them equal to
+                // his power").
+                CostItem::DamageToYou(amount @ Amount::Stat { .. }) => Some((i, amount)),
                 _ => None,
             })
             .collect();
@@ -1424,7 +1427,8 @@ impl<'a> Walker<'a> {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
-                | CostItem::ExileFromGraveyard { count, .. } => {
+                | CostItem::ExileFromGraveyard { count, .. }
+                | CostItem::DamageToYou(count) => {
                     *count = Amount::Fixed(1);
                 }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),

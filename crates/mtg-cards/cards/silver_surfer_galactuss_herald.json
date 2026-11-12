@@ -1,7 +1,7 @@
 {
   "oracle_id": "be02005c-0e37-4dba-ac8e-3c69d06bbec2",
   "name": "Silver Surfer, Galactus's Herald",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Silver Surfer, Galactus's Herald",
@@ -31,9 +31,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 157, "end": 302 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": { "Target": 0 }, "players": "Triggering" }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

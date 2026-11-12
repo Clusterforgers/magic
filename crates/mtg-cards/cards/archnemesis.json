@@ -1,7 +1,7 @@
 {
   "oracle_id": "c408717c-e07b-484f-9c81-5666595adf81",
   "name": "Archnemesis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Archnemesis",
@@ -9,15 +9,21 @@
       "abilities": [
         { "Keyword": { "EnchantPlayer": { "opponent": true } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 17, "end": 113 }
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "AttachedPlayer" } },
+            "effects": [
+              { "LoseLife": { "who": "AttachedPlayer", "amount": 2 } },
+              { "Draw": {} },
+              { "GainLife": { "amount": 2 } }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 114, "end": 185 }
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "41d408dc-f6fe-45b2-b225-2ac25db9ad0f",
   "name": "Perrie, the Pulverizer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Perrie, the Pulverizer",
@@ -17,9 +17,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 146, "end": 329 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "CounterKinds" }
+                        },
+                        "toughness": {
+                          "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "CounterKinds" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]
