@@ -46,6 +46,10 @@ pub struct Settings {
     pub combat_search: bool,
     /// Whether attacks and main-phase plays are played on through the next turn's combat.
     pub lookahead: bool,
+    /// Whether the seat and the seats it simulates play carefully: attacks keep enough creatures home to survive the
+    /// next attacks ([`super::combat::safe_attack`]), and instants wait for combat, a response or a target worth them
+    /// ([`super::priority::plan_priority`]).
+    pub careful: bool,
     /// Whether a main-phase play is judged with the best play that can follow it.
     pub sequences: bool,
     /// Whether each decision is searched in a world whose hidden cards are redealt ([`Engine::redeal`]), where every
@@ -72,12 +76,19 @@ impl Settings {
         depth: 1,
         combat_search: false,
         lookahead: false,
+        careful: true,
         sequences: false,
         fair: false,
         weights: Weights::NORMAL,
         deep: None,
         votes: 1,
         time: Some(Duration::from_millis(300)),
+    };
+
+    /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
+    pub const BASELINE: Settings = Settings {
+        careful: false,
+        ..Settings::NORMAL
     };
 
     /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
@@ -89,6 +100,7 @@ impl Settings {
         depth: 2,
         combat_search: true,
         lookahead: true,
+        careful: true,
         sequences: true,
         fair: true,
         weights: Weights::NORMAL,
@@ -419,7 +431,7 @@ impl Search {
             }
             DecisionKind::DeclareAttackers(options) => {
                 let seen = Seen::new(engine.state(), player);
-                Answer::DeclareAttackers(if self.settings.fair {
+                Answer::DeclareAttackers(if self.settings.careful || self.settings.fair {
                     safe_attack(&seen, options)
                 } else {
                     quick_attack(&seen, options)

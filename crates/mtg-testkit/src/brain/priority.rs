@@ -181,7 +181,7 @@ pub fn plan_priority(
         } else {
             0.0
         };
-        let score = outcome.score + ramp;
+        let score = outcome.score + ramp - held_back(search, &seen, window, &play);
         if follow_ups {
             scored.push((score, play.clone(), after));
         }
@@ -193,6 +193,26 @@ pub fn plan_priority(
         best = best_sequence(search, scored, baseline.score + MARGIN).or(best);
     }
     best.map_or(PriorityAction::Pass, |(_, play)| play)
+}
+
+/// What casting an instant in the seat's main phase or at an opponent's end step must gain beyond the margin when the
+/// seat plays carefully: removal and tricks wait for a target worth them, or for combat and responses.
+const HOLD: f64 = 5.0;
+
+/// What `play` must gain beyond the margin in `window` ([`HOLD`] for a careful seat's instant outside combat and
+/// responses, else nothing).
+fn held_back(search: &Search, seen: &Seen<'_>, window: Window, play: &PriorityAction) -> f64 {
+    let PriorityAction::CastSpell(id) = play else {
+        return 0.0;
+    };
+    let instant = seen
+        .chars(*id)
+        .is_some_and(|chars| chars.types.contains(mtg_core::card::CardType::Instant));
+    if search.settings().careful && instant && matches!(window, Window::Main | Window::EndStep) {
+        HOLD
+    } else {
+        0.0
+    }
 }
 
 /// How many of the best plays a lookahead tries a second play after.

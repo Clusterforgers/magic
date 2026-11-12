@@ -123,16 +123,25 @@ impl SeatBrain for Timed {
     }
 }
 
-/// A level, or `exp`: Hard with the settings the `EXP_*` variables change, for tuning.
-fn level(name: &str) -> Option<Level> {
-    Some(match name {
-        "easy" => Level::Easy,
-        "normal" => Level::Normal,
-        "hard" => Level::Hard,
-        "veryhard" => Level::VeryHard,
-        "exp" => return None,
+/// Who plays a seat: a level, the first Normal kept as a yardstick, or Hard with the settings the `EXP_*` variables
+/// change, for tuning.
+#[derive(Debug, Clone, Copy)]
+enum Who {
+    Level(Level),
+    Baseline,
+    Exp,
+}
+
+fn level(name: &str) -> Who {
+    match name {
+        "easy" => Who::Level(Level::Easy),
+        "normal" => Who::Level(Level::Normal),
+        "hard" => Who::Level(Level::Hard),
+        "veryhard" => Who::Level(Level::VeryHard),
+        "baseline" => Who::Baseline,
+        "exp" => Who::Exp,
         other => panic!("unknown level {other}"),
-    })
+    }
 }
 
 fn flag(name: &str, default: bool) -> bool {
@@ -146,11 +155,12 @@ fn number<T: std::str::FromStr>(name: &str, default: T) -> T {
         .unwrap_or(default)
 }
 
-/// The brain of `seat` at `level`, `None` being the experimental settings.
-fn make(level: Option<Level>, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
-    match level {
-        Some(level) => brain(level, seed, seat, timed),
-        None => {
+/// The brain of `seat` played by `who`.
+fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
+    match who {
+        Who::Level(level) => brain(level, seed, seat, timed),
+        Who::Baseline => Box::new(HeuristicBot::new(seed, seat, Settings::BASELINE.untimed())),
+        Who::Exp => {
             let base = Settings::HARD.untimed();
             let mut settings = base;
             settings.sims = number("EXP_SIMS", base.sims);
@@ -168,6 +178,7 @@ fn make(level: Option<Level>, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn
             }
             settings.votes = number("EXP_VOTES", base.votes);
             settings.fair = flag("EXP_FAIR", base.fair);
+            settings.careful = flag("EXP_CAREFUL", base.careful);
             settings.lookahead = flag("EXP_LOOKAHEAD", base.lookahead);
             settings.combat_search = flag("EXP_COMBAT", base.combat_search);
             settings.weights.defend = number("EXP_DEFEND", base.weights.defend);

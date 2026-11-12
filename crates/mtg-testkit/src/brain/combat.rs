@@ -450,8 +450,8 @@ pub fn plan_blocks(search: &mut Search, engine: &Engine, options: &BlockOptions)
 }
 
 /// Attacks worth comparing for the seat, each accepted and different, the likeliest first: the safe attack
-/// ([`safe_attack`]), the quick attack, every creature at the focused opponent, no attack, every creature at each other opponent, and the quick attack with one creature more or
-/// less.
+/// ([`safe_attack`]), the quick attack, every creature at the focused opponent, no attack, every creature at each
+/// other opponent, and the quick attack with one creature more or less.
 pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack> {
     let bodies = bodies_by_id(seen);
     let offered = offered_players(options);
@@ -511,7 +511,11 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
     let seat = search.seat();
     let seen = Seen::new(engine.state(), seat);
     if !search.settings().combat_search {
-        return quick_attack(&seen, options);
+        return if search.settings().careful {
+            safe_attack(&seen, options)
+        } else {
+            quick_attack(&seen, options)
+        };
     }
     let bodies = bodies_by_id(&seen);
     let offered = offered_players(options);
@@ -527,6 +531,9 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
         all.clone(),
         quick_attack(&seen, options),
     ];
+    if search.settings().careful {
+        candidates.insert(0, safe_attack(&seen, options));
+    }
     if search.settings().lookahead {
         for other in offered
             .iter()
@@ -583,7 +590,7 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
         };
         consider(search, toggled, &mut best);
     }
-    best.map_or_else(|| quick_attack(&seen, options), |(_, attack)| attack)
+    best.map_or_else(|| safe_attack(&seen, options), |(_, attack)| attack)
 }
 
 #[cfg(test)]

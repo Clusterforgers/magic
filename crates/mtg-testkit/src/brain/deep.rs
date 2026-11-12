@@ -64,6 +64,7 @@ fn rollout_settings(weights: Weights) -> Settings {
         depth: 0,
         combat_search: false,
         lookahead: true,
+        careful: true,
         sequences: false,
         fair: true,
         weights,
