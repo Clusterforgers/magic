@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fe4bee2c-f03f-44a4-94a4-55a06bcd0ad8",
+  "name": "Harsh Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harsh Justice",
+      "oracle_fingerprint": "208118931afa34b7a30dd0f973dcdd42",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, "Attacking"],
+                      "to": "You",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": "Dealer",
+                        "to": { "ControllerOf": "Dealer" },
+                        "amount": "Triggering"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -343,6 +343,7 @@ Consider
 Consign // Oblivion
 Consign to Dust
 Constable of the Realm
+Consume Spirit
 Consuming Aetherborn
 Consuming Vortex
 Contentious Plan
@@ -364,6 +365,7 @@ Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Crimson Hellkite
 Croakid Amphibonaut
 Crocanura
 Crop Rotation
@@ -372,6 +374,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
 Crystal Barricade
@@ -642,6 +645,7 @@ Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
 Feaster of Fools
+Feasting Hobbit
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -738,6 +742,7 @@ Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
+Gilded Drake
 Gilded Goose
 Gilded Lotus
 Gilt-Leaf Palace
@@ -894,6 +899,7 @@ Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
+Illuminate History
 Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -922,6 +928,7 @@ Inspirit
 Intelligence Bobblehead
 Into the Roil
 Into the Time Vortex
+Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
@@ -1022,9 +1029,11 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Landslide
 Lantern Flare
 Laquatus's Disdain
 Lash Out
+Last-Ditch Effort
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
@@ -1172,6 +1181,7 @@ Mirrorweave
 Misery Charm
 Mishra's Workshop
 Mishra, Excavation Prodigy
+Misleading Signpost
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
@@ -1339,6 +1349,7 @@ Pinion Feast
 Piper of the Swarm
 Pippin, Warden of Isengard
 Pit Fight
+Pitiless Carnage
 Pixie Guide
 Plague Drone
 Plague Myr
@@ -1355,6 +1366,7 @@ Pongify
 Pontiff of Blight
 Pop Quiz
 Porcuparrot
+Portal Mage
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
@@ -1363,6 +1375,7 @@ Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
 Prey Upon
+Preyseizer Dragon
 Price of Fame
 Pridemalkin
 Priest of the Crossing
@@ -1450,7 +1463,9 @@ Relic of Sauron
 Remorseful Cleric
 Render Inert
 Renewed Faith
+Renounce
 Replication Technique
+Reprocess
 Rescue Retriever
 Rescue Skiff
 Reset
@@ -1471,6 +1486,7 @@ Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
 Rhythm of the Wild
+Ribtruss Roaster
 Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
@@ -1507,6 +1523,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sacred Rites
 Sadistic Slash
 Safehold Elite
 Sage of Fables
@@ -1794,6 +1811,7 @@ Syphon Life
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
+Tainted Adversary
 Tainted Isle
 Tainted Remedy
 Tamiyo's Logbook
@@ -1836,6 +1854,7 @@ The Birth of Meletis
 The Celestus
 The Cruelty of Gix
 The Dalek Emperor
+The Elder Dragon War
 The Gaffer
 The Locust God
 The Mechanist, Aerial Artisan
@@ -2077,6 +2096,7 @@ Windbrisk Heights
 Windfall
 Winds of Qal Sisma
 Winds of Rath
+Windshaper Planetar
 Winged Boots
 Winged Hive Tyrant
 Winged Portent

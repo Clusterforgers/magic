@@ -40,7 +40,7 @@ const C11F_WHOLES: [(&str, &str); 99] = [
         "When this creature enters, return a green or white creature you control to its owner's hand.",
     ),
     (
-        r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Draw":{"count":{"Count":[{"Is":{"Bound":"discarded"}}]}}}]}}]}}"#,
+        r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"discarded"}},{"Draw":{"count":{"Bound":"discarded~moved"}}}]}}]}}"#,
         "At the beginning of your upkeep, you may discard all the cards in your hand. If you do, draw that many cards.",
     ),
     (

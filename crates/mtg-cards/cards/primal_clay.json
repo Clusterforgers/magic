@@ -1,0 +1,40 @@
+{
+  "oracle_id": "dccf2ca8-8c87-41c9-8373-351859396d05",
+  "name": "Primal Clay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Clay",
+      "oracle_fingerprint": "e2171243f405892c0e8b869ed2b6651a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "BecomesChoice": [
+                [
+                  { "SetPT": { "power": 3, "toughness": 3 } },
+                  { "AddType": "Artifact" },
+                  { "AddType": "Creature" }
+                ],
+                [
+                  { "SetPT": { "power": 2, "toughness": 2 } },
+                  { "AddType": "Artifact" },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Flying" }
+                ],
+                [
+                  { "SetPT": { "power": 1, "toughness": 6 } },
+                  { "AddSubtype": "Wall" },
+                  { "AddType": "Artifact" },
+                  { "AddType": "Creature" },
+                  { "AddKeyword": "Defender" }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
