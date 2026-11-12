@@ -705,6 +705,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
+    super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -3349,6 +3350,7 @@ impl Writer<'_> {
                 what,
                 duration,
                 tapped,
+                held: None,
             } => self.w7e_phase_out_text(what, duration.clone(), *tapped)?,
             Effect::Attach {
                 what: Ref::This,

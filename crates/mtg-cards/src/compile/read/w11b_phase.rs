@@ -81,6 +81,7 @@ pub fn w11b_untap_then_phase_out(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             what,
             duration,
             tapped: false,
+            held: None,
         },
     ])
 }
@@ -95,6 +96,7 @@ pub fn w11b_untap_then_phase_out_text(effects: &[Effect]) -> Option<(String, usi
             what: Ref::Each(phased),
             duration: duration @ Some(_),
             tapped: false,
+            held: None,
         },
         ..,
     ] = effects

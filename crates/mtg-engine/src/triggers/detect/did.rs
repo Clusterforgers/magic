@@ -171,6 +171,36 @@ pub(super) fn did_happened(
         }
         Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        Event::Explored {
+            object,
+            player,
+            land: Some(land),
+        } => found.push(did(
+            if *land {
+                Action::ExploredLand
+            } else {
+                Action::ExploredNonland
+            },
+            Some(*player),
+            Some(*object),
+        )),
+        Event::LifePaid { player, amount } => found.push(Happened::Did {
+            action: Action::PaidLife,
+            player: Some(*player),
+            object: None,
+            ability: None,
+            amount: *amount,
+        }),
+        Event::Exploited {
+            object,
+            sacrificed,
+            player,
+        } if pre
+            .object(*sacrificed)
+            .is_some_and(|o| o.kind() != crate::object::ObjectKind::Token) =>
+        {
+            found.push(did(Action::ExploitedNontoken, Some(*player), Some(*object)));
+        }
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));
@@ -336,9 +366,24 @@ pub(super) fn controller_changes(
                 return None;
             }
             let after = controller_of(post, object.id())?;
-            (controller_of(pre, object.id())? != after)
-                .then(|| did(Action::ChangedController, Some(after), Some(object.id())))
+            let before = controller_of(pre, object.id())?;
+            (before != after).then(|| {
+                let mut found = vec![did(
+                    Action::ChangedController,
+                    Some(after),
+                    Some(object.id()),
+                )];
+                if post.is_opponent(before, after) {
+                    found.push(did(
+                        Action::ControlTakenByOpponent,
+                        Some(before),
+                        Some(object.id()),
+                    ));
+                }
+                found
+            })
         })
+        .flatten()
         .collect()
 }
 

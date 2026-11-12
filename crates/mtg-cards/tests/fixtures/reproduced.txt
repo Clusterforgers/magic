@@ -688,6 +688,7 @@ Flowerfoot Swordmaster
 Fog
 Follow the Bodies
 Followed Footsteps
+Font of Agonies
 Fool's Demise
 Forbidding Spirit
 Forced March
@@ -726,6 +727,7 @@ Gatebreaker Ram
 Gatta and Luzzu
 Gavony Dawnguard
 Gaze of Granite
+Gearshift Ace
 Gemhide Sliver
 Gempalm Sorcerer
 Gemrazer
@@ -1247,6 +1249,7 @@ Nettlecyst
 Neverwinter Dryad
 New Horizons
 Niblis of Frost
+Nicanzil, Current Conductor
 Nick Valentine, Private Eye
 Night Clubber
 Night Market Guard
@@ -1664,6 +1667,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skull Skaab
 Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
@@ -1710,6 +1714,7 @@ Species Specialist
 Spectral Rider
 Spectral Shift
 Spectral Steel
+Speedway Fanatic
 Spellbreaker Behemoth
 Sphere of Safety
 Sphinx of Jwar Isle
@@ -2039,6 +2044,7 @@ Verdant Confluence
 Veronica, Dissident Scribe
 Vestige of Emrakul
 Vesuva
+Veteran Motorist
 Veteran's Powerblade
 Viashino Weaponsmith
 Vibranium Strike Gauntlets

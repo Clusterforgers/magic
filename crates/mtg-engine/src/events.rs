@@ -999,6 +999,10 @@ pub enum Event {
         object: ObjectId,
         /// Its controller, who revealed the card.
         player: PlayerId,
+        /// Whether the card revealed was a land card; none when the library was empty and nothing was revealed.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        land: Option<bool>,
     },
     /// A player amassed (CR 701.47): the counters and the Army token are the events around it.
     Amassed {
