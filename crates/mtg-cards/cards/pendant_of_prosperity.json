@@ -5,112 +5,50 @@
   "faces": [
     {
       "name": "Pendant of Prosperity",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "b53c15118f024423a5723f3b809d4c3f",
       "abilities": [
         {
-          "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": "UnderChosenOpponent"
-          }
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{2}"
-              },
-              "Tap"
-            ],
+            "cost": [{ "Mana": "{2}" }, "Tap"],
             "effects": [
-              {
-                "Draw": {}
-              },
+              { "Draw": {} },
               {
                 "May": {
                   "effects": [
                     {
                       "Choose": {
                         "from": {
-                          "Each": [
-                            {
-                              "In": "Hand"
-                            },
-                            {
-                              "OwnedBy": "You"
-                            },
-                            {
-                              "Type": "Land"
-                            }
-                          ]
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
                         },
                         "as": "card"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "card"
-                        },
-                        "to": {
-                          "Battlefield": {}
-                        }
-                      }
-                    }
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               },
-              {
-                "Draw": {
-                  "who": {
-                    "OwnerOf": "This"
-                  }
-                }
-              },
+              { "Draw": { "who": { "OwnerOf": "This" } } },
               {
                 "May": {
-                  "who": {
-                    "OwnerOf": "This"
-                  },
+                  "who": { "OwnerOf": "This" },
                   "effects": [
                     {
                       "Choose": {
-                        "who": {
-                          "OwnerOf": "This"
-                        },
+                        "who": { "OwnerOf": "This" },
                         "from": {
                           "Each": [
-                            {
-                              "In": "Hand"
-                            },
-                            {
-                              "OwnedBy": {
-                                "OwnerOf": "This"
-                              }
-                            },
-                            {
-                              "Type": "Land"
-                            }
+                            { "In": "Hand" },
+                            { "OwnedBy": { "OwnerOf": "This" } },
+                            { "Type": "Land" }
                           ]
                         },
                         "as": "card"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "card"
-                        },
-                        "to": {
-                          "Battlefield": {}
-                        }
-                      }
-                    }
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               }

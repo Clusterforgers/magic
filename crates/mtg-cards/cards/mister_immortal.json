@@ -5,42 +5,20 @@
   "faces": [
     {
       "name": "Mister Immortal",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "f2b20159a650c93878e98eb106be125e",
       "abilities": [
         {
           "Activated": {
             "cost": "{2}{G}",
             "from": "Graveyard",
-            "effects": [
-              {
-                "Move": {
-                  "what": "This",
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true
-                    }
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
           }
         },
         {
           "Activated": {
             "cost": "{2}{G}",
             "from": "Exile",
-            "effects": [
-              {
-                "Move": {
-                  "what": "This",
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true
-                    }
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
           }
         }
       ]

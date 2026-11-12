@@ -5,57 +5,21 @@
   "faces": [
     {
       "name": "Arcee, Sharpshooter",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "60d1975619b1e982ab9e14d051bec8f1",
       "abilities": [
-        {
-          "Keyword": {
-            "MoreThanMeetsTheEye": "{R}{W}"
-          }
-        },
-        {
-          "Keyword": "FirstStrike"
-        },
+        { "Keyword": { "MoreThanMeetsTheEye": "{W}{R}" } },
+        { "Keyword": "FirstStrike" },
         {
           "Activated": {
             "cost": [
-              {
-                "Mana": "{1}"
-              },
-              {
-                "RemoveCounters": {
-                  "counter": "+1/+1",
-                  "count": "X"
-                }
-              },
-              {
-                "XAtLeast": 1
-              }
+              { "Mana": "{1}" },
+              { "RemoveCounters": { "counter": "+1/+1", "count": "X" } },
+              { "XAtLeast": 1 }
             ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              {
-                "DealDamage": {
-                  "to": {
-                    "Target": 0
-                  },
-                  "amount": "X"
-                }
-              },
-              {
-                "Transform": {
-                  "what": "This"
-                }
-              }
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "Transform": { "what": "This" } }
             ]
           }
         }
@@ -63,23 +27,13 @@
     },
     {
       "name": "Arcee, Acrobatic Coupe",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "7bb251e615e64851c03b24f68189f8da",
       "abilities": [
-        {
-          "Keyword": {
-            "Macro": {
-              "name": "living metal",
-              "amount": 0
-            }
-          }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         {
           "Manual": {
             "reason": "you apply this triggered ability by hand",
-            "span": {
-              "start": 66,
-              "end": 205
-            }
+            "span": { "start": 66, "end": 205 }
           }
         }
       ]
