@@ -564,6 +564,7 @@ Emrakul, the Promised End
 Encroach
 Enigma Thief
 Enraged Revolutionary
+Entangling Trap
 Enthusiastic Study
 Entity Tracker
 Entomber Exarch
@@ -1958,6 +1959,7 @@ Vedalken Engineer
 Vengeful Vampire
 Venomous Vines
 Verdant Confluence
+Veronica, Dissident Scribe
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade

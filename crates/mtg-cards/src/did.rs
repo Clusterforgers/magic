@@ -92,6 +92,8 @@ pub enum Action {
     Rolled,
     /// A player collected evidence (CR 701.59).
     CollectedEvidence,
+    /// A player clashed (CR 701.23), won or lost; `Amount::Triggering` is 1 when they won and 0 when they lost.
+    Clashed,
 }
 
 impl Action {
@@ -150,6 +152,7 @@ impl Action {
             Action::Learned => ("learn", "learns"),
             Action::Rolled => ("roll a die", "rolls a die"),
             Action::CollectedEvidence => ("collect evidence", "collects evidence"),
+            Action::Clashed => ("clash", "clashes"),
         }
     }
 

@@ -415,6 +415,9 @@ pub enum TallyEvent {
     /// ability that countered it): "if a creature spell you cast this turn was countered by a spell or ability an opponent
     /// controlled".
     Countered,
+    /// A card was discarded (the card as it lies in the graveyard it went to, for the player who discarded it): "the first
+    /// time each turn you discard one or more nonland cards".
+    Discarded,
 }
 
 /// Which result of the latest die roll an amount reads.

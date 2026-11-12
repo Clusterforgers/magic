@@ -17,6 +17,7 @@ use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 mod did;
+mod l293_discards;
 mod r288_final_chapter;
 
 use super::{DelayedId, Triggered, x_read};
@@ -2240,14 +2241,21 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             batch_causes(inner, firsts, scope)
         }
         // "Whenever you discard one or more cards for the first time each turn": the batch that holds the player's first
-        // discards of the turn, any card.
+        // discards of the turn, any card; of a kind ("nonland cards"), the first discards of that kind.
         (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
             if matches!(&**event, TriggerPattern::Batch(inner)
-                if matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())) =>
+                if matches!(&**inner, TriggerPattern::Discarded { .. })) =>
         {
             let TriggerPattern::Batch(inner) = &**event else {
                 return Vec::new();
             };
+            let TriggerPattern::Discarded { what, .. } = &**inner else {
+                return Vec::new();
+            };
+            if !what.is_empty() {
+                let firsts = l293_discards::l293_first_discards_of(scope, members, what);
+                return batch_causes(inner, firsts.into_iter(), scope);
+            }
             let firsts = members
                 .iter()
                 .filter(|member| e16a_first_discards(scope.state, members, member));

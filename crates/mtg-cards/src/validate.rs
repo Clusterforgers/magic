@@ -2630,8 +2630,8 @@ impl Walker<'_> {
                     to: Some(to),
                     combat: None,
                 } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
-                    // A player's first discards of the turn, of any card.
-                    || matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())
+                    // A player's first discards of the turn, of any card or of a kind.
+                    || matches!(&**inner, TriggerPattern::Discarded { .. })
             }
             _ => false,
         };

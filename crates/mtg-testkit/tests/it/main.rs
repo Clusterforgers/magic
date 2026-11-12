@@ -371,6 +371,7 @@ mod keywords_triggers_fuzz;
 mod kicker;
 mod kicker_either;
 mod kt28_krarks_thumb;
+mod l293_triggers;
 mod lands_and_sickness;
 mod last_turn_spells;
 mod layers;
