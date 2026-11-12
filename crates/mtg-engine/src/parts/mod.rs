@@ -345,11 +345,8 @@ impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
-        if discards_the_hand(item) {
-            return Ok(Some(Part::DiscardHand));
-        }
-        if let Some(filter) = r303c_sacrifice_all::r303c_reads(item) {
-            return Ok(Some(Part::SacrificeAll(filter)));
+        if let Some(whole) = whole_part(item) {
+            return Ok(Some(whole));
         }
         let (part, x) = match item {
             CostItem::PayLife(count) => {
@@ -1030,6 +1027,15 @@ impl Pick {
 
 #[cfg(test)]
 mod tests;
+
+/// A part that takes all of a kind the payer has, with nothing to choose: "discard your hand", "sacrifice all
+/// permanents you control".
+fn whole_part(item: &CostItem) -> Option<Part> {
+    if discards_the_hand(item) {
+        return Some(Part::DiscardHand);
+    }
+    r303c_sacrifice_all::r303c_reads(item).map(Part::SacrificeAll)
+}
 
 /// "Discard your hand": a discard counted as every card of the payer's hand, with no filter.
 fn discards_the_hand(item: &CostItem) -> bool {
