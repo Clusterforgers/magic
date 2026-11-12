@@ -1171,6 +1171,7 @@ enum TaggedRef<'a> {
 }
 
 impl From<Tagged> for Amount {
+    #[allow(clippy::too_many_lines)] // one arm for each tagged form
     fn from(tagged: Tagged) -> Amount {
         match tagged {
             Tagged::X => Amount::X,

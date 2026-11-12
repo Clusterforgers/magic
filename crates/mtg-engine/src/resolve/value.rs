@@ -753,6 +753,12 @@ impl<'a> Scope<'a> {
         Ok(count)
     }
 
+    /// Whether the sticker whose putting on triggered the ability is of the kind.
+    fn r378_triggering_sticker(&self, kind: mtg_cards::ability::StickerKind) -> bool {
+        self.cause
+            .is_some_and(|cause| cause.amount == crate::un34_stickers::kind_code(kind))
+    }
+
     /// How many events of the kind the players had in the snapshot log given, among the objects the filter selects, or
     /// the stat of those objects added up.
     fn r378_logged_in(
@@ -2972,9 +2978,7 @@ impl<'a> Scope<'a> {
                 crate::priority::sorcery_timing(self.state, self.controller)
             }
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
-            Condition::TriggeringSticker(kind) => self
-                .cause
-                .is_some_and(|cause| cause.amount == crate::un34_stickers::kind_code(*kind)),
+            Condition::TriggeringSticker(kind) => self.r378_triggering_sticker(*kind),
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()
