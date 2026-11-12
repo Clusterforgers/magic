@@ -319,6 +319,7 @@ impl Happened {
                 from: Zone::Battlefield,
                 ..
             } | Happened::Exploited { .. }
+                | Happened::FinalChapter { resolved: true, .. }
                 | Happened::PhasedOut { .. }
                 | Happened::Unattached { left: true, .. }
         ) || matches!(self, Happened::Did { action, .. } if action.looks_back())

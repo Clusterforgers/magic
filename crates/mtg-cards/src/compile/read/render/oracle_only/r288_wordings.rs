@@ -42,9 +42,7 @@ fn creature_or_player(ability: &Ability, texts: &mut Vec<String>) {
     let creature = Targetable::Object(crate::refs::Selector(vec![crate::refs::Pred::Type(
         mtg_core::card::CardType::Creature,
     )]));
-    let is_either = |spec: &TargetSpec| {
-        matches!(&spec.what, Targetable::Either(kinds) if *kinds == [Targetable::Player, creature.clone()])
-    };
+    let is_either = |spec: &TargetSpec| matches!(&spec.what, Targetable::Either(kinds) if *kinds == [Targetable::Player, creature.clone()]);
     let mut twin = ability.clone();
     let (Ability::Triggered { targets, .. }
     | Ability::Spell { targets, .. }
@@ -176,7 +174,10 @@ fn greater_than_this(ability: &Ability) -> Vec<String> {
             stat,
         },
         op: Cmp::Gt,
-        right: Amount::Stat { of: Ref::This, stat },
+        right: Amount::Stat {
+            of: Ref::This,
+            stat,
+        },
     };
     if *tests != [greater(StatKind::Power), greater(StatKind::Toughness)] {
         return Vec::new();
@@ -204,7 +205,12 @@ fn greater_than_this(ability: &Ability) -> Vec<String> {
 /// from the wordings of the plain "Whenever you gain life, ...".
 fn spell_causes_gain(ability: &Ability) -> Vec<String> {
     let Ability::Triggered {
-        when: TriggerPattern::Caused { inner, by: None, source },
+        when:
+            TriggerPattern::Caused {
+                inner,
+                by: None,
+                source,
+            },
         intervening_if,
         limit,
         from,
@@ -473,7 +479,13 @@ fn draw_counted_then_lose(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    let [Effect::May { who: Ref::You, effects }] = effects.as_slice() else {
+    let [
+        Effect::May {
+            who: Ref::You,
+            effects,
+        },
+    ] = effects.as_slice()
+    else {
         return Vec::new();
     };
     let [
@@ -500,7 +512,9 @@ fn draw_counted_then_lose(ability: &Ability) -> Vec<String> {
     r288_heads(ability)
         .into_iter()
         .map(|head| {
-            format!("{head} you may draw X cards, where X is {counted}. If you do, you lose X life.")
+            format!(
+                "{head} you may draw X cards, where X is {counted}. If you do, you lose X life."
+            )
         })
         .collect()
 }

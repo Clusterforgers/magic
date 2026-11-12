@@ -9,6 +9,7 @@ use common::pid;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_core::card::CardType;
+use mtg_engine::choose::Target;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::{Engine, GameSetup, replay};
@@ -93,17 +94,27 @@ fn the_final_chapter_triggers_and_resolves_once(
             .iter()
             .map(|(numbers, life)| (numbers.as_slice(), *life))
             .collect();
-        Scenario::new(seats)
-            .at(1, 0, Step::Main1)
-            .battlefield(0, [ready(plains()), ready(plains())])
-            .battlefield(owner, [ready(bard())])
-            .hand(0, [saga("Tale", &chapters), lore_spell("Lore", 1)])
+        let mut mine = vec![ready(plains()), ready(plains())];
+        if owner == 0 {
+            mine.push(ready(bard()));
+        }
+        let scenario = Scenario::new(seats)
+            .at(1, 0, Step::Main2)
+            .battlefield(0, mine)
+            .hand(0, [saga("Tale", &chapters), lore_spell("Lore", 1)]);
+        if owner == 0 {
+            scenario
+        } else {
+            scenario.battlefield(owner, [ready(bard())])
+        }
     };
     let mut driver = Driver::from_scenario(table())?;
     driver.cast("Tale")?;
     settle(&mut driver)?;
     if chapters >= 2 {
-        driver.cast("Lore")?;
+        let tale = driver.id_of("Tale")?;
+        let target = Target::Object(driver.state().object(tale).unwrap().reference());
+        driver.cast_at("Lore", &[target])?;
         settle(&mut driver)?;
     }
     assert_eq!(life(&driver, 0), seat_zero);

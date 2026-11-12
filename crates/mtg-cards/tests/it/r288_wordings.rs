@@ -13,7 +13,8 @@ fn says(json: &str, text: &str) -> bool {
     written_variants(&ability).iter().any(|said| said == text)
 }
 
-const DISTRIBUTE: &str = "II \u{2014} Distribute seven +1/+1 counters among any number of target creatures you control.";
+const DISTRIBUTE: &str =
+    "II \u{2014} Distribute seven +1/+1 counters among any number of target creatures you control.";
 const HALF: &str = "When ~ enters, up to one target player's life total becomes half their starting life total, rounded down.";
 const BEBOP: &str = "Whenever ~ deals combat damage to a player, you may draw X cards, where X is the number of counters on ~. If you do, you lose X life.";
 const EVOLVING: &str = "Whenever another creature you control enters, if that creature has greater power or toughness than this creature, put an oil counter on ~.";

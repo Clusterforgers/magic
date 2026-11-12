@@ -11,8 +11,8 @@ use crate::object::GameObject;
 use crate::resolve::Scope;
 use crate::state::GameState;
 
-/// The final chapter ability that triggered (judged after the event) or resolved (judged before it) in this event.
-pub(super) fn r288_happened(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
+/// The final chapter ability that triggered or resolved in this event, judged after it (the Saga is sacrificed later).
+pub(super) fn r288_happened(_pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
     match event {
         Event::AbilityTriggered(triggered) if triggered.delayed.is_none() => {
             let pending = post
@@ -32,18 +32,12 @@ pub(super) fn r288_happened(pre: &GameState, event: &Event, post: &GameState) ->
             object,
             outcome: ResolutionOutcome::Resolved,
         } => {
-            let put = pre.object(*object)?.ability()?;
-            if put.delayed().is_some() {
-                return None;
-            }
-            let number = crate::saga::r288_chapter_number(put.rules())?;
-            let saga = put.source().id;
-            (crate::saga::final_chapter(pre, saga) == Some(number)).then_some(
-                Happened::FinalChapter {
-                    saga,
+            let (ability, source, number) = post.r288_resolved_chapter?;
+            (ability == *object && crate::saga::final_chapter(post, source.id) == Some(number))
+                .then_some(Happened::FinalChapter {
+                    saga: source.id,
                     resolved: true,
-                },
-            )
+                })
         }
         _ => None,
     }
