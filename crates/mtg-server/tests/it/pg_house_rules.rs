@@ -82,6 +82,7 @@ fn some_rules() -> HouseRules {
             starting_life: Some(9),
             opening_hand_size: Some(4),
         }],
+        teams: None,
     }
 }
 

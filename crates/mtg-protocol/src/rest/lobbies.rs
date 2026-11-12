@@ -8,6 +8,7 @@ use std::fmt;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -168,6 +169,15 @@ impl fmt::Debug for Joined {
 pub struct VisibilityBody {
     /// The visibility to set, or the one now in force.
     pub visibility: Visibility,
+}
+
+/// The body of `PUT /api/games/{id}/teams` and its answer: the teams the host sets before the start, one team per
+/// seat in seat order; `null` makes every player play alone. Every Ready is taken back.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct TeamsBody {
+    /// The teams to set, or the ones now in force.
+    pub teams: Option<Teams>,
 }
 
 /// The body of `PUT /api/games/{id}/seats/{n}/deck`: the deck the seat plays.

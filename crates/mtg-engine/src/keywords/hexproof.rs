@@ -24,17 +24,19 @@ impl KeywordRules for Hexproof {
         // and a hexproof card in a graveyard can be returned.
         state.object(holder).is_some_and(|object| {
             object.zone() == Zone::Battlefield
-                && crate::characteristics::controller_of(state, holder) != Some(controller)
+                && crate::characteristics::controller_of(state, holder)
+                    .is_none_or(|owner| state.is_opponent(owner, controller))
         })
     }
 
     fn restricts_player_targeting(
         &self,
+        state: &GameState,
         _keyword: &Keyword,
         holder: PlayerId,
         controller: PlayerId,
     ) -> bool {
-        holder != controller
+        state.is_opponent(holder, controller)
     }
 }
 

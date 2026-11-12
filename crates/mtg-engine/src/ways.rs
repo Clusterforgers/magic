@@ -951,7 +951,7 @@ pub(crate) fn can_foretell(
     };
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
-        && state.turn().active() == player
+        && state.is_active(player)
         && can_afford(
             &cost,
             pool,

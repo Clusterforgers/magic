@@ -361,6 +361,7 @@ pub trait KeywordRules: Debug + Sync {
     /// Whether `holder`, a player who has the keyword, may not be targeted by a spell or ability that `controller` controls.
     fn restricts_player_targeting(
         &self,
+        _state: &GameState,
         _keyword: &Keyword,
         _holder: PlayerId,
         _controller: PlayerId,
@@ -737,7 +738,7 @@ pub(crate) fn protects(
 /// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
 pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
     player_keywords(state, holder).into_iter().any(|keyword| {
-        rules(keyword).restricts_player_targeting(keyword, holder, controller)
+        rules(keyword).restricts_player_targeting(state, keyword, holder, controller)
             && !crate::combat_quirks::ignores_protection(
                 state,
                 crate::combat_quirks::Holder::Player(holder),
@@ -1230,7 +1231,16 @@ mod tests {
                 ignores_sickness: rules.ignores_summoning_sickness(keyword),
                 attacks_untapped: rules.attacks_untapped(keyword),
                 indestructible: rules.is_indestructible(keyword),
-                shields_player: rules.restricts_player_targeting(keyword, PlayerId(0), PlayerId(1)),
+                shields_player: rules.restricts_player_targeting(
+                    &GameState::from_setup(&crate::fixtures::setup(
+                        vec![Vec::new(); 2],
+                        vec![Vec::new(); 2],
+                    ))
+                    .unwrap(),
+                    keyword,
+                    PlayerId(0),
+                    PlayerId(1),
+                ),
                 damage: rules.modifies_damage(keyword),
                 timing: rules.grants_timing(keyword),
                 silences: rules.silences_players(keyword),

@@ -118,6 +118,11 @@ impl FormatRules for Commander {
         COMMANDER_LIFE
     }
 
+    // Two-Headed Giant keeps the ratio of CR 810.4 to a player's life, so a Commander team shares 60.
+    fn team_life(&self) -> i32 {
+        COMMANDER_LIFE * 3 / 2
+    }
+
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError> {
         self.validate_seat(deck, &[], &RuleSet::new(self, &HouseRules::default()))
     }

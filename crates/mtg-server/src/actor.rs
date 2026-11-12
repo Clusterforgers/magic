@@ -338,6 +338,10 @@ impl<S: EventStore> GameActor<S> {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.choose_deck(seat, deck));
             }
+            Command::Teams { teams, reply } => {
+                // A caller that stopped waiting needs no answer.
+                let _ = reply.send(self.set_teams(teams));
+            }
             Command::Closing { on, reply } => {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.set_closing(on));

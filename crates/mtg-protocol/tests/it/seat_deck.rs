@@ -37,6 +37,7 @@ fn a_seat_without_a_deck_leaves_the_field_out_and_a_seat_with_one_names_it() {
     let roster = ServerMessage::Lobby {
         seats: vec![seat(0, Some(deck("Burn", "modern", 3))), seat(1, None)],
         needed: 2,
+        teams: None,
     };
     assert_eq!(
         serde_json::to_value(&roster).unwrap(),
@@ -106,7 +107,7 @@ fn table() -> impl Strategy<Value = Vec<LobbySeat>> {
 proptest! {
     #[test]
     fn any_table_of_decks_round_trips_and_names_no_card(seats in table()) {
-        let message = ServerMessage::Lobby { seats, needed: 0 };
+        let message = ServerMessage::Lobby { seats, needed: 0, teams: None };
         let text = serde_json::to_string(&message).unwrap();
         let back: ServerMessage = serde_json::from_str(&text).unwrap();
         prop_assert_eq!(&back, &message);

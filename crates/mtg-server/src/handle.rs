@@ -1,6 +1,8 @@
 //! The cheap-clone front door to a running game actor.
 
+use mtg_core::house::HouseRuleError;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, SeatDeck, ServerMessage};
 use thiserror::Error;
@@ -29,6 +31,15 @@ pub(crate) enum DeckRefusal {
     Gone,
     /// The seat pressed Ready; it takes that back first.
     Ready,
+}
+
+/// Why a lobby did not take new teams.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum TeamsRefusal {
+    /// The game has begun.
+    Started,
+    /// The teams do not fit the table.
+    Invalid(HouseRuleError),
 }
 
 /// The game's task has ended, so nothing more can be sent to it.
@@ -90,6 +101,12 @@ pub(crate) enum Command {
         deck: ChosenDeck,
         /// What the table now knows of the deck, or why the lobby did not take it.
         reply: oneshot::Sender<Result<SeatDeck, DeckRefusal>>,
+    },
+    /// Sets the teams of the lobby.
+    Teams {
+        teams: Option<Teams>,
+        /// Whether the lobby took the teams, or why not.
+        reply: oneshot::Sender<Result<(), TeamsRefusal>>,
     },
     /// Stops the lobby from starting, or lets it start again.
     Closing {
@@ -202,6 +219,19 @@ impl GameHandle {
         let (reply, answer) = oneshot::channel();
         self.commands
             .send(Command::Deck { seat, deck, reply })
+            .await
+            .map_err(|_| GameClosed)?;
+        answer.await.map_err(|_| GameClosed)
+    }
+
+    /// Sets the teams of the lobby and tells the table; every seat takes Ready back.
+    pub(crate) async fn set_teams(
+        &self,
+        teams: Option<Teams>,
+    ) -> Result<Result<(), TeamsRefusal>, GameClosed> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Teams { teams, reply })
             .await
             .map_err(|_| GameClosed)?;
         answer.await.map_err(|_| GameClosed)

@@ -4,4 +4,4 @@ import type { PlayerId } from "./PlayerId";
 /**
  * How the game ended.
  */
-export type GameResult = { "Winner": PlayerId } | "Draw";
+export type GameResult = { "Winner": PlayerId } | "Draw" | { "Team": number };

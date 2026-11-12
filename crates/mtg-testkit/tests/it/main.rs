@@ -824,4 +824,5 @@ mod tc34_opposition_agent;
 mod tc34_player_control;
 mod tc34_restart;
 mod tc34_text_change;
+mod tm1_teams;
 mod together_batch;

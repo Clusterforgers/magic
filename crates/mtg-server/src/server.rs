@@ -356,6 +356,7 @@ pub(crate) fn router(state: AppState) -> Router {
                 .patch(lobbies::set_visibility)
                 .delete(lobbies::close),
         )
+        .route("/api/games/{id}/teams", put(lobbies::set_teams))
         .route("/api/games/{id}/join", post(lobbies::join_game))
         .route("/api/games/{id}/leave", post(lobbies::leave))
         .route(

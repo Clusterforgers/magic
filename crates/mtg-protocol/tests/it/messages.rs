@@ -751,6 +751,7 @@ fn server_samples() -> Vec<ServerMessage> {
         ServerMessage::Lobby {
             seats: lobby_seats(),
             needed: 2,
+            teams: None,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -1069,6 +1070,7 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Lobby {
         seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false, deck: None }],
         needed: 1,
+        teams: None,
     },
     json!({
         "type": "Lobby", "needed": 1,
