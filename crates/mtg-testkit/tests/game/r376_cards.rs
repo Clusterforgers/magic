@@ -43,7 +43,9 @@ fn hama_pashar_makes_each_room_ability_trigger_twice(
 ) -> Result<(), ScriptError> {
     let mut field = vec![ready(free_creature("Bear", 2, 2))];
     if hama {
-        field.push(ready(corpus().unwrap().card("Hama Pashar, Ruin Seeker").unwrap()));
+        field.push(ready(
+            corpus().unwrap().card("Hama Pashar, Ruin Seeker").unwrap(),
+        ));
     }
     let scenario = Scenario::new(seats)
         .hand(0, [w11d_venturer("Venture 0"), w11d_venturer("Venture 1")])

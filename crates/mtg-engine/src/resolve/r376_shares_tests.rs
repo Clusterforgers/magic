@@ -4,10 +4,10 @@
 
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
-use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use rstest::rstest;
@@ -39,7 +39,10 @@ fn shares(battlefield: &[&[&str]], hand: &[&str]) -> bool {
         .enumerate()
         .map(|(i, types)| creature(&format!("Field {i}"), types))
         .collect();
-    let setup = setup(vec![vec![creature("Card", hand)], vec![]], vec![field, vec![]]);
+    let setup = setup(
+        vec![vec![creature("Card", hand)], vec![]],
+        vec![field, vec![]],
+    );
     let game = GameState::from_setup(&setup).unwrap();
     let card = game.zone(Zone::Hand(PlayerId(0)))[0];
     let source = game.object(card).unwrap().reference();

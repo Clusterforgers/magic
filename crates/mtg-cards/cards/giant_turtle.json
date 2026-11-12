@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9297c0a6-1a8e-4e6e-99d6-f0877b2ec46c",
+  "name": "Giant Turtle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Turtle",
+      "oracle_fingerprint": "c3ec1663d81f08f457e6ae2ee478d61a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedLastTurn"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -320,7 +320,8 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         .is_some_and(|c| c == player || (state.shares_turns() && state.are_teammates(c, player)))
         && !cant_attack(state, id)
         && (!keywords::summoning_sick(state, id)
-            || crate::combat_quirks::attacks_as_though_haste(state, id))
+            || crate::combat_quirks::attacks_as_though_haste(state, id)
+            || crate::r303b_haste_at::r303b_attacks_sick(state, id))
         && (!keywords::forbids_attacking(state, id) || attacks_despite_defender(state, id))
         && is_untapped_creature(state, id)
 }
@@ -446,7 +447,8 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .filter_map(|object| {
             // "Can't attack you" takes the defender away before the requirements choose among the rest (CR 508.1c-d);
             // a creature it leaves nothing to attack is not offered.
-            let allowed = allowed_defenders(state, object, &defenders);
+            let mut allowed = allowed_defenders(state, object, &defenders);
+            crate::r303b_haste_at::r303b_sick_defenders(state, object, &mut allowed);
             if allowed.is_empty() && !defenders.is_empty() {
                 return None;
             }
@@ -711,6 +713,9 @@ fn name_requirements(
         }
         let mut named = provoked_attackers(state, option.object);
         named.extend(every.iter().copied());
+        named.extend(option.can_block.iter().copied().filter(|attacker| {
+            crate::r303b_blocked_by::r303b_must_block(state, *attacker, option.object)
+        }));
         named.retain(|attacker| option.can_block.contains(attacker));
         if named.is_empty() {
             continue;

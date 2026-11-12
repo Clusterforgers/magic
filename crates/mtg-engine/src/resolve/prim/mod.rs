@@ -108,7 +108,6 @@ mod turn_up;
 mod dk1c5_unlock;
 mod dk27_bid;
 mod dk27_numbers;
-mod r376_choose_words;
 mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
@@ -122,6 +121,7 @@ mod proliferate;
 mod put_counters;
 mod r281_lock_door;
 mod r281_pay_one_of;
+mod r376_choose_words;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;

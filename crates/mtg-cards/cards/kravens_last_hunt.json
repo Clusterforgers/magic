@@ -1,16 +1,40 @@
 {
   "oracle_id": "e74efcf2-d77f-4fb5-9027-77e462ec829e",
   "name": "Kraven's Last Hunt",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kraven's Last Hunt",
       "oracle_fingerprint": "113bcfd340f77aafe9c13bd524f1f818",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 89, "end": 232 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 5 } },
+              {
+                "Reflexive": {
+                  "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Greatest": {
+                            "of": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

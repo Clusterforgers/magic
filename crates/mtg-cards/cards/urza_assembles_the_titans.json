@@ -9,9 +9,34 @@
       "abilities": [
         { "Keyword": "ReadAhead" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 153, "end": 282 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Scry": { "count": 4 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Bind": {
+                        "what": {
+                          "Each": ["TopOfLibrary", { "OwnedBy": "You" }, { "In": "Library" }]
+                        },
+                        "as": "top"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "Is": { "Bound": "top" } }, { "Type": "Planeswalker" }]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

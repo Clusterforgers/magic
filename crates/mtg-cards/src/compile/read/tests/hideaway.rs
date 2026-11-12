@@ -15,6 +15,7 @@ fn exiled() -> Ref {
 fn cast(play: bool) -> Effect {
     Effect::CastFromZone {
         rather: None,
+        spend_as: crate::modify::SpendAs::default(),
         who: Ref::You,
         what: exiled(),
         free: true,

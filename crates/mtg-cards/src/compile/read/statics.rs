@@ -580,6 +580,8 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         (r.words("cards named") && r.source()).then_some(most)
     }) {
         GameRule::UpToInDeck(most)
+    } else if let Some(rule) = r.attempt(super::r303b_statics::r303b_rule_read) {
+        rule
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
     } else if let Some(rule) = r.attempt(player_rule) {
@@ -1773,6 +1775,7 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     }])
 }
 
+#[allow(clippy::too_many_lines)]
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     if let Some(texts) = ep27_rule_texts(rule, condition, from) {
         return texts;
@@ -1842,6 +1845,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (
+            GameRule::DamageAsWither | GameRule::ManaBurn | GameRule::AttackAsThoughHasteAt(_),
+            ZoneKind::Battlefield,
+        ) => super::r303b_statics::r303b_rule_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
         (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
             super::rmt4_untap_limit::untap_rule_texts(rule)

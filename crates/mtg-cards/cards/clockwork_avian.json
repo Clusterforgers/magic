@@ -1,7 +1,7 @@
 {
   "oracle_id": "3d5b71d4-ed5e-4c6d-be70-bebbb1475257",
   "name": "Clockwork Avian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clockwork Avian",
@@ -38,9 +38,51 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 160, "end": 350 }
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [
+                      0,
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": "X",
+                              "op": "Le",
+                              "right": {
+                                "Difference": [
+                                  4,
+                                  { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
+                                ]
+                              }
+                            }
+                          },
+                          "then": "X",
+                          "otherwise": {
+                            "Difference": [
+                              4,
+                              { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "n"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "+1/+0" },
+                  "count": { "ChosenAs": "n" }
+                }
+              }
+            ]
           }
         }
       ]

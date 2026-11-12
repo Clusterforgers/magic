@@ -23,6 +23,9 @@ impl Writer<'_> {
             Duration::UntilEndOfTurn => " until end of turn",
             Duration::Forever => "",
             Duration::WhileYouControlSource => " for as long as you control ~",
+            Duration::WhileYouControlSourceTapped => {
+                " for as long as you control ~ and ~ remains tapped"
+            }
             Duration::WhileSourceOnBattlefield => " for as long as ~ remains on the battlefield",
             _ => return None,
         };
@@ -62,6 +65,7 @@ impl Writer<'_> {
             duration:
                 duration @ (Duration::Forever
                 | Duration::WhileYouControlSource
+                | Duration::WhileYouControlSourceTapped
                 | Duration::WhileSourceOnBattlefield),
         } = effect
         else {

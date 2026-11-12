@@ -1,7 +1,7 @@
 {
   "oracle_id": "41129dc1-be88-4198-94f9-032817a79bc7",
   "name": "Karakyk Guardian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Karakyk Guardian",
@@ -11,9 +11,12 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 27, "end": 164 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["DealtDamageYet"] } }
+            }
           }
         }
       ]

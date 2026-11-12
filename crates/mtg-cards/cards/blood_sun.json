@@ -1,7 +1,7 @@
 {
   "oracle_id": "1534d90f-fc88-42dc-bf01-8b0986485e78",
   "name": "Blood Sun",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blood Sun",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 94 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }] },
+            "mods": ["LoseAbilitiesExceptMana"]
           }
         }
       ]

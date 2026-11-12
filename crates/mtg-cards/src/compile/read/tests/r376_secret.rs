@@ -29,7 +29,10 @@ fn a_near_miss_of_the_text_stays_unread(#[case] from: &str, #[case] to: &str) {
 #[rstest]
 #[case::open(r#""secret":true,"#, "")]
 #[case::lowest(r#""who":{"Bound":"highest"}"#, r#""who":{"Bound":"lowest"}"#)]
-#[case::not_among(r#""condition":{"Among":{"Bound":"highest"}}"#, r#""condition":{"Not":{"Among":{"Bound":"highest"}}}"#)]
+#[case::not_among(
+    r#""condition":{"Among":{"Bound":"highest"}}"#,
+    r#""condition":{"Not":{"Among":{"Bound":"highest"}}}"#
+)]
 #[case::three_counters(r#""count":2"#, r#""count":3"#)]
 #[case::from_one(r#""secret":true,"#, r#""secret":true,"min":1,"#)]
 fn a_near_miss_of_the_rules_is_not_written_as_the_text(#[case] from: &str, #[case] to: &str) {
@@ -96,11 +99,26 @@ fn a_near_miss_of_a_text_is_read_as_something_else(
 
 #[rstest]
 #[case::open_vote(MOB_RULES, r#""secret":true,"#, "", MOB)]
-#[case::any_player(MOB_RULES, r#""options":"AnotherPlayer""#, r#""options":{"Of":"EachPlayer"}"#, MOB)]
+#[case::any_player(
+    MOB_RULES,
+    r#""options":"AnotherPlayer""#,
+    r#""options":{"Of":"EachPlayer"}"#,
+    MOB
+)]
 #[case::three_damage(MOB_RULES, r#""by":2"#, r#""by":3"#, MOB)]
-#[case::cirdan_opponents(CIRDAN_RULES, r#""over":"EachPlayer""#, r#""over":"Opponents""#, CIRDAN)]
+#[case::cirdan_opponents(
+    CIRDAN_RULES,
+    r#""over":"EachPlayer""#,
+    r#""over":"Opponents""#,
+    CIRDAN
+)]
 #[case::dilemma_open(DILEMMA_RULES, r#""secret":true"#, r#""secret":false"#, DILEMMA)]
-#[case::dilemma_twelve_to_snitches(DILEMMA_RULES, r#""to":{"Bound":"silence"}"#, r#""to":{"Bound":"snitch"}"#, DILEMMA)]
+#[case::dilemma_twelve_to_snitches(
+    DILEMMA_RULES,
+    r#""to":{"Bound":"silence"}"#,
+    r#""to":{"Bound":"snitch"}"#,
+    DILEMMA
+)]
 #[case::dilemma_nine(DILEMMA_RULES, r#""amount":8"#, r#""amount":9"#, DILEMMA)]
 fn a_near_miss_of_the_rules_is_not_written_as_its_text(
     #[case] json: &str,
@@ -127,7 +145,10 @@ fn cryptic_gateway_reads_and_writes_back() {
 }
 
 #[rstest]
-#[case::one_of(r#"{"SharesCreatureTypeWithEach":"Paid"}"#, r#"{"SharesSubtype":"Paid"}"#)]
+#[case::one_of(
+    r#"{"SharesCreatureTypeWithEach":"Paid"}"#,
+    r#"{"SharesSubtype":"Paid"}"#
+)]
 #[case::must(r#""count":{"min":0,"max":1}"#, r#""count":{"min":1,"max":1}"#)]
 #[case::any_card(r#"{"Type":"Creature"},"#, "")]
 fn a_near_miss_of_the_gateway_is_not_written_as_its_text(#[case] from: &str, #[case] to: &str) {
@@ -145,7 +166,10 @@ fn a_near_miss_of_the_gateway_is_not_written_as_its_text(#[case] from: &str, #[c
 #[case::land("a creature card from", "a land card from")]
 fn a_near_miss_of_the_gateway_text_is_read_as_something_else(#[case] from: &str, #[case] to: &str) {
     let changed = GATEWAY.replace(from, to);
-    assert_ne!(clause(&changed, ClauseKind::Activated, false), Some(ability(GATEWAY_RULES)));
+    assert_ne!(
+        clause(&changed, ClauseKind::Activated, false),
+        Some(ability(GATEWAY_RULES))
+    );
 }
 
 const TEYO: &str = "\u{2212}2: Choose left or right. Until your next turn, each player may attack only the nearest opponent in the last chosen direction and planeswalkers controlled by that opponent.";
@@ -173,14 +197,22 @@ fn another_pair_of_words_is_not_written_as_left_or_right() {
     let written = crate::compile::read::render::written_variants(&ability(
         r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"ChooseWord":["up","down"]}}}"#,
     ));
-    assert!(!written.iter().any(|said| said.contains("left or right")), "{written:?}");
+    assert!(
+        !written.iter().any(|said| said.contains("left or right")),
+        "{written:?}"
+    );
 }
 
 #[rstest]
 #[case::for_the_turn(TEYO_RULES, "UntilYourNextTurn", "UntilEndOfTurn", TEYO)]
 #[case::entered(TEYO_RULES, r#"{"ChosenAs":"direction"}"#, r#""Entered""#, TEYO)]
 #[case::up_or_down(TEYO_RULES, r#"["left","right"]"#, r#"["up","down"]"#, TEYO)]
-#[case::by_resolution(PRAMIKON_RULES, r#""Entered""#, r#"{"ChosenAs":"direction"}"#, PRAMIKON)]
+#[case::by_resolution(
+    PRAMIKON_RULES,
+    r#""Entered""#,
+    r#"{"ChosenAs":"direction"}"#,
+    PRAMIKON
+)]
 fn a_near_miss_of_the_nearest_opponent_is_not_written_as_its_text(
     #[case] json: &str,
     #[case] from: &str,
@@ -225,5 +257,8 @@ fn a_near_miss_of_the_rooms_is_not_written_as_its_text(#[case] from: &str, #[cas
     let changed = HAMA_RULES.replacen(from, to, 1);
     assert_ne!(changed, HAMA_RULES);
     let written = crate::compile::read::render::written_variants(&ability(&changed));
-    assert!(!written.iter().any(|said| same_text(said, HAMA)), "{changed}: {written:?}");
+    assert!(
+        !written.iter().any(|said| same_text(said, HAMA)),
+        "{changed}: {written:?}"
+    );
 }

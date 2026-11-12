@@ -54,6 +54,7 @@ pub(super) fn w4a_step_texts(before: &[Effect], steps: &[Effect]) -> Vec<String>
         [
             Effect::CastFromZone {
                 rather: None,
+                spend_as: crate::modify::SpendAs::Normal,
                 who: Ref::You,
                 what: Ref::Each(group),
                 free: true,

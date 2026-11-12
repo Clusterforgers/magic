@@ -1,10 +1,11 @@
-// Goal: the questions of effects are put in the words of the card when the engine gave them and in plain ones when not, the number keys cover the first ten entries, a mode is chosen, repeated or taken back by the rules of its bounds, and the answer lists the chosen modes in the order they happen.
+// Goal: the questions of effects are put in the words of the card when the engine gave them and in plain ones when not, the number keys cover the first ten entries, a mode is chosen, repeated or taken back by the rules of its bounds, and the answer lists the chosen modes in the order they happen; modes counted in pawprints fit within the most.
 import { describe, expect, it } from 'vitest'
 import {
   askerWords,
   modeBounds,
   modeKeysWords,
   modeLabel,
+  modeWeight,
   modesAnswer,
   modesSentence,
   numberKey,
@@ -155,5 +156,32 @@ describe('pressing a mode', () => {
     modesAnswer(chosen)
     pressedMode(chosen, 2, { max: 3, repeat: false })
     expect(chosen).toEqual([3, 1])
+  })
+})
+
+describe('modes counted in pawprints', () => {
+  const weight = (index: number): number => index + 1
+  it.each([
+    ['adds a mode that fits', [2], 1, { max: 5, repeat: true, weight }, [2, 1]],
+    ['adds nothing past the pawprints', [2, 0], 1, { max: 5, repeat: true, weight }, [2, 0]],
+    ['adds a mode that fills them exactly', [2, 0], 0, { max: 5, repeat: true, weight }, [2, 0, 0]],
+  ])('%s', (_what, chosen, index, bounds, expected) => {
+    expect(pressedMode(chosen, index, bounds)).toEqual(expected)
+  })
+
+  it.each([
+    [0, 'Season: choose up to five {P} worth of modes, a mode more than once if you like, or none.'],
+    [3, 'Season: 3 {P} chosen. Confirm the modes, or choose up to 2 {P} more.'],
+    [5, 'Season: 5 {P} chosen. Confirm the modes, or take one back.'],
+  ])('%i pawprints read "%s"', (chosen, sentence) => {
+    expect(modesSentence({ asker: 'Season', min: 0, max: 5, repeat: true, chosen, pawprints: true })).toBe(
+      sentence,
+    )
+  })
+
+  it('labels a mode with its pawprints', () => {
+    expect(modeLabel({ index: 1, label: 'Draw a card.', weight: 2 })).toBe('{P}{P} — Draw a card.')
+    expect(modeWeight({ index: 1, label: null, weight: 3 })).toBe(3)
+    expect(modeWeight({ index: 1, label: null })).toBe(1)
   })
 })

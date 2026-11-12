@@ -44,5 +44,10 @@ fn the_card_is_verified_and_reads_back_as_printed(#[case] name: &str) {
         &BTreeSet::from([mtg_cards::load::slug(name)]),
         &Caps::everything(),
     );
-    assert_eq!(report.verdict(), Verdict::Accepted, "{name}: {:?}", report.clauses);
+    assert_eq!(
+        report.verdict(),
+        Verdict::Accepted,
+        "{name}: {:?}",
+        report.clauses
+    );
 }

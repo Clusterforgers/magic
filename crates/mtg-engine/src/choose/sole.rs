@@ -165,6 +165,7 @@ mod tests {
                     index: at * 2,
                     label: None,
                     cost: None,
+                    weight: None,
                 })
                 .collect(),
             min,

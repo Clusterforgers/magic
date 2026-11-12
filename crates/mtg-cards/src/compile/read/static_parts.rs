@@ -80,6 +80,10 @@ fn single(modification: &Modification, _last: bool, plural: bool) -> Vec<String>
         Modification::LoseAbilities => {
             vec![format!("{} all abilities", verb(plural, "loses", "lose"))]
         }
+        Modification::LoseAbilitiesExceptMana => vec![format!(
+            "{} all abilities except mana abilities",
+            verb(plural, "loses", "lose")
+        )],
         Modification::SetPT { power, toughness } => match (power, toughness) {
             (Amount::Fixed(power), Amount::Fixed(toughness)) => vec![format!(
                 "{} base power and toughness {power}/{toughness}",

@@ -10,6 +10,11 @@ mod inline;
 mod left;
 pub(crate) mod prim;
 mod r285_attacked;
+mod r300b_value;
+#[cfg(test)]
+mod r376_seats_tests;
+#[cfg(test)]
+mod r376_shares_tests;
 mod share;
 mod tree;
 mod value;
@@ -22,10 +27,6 @@ mod value_fill_tests;
 mod value_general;
 #[cfg(test)]
 mod value_players_where_tests;
-#[cfg(test)]
-mod r376_seats_tests;
-#[cfg(test)]
-mod r376_shares_tests;
 #[cfg(test)]
 mod value_test_tests;
 
@@ -43,7 +44,7 @@ pub(crate) use value::{CastTargets, zone_kind};
 
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
-use crate::announce::Pending;
+use crate::announce::{Granted, Pending};
 use crate::choose::{Choice, Target, announced_specs, spec_bases, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
@@ -195,6 +196,8 @@ pub struct Cast {
     pub transformed: bool,
     /// What it is cast for rather than its mana cost.
     pub rather: Option<mtg_cards::cost::Cost>,
+    /// Which mana may pay for it.
+    pub spend_as: mtg_cards::modify::SpendAs,
 }
 
 /// Where a step goes after its effect.
@@ -586,13 +589,17 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
             way,
             transformed,
             rather,
+            spend_as,
         })) => flow::Progress::Put(Box::new(Pending::during_resolution(
             player,
             card,
-            free,
-            way,
-            transformed,
-            rather,
+            Granted {
+                free,
+                way,
+                transformed,
+                rather,
+                spend_as,
+            },
         ))),
         Err(error) => flow::Progress::Fail(error),
     }

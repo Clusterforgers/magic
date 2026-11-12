@@ -32,12 +32,7 @@ pub(super) fn r376_seated(r: &mut Reader<'_>) -> Option<Ref> {
 
 /// The words of a seat the reader reads: "the player to your right".
 pub(super) fn r376_seated_text(who: &Ref) -> Option<String> {
-    let Ref::Seated {
-        of,
-        side,
-        opponent,
-    } = who
-    else {
+    let Ref::Seated { of, side, opponent } = who else {
         return None;
     };
     (**of == Ref::You).then_some(())?;

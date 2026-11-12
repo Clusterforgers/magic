@@ -113,6 +113,10 @@ pub const KEYWORDS: &[Entry] = &[
              {"Tap":{"what":{"Bound":"enlisted"}}},
              {"Reflexive":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Bound":"enlisted"},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}}]}}]"#,
     },
+    Entry {
+        name: "absorb",
+        template: r#"[{"Replacement":{"when":{"Damage":{"to":"This"}},"by":{"PreventUpTo":$N}}}]"#,
+    },
 ];
 
 /// The keyword actions that expand into effects: populate, endure, earthbend, blight, recruit, empower and assimilate.

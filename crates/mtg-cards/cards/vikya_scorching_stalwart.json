@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ad43ccce-3052-4817-8c46-f5c23cb49300",
+  "name": "Vikya, Scorching Stalwart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vikya, Scorching Stalwart",
+      "oracle_fingerprint": "f3df552974fd618aacaeebc657f49852",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "training", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}" }, "Untap", { "Discard": {} }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } },
+                  "excess": { "as": "excess" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      { "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 } },
+                      {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Type": "Creature" }]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

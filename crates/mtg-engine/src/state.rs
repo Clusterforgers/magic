@@ -1250,4 +1250,3 @@ mod tests {
         assert!(!game.discarded_this_turn(me, card), "the turn is over");
     }
 }
-

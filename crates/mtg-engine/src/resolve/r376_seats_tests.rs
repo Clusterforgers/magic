@@ -84,8 +84,14 @@ fn a_seat_that_has_left_the_game_is_passed_over(#[case] side: Side, #[case] expe
 #[test]
 fn each_player_names_their_own_neighbour_each_once() {
     let game = game(3);
-    assert_eq!(seated(&game, 0, Side::Left, false, Ref::EachPlayer), vec![1, 2, 0]);
-    assert_eq!(seated(&game, 0, Side::Right, false, Ref::Opponents), vec![0, 1]);
+    assert_eq!(
+        seated(&game, 0, Side::Left, false, Ref::EachPlayer),
+        vec![1, 2, 0]
+    );
+    assert_eq!(
+        seated(&game, 0, Side::Right, false, Ref::Opponents),
+        vec![0, 1]
+    );
 }
 
 #[test]

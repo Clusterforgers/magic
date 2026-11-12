@@ -1,7 +1,7 @@
 {
   "oracle_id": "a73d9109-36e0-40ea-ab06-5c5f7eb4ac54",
   "name": "Bilbo, Luckwearer // Burglar's Plot",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bilbo, Luckwearer",
@@ -21,9 +21,28 @@
       "oracle_fingerprint": "7af31b8bca60a4a0915e21af93c85d90",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 141 }
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }] } },
+              {
+                "what": {
+                  "Another": {
+                    "what": {
+                      "Object": [{ "Not": { "Type": "Land" } }, { "SharesType": { "Target": 0 } }]
+                    },
+                    "earlier": [0]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

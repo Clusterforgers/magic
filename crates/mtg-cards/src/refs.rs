@@ -157,6 +157,9 @@ pub enum Ref {
     /// an earlier step destroyed reads the controller they had. Each is named by what it was, as the resolution saw it
     /// leave; one with no such record (it moved twice, or came from a hidden zone) is nobody.
     Departed(Box<Ref>),
+    /// The source of each ability on the stack the reference names, as the object it was when the ability was put there
+    /// ("that permanent" of a countered ability); a spell or any other object names nobody.
+    SourceOf(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
@@ -317,6 +320,12 @@ pub enum Pred {
     Spell,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).
     Ability(AbilityKind),
+    /// Is an ability on the stack whose source matches the selector ("activated ability from an artifact source"): the
+    /// source as it is now, or as it last existed once it has left; written beside `Ability`, which keeps it to the stack.
+    AbilityFrom(Selector),
+    /// Is the source of one of the abilities on the stack the reference names, as the same object ("that permanent": the
+    /// source of the ability a spell counters).
+    SourceOf(Ref),
     /// Has an ability of the kind ("creatures with no abilities", "an artifact with a mana ability"): the abilities it
     /// has now on the battlefield, its printed ones elsewhere.
     HasAbility(HeldAbility),
@@ -382,7 +391,7 @@ pub enum Pred {
     OwnedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
-    /// Is a spell cast from the zone, a hand or a graveyard (the spell being cast included).
+    /// Is a spell cast from the zone, a hand, a graveyard or exile (the spell being cast included).
     CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
@@ -436,6 +445,9 @@ pub enum Pred {
     Targeting(Selector),
     /// Was dealt damage this turn.
     DamagedThisTurn,
+    /// Was dealt damage this turn by a source one of the players the reference names controlled as it dealt it ("a
+    /// creature dealt damage this turn by a source you controlled").
+    DamagedThisTurnBy(Ref),
     /// Was declared as an attacker this turn ("creatures that attacked this turn").
     AttackedThisTurn,
     /// Attacked during its controller's last turn, as the same object ("creatures that attacked during their controller's
@@ -522,6 +534,9 @@ pub enum Pred {
     Blocks(Ref),
     /// Is a target of one of the spells or abilities on the stack the reference names.
     TargetedBy(Ref),
+    /// Is an activated or triggered ability on the stack whose source matches the selector, as the source is now or, once
+    /// it has left its zone, as it last existed ("activated ability from an artifact source", CR 113.7a).
+    FromSource(Selector),
     /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
     SingleTarget,
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).

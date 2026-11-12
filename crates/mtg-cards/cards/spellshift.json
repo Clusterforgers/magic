@@ -1,0 +1,43 @@
+{
+  "oracle_id": "640fc475-5708-4ee6-a1a9-8f0722e22b48",
+  "name": "Spellshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellshift",
+      "oracle_fingerprint": "f3a2d48f2e0907c797f7aeb98cbb8b61",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "what": { "Bound": "found" },
+                  "free": true
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

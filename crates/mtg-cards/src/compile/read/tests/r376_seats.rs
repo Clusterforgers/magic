@@ -19,7 +19,12 @@ fn the_neighbour_gains_control_of_the_card(
     #[case] side: &str,
     #[case] opponent: bool,
 ) {
-    reads_as(text, ClauseKind::Spell, false, &seated_control(side, opponent));
+    reads_as(
+        text,
+        ClauseKind::Spell,
+        false,
+        &seated_control(side, opponent),
+    );
 }
 
 #[test]
@@ -103,13 +108,23 @@ fn a_near_miss_of_the_roll_is_not_read_as_treasures(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::itself(r#"{"Rule":{"rule":{"Cant":{"who":"This","action":"Sacrifice"}}}}"#, true)]
-#[case::each_player(r#"{"Rule":{"rule":{"Cant":{"who":"EachPlayer","action":"Sacrifice"}}}}"#, false)]
-#[case::countered(r#"{"Rule":{"rule":{"Cant":{"who":"This","action":"PutCounter"}}}}"#, false)]
+#[case::itself(
+    r#"{"Rule":{"rule":{"Cant":{"who":"This","action":"Sacrifice"}}}}"#,
+    true
+)]
+#[case::each_player(
+    r#"{"Rule":{"rule":{"Cant":{"who":"EachPlayer","action":"Sacrifice"}}}}"#,
+    false
+)]
+#[case::countered(
+    r#"{"Rule":{"rule":{"Cant":{"who":"This","action":"PutCounter"}}}}"#,
+    false
+)]
 fn the_card_that_cant_be_sacrificed_is_written_so(#[case] json: &str, #[case] written: bool) {
     let said = crate::compile::read::render::written_variants(&ability(json));
     assert_eq!(
-        said.iter().any(|text| same_text(text, "This artifact can't be sacrificed.")),
+        said.iter()
+            .any(|text| same_text(text, "This artifact can't be sacrificed.")),
         written,
         "{json}: {said:?}"
     );

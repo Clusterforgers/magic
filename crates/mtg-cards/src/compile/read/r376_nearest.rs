@@ -48,7 +48,8 @@ fn r376_side_choice() -> Ability {
 
 /// Reads "as ~ enters, choose left or right", leaving the period.
 pub(super) fn r376_side_entering(r: &mut Reader<'_>) -> Option<Ability> {
-    r.r376_text("as ~ enters, choose left or right").then_some(())?;
+    r.r376_text("as ~ enters, choose left or right")
+        .then_some(())?;
     Some(r376_side_choice())
 }
 

@@ -182,7 +182,11 @@ fn r376_player_votes(
 }
 
 /// The names a vote on players or objects binds: the leaders under `bind`, every vote under `tally`.
-fn r376_bound(votes: &[Target], bind: Option<&str>, tally: Option<&str>) -> Vec<(String, Vec<Target>)> {
+fn r376_bound(
+    votes: &[Target],
+    bind: Option<&str>,
+    tally: Option<&str>,
+) -> Vec<(String, Vec<Target>)> {
     bind.map(|name| (name.to_owned(), leaders(votes)))
         .into_iter()
         .chain(tally.map(|name| (name.to_owned(), votes.to_vec())))
@@ -460,7 +464,10 @@ mod tests {
         #[case] tally: Option<&str>,
         #[case] want: &[(&str, &[u64])],
     ) {
-        let votes: Vec<Target> = [1, 2, 2].iter().map(|n| Target::Player(PlayerId(*n))).collect();
+        let votes: Vec<Target> = [1, 2, 2]
+            .iter()
+            .map(|n| Target::Player(PlayerId(*n)))
+            .collect();
         let want: Vec<(String, Vec<Target>)> = want
             .iter()
             .map(|(name, seats)| {

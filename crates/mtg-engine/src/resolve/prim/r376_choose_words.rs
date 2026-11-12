@@ -26,12 +26,7 @@ fn choosers(cx: &Cx<'_>, who: &mtg_cards::refs::Ref) -> Result<Vec<PlayerId>, Re
 
 /// Each chooser picks one of the words (face down when `secret`); each word is bound to the players who chose it.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ChooseWords {
-        who,
-        words,
-        secret,
-    } = effect
-    else {
+    let Effect::ChooseWords { who, words, secret } = effect else {
         return Err(wrong_effect("ChooseWords"));
     };
     let options: Vec<ChoiceOption> = words
