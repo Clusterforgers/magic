@@ -15,6 +15,21 @@ const owed = ({ controller, manual_owed, name }: ObjectView): Owed => ({
   card: manual_owed === true ? name : null,
 })
 
+/** What the seat is told when the source of an ability the game left to the table is out of its view. */
+export const UNSEEN_SOURCE = 'a card'
+
+/** The source and controller of an ability the game could not run (`AbilityLeftToTable`, public or hidden), or null. */
+function leftToTable(view: EventView): { source: ObjectId; controller: PlayerId } | null {
+  if ('Hidden' in view) {
+    const hidden = view.Hidden
+    if (typeof hidden === 'string' || !('AbilityLeftToTable' in hidden)) return null
+    return { source: hidden.AbilityLeftToTable.source.id, controller: hidden.AbilityLeftToTable.controller }
+  }
+  const event = view.Public
+  if (typeof event === 'string' || !('AbilityLeftToTable' in event)) return null
+  return { source: event.AbilityLeftToTable.source.id, controller: event.AbilityLeftToTable.controller }
+}
+
 /** The object a public event says resolved, or null for any other event. */
 function resolved(event: Event): ObjectId | null {
   if (typeof event === 'string') return null
@@ -30,7 +45,8 @@ function resolved(event: Event): ObjectId | null {
  * the server holds a seat at every priority window from the resolution of an object of its own whose card has a clause
  * owed at resolution (`ObjectView.manual_owed`) until it passes priority, and never tells it. The object is read from the
  * view before the batch (it was on the stack) or, for a card that kept its id, after it; an ability put on the stack and
- * resolved inside the batch is in neither, and takes the flag of its source's view. A later resolution names the card.
+ * resolved inside the batch is in neither, and takes the flag of its source's view. An ability of the seat's that the
+ * game left to the table (`AbilityLeftToTable`) holds it too, for its source card. A later resolution names the card.
  */
 export function owesByHand(
   owes: string | null,
@@ -43,6 +59,11 @@ export function owesByHand(
   const abilities = new Map<ObjectId, Owed>()
   let held = owes
   for (const view of events) {
+    const left = leftToTable(view)
+    if (left !== null) {
+      if (left.controller === seat) held = (before[left.source] ?? after[left.source])?.name ?? UNSEEN_SOURCE
+      continue
+    }
     if (!('Public' in view) || typeof view.Public === 'string') continue
     const event = view.Public
     if ('PriorityPassed' in event) {

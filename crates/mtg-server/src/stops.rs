@@ -339,11 +339,13 @@ impl Stops {
     }
 
     /// Follows `events`, applied with `on_stack` ([`by_hand_on_stack`]) on the stack: a seat that passes priority
-    /// owes nothing, and the controller of one of those objects that resolves owes its clauses.
+    /// owes nothing, the controller of one of those objects that resolves owes its clauses, and the controller of an
+    /// ability the game left to the table (`AbilityLeftToTable`) owes its text.
     pub(crate) fn resolved(&mut self, on_stack: &[(ObjectId, PlayerId)], events: &[Event]) {
         for event in events {
             let (seat, owes) = match event {
                 Event::PriorityPassed { player } => (*player, false),
+                Event::AbilityLeftToTable(left) => (left.controller, true),
                 Event::SpellResolved { object }
                 | Event::ResolutionEnded {
                     object,
@@ -591,7 +593,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table until it passes, and is never told so. and the objects it holds a seat for are those the wire flags (`ObjectView::manual_owed`), for a spell and for an ability.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again; a seat owes the clauses of its own object that resolved with clauses left to the table, or the text of its own ability the game left to the table, until it passes, and is never told so. and the objects it holds a seat for are those the wire flags (`ObjectView::manual_owed`), for a spell and for an ability.
     use super::*;
     use mtg_engine::Engine;
     use mtg_protocol::ObjectView;
@@ -794,6 +796,18 @@ mod tests {
         Event::PriorityPassed { player }
     }
 
+    /// The game could not run an ability of object `source` that `controller` controls.
+    fn left(source: u64, controller: PlayerId) -> Event {
+        Event::AbilityLeftToTable(Box::new(mtg_engine::resolve::LeftToTable {
+            source: mtg_engine::object::ObjectRef {
+                id: ObjectId(source),
+                counter: 0,
+            },
+            controller,
+            text: String::new(),
+        }))
+    }
+
     #[rstest]
     #[case::a_spell(vec![Event::SpellResolved { object: ObjectId(7) }], [false, true])]
     #[case::an_ability(vec![resolution(7, ResolutionOutcome::Resolved)], [false, true])]
@@ -804,6 +818,10 @@ mod tests {
     #[case::pass_after(vec![resolution(7, ResolutionOutcome::Resolved), passed(ME)], [false, false])]
     #[case::pass_before(vec![passed(ME), resolution(7, ResolutionOutcome::Resolved)], [false, true])]
     #[case::foe_passes(vec![resolution(7, ResolutionOutcome::Resolved), passed(FOE)], [false, true])]
+    #[case::left_to_the_table(vec![left(9, ME), resolution(9, ResolutionOutcome::Resolved)], [false, true])]
+    #[case::foe_left_to_the_table(vec![left(9, FOE)], [true, false])]
+    #[case::left_then_passed(vec![left(9, ME), passed(ME)], [false, false])]
+    #[case::passed_then_left(vec![passed(ME), left(9, ME)], [false, true])]
     fn a_seat_owes_the_clauses_of_its_object_that_resolved_until_it_passes(
         #[case] events: Vec<Event>,
         #[case] owed: [bool; 2],
