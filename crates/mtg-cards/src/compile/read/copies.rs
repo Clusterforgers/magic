@@ -929,6 +929,7 @@ fn exception_parts(mods: &[Modification], subject: Subject, terse: bool) -> Opti
 }
 
 /// The parts of the exceptions, one for each change, with no head of creature types.
+#[allow(clippy::too_many_lines)]
 fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<Vec<String>> {
     let is_kind = |found: &Modification| {
         matches!(

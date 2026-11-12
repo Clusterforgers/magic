@@ -21,6 +21,11 @@ fn owner_static(attacked: &str) -> String {
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Tap":{"what":"This"}},{"Draw":{}}]}}"#
 )]
+#[case::counter_and_draw(
+    "Whenever ~ attacks, put a +1/+1 counter on ~ and draw a card.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}},{"Draw":{}}]}}"#
+)]
 #[case::bonus_and_unblockable_unless(PILOT, ClauseKind::Static, PILOT_JSON)]
 #[case::unblockable_unless_alone(
     "Enchanted creature can't be blocked unless it's attacking its owner or a permanent its owner controls.",
@@ -87,6 +92,9 @@ fn r371_owner_pair_near_misses(#[case] text: &str, #[case] restriction: &str) {
     "Enchanted creature can't be blocked unless it's attacking you or a permanent you control."
 )]
 #[case::and_then_another_verb("Whenever ~ attacks, tap ~ and draw a card and discard a card.")]
+#[case::after_a_players_step(
+    "Whenever ~ attacks, you gain 3 life and draw a card and discard a card."
+)]
 fn r371_owner_near_misses_stay_by_hand(#[case] text: &str) {
     let kind = if text.starts_with("Whenever") {
         ClauseKind::Triggered

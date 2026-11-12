@@ -133,11 +133,19 @@ pub(super) fn r371_three_texts(first: &Ability, second: &Ability, third: &Abilit
         .collect()
 }
 
-/// "untap ~ and draw a card": a sentence and the controller's draw joined by "and", read as the two sentences in order.
+/// "untap ~ and draw a card": a tap, an untap or counters put and the controller's draw joined by "and", read as the two sentences in
+/// order.
 pub(super) fn r371_and_draw(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()> {
     let found = templates().find_map(|template| {
         r.attempt(|r| {
             let mut first = template(r)?;
+            // Only a tap, an untap or counters put, which name no player, are joined: "you may gain 3 life and draw a
+            // card" is not.
+            matches!(
+                first.as_slice(),
+                [Effect::Tap { .. } | Effect::Untap { .. } | Effect::PutCounters { .. }]
+            )
+            .then_some(())?;
             r.need("and")?;
             (r.peek_word() == Some("draw")).then_some(())?;
             let second = templates().find_map(|template| {
