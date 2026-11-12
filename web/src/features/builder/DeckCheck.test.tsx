@@ -17,7 +17,7 @@ import {
 } from './renderBuilder'
 
 const pane = () => within(deckPane())
-const reason = (text: string, face = 0): Reason => ({ face, span: { start: 0, end: 10 }, text })
+const reason = (text: string, face = 0): Reason => ({ face, span: { start: 0, end: 10 }, text, quote: '' })
 
 interface Entry {
   card: CardHit

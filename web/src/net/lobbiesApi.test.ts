@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { fakeFetch, jsonResponse } from '@/test-utils/fakeFetch'
 import type { FetchCall } from '@/test-utils/fakeFetch'
 import { createApi } from './api'
+import type { Teams } from '@/protocol/generated'
 import type { Api, LobbyListing } from './api'
 import { LOBBY_ERROR_CODES, LobbyError } from './lobbyErrors'
 
@@ -57,6 +58,11 @@ const calls: [string, (api: Api) => Promise<unknown>, () => Response][] = [
     'setVisibility',
     (api) => api.setVisibility(GAME, 'invite', { token: TOKEN }),
     () => jsonResponse(200, { visibility: 'invite' }),
+  ],
+  [
+    'setTeams',
+    (api) => api.setTeams(GAME, { mode: 'teams', seats: [0, 1, 0, 1] }, { token: TOKEN }),
+    () => jsonResponse(200, { teams: { mode: 'teams', seats: [0, 1, 0, 1] } }),
   ],
   ['closeGame', (api) => api.closeGame(GAME, { token: TOKEN }), () => empty(204)],
 ]
@@ -327,6 +333,36 @@ describe('setVisibility', () => {
   ])('refuses an answer with %s as a bad_response', async (_what, body) => {
     const fake = fakeFetch(() => jsonResponse(200, body))
     const error = await failureOf(createApi({ fetch: fake.fetch }).setVisibility(GAME, 'public'))
+    expect(error.code).toBe('bad_response')
+  })
+})
+
+describe('setTeams', () => {
+  const giant: Teams = { mode: 'two_headed_giant', seats: [0, 0, 1, 1] }
+
+  it.each<[string, Teams | null]>([
+    ['the teams', giant],
+    ['null for every player alone', null],
+  ])('puts %s as JSON with the token and the cookie and returns the teams in force', async (_what, teams) => {
+    const fake = fakeFetch(() => jsonResponse(200, { teams }))
+    const result = await createApi({ fetch: fake.fetch }).setTeams(GAME, teams, { token: TOKEN })
+    expect(result).toEqual(teams)
+    expect(fake.calls[0]?.url).toBe(`/api/games/${GAME}/teams`)
+    expect(fake.calls[0]?.init).toEqual({
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${TOKEN}` },
+      body: JSON.stringify({ teams }),
+    })
+  })
+
+  it.each<[string, unknown]>([
+    ['no field', {}],
+    ['teams of an unknown mode', { teams: { mode: 'pairs', seats: [0, 1] } }],
+    ['null', null],
+  ])('refuses an answer with %s as a bad_response', async (_what, body) => {
+    const fake = fakeFetch(() => jsonResponse(200, body))
+    const error = await failureOf(createApi({ fetch: fake.fetch }).setTeams(GAME, giant))
     expect(error.code).toBe('bad_response')
   })
 })

@@ -198,6 +198,10 @@ pub enum Event {
         object: ObjectId,
         /// Why it could not go on.
         reason: Unplayable,
+        /// The detail of the reason, when the engine can name it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        why: Option<crate::decision::Why>,
     },
     /// A priority round started with this player.
     PriorityGranted {
@@ -579,6 +583,9 @@ pub enum Event {
     /// A step of a spell or ability of a card that runs on a player's read failed, so the rest of it is left to the table: the
     /// steps before it stand and the resolution ends right after (`docs/engine.md`, Fail-soft resolution).
     AbilityLeftToTable(Box<LeftToTable>),
+    /// The event a triggered line the table plays by hand waits for happened, so its controller applies it now
+    /// (`docs/engine.md`, By-hand lines): a note, no state change.
+    ByHandDue(Box<crate::triggers::ByHandDue>),
     /// An object moved from one zone to another.
     ZoneChanged {
         /// The object.
@@ -697,6 +704,14 @@ pub enum Event {
         /// The creature.
         object: ObjectId,
         /// What it attacks.
+        target: AttackTarget,
+    },
+    /// An attacking creature now attacks this player, planeswalker or battle instead (an effect reselected it); it is
+    /// still the creature that attacked as declared.
+    AttackRedirected {
+        /// The creature.
+        object: ObjectId,
+        /// What it attacks now.
         target: AttackTarget,
     },
     /// A permanent stopped being attached to what it was attached to.
@@ -1383,6 +1398,7 @@ impl Event {
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
             | Event::AbilityLeftToTable(_)
+            | Event::ByHandDue(_)
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
             | Event::ManualAction { .. }
@@ -1437,6 +1453,7 @@ impl Event {
             | Event::Entered { object, .. }
             | Event::Unattached { object }
             | Event::JoinedAttack { object, .. }
+            | Event::AttackRedirected { object, .. }
             | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

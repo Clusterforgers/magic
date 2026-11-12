@@ -16,7 +16,7 @@
                   "as": "discarded"
                 }
               },
-              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } }
+              { "Draw": { "count": { "Bound": "discarded~moved" } } }
             ]
           }
         },

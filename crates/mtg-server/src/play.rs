@@ -195,7 +195,8 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Projects `events` for the connected seats with who is connected, then saves them; nothing is sent yet.
+    /// Projects `events` for the connected seats (and the spectator viewer while someone watches) with who is
+    /// connected, then saves them; nothing is sent yet.
     pub(crate) async fn persist(
         &mut self,
         before: &GameState,
@@ -205,7 +206,11 @@ impl<S: EventStore> GameActor<S> {
         if events.is_empty() {
             return Ok(Vec::new()); // a cast in progress changes nothing worth saving or showing
         }
-        let viewers = self.seats.connected();
+        let connected = self.seats.connected();
+        let mut viewers = connected.clone();
+        if self.seats.watched() {
+            viewers.push(self.seats.spectator());
+        }
         let mut batches = if viewers.is_empty() {
             Vec::new()
         } else {
@@ -214,9 +219,9 @@ impl<S: EventStore> GameActor<S> {
         self.store.append(self.id, from_seq, events).await?;
         self.record_failed_reads(before, events).await;
         for batch in &mut batches {
-            presence::stamp(&mut batch.table, &viewers);
+            presence::stamp(&mut batch.table, &connected);
         }
-        self.presence.told(&viewers);
+        self.presence.told(&connected);
         Ok(viewers.into_iter().zip(batches).collect())
     }
 

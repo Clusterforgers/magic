@@ -278,7 +278,6 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
         <DeckPane
           draft={draft}
           deckId={stored.view.id}
-          cardsApi={cards}
           state={stored.view.state}
           check={check}
           dirty={dirty}

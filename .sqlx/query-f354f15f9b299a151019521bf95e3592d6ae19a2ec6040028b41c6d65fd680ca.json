@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO tournament_matches (tournament_id, round, table_no, a, b)\n             SELECT $1, $2, t.table_no, t.a, t.b\n             FROM unnest($3::int4[], $4::int4[], $5::int4[]) AS t(table_no, a, b)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4",
+        "Int4Array",
+        "Int4Array",
+        "Int4Array"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f354f15f9b299a151019521bf95e3592d6ae19a2ec6040028b41c6d65fd680ca"
+}

@@ -73,8 +73,13 @@ pub struct PreconCardView {
     pub card: Option<CardHit>,
     /// How far the game plays the card; `unplayable` for a card the database does not hold.
     pub support: Support,
-    /// The clauses left to the table, each with the span of oracle text it covers.
+    /// The clauses left to the table, each with the span of oracle text it covers and the words it quotes.
     pub reasons: Vec<Reason>,
+    /// The card's oracle text for a card the game leaves to the table whole (no clause of its own); left out
+    /// otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub whole_text: Option<String>,
 }
 
 /// The cards of one board of a precon.

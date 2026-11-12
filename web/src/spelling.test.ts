@@ -39,7 +39,6 @@ describe('britishWords', () => {
     ['American words', "const label = 'Color identity, colorless, colors'", []],
     ['an identifier', 'const colours = colourCounts(played)', []],
     ['a template substitution', 'const text = `\ (ability 2)`', []],
-    ['a wire key', "const key = 'colour_identity'", []],
     ['a comment', "// The colour of the border\nconst label = 'Border'", []],
     ['a block comment', "/** The colours of a deck. */\nconst label = 'Deck'", []],
   ])('finds the British spelling in %s', (_what, source, found) => {

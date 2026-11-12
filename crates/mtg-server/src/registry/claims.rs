@@ -10,15 +10,16 @@
 
 use std::sync::Arc;
 
-use mtg_core::house::HouseRules;
+use mtg_core::house::{HouseRuleError, HouseRules};
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_protocol::SeatDeck;
 use thiserror::Error;
 
 use super::{Entry, Registry, Removal, SeatSlot};
 use crate::api::MAX_NAME_CHARS;
 use crate::game_id::GameId;
-use crate::handle::{DeckRefusal, GameHandle};
+use crate::handle::{DeckRefusal, GameHandle, TeamsRefusal};
 use crate::recipe::FormatKind;
 use crate::records::{Claimed, GameRecords, RecordError, SeatState, Visibility};
 use crate::seat_deck::ChosenDeck;
@@ -106,6 +107,9 @@ pub enum TableError {
     /// The change could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
+    /// The teams do not fit the table.
+    #[error("house_rules.{0}")]
+    Teams(HouseRuleError),
 }
 
 /// What a change to one game's table works with, taken from its entry so no lock is held across
@@ -327,6 +331,31 @@ impl Registry {
         }
         match self.games().get_mut(&game) {
             Some(entry) => entry.visibility = visibility,
+            None => return Err(TableError::NotFound),
+        }
+        Ok(())
+    }
+
+    /// Sets the teams before the game starts; every seat takes Ready back. Only the host ([`HOST`], as `by`) may.
+    pub async fn set_teams(
+        &self,
+        game: GameId,
+        by: PlayerId,
+        teams: Option<Teams>,
+    ) -> Result<(), TableError> {
+        let table = self.table(game, |_| true).ok_or(TableError::NotFound)?;
+        if by != HOST {
+            return Err(TableError::NotAllowed);
+        }
+        let _turn = table.turn.lock().await;
+        match table.handle.set_teams(teams.clone()).await {
+            Ok(Ok(())) => {}
+            Ok(Err(TeamsRefusal::Started)) => return Err(TableError::Started),
+            Ok(Err(TeamsRefusal::Invalid(error))) => return Err(TableError::Teams(error)),
+            Err(_) => return Err(TableError::NotFound),
+        }
+        match self.games().get_mut(&game) {
+            Some(entry) => entry.house_rules.teams = teams,
             None => return Err(TableError::NotFound),
         }
         Ok(())

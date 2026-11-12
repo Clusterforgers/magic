@@ -110,6 +110,10 @@
   --color-card-back-ink: var(--card-back-ink);
   --color-support-stale: var(--support-stale);
   --color-support-unplayable: var(--support-unplayable);
+  --color-team-1: var(--team-1);
+  --color-team-2: var(--team-2);
+  --color-team-3: var(--team-3);
+  --color-team-4: var(--team-4);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -178,6 +182,11 @@
   --card-back-ink: oklch(0.78 0.05 260);
   --support-stale: oklch(0.44 0.09 100);
   --support-unplayable: oklch(0.47 0.19 27);
+  /* The colours of teams 1 to 4: blue, orange, teal and purple, apart from the state colours' hues. */
+  --team-1: oklch(0.48 0.14 255);
+  --team-2: oklch(0.5 0.13 60);
+  --team-3: oklch(0.47 0.09 190);
+  --team-4: oklch(0.48 0.15 310);
 
   /* The four phase themes, each an accent, a soft tint and the text on the accent (turn/phase.css picks one). */
   --phase-beginning: oklch(0.54 0.16 250);
@@ -269,6 +278,10 @@
   --card-back-ink: oklch(0.7 0.05 260);
   --support-stale: oklch(0.84 0.14 100);
   --support-unplayable: oklch(0.77 0.15 25);
+  --team-1: oklch(0.76 0.11 255);
+  --team-2: oklch(0.8 0.12 65);
+  --team-3: oklch(0.78 0.09 190);
+  --team-4: oklch(0.76 0.12 310);
 
   --phase-beginning: oklch(0.84 0.09 250);
   --phase-beginning-soft: oklch(0.3 0.05 250);

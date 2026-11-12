@@ -23,6 +23,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_core::attraction::Lights;
 use mtg_core::house::HouseRules;
+use mtg_core::ids::PlayerId;
 use mtg_engine::GameSetup;
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{Commander, FormatRules, Normal};
@@ -359,6 +360,9 @@ pub struct GameRecipe {
     /// created; a replay builds exactly these and refuses a game whose card changed. Left out while empty.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub conjured: BTreeMap<String, DeckFingerprint>,
+    /// The seats a server-side bot plays (`bots.rs`), which a resumed game hands to a bot again. Left out while empty.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub bots: Vec<PlayerId>,
 }
 
 /// The fingerprint of each conjurable card, by name.
@@ -476,6 +480,7 @@ impl GameRecipe {
             fingerprints: Vec::new(),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            bots: Vec::new(),
         }
     }
 
@@ -816,6 +821,19 @@ mod tests {
             let expected = demo::find(id).unwrap().cards();
             assert_eq!(names(&first.players[seat].library), names(&expected));
         }
+    }
+
+    #[test]
+    fn bot_seats_are_stored_and_read_back() {
+        let mut recipe =
+            GameRecipe::normal(5, demo_decks(&["mono-green", "mono-red", "mono-white"]));
+        recipe.bots = vec![PlayerId(1), PlayerId(2)];
+        let stored = serde_json::to_value(&recipe).unwrap();
+        assert_eq!(stored["bots"], json!([1, 2]));
+        assert_eq!(
+            serde_json::from_value::<GameRecipe>(stored).unwrap(),
+            recipe
+        );
     }
 
     #[test]

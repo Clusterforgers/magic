@@ -57,6 +57,8 @@ mod c8_kwq_abilities;
 mod c9_fight_double;
 mod card_grants;
 mod cast;
+mod ce29_arrest;
+mod ce29_charm;
 mod champion;
 mod chance;
 mod changes;
@@ -154,6 +156,9 @@ mod l293_events;
 mod l31a_events;
 pub(crate) mod l31a_performed;
 mod l31b_any_amount;
+mod l31d_any_number;
+mod l31d_x_color;
+mod l32a_paid;
 mod land_types;
 mod lands;
 mod leave_combat;
@@ -180,6 +185,7 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r303_forms;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -325,6 +331,7 @@ pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
+pub use r303_forms::form_text;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -344,6 +351,26 @@ use tokens::{Reader, tokenize};
 /// spell ability beside it.
 pub fn counts_targets(per: &crate::value::Amount) -> bool {
     statics::counts_targets(per)
+}
+
+/// The event of a triggered clause the table plays by hand ("Whenever a creature dies, ..."), when the words before its
+/// first comma read as one; `names` are the face's own names, which the clause reads as `~`. A clause of several lines
+/// waits for no one event.
+pub fn by_hand_event(text: &str, names: &[String]) -> Option<crate::trigger::TriggerPattern> {
+    let normalized = super::normalize::normalize(text, names);
+    let lines = normalized.lines();
+    let [line] = lines.as_slice() else {
+        return None;
+    };
+    let line = normalized.slice(line.clone());
+    if classify::classify(&line, false) != ClauseKind::Triggered {
+        return None;
+    }
+    let line = line.get(classify::ability_word_len(&line).unwrap_or(0)..)?;
+    let tokens = tokenize(line);
+    let mut reader = Reader::new(&tokens, false);
+    let when = triggers::pattern(&mut reader)?;
+    reader.punct(',').then_some(when)
 }
 
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
@@ -427,6 +454,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     reader.subtypes.clone_from(&own.subtypes);
     let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
+    } else if let Some(found) = ce29_arrest::ce29_arrest(text, x_free, own) {
+        found
     } else {
         let found = static_pairs::read(&mut reader)?;
         if !reader.end() {
@@ -437,9 +466,10 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let [first, second] = found.as_slice() else {
         return None;
     };
+    let said = ce29_arrest::ce29_said(text);
     static_pairs::texts(first, second)
         .iter()
-        .any(|written| same_text(written, text))
+        .any(|written| same_text(written, &said))
         .then_some(found)
 }
 
@@ -486,6 +516,7 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 ];
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
+#[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     if kind == ClauseKind::Spell
         && let Some(joined) = rmt0_x_is::rmt0_joined(text)
@@ -498,6 +529,40 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) = l31d_any_number::l31d_any_number_read(text, kind, |twin, kind, x_free| {
+        clause_with(twin, kind, x_free, own)
+    }) && written_variants(&found)
+        .iter()
+        .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        l31d_x_color::l31d_x_color_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            l32a_paid::l32a_times_read(text, |twin| clause_with(twin, kind, x_free, own))
+                .or_else(|| {
+                    l32a_paid::l32a_still_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+                .or_else(|| {
+                    l32a_paid::l32a_reattack_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+                .or_else(|| {
+                    l32a_paid::l32a_exchange_read(text, |twin| clause_with(twin, kind, x_free, own))
+                })
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

@@ -6,6 +6,7 @@
  * come from the generated bindings, which a Rust test keeps in step with the server.
  */
 import type {
+  AbilityRef,
   AttackerForecast,
   AttackerView,
   AutoChoices,
@@ -25,6 +26,9 @@ import type {
   LogName,
   ObjectKind,
   ObjectView,
+  Refusal,
+  Unplayable,
+  Why,
   PlayerForecast,
   PlayerView,
   SeatDeck,
@@ -37,6 +41,7 @@ import type {
   YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
+import { isTeams, readHouseRules } from './houseRules'
 
 /** Frames longer than this many characters are dropped unread; the biggest real message is a snapshot of about 50 KB. */
 export const MAX_FRAME_CHARS = 1_048_576
@@ -55,6 +60,7 @@ export type ParsedFrame = { ok: true; message: ServerMessage } | { ok: false; er
 
 const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Deciding: true,
+  Spectators: true,
   Welcome: true,
   Lobby: true,
   Decision: true,
@@ -82,6 +88,61 @@ const ERROR_CODES: Record<ErrorCode, true> = {
   StaleDecision: true,
   IllegalAnswer: true,
   Internal: true,
+}
+
+const UNPLAYABLE: Record<Unplayable, true> = {
+  Timing: true,
+  LandPlayed: true,
+  Mana: true,
+  Targets: true,
+  Cost: true,
+  Restricted: true,
+}
+
+const PLAIN_WHY = new Set([
+  'SorcerySpeed',
+  'OwnCondition',
+  'SummoningSick',
+  'Tapped',
+  'LimitSpent',
+  'OtherCost',
+  'NoWay',
+])
+
+const withRefusal = (refusal: Refusal | undefined): { refusal?: Refusal } =>
+  refusal === undefined ? {} : { refusal }
+
+/** Whether `value` is a `Why` the words can read: a plain one, or a detailed one with the fields they read. */
+function isWhy(value: unknown): value is Why {
+  if (isText(value)) return PLAIN_WHY.has(value)
+  if (!isRecord(value)) return false
+  const [key, ...more] = Object.keys(value)
+  const inner = key === undefined ? undefined : value[key]
+  if (more.length > 0 || !isRecord(inner)) return false
+  switch (key) {
+    case 'Target':
+      return isText(inner.needs) && isText(inner.zone)
+    case 'Mana':
+      return Array.isArray(inner.cost) && isCount(inner.at_hand)
+    case 'ForbiddenBy':
+      return inner.name === undefined || isText(inner.name)
+    case 'SplitSecond':
+      return isText(inner.name)
+    default:
+      return false
+  }
+}
+
+/** The refusal of an `Error`, kept when it names an object and a known reason; a detail it cannot read is left out. */
+function refusalOf(value: unknown): Refusal | undefined {
+  if (!isRecord(value) || !isCount(value.object) || !isText(value.reason)) return undefined
+  if (!Object.hasOwn(UNPLAYABLE, value.reason)) return undefined
+  const refusal: Refusal = { object: value.object, reason: value.reason as Unplayable }
+  if (isRecord(value.ability) && isCount(value.ability.object) && isCount(value.ability.ability)) {
+    refusal.ability = value.ability as AbilityRef
+  }
+  if (isWhy(value.why)) refusal.why = value.why
+  return refusal
 }
 
 const YIELD_UNTIL: Record<YieldUntil, true> = { Resolve: true, EndOfTurn: true, MyTurn: true }
@@ -208,9 +269,11 @@ function isAttacker(value: unknown): value is AttackerView {
   )
 }
 
-/** True for a game result: `"Draw"` or `{ Winner: seat }`. */
+/** True for a game result: `"Draw"`, `{ Winner: seat }` or `{ Team: team }`. */
 export function isGameResult(value: unknown): value is GameResult {
-  return value === 'Draw' || (isRecord(value) && isOneKey(value) && isCount(value.Winner))
+  return (
+    value === 'Draw' || (isRecord(value) && isOneKey(value) && (isCount(value.Winner) || isCount(value.Team)))
+  )
 }
 
 // A one-key object such as `{ Player: 1 }`: the key is one of `tags` and the value an id or seat.
@@ -290,7 +353,8 @@ function isTableView(value: unknown): value is TableView {
     isFlag(value.combat.attackers_declared) &&
     isIdList(value.combat.blockers_declared) &&
     (value.combat_forecast === null || isCombatForecast(value.combat_forecast)) &&
-    (value.result === null || isGameResult(value.result))
+    (value.result === null || isGameResult(value.result)) &&
+    (value.house_rules === undefined || readHouseRules(value.house_rules) !== null)
   )
 }
 
@@ -498,7 +562,16 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       // The lobby is drawn by seat number, so a roster that skips or repeats one is not one to draw.
       if (v.seats.some((seat, index) => seat.seat !== index)) return '"seats" must be listed in seat order'
       if (!isCount(v.needed)) return '"needed" must be a whole number'
-      return { type, seats: v.seats.map(lobbySeat), needed: v.needed }
+      // Absent means every player plays alone; the server never sends null.
+      if (v.teams !== undefined && !(isTeams(v.teams) && v.teams.seats.length === v.seats.length)) {
+        return '"teams" must name a mode and the team of every seat'
+      }
+      return {
+        type,
+        seats: v.seats.map(lobbySeat),
+        needed: v.needed,
+        ...(v.teams === undefined ? {} : { teams: v.teams }),
+      }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'
@@ -560,9 +633,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Error':
       if (!isErrorCode(v.code)) return '"code" is not a known error code'
       if (!isText(v.message)) return '"message" must be text'
-      return { type, code: v.code, message: v.message }
+      return { type, code: v.code, message: v.message, ...withRefusal(refusalOf(v.refusal)) }
     case 'GameOver':
-      if (!isGameResult(v.result)) return '"result" must be Draw or a Winner'
+      if (!isGameResult(v.result)) return '"result" must be Draw, a Winner or a Team'
       return { type, result: v.result }
     case 'Yielding':
       if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'
@@ -605,6 +678,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Deciding':
       if (!isListOf(v.seats, isDeciding)) return '"seats" must be a list of seats (seat, kind)'
       return { type, seats: v.seats }
+    case 'Spectators':
+      if (!isCount(v.count)) return '"count" must be a whole number'
+      return { type, count: v.count }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

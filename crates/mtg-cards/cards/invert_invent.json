@@ -1,7 +1,7 @@
 {
   "oracle_id": "9a378964-2c04-4d60-a905-c819d37ed4c3",
   "name": "Invert // Invent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Invert",
@@ -30,9 +30,28 @@
       "oracle_fingerprint": "f87ad2ef4be4b6c11303ce81e876c003",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 114 }
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Instant" }],
+                  "count": { "min": 0, "max": 1 },
+                  "reveal": true,
+                  "as": "instant"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Sorcery" }],
+                  "count": { "min": 0, "max": 1 },
+                  "reveal": true,
+                  "as": "sorcery"
+                }
+              },
+              { "Move": { "what": { "Bound": "instant" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "sorcery" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
           }
         }
       ]

@@ -23,7 +23,7 @@ fn new_game(setup: GameSetup) -> (GameHandle, FlakyStore) {
 /// The one internal error in `messages`, whose text must not leak what failed.
 fn internal_error(messages: &[ServerMessage]) {
     match messages {
-        [ServerMessage::Error { code, message }] => {
+        [ServerMessage::Error { code, message, .. }] => {
             assert_eq!(*code, ErrorCode::Internal);
             assert!(
                 !message.contains("injected"),

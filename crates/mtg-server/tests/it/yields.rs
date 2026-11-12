@@ -202,6 +202,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Bank { .. } => "bank".into(),
         ServerMessage::Presence { .. } => "presence".into(),
         ServerMessage::Deciding { .. } => "deciding".into(),
+        ServerMessage::Spectators { .. } => "spectators".into(),
     }
 }
 

@@ -31,6 +31,8 @@ const COUNT_KEYS: &[&str] = &["top", "bottom", "graveyard"];
 /// Keys whose numbers are counters or seat numbers, never object ids.
 const SCALAR_KEYS: &[&str] = &[
     "PayLife",
+    // The number of a keyword a card shows ("Toxic 1").
+    "Toxic",
     "counts",
     "combat_end",
     "turn_end",

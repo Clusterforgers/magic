@@ -1,7 +1,7 @@
 {
   "oracle_id": "8bed92cc-b3f8-4201-bcbc-44535ff1bd96",
   "name": "Tainted Adversary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tainted Adversary",
@@ -9,9 +9,34 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 328 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PayAnyTimes": { "cost": "{2}{B}" } },
+              {
+                "Reflexive": {
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Decayed" }]
+                          }
+                        },
+                        "count": { "Times": { "by": 2, "of": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1104,9 +1104,8 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::Opponents => state
-                .turn_order_from(state.turn().active())
+                .opponents_of(self.controller)
                 .into_iter()
-                .filter(|p| *p != self.controller)
                 .map(Target::Player)
                 .collect(),
             Ref::EachPlayer => state
@@ -1311,7 +1310,7 @@ impl<'a> Scope<'a> {
         self.state
             .turn_order_from(active)
             .into_iter()
-            .filter(|player| *player != active)
+            .filter(|player| self.state.is_opponent(active, *player))
             .collect()
     }
 
@@ -1340,7 +1339,9 @@ impl<'a> Scope<'a> {
         self.state
             .turn_order_from(self.state.turn().active())
             .into_iter()
-            .filter(|player| *player != self.controller && attacked.contains(player))
+            .filter(|player| {
+                self.state.is_opponent(self.controller, *player) && attacked.contains(player)
+            })
             .collect()
     }
 
@@ -2757,7 +2758,7 @@ impl<'a> Scope<'a> {
     fn turn_fact(&self, condition: &Condition) -> bool {
         match condition {
             Condition::ExtraTurn => self.state.turn().is_extra(),
-            _ => self.state.turn().active() == self.controller,
+            _ => self.state.is_active(self.controller),
         }
     }
 

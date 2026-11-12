@@ -48,6 +48,8 @@ export interface GamePageProps {
    * cookie (`/ws/{game}`), which the server maps to the account's own seat. Null for a guest.
    */
   account?: string | null
+  /** The page watches the game as a spectator, with no seat, through the session cookie (`/ws/{game}/watch`). */
+  watch?: boolean
   api?: Api
   /** The signed-in account's deck calls, for the deck chooser of the lobby: the shared client unless a test brings its own. */
   decks?: DecksApi
@@ -62,12 +64,28 @@ export function GamePage({
   gameId,
   link,
   account = null,
+  watch,
   api = sharedApi,
   decks = sharedDecks,
   precons = sharedPrecons,
   deps,
 }: GamePageProps) {
   // A new game, seat, token or account is a new session, so the key makes it a new component rather than a stale one.
+  if (watch === true) {
+    return (
+      <SeatedGame
+        key={`${gameId}/watch`}
+        gameId={gameId}
+        token={undefined}
+        watch
+        name="Spectator"
+        api={api}
+        decks={decks}
+        precons={precons}
+        deps={deps}
+      />
+    )
+  }
   if (link !== null) {
     return (
       <SeatedGame
@@ -103,6 +121,8 @@ interface SeatedGameProps {
   token: string | undefined
   /** The name sent in `Join`. */
   name: string
+  /** A spectator's session, through the session cookie. */
+  watch?: boolean
   api: Api
   decks: DecksApi
   precons: Pick<PreconsApi, 'list' | 'get'>
@@ -139,8 +159,8 @@ function useConnected(session: Session): void {
   }, [session])
 }
 
-function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGameProps) {
-  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name }))
+function SeatedGame({ gameId, token, watch = false, name, api, decks, precons, deps }: SeatedGameProps) {
+  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name, watch }))
   const [tutorial] = useState(() => tutorialOf(gameId))
   useConnected(session)
   const state = useStore(session.store, useShallow(screenState))

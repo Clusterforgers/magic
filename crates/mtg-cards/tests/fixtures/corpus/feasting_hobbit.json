@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "17662301-7284-40d4-af51-45a496c0eac0",
+  "oracle_id": "cca33482-0bc5-4fe4-89dc-ba33b2e93831",
+  "multiverse_ids": [
+    620723
+  ],
+  "mtgo_id": 113106,
+  "tcgplayer_id": 499744,
+  "cardmarket_id": 717444,
+  "name": "Feasting Hobbit",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/17662301-7284-40d4-af51-45a496c0eac0",
+  "scryfall_uri": "https://scryfall.com/card/ltc/37/feasting-hobbit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026",
+    "normal": "https://cards.scryfall.io/normal/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026",
+    "large": "https://cards.scryfall.io/large/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026",
+    "png": "https://cards.scryfall.io/png/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.png?1783916026",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.webp?1783916026",
+    "grid": "https://cards.scryfall.io/grid/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.webp?1783916026",
+    "display": "https://cards.scryfall.io/display/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.webp?1783916026",
+    "art": "https://cards.scryfall.io/art/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.webp?1783916026",
+    "crop": "https://cards.scryfall.io/crop/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.webp?1783916026",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/7/17662301-7284-40d4-af51-45a496c0eac0.jpg?1783916026"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Halfling Citizen",
+  "oracle_text": "Devour Food 3 (As this creature enters, you may sacrifice any number of Foods. It enters with three times that many +1/+1 counters on it.)\nCreatures with power less than this creature's power can't block it.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Devour"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/17662301-7284-40d4-af51-45a496c0eac0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acca33482-0bc5-4fe4-89dc-ba33b2e93831&unique=prints",
+  "collector_number": "37",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "His name, of course, was Proudfoot.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lorenzo Mastroianni",
+  "artist_ids": [
+    "70213e7d-47e0-4543-a1ae-451009053e2d"
+  ],
+  "illustration_id": "007ad34b-ad27-49ce-a64f-aeba839cb92c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4000,
+  "prices": {
+    "usd": "0.60",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.87",
+    "eur_foil": null,
+    "tix": "1.29"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620723&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeasting%2BHobbit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeasting%2BHobbit",
+    "edhrec": "https://edhrec.com/route/?cc=Feasting+Hobbit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499744%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717444&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113106?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

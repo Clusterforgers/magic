@@ -1,7 +1,7 @@
 /** The log lines of manual actions: the sentence of an action and the events of its change that the sentence already tells. */
 import type { LogEntry } from '@/play/store'
 import type { Event, EventView, ManualAction, ObjectId, Zone } from '@/protocol/generated'
-import { describeHiddenManual, describeHiddenTutor, describeManual, joinWords } from '../eventText'
+import { describeHiddenManual, describeHiddenTutor, describeManual, joinWords, quoted } from '../eventText'
 import type { EventNames } from '../eventText'
 
 /** The events that carry out `action`, by variant name; `Move` also reads the zone it left from the first of them. */
@@ -165,12 +165,6 @@ export function remember(
   if (remembered === undefined) return names
   return { ...names, card: (id) => remembered[id] ?? names.card(id) }
 }
-
-/** The longest clause the log quotes whole. */
-const QUOTE_CHARS = 160
-
-const quoted = (text: string): string =>
-  `“${text.length > QUOTE_CHARS ? `${text.slice(0, QUOTE_CHARS - 1)}…` : text}”`
 
 /** The card an event puts in front of the table, and whether it is cast and still to resolve; null for any other event. */
 function momentOf(event: EventView): { id: ObjectId; cast: boolean } | null {

@@ -135,6 +135,10 @@ pub trait FormatRules: Debug + Send + Sync {
     fn name(&self) -> &'static str;
     /// Life each player starts with.
     fn starting_life(&self) -> i32;
+    /// The life total a Two-Headed Giant team shares at the start (CR 810.4).
+    fn team_life(&self) -> i32 {
+        30
+    }
     /// Checks a player's deck.
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError>;
     /// Checks a seat: its `deck` (every card but the commanders) and the `commanders` it starts with in the command

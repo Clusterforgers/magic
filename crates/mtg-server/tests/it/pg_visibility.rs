@@ -147,7 +147,7 @@ async fn visibility_and_open_seats_are_stored_and_survive_a_restart(pool: PgPool
     let access = again.authenticate(listed.id, token.expose()).unwrap();
     assert_eq!(access.seat, seat(0));
     let mut host = Client::join(&access.handle, 0).await;
-    let ServerMessage::Lobby { seats, needed } = host
+    let ServerMessage::Lobby { seats, needed, .. } = host
         .until(|m| matches!(m, ServerMessage::Lobby { .. }).then(|| m.clone()))
         .await
     else {

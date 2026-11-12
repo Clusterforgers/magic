@@ -23,7 +23,6 @@ import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { DeckState, DeckZone } from '@/protocol/generated'
 import { CheckBar } from './CheckBar'
-import type { CardsApi } from '@/net/cards'
 import { CommanderSlot } from './CommanderSlot'
 import type { FindKind } from './CommanderSlot'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
@@ -62,8 +61,6 @@ interface DeckPaneProps {
   draft: Draft
   /** The saved deck, which its cards to read are read for. */
   deckId?: string
-  /** The card endpoint the words of the cards played by hand are quoted from. */
-  cardsApi: Pick<CardsApi, 'get'>
   /** The check state of the deck as last saved. */
   state: DeckState
   /** The check the pane shows: the saved deck's report, or the live check of the draft (its legality issues and the support of each card). */
@@ -99,7 +96,6 @@ interface DeckPaneProps {
 export function DeckPane({
   draft,
   deckId,
-  cardsApi,
   state,
   check,
   dirty,
@@ -380,7 +376,7 @@ export function DeckPane({
             {total === 0 ? empty : <StatsPanel deck={preview} counts={counts} asSaved={asSaved} />}
           </TabsContent>
           <TabsContent value="hand" className="outline-none">
-            <HandList cards={hand} cardsApi={cardsApi} onPreview={actions.preview} fixMarks={fixMarks} />
+            <HandList cards={hand} onPreview={actions.preview} fixMarks={fixMarks} />
           </TabsContent>
         </div>
       </Tabs>

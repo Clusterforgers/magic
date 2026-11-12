@@ -108,14 +108,22 @@ pub struct Reason {
     pub span: Span,
     /// Why it is left to the table, in plain words.
     pub text: String,
+    /// The words of the face's oracle text the span covers; empty when it covers none or the text is not known.
+    #[serde(default)]
+    pub quote: String,
 }
 
-impl From<&Clause> for Reason {
-    fn from(clause: &Clause) -> Self {
+impl Reason {
+    /// The reason for `clause`, quoting the words it covers in `face_text`, the oracle text of its face.
+    pub fn quoting(clause: &Clause, face_text: Option<&str>) -> Self {
         Reason {
             face: clause.face,
             span: clause.span,
             text: clause.reason.clone(),
+            quote: face_text
+                .and_then(|text| clause.span.slice(text))
+                .unwrap_or_default()
+                .to_owned(),
         }
     }
 }

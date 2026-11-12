@@ -1,4 +1,4 @@
-// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check, unreadable card texts and drafts that wait for a read beside a deck on approved reads), and answers "not found" with no fixture in a production build.
+// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check and drafts that wait for a read beside a deck on approved reads), and answers "not found" with no fixture in a production build.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -34,7 +34,7 @@ describe('parseDevUnvalidatedSearch', () => {
   it.each([
     [{}, 'all'],
     [{ view: 'deck' }, 'deck'],
-    [{ view: 'texts' }, 'texts'],
+    [{ view: 'texts' }, 'all'],
     [{ view: 'nonsense' }, 'all'],
     [{ view: 3 }, 'all'],
     [{ view: null }, 'all'],
@@ -52,7 +52,6 @@ describe('parseDevUnvalidatedSearch', () => {
       'error',
       'unavailable',
       'failed',
-      'texts',
       'reads',
     ])
   })
@@ -133,11 +132,6 @@ describe('/dev/unvalidated', () => {
   it('waits for ever in the loading view', async () => {
     await visit('/dev/unvalidated?view=loading')
     expect(await screen.findByText('Checking your decks…')).toBeInTheDocument()
-  })
-
-  it('says the texts could not be read in the texts view', async () => {
-    await visit('/dev/unvalidated?view=texts')
-    expect(await screen.findByText(/could not be read/)).toBeInTheDocument()
   })
 })
 

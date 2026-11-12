@@ -1,9 +1,10 @@
+import { Link } from '@tanstack/react-router'
 import { Pill } from '@/components/Pill'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import type { LobbyGame } from '@/protocol/generated'
-import { ageNow, ageText, formatName, isFull, joinLabel, seatsText } from './format'
+import { ageNow, ageText, formatName, isFull, joinLabel, seatsText, watchLabel } from './format'
 import type { OnJoin } from './useJoinGame'
 
 /** The window from which the open games are a table with columns; under it each game is a stacked row. */
@@ -54,7 +55,9 @@ function Seats({ game, dim }: { game: LobbyGame; dim: boolean }) {
     <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
       <SeatDots game={game} dim={dim} />
       <span className="text-sm tabular-nums">{seatsText(game)}</span>
-      {isFull(game) ? (
+      {game.running === true ? (
+        <Pill className="h-6">Running</Pill>
+      ) : isFull(game) ? (
         <Pill id={fullId(game)} className="h-6">
           Full
         </Pill>
@@ -68,13 +71,29 @@ function Age({ game, fetchedAt, now }: { game: LobbyGame; fetchedAt: number; now
   return <time dateTime={game.created_at}>{ageText(ageNow(game, fetchedAt, now))}</time>
 }
 
-/** The one primary button of a row; a full game keeps it in place, disabled and explained, and the row being joined spins. */
+/**
+ * The one primary control of a row: Watch for a running game (its page asks a visitor who is not signed in to sign in),
+ * else Join; a full game keeps Join in place, disabled and explained, and the row being joined spins.
+ */
 function JoinButton({
   game,
   joining,
   busy,
   onJoin,
 }: Pick<RowsProps, 'joining' | 'busy' | 'onJoin'> & { game: LobbyGame }) {
+  if (game.running === true) {
+    return (
+      <Link
+        to="/watch/$gameId"
+        params={{ gameId: game.game }}
+        data-watch={game.game}
+        aria-label={watchLabel(game)}
+        className={buttonVariants({ variant: 'outline' })}
+      >
+        Watch
+      </Link>
+    )
+  }
   const full = isFull(game)
   return (
     <Button

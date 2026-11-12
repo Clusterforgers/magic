@@ -49,12 +49,21 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
     match step {
         Step::Untap => untap_step(state),
         Step::Draw => {
-            let skipped = state.turn().number() == 1
-                && state.ruleset().skips_first_draw(state.players().len());
-            let mut events = match active {
-                Some(active) if !skipped => draw(state, active, state.ruleset().draw_step_cards()),
-                _ => Vec::new(),
-            };
+            // Teams that share turns count as one player each for the first draw (CR 810.5a).
+            let sides = state
+                .teams()
+                .filter(|_| state.shares_turns())
+                .map_or(state.players().len(), |teams| {
+                    usize::try_from(teams.count()).unwrap_or(usize::MAX)
+                });
+            let skipped = state.turn().number() == 1 && state.ruleset().skips_first_draw(sides);
+            let mut events = Vec::new();
+            if active.is_some() && !skipped {
+                // Each player whose turn it is draws (CR 805.3).
+                for player in state.active_players() {
+                    events.extend(draw(state, player, state.ruleset().draw_step_cards()));
+                }
+            }
             events.push(grant(state));
             Progress::Events(events)
         }
@@ -123,10 +132,17 @@ pub(crate) struct UntapQuestion {
 /// The events of the untap step with the permanents `kept` staying tapped, and the question the step asks.
 pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>, UntapQuestion) {
     let active = state.active_player();
+    // Every player whose turn it is untaps (CR 805.3); the question of the step is the active player's.
+    let actives = if active.is_some() {
+        state.active_players()
+    } else {
+        Vec::new()
+    };
     // Phasing comes first (CR 502.1): what phases in untaps with the rest.
-    let leaving = active.map_or_else(Vec::new, |active| {
-        crate::phasing::w7e_keyword_out_events(state, active)
-    });
+    let leaving: Vec<Event> = actives
+        .iter()
+        .flat_map(|player| crate::phasing::w7e_keyword_out_events(state, *player))
+        .collect();
     let going: BTreeSet<ObjectId> = leaving
         .iter()
         .filter_map(|event| match event {
@@ -134,8 +150,10 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
             _ => None,
         })
         .collect();
-    let mut events =
-        active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
+    let mut events: Vec<Event> = actives
+        .iter()
+        .flat_map(|player| crate::phasing::in_events(state, *player))
+        .collect();
     events.splice(0..0, leaving);
     let coming: Vec<_> = events
         .iter()
@@ -144,7 +162,10 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
             _ => None,
         })
         .collect();
-    let during = active.map_or_else(Vec::new, |active| untap_during(state, active));
+    let during: Vec<ObjectId> = actives
+        .iter()
+        .flat_map(|player| untap_during(state, *player))
+        .collect();
     let untapping: Vec<ObjectId> = state
         .zone(Zone::Battlefield)
         .iter()
@@ -152,7 +173,8 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
         .filter(|id| {
             active.is_some()
                 && !going.contains(*id)
-                && (controller_of(state, **id) == active || during.contains(*id))
+                && (controller_of(state, **id).is_some_and(|c| actives.contains(&c))
+                    || during.contains(*id))
                 && !crate::characteristics::doesnt_untap(state, **id)
                 && state
                     .object(**id)
@@ -174,8 +196,8 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
             .filter(|id| !kept.contains(id))
             .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
     );
-    if let Some(active) = active {
-        events.extend(crate::c7_untap::c7_untap_spent(state, active));
+    for player in &actives {
+        events.extend(crate::c7_untap::c7_untap_spent(state, *player));
     }
     events.extend(leave_step(state));
     let held = active.map_or_else(Vec::new, |active| {
@@ -450,7 +472,13 @@ fn pool_emptying(state: &GameState, through: ManaLasts) -> Vec<Event> {
 }
 
 fn cleanup(state: &GameState) -> Progress {
-    if let Some(active) = state.active_player() {
+    // Each player whose turn it is discards to their maximum hand size (CR 514.1, CR 805.3).
+    let actives = if state.active_player().is_some() {
+        state.active_players()
+    } else {
+        Vec::new()
+    };
+    for active in actives {
         let hand = state.zone(Zone::Hand(active));
         let most = state
             .ruleset()
@@ -577,7 +605,7 @@ fn next_turn(state: &GameState) -> NextTurn {
         }
     }
     let regular = state.turn().regular();
-    let first = state.next_alive_after(regular).unwrap_or(regular);
+    let first = state.next_turn_seat(regular).unwrap_or(regular);
     // A skipped turn is not taken; when every player skips, the first takes theirs.
     let mut next = first;
     for _ in 0..state.players().len() {
@@ -585,7 +613,7 @@ fn next_turn(state: &GameState) -> NextTurn {
             return (passed, spent, next, None);
         }
         spent.extend(used_skips(state, next));
-        next = state.next_alive_after(next).unwrap_or(next);
+        next = state.next_turn_seat(next).unwrap_or(next);
     }
     (passed, spent, first, None)
 }
@@ -613,6 +641,7 @@ fn highest_life(state: &GameState) -> GameResult {
     let highest = alive().map(Player::life).max();
     let mut leaders = alive().filter(|p| Some(p.life()) == highest);
     match (leaders.next(), leaders.next()) {
+        (Some(only), None) if state.teams().is_some() => GameResult::Team(state.team_of(only.id())),
         (Some(only), None) => GameResult::Winner(only.id()),
         _ => GameResult::Draw,
     }

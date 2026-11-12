@@ -12,7 +12,7 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
-              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } }
+              { "Draw": { "count": { "Bound": "discarded~moved" } } }
             ]
           }
         },
