@@ -33,7 +33,7 @@
   "mana_cost": "{5}{R}{R}",
   "cmc": 7.0,
   "type_line": "Sorcery",
-  "oracle_text": "For each creature target player controls, create a token that's a copy of that creature, except it has haste and \"At the beginning of the end step, if you don't control a planeswalker, sacrifice this creature.\"",
+  "oracle_text": "For each creature target player controls, create a token that's a copy of that creature, except it has haste and \"At the beginning of the end step, if you don't control a planeswalker, sacrifice this token.\"",
   "colors": [
     "R"
   ],
@@ -52,11 +52,11 @@
     },
     {
       "object": "related_card",
-      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "id": "2115c141-f2fb-4bfd-a8b5-2943bad9f418",
       "component": "token",
       "name": "Copy",
       "type_line": "Token",
-      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+      "uri": "https://api.scryfall.com/cards/2115c141-f2fb-4bfd-a8b5-2943bad9f418"
     }
   ],
   "legalities": {
@@ -127,13 +127,13 @@
   "textless": false,
   "booster": false,
   "story_spotlight": true,
-  "edhrec_rank": 17946,
+  "edhrec_rank": 15166,
   "prices": {
-    "usd": "0.33",
-    "usd_foil": "0.40",
+    "usd": "0.31",
+    "usd_foil": "0.37",
     "usd_etched": null,
-    "eur": "0.19",
-    "eur_foil": "0.24",
+    "eur": "0.22",
+    "eur_foil": "0.28",
     "tix": "0.01"
   },
   "related_uris": {
