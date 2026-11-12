@@ -3482,7 +3482,9 @@ impl Pass<'_> {
                     Some(Chosen::Name(name))
                 }
                 ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
-                ChoiceOption::Player(player) => Some(Chosen::Player(player)),
+                ChoiceOption::Player(player) | ChoiceOption::SecretPlayer(player) => {
+                    Some(Chosen::Player(player))
+                }
                 ChoiceOption::Secret(_) | ChoiceOption::Side(_) => None,
             }
         })))

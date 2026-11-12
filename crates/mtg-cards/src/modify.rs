@@ -364,6 +364,15 @@ pub enum Attacked {
     Both,
 }
 
+/// Which side of the table a rule means: one chosen as its source entered or by its resolution ("left" or "right").
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SideOf {
+    /// The word "left" or "right" the source chose as it entered ("the chosen direction"); no side without one.
+    Entered,
+    /// The word "left" or "right" the resolution chose under this name ("the last chosen direction").
+    ChosenAs(String),
+}
+
 /// How many creatures must block an attacker that "must be blocked".
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Blocking {
@@ -695,6 +704,11 @@ pub enum GameRule {
     VoteAgain(Ref),
     /// The players get an additional vote each time they vote: "While voting, you get an additional vote." (CR 701.38d).
     ExtraVote(Ref),
+    /// The game's turn order runs the other way round the table (Aeon Engine); two such rules cancel out.
+    ReverseTurnOrder,
+    /// Each player may attack only the nearest opponent on a side of them and planeswalkers that opponent controls
+    /// (Pramikon, Sky Rampart); several such rules all apply, so sides that disagree leave nobody to attack.
+    AttackOnlyNearest(SideOf),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such

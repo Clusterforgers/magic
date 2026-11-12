@@ -237,6 +237,7 @@ Broodhatch Nantuko
 Brooding Saurian
 Broodstar
 Bubble Matrix
+Bucknard's Everfull Purse
 Buried Alive
 Butcher's Cleaver
 Cabaretti Confluence
@@ -377,6 +378,7 @@ Crypt Ghast
 Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
+Cryptic Gateway
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
@@ -406,6 +408,7 @@ Cut the Earthly Bond
 Cybermen Squadron
 Cyclonic Rift
 Cytoshape
+Círdan the Shipwright
 Dalek Squadron
 Damocles Base, Sword of Kang
 Dampen Thought
@@ -831,6 +834,7 @@ Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
 Hall of Triumph
 Hallowed Spiritkeeper
+Hama Pashar, Ruin Seeker
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
@@ -1146,6 +1150,7 @@ Megaton's Fate
 Megrim
 Memory Guardian
 Memory Plunder
+Menacing Ogre
 Mer-Ek Nightblade
 Mercadia's Downfall
 Merchant of Truth
@@ -1184,6 +1189,7 @@ Mishra, Excavation Prodigy
 Misleading Signpost
 Mistmeadow Skulk
 Mizzium Mortars
+Mob Verdict
 Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
@@ -1371,6 +1377,7 @@ Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
 Power Conduit
+Pramikon, Sky Rampart
 Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
@@ -1388,6 +1395,7 @@ Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
 Prison Sentence
+Prisoner's Dilemma
 Prize Wall
 Prizefight
 Profane Command
@@ -1848,6 +1856,7 @@ Terrus Wurm
 Teshar, Ancestor's Apostle
 Teval's Judgment
 Textbook Tabulator
+Teyo, Geometric Tactician
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis

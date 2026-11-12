@@ -236,7 +236,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
         }
-        Ref::OwnerOf(inner) => reads_of_ref(inner),
+        Ref::OwnerOf(inner) | Ref::Seated { of: inner, .. } => reads_of_ref(inner),
         Ref::Arrived { of, .. } | Ref::Departed(of) => reads_of_ref(of),
         Ref::Each(selector) => reads_of_selector(selector),
         Ref::Union(parts) => parts
@@ -263,6 +263,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
+        | Pred::Dungeon
         | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped
@@ -352,7 +353,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Subtype(_) => Traits::SUBTYPES,
         Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
-        Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
+        Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
+            Traits::SUBTYPES.or(reads_of_ref(who))
+        }
         Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
             Traits::COLORS
         }

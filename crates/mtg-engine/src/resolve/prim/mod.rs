@@ -108,6 +108,7 @@ mod turn_up;
 mod dk1c5_unlock;
 mod dk27_bid;
 mod dk27_numbers;
+mod r376_choose_words;
 mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
@@ -343,6 +344,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Clash { .. } => w9b_clash::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
+        Effect::ChooseWords { .. } => r376_choose_words::run(cx, effect),
         Effect::BidLife { .. } => dk27_bid::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
@@ -407,7 +409,8 @@ mod tests {
         {"Vote":{"options":{"Named":["time","knowledge"]}}}, {"Planechase":{"act":"Planeswalk"}},
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
         {"Either":{"first":[],"second":[]}},
-        {"OneOf":{"options":[[],[],[]]}}
+        {"OneOf":{"options":[[],[],[]]}},
+        {"ChooseWords":{"words":["silence","snitch"],"secret":true}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -426,7 +429,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 129, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 130, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -590,5 +593,6 @@ mod tests {
         "Effect.VillainousChoice",
         "Effect.Either",
         "Effect.OneOf",
+        "Effect.ChooseWords",
     ];
 }

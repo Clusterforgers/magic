@@ -74,6 +74,8 @@ describe('what an answer is called', () => {
     [{ Player: 0 }, 0, 'Ana (you)'],
     [{ Player: 1 }, 0, 'Bo'],
     [{ Player: 1 }, null, 'Bo'],
+    [{ SecretPlayer: 2 }, 0, 'Cy'],
+    [{ SecretPlayer: 0 }, 0, 'Ana (you)'],
     [{ Color: 'Red' }, 0, 'Red'],
     [{ Label: 'Goblin' }, 0, 'Goblin'],
   ] as const)('%j seen from seat %s is "%s"', (option, viewer, label) => {

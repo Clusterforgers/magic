@@ -44,6 +44,8 @@ impl Writer<'_> {
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let whole = (self.ep22_flips(effects))
             .or_else(|| super::super::dk27_numbers::dk27_numbers_text(effects))
+            .or_else(|| super::super::r376_secret::r376_secret_text(effects))
+            .or_else(|| super::super::r376_seats::r376_roll_treasures_text(effects))
             .or_else(|| super::super::dk27_bid::dk27_bid_text(effects));
         if whole.is_some() {
             return whole;
@@ -123,6 +125,7 @@ impl Writer<'_> {
                 options: VoteFor::Named(names),
                 secret,
                 bind: None,
+                tally: None,
             } => self.vote(names, *secret, &effects[1..]),
             Effect::RepeatEach {
                 over,

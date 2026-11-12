@@ -157,6 +157,11 @@ pub enum Rule {
     VoteAgain(Vec<PlayerId>),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
+    /// The turn order runs the other way round the table.
+    ReverseTurnOrder,
+    /// Each player may attack only the nearest opponent on the left (`Some(true)`) or the right of them and the
+    /// planeswalkers that opponent controls; nothing when no side was chosen.
+    AttackOnlyNearest(Option<bool>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
@@ -633,6 +638,10 @@ pub(crate) struct RulesInForce {
     vote_again: BTreeSet<PlayerId>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
+    /// How many rules reverse the turn order; an odd count runs it the other way.
+    r376_reversals: usize,
+    /// The sides each player may attack only the nearest opponent on, left `true`, one entry for each rule.
+    r376_nearest: Vec<bool>,
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
@@ -1018,6 +1027,8 @@ impl RulesInForce {
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
+            Rule::ReverseTurnOrder => self.r376_reversals += 1,
+            Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
@@ -1366,6 +1377,18 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
+        GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
+        GameRule::AttackOnlyNearest(side) => {
+            let word = match side {
+                mtg_cards::modify::SideOf::Entered => scope.entered_choice(),
+                mtg_cards::modify::SideOf::ChosenAs(name) => scope.chosen_value(name),
+            };
+            Rule::AttackOnlyNearest(match word {
+                Some(crate::object::Chosen::Word(word)) if word == "left" => Some(true),
+                Some(crate::object::Chosen::Word(word)) if word == "right" => Some(false),
+                _ => None,
+            })
+        }
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
@@ -1608,7 +1631,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
-        | Rule::AbilitiesAsThoughHaste(_) => false,
+        | Rule::AbilitiesAsThoughHaste(_)
+        | Rule::ReverseTurnOrder => false,
+        Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1737,6 +1762,8 @@ static NONE: RulesInForce = RulesInForce {
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     extra_vote: Vec::new(),
+    r376_reversals: 0,
+    r376_nearest: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
@@ -2292,6 +2319,28 @@ pub fn ep33_extra_votes(state: &GameState, player: PlayerId) -> usize {
         .iter()
         .filter(|seat| **seat == player)
         .count()
+}
+
+/// The sides on which each player may attack only the nearest opponent, one for each rule in force; none when no rule
+/// limits attacks so.
+pub(crate) fn r376_nearest_sides(state: &GameState) -> Vec<mtg_cards::refs::Side> {
+    state
+        .rules()
+        .r376_nearest
+        .iter()
+        .map(|left| {
+            if *left {
+                mtg_cards::refs::Side::Left
+            } else {
+                mtg_cards::refs::Side::Right
+            }
+        })
+        .collect()
+}
+
+/// Whether the game's turn order runs the other way round the table: an odd number of rules reverse it.
+pub fn r376_turn_order_reversed(state: &GameState) -> bool {
+    state.rules().r376_reversals % 2 == 1
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

@@ -1227,6 +1227,8 @@ mod r11w;
 mod dk27_animate;
 mod dk27_bid;
 mod dk27_numbers;
+mod r376_seats;
+mod r376_secret;
 mod dk27_readers;
 mod e10c_writers;
 mod e17a_writers;

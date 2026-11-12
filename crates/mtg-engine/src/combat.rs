@@ -345,7 +345,17 @@ pub(crate) fn w7d_leave_on_control_change(state: &mut GameState) {
 /// What `player` may attack: the players the table's attack range allows, the planeswalkers they control and the battles
 /// they protect (CR 508.1b).
 pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
-    let seats = state.ruleset().defending_seats(state, player);
+    let mut seats = state.ruleset().defending_seats(state, player);
+    // "Each player may attack only the nearest opponent in the chosen direction and planeswalkers controlled by that
+    // opponent": every such rule keeps one seat, and battles are no such planeswalker.
+    let sides = crate::rules::r376_nearest_sides(state);
+    for side in &sides {
+        let nearest = state
+            .r376_seats_from(player, *side)
+            .into_iter()
+            .find(|seat| state.is_opponent(player, *seat));
+        seats.retain(|seat| Some(*seat) == nearest);
+    }
     let mut targets: Vec<AttackTarget> = seats.iter().copied().map(AttackTarget::Player).collect();
     for &id in state.zone(Zone::Battlefield) {
         let is_walker =
@@ -354,7 +364,8 @@ pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTa
         if is_walker && hostile {
             targets.push(AttackTarget::Planeswalker(id));
         }
-        if crate::battle::is_battle(state, id)
+        if sides.is_empty()
+            && crate::battle::is_battle(state, id)
             && crate::battle::protector(state, id).is_some_and(|p| seats.contains(&p))
         {
             targets.push(AttackTarget::Planeswalker(id));

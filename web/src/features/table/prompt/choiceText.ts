@@ -53,9 +53,10 @@ export function optionLabel(
   seatName: (seat: PlayerId) => string,
   viewer: PlayerId | null,
 ): string {
-  if ('Player' in option) {
-    const name = seatName(option.Player)
-    return option.Player === viewer ? `${name} (you)` : name
+  if ('Player' in option || 'SecretPlayer' in option) {
+    const seat = 'Player' in option ? option.Player : option.SecretPlayer
+    const name = seatName(seat)
+    return seat === viewer ? `${name} (you)` : name
   }
   if ('Color' in option) return option.Color
   if ('Side' in option) return option.Side

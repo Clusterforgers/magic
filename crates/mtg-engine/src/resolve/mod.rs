@@ -23,6 +23,10 @@ mod value_general;
 #[cfg(test)]
 mod value_players_where_tests;
 #[cfg(test)]
+mod r376_seats_tests;
+#[cfg(test)]
+mod r376_shares_tests;
+#[cfg(test)]
 mod value_test_tests;
 
 use std::sync::Arc;
