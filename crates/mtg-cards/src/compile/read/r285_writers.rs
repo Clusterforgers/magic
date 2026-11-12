@@ -137,6 +137,20 @@ pub(super) fn r285_pair_texts(first: &Ability, second: &Ability) -> Vec<String> 
             "Creatures you control but don't own get +2/+2 and can't be sacrificed".to_owned(),
         ];
     }
+    let fliers = json!([{ "Type": "Creature" }, { "HasKeyword": "Flying" }]);
+    let tap_ban = |sources: Value| json!({ "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": { "ActivateKind": { "kind": "TapCost", "sources": sources } } } } } });
+    if first == restricted && second == cant("Crew") {
+        return vec!["Enchanted creature can't attack, block, or crew Vehicles".to_owned()];
+    }
+    if first == restricted && second == tap_ban(json!([{ "Is": "Attached" }])) {
+        return vec!["Enchanted creature can't attack or block, and its activated abilities with {T} in their costs can't be activated".to_owned()];
+    }
+    if first
+        == json!({ "Static": { "affected": { "Each": fliers }, "mods": ["CantAttack", "CantBlock"] } })
+        && second == tap_ban(fliers)
+    {
+        return vec!["Creatures with flying can't attack or block, and their activated abilities with {T} in their costs can't be activated".to_owned()];
+    }
     let eminence = eminence_texts(&first, &second);
     if !eminence.is_empty() {
         return eminence;
@@ -653,6 +667,8 @@ fn trap_costs(value: &Value) -> Vec<String> {
 /// Single sentences of one card each: "Snow lands your opponents control enter tapped.", a Saga chapter that deals damage
 /// to each opponent and their planeswalkers, a cost tax given to your creatures and enchantments, and creatures with no
 /// abilities assigning combat damage as though unblocked.
+// One table of the wordings of single cards, an entry each.
+#[allow(clippy::too_many_lines)]
 fn sundry(value: &Value) -> Vec<String> {
     let snow = json!({ "Replacement": {
         "when": { "Enters": { "what": [{ "Supertype": "Snow" }, { "Type": "Land" }, { "ControlledBy": "Opponents" }] } },
@@ -712,7 +728,50 @@ fn sundry(value: &Value) -> Vec<String> {
         "mods": ["DoesntUntap"],
         "condition": { "Matches": { "subject": "Attached", "selector": ["AttackedLastTurn"] } }
     } });
-    let texts: &[&str] = if value == &halls {
+    let warriors = json!({ "Static": {
+        "affected": { "Each": [{ "Subtype": "Warrior" }, "Token", { "ControlledBy": "You" }] },
+        "mods": [{ "GrantAbility": { "Rule": { "rule": { "Cant": { "who": "This", "action": "Sacrifice" } } } } }],
+        "condition": { "All": ["YourTurn", { "Step": "End" }] }
+    } });
+    let passed = json!({ "Triggered": {
+        "when": { "StepBegins": { "step": "Upkeep" } },
+        "effects": [
+            { "Continuous": { "affected": "This", "mods": [{ "SetController": "Triggering" }], "duration": "Forever" } },
+            { "Untap": { "what": "This" } },
+            { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+            { "Continuous": { "affected": "This", "mods": [{ "AddKeyword": "Haste" }], "duration": "UntilEndOfTurn" } }
+        ]
+    } });
+    let echoes = json!({ "Rule": { "rule": { "TriggerAgain": {
+        "source": ["Colorless", { "ControlledBy": "You" }, { "AnyOf": ["Spell", "Other"] }]
+    } } } });
+    let hexproof_until = |pred: &str| {
+        json!({ "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Not": { "Matches": { "subject": "This", "selector": [pred] } } }
+        } })
+    };
+    let texts: &[&str] = if value == &hexproof_until("DealtDamageYet") {
+        &["~ has hexproof as long as it hasn't dealt damage yet"]
+    } else if value == &hexproof_until("DealtCombatDamageYet") {
+        &[
+            "~ has hexproof as long as it hasn't dealt combat damage yet",
+            "~ has hexproof as long as they haven't dealt combat damage yet",
+        ]
+    } else if value == &echoes {
+        &[
+            "If a triggered ability of a colorless spell you control or another colorless permanent you control triggers, that ability triggers an additional time",
+        ]
+    } else if value == &warriors {
+        &[
+            "During your end step, Warrior tokens you control have \"This token can't be sacrificed.\"",
+        ]
+    } else if value == &passed {
+        &[
+            "At the beginning of each player's upkeep, that player gains control of ~, untaps it, and puts a +1/+1 counter on it. It gains haste until end of turn",
+        ]
+    } else if value == &halls {
         &["Creatures that attacked during their controller's last turn can't attack"]
     } else if value == &kelp {
         &[

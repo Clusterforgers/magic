@@ -1,7 +1,7 @@
 {
   "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
   "name": "Zurgo, Thunder's Decree",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zurgo, Thunder's Decree",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "mobilize", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 164, "end": 251 }
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Warrior" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Rule": { "rule": { "Cant": { "who": "This", "action": "Sacrifice" } } }
+                }
+              }
+            ],
+            "condition": { "All": ["YourTurn", { "Step": "End" }] }
           }
         }
       ]

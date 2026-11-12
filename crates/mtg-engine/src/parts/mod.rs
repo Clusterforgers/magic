@@ -827,7 +827,8 @@ impl Pick {
             Kind::Exile | Kind::Evidence => exile::candidates(payer, &self.filter),
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Reveal => reveal::candidates(payer, &self.filter),
-            Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
+            Kind::Tap => tap::candidates(payer, &self.filter),
+            Kind::TapPower => tap::crew_candidates(payer, &self.filter),
             Kind::Return | Kind::Blight(_) | Kind::ExilePermanent => {
                 bounce::candidates(payer, &self.filter)
             }

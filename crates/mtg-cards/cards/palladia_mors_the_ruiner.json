@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c2b10ba-1930-4da8-9570-c89b2e239e3e",
   "name": "Palladia-Mors, the Ruiner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Palladia-Mors, the Ruiner",
@@ -11,9 +11,12 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 27, "end": 92 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["DealtDamageYet"] } }
+            }
           }
         }
       ]

@@ -169,6 +169,8 @@ pub struct Designations {
     pub(crate) level: u32,
     /// How many permanents it devoured as it entered (CR 702.82).
     pub(crate) devoured: u32,
+    /// Whether it has dealt damage, then combat damage, since it entered the battlefield, as this object.
+    pub(crate) dealt: [bool; 2],
 }
 
 /// How a permanent is phased out (CR 702.26): who controlled it when it phased out, which is who it phases in for, and

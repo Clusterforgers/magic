@@ -1,4 +1,4 @@
-//! Goal: the r28-5 engine pieces play as their rules say at tables of two to four seats: a spell cast only by a player attacked this combat, opponents held to the timing of a sorcery, a permanent that can't become untapped, creature cards that can't enter the battlefield from a graveyard, a macro keyword whose number is X, a creature that attacks as though it had haste, a rule from the command zone, encore for a card's mana value, a creature that attacked during its controller's last turn, and the turn's log of what an opponent destroyed or countered; each game replays to the state it reached.
+//! Goal: the r28-5 engine pieces play as their rules say at tables of two to four seats: a spell cast only by a player attacked this combat, opponents held to the timing of a sorcery, a permanent that can't become untapped, creature cards that can't enter the battlefield from a graveyard, a macro keyword whose number is X, a creature that attacks as though it had haste, a rule from the command zone, encore for a card's mana value, a creature that attacked during its controller's last turn, abilities with {T} in their costs and crews forbidden, triggers again only for permanents unless the rule names spells, whether a permanent has dealt damage yet, and the turn's log of what an opponent destroyed or countered; each game replays to the state it reached.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -473,6 +473,137 @@ fn a_creature_that_attacked_last_turn_cant_attack_under_the_rule(
     };
     assert!(!offered.contains(&driver.id_of("Raider")?));
     assert!(offered.contains(&driver.id_of("Stayer")?));
+    replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn abilities_with_tap_in_their_costs_cant_be_activated_under_the_rule(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] ruled: bool,
+) -> Result<(), ScriptError> {
+    let rule = r#"{"Cant":{"who":"EachPlayer","action":{"ActivateKind":{"kind":"TapCost","sources":[{"Type":"Creature"}]}}}}"#;
+    let pinger = Arc::new(
+        CardDefinition::new("Pinger")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(ability(
+                r#"{"Activated":{"cost":["Tap"],"effects":[{"GainLife":{"amount":1}}]}}"#,
+            ))
+            .with_rules(ability(
+                r#"{"Activated":{"cost":"{0}","effects":[{"GainLife":{"amount":1}}]}}"#,
+            )),
+    );
+    let druid = Arc::new(
+        CardDefinition::new("Druid")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#)),
+    );
+    let mut own = vec![ready(pinger), ready(druid)];
+    if ruled {
+        own.push(ready(warden(rule)));
+    }
+    let driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, own),
+    )?;
+    let offered = driver.offered_abilities("Pinger")?;
+    assert_eq!(offered, if ruled { vec![1] } else { vec![0, 1] });
+    let priority = match &driver.decision()?.kind {
+        DecisionKind::Priority(options) => options.clone(),
+        _ => panic!("no priority"),
+    };
+    let elf = driver.id_of("Druid")?;
+    let taps_elf = priority
+        .mana_abilities
+        .iter()
+        .any(|mana| mana.source.object == elf);
+    assert_eq!(taps_elf, !ruled);
+    Ok(())
+}
+
+#[rstest]
+fn a_creature_that_cant_crew_is_no_crew_candidate(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] ruled: bool,
+) -> Result<(), ScriptError> {
+    let rule = r#"{"Cant":{"who":{"Each":[{"Named":"Pilot"}]},"action":"Crew"}}"#;
+    let wagon = Arc::new(
+        CardDefinition::new("Wagon")
+            .with_type(CardType::Artifact)
+            .with_power_toughness(3, 3)
+            .with_rules(ability(r#"{"Keyword":{"Crew":1}}"#)),
+    );
+    let mut own = vec![ready(wagon), ready(free_creature("Pilot", 2, 2))];
+    if ruled {
+        own.push(ready(warden(rule)));
+    }
+    let driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, own),
+    )?;
+    assert_eq!(driver.offered_abilities("Wagon")?.is_empty(), ruled);
+    Ok(())
+}
+
+#[rstest]
+fn a_rule_for_permanents_triggers_a_spells_own_cast_trigger_once(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] ruled: bool,
+) -> Result<(), ScriptError> {
+    let rule = r#"{"TriggerAgain":{}}"#;
+    let healer = Arc::new(
+        CardDefinition::new("Healer")
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(ability(
+                r#"{"Triggered":{"when":{"SpellCast":{"what":["This"],"by":"You"}},"from":"Stack","effects":[{"GainLife":{"amount":1}}]}}"#,
+            ))
+            .with_rules(ability(r#"{"Spell":{"effects":[]}}"#)),
+    );
+    let mut scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, vec![healer]);
+    if ruled {
+        scenario = scenario.battlefield(0, vec![ready(warden(rule))]);
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    let before = driver.state().player(pid(0)).unwrap().life();
+    driver.cast("Healer")?;
+    while !driver.state().stack().is_empty() {
+        if matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
+            driver.pass()?;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), before + 1);
+    replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn a_creature_remembers_it_has_dealt_damage_while_it_stays(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] attacks: bool,
+) -> Result<(), ScriptError> {
+    let rule = r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Hexproof"}],"condition":{"Not":{"Matches":{"subject":"This","selector":["DealtCombatDamageYet"]}}}}}"#;
+    let ruric = Arc::new(
+        CardDefinition::new("Ruric")
+            .with_type(CardType::Creature)
+            .with_power_toughness(3, 3)
+            .with_rules(ability(rule)),
+    );
+    let mut driver = Driver::from_scenario(table(seats, vec![ruric], &[]))?;
+    let attacks_with: &[&str] = if attacks { &["Ruric"] } else { &[] };
+    play(&mut driver, attacks_with, &[], &|_, _| None, Step::Main2)?;
+    let id = driver.id_of("Ruric")?;
+    let hexproof =
+        mtg_engine::keywords::keywords_of(driver.state(), id).contains(&&Keyword::Hexproof);
+    assert_eq!(hexproof, !attacks);
     replays(&driver);
     Ok(())
 }

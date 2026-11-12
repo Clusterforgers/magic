@@ -61,7 +61,11 @@ pub(crate) enum Doing {
         source: ObjectId,
         /// The specific kind of the ability (`activation_kind::specific`); none for any other.
         kind: Option<ActivationKind>,
+        /// Whether its cost has {T}.
+        taps: bool,
     },
+    /// `object` is tapped to pay a crew cost.
+    Crew { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -141,6 +145,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 player,
                 source,
                 kind,
+                ..
             },
         ) => {
             kind != Some(ActivationKind::Mana)
@@ -155,10 +160,14 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 player,
                 source,
                 kind: own,
+                taps,
             },
         ) => {
-            crate::activation_kind::is_kind(*kind, own)
-                && covers(who, Some(player), Some(source))
+            (if *kind == ActivationKind::TapCost {
+                taps
+            } else {
+                crate::activation_kind::is_kind(*kind, own)
+            }) && covers(who, Some(player), Some(source))
                 && state
                     .object(source)
                     .is_some_and(|o| picks(state, ban, sources, o.reference()))
@@ -203,6 +212,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         ),
         (Prohibited::Transform, Doing::Transform { object })
         | (Prohibited::Untap, Doing::Untap { object })
+        | (Prohibited::Crew, Doing::Crew { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
             covers(who, holder(state, object), Some(object))
         }

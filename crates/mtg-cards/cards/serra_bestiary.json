@@ -1,7 +1,7 @@
 {
   "oracle_id": "320d8f2b-005d-4769-80d2-f46d96afffe7",
   "name": "Serra Bestiary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Serra Bestiary",
@@ -16,10 +16,17 @@
             ]
           }
         },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 206 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "TapCost", "sources": [{ "Is": "Attached" }] }
+                }
+              }
+            }
           }
         }
       ]

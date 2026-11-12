@@ -181,14 +181,7 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
-    if crate::prohibit::forbidden(
-        state,
-        crate::prohibit::Doing::Activate {
-            player,
-            source: object.id(),
-            kind: crate::activation_kind::specific(state, address, rules),
-        },
-    ) {
+    if activation_forbidden(state, player, object, (address, rules)) {
         return false;
     }
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
@@ -289,6 +282,25 @@ fn can_activate(
     (least == 0 || affords(least))
         && announceable(state, player, object.id(), rules)
         && some_x_has_targets(state, player, object.id(), rules, affords)
+}
+
+/// Whether a prohibition keeps `player` from activating the ability `rules` of `object`.
+fn activation_forbidden(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    (address, rules): (AbilityRef, &Ability),
+) -> bool {
+    crate::prohibit::forbidden(
+        state,
+        crate::prohibit::Doing::Activate {
+            player,
+            source: object.id(),
+            kind: crate::activation_kind::specific(state, address, rules),
+            taps: matches!(rules, Ability::Activated { cost, .. }
+                if cost.0.contains(&mtg_cards::cost::CostItem::Tap)),
+        },
+    )
 }
 
 /// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a

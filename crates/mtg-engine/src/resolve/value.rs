@@ -1765,6 +1765,13 @@ impl<'a> Scope<'a> {
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
             Pred::AttackedLastTurn => state.attacked_last_turn(reference),
+            Pred::DealtDamageYet | Pred::DealtCombatDamageYet => state
+                .object(reference.id)
+                .filter(|object| object.reference() == reference)
+                .and_then(GameObject::permanent)
+                .is_some_and(|permanent| {
+                    permanent.designations.dealt[usize::from(*pred == Pred::DealtCombatDamageYet)]
+                }),
             Pred::DidThisTurn {
                 event,
                 by,
