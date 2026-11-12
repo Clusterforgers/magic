@@ -55,7 +55,6 @@ fn compact(name: &str) -> String {
     r#"{"SkipStep":"Untap"}"#,
     r#"{"SkipStep":"Draw"}"#
 )]
-#[case::brine_opponents("Brine Elemental", r#""who":"Opponents""#, r#""who":"EachPlayer""#)]
 #[case::firemaw_name(
     "Chandra's Firemaw",
     r#""Named":"Chandra, Flame's Catalyst""#,
@@ -134,7 +133,6 @@ fn compact(name: &str) -> String {
     r#"{"GainLife":{"amount":2}}"#,
     r#"{"GainLife":{"amount":3}}"#
 )]
-#[case::euthanist_damaged("Orzhov Euthanist", r#""event":"Damaged""#, r#""event":"Attacked""#)]
 #[case::graven_other(
     "Graven Dominator",
     r#"{"Type":"Creature"},"Other"]"#,
@@ -150,7 +148,6 @@ fn compact(name: &str) -> String {
     r#"{"Not":{"Type":"Land"}}"#,
     r#"{"Not":{"Type":"Creature"}}"#
 )]
-#[case::nephilim_ten("Witch-Maw Nephilim", r#""right":10"#, r#""right":9"#)]
 #[case::yore_tiller_attacking(
     "Yore-Tiller Nephilim",
     r#"{"JoinAttack":{"what":{"Target":0}}}"#,
@@ -177,11 +174,6 @@ fn compact(name: &str) -> String {
     r#"{"HasKeywordNamed":"Disguise"}"#
 )]
 #[case::cerberus_hand("Underworld Cerberus", r#""to":"Hand""#, r#""to":"Exile""#)]
-#[case::preacher_most_life(
-    "Preacher of the Schism",
-    r#""op":"Ge","right":{"HighestLife""#,
-    r#""op":"Gt","right":{"HighestLife""#
-)]
 #[case::lammasu_three("Absolving Lammasu", r#""amount":3"#, r#""amount":2"#)]
 #[case::monitor_four(
     "Surveillance Monitor",

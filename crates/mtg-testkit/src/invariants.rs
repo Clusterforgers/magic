@@ -1349,6 +1349,17 @@ impl InvariantChecker {
         if !loyalty && !sorcery {
             return Ok(());
         }
+        // A permanent its controller controls may let them activate the ability any time they could cast an instant.
+        let instant_too = sorcery
+            && self.shadow.zone(Zone::Battlefield).iter().any(|id| {
+                controller_of(&self.shadow, *id) == Some(player)
+                    && ability_reader::abilities_of(&self.shadow, *id)
+                        .iter()
+                        .any(|(_, rules)| matches!(**rules, Ability::InstantActivation { .. }))
+            });
+        if instant_too {
+            return Ok(());
+        }
         let turn = self.shadow.turn();
         if turn.active() != player || !turn.step().is_main() || !self.shadow.stack().is_empty() {
             return Err(Violation::Bookkeeping(format!(
