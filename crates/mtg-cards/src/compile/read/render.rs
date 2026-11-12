@@ -217,6 +217,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
+    if let Some(texts) = super::l31d_x_color::r405_chosen_only_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::l31d_any_number::l31d_any_number_variants(ability, variants) {
         return texts;
     }

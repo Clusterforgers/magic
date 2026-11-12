@@ -100,6 +100,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
         CostItem::XColor(_) => "Cost.XColor",
+        CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
     }
 }
@@ -217,6 +218,8 @@ impl Price {
                 // (`resolve/prim/w6c_pay_x.rs`).
                 CostItem::XAtLeast(_) | CostItem::XAtMost(_) => {}
                 CostItem::XColor(color) => x_color = Some(*color),
+                // Read where the total of an activation is worked out (`chosen_color_only`).
+                CostItem::ChosenColorOnly => {}
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {
                     mana = true;
@@ -399,6 +402,46 @@ pub(crate) fn with_x(mana: ManaCost, amount: u32, color: Option<Color>) -> ManaC
         None => mana.with(ManaSymbol::Generic(amount)),
         Some(color) => (0..amount).fold(mana, |mana, _| mana.with(ManaSymbol::Colored(color))),
     }
+}
+
+/// `mana` paid only with mana of the color `source` chose ("Spend only mana of the chosen color to activate this
+/// ability"): each generic mana becomes a symbol of that color and a hybrid symbol with that color its half of it; `None`
+/// when no color is chosen or a symbol can't be paid with mana of that color. `mana` as it is when `cost` has no such
+/// part.
+pub(crate) fn chosen_color_only(
+    state: &GameState,
+    source: ObjectId,
+    cost: &Cost,
+    mana: ManaCost,
+) -> Option<ManaCost> {
+    if !cost.0.contains(&CostItem::ChosenColorOnly) {
+        return Some(mana);
+    }
+    let color = match state
+        .object(source)
+        .and_then(crate::object::GameObject::permanent)
+        .and_then(crate::object::PermanentState::chosen)
+    {
+        Some(crate::object::Chosen::Color(color)) => *color,
+        _ => return None,
+    };
+    mana.symbols()
+        .iter()
+        .try_fold(ManaCost::ZERO, |paid, symbol| {
+            let (each, symbol) = match *symbol {
+                ManaSymbol::Generic(count) => (count, ManaSymbol::Colored(color)),
+                ManaSymbol::Colored(held) | ManaSymbol::MonoHybrid(held) if held == color => {
+                    (1, ManaSymbol::Colored(color))
+                }
+                ManaSymbol::Hybrid(one, other) if one == color || other == color => {
+                    (1, ManaSymbol::Colored(color))
+                }
+                // Life still pays a Phyrexian symbol; mana that pays it is of its color.
+                ManaSymbol::Phyrexian(held) if held == color => (1, ManaSymbol::Phyrexian(held)),
+                _ => return None,
+            };
+            Some((0..each).fold(paid, |paid, _| paid.with(symbol)))
+        })
 }
 
 /// The color "Spend only black mana on X" asks of the mana paid for X in `cost`, if any.

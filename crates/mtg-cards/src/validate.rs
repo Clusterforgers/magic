@@ -1598,6 +1598,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OthersGainLife(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
+                    CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
                     CostItem::XAtMost(most) => {
                         // The most X is read where an effect asks the payment and announces its X.
                         if !w.r306_paying || !w.x_free {

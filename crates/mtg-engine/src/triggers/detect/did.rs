@@ -434,9 +434,14 @@ fn activated(
         .map(Action::activation_kinds)
         .unwrap_or_default();
     let loyalty = rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
+    let eternalize = matches!(
+        ability_reader::keyword_adding(pre, address),
+        Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
+    );
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
         .chain(kinds)
+        .chain(eternalize.then_some(Action::ActivatedEternalizeOrEmbalm))
         .chain(loyalty.then_some(Action::ActivatedLoyalty))
         .map(|action| Happened::Did {
             action,

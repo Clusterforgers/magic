@@ -40,6 +40,50 @@ fn x_color(cost: &Cost) -> Option<Color> {
     })
 }
 
+/// The sentence of `CostItem::ChosenColorOnly`.
+const CHOSEN_ONLY: &str = "Spend only mana of the chosen color to activate this ability.";
+
+/// An activated ability read from the text before "Spend only mana of the chosen color to activate this ability." at the
+/// end of `text`, with the part in its cost.
+pub(super) fn r405_chosen_only_read(
+    text: &str,
+    kind: ClauseKind,
+    read: impl Fn(&str) -> Option<Ability>,
+) -> Option<Ability> {
+    let head = text.trim_end().strip_suffix(CHOSEN_ONLY)?.trim_end();
+    (kind == ClauseKind::Activated && !head.is_empty()).then_some(())?;
+    let mut ability = read(head)?;
+    let Ability::Activated { cost, .. } = &mut ability else {
+        return None;
+    };
+    let paid = cost.0.iter().any(|item| matches!(item, CostItem::Mana(_)));
+    (paid && !cost.0.contains(&CostItem::ChosenColorOnly)).then_some(())?;
+    cost.0.push(CostItem::ChosenColorOnly);
+    Some(ability)
+}
+
+/// The words of an activated ability whose cost is paid with mana of the chosen color alone: the ability without the
+/// part, then the sentence; `None` for any other ability.
+pub(super) fn r405_chosen_only_variants(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+) -> Option<Vec<String>> {
+    let Ability::Activated { cost, .. } = ability else {
+        return None;
+    };
+    cost.0.contains(&CostItem::ChosenColorOnly).then_some(())?;
+    let mut twin = ability.clone();
+    if let Ability::Activated { cost, .. } = &mut twin {
+        cost.0.retain(|item| *item != CostItem::ChosenColorOnly);
+    }
+    Some(
+        written(&twin)
+            .into_iter()
+            .map(|text| format!("{text} {CHOSEN_ONLY}"))
+            .collect(),
+    )
+}
+
 /// The ability `text` says with "Spend only black mana on X." at its end: the spell line alone, or an activated ability
 /// read from the text before it (`read`) whose cost holds `{X}`.
 pub(super) fn l31d_x_color_read(

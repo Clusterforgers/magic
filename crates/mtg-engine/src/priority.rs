@@ -374,6 +374,9 @@ pub(crate) fn activation(
     if let Some(mana) =
         crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
+        let Some(mana) = crate::price::chosen_color_only(state, object.id(), &cost, mana) else {
+            return Hindered(Unplayable::Mana, None);
+        };
         let mana = &mana;
         let Some(seat) = state.player(player) else {
             return Never;

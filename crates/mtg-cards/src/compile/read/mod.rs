@@ -208,6 +208,7 @@ mod r372_suspend;
 mod r375_events;
 mod r375_phase;
 mod r405_cast_target;
+mod r405_events;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -558,6 +559,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if let Some(found) = l31d_any_number::l31d_any_number_read(text, kind, |twin, kind, x_free| {
         clause_with(twin, kind, x_free, own)
+    }) && written_variants(&found)
+        .iter()
+        .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) = l31d_x_color::r405_chosen_only_read(text, kind, |head| {
+        clause_with(head, kind, x_free, own)
     }) && written_variants(&found)
         .iter()
         .any(|written| same_text(written, text))
