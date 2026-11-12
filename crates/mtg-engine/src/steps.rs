@@ -406,10 +406,10 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     events
 }
 
-/// Empties every mana pool of the mana that lasts no longer than `through`; under the house rule of mana burn, a player
-/// in the game loses 1 life for each mana that was left, restricted mana included.
+/// Empties every mana pool of the mana that lasts no longer than `through`; under the house rule or a rule of mana
+/// burn, a player in the game loses 1 life for each mana that was left, restricted mana included.
 fn pool_emptying(state: &GameState, through: ManaLasts) -> Vec<Event> {
-    let burn = state.ruleset().mana_burn();
+    let burn = state.ruleset().mana_burn() || state.rules().mana_burn;
     state
         .players()
         .iter()

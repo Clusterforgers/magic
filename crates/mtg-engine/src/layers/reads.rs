@@ -63,9 +63,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
-        Modification::LoseAbilities | Modification::LoseAbility(_) => {
-            Traits::KEYWORDS.or(Traits::RULES)
-        }
+        Modification::LoseAbilities
+        | Modification::LoseAbilitiesExceptMana
+        | Modification::LoseAbility(_) => Traits::KEYWORDS.or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -105,7 +105,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::SetLandTypes(_) | Wanted::SetLandTypesChosen(_) => {
             Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
         }
-        Wanted::SetCreatureTypesChosen(_) | Wanted::AddChosenSubtype => Traits::SUBTYPES,
+        Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
+        | Wanted::AddChosenSubtype => Traits::SUBTYPES,
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
@@ -116,9 +118,10 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::RemoveKeyword(_)
         | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities | Wanted::LoseThisAbility | Wanted::LosePrinted(_) => {
-            Traits::KEYWORDS.or(Traits::RULES)
-        }
+        Wanted::LoseAbilities
+        | Wanted::LoseAbilitiesExceptMana
+        | Wanted::LoseThisAbility
+        | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
@@ -173,6 +176,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
@@ -190,6 +194,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LosePrinted(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
+        | Wanted::LoseAbilitiesExceptMana
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
         | Wanted::CantBlock

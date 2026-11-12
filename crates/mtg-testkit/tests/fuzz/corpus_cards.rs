@@ -36,9 +36,9 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Kaervek's Spite", Partial, 1),
     ("Nourishing Shoal", Partial, 1),
     ("Plagiarize", Manual, 0),
+    ("Shining Shoal", Partial, 1),
     ("Sickening Shoal", Partial, 1),
     ("Vexing Puzzlebox", Partial, 2),
-    ("Yurlok of Scorch Thrash", Partial, 2),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

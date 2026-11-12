@@ -395,6 +395,12 @@ pub enum Rule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// All damage is dealt as though its source had wither (CR 702.80).
+    DamageAsWither,
+    /// A player losing unspent mana loses that much life (mana burn).
+    ManaBurn,
+    /// Creatures can attack the players and their planeswalkers as though they had haste (CR 302.6).
+    AttackAsThoughHasteAt(Vec<PlayerId>),
     /// The players can't lose the game, and the other players can't win it (CR 104.3).
     CantLoseGame {
         /// The players who can't lose.
@@ -688,6 +694,12 @@ pub(crate) struct RulesInForce {
     pub(crate) static_spell_costs: Vec<(Rule, PlayerId, ObjectRef)>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
+    /// All damage is dealt as though its source had wither.
+    pub(crate) damage_as_wither: bool,
+    /// Players losing unspent mana lose that much life.
+    pub(crate) mana_burn: bool,
+    /// The players creatures can attack as though they had haste.
+    pub(crate) haste_at: BTreeSet<PlayerId>,
 }
 
 /// A tax on attacking in force, with whose it is.
@@ -1195,6 +1207,12 @@ impl RulesInForce {
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
             | Rule::Replaces { .. } => {}
+            Rule::DamageAsWither => self.damage_as_wither = true,
+            Rule::ManaBurn => self.mana_burn = true,
+            Rule::AttackAsThoughHasteAt(players) => {
+                self.haste_at
+                    .extend(crate::r303b_haste_at::r303b_named(players));
+            }
             Rule::GraveyardCardsUntargetable
             | Rule::CantLoseGame { .. }
             | Rule::CantCastSpells { .. }
@@ -1484,6 +1502,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::UpToInDeck(_) => return Err(ResolveError::Unsupported("Rule.UpToInDeck")),
         // A draft rule works only during a booster draft; nothing changes in a game.
         GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
+        GameRule::DamageAsWither => Rule::DamageAsWither,
+        GameRule::ManaBurn => Rule::ManaBurn,
+        GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -1583,7 +1604,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
-        | Rule::NoMaxHandSize(players) => players.is_empty(),
+        | Rule::NoMaxHandSize(players)
+        | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::HandSizeChange(changes) => changes.is_empty(),
@@ -1608,7 +1630,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
-        | Rule::AbilitiesAsThoughHaste(_) => false,
+        | Rule::AbilitiesAsThoughHaste(_)
+        | Rule::DamageAsWither
+        | Rule::ManaBurn => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1776,6 +1800,9 @@ static NONE: RulesInForce = RulesInForce {
     cants: Vec::new(),
     static_spell_costs: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
+    damage_as_wither: false,
+    mana_burn: false,
+    haste_at: BTreeSet::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
