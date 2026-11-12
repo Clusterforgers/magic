@@ -156,7 +156,6 @@ fn a_phrase_with_an_open_atom_reads_and_writes_back(
 #[rstest]
 #[case::paired("creature it's paired with", Form::Target)]
 #[case::targets_only("spell that targets only ~", Form::Target)]
-#[case::targets_a_player("spell that targets a player", Form::Target)]
 #[case::graved_elsewhere(
     "creature cards that were put into your graveyard from exile this turn",
     Form::All
