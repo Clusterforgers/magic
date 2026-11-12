@@ -1,38 +1,38 @@
 {
   "object": "card",
-  "id": "980b31eb-a9cd-44d2-8755-9323bb4de2f0",
+  "id": "4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795",
   "oracle_id": "8222321f-b74d-4f74-9ee7-79455433345a",
   "multiverse_ids": [
-    627794
+    683369
   ],
-  "mtgo_id": 114889,
-  "tcgplayer_id": 507294,
-  "cardmarket_id": 723694,
+  "arena_id": 93295,
+  "tcgplayer_id": 590737,
+  "cardmarket_id": 796906,
   "name": "Verdeloth the Ancient",
   "lang": "en",
-  "released_at": "2023-08-04",
-  "uri": "https://api.scryfall.com/cards/980b31eb-a9cd-44d2-8755-9323bb4de2f0",
-  "scryfall_uri": "https://scryfall.com/card/cmm/330/verdeloth-the-ancient?utm_source=api",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795",
+  "scryfall_uri": "https://scryfall.com/card/j25/737/verdeloth-the-ancient?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T04:06:58Z",
+  "image_updated_at": "2026-07-13T02:10:12Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618",
-    "normal": "https://cards.scryfall.io/normal/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618",
-    "large": "https://cards.scryfall.io/large/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618",
-    "png": "https://cards.scryfall.io/png/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.png?1783915618",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618",
-    "thumb": "https://cards.scryfall.io/thumb/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.webp?1783915618",
-    "grid": "https://cards.scryfall.io/grid/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.webp?1783915618",
-    "display": "https://cards.scryfall.io/display/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.webp?1783915618",
-    "art": "https://cards.scryfall.io/art/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.webp?1783915618",
-    "crop": "https://cards.scryfall.io/crop/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.webp?1783915618",
-    "jpeg": "https://cards.scryfall.io/normal/front/9/8/980b31eb-a9cd-44d2-8755-9323bb4de2f0.jpg?1783915618"
+    "small": "https://cards.scryfall.io/small/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612",
+    "normal": "https://cards.scryfall.io/normal/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612",
+    "large": "https://cards.scryfall.io/large/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612",
+    "png": "https://cards.scryfall.io/png/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.png?1783908612",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.webp?1783908612",
+    "grid": "https://cards.scryfall.io/grid/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.webp?1783908612",
+    "display": "https://cards.scryfall.io/display/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.webp?1783908612",
+    "art": "https://cards.scryfall.io/art/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.webp?1783908612",
+    "crop": "https://cards.scryfall.io/crop/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.webp?1783908612",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/b/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795.jpg?1783908612"
   },
   "mana_cost": "{4}{G}{G}",
-  "cmc": 6.0,
+  "cmc": 6,
   "type_line": "Legendary Creature — Treefolk",
   "oracle_text": "Kicker {X} (You may pay an additional {X} as you cast this spell.)\nSaproling creatures and other Treefolk creatures get +1/+1.\nWhen Verdeloth enters, if it was kicked, create X 1/1 green Saproling creature tokens.",
   "power": "4",
@@ -49,19 +49,19 @@
   "all_parts": [
     {
       "object": "related_card",
-      "id": "82f710ed-fda6-44dd-9a42-d5b37656307d",
+      "id": "248ade83-ac57-42d6-985c-1e4cc3639f36",
       "component": "token",
       "name": "Saproling",
       "type_line": "Token Creature — Saproling",
-      "uri": "https://api.scryfall.com/cards/82f710ed-fda6-44dd-9a42-d5b37656307d"
+      "uri": "https://api.scryfall.com/cards/248ade83-ac57-42d6-985c-1e4cc3639f36"
     },
     {
       "object": "related_card",
-      "id": "980b31eb-a9cd-44d2-8755-9323bb4de2f0",
+      "id": "4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795",
       "component": "combo_piece",
       "name": "Verdeloth the Ancient",
       "type_line": "Legendary Creature — Treefolk",
-      "uri": "https://api.scryfall.com/cards/980b31eb-a9cd-44d2-8755-9323bb4de2f0"
+      "uri": "https://api.scryfall.com/cards/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795"
     }
   ],
   "legalities": {
@@ -91,32 +91,31 @@
   },
   "games": [
     "paper",
-    "mtgo"
+    "arena"
   ],
   "reserved": false,
   "game_changer": false,
-  "foil": true,
+  "foil": false,
   "nonfoil": true,
   "finishes": [
-    "nonfoil",
-    "foil"
+    "nonfoil"
   ],
   "oversized": false,
   "promo": false,
   "reprint": true,
   "variation": false,
-  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
-  "set": "cmm",
-  "set_name": "Commander Masters",
-  "set_type": "masters",
-  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/980b31eb-a9cd-44d2-8755-9323bb4de2f0/rulings",
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4b3e632e-21dc-4cc3-9c80-4b3d8b8e5795/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8222321f-b74d-4f74-9ee7-79455433345a&unique=prints",
-  "collector_number": "330",
+  "collector_number": "737",
   "digital": false,
-  "rarity": "uncommon",
+  "rarity": "rare",
   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
   "artist": "Daren Bader",
   "artist_ids": [
@@ -128,29 +127,30 @@
   "frame_effects": [
     "legendary"
   ],
+  "security_stamp": "oval",
   "full_art": false,
   "textless": false,
-  "booster": true,
+  "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 7636,
-  "penny_rank": 10815,
+  "edhrec_rank": 7764,
+  "penny_rank": 10818,
   "prices": {
-    "usd": "0.20",
-    "usd_foil": "0.37",
+    "usd": "0.33",
+    "usd_foil": null,
     "usd_etched": null,
-    "eur": "0.12",
-    "eur_foil": "0.26",
-    "tix": "0.04"
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": null
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627794&printed=false",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=683369&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVerdeloth%2Bthe%2BAncient",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVerdeloth%2Bthe%2BAncient",
     "edhrec": "https://edhrec.com/route/?cc=Verdeloth+the+Ancient"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F507294%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723694&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/114889?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590737%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=796906&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Verdeloth+the+Ancient&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

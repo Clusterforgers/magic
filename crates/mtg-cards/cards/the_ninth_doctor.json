@@ -1,7 +1,7 @@
 {
   "oracle_id": "c99f59c0-5cce-41a4-908f-d34e2c697419",
   "name": "The Ninth Doctor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Ninth Doctor",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 141 }
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"], "untap_step": true } },
+            "effects": [{ "AddStep": { "step": "Upkeep" } }]
           }
         }
       ]

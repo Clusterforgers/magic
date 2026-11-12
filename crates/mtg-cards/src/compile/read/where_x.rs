@@ -82,8 +82,8 @@ const PAID_NOUNS: [&str; 7] = [
     "card",
 ];
 
-/// "the sacrificed creature's power", "the discarded card's mana value": a characteristic of what the cost took, read
-/// only where the cost took something (`Reader.paid`).
+/// "the sacrificed creature's power", "the discarded card's mana value", "the power of the creature tapped this way": a
+/// characteristic of what the cost took, read only where the cost took something (`Reader.paid`).
 pub(super) fn paid_stat(r: &mut Reader<'_>) -> Option<StatKind> {
     r.paid.then_some(())?;
     r.attempt(|r| {
@@ -92,6 +92,17 @@ pub(super) fn paid_stat(r: &mut Reader<'_>) -> Option<StatKind> {
         let noun = r.take_word()?.strip_suffix("'s")?;
         PAID_NOUNS.contains(&noun).then_some(())?;
         stat_word(r)
+    })
+    .or_else(|| {
+        r.attempt(|r| {
+            r.need("the")?;
+            let stat = stat_word(r)?;
+            r.need("of the")?;
+            PAID_NOUNS.contains(&r.take_word()?).then_some(())?;
+            PAID_VERBS.contains(&r.take_word()?).then_some(())?;
+            r.need("this way")?;
+            Some(stat)
+        })
     })
 }
 
@@ -103,9 +114,12 @@ fn paid_names(stat: StatKind) -> Vec<String> {
     PAID_VERBS
         .iter()
         .flat_map(|verb| {
-            PAID_NOUNS
-                .iter()
-                .map(move |noun| format!("the {verb} {noun}'s {name}"))
+            PAID_NOUNS.iter().flat_map(move |noun| {
+                [
+                    format!("the {verb} {noun}'s {name}"),
+                    format!("the {name} of the {noun} {verb} this way"),
+                ]
+            })
         })
         .collect()
 }

@@ -101,10 +101,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         match asked {
             Choice::YesNo(false) => {}
             Choice::YesNo(true) => {
-                let (price, x) = match w6c_pay_x::announced(cx, player, &template, &mut journal)? {
-                    w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
-                    w6c_pay_x::Announced::Price(price, x) => (price, x),
-                };
+                let cap = w6c_pay_x::r306_cap(cx, cost)?;
+                let (price, x) =
+                    match w6c_pay_x::announced(cx, player, &template, cap, &mut journal)? {
+                        w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
+                        w6c_pay_x::Announced::Price(price, x) => (price, x),
+                    };
                 match settle(cx, player, &price, &mut journal)? {
                     Settled::Ask(decision) => return Ok(Run::Ask(decision)),
                     Settled::Paid(events) => {
@@ -134,7 +136,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 /// The cost with the life of a counted amount ("pay that much life", "pay X life, where X is ..."), the cards of a counted
 /// draw ("you may draw cards equal to its power") and the cards of a counted
 /// discard ("discard your hand") or exile from a graveyard ("exiles all cards from their graveyard") counted as the
-/// effect resolves (CR 119.4, CR 608.2h); a negative count pays nothing.
+/// effect resolves (CR 119.4, CR 608.2h), as is the damage of "unless they have ~ deal that much damage to them"; a negative
+/// count pays nothing.
 pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
@@ -146,7 +149,8 @@ pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveErr
             *amount = Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
             continue;
         }
-        if let CostItem::PayLife(amount) | CostItem::Draw(amount) = item
+        if let CostItem::PayLife(amount) | CostItem::Draw(amount) | CostItem::DamageToYou(amount) =
+            item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)
         {
             let count = cx.scope.amount(amount)?.clamp(0, i64::from(i32::MAX));

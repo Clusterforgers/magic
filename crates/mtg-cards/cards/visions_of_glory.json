@@ -1,7 +1,7 @@
 {
   "oracle_id": "ef47c447-bd7f-43c6-b4db-4a848c39820c",
   "name": "Visions of Glory",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Visions of Glory",
@@ -28,10 +28,23 @@
             ]
           }
         },
+        { "Keyword": { "Flashback": "{8}{W}{W}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 71, "end": 320 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [
+                  "Commander",
+                  { "OwnedBy": "You" },
+                  { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                ],
+                "stat": "ManaValue"
+              }
+            },
+            "condition": { "CastWith": "Flashback" }
           }
         }
       ]

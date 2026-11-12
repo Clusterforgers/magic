@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6933a7bf-10ed-46c8-a49c-ce200bce3eea",
+  "name": "Rayne, Academy Chancellor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rayne, Academy Chancellor",
+      "oracle_fingerprint": "045793dbcac9d4f4aef88125d782ceea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PlayerBecomesTarget": { "who": "You", "by": [{ "ControlledBy": "Opponents" }] } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "by": [{ "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "May": { "effects": [{ "Draw": {} }] } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "HasAttached": [{ "Subtype": "Aura" }] }]
+                    }
+                  },
+                  "then": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

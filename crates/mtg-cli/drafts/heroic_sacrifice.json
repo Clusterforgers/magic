@@ -1,0 +1,62 @@
+{
+  "oracle_id": "03c47f1c-02a7-428c-a126-9e85325ebc71",
+  "name": "Heroic Sacrifice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroic Sacrifice",
+      "oracle_fingerprint": "d3361fd21f9df3ec37bea8f4e7797f39",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "Redirect": { "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": { "Redirect": { "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [
+                    { "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } },
+                    { "Draw": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

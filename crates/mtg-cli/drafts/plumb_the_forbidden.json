@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b099fc54-cdbc-46cb-b4e4-7c2ca77b115b",
+  "name": "Plumb the Forbidden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plumb the Forbidden",
+      "oracle_fingerprint": "94ae8a6762df816f903f9c714ec6f1ba",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "repeatable": true
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] } }
+      ]
+    }
+  ]
+}

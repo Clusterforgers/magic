@@ -135,6 +135,7 @@ Basilisk Gate
 Basking Rootwalla
 Bastion Protector
 Baton of Courage
+Baton of Morale
 Battering Krasis
 Batterskull
 Battle Frenzy
@@ -144,6 +145,7 @@ Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
 Bear Umbra
+Beast Walkers
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
@@ -349,6 +351,7 @@ Consuming Aetherborn
 Consuming Vortex
 Contentious Plan
 Conversion Apparatus
+Cooperation
 Copper-Leaf Angel
 Coralhelm Commander
 Cormela, Glamour Thief
@@ -469,6 +472,7 @@ Dimir Cutpurse
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
+Dire Wolves
 Direct Current
 Dirgur Focusmage // Braingeyser
 Disallow
@@ -598,6 +602,7 @@ Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Erhnam Djinn
 Eris, Roar of the Storm
+Errand of Duty
 Essence Bottle
 Etched Oracle
 Eternal Dragon
@@ -689,6 +694,7 @@ Fool's Demise
 Forbidding Spirit
 Forced March
 Fork
+Fortified Area
 Forum of Amity
 Founding of Omashu
 Foundry Inspector
@@ -858,6 +864,7 @@ Heliod, Sun-Crowned
 Hellkite Igniter
 Hellkite Overlord
 Hellkite Tyrant
+Helm of Chatzuk
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Herald of Anguish
@@ -898,6 +905,7 @@ Hungry Lynx
 Hunt the Weak
 Huntmaster Liger
 Hydra Broodmaster
+Icatian Infantry
 Icefeather Aven
 Ichor Rats
 Idyllic Beachfront
@@ -960,6 +968,7 @@ Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
 Jarad, Golgari Lich Lord
+Jasmine Boreal of the Seven
 Jaspera Sentinel
 Jazal Goldmane
 Jedit Ojanen of Efrava
@@ -1025,6 +1034,7 @@ Korozda Monitor
 Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
+Krav, the Unredeemed
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
 Krosan Cloudscraper
@@ -1329,6 +1339,8 @@ Path of the Ghosthunter
 Path to Exile
 Path to the Festival
 Patrolling Peacemaker
+Patron of the Akki
+Patron of the Kitsune
 Patron of the Vein
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
@@ -1340,6 +1352,7 @@ Persist
 Personal Sanctuary
 Pestilent Syphoner
 Peter Parker's Camera
+Petrified Wood-Kin
 Petrify
 Petting Zookeeper
 Phantasmal Image
@@ -1561,6 +1574,7 @@ Sarkhan, Dragonsoul
 Satyr Firedancer
 Satyr Wayfinder
 Sauroform Hybrid
+Savage Beating
 Savage Stomp
 Savage Ventmaw
 Savor the Moment
@@ -1684,6 +1698,7 @@ Sol Ring
 Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
+Soraya the Falconer
 Soul Manipulation
 Soul Shepherd
 Soul of New Phyrexia
@@ -1880,6 +1895,7 @@ The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
 The Torment of Gollum
+The Underworld Cookbook
 The War Doctor
 The Warring Triad
 The Wise Mothman
@@ -1999,6 +2015,7 @@ Up the Beanstalk
 Urabrask the Hidden
 Urban Evolution
 Ursine Champion
+Urza's Engine
 Urza's Incubator
 Urza's Mine
 Urza's Power Plant

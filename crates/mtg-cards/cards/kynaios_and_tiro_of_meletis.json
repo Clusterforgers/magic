@@ -1,0 +1,48 @@
+{
+  "oracle_id": "53ee4254-fef7-49ec-aafc-0320987764e6",
+  "name": "Kynaios and Tiro of Meletis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kynaios and Tiro of Meletis",
+      "oracle_fingerprint": "a26deb2241137548e423cd0d25b0080d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [{ "In": "Hand" }, { "OwnedBy": "Chooser" }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "lands"
+                }
+              },
+              { "Move": { "what": { "Bound": "lands" }, "to": { "Battlefield": {} }, "as": "put" } },
+              {
+                "Draw": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Is": { "Bound": "put" } }, { "OwnedBy": "You" }] },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

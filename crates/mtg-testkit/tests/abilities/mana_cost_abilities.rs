@@ -201,11 +201,16 @@ fn deck() -> Vec<Arc<CardDefinition>> {
 
 /// Pays of a source's cost seen in a campaign: the mana is spent and the source taps right after.
 fn paid_costs(events: &[Event]) -> u64 {
+    // The log of the activation comes between the spending and the tap.
+    let events: Vec<&Event> = events
+        .iter()
+        .filter(|event| !matches!(event, Event::ManaAbilityActivated { .. }))
+        .collect();
     events
         .windows(2)
         .filter(|pair| {
             matches!(
-                (&pair[0], &pair[1]),
+                (pair[0], pair[1]),
                 (Event::ManaSpent { .. }, Event::PermanentTapped { .. })
             )
         })

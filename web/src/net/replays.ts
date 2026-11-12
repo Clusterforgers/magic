@@ -1,13 +1,13 @@
 /**
  * `GET /api/games/{id}/replay` of `mtg-server` (docs/server.md, Replays): a finished game step by step. The session
- * cookie rides along, so the account that held a seat gets its own hidden cards; anybody else the public view.
+ * cookie rides along, so the account that held a seat gets its own hidden cards; any other account the public view; a guest is refused (401).
  */
 import type { Replay } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isListOf, isRecord, isText } from './check'
 
-/** Why a replay did not load: none to show (an unknown game, one that has not ended), the network, or anything else. */
-export type ReplayFailure = 'not_found' | 'network' | 'failed'
+/** Why a replay did not load: none to show (an unknown game, one that has not ended), no session, the network, or anything else. */
+export type ReplayFailure = 'not_found' | 'signed_out' | 'network' | 'failed'
 
 /** A replay that did not load, with its reason. */
 export class ReplayError extends Error {
@@ -44,6 +44,7 @@ export async function loadReplay(game: string, fetch?: Fetch, signal?: AbortSign
     throw new ReplayError('network')
   }
   if (response.status === 404) throw new ReplayError('not_found')
+  if (response.status === 401) throw new ReplayError('signed_out')
   let body: unknown = null
   try {
     body = JSON.parse(text)

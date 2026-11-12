@@ -1,0 +1,27 @@
+{
+  "oracle_id": "52fc8217-5a14-40b5-a8fc-b6fc45af5f33",
+  "name": "Spatial Binding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spatial Binding",
+      "oracle_fingerprint": "6abf0d72d9faa8eef72a156049b027b5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "PhaseOut" } },
+                  "duration": "UntilYourNextUpkeep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

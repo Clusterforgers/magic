@@ -309,6 +309,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         when: Option<Box<Condition>>,
+        /// It opens no zone: its free cast or cost is offered for the casts the players may make anyway.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        any_cast: bool,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -530,7 +534,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -772,6 +776,8 @@ pub(crate) struct Cast {
     pub(crate) rather: Option<ManaCost>,
     /// What is paid in place of the mana cost of the card, its amounts counted for the card cast.
     pub(crate) instead: Option<Cost>,
+    /// It opens no zone: it covers only a card its player may cast anyway.
+    pub(crate) opens_no_zone: bool,
 }
 
 impl Cast {
@@ -783,7 +789,8 @@ impl Cast {
 
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
-        self.c11b_open(state)
+        (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
+            && self.c11b_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
             && self
@@ -973,6 +980,7 @@ impl RulesInForce {
                         when: None,
                         rather: None,
                         instead: Some(cost.clone()),
+                        opens_no_zone: false,
                     });
                 }
                 return;
@@ -998,6 +1006,7 @@ impl RulesInForce {
                 when: None,
                 rather: None,
                 instead: None,
+                opens_no_zone: false,
             });
         }
     }
@@ -1183,9 +1192,11 @@ impl RulesInForce {
                 rather,
                 spend_as,
                 when,
+                any_cast,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
+                        opens_no_zone: *any_cast,
                         controller,
                         source,
                         who: who.clone(),
@@ -1223,6 +1234,7 @@ impl RulesInForce {
                             when: None,
                             rather: Some(cost.clone()),
                             instead: None,
+                            opens_no_zone: false,
                         });
                     }
                 }
@@ -1481,6 +1493,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             rather: permission.rather.clone().map(Box::new),
             spend_as: permission.spend_as,
             when: permission.when.clone().map(Box::new),
+            any_cast: permission.any_cast,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::SpellCost {
@@ -2440,6 +2453,20 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
     })
 }
 
+/// Whether `player` may cast `card` without a permission that opens no zone: from their hand, as their commander from
+/// their command zone, or from a zone another permission opens for its mana cost.
+fn r305c_cast_anyway(state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+    match card.zone() {
+        Zone::Hand(owner) => owner == player,
+        Zone::Command(owner) => owner == player && state.is_commander(card.id()),
+        zone => cast_permissions(state).iter().any(|other| {
+            !other.opens_no_zone
+                && other.adds_to_printed(crate::resolve::zone_kind(zone))
+                && other.covers(state, player, card)
+        }),
+    }
+}
+
 /// The permissions to cast cards in force: the one place a cast reads them (`ways`).
 pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
@@ -2885,6 +2912,7 @@ mod tests {
             additional: None,
             spend_as: SpendAs::Normal,
             when: None,
+            any_cast: false,
         }
     }
 

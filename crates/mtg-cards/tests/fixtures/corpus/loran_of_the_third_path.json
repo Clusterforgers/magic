@@ -1,38 +1,38 @@
 {
   "object": "card",
-  "id": "9e83a0ef-4fea-45ba-86c0-130d6687f7fe",
+  "id": "e58c2b2c-4206-4e9c-97c4-4b58baa554de",
   "oracle_id": "b3d81980-76f2-44e2-b1c9-01e30c726312",
-  "multiverse_ids": [
-    650165
-  ],
-  "mtgo_id": 122282,
-  "tcgplayer_id": 535561,
-  "cardmarket_id": 753304,
+  "multiverse_ids": [],
+  "resource_id": "87641E9954FBFC3F357FB8232DEEA8A1B31730EA3F44B78C1F48ACAAD6636ADC",
+  "mtgo_id": 157066,
+  "tcgplayer_id": 726334,
+  "cardmarket_id": 919547,
   "name": "Loran of the Third Path",
+  "flavor_name": "Sonya Gomez, Learning Together",
   "lang": "en",
-  "released_at": "2024-02-09",
-  "uri": "https://api.scryfall.com/cards/9e83a0ef-4fea-45ba-86c0-130d6687f7fe",
-  "scryfall_uri": "https://scryfall.com/card/mkc/71/loran-of-the-third-path?utm_source=api",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/e58c2b2c-4206-4e9c-97c4-4b58baa554de",
+  "scryfall_uri": "https://scryfall.com/card/trc/424/loran-of-the-third-path?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T03:23:48Z",
+  "image_updated_at": "2026-10-27T14:37:29Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028",
-    "normal": "https://cards.scryfall.io/normal/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028",
-    "large": "https://cards.scryfall.io/large/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028",
-    "png": "https://cards.scryfall.io/png/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.png?1783913028",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028",
-    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.webp?1783913028",
-    "grid": "https://cards.scryfall.io/grid/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.webp?1783913028",
-    "display": "https://cards.scryfall.io/display/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.webp?1783913028",
-    "art": "https://cards.scryfall.io/art/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.webp?1783913028",
-    "crop": "https://cards.scryfall.io/crop/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.webp?1783913028",
-    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e83a0ef-4fea-45ba-86c0-130d6687f7fe.jpg?1783913028"
+    "small": "https://cards.scryfall.io/small/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849",
+    "normal": "https://cards.scryfall.io/normal/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849",
+    "large": "https://cards.scryfall.io/large/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849",
+    "png": "https://cards.scryfall.io/png/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.png?1793111849",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.webp?1793111849",
+    "grid": "https://cards.scryfall.io/grid/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.webp?1793111849",
+    "display": "https://cards.scryfall.io/display/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.webp?1793111849",
+    "art": "https://cards.scryfall.io/art/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.webp?1793111849",
+    "crop": "https://cards.scryfall.io/crop/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.webp?1793111849",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/5/e58c2b2c-4206-4e9c-97c4-4b58baa554de.jpg?1793111849"
   },
   "mana_cost": "{2}{W}",
-  "cmc": 3.0,
+  "cmc": 3,
   "type_line": "Legendary Creature — Human Artificer",
   "oracle_text": "Vigilance\nWhen Loran enters, destroy up to one target artifact or enchantment.\n{T}: You and target opponent each draw a card.",
   "power": "2",
@@ -77,34 +77,35 @@
   ],
   "reserved": false,
   "game_changer": false,
-  "foil": false,
+  "foil": true,
   "nonfoil": true,
   "finishes": [
-    "nonfoil"
+    "nonfoil",
+    "foil"
   ],
   "oversized": false,
   "promo": false,
   "reprint": true,
   "variation": false,
-  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
-  "set": "mkc",
-  "set_name": "Murders at Karlov Manor Commander",
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
   "set_type": "commander",
-  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/9e83a0ef-4fea-45ba-86c0-130d6687f7fe/rulings",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e58c2b2c-4206-4e9c-97c4-4b58baa554de/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab3d81980-76f2-44e2-b1c9-01e30c726312&unique=prints",
-  "collector_number": "71",
+  "collector_number": "424",
   "digital": false,
   "rarity": "rare",
-  "flavor_text": "As a scholar, she saw the sylex not as a weapon, but as a key to the past.",
+  "flavor_text": "\"Oh my. First impressions, right? First impressions are the most important?\"",
   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
-  "artist": "Steven Belledin",
+  "artist": "John Tyler Christopher",
   "artist_ids": [
-    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+    "b029218f-baba-45aa-8f5a-24353077dcc9"
   ],
-  "illustration_id": "68a145a5-f907-4efe-a563-e17d33333e44",
+  "illustration_id": "53d3e3e9-b655-469a-9643-ee12695dc4ac",
   "border_color": "black",
   "frame": "2015",
   "frame_effects": [
@@ -115,24 +116,32 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 340,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 338,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=lI6pzIWFViA",
+    "previewed_at": "2026-10-27"
+  },
   "prices": {
-    "usd": "7.12",
+    "usd": "3.11",
     "usd_foil": null,
     "usd_etched": null,
-    "eur": "4.15",
+    "eur": "3.81",
     "eur_foil": null,
-    "tix": "0.47"
+    "tix": "0.20"
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650165&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLoran%2Bof%2Bthe%2BThird%2BPath",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLoran%2Bof%2Bthe%2BThird%2BPath",
     "edhrec": "https://edhrec.com/route/?cc=Loran+of+the+Third+Path"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535561%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753304&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/122282?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726334%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919547&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/157066?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

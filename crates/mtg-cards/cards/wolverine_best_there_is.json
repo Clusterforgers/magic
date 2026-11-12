@@ -7,12 +7,7 @@
       "name": "Wolverine, Best There Is",
       "oracle_fingerprint": "3355c34e717a119890424f539b845edb",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 61 }
-          }
-        },
+        { "Replacement": { "when": { "Damage": { "source": ["This"] } }, "by": { "Multiply": 2 } } },
         {
           "Manual": {
             "reason": "you apply this triggered ability by hand",

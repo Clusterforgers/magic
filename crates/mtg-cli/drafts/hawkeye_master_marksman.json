@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6b59bb1f-f2d4-4d47-bd57-23927d588381",
+  "name": "Hawkeye, Master Marksman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hawkeye, Master Marksman",
+      "oracle_fingerprint": "5665d7ccca3391c211243b6f76f496c5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 3 },
+                  "mode_costs": ["{1}", "{1}", "{1}"],
+                  "modes": [
+                    {
+                      "label": "Net",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBlock"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Explosive",
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                    },
+                    { "label": "Boomerang", "effects": [{ "Discard": {} }, { "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

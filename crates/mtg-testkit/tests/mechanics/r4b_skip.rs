@@ -74,3 +74,40 @@ fn each_rule_skips_one_turn_of_the_player_and_ends(
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
     Ok(())
 }
+
+/// When every player left in the game skips and a seat between them is empty, the search passes some of them twice; the
+/// first takes their turn and each player's oldest rule ends once.
+#[rstest]
+#[case::three_of_four(4, 2)]
+#[case::four_of_five(5, 3)]
+fn everyone_skipping_with_a_player_gone_ends_each_rule_once(
+    #[case] seats: usize,
+    #[case] gone: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats).at(START, 0, Step::Main1);
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.concede(pid(gone))?;
+    let left: Vec<usize> = (0..seats).filter(|seat| *seat != gone).collect();
+    for seat in &left {
+        driver.add_rule(
+            Rule::Cant {
+                who: vec![Target::Player(pid(*seat))],
+                action: Box::new(Prohibited::SkipTurn),
+            },
+            Duration::UntilTurnSkipped,
+        )?;
+    }
+    play(&mut driver, seats, 1)?;
+    let expired = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| matches!(event, Event::RuleExpired { .. }))
+        .count();
+    assert_eq!(expired, left.len());
+    assert_eq!(driver.state().rule_effects().len(), 0);
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}

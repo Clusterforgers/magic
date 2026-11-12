@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9da896e1-2256-425b-b801-1ae6f0470559",
+  "name": "Omnath, Locus of Mana",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Omnath, Locus of Mana",
+      "oracle_fingerprint": "59fd7e695c8b9f0123c3ab09e4e5f7da",
+      "abilities": [
+        { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Green" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 59, "end": 114 }
+          }
+        }
+      ]
+    }
+  ]
+}

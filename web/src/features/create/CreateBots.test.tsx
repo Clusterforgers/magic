@@ -1,4 +1,4 @@
-// Goal: the create form fills the seats after the creator's with bots: the count runs from none to every other seat and follows the seat count, a Normal bot plays the deck the form gave its seat and a Commander bot a playable precon (Verified first), bot seats are held and never handed out as links, a table without a usable precon asks to go without bots, and a link per seat has none.
+// Goal: the create form fills the seats after the creator's with bots: the count runs from none to every other seat and follows the seat count, a difficulty shown with bots sets every bot's level, a Normal bot plays the deck the form gave its seat and a Commander bot a playable precon (Verified first), bot seats are held and never handed out as links, a table without a usable precon asks to go without bots, and a link per seat has none.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { preconItem } from '@/features/precons/fakePrecons'
@@ -7,7 +7,16 @@ import { DECKS } from '@/test-utils/decks'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { openCreateForm, typeSeats } from '@/test-utils/createForm'
 import { MADE_GAME } from '@/test-utils/fakeServer'
-import { botsOf, chooseBots, chooseLinks, defaultDraft, pickBotPrecons, resizeSeats, toRequest } from './form'
+import {
+  botsOf,
+  chooseBotLevel,
+  chooseBots,
+  chooseLinks,
+  defaultDraft,
+  pickBotPrecons,
+  resizeSeats,
+  toRequest,
+} from './form'
 
 const bots = () => screen.getByLabelText('Bots')
 const create = () => screen.getByRole('button', { name: 'Create game' })
@@ -25,7 +34,7 @@ describe('the bots of the form', () => {
     expect(request.held).toBe(1 + made)
     expect(request.seats.filter((seat) => seat.bot === true)).toHaveLength(made)
     request.seats.slice(1, 1 + made).forEach((seat, at) => {
-      expect(seat).toEqual({ name: 'Bot', deck: draft.seats[at + 1]?.deck, bot: true })
+      expect(seat).toEqual({ name: 'Bot', deck: draft.seats[at + 1]?.deck, bot: true, level: 'normal' })
     })
     expect(
       request.seats.slice(1 + made).every((seat) => seat.bot === undefined && seat.deck === undefined),
@@ -36,6 +45,15 @@ describe('the bots of the form', () => {
     const draft = chooseLinks(chooseBots(defaultDraft(DECKS, undefined, 'normal'), 1), true)
     expect(botsOf(draft)).toBe(0)
     expect(toRequest(draft).seats.some((seat) => seat.bot === true)).toBe(false)
+  })
+
+  it.each(['easy', 'normal', 'hard'] as const)('sends every bot at level %s', (level) => {
+    const draft = chooseBotLevel(
+      chooseBots(resizeSeats(defaultDraft(DECKS, undefined, 'normal'), DECKS, 3), 2),
+      level,
+    )
+    const request = toRequest(draft)
+    expect(request.seats.map((seat) => seat.level)).toEqual([undefined, level, level])
   })
 
   it('gives Commander bots the decks it is handed', () => {
@@ -104,6 +122,24 @@ describe('the Bots field', () => {
     const body = server.creates[0] as { held: number; seats: { bot?: boolean; deck?: string }[] }
     expect(body.held).toBe(4)
     expect(body.seats.slice(1).map((seat) => seat.deck)).toEqual(['precon:one', 'precon:one', 'precon:one'])
+  })
+
+  it('shows the difficulty only with bots and sends the level chosen', async () => {
+    const { user, server } = await openCreateForm({}, 'normal')
+    expect(screen.queryByLabelText('Difficulty')).toBeNull()
+    await user.selectOptions(bots(), '1')
+    const difficulty = screen.getByLabelText('Difficulty')
+    expect(difficulty).toHaveValue('normal')
+    expect(
+      within(difficulty)
+        .getAllByRole('option')
+        .map((option) => option.getAttribute('value')),
+    ).toEqual(['easy', 'normal', 'hard'])
+    await user.selectOptions(difficulty, 'hard')
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    const body = server.creates[0] as { seats: { bot?: boolean; level?: string }[] }
+    expect(body.seats[1]).toMatchObject({ bot: true, level: 'hard' })
   })
 
   it('asks to go without bots when no precon can be played', async () => {

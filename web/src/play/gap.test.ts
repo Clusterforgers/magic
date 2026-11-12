@@ -55,7 +55,7 @@ describe('a batch that does not follow the last one', () => {
     const { before } = atGap()
     expect(before.phase).toBe('playing')
     expect(before.pending?.id).toBe(390)
-    expect(before.seq).toBe(995)
+    expect(before.seq).toBe(1061)
   })
 
   it.each(offsets)('%s: one Resync, nothing applied', (_name, fromSeq) => {

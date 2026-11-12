@@ -1,7 +1,7 @@
 {
   "oracle_id": "1372dd15-cdb9-470c-b3e8-3423697e46e8",
   "name": "Tree of Redemption",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tree of Redemption",
@@ -9,7 +9,10 @@
       "abilities": [
         { "Keyword": "Defender" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 9, "end": 70 } }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "ExchangeLifeWithToughness": { "what": "This" } }]
+          }
         }
       ]
     }

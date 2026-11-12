@@ -1,7 +1,7 @@
 {
   "oracle_id": "a0e85762-e433-4a23-bbee-69daeebb5898",
   "name": "Plargg, Dean of Chaos // Augusta, Dean of Order",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Plargg, Dean of Chaos",
@@ -9,9 +9,28 @@
       "abilities": [
         { "Activated": { "cost": ["Tap", { "Discard": {} }], "effects": [{ "Draw": {} }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 34, "end": 304 }
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}" }, "Tap"],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "revealed" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]
@@ -23,7 +42,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": "You" }, "Other"]
+              "Each": ["Other", "Tapped", { "Type": "Creature" }, { "ControlledBy": "You" }]
             },
             "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
           }
@@ -31,35 +50,29 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "You" }, "Other"]
+              "Each": ["Other", "Untapped", { "Type": "Creature" }, { "ControlledBy": "You" }]
             },
             "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
-            },
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
             "effects": [
               {
                 "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
               },
               {
                 "Choose": {
-                  "from": {
-                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
-                  },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
                   "count": {
                     "min": 0,
-                    "max": {
-                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
-                    }
+                    "max": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
                   },
-                  "as": "tap"
+                  "as": "to_tap"
                 }
               },
-              { "Tap": { "what": { "Bound": "tap" } } }
+              { "Tap": { "what": { "Bound": "to_tap" } } }
             ]
           }
         }

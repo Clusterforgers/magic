@@ -1,7 +1,7 @@
 {
   "oracle_id": "7a56c6e1-0509-4783-9b29-cf3163977166",
   "name": "Serra's Emissary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Serra's Emissary",
@@ -15,9 +15,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 124 }
+          "Static": {
+            "affected": {
+              "Union": ["You", { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }]
+            },
+            "mods": [{ "AddKeyword": { "Protection": ["ChosenSubtype"] } }]
           }
         }
       ]

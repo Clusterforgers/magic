@@ -1,0 +1,41 @@
+{
+  "oracle_id": "76bdc626-f51b-420a-ac5c-5ab33772fabe",
+  "name": "Arsenal Thresher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arsenal Thresher",
+      "oracle_fingerprint": "5b024da245b02bf72d6e7424429b5bae",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [
+                  {
+                    "Choose": {
+                      "from": {
+                        "Each": [
+                          { "Type": "Artifact" },
+                          "Other",
+                          { "In": "Hand" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      "count": { "min": 0, "max": null },
+                      "as": "revealed"
+                    }
+                  },
+                  { "Reveal": { "what": { "Bound": "revealed" } } }
+                ],
+                "counter": "+1/+1",
+                "count": { "CountOf": { "of": { "Bound": "revealed" }, "filter": [] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

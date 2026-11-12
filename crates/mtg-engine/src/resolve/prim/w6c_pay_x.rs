@@ -55,8 +55,14 @@ pub(super) fn announced<'a>(
     cx: &Cx<'_>,
     player: PlayerId,
     template: &Price,
+    cap: Option<u32>,
     journal: &mut Peekable<impl Iterator<Item = &'a (PlayerId, Choice)>>,
 ) -> Result<Announced, ResolveError> {
+    // The question offers X up to the most the player can pay, held to the cap of the cost.
+    let allowed = |cx: &Cx<'_>| {
+        let can = most(cx, player, template);
+        cap.map_or(can, |cap| can.min(cap))
+    };
     if template.x == 0 && !template.counted() {
         return Ok(Announced::Price(template.clone(), None));
     }
@@ -66,13 +72,16 @@ pub(super) fn announced<'a>(
         Some((_, Choice::Number(x))) if template.x == 0 && *x > most(cx, player, template) => Err(
             ResolveError::Invalid(format!("{x} is more than {player:?} can pay")),
         ),
+        Some((_, Choice::Number(x))) if cap.is_some_and(|cap| *x > cap) => Err(
+            ResolveError::Invalid(format!("{x} is more than the X the cost allows")),
+        ),
         Some((_, Choice::Number(x))) => Ok(Announced::Price(at(template, *x), Some(*x))),
         None => Ok(Announced::Ask(Decision {
             player,
             kind: DecisionKind::ChooseNumber(NumberOptions {
                 source: cx.scope.source.id,
                 min: 0,
-                max: Some(most(cx, player, template)),
+                max: Some(allowed(cx)),
                 except: Vec::new(),
                 text: "Choose a value for X.".to_owned(),
                 can_cancel: false,
@@ -85,6 +94,22 @@ pub(super) fn announced<'a>(
             "{other:?} is no value of X {player:?} can pay"
         ))),
     }
+}
+
+/// The most X the cost allows (`CostItem::XAtMost`, "X can't be greater than ..."), read as the payment is asked: the
+/// least of its caps, never below 0; `None` when it has none.
+pub(super) fn r306_cap(
+    cx: &Cx<'_>,
+    cost: &mtg_cards::cost::Cost,
+) -> Result<Option<u32>, ResolveError> {
+    let mut cap: Option<u32> = None;
+    for item in &cost.0 {
+        if let mtg_cards::cost::CostItem::XAtMost(most) = item {
+            let most = u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX);
+            cap = Some(cap.map_or(most, |held| held.min(most)));
+        }
+    }
+    Ok(cap)
 }
 
 /// The most X the player can pay for: affording is monotone in X, so a binary search finds it.

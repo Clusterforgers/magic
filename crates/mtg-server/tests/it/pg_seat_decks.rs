@@ -576,12 +576,12 @@ async fn a_start_whose_recipe_cannot_be_stored_is_refused_and_tried_again(pool: 
     assert_eq!(stored["decks"][0]["kind"], "oracle");
 }
 
-/// `GET /api/games/{id}` and `GET /api/lobbies`: whether each says the table plays by hand (`None` for a game not listed).
-async fn flags(server: &TestServer, game: &str) -> (bool, Option<bool>) {
+/// `GET /api/games/{id}` and `GET /api/lobbies` as `who`: whether each says the table plays by hand (`None` for a game not listed).
+async fn flags(server: &TestServer, who: &Browser, game: &str) -> (bool, Option<bool>) {
     let looked =
         net::lobby::call(server.addr, "GET", &format!("/api/games/{game}"), None, &[]).await;
     assert_eq!(looked.status, 200, "{}", looked.text());
-    let listing = net::lobby::lobbies(server.addr, &[]).await;
+    let listing = net::lobby::lobbies(server.addr, &[("Cookie", who.cookie.as_str())]).await;
     assert_eq!(listing.status, 200, "{}", listing.text());
     let rows = listing.json()["games"].clone();
     let listed = rows
@@ -617,7 +617,7 @@ async fn plays_by_hand_through_a_restart(
     let guest_id = store(&server, &bo, &guest_deck).await;
     let game = create(&server, &ann, "mono-green").await;
     assert_eq!(
-        flags(&server, &game).await,
+        flags(&server, &ann, &game).await,
         (false, Some(false)),
         "built-in decks"
     );
@@ -630,7 +630,10 @@ async fn plays_by_hand_through_a_restart(
         )
         .await;
     assert_eq!(joined.status, 200, "{}", joined.text());
-    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
+    assert_eq!(
+        flags(&server, &ann, &game).await,
+        (expected, Some(expected))
+    );
     assert!(
         !stored_flag(&pool, &game).await,
         "a lobby stores nothing yet"
@@ -642,7 +645,10 @@ async fn plays_by_hand_through_a_restart(
         expected,
         "the start stores it"
     );
-    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
+    assert_eq!(
+        flags(&server, &ann, &game).await,
+        (expected, Some(expected))
+    );
 
     let handle = server.registry.handle(game.parse().unwrap()).unwrap();
     let hash = handle.status().await.unwrap().state_hash;
@@ -660,7 +666,10 @@ async fn plays_by_hand_through_a_restart(
     assert!(status.started);
     assert_eq!(status.state_hash, hash);
     assert_eq!(status.manual_play, expected, "the resumed game keeps it");
-    assert_eq!(flags(&server, &game).await, (expected, Some(expected)));
+    assert_eq!(
+        flags(&server, &ann, &game).await,
+        (expected, Some(expected))
+    );
     assert_eq!(stored_flag(&pool, &game).await, expected);
     game
 }

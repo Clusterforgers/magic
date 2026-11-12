@@ -119,6 +119,7 @@ pub mod gives;
 pub mod hash;
 pub mod help;
 pub mod keywords;
+mod l294_damage;
 pub mod library;
 pub mod loyalty;
 pub mod mana;
@@ -145,6 +146,9 @@ mod r281_kicked_spend;
 mod r281_mana_at_priority;
 pub mod r286_joins;
 mod r300c_activation_spent;
+mod r301_offering;
+#[cfg(test)]
+mod r301b_spend_facts;
 mod r304b_lost_priority;
 pub mod replace;
 pub mod resolve;

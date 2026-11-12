@@ -57,6 +57,9 @@ const THIS_ABILITY_BECOMES_ONLY: &str =
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
 
+/// Only a continuous effect waits for the next turn of the controller of what it changes.
+const L294_TURN_ONLY: &str = "only a continuous effect applies during its controller's next turn";
+
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
 /// Only the rule that a player skips a step or combat lasts until it is skipped.
@@ -89,6 +92,28 @@ fn tag_of<T: Serialize>(value: &T) -> String {
             map.keys().next().cloned().unwrap_or_default()
         }
         _ => String::from("?"),
+    }
+}
+
+/// The name of a part of a cost that takes all of a kind the payer has, with nothing to choose: "discard your hand"
+/// (`Cost.Discard.Hand`), "sacrifice all permanents you control" (`Cost.Sacrifice.All`).
+fn r303c_whole(item: &CostItem) -> Option<&'static str> {
+    match item {
+        CostItem::Discard {
+            count: Amount::Count(counted),
+            filter: None,
+        } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
+            Some("Discard.Hand")
+        }
+        CostItem::Sacrifice {
+            filter,
+            count: Amount::Count(counted),
+        } if counted.0.split_last()
+            == Some((&Pred::ControlledBy(Ref::You), filter.0.as_slice())) =>
+        {
+            Some("Sacrifice.All")
+        }
+        _ => None,
     }
 }
 
@@ -387,6 +412,8 @@ struct Walker<'a> {
     x_free: bool,
     /// Whether a madness, foretell or freerunning cost of the face holds an `{X}`, which its spell reads.
     r283_keyword_x: bool,
+    /// The alternative cost being walked is a keyword's (`AltCast`), whose `{X}` the cast announces.
+    r301_alt_x: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
@@ -394,6 +421,8 @@ struct Walker<'a> {
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
+    /// Whether the cost walked is the cost of a payment an effect asks (`Effect::Pay`), the one place an `XAtMost` is read.
+    r306_paying: bool,
     /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
     amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
@@ -433,9 +462,11 @@ impl<'a> Walker<'a> {
             counts_x: false,
             x_free: false,
             r283_keyword_x: false,
+            r301_alt_x: false,
             x_now: false,
             choosing: false,
             r281_paying: false,
+            r306_paying: false,
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
@@ -818,8 +849,15 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
-                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile) {
-                    self.problem("`CastFrom` names a hand, a graveyard or exile");
+                if !matches!(
+                    zone,
+                    ZoneKind::Hand
+                        | ZoneKind::Graveyard
+                        | ZoneKind::Exile
+                        | ZoneKind::Library
+                        | ZoneKind::Command
+                ) {
+                    self.problem("`CastFrom` names a hand, a graveyard, exile, a library or the command zone");
                 }
             }
             Pred::DidThisTurn { by, to, .. } => {
@@ -1171,6 +1209,11 @@ impl<'a> Walker<'a> {
                     self.at("per", |w| w.reference(per, Kind::Player));
                 }
             }
+            Amount::DamageDealtByTo { by, to } => {
+                self.uses("Amount", "DamageDealtByTo");
+                self.at("by", |w| w.reference(by, Kind::Object));
+                self.at("to", |w| w.reference(to, Kind::Either));
+            }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
@@ -1386,6 +1429,7 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::FirstStep => self.uses("Condition", "FirstStep"),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
@@ -1416,7 +1460,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// The cost of an `Effect::Pay`: life or damage of a counted amount ("pay that much life", "have ~ deal that much
+    /// damage to them") and a counted draw the controller
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
@@ -1428,7 +1473,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) if !is_fixed(item) && *amount != Amount::X => {
+                CostItem::PayLife(amount) | CostItem::DamageToYou(amount)
+                    if !is_fixed(item) && *amount != Amount::X =>
+                {
                     Some((i, amount))
                 }
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
@@ -1456,6 +1503,7 @@ impl<'a> Walker<'a> {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
+                | CostItem::DamageToYou(count)
                 | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
@@ -1479,7 +1527,10 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                if !is_fixed(item) {
+                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
+                if let Some(whole) = r303c_whole(item).filter(|_| w.choosing && !w.activated_cost) {
+                    w.uses("Cost", whole);
+                } else if !is_fixed(item) {
                     let activated = match (w.activated_cost, w.rather_cost) {
                         (true, _) => ".Activated",
                         (false, true) => ".Rather",
@@ -1552,6 +1603,13 @@ impl<'a> Walker<'a> {
                     | CostItem::OthersGainLife(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
+                    CostItem::XAtMost(most) => {
+                        // The most X is read where an effect asks the payment and announces its X.
+                        if !w.r306_paying || !w.x_free {
+                            w.uses("Cost", "XAtMost.Elsewhere");
+                        }
+                        w.at("XAtMost", |w| w.amount(most));
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
@@ -1651,7 +1709,9 @@ impl<'a> Walker<'a> {
         else {
             return;
         };
+        self.r301_alt_x = true;
         self.w14c_free_cast(condition.as_ref(), cost.as_ref());
+        self.r301_alt_x = false;
         if matches!(from, ZoneKind::Battlefield | ZoneKind::Stack) {
             self.problem(
                 "a card is cast from a hand, a library, a graveyard, exile or the command zone",
@@ -1672,11 +1732,26 @@ impl<'a> Walker<'a> {
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        // A card picked for the cost may be chosen by the X the spell announces ("Exile a red card with mana value X from
+        // your hand"): the cast asks X first.
+        let reads_x = cost
+            .0
+            .iter()
+            .any(|item| r301_pick_filter(item).is_some_and(Selector::r301_reads_x));
+        let held = self.x_now;
+        self.x_now |= reads_x;
         self.at("cost", |w| w.cost(cost));
+        self.x_now = held;
+        if reads_x {
+            self.uses("Cost", "Pick.FilterX");
+        }
         if cost.0.is_empty() {
             self.problem("an alternative cost names what is paid; leave it out for a free cast");
         }
-        if cost.has_x() {
+        // A keyword's alternative cost may hold an `{X}` ("Surge {X}{R}", "Warp {X}{G}"), announced with the cast.
+        if cost.has_x() && self.r301_alt_x {
+            self.uses("Ability", "AltCast.X");
+        } else if cost.has_x() {
             self.problem("an alternative cost has no X");
         }
         let by_the_source = cost.0.iter().any(|item| {
@@ -2069,7 +2144,6 @@ impl<'a> Walker<'a> {
             | Keyword::Squad(cost)
             | Keyword::Replicate(cost)
             | Keyword::Offspring(cost)
-            | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
             | Keyword::Miracle(cost)
             | Keyword::Buyback(cost)
@@ -2090,6 +2164,15 @@ impl<'a> Walker<'a> {
             | Keyword::Splice { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
+            }
+            // A part of a flashback cost that counts X takes the X the spell announces ("Flashback—{R}{R}, Discard X
+            // cards."), which the cast for that cost asks.
+            Keyword::Flashback(cost) => {
+                let held = self.x_now;
+                self.x_now |= cost.0.iter().any(amount_is_x) && !has_x_mana(cost);
+                self.at("cost", |w| w.cost(cost));
+                self.x_now = held;
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Flashback.Cost", cost, false);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
                 self.turn_up_cost(cost);
@@ -2125,6 +2208,7 @@ impl<'a> Walker<'a> {
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
             | Keyword::BandsWithOther(quality)
+            | Keyword::Offering(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
@@ -2486,7 +2570,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::TurnedFaceUp { what }
             | TriggerPattern::Mutates { what }
             | TriggerPattern::Adapted { what }
-            | TriggerPattern::Untapped { what }
+            | TriggerPattern::Untapped { what, .. }
             | TriggerPattern::PhasedOut { what }
             | TriggerPattern::PhasedIn { what }
             | TriggerPattern::Unblocked { what }
@@ -3785,6 +3869,9 @@ impl Walker<'_> {
                 value,
                 to,
             } => w.l31a_performed(*action, who, times, (card.as_ref(), value.as_ref(), to.as_ref())),
+            Effect::Enlist { what } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::Pair { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -3899,6 +3986,10 @@ impl Walker<'_> {
             Effect::ExchangeLife { who, with } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("with", |w| w.reference(with, Kind::Player));
+            }
+            Effect::ExchangeLifeWithToughness { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RepeatWhile {
@@ -4156,6 +4247,9 @@ impl Walker<'_> {
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.uses("Duration", "DuringItsControllersNextTurn");
+                }
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
@@ -4175,8 +4269,14 @@ impl Walker<'_> {
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Duration", "WhileYouControlSource");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Exchange", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
@@ -4203,11 +4303,17 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Rule", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
@@ -4241,6 +4347,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::StillResolves
+            | Effect::AddStep { .. }
             | Effect::Forget { .. }
             | Effect::DrawGame {}
             | Effect::Crewed { .. }
@@ -4276,8 +4383,14 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Shield", "Duration.WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Shield", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
@@ -4375,7 +4488,9 @@ impl Walker<'_> {
                 w.x_now |= announces_x(cost);
                 w.r281_paying = *times == Amount::one()
                     && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
+                w.r306_paying = true;
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r306_paying = false;
                 w.r281_paying = false;
                 (w.x_free, w.x_now) = (saved, saved_now);
                 w.at("times", |w| w.amount(times));
@@ -4619,6 +4734,8 @@ impl Walker<'_> {
         // A keyword a player has is given to the player: "You have hexproof."
         let kind = if gives_player_keywords(affected, mods) {
             Kind::Player
+        } else if r305c_players_and_objects(affected, mods) {
+            Kind::Either
         } else {
             Kind::Object
         };
@@ -5681,6 +5798,22 @@ impl Walker<'_> {
                 }
                 self.at("count", |w| w.amount(count));
             }
+            ReplaceBy::AsEnters(effects) => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                if effects.is_empty() {
+                    self.problem("needs at least one effect");
+                }
+                self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::AsEntersWith { effects, count, .. } => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                self.effect_list("AsEntersWith", effects, false);
+                self.at("count", |w| w.amount(count));
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");
@@ -5704,12 +5837,23 @@ impl Walker<'_> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except, .. } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                counters,
+                ..
+            } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
+                for (index, entry) in counters.iter().enumerate() {
+                    self.at(format!("counters[{index}]"), |w| {
+                        w.amount(&entry.count);
+                        w.selector(&entry.of);
+                    });
+                }
             }
             _ => {}
         }
@@ -5745,6 +5889,19 @@ fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
 fn r283_counts_payers_own(count: &Amount, who: &Ref) -> bool {
     matches!(count, Amount::Count(Selector(preds))
         if preds.contains(&Pred::OwnedBy(who.clone())) && !matches!(who, Ref::You))
+}
+
+/// The filter of a cost item that picks cards or permanents.
+fn r301_pick_filter(item: &CostItem) -> Option<&Selector> {
+    match item {
+        CostItem::ExileFromHand { filter, .. }
+        | CostItem::Sacrifice { filter, .. }
+        | CostItem::ExileFromGraveyard { filter, .. }
+        | CostItem::RevealFromHand { filter, .. }
+        | CostItem::ReturnToHand { filter, .. } => Some(filter),
+        CostItem::Discard { filter, .. } => filter.as_ref(),
+        _ => None,
+    }
 }
 
 /// Whether the face has a madness, foretell or freerunning cost with an `{X}` ("Madness {X}{B}{B}").
@@ -5810,6 +5967,27 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         && mods.iter().all(Modification::is_player_keyword)
 }
 
+/// Whether a static ability gives keywords a player can have to players and to the objects a selector names together:
+/// "You and permanents you control have protection from Salamanders."
+fn r305c_players_and_objects(affected: &Ref, mods: &[Modification]) -> bool {
+    let Ref::Union(parts) = affected else {
+        return false;
+    };
+    let players = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::You | Ref::Opponents | Ref::EachPlayer))
+        .count();
+    let objects = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::Each(_)))
+        .count();
+    players > 0
+        && objects > 0
+        && players + objects == parts.len()
+        && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
+}
+
 /// Whether a cost has a part that picks objects the effects can name.
 fn picks(cost: &Cost) -> bool {
     cost.0.iter().any(|item| match item {
@@ -5833,6 +6011,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Craft { .. }
                 | CostItem::Forage
                 | CostItem::ExileTop(_)
+                | CostItem::DiscardRandom(_)
         ),
     })
 }
@@ -6161,6 +6340,8 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
                         || (keyword.eq_ignore_ascii_case("Typecycling")
                             && names_typecycling(clause))
                         || (keyword.eq_ignore_ascii_case("Landwalk") && names_landwalk(clause))
+                        // Scryfall lists `Plot` for a card that makes another one plotted (CR 702.170).
+                        || (keyword.eq_ignore_ascii_case("Plot") && names_keyword(clause, "plotted"))
                 }),
             _ => false,
         })
@@ -6648,6 +6829,7 @@ mod tests {
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::r306c_counted_damage_an_opponent_takes(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":{"Counters":{"on":"This","counter":"+1/+1"}}}],"unpaid":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}"#, &["Ability.Triggered", "Cost.DamageToYou", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.Counted", "Trigger.Attacks"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
@@ -6655,6 +6837,9 @@ mod tests {
     #[case::r5g_a_discard_counted_by_a_condition(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Discard":{"count":{"When":{"condition":"YourTurn","then":2,"otherwise":1}}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Amount.When", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
     #[case::e19_ward_of_life_equal_to_its_power(r#"{"Keyword":{"Ward":[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]}}"#, &["Cost.PayLife", "Effect.Pay.Counted", "Keyword.Ward"])]
     #[case::e19_ward_of_a_blight(r#"{"Keyword":{"Ward":[{"Blight":2}]}}"#, &["Cost.Blight", "Keyword.Ward"])]
+    #[case::r303c_a_spell_costing_the_hand_and_every_permanent(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}},{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Discard", "Cost.Discard.Hand", "Cost.Sacrifice", "Cost.Sacrifice.All"])]
+    #[case::r303c_half_the_lands_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Half":{"of":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"up":true}}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
+    #[case::r303c_all_of_another_kind_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
     #[case::e19_ward_of_a_counted_discard(r#"{"Keyword":{"Ward":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}"#, &["Cost.Discard", "Cost.Discard.Counted", "Keyword.Ward"])]
     #[case::r5g_untapping_the_source(r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Untap", "Effect.Draw"])]
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]
@@ -8086,6 +8271,12 @@ mod printed_keywords {
         "Partial",
         &[(BIRD, "Flashback and flash", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
         &["Flash"],
+        &[]
+    )]
+    #[case::becomes_plotted_names_plot(
+        "Partial",
+        &[(BIRD, "Exile target spell. It becomes plotted.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":39}}}"#)],
+        &["Plot"],
         &[]
     )]
     #[case::enchanted_is_not_enchant(

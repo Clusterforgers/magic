@@ -2,7 +2,7 @@
 //! each round's matches become games whose seats are bound to their players, results come from the
 //! game records and the organiser's corrections, Swiss rounds avoid rematches and hand out byes,
 //! elimination ends with one entrant, drops stop pairings, and strangers, players and guests are
-//! refused what is the organiser's.
+//! refused what is the organiser's; a match game has no player host, and one dropped without a result is made again.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -556,4 +556,75 @@ async fn a_deleted_account_takes_its_tournament_rows_with_it(pool: PgPool) {
     for table in ["tournaments", "tournament_entrants", "tournament_matches"] {
         assert_eq!(rows(&pool, table).await, 0, "{table}");
     }
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_match_game_has_no_player_host_and_one_dropped_without_a_result_is_made_again(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let org = register(server.addr, "Org", PASSWORD).await;
+    let (id, invite) = create(
+        &server,
+        &org,
+        json!({"name": "Cup", "format": "commander_1v1", "structure": "elimination"}),
+    )
+    .await;
+    let mut players = Vec::new();
+    for name in ["Pia", "Pbo"] {
+        let player = register(server.addr, name, PASSWORD).await;
+        assert_eq!(join(&server, &invite, &player, json!({})).await.status, 200);
+        players.push((name, player));
+    }
+    let t = act(&server, &id, "start", &org).await.json();
+    let game = round(&t, 1)[0]["game"].as_str().unwrap().to_owned();
+    let first = entrant_named(&t, round(&t, 1)[0]["a"].as_u64().unwrap());
+
+    // Seat 0 is a player like the other: neither closes, hides or splits the table.
+    let host_only = [
+        ("DELETE", format!("/api/games/{game}"), None),
+        (
+            "PATCH",
+            format!("/api/games/{game}"),
+            Some(json!({"visibility": "public"})),
+        ),
+        (
+            "PUT",
+            format!("/api/games/{game}/teams"),
+            Some(json!({"teams": null})),
+        ),
+    ];
+    for (_, player) in &players {
+        for (method, path, body) in &host_only {
+            let reply = call(&server, method, path, Some(player), body.clone()).await;
+            assert_eq!(
+                reply.status,
+                403,
+                "{method} {path} by {first}: {}",
+                reply.text()
+            );
+        }
+    }
+    assert!(server.registry.handle(game.parse().unwrap()).is_some());
+
+    // The lobby is dropped without a result (closed or expired): the organiser's retry makes a new game.
+    server
+        .registry
+        .close(game.parse().unwrap(), mtg_server::registry::HOST)
+        .await
+        .unwrap();
+    let t = view(&server, &id, &org).await;
+    assert!(
+        round(&t, 1)[0]["game"].is_null(),
+        "the dead game is forgotten"
+    );
+    let retried = act(&server, &id, "games", &org).await;
+    assert_eq!(retried.status, 200, "{}", retried.text());
+    let fresh = round(&retried.json(), 1)[0]["game"]
+        .as_str()
+        .unwrap()
+        .to_owned();
+    assert_ne!(fresh, game);
+    assert!(server.registry.handle(fresh.parse().unwrap()).is_some());
+    assert_eq!(seat_owners(&pool, &fresh).await.len(), 2);
 }

@@ -1,0 +1,796 @@
+[
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}{B}"
+     },
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "LoseLife": {
+       "who": {
+        "Target": 0
+       },
+       "amount": 2
+      }
+     },
+     {
+      "ChooseAtRandom": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": {
+           "Target": 0
+          }
+         },
+         {
+          "In": "Hand"
+         }
+        ]
+       },
+       "as": "revealed"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "revealed"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{3}{B}, {T}: Target opponent loses 2 life, then reveals a card at random from their hand."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 2
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetTypes": [
+          "Artifact"
+         ]
+        },
+        {
+         "AddSubtype": "Treasure"
+        },
+        "LoseAbilities",
+        {
+         "GrantAbility": {
+          "Activated": {
+           "cost": [
+            "Tap",
+            "SacrificeSelf"
+           ],
+           "effects": [
+            {
+             "AddMana": {
+              "mana": {
+               "AnyColor": 1
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "Forever"
+      }
+     }
+    ]
+   }
+  },
+  "−2: Target creature becomes a Treasure artifact with \"{T}, Sacrifice this artifact: Add one mana of any color\" and loses all other card types and abilities."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 9
+    },
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Counters": {
+           "on": {
+            "Target": 0
+           },
+           "counter": "poison"
+          }
+         },
+         "op": "Lt",
+         "right": 9
+        }
+       },
+       "then": [
+        {
+         "PutCounters": {
+          "on": {
+           "Target": 0
+          },
+          "counter": "poison",
+          "count": {
+           "Difference": [
+            9,
+            {
+             "Counters": {
+              "on": {
+               "Target": 0
+              },
+              "counter": "poison"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−9: If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}"
+     }
+    ],
+    "effects": [
+     {
+      "Rule": {
+       "rule": {
+        "LookAtFaceDown": {
+         "what": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Not": {
+            "ControlledBy": "You"
+           }
+          }
+         ]
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{2}: Until end of turn, you may look at face-down creatures you don't control any time."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{3}{G}"
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "SetPT": {
+          "power": 5,
+          "toughness": 3
+         }
+        },
+        {
+         "AddKeyword": "Trample"
+        },
+        {
+         "AddSubtype": "Werewolf"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{3}{G}: Until end of turn, this creature has base power and toughness 5/3, gains trample, and is a Werewolf."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "CreateToken": {
+       "who": {
+        "Target": 0
+       },
+       "token": {
+        "Named": "treasure"
+       },
+       "count": {
+        "Tally": {
+         "event": "TokenCreated",
+         "who": "You",
+         "filter": [
+          {
+           "Subtype": "Treasure"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Target opponent creates X Treasure tokens, where X is the number of Treasure tokens you created this turn."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "TapPermanents": {
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "count": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Stat": {
+            "of": "Paid",
+            "stat": "Power"
+           }
+          },
+          "toughness": 0
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Tap an untapped creature you control: This creature gets +X/+0 until end of turn, where X is the power of the creature tapped this way."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{2}{U}{U}",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": 1,
+          "toughness": 0
+         }
+        },
+        {
+         "GrantAbility": {
+          "Triggered": {
+           "when": {
+            "DealsDamage": {
+             "source": [
+              "This"
+             ],
+             "to": "EachPlayer",
+             "combat": true
+            }
+           },
+           "effects": [
+            {
+             "Draw": {
+              "count": {
+               "Stat": {
+                "of": "This",
+                "stat": "Toughness"
+               }
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "Combat": {
+         "who": {
+          "Target": 0
+         },
+         "quirk": "AttackDespiteDefender"
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{2}{U}{U}: Until end of turn, target creature you control gets +1/+0, gains \"Whenever this creature deals combat damage to a player, draw cards equal to its toughness,\" and can attack as though it didn't have defender."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "condition": {
+     "Step": "Upkeep"
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "RemoveKeyword": "Banding"
+        },
+        {
+         "RemoveKeywordKind": "BandsWithOther"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Target creature loses banding and all \"bands with other\" abilities until end of turn. Activate only during any upkeep step."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Reduce",
+    "mana": "{1}",
+    "per": {
+     "Greatest": {
+      "of": [
+       "Commander",
+       {
+        "OwnedBy": "You"
+       },
+       {
+        "AnyOf": [
+         {
+          "In": "Battlefield"
+         },
+         {
+          "In": "Command"
+         }
+        ]
+       }
+      ],
+      "stat": "ManaValue"
+     }
+    },
+    "condition": {
+     "CastWith": "Flashback"
+    }
+   }
+  },
+  "This spell costs {X} less to cast this way, where X is the greatest mana value of a commander you own on the battlefield or in the command zone."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "Spell",
+     {
+      "ControlledBy": "You"
+     },
+     {
+      "CastWith": "Dash"
+     }
+    ],
+    "change": "Reduce",
+    "mana": "{2}"
+   }
+  },
+  "Dash costs you pay cost {2} less."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Reduce",
+    "mana": "{1}",
+    "activating": "Any",
+    "targeting": [
+     {
+      "Type": "Creature"
+     },
+     {
+      "Compare": {
+       "stat": "Power",
+       "op": "Le",
+       "to": 3
+      }
+     }
+    ]
+   }
+  },
+  "This ability costs {1} less to activate if it targets a creature with power 3 or less."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "BeginCombat",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Party": "You"
+      },
+      "op": "Ge",
+      "right": 4
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        {
+         "ControlledBy": "Opponents"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        "CantAttack",
+        "CantBlock"
+       ],
+       "duration": "UntilYourNextTurn"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "Cant": {
+         "who": {
+          "Target": 0
+         },
+         "action": {
+          "Activate": []
+         }
+        }
+       },
+       "duration": "UntilYourNextTurn"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of combat on your turn, if you have a full party, choose target nonland permanent an opponent controls. Until your next turn, it can't attack or block, and its activated abilities can't be activated."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "SacrificeSelf"
+    ],
+    "effects": [
+     {
+      "Either": {
+       "first": [
+        {
+         "Continuous": {
+          "affected": {
+           "Each": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ]
+          },
+          "mods": [
+           {
+            "AddKeyword": "Hexproof"
+           }
+          ],
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ],
+       "second": [
+        {
+         "Continuous": {
+          "affected": {
+           "Each": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ]
+          },
+          "mods": [
+           {
+            "AddKeyword": "Indestructible"
+           }
+          ],
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Sacrifice ~: Choose hexproof or indestructible. Creatures you control gain that ability until end of turn."
+ ],
+ [
+  {
+   "FreeCast": {
+    "condition": {
+     "Compare": {
+      "left": {
+       "Tallied": {
+        "who": "You",
+        "what": "Discarded"
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "cost": "{B/R}"
+   }
+  },
+  "As long as you've discarded a card this turn, you may pay {B/R} to cast this spell."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "filter": [
+        {
+         "Subtype": "Food"
+        }
+       ],
+       "count": 2
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "DealDamage": {
+       "source": {
+        "Target": 0
+       },
+       "to": {
+        "Target": 0
+       },
+       "amount": 6
+      }
+     }
+    ]
+   }
+  },
+  "Sacrifice two Foods: Target creature deals 6 damage to itself."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Did": {
+        "action": "PlayedLand",
+        "what": [
+         {
+          "Type": "Land"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "ArrivedFrom": "Exile"
+         }
+        ]
+       }
+      },
+      {
+       "SpellCast": {
+        "what": [
+         {
+          "WasCast": {
+           "from": "Exile"
+          }
+         }
+        ],
+        "by": "You"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you play a land from exile or cast a spell from exile, put a +1/+1 counter on ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Tally": {
+        "event": "SpellCast",
+        "who": "You",
+        "filter": [
+         {
+          "WasCast": {
+           "from": "Hand"
+          }
+         }
+        ]
+       }
+      },
+      "op": "Eq",
+      "right": 0
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your end step, if you haven't cast a spell from your hand this turn, put a +1/+1 counter on this creature."
+ ]
+]

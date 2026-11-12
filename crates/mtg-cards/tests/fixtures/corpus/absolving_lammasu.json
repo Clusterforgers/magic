@@ -1,0 +1,28 @@
+{
+  "id": "bd6e71a1-713e-4eca-bd65-9f0638c16794",
+  "oracle_id": "dbedd45e-f76c-4be7-ad89-ff57bed6626f",
+  "name": "Absolving Lammasu",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mkm",
+  "collector_number": "2",
+  "rarity": "uncommon",
+  "released_at": "2024-02-09",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Lammasu",
+  "oracle_text": "Flying\nWhen this creature enters, all suspected creatures are no longer suspected.\nWhen this creature dies, you gain 3 life and suspect up to one target creature an opponent controls. (A suspected creature has menace and can't block.)",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Suspect"
+  ]
+}

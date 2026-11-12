@@ -1,14 +1,16 @@
-//! Goal: bot seats play whole games on their own: a table of 2 to 4 seats whose other seats are bots starts once the creator alone is ready, never stalls without any clock to push it, and ends in a result every seat is told; the recipe names the bot seats so a resumed game hands them to bots again.
+//! Goal: bot seats play whole games on their own: a table of 2 to 4 seats whose other seats are bots starts once the creator alone is ready, never stalls without any clock to push it, and ends in a result every seat is told; the recipe names the bot seats so a resumed game hands them to bots again; a change of teams, which takes every Ready back, leaves the bots ready.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::time::Duration;
 
 use crate::common::{self, Client, roomy};
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_server::bots::{BotLevel, BotSeat};
 use mtg_server::config::ServerConfig;
 use mtg_server::demo;
-use mtg_server::registry::{GameOptions, Registry, SeatRequest};
+use mtg_server::registry::{GameOptions, HOST, Registry, SeatRequest};
 use rstest::rstest;
 
 fn requests(seats: usize) -> Vec<SeatRequest> {
@@ -29,13 +31,27 @@ fn registry() -> Registry {
     })
 }
 
+/// Bots at `level` for seats 1 to `seats - 1`.
+fn bots(seats: usize, level: BotLevel) -> Vec<BotSeat> {
+    (1..seats)
+        .map(|seat| BotSeat {
+            seat: PlayerId::from_index(seat),
+            level,
+        })
+        .collect()
+}
+
 #[rstest]
+#[case::easy_duel(2, BotLevel::Easy)]
+#[case::easy_three(3, BotLevel::Easy)]
+#[case::easy_four(4, BotLevel::Easy)]
+#[case::normal_duel(2, BotLevel::Normal)]
+#[case::hard_three(3, BotLevel::Hard)]
 #[tokio::test(start_paused = true)]
-async fn a_table_of_bots_plays_to_the_end(#[values(2, 3, 4)] seats: usize) {
+async fn a_table_of_bots_plays_to_the_end(#[case] seats: usize, #[case] level: BotLevel) {
     let registry = registry();
-    let bots: Vec<PlayerId> = (1..seats).map(PlayerId::from_index).collect();
     let options = GameOptions {
-        bots: bots.clone(),
+        bots: bots(seats, level),
         ..GameOptions::default()
     };
     let created = registry
@@ -76,7 +92,7 @@ async fn a_table_of_bots_plays_to_the_end(#[values(2, 3, 4)] seats: usize) {
 async fn the_bots_are_ready_and_the_game_waits_for_the_creator_alone() {
     let registry = registry();
     let options = GameOptions {
-        bots: vec![PlayerId::from_index(1), PlayerId::from_index(2)],
+        bots: bots(3, BotLevel::Normal),
         ..GameOptions::default()
     };
     let created = registry
@@ -98,6 +114,38 @@ async fn the_bots_are_ready_and_the_game_waits_for_the_creator_alone() {
     let connected: Vec<bool> = roster.iter().map(|seat| seat.connected).collect();
     assert_eq!(ready, [false, true, true]);
     assert_eq!(connected, [true, true, true]);
+    me.say(&handle, ClientMessage::Ready).await;
+    me.decision().await;
+    assert!(handle.status().await.unwrap().started);
+}
+
+#[rstest]
+#[case::two_v_two(TeamMode::Teams)]
+#[case::two_headed_giant(TeamMode::TwoHeadedGiant)]
+#[tokio::test(start_paused = true)]
+async fn a_change_of_teams_leaves_the_bots_ready(#[case] mode: TeamMode) {
+    let registry = registry();
+    let options = GameOptions {
+        bots: bots(4, BotLevel::Easy),
+        ..GameOptions::default()
+    };
+    let created = registry
+        .create_with(&requests(4), options, None)
+        .await
+        .unwrap();
+    let handle = registry.handle(created.id).unwrap();
+    let mut me = Client::join(&handle, 0).await;
+    tokio::time::sleep(Duration::from_secs(1)).await;
+    let teams = Teams {
+        mode,
+        seats: vec![0, 1, 0, 1],
+    };
+    registry
+        .set_teams(created.id, HOST, Some(teams))
+        .await
+        .unwrap();
+    tokio::time::sleep(Duration::from_secs(1)).await;
+    me.drain_all();
     me.say(&handle, ClientMessage::Ready).await;
     me.decision().await;
     assert!(handle.status().await.unwrap().started);

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "e40daee2-f9e6-489f-b3dd-274e5a6b8604",
+  "name": "Whispergear Sneak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispergear Sneak",
+      "oracle_fingerprint": "8dc235be1790e98acedc5f8b4df66781",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "LookAtAnyPack" } } }
+      ]
+    }
+  ]
+}

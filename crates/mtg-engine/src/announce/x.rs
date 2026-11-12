@@ -97,10 +97,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return None;
     }
     // An alternative cost has no `{X}` unless it names one (a miracle cost): the one of the mana cost is 0 (CR 107.3b). The
-    // X of a cost that counts it is still announced.
+    // X of a cost that counts it is still announced, a part of the alternative cost itself among them ("Flashback—{R}{R},
+    // Discard X cards.").
     if work.choices.way.is_some_and(CastWay::replaces_cost)
         && ctx.needs.x != Some(XCost::Parts)
         && alternative_symbols(ctx, work.choices.way) == Some(0)
+        && parts::most(ctx, work.choices).is_none()
     {
         work.choices.x = Some(0);
         work.done.x = true;
@@ -128,6 +130,23 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let Some(offer) = Offer::of(ctx, work.choices, max) else {
         return Some(Next::Drop);
     };
+    let mut offer = offer;
+    offer.except.extend(parts::r301_x_without_picks(
+        ctx,
+        work.choices,
+        offer.min,
+        offer.max,
+    ));
+    offer.except.sort_unstable();
+    offer.except.dedup();
+    // A value at either end that leaves a pick nothing to take is no end.
+    while offer.min < offer.max && offer.except.contains(&offer.min) {
+        offer.min += 1;
+    }
+    while offer.max > offer.min && offer.except.contains(&offer.max) {
+        offer.max -= 1;
+    }
+    offer.except.retain(|x| *x > offer.min && *x < offer.max);
     // Nothing to choose between: X is the one value left.
     if offer.min == offer.max {
         work.choices.x = Some(offer.min);

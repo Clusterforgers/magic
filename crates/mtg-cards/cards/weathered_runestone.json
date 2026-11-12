@@ -1,0 +1,70 @@
+{
+  "oracle_id": "4386ae4e-560a-4251-942c-0f84ba7448fa",
+  "name": "Weathered Runestone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weathered Runestone",
+      "oracle_fingerprint": "0f1621598992d572ca0f14f31ca2a787",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Union": [
+                    {
+                      "Each": [
+                        { "Not": { "Type": "Land" } },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    {
+                      "Each": [
+                        { "Not": { "Type": "Land" } },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "In": "Library" }
+                      ]
+                    }
+                  ]
+                },
+                "action": "EnterBattlefield"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "AnyOf": [{ "In": "Graveyard" }, { "In": "Library" }] }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7bee3848-24e2-4e12-a341-a759214308c0",
+  "name": "Ouphe Vandals",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ouphe Vandals",
+      "oracle_fingerprint": "0a8aa2da18519a3b7130c63a269fa8fa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Ability": "Activated" }, { "Type": "Artifact" }] } }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

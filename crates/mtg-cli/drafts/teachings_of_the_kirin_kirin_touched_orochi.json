@@ -1,0 +1,129 @@
+{
+  "oracle_id": "cb7edb5e-3a90-41c7-ae52-dc564086bf22",
+  "name": "Teachings of the Kirin // Kirin-Touched Orochi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teachings of the Kirin",
+      "oracle_fingerprint": "31c62f5e02be9edd57c617bfd5e0d70b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kirin-Touched Orochi",
+      "oracle_fingerprint": "60a3d3f4ce24485fbb2ffb47a68f3edd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 } } },
+                        {
+                          "Reflexive": {
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Spirit",
+                                      "types": ["Creature"],
+                                      "subtypes": ["Spirit"],
+                                      "power": 1,
+                                      "toughness": 1
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Not": { "Type": "Creature" } }, { "In": "Graveyard" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 } } },
+                        {
+                          "Reflexive": {
+                            "targets": [
+                              {
+                                "what": {
+                                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            ],
+                            "effects": [
+                              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

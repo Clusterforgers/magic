@@ -1,0 +1,32 @@
+{
+  "oracle_id": "60754d4b-2add-4928-8d30-8ce9c0f54f91",
+  "name": "Raft Security Officer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raft Security Officer",
+      "oracle_fingerprint": "768e2519663dcbc1346cb3b86e42ea84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any",
+            "targeting": [
+              { "Type": "Creature" },
+              { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d8ce3f18-26fe-47e8-be8b-0d89d7de7038",
+  "name": "Acrobatic Cheerleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acrobatic Cheerleader",
+      "oracle_fingerprint": "51025e51e4fc3f02fe0b78f2198b1cee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "limit": "OncePerGame",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "flying" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -33,7 +33,12 @@ export interface SeatRequest {
   deck?: string
   /** A bot plays the seat: a held seat other than seat 0, with a deck; the server names it. */
   bot?: boolean
+  /** How well the seat's bot plays; the server plays Normal when it is left out. Only for a bot seat. */
+  level?: BotLevel
 }
+
+/** How well a server bot plays: random legal plays, heuristics with a short search, or a deeper search. */
+export type BotLevel = 'easy' | 'normal' | 'hard'
 
 /** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */
 export interface CreateGameRequest {

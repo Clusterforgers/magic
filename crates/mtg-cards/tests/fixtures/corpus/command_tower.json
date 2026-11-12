@@ -1,16 +1,37 @@
 {
-  "id": "1ac6cb62-45da-4e9a-84c6-09e6eacf0664",
+  "object": "card",
+  "id": "a73297d2-580c-4174-a427-265f6916d09f",
   "oracle_id": "0895c9b7-ae7d-4bb3-af17-3b75deb50a25",
+  "multiverse_ids": [],
+  "resource_id": "765D56E94FE49B50FBDEFD9BAC366DA73DBB09E6AA7F7BF9202ACD9D2A282735",
+  "mtgo_id": 157260,
+  "tcgplayer_id": 726072,
+  "cardmarket_id": 919662,
   "name": "Command Tower",
   "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/a73297d2-580c-4174-a427-265f6916d09f",
+  "scryfall_uri": "https://scryfall.com/card/trc/521/command-tower?utm_source=api",
   "layout": "normal",
-  "set": "frc",
-  "collector_number": "22",
-  "rarity": "common",
-  "released_at": "2026-10-02",
-  "digital": false,
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-26T13:27:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256",
+    "large": "https://cards.scryfall.io/large/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256",
+    "png": "https://cards.scryfall.io/png/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.png?1793021256",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.webp?1793021256",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.webp?1793021256",
+    "display": "https://cards.scryfall.io/display/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.webp?1793021256",
+    "art": "https://cards.scryfall.io/art/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.webp?1793021256",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.webp?1793021256",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a73297d2-580c-4174-a427-265f6916d09f.jpg?1793021256"
+  },
   "mana_cost": "",
-  "cmc": 0.0,
+  "cmc": 0,
   "type_line": "Land",
   "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
   "colors": [],
@@ -22,5 +43,117 @@
     "R",
     "U",
     "W"
-  ]
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a73297d2-580c-4174-a427-265f6916d09f",
+      "component": "combo_piece",
+      "name": "Command Tower",
+      "type_line": "Land",
+      "uri": "https://api.scryfall.com/cards/a73297d2-580c-4174-a427-265f6916d09f"
+    },
+    {
+      "object": "related_card",
+      "id": "ad03209f-568a-40f5-8470-a083080e6831",
+      "component": "combo_piece",
+      "name": "Tower Winder",
+      "type_line": "Creature — Snake",
+      "uri": "https://api.scryfall.com/cards/ad03209f-568a-40f5-8470-a083080e6831"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a73297d2-580c-4174-a427-265f6916d09f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0895c9b7-ae7d-4bb3-af17-3b75deb50a25&unique=prints",
+  "collector_number": "521",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Starting to like this chair. It's feeling like a little piece of home we're carrying to the edge of the universe.\"\n—Captain Jonathan Archer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Arthur Yuan",
+  "artist_ids": [
+    "0c066852-6fdb-42d0-aab9-db4038850da0"
+  ],
+  "illustration_id": "c102684f-599d-4d88-9ecb-297482c1620e",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2,
+  "preview": {
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=2VJq4uR-r4s",
+    "previewed_at": "2026-10-26"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCommand%2BTower",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCommand%2BTower",
+    "edhrec": "https://edhrec.com/route/?cc=Command+Tower"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726072%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919662&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/157260?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
 }

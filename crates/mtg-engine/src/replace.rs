@@ -765,6 +765,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::BecomesChoice(_)
         | ReplaceBy::Mill(_)
+        | ReplaceBy::AsEnters(_)
+        | ReplaceBy::AsEntersWith { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -805,6 +807,8 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::BecomesChoice(_)
                 | ReplaceBy::Mill(_)
+                | ReplaceBy::AsEnters(_)
+                | ReplaceBy::AsEntersWith { .. }
         )
     )
 }
@@ -2129,6 +2133,7 @@ impl Pass<'_> {
             }
         }
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
+        r35_mills::r35_fresh_mills(self.state, &mut events);
         g12a_library::g12a_order_shuffles(self.state, &mut events);
         events.extend(used);
         events
@@ -2271,6 +2276,19 @@ impl Pass<'_> {
             ReplaceBy::DayIfNeither => {
                 self.day_if_neither(at, applied);
                 Ok(Applied::Done)
+            }
+            ReplaceBy::AsEnters(effects) => {
+                let unit = Unit::Enter { object, controller };
+                Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
+            }
+            ReplaceBy::AsEntersWith {
+                effects,
+                counter,
+                count,
+            } => {
+                let unit = Unit::Enter { object, controller };
+                let with = (effects.as_slice(), counter, count);
+                Ok(self.r304_as_enters_with(at, candidate, with, &unit, applied))
             }
             _ => self.enter(at, candidate, by, object, controller, applied),
         }
@@ -2936,6 +2954,7 @@ impl Pass<'_> {
                 except,
                 tapped: enters_tapped,
                 until_end_of_turn,
+                counters,
             } => {
                 let copy = match self.copies(candidate.object, controller, object, of, except)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -2947,7 +2966,9 @@ impl Pass<'_> {
                     if *enters_tapped {
                         tapped(self, at);
                     }
+                    let copied = copy.of;
                     self.begin_copy(at, copy, &applied);
+                    self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
                 }
             }
             _ => {}
@@ -3295,6 +3316,27 @@ impl Pass<'_> {
         Ok(())
     }
 
+    /// The counters a permanent entering as a copy of `copied` enters with: each entry whose selector the copied
+    /// permanent matches as it is copied.
+    fn r305c_copy_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        copied: ObjectRef,
+        counters: &[mtg_cards::trigger::CopyCounters],
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        for entry in counters {
+            let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+            if !entry.of.is_empty() && !scope.selects(&entry.of, copied)? {
+                continue;
+            }
+            self.enter_with_counters(at, candidate, object, &entry.counter, &entry.count, applied)?;
+        }
+        Ok(())
+    }
+
     /// Whether `controller` has the permanent enter with counters: asked yes or no.
     fn takes_counters(
         &mut self,
@@ -3567,10 +3609,14 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod r304_as_enters;
+#[cfg(test)]
+mod r304_skip;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
 mod g12a_library;
+mod r35_mills;
 
 mod e14b_pay_or_graveyard;
 

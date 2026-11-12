@@ -64,6 +64,8 @@ const FACTS: Record<SpendFact, string> = {
   YourCommander: 'that is your commander',
   FaceDown: 'cast face down',
   Kicked: 'that is kicked',
+  Freerunning: 'with freerunning',
+  NoAbilities: 'with no abilities',
 }
 
 const lower = (text: string): string => text.toLowerCase()
