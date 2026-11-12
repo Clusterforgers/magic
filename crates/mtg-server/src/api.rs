@@ -550,6 +550,7 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         format,
         pace: None,
         bots,
+        accounts: Vec::new(),
     };
     Ok((seats, options))
 }

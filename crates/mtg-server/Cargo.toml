@@ -35,6 +35,7 @@ workspace = true
 
 [dev-dependencies]
 flate2.workspace = true
+proptest.workspace = true
 futures-util.workspace = true
 rstest.workspace = true
 tempfile.workspace = true

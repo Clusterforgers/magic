@@ -47,7 +47,8 @@ use crate::pace::Pace;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError, merged_reads};
 use crate::recorder::Recorder;
 use crate::records::{
-    Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
+    Binding, GameRecords, NewGame, NewSeat, RecordError, RecordStatus, SeatState, UserGame,
+    Visibility,
 };
 use crate::seat_deck::SeatDecks;
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
@@ -120,6 +121,9 @@ pub struct GameOptions {
     pub pace: Option<Pace>,
     /// The held seats a server-side bot plays ([`crate::bots`]); never seat 0, which the creator plays.
     pub bots: Vec<PlayerId>,
+    /// The account each held seat is bound to, by seat, for a game the server makes for its players
+    /// (a tournament match); empty binds only the creator to seat 0.
+    pub accounts: Vec<Option<UserId>>,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -228,13 +232,13 @@ impl SeatSlot {
 }
 
 /// The slots of a new game with `seats` seats: a seat with a token is issued under its name (a
-/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and `host`
-/// owns seat 0; the others are open.
+/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and bound to its
+/// entry of `users`; the others are open.
 fn seat_slots(
     mut names: Vec<String>,
     tokens: &[SeatToken],
     seats: usize,
-    host: Option<UserId>,
+    users: &[Option<UserId>],
 ) -> Vec<SeatSlot> {
     names.truncate(seats);
     while names.len() < seats {
@@ -250,7 +254,7 @@ fn seat_slots(
                 } else {
                     name
                 };
-                SeatSlot::issued(name, token.digest(), host.filter(|_| seat == 0))
+                SeatSlot::issued(name, token.digest(), users.get(seat).copied().flatten())
             }
             None => SeatSlot::open(),
         })
@@ -654,8 +658,16 @@ impl Registry {
         let (id, code) = self.unused_id_and_code()?;
         // Bound only where it is recorded: a game without a database has no accounts to bind.
         let persistent = self.shared.records.is_some() && recipe.is_some();
-        let host = host.filter(|_| persistent);
-        let slots = seat_slots(names, &tokens, seats, host);
+        let users: Vec<Option<UserId>> = if options.accounts.is_empty() {
+            vec![host]
+        } else {
+            options.accounts.clone()
+        };
+        let users: Vec<Option<UserId>> = users
+            .into_iter()
+            .map(|user| user.filter(|_| persistent))
+            .collect();
+        let slots = seat_slots(names, &tokens, seats, &users);
         let meta = NewGame {
             visibility: options.visibility,
             code_digest: Some(*code.digest().as_bytes()),
@@ -955,6 +967,21 @@ impl Registry {
         match &self.shared.records {
             Some(records) => records.remove_failed(game, user).await,
             None => Ok(false),
+        }
+    }
+
+    /// The stored status and result of a game; `None` for a game that is not recorded, and for a
+    /// registry without a database.
+    pub(crate) async fn record_result(
+        &self,
+        id: GameId,
+    ) -> Result<Option<(RecordStatus, Option<GameResult>)>, RecordError> {
+        match &self.shared.records {
+            Some(records) => Ok(records
+                .get(id)
+                .await?
+                .map(|record| (record.status, record.result))),
+            None => Ok(None),
         }
     }
 

@@ -29,9 +29,10 @@ use crate::config::ServerConfig;
 use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
+use crate::tournaments::Tournaments;
 use crate::{
     api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads,
-    tutorial, ws,
+    tournaments, tutorial, ws,
 };
 
 struct Inner {
@@ -40,8 +41,16 @@ struct Inner {
     auth: Auth,
     /// The card database with the rules and what the engine runs; `None` without a database.
     cards: Option<CardSource>,
+    /// The tournaments; `None` without a database.
+    tournaments: Option<Tournaments>,
     stop: watch::Receiver<bool>,
     sessions: mpsc::Sender<()>,
+}
+
+/// What a server keeps in its database besides games and accounts; both `None` without one.
+struct Stores {
+    cards: Option<CardSource>,
+    tournaments: Option<Tournaments>,
 }
 
 /// What every handler can reach. Cheap to clone.
@@ -67,6 +76,11 @@ impl AppState {
     /// The card database, for the card and deck endpoints; `None` on a server without a database.
     pub(crate) fn cards(&self) -> Option<&CardSource> {
         self.inner.cards.as_ref()
+    }
+
+    /// The tournaments, for their endpoints; `None` on a server without a database.
+    pub(crate) fn tournaments(&self) -> Option<&Tournaments> {
+        self.inner.tournaments.as_ref()
     }
 
     /// Whether shutdown has begun.
@@ -100,7 +114,11 @@ impl Server {
     pub fn new(config: ServerConfig) -> Server {
         let registry = Registry::new(&config);
         let auth = Auth::new(&config.auth, None);
-        Server::with_registry(config, registry, auth, None, ResumeReport::default())
+        let stores = Stores {
+            cards: None,
+            tournaments: None,
+        };
+        Server::with_registry(config, registry, auth, stores, ResumeReport::default())
     }
 
     /// Builds a server that records its games and accounts in `pool` (already migrated by
@@ -129,6 +147,7 @@ impl Server {
         auth.sync_admin()
             .await
             .map_err(|error| RecordError::Unavailable(error.to_string()))?;
+        let tournaments = Tournaments::new(pool.clone());
         let registry = Registry::with_card_source(&config, pool, cards.clone());
         let resumed = registry.resume().await?;
         tracing::info!(
@@ -139,12 +158,12 @@ impl Server {
             failed = resumed.failed.len(),
             "stored games loaded"
         );
+        let stores = Stores {
+            cards: Some(cards),
+            tournaments: Some(tournaments),
+        };
         Ok(Server::with_registry(
-            config,
-            registry,
-            auth,
-            Some(cards),
-            resumed,
+            config, registry, auth, stores, resumed,
         ))
     }
 
@@ -157,7 +176,7 @@ impl Server {
         config: ServerConfig,
         registry: Registry,
         auth: Auth,
-        cards: Option<CardSource>,
+        stores: Stores,
         resumed: ResumeReport,
     ) -> Server {
         let (stop, stop_receiver) = watch::channel(false);
@@ -167,7 +186,8 @@ impl Server {
                 config,
                 registry,
                 auth,
-                cards,
+                cards: stores.cards,
+                tournaments: stores.tournaments,
                 stop: stop_receiver,
                 sessions,
             }),
@@ -288,6 +308,40 @@ fn account_routes() -> Router<AppState> {
         .route("/api/admin/users/{id}/password", post(auth::reset_password))
 }
 
+/// The tournament routes: the player's list, creating, signing up by invite and the organiser's controls.
+fn tournament_routes() -> Router<AppState> {
+    Router::new()
+        .route(
+            "/api/tournaments",
+            get(tournaments::list).post(tournaments::create),
+        )
+        .route("/api/tournaments/invite/{code}", get(tournaments::invite))
+        .route(
+            "/api/tournaments/invite/{code}/join",
+            post(tournaments::join),
+        )
+        .route(
+            "/api/tournaments/{id}",
+            get(tournaments::get_one).delete(tournaments::remove),
+        )
+        .route("/api/tournaments/{id}/leave", post(tournaments::leave))
+        .route("/api/tournaments/{id}/drop", post(tournaments::drop_self))
+        .route(
+            "/api/tournaments/{id}/entrants/{entrant}/drop",
+            post(tournaments::drop_other),
+        )
+        .route("/api/tournaments/{id}/start", post(tournaments::start))
+        .route("/api/tournaments/{id}/next", post(tournaments::next))
+        .route(
+            "/api/tournaments/{id}/games",
+            post(tournaments::retry_games),
+        )
+        .route(
+            "/api/tournaments/{id}/matches/{round}/{table}",
+            put(tournaments::set_outcome),
+        )
+}
+
 /// All routes of the server.
 /// The routes of games: making one, its lobby and seats, and the game browser.
 fn game_routes() -> Router<AppState> {
@@ -376,6 +430,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/tutorial", post(tutorial::start))
         .merge(game_routes())
         .merge(account_routes())
+        .merge(tournament_routes())
         .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))

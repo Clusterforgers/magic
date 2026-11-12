@@ -1,0 +1,100 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT round, table_no, a, b, game_id, outcome, corrected FROM tournament_matches\n             WHERE tournament_id = $1 ORDER BY round, table_no",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "round",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "round"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "table_no",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "table_no"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "a",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "a"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "b",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "b"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "game_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "game_id"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "outcome",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "outcome"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "corrected",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "tournament_matches",
+            "name": "corrected"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "43762cc41c7a7b390d2477f9f4d0b30f920d28a57fddba767740386d7f9580c9"
+}

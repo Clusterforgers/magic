@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE tournament_matches SET game_id = $4\n             WHERE tournament_id = $1 AND round = $2 AND table_no = $3\n               AND b IS NOT NULL AND game_id IS NULL",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4",
+        "Int4",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "41a52bb6aba7b1279359fe44cb87fc13c5427a03cce60e5fc20d102cff74929c"
+}

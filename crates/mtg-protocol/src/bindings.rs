@@ -19,6 +19,10 @@ use crate::rest::{
     PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
     ReadQueue, Replay, UserPrefs, UserView, VisibilityBody,
 };
+use crate::rest::{
+    CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
+    TournamentInvite, TournamentList, TournamentView,
+};
 
 /// Where the committed bindings live, relative to the workspace root.
 pub const GENERATED_DIR: &str = "web/src/protocol/generated";
@@ -60,6 +64,14 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     AuthErrorCode::export_all(&config)?;
     MyGames::export_all(&config)?;
     Replay::export_all(&config)?;
+    CreateTournament::export_all(&config)?;
+    TournamentCreated::export_all(&config)?;
+    JoinTournament::export_all(&config)?;
+    SetMatchOutcome::export_all(&config)?;
+    TournamentList::export_all(&config)?;
+    TournamentView::export_all(&config)?;
+    TournamentInvite::export_all(&config)?;
+    TournamentErrorCode::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
     DeckBody::export_all(&config)?;

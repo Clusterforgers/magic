@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT (SELECT count(*) FROM tournament_players p\n                               WHERE p.tournament_id = e.tournament_id AND p.entrant = e.entrant) AS \"n!\"\n                       FROM tournament_entrants e WHERE e.tournament_id = $1 AND e.entrant = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "n!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "467d21d31a6daf0bd273218de0b460158764703b04da7481a9a5c25ee8134160"
+}

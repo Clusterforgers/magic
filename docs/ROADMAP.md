@@ -9,7 +9,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
 - Live: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
 - Cards: 94.7% of the 32,116 Commander cards play automatically (Verified 22,622, Read 4,863, Unverified 2,935); Partial (973) and Manual (723) cards play through by-hand clauses. Run `mtg-cli compile` and `coverage` before quoting newer numbers.
-- In progress: team Commander (tm1), tournaments (tm2), refusal explanations, tutorial fixes and the card coverage of M3 and M6.
+- In progress: team Commander (tm1), refusal explanations, tutorial fixes and the card coverage of M3 and M6.
 - Open: an off-queen copy of the backups (M7).
 
 ## Order of work
@@ -38,6 +38,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Unfinity: Attractions (open, roll to visit, visit and prize abilities, the junkyard, the deck warning), tickets and stickers (three random sheets, name, ability and power/toughness stickers), the sheet and sticker chips at the table (`docs/engine.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn, under a clock and behind a replacement question, and fix marks with a cap and a budget (`docs/web.md`, `docs/protocol.md`).
 - Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, counters on players at every seat, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes, the many-seat layout, a shared large card preview with pins, the win celebration on every seat, a 12 px text floor and glyph marks on narrow faces (`docs/web.md`, `docs/ui-design.md`).
+- Tournaments: Swiss and single elimination for 1v1 Commander, sign-up by invite, games made and results read per match, the organiser's corrections, drops, byes and standings with tiebreakers (`docs/server.md`, `docs/web.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list, deck lines the owner plays by hand (also Verified cards) and the precon browser (`docs/web.md`, `docs/server.md`).
 - Reviewing cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/review` (`/read` forwards): one place for a deck's, a precon's or every card's drafts to read and cards played by hand to check, most played first, the card large beside its rules and Oracle text, progress, bulk approval of wording-only drafts, keys C, W, J, K, H and ?, `ReadDialog` from the table's preview and a link from every deck check (`docs/server.md`, `docs/web.md`).
 - Control and text: a player controlled during their next turn with the controller answering and seeing for them (CR 722), control of a spell on the stack, text changes in layer 3 (CR 612), cleave, a restart of the game (CR 727) and the cards an opponent finds exiled for the searcher's controller (`docs/engine.md`).
@@ -108,7 +109,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## M7 Product
 
 - [ ] (tm1) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
-- [ ] (tm2) Tournaments: an organiser sets up 1v1 or 2v2 Commander rounds (Swiss or single elimination), pairings, results and standings, each match a normal game
+- [ ] (tm2a) 2v2 tournaments start: their matches pass the team mode of Team Commander (tm1) when the server makes their games, and `TEAM_GAMES` turns on (`crates/mtg-server/src/tournaments.rs`; after tm1)
+- [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1h) A "waiting on <player>" mark on the pods of a table of three or more, beside the strip's line, so a spectator and a player see at a glance whom the game waits for

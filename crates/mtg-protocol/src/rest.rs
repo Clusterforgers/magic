@@ -2,7 +2,8 @@
 //! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
 //! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
 //! (`/api/reads`), of the precon endpoints
-//! (`/api/precons`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
+//! (`/api/precons`), of the game browser (`/api/lobbies`, joining) and of tournaments
+//! (`/api/tournaments`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
@@ -16,6 +17,7 @@ mod lobbies;
 mod precons;
 mod prefs;
 mod reads;
+mod tournaments;
 
 use std::fmt;
 
@@ -56,6 +58,12 @@ pub use prefs::{
     default_stops,
 };
 pub use reads::{CardDraft, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict};
+pub use tournaments::{
+    CreateTournament, EntrantView, JoinTournament, MAX_ENTRANTS, MAX_SWISS_ROUNDS,
+    MAX_TOURNAMENT_NAME_CHARS, MatchOutcome, MatchView, RoundView, SetMatchOutcome, StandingView,
+    TournamentCreated, TournamentErrorCode, TournamentFormat, TournamentInvite, TournamentList,
+    TournamentStatus, TournamentStructure, TournamentSummary, TournamentView,
+};
 
 /// Fewest characters in a username.
 pub const USERNAME_MIN_CHARS: usize = 3;

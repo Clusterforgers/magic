@@ -81,6 +81,7 @@ mod pg_resume_decks;
 mod pg_seat_decks;
 mod pg_spectators;
 mod pg_store;
+mod pg_tournaments;
 mod pg_user_games;
 mod pg_visibility;
 mod presence;

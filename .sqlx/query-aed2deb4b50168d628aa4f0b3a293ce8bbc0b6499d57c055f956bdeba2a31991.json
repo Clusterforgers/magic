@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM tournament_players WHERE tournament_id = $1 AND user_id = $2 RETURNING entrant",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "entrant",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "tournament_players",
+            "name": "entrant"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "aed2deb4b50168d628aa4f0b3a293ce8bbc0b6499d57c055f956bdeba2a31991"
+}

@@ -145,7 +145,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 
 ## REST bodies
 
-The account, card, deck, precon, game-browser and preference endpoints of `mtg-server` take and answer the types of `mtg_protocol::rest` (`rest/*.rs`), so the web gets them from the bindings. Rules that hold across them:
+The account, card, deck, precon, game-browser, preference and tournament endpoints of `mtg-server` take and answer the types of `mtg_protocol::rest` (`rest/*.rs`), so the web gets them from the bindings. Rules that hold across them:
 
 - Bodies refuse unknown fields; any type holding a password prints it as `<redacted>` in `Debug`; a `Joined` never prints its token.
 - Each family has an error-code type (`AuthErrorCode`, `DeckErrorCode`, `LobbyErrorCode`, `DeckChoiceErrorCode`, `PreconErrorCode`) whose `error` string is snake_case; `as_str` is the wire text, `ALL` lists every code, and a test keeps `as_str`, serde and the generated union equal. `DeckChoiceErrorCode` is a type of its own so that clients built before it still handle every `LobbyErrorCode`.

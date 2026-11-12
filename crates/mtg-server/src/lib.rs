@@ -134,6 +134,7 @@ mod session;
 mod stops;
 mod store;
 mod throttle;
+mod tournaments;
 mod turn_time;
 pub mod tutorial;
 mod user_id;
