@@ -703,6 +703,29 @@ struct Started {
     players: BTreeSet<PlayerId>,
 }
 
+/// The players a static ability's `affected` names: a player reference, or the players of a union ("you and permanents
+/// you control"); none for objects alone.
+fn r305c_affected_players(scope: &Scope<'_>, affected: &Ref) -> BTreeSet<PlayerId> {
+    let parts = match affected {
+        Ref::Union(parts) => parts.as_slice(),
+        other => std::slice::from_ref(other),
+    };
+    parts
+        .iter()
+        .filter(|part| is_player_ref(part))
+        .filter_map(|part| scope.players(part).ok())
+        .flatten()
+        .collect()
+}
+
+/// The selectors of a union's object parts ("permanents you control" of "you and permanents you control").
+fn r305c_union_selectors(parts: &[Ref]) -> impl Iterator<Item = &mtg_cards::refs::Selector> {
+    parts.iter().filter_map(|part| match part {
+        Ref::Each(selector) => Some(selector),
+        _ => None,
+    })
+}
+
 /// Whether a static ability's `affected` names players: the keywords it changes are the players'.
 fn is_player_ref(affected: &Ref) -> bool {
     matches!(
@@ -1333,22 +1356,9 @@ impl<'a> Pass<'a> {
                 .controller()
         };
         let scope = Scope::announcing(self.state, controller, cand.holder).with_layered(view);
-        let players = if let Some(started) = started {
-            started.players.clone()
-        } else if is_player_ref(affected) {
-            scope
-                .players(affected)
-                .map_or_else(|_| BTreeSet::new(), |named| named.into_iter().collect())
-        } else if let Ref::Union(parts) = affected {
-            // "You and permanents you control": the players of the union get the keyword too.
-            parts
-                .iter()
-                .filter(|part| is_player_ref(part))
-                .filter_map(|part| scope.players(part).ok())
-                .flatten()
-                .collect()
-        } else {
-            BTreeSet::new()
+        let players = match started {
+            Some(started) => started.players.clone(),
+            None => r305c_affected_players(&scope, affected),
         };
         let set = if let Some(started) = started {
             started.set.clone()
@@ -1379,14 +1389,7 @@ impl<'a> Pass<'a> {
             };
             let chosen: BTreeSet<ObjectId> = match affected {
                 Ref::This => BTreeSet::from([cand.holder.id]),
-                Ref::Union(parts) => parts
-                    .iter()
-                    .filter_map(|part| match part {
-                        Ref::Each(selector) => Some(each(selector)),
-                        _ => None,
-                    })
-                    .flatten()
-                    .collect(),
+                Ref::Union(parts) => r305c_union_selectors(parts).flat_map(&each).collect(),
                 Ref::Attached => {
                     let host = self.state.host_of(cand.holder.id)?;
                     view.get(host)?;

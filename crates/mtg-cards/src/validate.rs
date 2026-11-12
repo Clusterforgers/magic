@@ -5543,7 +5543,7 @@ impl Walker<'_> {
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
                 for (index, entry) in counters.iter().enumerate() {
-                    self.at(&format!("counters[{index}]"), |w| {
+                    self.at(format!("counters[{index}]"), |w| {
                         w.amount(&entry.count);
                         w.selector(&entry.of);
                     });

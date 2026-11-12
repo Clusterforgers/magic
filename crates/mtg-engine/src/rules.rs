@@ -756,7 +756,7 @@ pub(crate) struct Cast {
     /// What is paid in place of the mana cost of the card, its amounts counted for the card cast.
     pub(crate) instead: Option<Cost>,
     /// It opens no zone: it covers only a card its player may cast anyway.
-    pub(crate) any_cast: bool,
+    pub(crate) opens_no_zone: bool,
 }
 
 impl Cast {
@@ -768,7 +768,7 @@ impl Cast {
 
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
-        (!self.any_cast || r305c_cast_anyway(state, player, card))
+        (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
             && self.c11b_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
@@ -961,7 +961,7 @@ impl RulesInForce {
                 when: None,
                 rather: None,
                 instead: None,
-                any_cast: false,
+                opens_no_zone: false,
             });
         }
     }
@@ -1149,7 +1149,7 @@ impl RulesInForce {
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
-                        any_cast: *any_cast,
+                        opens_no_zone: *any_cast,
                         controller,
                         source,
                         who: who.clone(),
@@ -1187,7 +1187,7 @@ impl RulesInForce {
                             when: None,
                             rather: Some(cost.clone()),
                             instead: None,
-                            any_cast: false,
+                            opens_no_zone: false,
                         });
                     }
                 }
@@ -2358,7 +2358,7 @@ fn r305c_cast_anyway(state: &GameState, player: PlayerId, card: &GameObject) -> 
         Zone::Hand(owner) => owner == player,
         Zone::Command(owner) => owner == player && state.is_commander(card.id()),
         zone => cast_permissions(state).iter().any(|other| {
-            !other.any_cast
+            !other.opens_no_zone
                 && other.adds_to_printed(crate::resolve::zone_kind(zone))
                 && other.covers(state, player, card)
         }),

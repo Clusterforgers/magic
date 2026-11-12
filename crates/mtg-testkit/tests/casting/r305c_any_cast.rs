@@ -142,7 +142,10 @@ fn the_five_color_cost_stands_beside_the_mana_cost(
         .iter()
         .filter(|id| {
             let object = driver.state().object(**id).unwrap();
-            object.controller() == pid(0) && object.permanent().is_some_and(|p| p.tapped())
+            object.controller() == pid(0)
+                && object
+                    .permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(tapped, 5);
