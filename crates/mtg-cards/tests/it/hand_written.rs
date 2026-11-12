@@ -43,7 +43,9 @@ fn problems_of_card(
 
 /// The problems of every file of the library against the records.
 fn problems(library: &Library, records: &[PrintedCard]) -> Vec<String> {
-    let names = names_of(records);
+    let mut names = names_of(records);
+    // A search by name may name a card a draft holds (`Library::check_printed_naming`).
+    names.extend(common::draft_names());
     let by_id: BTreeMap<&str, &PrintedCard> = records
         .iter()
         .map(|record| (record.oracle_id.as_str(), record))
