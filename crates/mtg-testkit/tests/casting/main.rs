@@ -99,6 +99,7 @@ mod hybrid_payment;
 mod improvise;
 mod kicker;
 mod kicker_either;
+mod l290_triggers;
 mod l291_cards;
 mod l291_dice;
 mod l291_nth_counter;

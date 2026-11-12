@@ -1872,6 +1872,7 @@ impl<'a> Scope<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::SingleTarget

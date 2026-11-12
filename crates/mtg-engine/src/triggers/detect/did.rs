@@ -65,6 +65,7 @@ const fn moved_action(cause: ZoneCause) -> Option<Action> {
 
 /// The actions `event` is, given what the batch already found about it (`fresh`). `pre` and `post` are the states before
 /// and after the batch.
+#[allow(clippy::too_many_lines)] // one arm for each event
 pub(super) fn did_happened(
     pre: &GameState,
     post: &GameState,
@@ -111,6 +112,19 @@ pub(super) fn did_happened(
                     ability: on_stack,
                     amount: 0,
                 });
+                for action in rules
+                    .as_deref()
+                    .map(Action::activation_kinds)
+                    .unwrap_or_default()
+                {
+                    found.push(Happened::Did {
+                        action,
+                        player: Some(*player),
+                        object: Some(source.id),
+                        ability: on_stack,
+                        amount: 0,
+                    });
+                }
                 if rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. })) {
                     found.push(Happened::Did {
                         action: Action::ActivatedLoyalty,

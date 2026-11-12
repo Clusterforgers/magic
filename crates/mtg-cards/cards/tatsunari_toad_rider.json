@@ -1,16 +1,54 @@
 {
   "oracle_id": "e87be082-eafd-480e-b150-d27fd937e1b1",
   "name": "Tatsunari, Toad Rider",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tatsunari, Toad Rider",
       "oracle_fingerprint": "6d6a5894b33218efddb361ed9b17002c",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 245 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "Named": "Keimi" }]
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Keimi",
+                      "colors": ["Black", "Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Frog"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" }
+                            },
+                            "effects": [
+                              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+                              { "GainLife": { "amount": 1 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

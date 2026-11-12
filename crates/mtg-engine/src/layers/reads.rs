@@ -328,6 +328,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)
+        | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)

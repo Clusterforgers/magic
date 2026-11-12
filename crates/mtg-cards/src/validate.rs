@@ -702,6 +702,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::BandedWith(who) => {
+                self.uses("Pred", "BandedWith");
+                self.reference(who, Kind::Object);
+            }
             Pred::Blocks(who) => {
                 self.uses("Pred", "Blocks");
                 self.reference(who, Kind::Object);
@@ -832,6 +836,7 @@ impl<'a> Walker<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
@@ -2361,6 +2366,10 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.selector(by));
             }
+            TriggerPattern::PlayerBecomesTarget { who, by } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("by", |w| w.selector(by));
+            }
             TriggerPattern::SpellCast { what, by }
             | TriggerPattern::SpellCopied { what, by }
             | TriggerPattern::Sacrificed { what, by }
@@ -2568,6 +2577,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
+                | TriggerPattern::PlayerBecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
                 | TriggerPattern::GroupAttacksAt { .. }
                 | TriggerPattern::Chapter { .. }
