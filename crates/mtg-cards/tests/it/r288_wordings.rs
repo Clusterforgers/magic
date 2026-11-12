@@ -1,6 +1,6 @@
 //! Goal: the writers of pack r288 word each shape as the Oracle text does (a chapter worded as its steps after "When ~
 //! enters", a life total set to half the starting life total, X cards drawn from counters with X life lost if you do,
-//! the evolve test as an intervening "if", a delayed trigger with targets of its own, the final chapter of a Saga, an opponent who attacks another, a life gain caused by a spell of a kind, a target creature or player) and
+//! the evolve test as an intervening "if", a delayed trigger with targets of its own, the final chapter of a Saga, an opponent who attacks another, a tap and goad of a creature the attacked player controls, the creature with the lowest toughness returned, a life gain caused by a spell of a kind, a target creature or player) and
 //! refuse the near misses.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -22,6 +22,8 @@ const HARALD: &str = "III \u{2014} Whenever an Elf you control attacks this turn
 const NARCI: &str = "Whenever the final chapter ability of a Saga you control resolves, each opponent loses X life and you gain X life, where X is that Saga's mana value.";
 const BOON: &str = "Whenever the final chapter ability of a Saga you control triggers, create a 4/4 white Angel creature token with flying and vigilance.";
 const KARAZIKAR: &str = "Whenever an opponent attacks another one of your opponents, you and the attacking player each draw a card and lose 1 life.";
+const GOAD: &str = "Whenever you attack a player, tap target creature that player controls and goad it.";
+const BOUNCE: &str = "Visit \u{2014} Return a creature you don't control with the lowest toughness among creatures you don't control to its owner's hand.";
 const FIRESONG: &str = "Whenever a white instant or sorcery spell causes you to gain life, ~ deals 3 damage to target creature or player.";
 
 #[rstest]
@@ -168,6 +170,31 @@ const FIRESONG: &str = "Whenever a white instant or sorcery spell causes you to 
 #[case::you_lose_more(
     r#"{"Triggered":{"when":{"PlayerAttacks":{"by":"Opponents","at":"Opponents"}},"effects":[{"Draw":{}},{"Draw":{"who":"Triggering"}},{"LoseLife":{"amount":2}},{"LoseLife":{"who":"Triggering","amount":1}}]}}"#,
     KARAZIKAR,
+    false
+)]
+#[case::tap_and_goad(
+    r#"{"Triggered":{"when":{"GroupAttacksAt":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at":"EachPlayer"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Against"}]}}],"effects":[{"Tap":{"what":{"Target":0}}},{"Goad":{"what":{"Target":0}}}]}}"#,
+    GOAD,
+    true
+)]
+#[case::goad_without_tap(
+    r#"{"Triggered":{"when":{"GroupAttacksAt":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at":"EachPlayer"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Against"}]}}],"effects":[{"Goad":{"what":{"Target":0}}}]}}"#,
+    GOAD,
+    false
+)]
+#[case::lowest_toughness(
+    r#"{"Triggered":{"when":{"Visit":{}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}},{"LeastAmong":{"stat":"Toughness","group":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}]},"as":"bounced"}},{"Move":{"what":{"Bound":"bounced"},"to":"Hand"}}]}}"#,
+    BOUNCE,
+    true
+)]
+#[case::lowest_power(
+    r#"{"Triggered":{"when":{"Visit":{}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}},{"LeastAmong":{"stat":"Power","group":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]}}]},"as":"bounced"}},{"Move":{"what":{"Bound":"bounced"},"to":"Hand"}}]}}"#,
+    BOUNCE,
+    false
+)]
+#[case::any_creature_you_dont_control(
+    r#"{"Triggered":{"when":{"Visit":{}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}]},"as":"bounced"}},{"Move":{"what":{"Bound":"bounced"},"to":"Hand"}}]}}"#,
+    BOUNCE,
     false
 )]
 fn r288_writers_word_the_shape_and_refuse_near_misses(

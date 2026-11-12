@@ -28,6 +28,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(final_chapter(ability))
         .chain(tap_and_goad(ability))
         .chain(attacks_another_opponent(ability))
+        .chain(lowest_returned(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -399,6 +400,61 @@ fn attacks_another_opponent(ability: &Ability) -> Vec<String> {
         "Whenever an opponent attacks another one of your opponents, you and the attacking player each draw a card and lose 1 life."
             .to_owned(),
     ]
+}
+
+/// "Visit — Return a creature you don't control with the lowest toughness among creatures you don't control to its
+/// owner's hand.": one creature of a group with the least of a stat in it, chosen and returned to its owner's hand.
+fn lowest_returned(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        when: TriggerPattern::Visit {},
+        intervening_if: None,
+        limit: None,
+        targets,
+        effects,
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(chosen),
+            count,
+            bind,
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(moved),
+            to: crate::effect::Destination::Hand,
+            ..
+        },
+    ] = effects.as_slice()
+    else {
+        return Vec::new();
+    };
+    if !targets.is_empty() || bind != moved || !count.is_one() {
+        return Vec::new();
+    }
+    let Some((crate::refs::Pred::LeastAmong { stat, group }, rest)) = chosen.0.split_last() else {
+        return Vec::new();
+    };
+    if rest != group.0.as_slice() {
+        return Vec::new();
+    }
+    let stat = match stat {
+        StatKind::Toughness => "toughness",
+        StatKind::Power => "power",
+        _ => return Vec::new(),
+    };
+    let (Some(one), Some(all)) = (phrase_text(group, Form::Subject), phrase_text(group, Form::All))
+    else {
+        return Vec::new();
+    };
+    vec![format!(
+        "Visit \u{2014} Return {} {one} with the lowest {stat} among {all} to its owner's hand.",
+        article(&one)
+    )]
 }
 
 /// "distribute seven +1/+1 counters among any number of target creatures you control".

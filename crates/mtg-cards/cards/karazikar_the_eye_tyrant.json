@@ -1,0 +1,91 @@
+{
+  "oracle_id": "47fde936-be71-4550-826b-b98d139cc57a",
+  "name": "Karazikar, the Eye Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karazikar, the Eye Tyrant",
+      "oracle_fingerprint": "39e9a16e156b7d931d90737536b2849e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [
+                  {
+                    "Type": "Creature"
+                  },
+                  {
+                    "ControlledBy": "You"
+                  }
+                ],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "Against"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              },
+              {
+                "Goad": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "PlayerAttacks": {
+                "by": "Opponents",
+                "at": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "Draw": {}
+              },
+              {
+                "Draw": {
+                  "who": "Triggering"
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": 1
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
