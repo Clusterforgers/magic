@@ -1,5 +1,81 @@
 [
   {
+    "id": "db87a2be-4490-45af-89d7-540549d1d6af",
+    "oracle_id": "be9d1346-4416-4ade-ae84-7a4121e0bd12",
+    "name": "Dregscape Zombie",
+    "lang": "en",
+    "released_at": "2017-03-17",
+    "layout": "normal",
+    "mana_cost": "{1}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Zombie",
+    "oracle_text": "Unearth {B} ({B}: Return this card from your graveyard to the battlefield. It gains haste. Exile it at the beginning of the next end step or if it would leave the battlefield. Unearth only as a sorcery.)",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Unearth"
+    ],
+    "set": "mm3",
+    "collector_number": "67",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "d232fcc2-12f6-401a-b1aa-ddff11cb9378",
+    "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+    "name": "Forest",
+    "lang": "en",
+    "released_at": "2024-11-15",
+    "layout": "normal",
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Basic Land — Forest",
+    "oracle_text": "({T}: Add {G}.)",
+    "colors": [],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "set": "fdn",
+    "collector_number": "280",
+    "digital": false,
+    "rarity": "common"
+  },
+  {
+    "id": "8ae6fc26-cfad-4da8-98d9-49c27c24d293",
+    "oracle_id": "48e6d3d8-2f27-4017-acdd-40bce8cdbc02",
+    "name": "Giada, Font of Hope",
+    "lang": "en",
+    "released_at": "2024-11-15",
+    "layout": "normal",
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Angel",
+    "oracle_text": "Flying, vigilance\nEach other Angel you control enters with an additional +1/+1 counter on it for each Angel you already control.\n{T}: Add {W}. Spend this mana only to cast an Angel spell.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Vigilance"
+    ],
+    "set": "fdn",
+    "collector_number": "141",
+    "digital": false,
+    "rarity": "rare"
+  },
+  {
     "id": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
     "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
     "name": "Giant Growth",
@@ -19,31 +95,6 @@
     "keywords": [],
     "set": "msh",
     "collector_number": "167",
-    "digital": false,
-    "rarity": "common"
-  },
-  {
-    "id": "083ec3e7-950c-4e9d-aba5-02ed13d723f0",
-    "oracle_id": "50608184-90d3-43d2-a221-deb186c78323",
-    "name": "Goblin Piker",
-    "lang": "en",
-    "released_at": "2011-07-15",
-    "layout": "normal",
-    "mana_cost": "{1}{R}",
-    "cmc": 2.0,
-    "type_line": "Creature — Goblin Warrior",
-    "oracle_text": "",
-    "power": "2",
-    "toughness": "1",
-    "colors": [
-      "R"
-    ],
-    "color_identity": [
-      "R"
-    ],
-    "keywords": [],
-    "set": "m12",
-    "collector_number": "141",
     "digital": false,
     "rarity": "common"
   },
@@ -98,28 +149,45 @@
     "rarity": "common"
   },
   {
-    "id": "6afead32-3542-44c4-82d6-b6a81beb9f90",
-    "oracle_id": "cfb756dd-6fe1-430a-8f04-8b10cac62a86",
-    "name": "Isamaru, Hound of Konda",
+    "id": "4ef17ed4-a9b5-4b8e-b4cb-2ecb7e5898c3",
+    "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+    "name": "Plains",
     "lang": "en",
-    "released_at": "2020-07-17",
+    "released_at": "2024-11-15",
     "layout": "normal",
-    "mana_cost": "{W}",
-    "cmc": 1.0,
-    "type_line": "Legendary Creature — Dog",
-    "oracle_text": "",
-    "power": "2",
-    "toughness": "2",
-    "colors": [
-      "W"
-    ],
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Basic Land — Plains",
+    "oracle_text": "({T}: Add {W}.)",
+    "colors": [],
     "color_identity": [
       "W"
     ],
     "keywords": [],
-    "set": "jmp",
-    "collector_number": "113",
+    "set": "fdn",
+    "collector_number": "272",
     "digital": false,
-    "rarity": "rare"
+    "rarity": "common"
+  },
+  {
+    "id": "319bc1f0-ee42-44e5-b08b-735613ded2ba",
+    "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+    "name": "Swamp",
+    "lang": "en",
+    "released_at": "2024-11-15",
+    "layout": "normal",
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Basic Land — Swamp",
+    "oracle_text": "({T}: Add {B}.)",
+    "colors": [],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [],
+    "set": "fdn",
+    "collector_number": "276",
+    "digital": false,
+    "rarity": "common"
   }
 ]
