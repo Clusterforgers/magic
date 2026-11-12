@@ -1339,6 +1339,14 @@ impl<'a> Pass<'a> {
             scope
                 .players(affected)
                 .map_or_else(|_| BTreeSet::new(), |named| named.into_iter().collect())
+        } else if let Ref::Union(parts) = affected {
+            // "You and permanents you control": the players of the union get the keyword too.
+            parts
+                .iter()
+                .filter(|part| is_player_ref(part))
+                .filter_map(|part| scope.players(part).ok())
+                .flatten()
+                .collect()
         } else {
             BTreeSet::new()
         };
@@ -1357,25 +1365,34 @@ impl<'a> Pass<'a> {
             } else {
                 false
             };
+            let each = |selector: &mtg_cards::refs::Selector| -> BTreeSet<ObjectId> {
+                let zones = ep22_zones_named(selector);
+                view.iter()
+                    .filter(|(id, held)| {
+                        self.state.object(*id).is_some_and(|object| {
+                            zones.contains(&zone_kind(object.zone()))
+                                && scope.selects_with(selector, object, held).unwrap_or(false)
+                        })
+                    })
+                    .map(|(id, _)| id)
+                    .collect()
+            };
             let chosen: BTreeSet<ObjectId> = match affected {
                 Ref::This => BTreeSet::from([cand.holder.id]),
+                Ref::Union(parts) => parts
+                    .iter()
+                    .filter_map(|part| match part {
+                        Ref::Each(selector) => Some(each(selector)),
+                        _ => None,
+                    })
+                    .flatten()
+                    .collect(),
                 Ref::Attached => {
                     let host = self.state.host_of(cand.holder.id)?;
                     view.get(host)?;
                     BTreeSet::from([host])
                 }
-                Ref::Each(selector) => {
-                    let zones = ep22_zones_named(selector);
-                    view.iter()
-                        .filter(|(id, held)| {
-                            self.state.object(*id).is_some_and(|object| {
-                                zones.contains(&zone_kind(object.zone()))
-                                    && scope.selects_with(selector, object, held).unwrap_or(false)
-                            })
-                        })
-                        .map(|(id, _)| id)
-                        .collect()
-                }
+                Ref::Each(selector) => each(selector),
                 // The data check keeps every other reference out of a static ability.
                 _ => BTreeSet::new(),
             };
