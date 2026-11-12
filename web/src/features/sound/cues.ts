@@ -1,4 +1,5 @@
 /** Which sound cue, if any, a change of the play store calls for: pure, so it is tested without audio. */
+import { winningSeats } from '@/lib/teams'
 import type { PlayState } from '@/play/store'
 
 /** A short sound: the viewer's turn began, a decision waits for the viewer, or the viewer won. */
@@ -12,7 +13,7 @@ export type SoundCue = 'turn' | 'decision' | 'won'
 export function soundCueBetween(prev: PlayState, next: PlayState): SoundCue | null {
   const seat = next.seat
   if (seat === null || next.view?.spectator === true) return null
-  if (prev.result === null && next.result !== null && next.result !== 'Draw' && next.result.Winner === seat)
+  if (prev.result === null && winningSeats(next.result, next.view?.house_rules?.teams).includes(seat))
     return 'won'
   const before = prev.view?.turn
   const after = next.view?.turn

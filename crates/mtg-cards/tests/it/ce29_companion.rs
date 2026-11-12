@@ -85,7 +85,7 @@ fn the_wordings_read(#[case] text: &str, #[case] condition: DeckCondition) {
         mtg_cards::compile::read_keyword(&line),
         Some(Keyword::companion(condition.clone()))
     );
-    assert!(condition.unreadable().is_empty());
+    assert_eq!(condition.unreadable(), Vec::<String>::new());
     let json = serde_json::to_string(&condition).unwrap();
     assert_eq!(
         serde_json::from_str::<DeckCondition>(&json).unwrap(),

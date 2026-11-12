@@ -28,6 +28,7 @@ export function replaySession(store: PlayStore): Session {
     cancelYield: no,
     chat: no,
     resync: no,
+    clearDueLines: () => undefined,
     dismissNotice: () => store.setState({ notice: null }),
   }
 }

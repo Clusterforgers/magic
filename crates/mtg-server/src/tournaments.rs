@@ -163,10 +163,9 @@ async fn as_organiser(
 fn outcome_of(result: GameResult) -> MatchOutcome {
     match result {
         GameResult::Winner(seat) if seat.index() % 2 == 0 => MatchOutcome::A,
-        GameResult::Winner(_) => MatchOutcome::B,
-        GameResult::Draw => MatchOutcome::Draw,
         GameResult::Team(0) => MatchOutcome::A,
-        GameResult::Team(_) => MatchOutcome::B,
+        GameResult::Winner(_) | GameResult::Team(_) => MatchOutcome::B,
+        GameResult::Draw => MatchOutcome::Draw,
     }
 }
 

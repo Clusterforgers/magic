@@ -1,4 +1,4 @@
-// Goal: each change of the play store calls for at most one sound cue, the strongest that applies (a win, the viewer's own turn, a decision after none), and a first view, a spectator, another seat's turn or decision, a draw and a loss call for none.
+// Goal: each change of the play store calls for at most one sound cue, the strongest that applies (a win of the viewer or its team, the viewer's own turn, a decision after none), and a first view, a spectator, another seat's turn or decision, a draw and a loss call for none.
 import { describe, expect, it } from 'vitest'
 import { initialPlayState } from '@/play/store'
 import type { PlayState } from '@/play/store'
@@ -15,6 +15,7 @@ interface At {
   result?: GameResult | null
   spectator?: boolean
   noView?: boolean
+  teams?: number[]
 }
 
 function at(over: At = {}): PlayState {
@@ -23,7 +24,16 @@ function at(over: At = {}): PlayState {
   return {
     ...initialPlayState(),
     seat: ME,
-    view: over.noView === true ? null : { ...view, turn, spectator: over.spectator },
+    view:
+      over.noView === true
+        ? null
+        : {
+            ...view,
+            turn,
+            spectator: over.spectator,
+            house_rules:
+              over.teams === undefined ? undefined : { teams: { mode: 'teams', seats: over.teams } },
+          },
     pending: over.pending === undefined || over.pending === null ? null : { id: 7, decision: over.pending },
     result: over.result ?? null,
   }
@@ -37,6 +47,8 @@ const cases: [string, At, At, SoundCue | null][] = [
   ['the viewer wins', {}, { result: { Winner: ME } }, 'won'],
   ['the viewer wins on their own new turn', {}, { turn: 4, active: ME, result: { Winner: ME } }, 'won'],
   ['another seat wins', {}, { result: { Winner: FOE } }, null],
+  ['the viewer’s team wins', {}, { teams: [0, 1], result: { Team: 0 } }, 'won'],
+  ['another team wins', {}, { teams: [0, 1], result: { Team: 1 } }, null],
   ['a draw', {}, { result: 'Draw' }, null],
   ['the viewer’s turn begins', {}, { turn: 4, active: ME }, 'turn'],
   ['the viewer’s turn begins with a decision', {}, { turn: 4, active: ME, pending: mine }, 'turn'],
