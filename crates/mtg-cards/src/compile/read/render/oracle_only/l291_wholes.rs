@@ -5,7 +5,17 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const L291_WHOLES: [(&str, &str); 8] = [
+const L291_WHOLES: [(&str, &str); 10] = [
+    // glorious_purpose
+    (
+        r#"{"Triggered":{"when":{"Did":{"action":"Connived","what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"PutCounters":{"on":{"Each":[{"Is":"Triggering"}]},"counter":"+1/+1"}},{"PutCounters":{"on":{"Each":["This"]},"counter":{"Other":"plan"}}}]}}"#,
+        r"Whenever a creature you control connives, put a +1/+1 counter on that creature and a plan counter on ~.",
+    ),
+    // glorious_purpose: the cards cast leave exile, so the rest are the exiled cards still there.
+    (
+        r#"{"Triggered":{"when":{"NthCounterPut":{"counter":{"Other":"plan"},"number":6}},"effects":[{"Sacrifice":{"filter":["This"]}},{"If":{"condition":"Performed","then":[{"ExileTop":{"count":4,"as":"exiled"}},{"RepeatEach":{"over":{"Bound":"exiled"},"as":"card","effects":[{"CastFromZone":{"what":{"Bound":"card"},"free":true}}]}},{"Move":{"what":{"Each":[{"Is":{"Bound":"exiled"}},{"In":"Exile"}]},"to":"Hand"}}]}}]}}"#,
+        r"When the sixth plan counter is put on ~, sacrifice it. If you do, exile the top four cards of your library. You may cast any number of spells from among them without paying their mana costs. Put the rest into your hand.",
+    ),
     // kros_defense_contractor: one trigger for each creature that gets counters (CR 603.2c).
     (
         r#"{"Triggered":{"when":{"Caused":{"inner":{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"Not":{"ControlledBy":"You"}}],"each":true}}},"by":"You"}},"effects":[{"Tap":{"what":"Triggering"}},{"Goad":{"what":"Triggering"}},{"Continuous":{"affected":"Triggering","mods":[{"AddKeyword":"Trample"}],"duration":"UntilYourNextTurn"}}]}}"#,

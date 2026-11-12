@@ -322,3 +322,48 @@ fn l291_kros_taps_a_creature_you_do_not_control_that_gets_counters(
     l291_replays(&driver, scenario());
     Ok(())
 }
+
+/// An artifact with "{0}: Put a plan counter on target enchantment."
+fn l291_planner() -> Arc<CardDefinition> {
+    let put: mtg_cards::ability::Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":"{0}","targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"plan"}}}]}}"#,
+    )
+    .unwrap();
+    Arc::new(
+        CardDefinition::new("Plan Pusher")
+            .with_type(mtg_core::card::CardType::Artifact)
+            .with_rules(put),
+    )
+}
+
+#[rstest]
+fn l291_glorious_purpose_puts_the_rest_into_the_hand_on_its_sixth_plan_counter(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mine = vec![
+        ready(card("Glorious Purpose").unwrap()),
+        ready(l291_planner()),
+    ];
+    let scenario = || l291_table(seats, mine.clone(), Vec::new());
+    let mut driver = Driver::from_scenario(scenario())?;
+    let hand = |driver: &Driver| driver.state().zone(Zone::Hand(pid(0))).len();
+    let before = hand(&driver);
+    for counter in 1..=6 {
+        driver.begin_activation("Plan Pusher")?;
+        let target = driver.target_named("Glorious Purpose")?;
+        driver.choose_targets(&[target])?;
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
+        l291_settle(&mut driver)?;
+        let done = counter == 6;
+        // The library is Islands: none is cast, all four go to the hand.
+        assert_eq!(
+            hand(&driver) - before,
+            if done { 4 } else { 0 },
+            "counter {counter}"
+        );
+        let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
+        assert_eq!(graveyard.contains(&"Glorious Purpose".to_owned()), done);
+    }
+    l291_replays(&driver, scenario());
+    Ok(())
+}
