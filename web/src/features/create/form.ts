@@ -180,7 +180,7 @@ export function problemCount(problems: ReadonlyMap<number, SeatProblems>): numbe
 
 /** What is wrong with each house rule's text, by rule id; empty when every text is fine. */
 export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
-  return rulesFromTexts(draft.rules, draft.format).problems
+  return rulesFromTexts(draft.rules, draft.format, draft.seats.length).problems
 }
 
 /**
@@ -191,7 +191,7 @@ export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
  * chooses its deck in the lobby.
  */
 export function toRequest(draft: Draft): CreateGameRequest {
-  const house = requestRules(draft.rules, draft.format)
+  const house = requestRules(draft.rules, draft.format, draft.seats.length)
   const rules = house === undefined ? {} : { house_rules: house }
   if (draft.links) {
     return {
