@@ -1,0 +1,937 @@
+[
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "as": "it",
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Reflexive": {
+       "effects": [
+        {
+         "Fight": {
+          "what": {
+           "Bound": "it"
+          },
+          "with": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "targets": [
+        {
+         "bounds": {
+          "max": 1,
+          "min": 0
+         },
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "Not": {
+             "ControlledBy": "You"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Return target creature card from your graveyard to the battlefield. When you do, it fights up to one target creature you don't control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Compare": {
+           "left": {
+            "Distinct": {
+             "of": [
+              {
+               "Type": "Land"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ],
+             "stat": "BasicLandTypes"
+            }
+           },
+           "op": "Ge",
+           "right": 5
+          }
+         },
+         {
+          "Compare": {
+           "left": {
+            "Distinct": {
+             "of": [
+              {
+               "Type": "Creature"
+              },
+              {
+               "ControlledBy": "You"
+              }
+             ],
+             "stat": "Colors"
+            }
+           },
+           "op": "Ge",
+           "right": 5
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "WinGame": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "You win the game if you control a land of each basic land type and a creature of each color."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "LoseLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Count": [
+           {
+            "Subtype": "Swamp"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Count": [
+         {
+          "Subtype": "Mountain"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "to": {
+        "Target": 1
+       }
+      }
+     },
+     {
+      "CreateToken": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Forest"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "token": {
+        "Custom": {
+         "colors": [
+          "Green"
+         ],
+         "name": "Saproling",
+         "power": 1,
+         "subtypes": [
+          "Saproling"
+         ],
+         "toughness": 1,
+         "types": [
+          "Creature"
+         ]
+        }
+       }
+      }
+     },
+     {
+      "GainLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Count": [
+           {
+            "Subtype": "Plains"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Island"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "Subtype": "Island"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Target opponent loses 2 life for each Swamp you control. ~ deals damage to target creature equal to the number of Mountains you control. Create a 1/1 green Saproling creature token for each Forest you control. You gain 2 life for each Plains you control. Draw a card for each Island you control, then discard that many cards."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilEndOfCombat",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": 10,
+          "toughness": 0
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Destroy": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Wall"
+        },
+        "Blocking",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Target blocking Wall you control gets +10/+0 until end of combat. Prevent all damage that would be dealt to it this turn. Destroy it at the beginning of the next end step."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "countered",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "AnyOf": [
+             {
+              "Type": "Instant"
+             },
+             {
+              "Type": "Sorcery"
+             }
+            ]
+           },
+           {
+            "OwnedBy": "You"
+           },
+           {
+            "In": "Graveyard"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 2
+        }
+       },
+       "then": [
+        {
+         "May": {
+          "effects": [
+           {
+            "CopySpell": {
+             "new_targets": true,
+             "what": {
+              "Bound": "countered"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "TargetsPlayer": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell that targets you.\nIf there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy."
+ ],
+ [
+  {
+   "OpeningReveal": {
+    "effects": [
+     {
+      "SetLife": {
+       "amount": 26
+      }
+     }
+    ],
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep"
+     }
+    }
+   }
+  },
+  "You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, your life total becomes 26."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "found",
+       "count": {
+        "max": "X",
+        "min": 0
+       },
+       "distinct": true,
+       "filter": [
+        {
+         "Type": "Battle"
+        }
+       ]
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for up to X battle cards with different names, put them onto the battlefield, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "w",
+       "filter": [
+        {
+         "Color": "White"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "u",
+       "filter": [
+        {
+         "Color": "Blue"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "b",
+       "filter": [
+        {
+         "Color": "Black"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "r",
+       "filter": [
+        {
+         "Color": "Red"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "b"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "g",
+       "filter": [
+        {
+         "Color": "Green"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "w"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "u"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "b"
+          }
+         }
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "r"
+          }
+         }
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "w"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "u"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "b"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "r"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "g"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for a white card, a blue card, a black card, a red card, and a green card. Reveal those cards, put them into your hand, then shuffle."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Tap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Target": 0
+         },
+         "stat": "Power"
+        }
+       },
+       "source": {
+        "Target": 0
+       },
+       "to": "ActivePlayer"
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "combat": true,
+         "to": {
+          "Target": 0
+         }
+        }
+       }
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "combat": true,
+         "source": [
+          {
+           "Is": {
+            "Target": 0
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "ActivePlayer"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Tap target creature that player controls. That creature deals damage equal to its power to the player. Prevent all combat damage that would be dealt to and dealt by the creature this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "DealDamage": {
+          "amount": "Triggering",
+          "source": "Dealer",
+          "to": {
+           "ControllerOf": "Dealer"
+          }
+         }
+        }
+       ],
+       "once": false,
+       "this_turn": true,
+       "when": {
+        "DealsDamage": {
+         "combat": true,
+         "source": [
+          {
+           "Type": "Creature"
+          },
+          "Attacking"
+         ],
+         "to": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "This turn, whenever an attacking creature deals combat damage to you, it deals that much damage to its controller."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "instant",
+       "count": {
+        "max": 1,
+        "min": 0
+       },
+       "filter": [
+        {
+         "Type": "Instant"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Search": {
+       "as": "sorcery",
+       "count": {
+        "max": 1,
+        "min": 0
+       },
+       "filter": [
+        {
+         "Type": "Sorcery"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "instant"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "sorcery"
+       }
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for an instant card and/or a sorcery card, reveal them, put them into your hand, then shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Draw": {
+       "as": "card"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": "Triggering",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "ModifyPT": {
+          "power": {
+           "Stat": {
+            "of": {
+             "Bound": "card"
+            },
+            "stat": "ManaValue"
+           }
+          },
+          "toughness": {
+           "Stat": {
+            "of": {
+             "Bound": "card"
+            },
+            "stat": "ManaValue"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "LoseLife": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Bound": "card"
+         },
+         "stat": "ManaValue"
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "Attacks": {
+      "what": [
+       {
+        "Is": "Attached"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "Whenever equipped creature attacks, draw a card and reveal it. The creature gets +X/+X until end of turn and you lose X life, where X is that card's mana value."
+ ],
+ [
+  {
+   "FreeActivation": {
+    "condition": {
+     "All": [
+      {
+       "EnduringStory": "You"
+      },
+      {
+       "Compare": {
+        "left": {
+         "Tally": {
+          "event": {
+           "KindActivated": "Equip"
+          },
+          "filter": [],
+          "who": "You"
+         }
+        },
+        "op": "Lt",
+        "right": 1
+       }
+      }
+     ]
+    },
+    "kind": "Equip"
+   }
+  },
+  "As long as you have an enduring story, you may pay {0} rather than pay the equip cost of the first equip ability you activate each turn."
+ ]
+]

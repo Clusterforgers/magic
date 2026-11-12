@@ -347,6 +347,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
     "ReplaceBy.ChooseWord",
+    "ReplaceBy.BecomesChoice",
     "ReplaceBy.UnderChosenOpponent",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",

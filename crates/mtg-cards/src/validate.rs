@@ -5380,6 +5380,20 @@ impl Walker<'_> {
         }
     }
 
+    /// A choice of forms as a permanent enters: two or more, each made of changes a copy effect can make.
+    fn r303_becomes_choice(&mut self, enters: bool, forms: &[Vec<Modification>]) {
+        if !enters {
+            self.problem("only an `Enters` event becomes a chosen form");
+        }
+        if forms.len() < 2 || forms.iter().any(Vec::is_empty) {
+            self.problem("a choice of forms offers two or more forms, each with a change");
+        }
+        let mut values = crate::definition::CardDefinition::new("form");
+        if forms.iter().flatten().any(|change| !values.except(change)) {
+            self.problem("a form changes only what a copy effect changes: types, subtypes, keywords, a fixed power and toughness");
+        }
+    }
+
     #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
@@ -5451,6 +5465,7 @@ impl Walker<'_> {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
             }
             ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
+            ReplaceBy::BecomesChoice(forms) => self.r303_becomes_choice(enters, forms),
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

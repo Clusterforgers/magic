@@ -1,0 +1,69 @@
+{
+  "oracle_id": "32ebb029-9f03-49c9-b9bb-cb1954e2a324",
+  "name": "Conflux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conflux",
+      "oracle_fingerprint": "e928dba392f2bff7133a62f87ebb8ec1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [{ "Color": "White" }], "reveal": true, "as": "w" } },
+              {
+                "Search": {
+                  "filter": [{ "Color": "Blue" }, { "Not": { "Is": { "Bound": "w" } } }],
+                  "reveal": true,
+                  "as": "u"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Color": "Black" },
+                    { "Not": { "Is": { "Bound": "w" } } },
+                    { "Not": { "Is": { "Bound": "u" } } }
+                  ],
+                  "reveal": true,
+                  "as": "b"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Color": "Red" },
+                    { "Not": { "Is": { "Bound": "w" } } },
+                    { "Not": { "Is": { "Bound": "u" } } },
+                    { "Not": { "Is": { "Bound": "b" } } }
+                  ],
+                  "reveal": true,
+                  "as": "r"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Color": "Green" },
+                    { "Not": { "Is": { "Bound": "w" } } },
+                    { "Not": { "Is": { "Bound": "u" } } },
+                    { "Not": { "Is": { "Bound": "b" } } },
+                    { "Not": { "Is": { "Bound": "r" } } }
+                  ],
+                  "reveal": true,
+                  "as": "g"
+                }
+              },
+              { "Move": { "what": { "Bound": "w" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "u" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "b" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "r" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "g" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

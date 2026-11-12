@@ -1,7 +1,7 @@
 {
   "oracle_id": "840de40b-590e-4bf0-8d16-22b0eff61202",
   "name": "Kíli the Resourceful",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kíli the Resourceful",
@@ -9,9 +9,22 @@
       "abilities": [
         { "Keyword": "Storied" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 266 }
+          "FreeActivation": {
+            "kind": "Equip",
+            "condition": {
+              "All": [
+                { "EnduringStory": "You" },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": { "event": { "KindActivated": "Equip" }, "who": "You", "filter": [] }
+                    },
+                    "op": "Lt",
+                    "right": 1
+                  }
+                }
+              ]
+            }
           }
         },
         {
