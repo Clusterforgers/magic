@@ -955,6 +955,14 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), 'CantBeBlocked', 'UntilEndOfTurn'), "Hill Giant can't be blocked until end of turn"],
     [
+      effect(objects(2), 'BlockedByAll', 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked unless all creatures defending player controls block it until end of turn",
+    ],
+    [
+      effect(objects(2), 'CantAttack', 'TheirNextTurn'),
+      "Hill Giant can't attack during that player's next turn",
+    ],
+    [
       effect(objects(2), 'CantBeTurnedFaceUp', 'UntilEndOfTurn'),
       "Hill Giant can't be turned face up until end of turn",
     ],

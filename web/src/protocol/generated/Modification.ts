@@ -61,7 +61,7 @@ controller: PlayerId,
 /**
  * What "this" is for the selector.
  */
-source: ObjectRef, } } | { "MinBlockers": number } | { "MaxBlockers": number } | { "BlocksAdditional": number } | { "CantAttackYou": { 
+source: ObjectRef, } } | { "MinBlockers": number } | { "MaxBlockers": number } | "BlockedByAll" | { "BlocksAdditional": number } | { "CantAttackYou": { 
 /**
  * The player it protects: the controller of the effect or ability.
  */

@@ -145,6 +145,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBeBlockedUnlessAttackingOwner:
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
+      BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
   }
@@ -289,6 +290,7 @@ function durationWords(
     UntilTurnSkipped: ' until the turn it skips',
     UntilSkipped: ' until the step or combat it skips',
     UntilSkippedThisTurn: ' until the step or combat it skips this turn',
+    TheirNextTurn: " during that player's next turn",
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'

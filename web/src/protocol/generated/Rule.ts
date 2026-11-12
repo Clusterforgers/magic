@@ -322,7 +322,23 @@ who: Array<PlayerId>,
 /**
  * The player during whose turns they can't; every turn when absent.
  */
-turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> } | { "Cant": { 
+turn: PlayerId | null, } } | { "ToughnessAssignsDamage": Array<PlayerId> } | { "LethalByPower": Array<PlayerId> } | { "DamageAsInfect": Array<PlayerId> } | { "VentureLimit": { 
+/**
+ * Who is limited.
+ */
+who: Array<PlayerId>, 
+/**
+ * The ventures each turn.
+ */
+per_turn: number, } } | { "DevotionIncreased": { 
+/**
+ * Whose devotion.
+ */
+who: Array<PlayerId>, 
+/**
+ * By how much.
+ */
+by: number, } } | { "Cant": { 
 /**
  * The players and objects it is about.
  */
