@@ -1973,7 +1973,10 @@ impl<'a> Scope<'a> {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
             // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
-            StatKind::Name | StatKind::CreatureType | StatKind::CounterKinds => None,
+            StatKind::Name
+            | StatKind::CreatureType
+            | StatKind::CounterKinds
+            | StatKind::Subtypes => None,
         }
     }
 
@@ -2460,6 +2463,25 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(kinds.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::Subtypes {
+            // Each subtype once among the objects, an object of several subtypes adding each of them.
+            let mut subtypes = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    let printed: &[mtg_core::card::Subtype] =
+                        seen.card.map_or(&[], |card| &card.card().subtypes);
+                    subtypes.extend(
+                        seen.chars
+                            .subtypes
+                            .iter()
+                            .chain(printed)
+                            .filter(|subtype| seen.chars.has_subtype(printed, subtype))
+                            .map(|subtype| subtype.0.clone()),
+                    );
+                }
+            }
+            return Ok(i64::try_from(subtypes.len()).unwrap_or(i64::MAX));
         }
         if stat == StatKind::Name {
             let mut names = BTreeSet::new();

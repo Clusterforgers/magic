@@ -4117,6 +4117,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Duration", "WhileYouControlSourceTapped");
+                }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.uses("Duration", "UntilPaid");
                 }

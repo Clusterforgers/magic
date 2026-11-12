@@ -20,6 +20,7 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     ));
     texts.extend(super::wf25_writers::wf25_either_event_texts(first, second));
     texts.extend(super::r300b_writers::r300b_two_zone_texts(first, second));
+    texts.extend(super::r300c_cost_pairs::r300c_either_cost(first, second));
     texts
 }
 

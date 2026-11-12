@@ -444,6 +444,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::Subtypes => "subtypes",
     }
 }
 
@@ -599,6 +600,9 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
+        Duration::WhileYouControlSourceTapped => {
+            "while you control this and it stays tapped".to_owned()
+        }
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
