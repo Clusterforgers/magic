@@ -383,8 +383,8 @@ mod r7c_searches;
 // rmt5
 mod r283_wholes;
 mod r287_wholes;
-mod r306b_wholes;
 mod r301b_wholes;
+mod r306b_wholes;
 mod rmt5_wholes;
 
 use crate::ability::Ability;

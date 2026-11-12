@@ -971,6 +971,7 @@ impl RulesInForce {
                         when: None,
                         rather: None,
                         instead: Some(cost.clone()),
+                        opens_no_zone: false,
                     });
                 }
                 return;
