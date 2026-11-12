@@ -324,6 +324,7 @@ const RUNS: &[&str] = &[
     "Trigger.OpenedAttraction",
     "Trigger.DoorUnlocked",
     "Effect.UnlockDoor",
+    "Effect.LockOrUnlockDoor",
     "Condition.CompletedDungeon",
     "Effect.TakeInitiative",
     "Trigger.TakesInitiative",

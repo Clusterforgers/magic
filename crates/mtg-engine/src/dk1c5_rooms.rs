@@ -122,6 +122,29 @@ pub(crate) fn dk1c5_fold_unlocked(
     Ok(())
 }
 
+/// Locks `door` of the Room `object` (CR 709.5): the door must be unlocked.
+pub(crate) fn r281_fold_locked(
+    state: &mut GameState,
+    object: ObjectId,
+    door: u8,
+) -> Result<(), EngineError> {
+    let permanent = state
+        .objects
+        .get_mut(&object)
+        .filter(|o| o.zone() == Zone::Battlefield)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
+    let doors = permanent.doors;
+    if !doors.is_room() || door > 1 || !doors.unlocked(door) {
+        return Err(invalid(format!(
+            "{object:?} has no unlocked door {door} to lock"
+        )));
+    }
+    permanent.doors = Doors(doors.0 & !(1 << door));
+    permanent.face = permanent.doors.face();
+    Ok(())
+}
+
 /// The locked doors of the Room permanents `player` controls, as (permanent, door).
 pub(crate) fn dk1c5_locked(state: &GameState, player: PlayerId) -> Vec<(ObjectId, u8)> {
     state

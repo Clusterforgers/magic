@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0507a9d2-cbad-4a7b-b888-fbd5ac1ed02f",
+  "name": "Karfell Harbinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karfell Harbinger",
+      "oracle_fingerprint": "120eceab45067a64f78906ec81643481",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "only": [
+                    { "Special": "Foretell" },
+                    { "Spell": { "types": ["Instant", "Sorcery"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

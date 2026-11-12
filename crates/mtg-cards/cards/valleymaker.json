@@ -1,7 +1,7 @@
 {
   "oracle_id": "57098671-016e-4adb-ba7d-ab2dd2bc34e3",
   "name": "Valleymaker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Valleymaker",
@@ -15,9 +15,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 76, "end": 145 }
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Forest" }] } }],
+            "effects": [
+              { "Choose": { "from": "EachPlayer", "as": "player" } },
+              {
+                "AddMana": {
+                  "who": { "Bound": "player" },
+                  "mana": { "Fixed": ["Green", "Green", "Green"] }
+                }
+              }
+            ]
           }
         }
       ]

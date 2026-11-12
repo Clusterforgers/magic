@@ -1,0 +1,50 @@
+{
+  "oracle_id": "5aafc6c3-14f2-45b1-bd5b-c27760d791dd",
+  "name": "Marina Vendrell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marina Vendrell",
+      "oracle_fingerprint": "d65895dd71b75aa61f0a839a155b061d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Enchantment" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "LockOrUnlockDoor": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

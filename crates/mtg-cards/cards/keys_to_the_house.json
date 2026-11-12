@@ -1,7 +1,7 @@
 {
   "oracle_id": "62320290-ac8e-4f92-bb06-3368f66ae0a9",
   "name": "Keys to the House",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Keys to the House",
@@ -24,9 +24,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 126, "end": 238 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "LockOrUnlockDoor": { "what": { "Target": 0 } } }]
           }
         }
       ]

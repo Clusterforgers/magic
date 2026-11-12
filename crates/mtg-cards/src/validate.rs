@@ -3382,6 +3382,7 @@ impl Walker<'_> {
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
             | Effect::TurnFaceDown { what }
+            | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }

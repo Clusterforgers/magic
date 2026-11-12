@@ -1,0 +1,22 @@
+{
+  "oracle_id": "511b1174-8ef7-4d17-93de-01b9b81bda6a",
+  "name": "Spectral Searchlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Searchlight",
+      "oracle_fingerprint": "d5b5f9d68f6b76175c31d60cc77a844a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Choose": { "from": "EachPlayer", "as": "player" } },
+              { "AddMana": { "who": { "Bound": "player" }, "mana": { "AnyColor": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
