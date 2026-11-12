@@ -1255,5 +1255,291 @@
    }
   },
   "~ deals 5 damage to each creature. Whenever a creature you control dealt damage this way dies this turn, add {R}."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Continuous": {
+          "affected": {
+           "Target": 0
+          },
+          "mods": [
+           {
+            "SetController": "You"
+           }
+          ],
+          "duration": "Forever"
+         }
+        },
+        {
+         "ChangeTargets": {
+          "what": {
+           "Target": 0
+          },
+          "to": "Choose"
+         }
+        }
+       ],
+       "lose": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell, then flip a coin. If you win the flip, gain control of that spell and you may choose new targets for it. If you lose the flip, counter that spell."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Stat": {
+           "of": {
+            "Target": 0
+           },
+           "stat": "ManaValue"
+          }
+         },
+         "op": "Eq",
+         "right": "X"
+        }
+       },
+       "then": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target spell if its mana value is X."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          "Spell",
+          {
+           "Ability": "Activated"
+          },
+          {
+           "Ability": "Triggered"
+          }
+         ]
+        },
+        {
+         "AnyOf": [
+          {
+           "Targeting": []
+          },
+          {
+           "TargetsPlayer": "EachPlayer"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 20,
+       "plus": {
+        "Greatest": {
+         "of": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "stat": "Power"
+        }
+       },
+       "results": [
+        {
+         "from": 1,
+         "to": 14,
+         "effects": [
+          {
+           "ChangeTargets": {
+            "what": {
+             "Target": 0
+            },
+            "to": "Choose"
+           }
+          }
+         ]
+        },
+        {
+         "from": 15,
+         "effects": [
+          {
+           "ChangeTargets": {
+            "what": {
+             "Target": 0
+            },
+            "to": "Choose"
+           }
+          },
+          {
+           "If": {
+            "condition": {
+             "Matches": {
+              "subject": {
+               "Target": 0
+              },
+              "selector": [
+               "Spell"
+              ]
+             }
+            },
+            "then": [
+             {
+              "CopySpell": {
+               "what": {
+                "Target": 0
+               },
+               "new_targets": true
+              }
+             }
+            ],
+            "otherwise": [
+             {
+              "CopyAbility": {
+               "what": {
+                "Target": 0
+               },
+               "new_targets": true
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell or ability with one or more targets. Roll a d20 and add the greatest power among creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Choose"
+      }
+     }
+    ]
+   }
+  },
+  "You may choose new targets for that spell or ability."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Choose"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Target": 0
+         },
+         "selector": [
+          "Spell"
+         ]
+        }
+       },
+       "then": [
+        {
+         "CopySpell": {
+          "what": {
+           "Target": 0
+          },
+          "new_targets": true
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "CopyAbility": {
+          "what": {
+           "Target": 0
+          },
+          "new_targets": true
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "You may choose new targets for that spell or ability. Then copy it. You may choose new targets for the copy."
  ]
 ]

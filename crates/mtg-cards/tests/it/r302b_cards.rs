@@ -78,12 +78,14 @@ fn report(name: &str) -> mtg_cards::proposal::Report {
 
 #[rstest]
 #[case("Deadly Cover-Up")]
+#[case("Disrupting Shoal")]
 #[case("Dream Harvest")]
 #[case("Firecat Blitz")]
 #[case("Flash Foliage")]
 #[case("Glyph of Life")]
 #[case("Hurkyl's Final Meditation")]
 #[case("Interdict")]
+#[case("Invert Polarity")]
 #[case("Invasive Surgery")]
 #[case("Quash")]
 #[case("Reckless Blaze")]
@@ -95,6 +97,7 @@ fn report(name: &str) -> mtg_cards::proposal::Report {
 #[case("Teferi's Response")]
 #[case("Test of Talents")]
 #[case("Trickbind")]
+#[case("Wyll's Reversal")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -112,6 +115,9 @@ fn written(json: &str) -> Vec<String> {
 
 const RUST: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Ability":"Activated"},{"FromSource":[{"Type":"Artifact"}]}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#;
 
+const COPY_ROW: &str = r#"{"Spell":{"effects":[{"ChangeTargets":{"what":{"Target":0},"to":"Choose"}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":["Spell"]}},"then":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}],"otherwise":[{"CopyAbility":{"what":{"Target":0},"new_targets":true}}]}}]}}"#;
+const WYLL_ROW: &str = "You may choose new targets for that spell or ability. Then copy it. You may choose new targets for the copy.";
+
 /// The r30-2b wholes write the card's words and nothing near them: another source, another kind of ability or another
 /// cost change is not written as the printed sentence.
 #[rstest]
@@ -122,6 +128,9 @@ const RUST: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Ability":"Activa
 #[case::more_in_other_turns(r#"{"CostModifier":{"applies_to":["This"],"change":"Increase","mana":"{3}","condition":{"Not":"YourTurn"}}}"#.to_owned(), "During turns other than yours, this spell costs {3} more to cast.", true)]
 #[case::more_in_your_turn(r#"{"CostModifier":{"applies_to":["This"],"change":"Increase","mana":"{3}","condition":"YourTurn"}}"#.to_owned(), "During turns other than yours, this spell costs {3} more to cast.", false)]
 #[case::two_more(r#"{"CostModifier":{"applies_to":["This"],"change":"Increase","mana":"{2}","condition":{"Not":"YourTurn"}}}"#.to_owned(), "During turns other than yours, this spell costs {3} more to cast.", false)]
+#[case::the_copy_row(COPY_ROW.to_owned(), WYLL_ROW, true)]
+#[case::a_copy_on_the_old_targets(COPY_ROW.replace(r#","new_targets":true"#, ""), WYLL_ROW, false)]
+#[case::a_row_with_no_copy(r#"{"Spell":{"effects":[{"ChangeTargets":{"what":{"Target":0},"to":"Choose"}}]}}"#.to_owned(), WYLL_ROW, false)]
 fn the_wholes_write_only_their_card(#[case] json: String, #[case] text: &str, #[case] reads: bool) {
     assert_eq!(
         written(&json).iter().any(|w| w == text),

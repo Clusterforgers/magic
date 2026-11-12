@@ -152,6 +152,7 @@ mod r288_final_chapter;
 mod r2e_cost_parts;
 mod r302b_ability_sources;
 mod r302b_named_searches;
+mod r302b_stack_answers;
 mod r3f_mana;
 mod r4f_stack_move;
 mod r4i_may_flash;
