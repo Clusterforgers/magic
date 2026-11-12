@@ -1,0 +1,46 @@
+{
+  "oracle_id": "2912d93d-ed51-41ef-b64f-3cb6581c09e5",
+  "name": "Disrupting Shoal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disrupting Shoal",
+      "oracle_fingerprint": "d11764ab503b5933ca4e7ee3eb810eed",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "ExileFromHand": {
+                  "filter": [
+                    { "Color": "Blue" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Eq",
+                      "right": "X"
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

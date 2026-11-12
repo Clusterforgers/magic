@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "456b44ec-c299-419a-82b6-99d8609a0c04",
+  "oracle_id": "6e49a5b8-6bc4-4c7b-82c1-957f1fb0ca5f",
+  "multiverse_ids": [
+    202489
+  ],
+  "mtgo_id": 38564,
+  "mtgo_foil_id": 38565,
+  "name": "Personal Incarnation",
+  "lang": "en",
+  "released_at": "2011-01-10",
+  "uri": "https://api.scryfall.com/cards/456b44ec-c299-419a-82b6-99d8609a0c04",
+  "scryfall_uri": "https://scryfall.com/card/me4/22/personal-incarnation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:17:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459",
+    "normal": "https://cards.scryfall.io/normal/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459",
+    "large": "https://cards.scryfall.io/large/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459",
+    "png": "https://cards.scryfall.io/png/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.png?1783941459",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.webp?1783941459",
+    "grid": "https://cards.scryfall.io/grid/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.webp?1783941459",
+    "display": "https://cards.scryfall.io/display/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.webp?1783941459",
+    "art": "https://cards.scryfall.io/art/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.webp?1783941459",
+    "crop": "https://cards.scryfall.io/crop/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.webp?1783941459",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/5/456b44ec-c299-419a-82b6-99d8609a0c04.jpg?1783941459"
+  },
+  "mana_cost": "{3}{W}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Avatar Incarnation",
+  "oracle_text": "{0}: The next 1 damage that would be dealt to this creature this turn is dealt to its owner instead. Only this creature's owner may activate this ability.\nWhen this creature dies, its owner loses half their life, rounded up.",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set": "me4",
+  "set_name": "Masters Edition IV",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/d38a13b7-6615-4c89-be7d-3b4eaacf1875",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame4&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me4?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/456b44ec-c299-419a-82b6-99d8609a0c04/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6e49a5b8-6bc4-4c7b-82c1-957f1fb0ca5f&unique=prints",
+  "collector_number": "22",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kev Brockschmidt",
+  "artist_ids": [
+    "6c0e6eb2-d659-49c4-9df9-ca4007b34719"
+  ],
+  "illustration_id": "aca6a924-81e4-4326-a324-3eb6112c048f",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30795,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=202489&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPersonal%2BIncarnation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPersonal%2BIncarnation",
+    "edhrec": "https://edhrec.com/route/?cc=Personal+Incarnation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DPersonal%2BIncarnation%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Personal+Incarnation&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/38564?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

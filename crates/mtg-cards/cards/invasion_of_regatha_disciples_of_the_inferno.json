@@ -1,7 +1,7 @@
 {
   "oracle_id": "4f0bcfe5-7e52-4249-a26a-482619716f18",
   "name": "Invasion of Regatha // Disciples of the Inferno",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Invasion of Regatha",
@@ -32,9 +32,19 @@
       "abilities": [
         { "Keyword": "Prowess" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 93, "end": 224 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": {
+                  "Union": [
+                    "Opponents",
+                    { "Each": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Battle" }] }] }
+                  ]
+                },
+                "source": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+              }
+            },
+            "by": { "Add": 2 }
           }
         }
       ]

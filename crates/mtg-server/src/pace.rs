@@ -761,6 +761,7 @@ mod tests {
                     index: 2 * n + 1,
                     label: None,
                     cost: None,
+                    weight: None,
                 })
                 .collect(),
             min,

@@ -38,12 +38,16 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
             all_if,
             mode_costs,
             extra_mode_cost: None,
+            pawprints,
             modes,
         },
     ] = effects.as_slice()
     else {
         return Vec::new();
     };
+    if !pawprints.is_empty() {
+        return Vec::new();
+    }
     if !targets.is_empty() || !mode_costs.is_empty() {
         return Vec::new();
     }

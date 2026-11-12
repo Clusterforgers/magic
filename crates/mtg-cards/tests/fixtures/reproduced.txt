@@ -691,6 +691,7 @@ Founding of Omashu
 Foundry Inspector
 Four Knocks
 Franklin Richards, Ascendant
+Frenzied Saddlebrute
 Freyalise, Llanowar's Fury
 Frogtosser Banneret
 Frost Titan
@@ -1192,6 +1193,7 @@ Molten Hydra
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
+Monk of the Open Hand
 Monk's Fist
 Moonrager's Slash
 Morinfen
@@ -1312,6 +1314,7 @@ Paradise Plume
 Parasitic Grasp
 Parhelion Patrol
 Pariah
+Pariah's Shield
 Patagia Viper
 Path of Peril
 Path of the Animist
@@ -2124,6 +2127,7 @@ Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
 Young Wolf
+Yurlok of Scorch Thrash
 Zanikev Locust
 Zealous Conscripts
 Zellix, Sanity Flayer

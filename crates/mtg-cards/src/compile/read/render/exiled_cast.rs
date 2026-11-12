@@ -17,6 +17,7 @@ impl Writer<'_> {
             Effect::ExileUntil {
                 who: Ref::Target(0),
                 filter,
+                total: None,
                 bind,
                 exiled_as,
             },

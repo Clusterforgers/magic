@@ -1,7 +1,7 @@
 {
   "oracle_id": "fee455f2-fcc4-47b1-a533-92fa1ae8ae63",
   "name": "Errantry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Errantry",
@@ -9,11 +9,12 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 73 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
           }
-        }
+        },
+        { "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "AttackAlone" } } } }
       ]
     }
   ]

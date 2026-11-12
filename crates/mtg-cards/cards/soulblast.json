@@ -1,0 +1,39 @@
+{
+  "oracle_id": "18d4c57b-e2bf-47a0-8823-c4a79498a7ff",
+  "name": "Soulblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulblast",
+      "oracle_fingerprint": "40a5f30ab325b5b088bc637ac59017a7",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

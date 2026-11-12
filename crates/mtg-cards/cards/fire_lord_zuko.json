@@ -1,7 +1,7 @@
 {
   "oracle_id": "a129423d-c886-4120-96f7-c2517ea7eb83",
   "name": "Fire Lord Zuko",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fire Lord Zuko",
@@ -13,9 +13,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 132, "end": 274 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": [{ "CastFrom": "Exile" }], "by": "You" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "from": "Exile",
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "93771480-2672-4bc7-81a8-011d3b8878b0",
+  "name": "Interdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Interdict",
+      "oracle_fingerprint": "90f9874ea5fe8b4c0d65fda70edc8e0c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Ability": "Activated" },
+                    {
+                      "FromSource": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "SourceOf": { "Target": 0 } }, "as": "source" } },
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "ActivateKind": {
+                          "kind": "Every",
+                          "sources": [{ "Is": { "Bound": "source" } }]
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

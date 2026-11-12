@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0f98e055-ab61-4314-aae8-9d3c19f66acf",
+  "name": "Scrying Sheets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrying Sheets",
+      "oracle_fingerprint": "8cf3344cfdfcc2e74a73603b1cd87805",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{S}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      { "Supertype": "Snow" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "oracle_id": "3cd3cdc9-2ed2-4cdf-b58a-12c3a2ef218b",
+  "name": "Roads Go Ever, Ever On",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roads Go Ever, Ever On",
+      "oracle_fingerprint": "ecc60815b6ffe2d23008d7e6454410aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Plains" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "plains"
+                }
+              },
+              { "Exile": { "what": { "Bound": "plains" } } },
+              { "Shuffle": {} },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }]
+                              },
+                              "toughness": {
+                                "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

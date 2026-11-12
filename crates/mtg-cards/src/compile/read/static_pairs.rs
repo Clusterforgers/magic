@@ -39,9 +39,21 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let escapes = super::r304b_writers::r304b_escapes_instead(first, second);
+    if !escapes.is_empty() {
+        return escapes;
+    }
+    let r302c = super::r302c_writers::r302c_pair_texts(first, second);
+    if !r302c.is_empty() {
+        return r302c;
+    }
     let r285 = super::r285_writers::r285_pair_texts(first, second);
     if !r285.is_empty() {
         return r285;
+    }
+    let pairs305 = super::r305b_writers::r305b_pair_texts(first, second);
+    if !pairs305.is_empty() {
+        return pairs305;
     }
     let alone = super::wf25_writers::wf25_pair_texts(first, second);
     if !alone.is_empty() {

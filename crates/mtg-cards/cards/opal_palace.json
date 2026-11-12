@@ -1,0 +1,39 @@
+{
+  "oracle_id": "aa6723a2-75da-49f5-a1ba-cbfa82c55301",
+  "name": "Opal Palace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opal Palace",
+      "oracle_fingerprint": "d85016da3e69307b6e1028ca08373ab1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "CommanderIdentity": 1 },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "facts": ["YourCommander"] },
+                        "per_command_cast": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
