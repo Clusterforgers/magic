@@ -259,6 +259,7 @@ mod tests {
                 endable: Vec::new(),
                 faces: Vec::new(),
                 unplayable: Vec::new(),
+                inactive: Vec::new(),
                 can_act: true,
                 can_pass: true,
             })),

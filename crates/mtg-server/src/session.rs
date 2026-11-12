@@ -210,6 +210,7 @@ async fn pump(
                     let error = ServerMessage::Error {
                         code: ErrorCode::BadMessage,
                         message: "a spectator watches and sends nothing".into(),
+                        refusal: None,
                     };
                     if let Err(exit) = send(socket, &error, limits.send_timeout).await {
                         return exit;
