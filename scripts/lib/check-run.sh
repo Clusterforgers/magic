@@ -39,6 +39,50 @@ current_share() {
   thread_share "${MTG_TEST_THREADS:-$(nproc 2>/dev/null || echo 4)}" "$(running_checks)"
 }
 
+# --- Postgres ----------------------------------------------------------------------------------------------------
+
+# `sqlx::test` names a test database after the test path alone, so two runs of one test on one server drop each
+# other's database. In `own` mode every Postgres unit gets a throwaway server of its own and runs without the lock;
+# in `shared` mode (no docker, or MTG_PG_SHARED set) the units share DATABASE_URL one at a time under the lock.
+pg_mode=shared pg_label=""
+pg_image="${MTG_PG_IMAGE:-postgres:17}"
+
+# pg_pick_mode: own servers when docker answers and MTG_PG_SHARED is unset.
+pg_pick_mode() {
+  pg_mode=shared
+  if [[ -z "${MTG_PG_SHARED:-}" ]] && command -v docker >/dev/null && docker info >/dev/null 2>&1; then pg_mode=own; fi
+}
+
+# pg_start: start a throwaway server for one unit and print "<container> <DATABASE_URL>". It keeps its data in memory
+# and stops itself after the run cap plus ten minutes, so a check killed outright leaves nothing behind for long.
+pg_start() {
+  local id addr limit i
+  limit=$(awk -v m="$test_timeout" 'BEGIN { printf "%d", m * 60 + 600 }')
+  id=$(docker run -d --rm --label "$pg_label" --tmpfs /var/lib/postgresql/data -p 127.0.0.1::5432 \
+    -e POSTGRES_USER=magic -e POSTGRES_PASSWORD=magic -e POSTGRES_DB=magic \
+    --entrypoint timeout "$pg_image" "$limit" docker-entrypoint.sh postgres \
+    -c fsync=off -c synchronous_commit=off -c full_page_writes=off) || return 1
+  addr=$(docker port "$id" 5432/tcp | first 1)
+  for ((i = 0; i < 300; i++)); do
+    if docker exec "$id" pg_isready -q -h 127.0.0.1 -U magic 2>/dev/null; then
+      echo "$id postgres://magic:magic@127.0.0.1:${addr##*:}/magic"
+      return 0
+    fi
+    sleep 0.2
+  done
+  docker rm -f "$id" >/dev/null 2>&1
+  return 1
+}
+
+# pg_stop <container>: remove one unit's server.
+pg_stop() { docker rm -f "$1" >/dev/null 2>&1 || true; }
+
+# pg_stop_all: remove every server this check started (also those of units killed while starting one).
+pg_stop_all() {
+  [[ "$pg_mode" == own && -n "$pg_label" ]] || return 0
+  docker ps -aq --filter "label=$pg_label" | xargs -r docker rm -f >/dev/null 2>&1 || true
+}
+
 # --- Units -------------------------------------------------------------------------------------------------------
 
 # A unit is one process: a test binary or the web checks. Its words and environment are one entry per line.
@@ -48,6 +92,7 @@ used=0 lock_held=0 tick_pid="" run_dir="" pg_fd_open=0
 
 init_units() {
   run_dir=$(mktemp -d "${TMPDIR:-/tmp}/mtg-check-run.XXXXXX")
+  pg_label="mtg-check.run=${run_dir##*/}"
   if command -v flock >/dev/null; then
     exec 9>"$pg_lock"
     pg_fd_open=1
@@ -59,7 +104,7 @@ add_unit() {
   local name="$1"
   u_kind[$name]="$2" u_dir[$name]="$3" u_need[$name]="$4" u_env[$name]="$5" u_cmd[$name]="$6"
   u_lock[$name]=0
-  [[ "$2" != pg ]] || u_lock[$name]=1
+  [[ "$2" != pg || "$pg_mode" == own ]] || u_lock[$name]=1
   u_log[$name]="$run_dir/${name//[^A-Za-z0-9_.-]/_}.log"
   queue+=("$name")
 }
@@ -76,8 +121,17 @@ launch_unit() {
   set -m
   (
     cd "${u_dir[$name]}" || exit 1
-    rc=0
+    rc=0 server=""
+    if [[ "${u_kind[$name]}" == pg && "$pg_mode" == own ]]; then
+      server=$(pg_start) || {
+        echo "could not start a Postgres server ($pg_image)"
+        echo 1 >"$log.rc"
+        exit 1
+      }
+      envs+=("DATABASE_URL=${server#* }")
+    fi
     "${limit[@]}" env "RUST_TEST_THREADS=$threads" "${envs[@]}" "${words[@]}" || rc=$?
+    [[ -z "$server" ]] || pg_stop "${server%% *}"
     echo "$rc" >"$log.rc"
     exit "$rc"
   ) >"$log" 2>&1 7>&- 9>&- &
