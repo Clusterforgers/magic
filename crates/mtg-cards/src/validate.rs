@@ -923,6 +923,7 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::CouldProduce(_)
             | Pred::Stickered
             | Pred::Harnessed
             | Pred::FoughtSinceYourLastUpkeep { .. }
@@ -3624,6 +3625,7 @@ impl Walker<'_> {
             | Effect::TurnFaceDown { what }
             | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
+            | Effect::Unprepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
@@ -5010,6 +5012,10 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
+            Ability::CantTargetAsCast { what } => {
+                w.uses("Ability", "CantTargetAsCast");
+                w.at("what", |w| w.selector(what));
+            }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),

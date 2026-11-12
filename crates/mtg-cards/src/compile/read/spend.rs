@@ -67,6 +67,22 @@ fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
         filter.facts.insert(0, SpendFact::Kicked);
         return Some(filter);
     }
+    // "non-Human creature spells".
+    if let Some(name) = r.peek_word().and_then(|word| word.strip_prefix("non-")) {
+        let mut chars = name.chars();
+        let name = format!("{}{}", chars.next()?.to_uppercase(), chars.as_str());
+        r.is_subtype(&name).then_some(())?;
+        r.skip();
+        let mut filter = r.attempt(kind).unwrap_or_default();
+        filter.not_subtypes.insert(0, Subtype(name));
+        return Some(filter);
+    }
+    // "monocolored spells".
+    if r.word("monocolored") {
+        let mut filter = r.attempt(kind).unwrap_or_default();
+        filter.facts.insert(0, SpendFact::Monocolored);
+        return Some(filter);
+    }
     // "outlaw spells" (CR 205.3m).
     if r.word("outlaw") {
         return Some(SpendFilter {
@@ -122,6 +138,19 @@ fn qualifiers(r: &mut Reader<'_>, filter: &mut SpendFilter) {
     loop {
         if r.words("of the chosen type") {
             filter.chosen_type = true;
+        } else if r.words("of that color") {
+            filter.chosen_color = true;
+        } else if r.words("that's one or more colors") {
+            filter.facts.push(SpendFact::Colored);
+        } else if r
+            .attempt(|r| {
+                r.need("without")?;
+                (r.symbol()? == "X").then_some(())?;
+                r.need("in its mana cost")
+            })
+            .is_some()
+        {
+            filter.facts.push(SpendFact::NoXInCost);
         } else if let Some(value) = r.attempt(|r| {
             r.need("with mana value")?;
             let value = r.number()?;
@@ -267,6 +296,30 @@ fn any_ability(r: &mut Reader<'_>) -> Option<SpendOn> {
     })
 }
 
+/// The spells cast for their disturb cost: "pay a disturb cost".
+fn disturb() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::Disturb],
+        ..SpendFilter::default()
+    }
+}
+
+/// The equip abilities of any source.
+fn equip() -> SpendFilter {
+    SpendFilter {
+        facts: vec![SpendFact::Equip],
+        ..SpendFilter::default()
+    }
+}
+
+/// "activate an equip ability" or "activate equip abilities" after the spells.
+fn equip_abilities(r: &mut Reader<'_>) -> Option<SpendOn> {
+    r.attempt(|r| {
+        r.need("activate")?;
+        (r.words("an equip ability") || r.words("equip abilities")).then(|| SpendOn::Ability(equip()))
+    })
+}
+
 /// The sentence "Spend this mana only to ..." read after the period that ends the sentence adding the mana.
 pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
     r.attempt(|r| {
@@ -286,6 +339,10 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         if r.words("activate abilities") {
             return Some(vec![SpendOn::abilities()]);
         }
+        // "to pay a disturb cost or cast an instant or sorcery spell".
+        if r.words("pay a disturb cost or cast") {
+            return Some(vec![SpendOn::Spell(disturb()), SpendOn::Spell(spells(r)?)]);
+        }
         r.need("cast")?;
         let first = spells(r)?;
         let mut uses = vec![SpendOn::Spell(first.clone())];
@@ -295,6 +352,7 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
             spells(r)
                 .map(SpendOn::Spell)
                 .or_else(|| abilities_like(r, &first).map(SpendOn::Ability))
+                .or_else(|| equip_abilities(r))
                 .or_else(|| any_ability(r))
         }) {
             uses.push(next);
@@ -337,7 +395,15 @@ fn list_words(names: &[&str], last: &str) -> String {
 
 /// The kind of spell as the plural noun phrase reads, up to "spells": `None` when no wording of the kind exists.
 fn kind_text(filter: &SpendFilter) -> Option<String> {
-    let kind = plain_kind_text(filter)?;
+    let mut kind = plain_kind_text(filter)?;
+    // "non-Human creature spells".
+    for name in filter.not_subtypes.iter().rev() {
+        kind = format!("non-{} {kind}", name.0);
+    }
+    // "monocolored spells".
+    if filter.facts.contains(&SpendFact::Monocolored) {
+        kind = format!("monocolored {kind}");
+    }
     // "colorless spells", "colorless Eldrazi spells", "kicked spells".
     Some(if filter.facts.contains(&SpendFact::Colorless) {
         format!("colorless {kind}")
@@ -415,6 +481,9 @@ fn qualifier_text(filter: &SpendFilter) -> String {
     if filter.chosen_type {
         text.push_str(CHOSEN_TYPE);
     }
+    if filter.chosen_color {
+        text.push_str(" of that color");
+    }
     if filter.min_value > 0 {
         let _ = write!(text, " with mana value {} or greater", filter.min_value);
     }
@@ -448,6 +517,11 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::Flashback => text.push_str(" with flashback"),
             SpendFact::Freerunning => text.push_str(" with freerunning"),
             SpendFact::NoAbilities => text.push_str(" with no abilities"),
+            // One spell's words: `text` writes a filter with them one spell at a time.
+            SpendFact::Colored => text.push_str(" that's one or more colors"),
+            SpendFact::NoXInCost => text.push_str(" without {X} in its mana cost"),
+            // Monocolored is written before the noun (`kind_text`); equip abilities and disturb costs by `text`.
+            SpendFact::Monocolored | SpendFact::Equip | SpendFact::Disturb => {}
         }
     }
     text
@@ -455,6 +529,9 @@ fn qualifier_text(filter: &SpendFilter) -> String {
 
 /// "creature spells of the chosen type": the spells of a kind with what is said of them.
 fn spells_text(filter: &SpendFilter) -> Option<String> {
+    if unworded(filter) {
+        return None;
+    }
     Some(format!(
         "{}spells{}",
         kind_text(filter)?,
@@ -464,6 +541,9 @@ fn spells_text(filter: &SpendFilter) -> Option<String> {
 
 /// The same with one spell and its article: "a creature spell of the chosen type".
 fn one_spell_text(filter: &SpendFilter) -> Option<String> {
+    if unworded(filter) {
+        return None;
+    }
     let kind = kind_text(filter)?;
     // One spell "has" freerunning: "a spell that has freerunning".
     let qualifier = qualifier_text(filter).replace(" with freerunning", " that has freerunning");
@@ -498,8 +578,26 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }
-        [SpendOn::Spell(filter)] => {
+        // "Spend this mana only to cast a spell that's one or more colors without {X} in its mana cost."
+        [SpendOn::Spell(filter)] if filter.facts.iter().any(|fact| matches!(fact, SpendFact::Colored | SpendFact::NoXInCost)) => {
+            format!("Spend this mana only to cast {}", one_spell_text(filter)?)
+        }
+        [SpendOn::Spell(filter)] if !unworded(filter) => {
             format!("Spend this mana only to cast {}", spells_text(filter)?)
+        }
+        // "Spend this mana only to pay a disturb cost or cast an instant or sorcery spell."
+        [SpendOn::Spell(first), SpendOn::Spell(spell)] if *first == disturb() && !unworded(spell) => {
+            format!(
+                "Spend this mana only to pay a disturb cost or cast {}",
+                one_spell_text(spell)?
+            )
+        }
+        // "Spend this mana only to cast Equipment spells or activate equip abilities."
+        [SpendOn::Spell(spell), SpendOn::Ability(source)] if *source == equip() && !unworded(spell) => {
+            format!(
+                "Spend this mana only to cast {} or activate equip abilities",
+                spells_text(spell)?
+            )
         }
         [
             SpendOn::Spell(spell),
@@ -563,6 +661,14 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         ),
         _ => return None,
     })
+}
+
+/// Whether a filter of spells holds a fact only `text` words as a use of its own (an equip ability, a disturb cost).
+fn unworded(filter: &SpendFilter) -> bool {
+    filter
+        .facts
+        .iter()
+        .any(|fact| matches!(fact, SpendFact::Equip | SpendFact::Disturb))
 }
 
 /// Whether two kinds of spell are named one spell at a time: "a creature spell of the chosen type or ...", "an instant
@@ -654,6 +760,13 @@ pub(super) fn more(text: &str) -> Vec<String> {
                     .map(|form| format!("{head}{form}"))
                     .collect()
             });
+    }
+    // "cast an Equipment spell or activate an equip ability".
+    if let Some(head) = text.strip_suffix(" or activate equip abilities") {
+        return singular(head)
+            .map(|one| format!("{one} or activate an equip ability"))
+            .into_iter()
+            .collect();
     }
     let mut forms = vec![text.to_owned()];
     forms.extend(singular(text));

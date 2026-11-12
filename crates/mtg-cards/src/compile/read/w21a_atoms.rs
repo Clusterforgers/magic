@@ -13,7 +13,7 @@ use super::tokens::Reader;
 use crate::refs::{HeldAbility, Pred, Ref, Selector, ZoneKind};
 
 /// The words of an ability an object has or lacks, written and read the same way: the words, the kind and whether it has one.
-const EP31_HELD: [(&str, HeldAbility, bool); 5] = [
+const EP31_HELD: [(&str, HeldAbility, bool); 6] = [
     ("with no abilities", HeldAbility::Any, false),
     ("with a mana ability", HeldAbility::Mana, true),
     ("without mana abilities", HeldAbility::Mana, false),
@@ -23,6 +23,11 @@ const EP31_HELD: [(&str, HeldAbility, bool); 5] = [
         true,
     ),
     ("with abilities", HeldAbility::Any, true),
+    (
+        "that has an activated ability with {T} in its cost",
+        HeldAbility::TapCost,
+        true,
+    ),
 ];
 
 /// "that were put into your graveyard from the battlefield this turn" ("that was" for one, "a graveyard" for any): the
@@ -203,6 +208,16 @@ pub(super) fn w21a_adjective_text(pred: &Pred) -> Option<String> {
 
 /// A suffix of this module after the noun.
 pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
+    // "that is snow or could produce {C}".
+    if r
+        .attempt(|r| {
+            r.need("that is snow or could produce")?;
+            (r.symbol()? == "C").then_some(())
+        })
+        .is_some()
+    {
+        return Some(snow_or_colorless());
+    }
     if r.words("of the chosen type") {
         return Some(Pred::ChosenSubtype);
     }
@@ -211,6 +226,17 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     }
     if let Some(pred) = r.attempt(|r| w21a_targets(r)) {
         return Some(pred);
+    }
+    // "that has an activated ability with {T} in its cost": the symbol is a token of its own.
+    if r
+        .attempt(|r| {
+            r.need("that has an activated ability with")?;
+            (r.symbol()? == "T").then_some(())?;
+            r.need("in its cost")
+        })
+        .is_some()
+    {
+        return Some(Pred::HasAbility(HeldAbility::TapCost));
     }
     if let Some(pred) = r.attempt(|r| {
         EP31_HELD.iter().find_map(|(words, held, has)| {
@@ -306,6 +332,14 @@ fn w21a_amount_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// "that is snow or could produce {C}".
+fn snow_or_colorless() -> Pred {
+    Pred::AnyOf(vec![
+        Pred::Supertype(mtg_core::card::Supertype::Snow),
+        Pred::CouldProduce(mtg_core::mana::ManaType::Colorless),
+    ])
+}
+
 /// The suffix of this module for a predicate.
 pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
@@ -319,6 +353,9 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Targeting(objects) if objects.0 == [Pred::This] => "that targets ~".to_owned(),
         Pred::Targeting(objects) => {
             format!("that targets {}", w21a_a(&g13a_in_play(objects, form))?)
+        }
+        pred if *pred == snow_or_colorless() && !form.plural() => {
+            "that is snow or could produce {C}".to_owned()
         }
         Pred::AnyOf(any) => match any.as_slice() {
             [Pred::TargetsPlayer(Ref::You), Pred::Targeting(objects)] => {

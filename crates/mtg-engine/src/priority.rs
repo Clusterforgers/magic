@@ -385,7 +385,8 @@ pub(crate) fn activation(
         let life = seat
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-        let spend = Spend::for_ability(state, object.id(), price.x > 0);
+        let spend =
+            Spend::for_ability(state, object.id(), price.x > 0).of_ability(state, address, rules);
         let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return Hindered(

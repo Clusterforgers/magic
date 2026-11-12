@@ -3373,7 +3373,9 @@ impl Writer<'_> {
             Effect::GainSuspend { what, unless_has } => {
                 super::r372_suspend::gain_text(&self.object(what)?, *unless_has)
             }
-            Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
+            Effect::Prepare { what } | Effect::Unprepare { what } => {
+                super::prepare::becomes_prepared_text(effect, &self.object(what)?)?
+            }
             Effect::If {
                 condition: Condition::Not(_),
                 ..

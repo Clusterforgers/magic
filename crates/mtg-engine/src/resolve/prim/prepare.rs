@@ -32,6 +32,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
+/// Each permanent the effect names that is on the battlefield and prepared becomes unprepared, in the order the reference
+/// lists them; anything else is passed over.
+pub(super) fn run_unprepare(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::Unprepare { what } = effect else {
+        return Err(wrong_effect("Unprepare"));
+    };
+    let events = cx
+        .scope
+        .live_objects(what)?
+        .into_iter()
+        .filter(|object| {
+            object.zone() == Zone::Battlefield
+                && object.permanent().is_some_and(|held| held.prepared())
+        })
+        .map(|object| Event::Unprepared {
+            object: object.id(),
+        })
+        .collect();
+    Ok(Run::events(events))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: preparing makes each unprepared prepare card it names on the battlefield prepared, in the order the reference lists them, and passes over a prepared one, a card of another layout, a card in another zone and a player; it binds nothing and goes on to the next effect, and it refuses another effect by name.

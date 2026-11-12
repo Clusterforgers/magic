@@ -113,6 +113,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::FreeActivation { .. }
         | Ability::InstantActivation { .. }
         | Ability::CastOnly { .. }
+        | Ability::CantTargetAsCast { .. }
         | Ability::OpeningHand
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)

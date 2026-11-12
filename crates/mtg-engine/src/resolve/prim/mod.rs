@@ -266,6 +266,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Harness { .. } => rmt8_turn_down::harness(cx, effect),
         Effect::Plot { .. } => r282_plot::run(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
+        Effect::Unprepare { .. } => prepare::run_unprepare(cx, effect),
         Effect::Suspect { .. } | Effect::Unsuspect { .. } | Effect::Solve { .. } => {
             suspect::run(cx, effect)
         }
@@ -508,6 +509,7 @@ mod tests {
         "Effect.Transform",
         "Effect.Flip",
         "Effect.Prepare",
+        "Effect.Unprepare",
         "Effect.WinGame",
         "Effect.LoseGame",
         "Effect.DrawGame",

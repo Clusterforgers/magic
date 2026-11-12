@@ -144,6 +144,11 @@ impl Spend {
         match way {
             Some(mtg_cards::value::CastWay::Bestow) => self.bestowed(),
             Some(mtg_cards::value::CastWay::FaceDown) => self.face_down(),
+            Some(mtg_cards::value::CastWay::Disturb) => {
+                let mut spend = self;
+                spend.traits.disturb = true;
+                spend
+            }
             _ => self,
         }
     }
@@ -159,6 +164,19 @@ impl Spend {
             traits,
             has_x,
         }
+    }
+
+    /// The payment for the ability `rules` at `address`, which is an equip ability when equip adds it (CR 702.6).
+    #[must_use]
+    pub fn of_ability(
+        mut self,
+        state: &GameState,
+        address: crate::abilities::AbilityRef,
+        rules: &mtg_cards::ability::Ability,
+    ) -> Self {
+        self.traits.equip = crate::activation_kind::specific(state, address, rules)
+            == Some(mtg_cards::ability::ActivationKind::Equip);
+        self
     }
 
     /// Whether mana restricted to `only` may be spent on this; mana with no restriction, or with a rider alone, may be

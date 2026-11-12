@@ -24,7 +24,9 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::FreeCast { .. } | Ability::AltCast { .. } => "alternative cost".to_owned(),
         Ability::FreeActivation { .. } => "alternative activation cost".to_owned(),
         Ability::InstantActivation { .. } => "activation timing".to_owned(),
-        Ability::CastOnly { .. } => "casting restriction".to_owned(),
+        Ability::CastOnly { .. } | Ability::CantTargetAsCast { .. } => {
+            "casting restriction".to_owned()
+        }
         Ability::OpeningHand | Ability::OpeningHandWith { .. } | Ability::OpeningReveal { .. } => {
             "opening-hand ability".to_owned()
         }
@@ -345,6 +347,15 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
                 format!("may be cast{place} in place of its mana cost{by}"),
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
+        }
+        Ability::CantTargetAsCast { what } => {
+            out.push(Step::new(
+                depth,
+                format!(
+                    "as it is cast, it can't target: {}",
+                    phrase::selector(&ctx, what)
+                ),
+            ));
         }
         Ability::CastOnly { condition } => {
             out.push(Step::new(
