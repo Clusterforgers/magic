@@ -71,7 +71,10 @@ fn tapped_islands(driver: &Driver, seat: usize) -> usize {
         .iter()
         .filter_map(|id| state.object(*id))
         .filter(|o| o.controller() == pid(seat) && o.card().name == "Island")
-        .filter(|o| o.permanent().is_some_and(mtg_engine::object::PermanentState::tapped))
+        .filter(|o| {
+            o.permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count()
 }
 

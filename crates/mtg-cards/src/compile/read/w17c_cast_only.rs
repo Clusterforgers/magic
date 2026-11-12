@@ -7,7 +7,7 @@ use crate::trigger::Step;
 use crate::value::Condition;
 
 /// The moments a spell may be cast in, each with its wording after "only".
-fn w17c_moments() -> [(Condition, &'static str); 6] {
+fn w17c_moments() -> [(Condition, &'static str); 7] {
     [
         // Before the declare blockers step, never after combat (Rapid Fire).
         (
