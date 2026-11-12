@@ -1,5 +1,6 @@
 Abbot of Keral Keep
 Aberrant
+Abominable Treefolk
 Abomination, World Ravager
 Aboroth
 Absolver Thrull
@@ -80,6 +81,7 @@ Archon of Absolution
 Archon of Coronation
 Archon of Cruelty
 Archway Commons
+Arcum's Weathervane
 Armguard Familiar
 Arrest
 Arrogant Wurm
@@ -101,6 +103,8 @@ Auriok Champion
 Austere Command
 Authority of the Consuls
 Auton Soldier
+Avalanche
+Avalanche Caller
 Avatar of Woe
 Aven Eternal
 Aven Initiate
@@ -117,6 +121,7 @@ Azure Fleet Admiral
 Azusa, Lost but Seeking
 Back in Town
 Baird, Steward of Argive
+Balduvian Conjurer
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -292,6 +297,7 @@ Chartooth Cougar
 Chemister's Insight
 Chicken Troupe
 Chief Engineer
+Chill to the Bone
 Chimil, the Inner Sun
 Chittering Harvester
 Chittering Witch
@@ -342,6 +348,7 @@ Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
+Conifer Wurm
 Consider
 Consign // Oblivion
 Consign to Dust
@@ -464,6 +471,7 @@ Despise
 Determined Iteration
 Devastation Tide
 Devoted Druid
+Diamond Faerie
 Diffusion Sliver
 Dig Up
 Dimir Cutpurse
@@ -518,6 +526,7 @@ Dreamtail Heron
 Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
+Drift of the Dead
 Drill Bit
 Drogskol Reinforcements
 Dromoka Captain
@@ -762,6 +771,7 @@ Girder Goons
 Gisa and Geralf
 Gix's Caress
 Gixian Infiltrator
+Glacial Crevasses
 Glacial Ray
 Glacier Godmaw
 Glamerdye
@@ -840,6 +850,7 @@ Hackrobat
 Hada Spy Patrol
 Hagra Mauling // Hagra Broodpit
 Hall of Triumph
+Hallowed Ground
 Hallowed Spiritkeeper
 Hammer Dropper
 Hangar Scrounger
@@ -858,6 +869,7 @@ Headless Skaab
 Hearthhull, the Worldseed
 Heartless Act
 Hei Bai, Spirit of Balance
+Heidar, Rimewind Master
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellkite Igniter
@@ -905,6 +917,7 @@ Hunt the Weak
 Huntmaster Liger
 Hydra Broodmaster
 Icatian Infantry
+Ice-Fang Coatl
 Icefeather Aven
 Ichor Rats
 Idyllic Beachfront
@@ -938,6 +951,7 @@ Inspired Sphinx
 Inspiring Statuary
 Inspirit
 Intelligence Bobblehead
+Into the North
 Into the Roil
 Into the Time Vortex
 Intrepid Adversary
@@ -1136,6 +1150,7 @@ Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Mariposa Military Base
+Marit Lage's Slumber
 Maro
 Marrow Chomper
 Marvo, Deep Operative
@@ -1239,6 +1254,7 @@ Nantuko Vigilante
 Nardole, Resourceful Cyborg
 Narset's Rebuke
 Nature's Embrace
+Navigator's Compass
 Necklace of Girion
 Necroplasm
 Necropolis Regent
@@ -1286,9 +1302,11 @@ Observed Stasis
 Obstinate Baloth
 Octomancer
 Octopus Umbra
+Ohran Yeti
 Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
+On Thin Ice
 Onakke Oathkeeper
 Oona's Blackguard
 Opposition Agent
@@ -1296,6 +1314,7 @@ Opt
 Oran-Rief, the Vastwood
 Orazca Relic
 Orchard Strider
+Orcish Farmer
 Ordered Migration
 Organic Extinction
 Origin of the Hulk
@@ -1399,6 +1418,7 @@ Preyseizer Dragon
 Price of Fame
 Pridemalkin
 Priest of the Crossing
+Priest of the Haunted Edge
 Primal Beyond
 Primal Growth
 Primal Might
@@ -1513,6 +1533,9 @@ Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Righteous Confluence
+Rime Tender
+Rimewind Cryomancer
+Rimewind Taskmage
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1529,6 +1552,7 @@ Rogue Refiner
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
+Rootwater Matriarch
 Rope
 Rosheen Meanderer
 Rousing Refrain
@@ -1587,6 +1611,7 @@ Scrabbling Claws
 Scrapshooter
 Screeching Scorchbeast
 Scrounging Skyray
+Sculptor of Winter
 Scuzzback Marauders
 Scytheclaw
 Sea Gate
@@ -1667,6 +1692,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skred
 Skull Skaab
 Skullbriar, the Walking Grave
 Skullclamp
@@ -1729,6 +1755,7 @@ Spinnerette, Arachnobat
 Spire Golem
 Spire Winder
 Spirit Bonds
+Spirit of the Aldergard
 Spirit of the Hearth
 Spiritual Visit
 Spiteful Visions
@@ -1807,6 +1834,7 @@ Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
 Sunscorch Regent
+Sunstone
 Suntouched Myr
 Super Combo
 Supernatural Rescue
@@ -2054,6 +2082,7 @@ Village Rites
 Viper's Kiss
 Viridian Corrupter
 Visage of Dread // Dread Osseosaur
+Viscerid Drone
 Vish Kal, Blood Arbiter
 Visionary Augmenter
 Vital Surge
@@ -2112,6 +2141,7 @@ Whisperer of the Wilds
 Whispering Madness
 Whispering Snitch
 White Auracite
+Whiteout
 Wibbly-wobbly, Timey-wimey
 Wickersmith's Tools
 Wild Growth
@@ -2142,6 +2172,7 @@ Wolfwillow Haven
 Wooded Bastion
 Woodland Bellower
 Woodripper
+Woolly Mammoths
 Worldspine Wurm
 Worst Fears
 Wrath of God

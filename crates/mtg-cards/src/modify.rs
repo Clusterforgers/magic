@@ -84,6 +84,9 @@ pub enum Modification {
     /// Adds the creature type the resolution chose under this name (layer 4): "becomes the creature type of your choice
     /// in addition to its other types". Only an effect of a spell or ability has it.
     AddCreatureTypeChosen(String),
+    /// Adds the basic land type the resolution chose under this name (layer 4): "becomes the basic land type of your
+    /// choice in addition to its other types". Only an effect of a spell or ability has it.
+    AddLandTypeChosen(String),
     /// Changes the text (layer 3, CR 612): every instance of the word the resolution chose under `from` becomes the word it
     /// chose under `to` ("replacing all instances of one color word with another"). Only an effect of a spell or ability
     /// has it.
@@ -196,6 +199,7 @@ impl Modification {
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
             | Modification::AddCreatureTypeChosen(_)
+            | Modification::AddLandTypeChosen(_)
             | Modification::AddChosenSubtype
             | Modification::AddAllCreatureTypes => Some("4"),
             Modification::SetColors(_)
@@ -280,6 +284,18 @@ pub enum Duration {
     /// of the kind or leaves, and a counter put on another permanent later changes nothing. Only a continuous effect that
     /// names its objects (a reference, not a group) lasts this way.
     WhileHasCounter(Box<CounterKind>),
+    /// For as long as every object the effect names is still on the battlefield with an Aura attached ("gain control of
+    /// target creature for as long as that creature is enchanted", CR 611.2b): it ends when one of them is no longer
+    /// enchanted or leaves. Only a continuous effect that names its objects lasts this way.
+    WhileEnchanted,
+    /// For as long as the player the reference names as the effect begins is the monarch ("for as long as they're the
+    /// monarch", CR 724): it ends when that player stops being the monarch, and at once when they are not the monarch
+    /// as it begins. Only a continuous effect lasts this way.
+    WhileMonarch(Ref),
+    /// Until the next untap step of the player who controls a permanent it applies to as it begins ("target land
+    /// becomes a Swamp until its controller's next untap step"): it ends as that player's next turn begins. Only a
+    /// continuous effect lasts this way.
+    UntilItsControllersNextUntapStep,
     /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
     /// player skips a turn lasts this long.
     UntilTurnSkipped,

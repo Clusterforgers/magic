@@ -13,12 +13,12 @@
             "effects": [
               {
                 "Search": {
-                  "filter": [{ "Type": "Land" }, { "Supertype": "Snow" }],
+                  "filter": [{ "Supertype": "Snow" }, { "Type": "Land" }],
                   "reveal": true,
-                  "as": "found"
+                  "as": "land"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }

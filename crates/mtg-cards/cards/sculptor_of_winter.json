@@ -10,7 +10,7 @@
         {
           "Activated": {
             "cost": ["Tap"],
-            "targets": [{ "what": { "Object": [{ "Supertype": "Snow" }, { "Type": "Land" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }],
             "effects": [{ "Untap": { "what": { "Target": 0 } } }]
           }
         }

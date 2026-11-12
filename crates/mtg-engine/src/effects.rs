@@ -472,7 +472,8 @@ pub(crate) fn lasts(
                     && turn.active() == controller
                     && turn.step() > Step::EndCombat)
         }
-        Duration::UntilYourNextTurn => {
+        // Begun for the player who controls the permanent (`continuous.rs`): their next untap step opens their next turn.
+        Duration::UntilYourNextTurn | Duration::UntilItsControllersNextUntapStep => {
             state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
         // It lasts through the untap step of that turn and ends as its upkeep begins.
@@ -528,7 +529,11 @@ pub(crate) fn lasts(
         // Only an exile lasts until an opponent becomes the monarch (a card in exile waits, `exile_return.rs`); no continuous
         // effect does.
         // Only a continuous effect that names its objects follows a counter on them (`ContinuousEffect::holds_counter`).
-        Duration::UntilOpponentBecomesMonarch | Duration::WhileHasCounter(_) => false,
+        // An effect that follows Auras on its objects or a player fixed as it began reads its own record (`lasts_by`).
+        Duration::UntilOpponentBecomesMonarch
+        | Duration::WhileHasCounter(_)
+        | Duration::WhileEnchanted
+        | Duration::WhileMonarch(_) => false,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
 }
@@ -591,6 +596,10 @@ pub struct ContinuousEffect {
     pub controller: PlayerId,
     /// The number of the turn it began in, which `UntilEndOfCombat` and `UntilYourNextTurn` measure from.
     pub turn: u32,
+    /// The player a `WhileMonarch` effect follows, fixed as it began; none for any other duration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub anchor: Option<PlayerId>,
 }
 
 impl ContinuousEffect {
@@ -613,6 +622,7 @@ impl ContinuousEffect {
             source: None,
             controller: PlayerId(0),
             turn: 0,
+            anchor: None,
         }
     }
 
@@ -620,6 +630,13 @@ impl ContinuousEffect {
     #[must_use]
     pub fn from_source(mut self, source: ObjectRef) -> Self {
         self.source = Some(source);
+        self
+    }
+
+    /// The same effect, following `player` for a `WhileMonarch` duration.
+    #[must_use]
+    pub fn anchored(mut self, player: Option<PlayerId>) -> Self {
+        self.anchor = player;
         self
     }
 
@@ -671,6 +688,8 @@ impl ContinuousEffect {
     fn lasts_by(&self, state: &GameState, duration: &Duration) -> bool {
         match duration {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
+            Duration::WhileEnchanted => self.stays_enchanted(state),
+            Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
     }
@@ -684,6 +703,24 @@ impl ContinuousEffect {
                     o.counter() == r.counter
                         && o.zone() == Zone::Battlefield
                         && o.permanent().is_some_and(|p| p.counters_of(kind) > 0)
+                })
+            }),
+            Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+        }
+    }
+
+    /// Whether every object the effect names is still the object it named, on the battlefield, with an Aura attached
+    /// (CR 303.4); an effect of a group never follows Auras.
+    fn stays_enchanted(&self, state: &GameState) -> bool {
+        match &self.selector {
+            Selector::Objects(named) => named.iter().all(|r| {
+                state.object(r.id).is_some_and(|o| {
+                    o.counter() == r.counter && o.zone() == Zone::Battlefield
+                }) && state.attachments_of(r.id).into_iter().any(|id| {
+                    // Read from the card (or the copy it shows), not the layers, which call this as they apply.
+                    state.object(id).is_some_and(|aura| {
+                        aura.bestowed() || aura.card().subtypes.iter().any(|s| s.0 == "Aura")
+                    })
                 })
             }),
             Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,

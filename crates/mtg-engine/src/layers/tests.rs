@@ -279,6 +279,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::SetLandTypesChosen(_)
             | mtg_cards::modify::Modification::SetCreatureTypesChosen(_)
             | mtg_cards::modify::Modification::AddCreatureTypeChosen(_)
+            | mtg_cards::modify::Modification::AddLandTypeChosen(_)
             | mtg_cards::modify::Modification::ChangeTextChosen { .. }
             // Only a static ability has these, and they read what its source chose as it entered (`g9b_chosen`).
             | mtg_cards::modify::Modification::AddChosenSubtype

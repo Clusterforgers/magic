@@ -10,25 +10,15 @@
         {
           "Triggered": {
             "when": {
-              "ZoneChange": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      "This",
-                      {
-                        "Not": {
-                          "AnyOf": [
-                            { "Not": { "Supertype": "Snow" } },
-                            { "Not": "Other" },
-                            { "Not": { "ControlledBy": "You" } }
-                          ]
-                        }
-                      }
-                    ]
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Supertype": "Snow" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
                   }
-                ],
-                "to": "Battlefield"
-              }
+                }
+              ]
             },
             "effects": [{ "Scry": {} }]
           }

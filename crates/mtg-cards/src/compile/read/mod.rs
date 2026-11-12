@@ -207,6 +207,7 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r404_land;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -573,6 +574,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Static
         && let Some(found) = r375_phase::r375_no_phase_in_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        r404_land::r404_land_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

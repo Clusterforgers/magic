@@ -386,6 +386,9 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSourceTapped",
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
+    "Duration.WhileEnchanted",
+    "Duration.WhileMonarch",
+    "Duration.UntilItsControllersNextUntapStep",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
     "Effect.Rule",
@@ -517,6 +520,7 @@ const RUNS: &[&str] = &[
     "Mod.ChangeTextChosen",
     "Mod.SetCreatureTypesChosen",
     "Mod.AddCreatureTypeChosen",
+    "Mod.AddLandTypeChosen",
     "Mod.AddChosenSubtype",
     "Mod.SetChosenColor",
     "Mod.RemoveKeyword",
@@ -1106,6 +1110,8 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::control_for_as_long_as_you_control_the_source("Duration.WhileYouControlSource", true)]
     #[case::continuous_for_as_long_as_it_has_a_counter("Duration.WhileHasCounter", true)]
+    #[case::control_for_as_long_as_it_is_enchanted("Duration.WhileEnchanted", true)]
+    #[case::control_for_as_long_as_they_are_the_monarch("Duration.WhileMonarch", true)]
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::continuous_while_you_control_the_tapped_source(
         "Duration.WhileYouControlSourceTapped",
@@ -1140,6 +1146,8 @@ mod tests {
     #[case::colours("Mod.SetColors", true)]
     #[case::chosen_colours("Mod.SetColorsChosen", true)]
     #[case::chosen_land_types("Mod.SetLandTypesChosen", true)]
+    #[case::chosen_land_type_added("Mod.AddLandTypeChosen", true)]
+    #[case::until_its_controllers_next_untap_step("Duration.UntilItsControllersNextUntapStep", true)]
     #[case::chosen_creature_types("Mod.SetCreatureTypesChosen", true)]
     #[case::the_type_chosen_as_it_entered("Mod.AddChosenSubtype", true)]
     #[case::the_color_chosen_as_it_entered("Mod.SetChosenColor", true)]

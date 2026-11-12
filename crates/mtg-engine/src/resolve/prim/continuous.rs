@@ -50,7 +50,11 @@ fn l294_turn_holders(
     duration: &mtg_cards::modify::Duration,
     named: &[ObjectRef],
 ) -> Vec<(PlayerId, Vec<ObjectRef>)> {
-    if *duration != mtg_cards::modify::Duration::DuringItsControllersNextTurn {
+    if !matches!(
+        duration,
+        mtg_cards::modify::Duration::DuringItsControllersNextTurn
+            | mtg_cards::modify::Duration::UntilItsControllersNextUntapStep
+    ) {
         return vec![(cx.controller(), named.to_vec())];
     }
     let mut holders: Vec<(PlayerId, Vec<ObjectRef>)> = Vec::new();
@@ -161,6 +165,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
+    // The player a "for as long as they're the monarch" effect follows, read as it begins.
+    let anchor = match duration {
+        mtg_cards::modify::Duration::WhileMonarch(who) => cx.scope.players(who)?.first().copied(),
+        _ => None,
+    };
     let mut made = 0u64;
     for (player, objects) in l294_turn_holders(cx, duration, &named) {
         for modification in &modifications {
@@ -174,6 +183,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         state.next_timestamp + made,
                     )
                     .from_source(cx.scope.source)
+                    .anchored(anchor)
                     .begun(player, crate::effects::began_turn(state, duration, player)),
                 ),
             });
@@ -312,6 +322,10 @@ fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, Reso
             Some(Chosen::CreatureType(kind)) => Ok(Modification::AddSubtype(kind.clone())),
             _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddLandTypeChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::LandType(land)) => Ok(Modification::AddSubtype(land.clone())),
+            _ => Err(ResolveError::Invalid("no land type was chosen".into())),
+        },
         _ => Err(ResolveError::Invalid("no chosen type".into())),
     }
 }
@@ -374,7 +388,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         },
         Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
-        | Wanted::AddCreatureTypeChosen(_) => chosen_types(scope, wanted)?,
+        | Wanted::AddCreatureTypeChosen(_)
+        | Wanted::AddLandTypeChosen(_) => chosen_types(scope, wanted)?,
         Wanted::ChangeTextChosen { from, to } => Modification::ChangeText {
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,

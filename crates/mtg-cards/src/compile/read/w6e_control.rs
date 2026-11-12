@@ -80,6 +80,12 @@ pub(super) fn w6e_duration(r: &mut Reader<'_>) -> Option<Duration> {
             Duration::WhileYouControlSource
         });
     }
+    if r.words("for as long as that creature is enchanted") {
+        return Some(Duration::WhileEnchanted);
+    }
+    if r.words("for as long as they're the monarch") {
+        return Some(Duration::WhileMonarch(Ref::Triggering));
+    }
     if r.words("for as long as") {
         r.source().then_some(())?;
         if r.words("remains tapped") {

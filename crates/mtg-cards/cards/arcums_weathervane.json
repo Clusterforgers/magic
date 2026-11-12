@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b4e57fba-5fa3-4fd5-8f0a-7b61593ade72",
+  "name": "Arcum's Weathervane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcum's Weathervane",
+      "oracle_fingerprint": "f1bc0d6526058d2013ac0dbfa21e96fb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveSupertype": "Snow" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Snow" } },
+                    { "Supertype": "Basic" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSupertype": "Snow" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

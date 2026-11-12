@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c3039d19-8c98-4953-8943-9922b6ab45ef",
+  "name": "Orcish Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Farmer",
+      "oracle_fingerprint": "43207b282fe22bce3b90d680926fd48f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Swamp"] }],
+                  "duration": "UntilItsControllersNextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

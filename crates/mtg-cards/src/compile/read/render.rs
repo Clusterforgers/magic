@@ -707,6 +707,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
     super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
+    super::r404_land::r404_land_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {

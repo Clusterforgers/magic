@@ -182,6 +182,9 @@ impl Delayed {
             | Duration::WhileSourceTapped
             | Duration::WhileYouControlSourceTapped
             | Duration::WhileHasCounter(_)
+            | Duration::WhileEnchanted
+            | Duration::WhileMonarch(_)
+            | Duration::UntilItsControllersNextUntapStep
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)
             | Duration::UntilTurnSkipped

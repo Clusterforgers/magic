@@ -266,6 +266,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         return match rest {
             "legendary" => Some(not(Pred::Supertype(Supertype::Legendary))),
             "basic" => Some(not(Pred::Supertype(Supertype::Basic))),
+            "snow" => Some(not(Pred::Supertype(Supertype::Snow))),
             "token" => Some(not(Pred::Token)),
             _ => super::w21a_atoms::w21a_adjective(word),
         };
@@ -284,6 +285,7 @@ pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
         "goaded" => Pred::Goaded,
         "legendary" => Pred::Supertype(Supertype::Legendary),
         "basic" => Pred::Supertype(Supertype::Basic),
+        "snow" => Pred::Supertype(Supertype::Snow),
         "other" => Pred::Other,
         "enchanted" | "equipped" => return super::t17b_attached::adjective(word, form),
         _ => return super::w21a_atoms::w21a_adjective(word),
@@ -323,12 +325,14 @@ pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Other => "other".to_owned(),
         Pred::Supertype(Supertype::Legendary) => "legendary".to_owned(),
         Pred::Supertype(Supertype::Basic) => "basic".to_owned(),
+        Pred::Supertype(Supertype::Snow) => "snow".to_owned(),
         Pred::Not(inner) if **inner == outlaw() => "non-outlaw".to_owned(),
         Pred::Not(inner) => match &**inner {
             Pred::Color(color) => format!("non{}", color_name(*color)),
             Pred::Type(card_type) => format!("non{}", type_name(*card_type)),
             Pred::Supertype(Supertype::Legendary) => "nonlegendary".to_owned(),
             Pred::Supertype(Supertype::Basic) => "nonbasic".to_owned(),
+            Pred::Supertype(Supertype::Snow) => "nonsnow".to_owned(),
             Pred::Subtype(subtype) => format!("non-{}", subtype.0),
             Pred::Token => "nontoken".to_owned(),
             Pred::Commander => "noncommander".to_owned(),
