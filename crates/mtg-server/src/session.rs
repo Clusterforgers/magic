@@ -213,6 +213,7 @@ async fn pump(
                 let error = ServerMessage::Error {
                     code: ErrorCode::BadMessage,
                     message: "send each message as one JSON text frame of a known type".into(),
+                    refusal: None,
                 };
                 if let Err(exit) = send(socket, &error, limits.send_timeout).await {
                     return exit;
@@ -299,6 +300,7 @@ async fn refuse(
     let error = ServerMessage::Error {
         code,
         message: message.into(),
+        refusal: None,
     };
     match send(socket, &error, limits.send_timeout).await {
         Ok(()) => Exit::Say(PROTOCOL_ERROR),

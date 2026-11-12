@@ -21,7 +21,7 @@ use crate::announce::{self, Granted};
 use crate::attach;
 use crate::characteristics::controller_of;
 use crate::choose::announceable;
-use crate::decision::Unplayable;
+use crate::decision::{Unplayable, Why};
 use crate::face_down;
 use crate::faces;
 use crate::help;
@@ -1295,6 +1295,100 @@ pub(crate) fn hindrance_as_is(
         }
     }
     Some(nearest.unwrap_or(Unplayable::Cost))
+}
+
+/// The detail of `reason`, which [`hindrance_now`] gave for `player` and `id` (or the offer, for `Restricted` when
+/// `restricted` silences every cast), read off the same checks; for a card with several faces, off the first face whose
+/// own reason it is.
+pub(crate) fn why_now(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    reason: Unplayable,
+    (pool, sources, life): (&ManaPool, &[ManaOption], i32),
+    restricted: bool,
+) -> Option<Why> {
+    if !faces::is_multi_face(state, id) {
+        return why_as_is(state, player, id, reason, (pool, sources, life), restricted);
+    }
+    faces::candidates(state, id).into_iter().find_map(|face| {
+        let view = state.with_face(id, face);
+        (hindrance_as_is(&view, player, id, pool, sources, life) == Some(reason))
+            .then(|| why_as_is(&view, player, id, reason, (pool, sources, life), restricted))
+            .flatten()
+    })
+}
+
+/// [`why_now`] for the card as it stands.
+fn why_as_is(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    reason: Unplayable,
+    (pool, sources, _): (&ManaPool, &[ManaOption], i32),
+    restricted: bool,
+) -> Option<Why> {
+    let card = state.object(id)?;
+    match reason {
+        Unplayable::Timing => Some(Why::SorcerySpeed),
+        Unplayable::LandPlayed => None,
+        Unplayable::Mana => {
+            let timing = sorcery_timing(state, player);
+            let sources = &for_card(state, sources, id);
+            let way = of(state, player, id)
+                .into_iter()
+                .find(|way| way.instant || timing)?;
+            let cost = way.cost(card.card().mana_cost.as_ref()).map(|cost| {
+                crate::c9_emerge_ways::c9_emerge_offered(state, player, id, &way, cost)
+            })?;
+            // The total the payment is asked for, after increases and reductions.
+            let asked = std::cell::RefCell::new(None);
+            announce::payable(
+                state,
+                player,
+                id,
+                (
+                    way.alternative.is_some_and(CastWay::replaces_cost),
+                    way.alternative,
+                ),
+                &cost,
+                |total| {
+                    asked.borrow_mut().get_or_insert_with(|| total.clone());
+                    false
+                },
+            );
+            Some(crate::why::mana(
+                asked.into_inner().unwrap_or(cost),
+                pool,
+                sources,
+            ))
+        }
+        Unplayable::Targets => {
+            let (_, rules) = spell_ability(state, id)?;
+            crate::why::target(state, player, id, &rules)
+        }
+        Unplayable::Cost => Some(if of(state, player, id).is_empty() {
+            Why::NoWay
+        } else {
+            Why::OtherCost
+        }),
+        Unplayable::Restricted => {
+            if let Some(source) =
+                crate::prohibit::forbidder(state, crate::prohibit::Doing::Cast { player, card: id })
+            {
+                Some(crate::why::forbidden_by(state, source))
+            } else if !w17c_cast_only_holds(state, player, card) {
+                Some(Why::OwnCondition)
+            } else if restricted {
+                crate::why::split_second(state).or_else(|| {
+                    crate::w17b_statics::w17b_cant_cast_by(state, player)
+                        .map(|source| crate::why::forbidden_by(state, source))
+                })
+            } else {
+                None
+            }
+        }
+    }
 }
 
 /// The cards `player` may be able to cast, in the zones other than the hand: a graveyard, exile, the top of the library.

@@ -3,7 +3,7 @@
 //! A [`Decision`] lists every legal option; an [`Answer`] must be built from exactly those.
 
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityRef;
@@ -217,6 +217,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<UnplayableCard>>", optional))]
     pub unplayable: Vec<UnplayableCard>,
+    /// The activated abilities of the holder's permanents that `abilities` leaves out, each with why, in battlefield order.
+    /// Mana abilities and abilities whose costs the engine does not pay are not listed.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<InactiveAbility>>", optional))]
+    pub inactive: Vec<InactiveAbility>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
@@ -225,13 +230,126 @@ pub struct PriorityOptions {
 }
 
 /// A card of the holder's hand or command zone that cannot be played now, and why.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct UnplayableCard {
     /// The card.
     pub card: ObjectId,
     /// The first reason found, in the order of [`Unplayable`].
     pub reason: Unplayable,
+    /// The detail of the reason, when the engine can name it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub why: Option<Why>,
+}
+
+/// An activated ability of the holder's permanent that cannot be activated now, and why.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct InactiveAbility {
+    /// The ability.
+    pub ability: AbilityRef,
+    /// The first reason found.
+    pub reason: Unplayable,
+    /// The detail of the reason, when the engine can name it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub why: Option<Why>,
+}
+
+/// A play the engine refused (`IllegalAnswer::Refused`): the card or the source of the ability, and why.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Refusal {
+    /// The card or the permanent whose ability was refused.
+    pub object: ObjectId,
+    /// The ability, for an activation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub ability: Option<AbilityRef>,
+    /// The reason.
+    pub reason: Unplayable,
+    /// The detail of the reason, when the engine can name it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub why: Option<Why>,
+}
+
+/// The detail of an [`Unplayable`] reason, for the player's words (`docs/engine.md`, Refusals). It is worked out by the
+/// same checks that decide the reason.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Why {
+    /// A target with no legal choice: what it must be, in the words of the card's target ("a creature spell you
+    /// control"), and where such a target is.
+    Target {
+        /// What the target must be, with its article.
+        needs: String,
+        /// Where it is looked for.
+        zone: TargetZone,
+    },
+    /// The mana it costs now, after increases and reductions, against what the player has.
+    Mana {
+        /// The cost to pay.
+        cost: ManaCost,
+        /// The most mana the pool and the untapped sources can make, one use of each source.
+        at_hand: u32,
+        /// The kinds of mana the cost asks that nothing at hand makes.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
+        missing: Vec<ManaType>,
+    },
+    /// Only at sorcery speed: its controller's main phase with an empty stack.
+    SorcerySpeed,
+    /// A condition the card or ability sets for itself does not hold ("Cast this spell only during combat", "Activate
+    /// only if ...").
+    OwnCondition,
+    /// A rule in force forbids it: the object that put it in force, with its name, when there is one the player can see.
+    ForbiddenBy {
+        /// The object.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        source: Option<ObjectId>,
+        /// Its name.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        name: Option<String>,
+    },
+    /// A spell with split second is on the stack (CR 702.61a).
+    SplitSecond {
+        /// The spell.
+        spell: ObjectId,
+        /// Its name.
+        name: String,
+    },
+    /// A `{T}` or `{Q}` ability of a creature its controller has not controlled since their latest turn began (CR 302.6).
+    SummoningSick,
+    /// A `{T}` ability of a permanent that is tapped, or a `{Q}` ability of one that is untapped.
+    Tapped,
+    /// The ability's limit is spent ("Activate only once each turn", one loyalty ability a turn).
+    LimitSpent,
+    /// A cost besides mana cannot be paid: the life, the counters or the objects it takes are not there.
+    OtherCost,
+    /// The card has no way to be cast from where it is.
+    NoWay,
+}
+
+/// Where a target is looked for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum TargetZone {
+    /// A permanent.
+    Battlefield,
+    /// A spell or ability on the stack.
+    Stack,
+    /// A card in a graveyard.
+    Graveyard,
+    /// A card in exile.
+    Exile,
+    /// A card in a hand, a library or the command zone.
+    Elsewhere,
+    /// A player.
+    Player,
 }
 
 /// Why a card cannot be played now. The variants are looked for in this order; a later one means the card came closer

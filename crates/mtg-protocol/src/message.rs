@@ -3,6 +3,7 @@
 //! Both enums are internally tagged with `type`, so each message is one flat JSON object.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::decision::Refusal;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
@@ -489,6 +490,11 @@ pub enum ServerMessage {
         code: ErrorCode,
         /// Human-readable detail.
         message: String,
+        /// For an `IllegalAnswer` that plays a card or ability the engine cannot play now: which, and why, for the
+        /// client's own words. Only the refused seat gets it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        refusal: Option<Refusal>,
     },
     /// The game is over.
     GameOver {

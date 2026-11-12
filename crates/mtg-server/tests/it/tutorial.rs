@@ -140,7 +140,7 @@ async fn play_lesson(server: &TestServer) -> (GameResult, u32, Vec<i32>, StateVi
                 let view = view.unwrap();
                 return (result, view.table.turn.number, lives, view);
             }
-            ServerMessage::Error { code, message } => panic!("refused: {code:?} {message}"),
+            ServerMessage::Error { code, message, .. } => panic!("refused: {code:?} {message}"),
             _ => {}
         }
     }

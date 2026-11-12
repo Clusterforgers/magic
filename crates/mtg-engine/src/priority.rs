@@ -15,7 +15,9 @@ use crate::announce::some_x_has_targets;
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
-use crate::decision::{FaceOption, PriorityAction, PriorityOptions};
+use crate::decision::{
+    FaceOption, InactiveAbility, PriorityAction, PriorityOptions, Refusal, Unplayable, Why,
+};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
@@ -109,6 +111,40 @@ fn e15g_special_answer(
     }
 }
 
+/// The refusal of a play of `card` the offer does not list: with the reason the offer gives for it, else `NotOffered`.
+fn refused_card(options: &PriorityOptions, card: ObjectId, what: &'static str) -> EngineError {
+    options
+        .unplayable
+        .iter()
+        .find(|entry| entry.card == card)
+        .map_or(IllegalAnswer::NotOffered(what), |entry| {
+            IllegalAnswer::Refused(Box::new(Refusal {
+                object: card,
+                ability: None,
+                reason: entry.reason,
+                why: entry.why.clone(),
+            }))
+        })
+        .into()
+}
+
+/// The refusal of an activation the offer does not list: with the reason the offer gives for it, else `NotOffered`.
+fn refused_ability(options: &PriorityOptions, ability: AbilityRef) -> EngineError {
+    options
+        .inactive
+        .iter()
+        .find(|inactive| inactive.ability == ability)
+        .map_or(IllegalAnswer::NotOffered("ability"), |inactive| {
+            IllegalAnswer::Refused(Box::new(Refusal {
+                object: ability.object,
+                ability: Some(ability),
+                reason: inactive.reason,
+                why: inactive.why.clone(),
+            }))
+        })
+        .into()
+}
+
 fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, EngineError> {
     if options.plottable.contains(&object) {
         Ok(Outcome::BeginPlot(object))
@@ -169,11 +205,7 @@ fn leaves_from_here(
 }
 
 /// Whether the ability `rules`, which `address` names among the abilities of the permanent `object`, could be
-/// activated by `player` now.
-///
-/// The engine pays `{T}`, mana, the loss of the source and the parts of `Price::parts` for an ability and nothing else;
-/// `Caps` keeps abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
-/// permanents the player taps.
+/// activated by `player` now ([`activation`]).
 fn can_activate(
     state: &GameState,
     player: PlayerId,
@@ -181,7 +213,40 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
-    if crate::prohibit::forbidden(
+    matches!(
+        activation(state, player, object, address, rules),
+        Activation::Ready
+    )
+}
+
+/// Whether an ability can be activated now, and why not.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum Activation {
+    /// It can be activated now.
+    Ready,
+    /// It cannot now, for this reason.
+    Hindered(Unplayable, Option<Why>),
+    /// It is never offered here: a mana ability, an ability that works from another zone, a cost the engine does not
+    /// pay, or a cost a player who does not control the source cannot pay.
+    Never,
+}
+
+/// The [`Activation`] of the ability `rules`, which `address` names among the abilities of the permanent `object`, for
+/// `player` now: the first check that fails gives the reason.
+///
+/// The engine pays `{T}`, mana, the loss of the source and the parts of `Price::parts` for an ability and nothing else;
+/// `Caps` keeps abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
+/// permanents the player taps.
+#[allow(clippy::too_many_lines)]
+pub(crate) fn activation(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    address: AbilityRef,
+    rules: &Ability,
+) -> Activation {
+    use Activation::{Hindered, Never, Ready};
+    if let Some(source) = crate::prohibit::forbidder(
         state,
         crate::prohibit::Doing::Activate {
             player,
@@ -189,20 +254,47 @@ fn can_activate(
             kind: crate::activation_kind::specific(state, address, rules),
         },
     ) {
-        return false;
+        return Hindered(
+            Unplayable::Restricted,
+            Some(crate::why::forbidden_by(state, source)),
+        );
     }
+    let targets = || {
+        Hindered(
+            Unplayable::Targets,
+            crate::why::target(state, player, object.id(), rules),
+        )
+    };
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
     if let Ability::Loyalty { cost, .. } = rules {
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
         let counters = object
             .permanent()
             .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
-        return loyalty::can_activate(state, player, object, *cost)
-            && loyalty_mana_affordable(state, player, object, address, rules)
-            && announceable(state, player, object.id(), rules)
-            && some_x_has_targets(state, player, object.id(), rules, |x| {
-                x == 0 || (*cost == LoyaltyCost::MinusX && x <= counters)
-            });
+        if !loyalty::can_activate(state, player, object, *cost) {
+            return if object.zone() != Zone::Battlefield {
+                Never
+            } else if !sorcery_timing(state, player) {
+                Hindered(Unplayable::Timing, Some(Why::SorcerySpeed))
+            } else if state.loyalty_spent(object.reference()) {
+                Hindered(Unplayable::Restricted, Some(Why::LimitSpent))
+            } else {
+                Hindered(Unplayable::Cost, Some(Why::OtherCost))
+            };
+        }
+        if !loyalty_mana_affordable(state, player, object, address, rules) {
+            return Hindered(Unplayable::Mana, None);
+        }
+        if !announceable(state, player, object.id(), rules) {
+            return targets();
+        }
+        return if some_x_has_targets(state, player, object.id(), rules, |x| {
+            x == 0 || (*cost == LoyaltyCost::MinusX && x <= counters)
+        }) {
+            Ready
+        } else {
+            Hindered(Unplayable::Targets, None)
+        };
     }
     let Ability::Activated {
         cost,
@@ -213,40 +305,41 @@ fn can_activate(
         ..
     } = rules
     else {
-        return false;
+        return Never;
     };
     // An ability is activated from the zone it works from, and a cost that moves its source needs it in the right one.
     if *from != zone_kind(object.zone()) {
-        return false;
+        return Never;
     }
     if let Some(limit) = limit
         && state.limit_spent(*limit, object.reference(), address.source, address.ability)
     {
-        return false;
+        return Hindered(Unplayable::Restricted, Some(Why::LimitSpent));
     }
     let cost = crate::free_activation::cost(state, player, (address, rules), cost);
     let Ok(price) =
         Price::announced_in(&cost, state, player, object.id(), address.source.granter())
     else {
-        return false;
+        return Never;
     };
     // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
     let foreign = controller_of_object(state, object) != player;
     if rules.is_mana_ability()
         || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
     {
-        return false;
+        return Never;
     }
+    let other_cost = Hindered(Unplayable::Cost, Some(Why::OtherCost));
     if !leaves_from_here(state, player, object, price.leaves) {
-        return false;
+        return other_cost;
     }
     // Life, counters and the objects the other parts take must be there to pay (CR 118.3).
     let Some(claimed) = price.claimed(state, player, object.id()) else {
-        return false;
+        return other_cost;
     };
     if *timing == Timing::Sorcery && !free_activation::timing_open(state, player, (address, rules))
     {
-        return false;
+        return Hindered(Unplayable::Timing, Some(Why::SorcerySpeed));
     }
     // "Activate only if ..." is judged as the ability is activated (CR 602.5b).
     if let Some(condition) = condition
@@ -254,17 +347,17 @@ fn can_activate(
             .holds(condition)
             .unwrap_or(false)
     {
-        return false;
+        return Hindered(Unplayable::Restricted, Some(Why::OwnCondition));
     }
-    if !source_turns(state, object, &price) {
-        return false;
+    if let Some(why) = source_turns(state, object, &price) {
+        return Hindered(Unplayable::Cost, Some(why));
     }
     if let Some(mana) =
         crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
         let mana = &mana;
         let Some(seat) = state.player(player) else {
-            return false;
+            return Never;
         };
         let mut sources = price.sources(state, player, object.id());
         // What the other parts of the cost take is not there to tap for mana, and the life they pay is not there to spend.
@@ -275,7 +368,10 @@ fn can_activate(
         let spend = Spend::for_ability(state, object.id(), price.x > 0);
         let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
-            return false;
+            return Hindered(
+                Unplayable::Mana,
+                Some(crate::why::mana(mana.clone(), seat.mana(), &sources)),
+            );
         }
     }
     let affords = |x: u32| {
@@ -286,19 +382,28 @@ fn can_activate(
     };
     // "X can't be 0": the least X must be paid for.
     let least = crate::announce::least_of(&cost);
-    (least == 0 || affords(least))
-        && announceable(state, player, object.id(), rules)
-        && some_x_has_targets(state, player, object.id(), rules, affords)
+    if least != 0 && !affords(least) {
+        return Hindered(Unplayable::Mana, None);
+    }
+    if !announceable(state, player, object.id(), rules) {
+        return targets();
+    }
+    if some_x_has_targets(state, player, object.id(), rules, affords) {
+        Ready
+    } else {
+        Hindered(Unplayable::Targets, None)
+    }
 }
 
-/// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a
-/// creature free of summoning sickness (CR 302.6); a price with neither asks nothing of it.
-fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
+/// Why the source cannot be tapped (`{T}`) or untapped (`{Q}`) as the price asks, `None` when it can: it must be a
+/// permanent in the other state, and a creature free of summoning sickness (CR 302.6); a price with neither asks
+/// nothing of it.
+fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> Option<Why> {
     if !price.tap && !price.untap {
-        return true;
+        return None;
     }
     let Some(permanent) = object.permanent() else {
-        return false;
+        return Some(Why::OtherCost);
     };
     let sick = keywords::sick_for_abilities(state, object.id())
         && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
@@ -307,7 +412,13 @@ fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
     } else {
         !permanent.tapped()
     };
-    ready && !sick
+    if !ready {
+        Some(Why::Tapped)
+    } else if sick {
+        Some(Why::SummoningSick)
+    } else {
+        None
+    }
 }
 
 /// What may help pay the waterbend part of the price of an ability of `source`: the artifacts and creatures the cost does not
@@ -394,8 +505,19 @@ fn own_cards_elsewhere(state: &GameState, player: PlayerId) -> impl Iterator<Ite
 
 /// Activated abilities of `player`'s permanents, and of the cards they own in a hand, a graveyard, exile or the command
 /// zone, that are not mana abilities and could be used now.
+#[cfg(test)]
 pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<AbilityRef> {
+    abilities_now(state, player).0
+}
+
+/// [`other_abilities`], and the activated abilities of the permanents `player` controls that cannot be activated now,
+/// each with why (`PriorityOptions.inactive`).
+pub(crate) fn abilities_now(
+    state: &GameState,
+    player: PlayerId,
+) -> (Vec<AbilityRef>, Vec<InactiveAbility>) {
     let mut found = Vec::new();
+    let mut inactive = Vec::new();
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;
@@ -414,8 +536,19 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
                 Activators::Anyone => true,
                 Activators::Opponents => controller != player,
             };
-            if allowed && can_activate(state, player, object, address, &rules) {
-                found.push(address);
+            if !allowed {
+                continue;
+            }
+            match activation(state, player, object, address, &rules) {
+                Activation::Ready => found.push(address),
+                Activation::Hindered(reason, why) if controller == player => {
+                    inactive.push(InactiveAbility {
+                        ability: address,
+                        reason,
+                        why,
+                    });
+                }
+                Activation::Hindered(..) | Activation::Never => {}
             }
         }
     }
@@ -429,7 +562,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
             }
         }
     }
-    found
+    (found, inactive)
 }
 
 /// Whether `player` can do anything worth stopping for: play a land, cast a spell or use an ability that is not a mana ability.
@@ -492,6 +625,30 @@ fn face_options(
     found
 }
 
+/// The abilities offered and explained while split second forbids every activation but mana abilities (`silenced`):
+/// none is offered, and each one that could be activated says so.
+fn silence(
+    state: &GameState,
+    silenced: bool,
+    (abilities, inactive): (Vec<AbilityRef>, Vec<InactiveAbility>),
+) -> (Vec<AbilityRef>, Vec<InactiveAbility>) {
+    match crate::why::split_second(state).filter(|_| silenced) {
+        Some(why) => (
+            Vec::new(),
+            abilities
+                .into_iter()
+                .map(|ability| InactiveAbility {
+                    ability,
+                    reason: Unplayable::Restricted,
+                    why: Some(why.clone()),
+                })
+                .chain(inactive)
+                .collect(),
+        ),
+        None => (abilities, inactive),
+    }
+}
+
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
@@ -540,11 +697,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .collect();
     let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
     let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
-    let abilities = if silenced {
-        Vec::new()
-    } else {
-        other_abilities(state, player)
-    };
+    let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     let mut faces = face_options(
         state,
         player,
@@ -565,7 +718,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         faces: &faces,
         special: [&suspendable, &foretellable, &plottable],
     };
-    let unplayable = unplayable::unplayable(state, player, &judged, &offered);
+    let at_hand = (&pool, all_mana.as_slice(), life);
+    let unplayable = unplayable::unplayable(state, player, &judged, &offered, at_hand, restricted);
     PriorityOptions {
         can_act: can_act(
             &playable_lands,
@@ -595,6 +749,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         companion,
         faces,
         unplayable,
+        inactive,
         can_pass: true,
     }
 }
@@ -610,7 +765,7 @@ pub(crate) fn answer(
         PriorityAction::Pass => Ok(Outcome::Events(vec![Event::PriorityPassed { player }])),
         PriorityAction::PlayLand(object) => {
             if !options.playable_lands.contains(&object) {
-                return Err(IllegalAnswer::NotOffered("land").into());
+                return Err(refused_card(options, object, "land"));
             }
             Ok(Outcome::Events(crate::stack::land_played(
                 state, player, object, None,
@@ -634,13 +789,13 @@ pub(crate) fn answer(
         }
         PriorityAction::CastSpell(object) => {
             if !options.castable.contains(&object) {
-                return Err(IllegalAnswer::NotOffered("spell").into());
+                return Err(refused_card(options, object, "spell"));
             }
             Ok(Outcome::BeginCast(object))
         }
         PriorityAction::Activate(ability) => {
             if !options.abilities.contains(&ability) {
-                return Err(IllegalAnswer::NotOffered("ability").into());
+                return Err(refused_ability(options, ability));
             }
             Ok(Outcome::BeginActivation(ability))
         }

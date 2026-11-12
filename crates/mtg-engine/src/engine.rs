@@ -762,10 +762,24 @@ impl Engine {
             (What::Trigger(_) | What::Attack(..) | What::Block(_), None) => return Ok(()),
         };
         let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
+        // The target that had no legal choice, read as the announcement read it.
+        let why = (reason == Unplayable::Targets)
+            .then(|| {
+                let rules = match &pending.what {
+                    What::Spell(card) => {
+                        crate::resolve::spell_ability(&self.state, *card).map(|(_, rules)| rules)
+                    }
+                    What::Ability(address) => crate::ability_reader::ability(&self.state, *address),
+                    _ => None,
+                }?;
+                crate::why::target(&self.state, player, object, &rules)
+            })
+            .flatten();
         self.commit(vec![Event::AnnouncementRewound {
             player,
             object,
             reason,
+            why,
         }])
     }
 

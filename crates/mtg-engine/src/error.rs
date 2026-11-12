@@ -269,6 +269,9 @@ pub enum IllegalAnswer {
         /// The total mana value of the cards chosen.
         got: u32,
     },
+    /// The card or ability the answer plays cannot be played now, for the reason it carries.
+    #[error("that cannot be played now ({:?})", .0.reason)]
+    Refused(Box<crate::decision::Refusal>),
     /// The objects chosen for a cost are not what it takes.
     #[error("the cost takes {0}")]
     WrongPick(&'static str),

@@ -163,7 +163,7 @@ async fn ready_is_refused_without_a_deck_and_a_ready_seat_keeps_its_deck_until_i
     bo.send(&ClientMessage::Ready).await;
     loop {
         match bo.message().await {
-            ServerMessage::Error { code, message } => {
+            ServerMessage::Error { code, message, .. } => {
                 assert_eq!(code, ErrorCode::BadMessage);
                 assert!(message.contains("choose a deck"), "{message}");
                 break;

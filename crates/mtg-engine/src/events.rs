@@ -198,6 +198,10 @@ pub enum Event {
         object: ObjectId,
         /// Why it could not go on.
         reason: Unplayable,
+        /// The detail of the reason, when the engine can name it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        why: Option<crate::decision::Why>,
     },
     /// A priority round started with this player.
     PriorityGranted {

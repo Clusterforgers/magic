@@ -108,7 +108,24 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 - `castable` lists cards in a hand and, for a way that names another zone, in a graveyard, exile, the top of a library or the command zone; it means affordable at the timing the card allows. A spell that needs targets is castable only when every target specification has enough legal targets (CR 601.2c). Split second (CR 702.61) empties `castable` and `abilities` while the spell is on the stack; mana abilities, special actions and passing stay.
 - `abilities` lists the activated abilities that work from the zone the card is in, are not mana abilities and could be activated now (`priority::other_abilities`). `Activated.by` names who may activate a permanent's ability: its controller (default), any player or its opponents; the activator controls the ability on the stack, and a cost that taps or gives up the permanent is not offered to a player who does not control it. `Limit::TimesPerTurn(n)` counts the uses of an ability in the turn (`Tallies::limit_uses`).
 - `unplayable` names each card of the holder's hand and command zone that no list offers, with its first reason (`Unplayable`); the hand and command cards are judged once (`unplayable::judge`) and the judgement also fills `castable`. `suspendable` and `foretellable` list the special actions.
+- `inactive` names each activated ability of the holder's permanents that `abilities` leaves out, with its reason; `priority::activation` is the one check and gives the first reason that fails (mana abilities, other zones and costs the engine does not pay are never listed).
 - `can_act` is true with a land to play, a spell to cast, a card to suspend or foretell or such an ability. Mana abilities alone never count. One function holds the rule (`priority::can_act`); the server uses the flag only to pass for a seat that asked for it ([server.md](server.md)). The response clock and the yields never read it, so the pace of a table never tells what a hand holds. `PlayOptions::auto_pass` in `mtg-testkit` applies the same rule in a bot game and is the reference the server tests compare with.
+
+## Refusals
+
+Each reason carries a detail (`Why`, `why.rs`) read off the check that decided it, so the two never disagree.
+
+| `Why` | From |
+|---|---|
+| `Target { needs, zone }` | the first target specification with too few legal targets (`choose::unmet_target`), in the words of `wording::target_need`: "a creature spell you control on the stack" |
+| `Mana { cost, at_hand, missing }` | the total the payment is asked for after increases and reductions, the pool plus one use of each source, and the kinds of mana a one-kind symbol asks that nothing makes |
+| `SorcerySpeed`, `OwnCondition` | the timing of the card or ability, and a `CastOnly` or "Activate only if" that does not hold |
+| `ForbiddenBy { source, name }` | the first prohibition in force (`prohibit::forbidder`, `w17b_cant_cast_by`), named while its source is face up on the battlefield, on the stack or in the command zone |
+| `SplitSecond` | the spell with split second on the stack |
+| `SummoningSick`, `Tapped`, `LimitSpent`, `OtherCost`, `NoWay` | the source that cannot turn, a spent `Limit` or loyalty activation, a cost besides mana, and a card with no way to be cast from its zone |
+
+- A play the offer does not list is refused with `IllegalAnswer::Refused(Refusal)`, which carries the offer's reason and detail for that card or ability; any other play stays `NotOffered`.
+- `AnnouncementRewound.why` names the target that had none when a cast or activation is taken back for its targets.
 
 ## Manual actions
 

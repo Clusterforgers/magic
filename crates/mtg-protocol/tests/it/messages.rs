@@ -257,6 +257,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
+            inactive: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -367,6 +368,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
+            inactive: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -846,6 +848,7 @@ fn server_samples() -> Vec<ServerMessage> {
         out.push(ServerMessage::Error {
             code,
             message: format!("{code:?}"),
+            refusal: None,
         });
     }
     out.extend(clocked_decisions());
@@ -1165,7 +1168,7 @@ fn client_wire_shape_is_flat_and_tagged(
     })
 )]
 #[case(
-    ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into() },
+    ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into(), refusal: None },
     json!({"type": "Error", "code": "StaleDecision", "message": "late"})
 )]
 #[case(
@@ -1403,7 +1406,7 @@ proptest! {
             decision: DecisionId(u64::from(id)),
             answer: Answer::Discard(cards.iter().map(|c| ObjectId(u64::from(*c))).collect()),
         };
-        let error = ServerMessage::Error { code: ErrorCode::BadMessage, message: text };
+        let error = ServerMessage::Error { code: ErrorCode::BadMessage, message: text, refusal: None };
         round_trip(&join);
         round_trip(&answer);
         round_trip(&error);
@@ -1931,6 +1934,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         endable: Vec::new(),
         faces: Vec::new(),
         unplayable: Vec::new(),
+        inactive: Vec::new(),
         can_act: true,
         can_pass: true,
     };
