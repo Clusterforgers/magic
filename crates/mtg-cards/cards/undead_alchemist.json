@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3807e6fe-0555-4b09-aef2-efd58abaf669",
+  "name": "Undead Alchemist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Undead Alchemist",
+      "oracle_fingerprint": "50b986d85bcbd3cc298f2952ce15d22d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "EachPlayer",
+                "source": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }],
+                "combat": true
+              }
+            },
+            "by": { "Instead": [{ "Mill": { "who": "Triggering", "count": "Triggering" } }] }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 247 }
+          }
+        }
+      ]
+    }
+  ]
+}

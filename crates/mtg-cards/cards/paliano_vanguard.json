@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6dd3be81-b6dc-42ee-9e0a-2e39e3f4e793",
+  "name": "Paliano Vanguard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Paliano Vanguard",
+      "oracle_fingerprint": "1b9f7d1c31491327aea3926298c53e98",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "NoteCreatureTypes" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 221 }
+          }
+        }
+      ]
+    }
+  ]
+}

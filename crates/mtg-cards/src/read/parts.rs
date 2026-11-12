@@ -629,6 +629,26 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::AsEntersWith {
+            effects: list,
+            counter,
+            count,
+        } => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+            out.push(Step::new(
+                depth,
+                format!(
+                    "then it enters with {} {} counters",
+                    generic::node(ctx, count),
+                    generic::node(ctx, counter)
+                ),
+            ));
+        }
+        ReplaceBy::AsEnters(list) => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+        }
         ReplaceBy::Plus(list) => {
             out.push(Step::new(depth, "it happens, and with it:"));
             effects::list(ctx, list, depth + 1, out);

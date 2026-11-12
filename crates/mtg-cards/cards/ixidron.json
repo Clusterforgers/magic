@@ -1,14 +1,25 @@
 {
   "oracle_id": "a86587ea-14ec-45db-8bac-10b6b9eaeb25",
   "name": "Ixidron",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ixidron",
       "oracle_fingerprint": "91ca8324f9ffe025d48726ae06ee09a7",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 94 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "TurnFaceDown": {
+                    "what": { "Each": [{ "Type": "Creature" }, "Other", { "Not": "Token" }] }
+                  }
+                }
+              ]
+            }
+          }
         },
         {
           "Static": {

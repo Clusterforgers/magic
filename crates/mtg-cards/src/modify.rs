@@ -994,6 +994,25 @@ pub enum DraftRule {
     NoteNextName,
     /// Reveal it as drafted, then guess the name of the next card drafted from its booster pack.
     GuessNextPick,
+    /// Turn it face down during the draft to look at the next card a chosen player drafts.
+    LookAtNextDrafted,
+    /// Turn it face down during the draft to look at an unopened booster pack or one nobody looks at.
+    LookAtAnyPack,
+    /// Draft a whole booster pack in place of one card, then draft no more cards that round.
+    DraftWholePack,
+    /// Draft an additional card from a pack, putting this card into it.
+    DraftAdditional,
+    /// Draft an additional card from a pack, turning this card face down and passing the next pack without a pick.
+    DraftAdditionalPassNext,
+    /// Remove a card drafted from the draft, face down or face up.
+    RemoveDrafted {
+        /// It is removed face up.
+        face_up: bool,
+    },
+    /// Reveal a drafted card and note its name, then turn this card face down.
+    NoteName,
+    /// Reveal a drafted creature card and note its creature types, then turn this card face down.
+    NoteCreatureTypes,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

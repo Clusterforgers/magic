@@ -5570,6 +5570,22 @@ impl Walker<'_> {
                 }
                 self.at("count", |w| w.amount(count));
             }
+            ReplaceBy::AsEnters(effects) => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                if effects.is_empty() {
+                    self.problem("needs at least one effect");
+                }
+                self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::AsEntersWith { effects, count, .. } => {
+                if !enters {
+                    self.problem("only an `Enters` event has effects as it enters");
+                }
+                self.effect_list("AsEntersWith", effects, false);
+                self.at("count", |w| w.amount(count));
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

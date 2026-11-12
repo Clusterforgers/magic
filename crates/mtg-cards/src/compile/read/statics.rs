@@ -1546,6 +1546,15 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             super::w13b_mill_rad::w13b_tapped_texts(counter, *count)
         }
         (ReplaceBy::WithCounterOf(kinds), None) => super::e15b_entering::counter_of_texts(kinds),
+        (ReplaceBy::AsEnters(effects), None) => super::r304_as_enters::texts(effects),
+        (
+            ReplaceBy::AsEntersWith {
+                effects,
+                counter,
+                count,
+            },
+            None,
+        ) => super::r304_as_enters::with_texts(effects, counter, count),
         (ReplaceBy::DayIfNeither, None) => {
             vec!["If it's neither day nor night, it becomes day as ~ enters".to_owned()]
         }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "520c4d88-34b6-4a26-81ca-65eb8b10461c",
   "name": "Phylactery Lich",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Phylactery Lich",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Indestructible" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 92 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                    "as": "chosen"
+                  }
+                },
+                {
+                  "PutCounters": {
+                    "on": { "Bound": "chosen" },
+                    "counter": { "Other": "phylactery" }
+                  }
+                }
+              ]
+            }
           }
         },
         {

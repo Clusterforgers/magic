@@ -797,6 +797,8 @@ const RUNS: &[&str] = &[
     "Keyword.Hideaway",
     "Keyword.Gift",
     "ReplaceBy.Devour",
+    "ReplaceBy.AsEnters",
+    "ReplaceBy.AsEntersWith",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
