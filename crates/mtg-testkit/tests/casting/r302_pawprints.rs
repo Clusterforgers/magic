@@ -73,6 +73,6 @@ fn modes_take_their_pawprints_from_the_most(
         }
     }
     let after = driver.state().player(pid(0)).unwrap().life();
-    assert_eq!(i32::try_from(after - before).unwrap(), gained, "{modes:?}");
+    assert_eq!(after - before, gained, "{modes:?}");
     Ok(())
 }

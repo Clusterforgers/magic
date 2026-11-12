@@ -94,7 +94,7 @@ fn a_counter_reads_the_source_of_the_ability(
     assert_eq!(cast.is_ok(), legal, "{kind:?} legal {legal}");
     settle(&mut driver)?;
     let lost = before - life(&driver);
-    assert_eq!(lost, if legal { 0 } else { 1 }, "{kind:?}");
+    assert_eq!(lost, i32::from(!legal), "{kind:?}");
     let again = driver.begin_activation("Pinger").is_ok();
     assert_eq!(again, !locks, "{kind:?} locks {locks}");
     Ok(())
