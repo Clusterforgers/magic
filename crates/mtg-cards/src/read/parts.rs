@@ -258,15 +258,9 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
                 phrase::selector(ctx, what)
             )
         }
-        TriggerPattern::Untapped { what, untap_step } => format!(
-            "{} becomes untapped{}",
-            phrase::selector(ctx, what),
-            if *untap_step {
-                " during your untap step"
-            } else {
-                ""
-            }
-        ),
+        TriggerPattern::Untapped { what, untap_step } => {
+            crate::trigger::untapped_words(&phrase::selector(ctx, what), *untap_step)
+        }
         TriggerPattern::Chapter { number } => format!("chapter {number}"),
         TriggerPattern::StepBegins { step, whose } => {
             format!("the beginning of {}", step_text(ctx, *step, whose))

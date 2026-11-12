@@ -10,7 +10,7 @@ use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::trigger::{Step, TriggerPattern};
+use crate::trigger::{Step, TriggerPattern, untapped_words};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 use mtg_core::card::CardType;
 
@@ -1456,14 +1456,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
-        TriggerPattern::Untapped {
-            what,
-            untap_step: false,
-        } => said(what, "becomes untapped"),
-        TriggerPattern::Untapped {
-            what,
-            untap_step: true,
-        } => said(what, "becomes untapped during your untap step"),
+        TriggerPattern::Untapped { what, untap_step } => {
+            said(what, &untapped_words("", *untap_step))
+        }
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
         TriggerPattern::Explored { what } => said(what, "explores"),

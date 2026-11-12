@@ -1145,6 +1145,22 @@ pub enum ShieldShape {
     Next,
 }
 
+/// "<subject> becomes untapped", with " during your untap step" for an untap in the controller's untap step; an empty
+/// subject gives the verb alone.
+#[must_use]
+pub fn untapped_words(subject: &str, untap_step: bool) -> String {
+    let during = if untap_step {
+        " during your untap step"
+    } else {
+        ""
+    };
+    if subject.is_empty() {
+        format!("becomes untapped{during}")
+    } else {
+        format!("{subject} becomes untapped{during}")
+    }
+}
+
 impl ShieldShape {
     /// The shape of a shield, or none when the engine plays no shield of this replacement.
     #[must_use]

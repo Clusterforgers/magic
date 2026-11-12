@@ -56,6 +56,115 @@
   {
    "Triggered": {
     "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "Modal": {
+       "choose": {
+        "min": 1,
+        "max": 1
+       },
+       "modes": [
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "token": {
+             "Custom": {
+              "name": "Balloon",
+              "colors": [
+               "Red"
+              ],
+              "types": [
+               "Creature"
+              ],
+              "subtypes": [
+               "Balloon"
+              ],
+              "power": 1,
+              "toughness": 1,
+              "abilities": [
+               {
+                "Keyword": "Flying"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        },
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           }
+          }
+         ],
+         "effects": [
+          {
+           "Sacrifice": {
+            "filter": [
+             {
+              "Subtype": "Balloon"
+             }
+            ],
+            "as": "popped"
+           }
+          },
+          {
+           "If": {
+            "condition": {
+             "Compare": {
+              "left": {
+               "CountOf": {
+                "of": {
+                 "Bound": "popped"
+                },
+                "filter": []
+               }
+              },
+              "op": "Ge",
+              "right": 1
+             }
+            },
+            "then": [
+             {
+              "Continuous": {
+               "affected": {
+                "Target": 0
+               },
+               "mods": [
+                {
+                 "AddKeyword": "Flying"
+                }
+               ],
+               "duration": "UntilEndOfTurn"
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Choose one.\n• Create a 1/1 red Balloon creature token with flying.\n• Sacrifice a Balloon. If you do, target creature gains flying until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
      "StepBegins": {
       "step": "BeginCombat",
       "whose": "You"
@@ -164,6 +273,53 @@
    }
   },
   "At the beginning of your upkeep, reveal the top card of your library. If it's a land card, put it into your graveyard and repeat this process."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": "{2}",
+       "times": {
+        "Difference": [
+         5,
+         {
+          "Distinct": {
+           "of": [
+            {
+             "Type": "Land"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ],
+           "stat": "BasicLandTypes"
+          }
+         }
+        ]
+       },
+       "unpaid": [
+        {
+         "Sacrifice": {
+          "filter": [
+           "This"
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Domain — At the beginning of your upkeep, sacrifice this creature unless you pay {10}. This cost is reduced by {2} for each basic land type among lands you control."
  ],
  [
   {
@@ -304,6 +460,62 @@
   {
    "Triggered": {
     "when": {
+     "Visit": {}
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "BecomeCopy": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Not": {
+           "Is": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       },
+       "of": {
+        "Target": 0
+       },
+       "except": [
+        {
+         "RemoveSupertype": "Legendary"
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Choose target creature you control. Each other creature you control becomes a copy of that creature until end of turn, except it isn't legendary."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
      "StepBegins": {
       "step": "Upkeep",
       "whose": "You"
@@ -372,6 +584,152 @@
    }
   },
   "At the beginning of your upkeep, any opponent may sacrifice a creature of their choice. If no one does, transform this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 3
+     }
+    },
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "In": "Hand"
+           },
+           {
+            "OwnedBy": "You"
+           },
+           {
+            "Not": {
+             "Type": "Land"
+            }
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            },
+            {
+             "Not": {
+              "Type": "Land"
+             }
+            }
+           ]
+          },
+          "as": "spell"
+         }
+        },
+        {
+         "CastFromZone": {
+          "what": {
+           "Bound": "spell"
+          },
+          "free": true
+         }
+        }
+       ],
+       "most": 1000,
+       "ask": "You"
+      }
+     },
+     {
+      "Exile": {
+       "what": "This",
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "III — You may cast any number of spells from your hand without paying their mana costs. Exile this Saga, then return it to the battlefield."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 1
+     }
+    },
+    "effects": [
+     {
+      "Mill": {
+       "count": 5
+      }
+     },
+     {
+      "Reflexive": {
+       "targets": [
+        {
+         "what": {
+          "Object": [
+           {
+            "Type": "Creature"
+           }
+          ]
+         }
+        }
+       ],
+       "effects": [
+        {
+         "DealDamage": {
+          "to": {
+           "Target": 0
+          },
+          "amount": {
+           "Greatest": {
+            "of": [
+             {
+              "In": "Graveyard"
+             },
+             {
+              "OwnedBy": "You"
+             },
+             {
+              "Type": "Creature"
+             }
+            ],
+            "stat": "Power"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "I — Mill five cards. When you do, this Saga deals damage equal to the greatest power among creature cards in your graveyard to target creature."
  ],
  [
   {
@@ -457,6 +815,244 @@
    "Triggered": {
     "when": {
      "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Discard": {
+       "who": "EachPlayer",
+       "count": 1,
+       "optional": true,
+       "as": "discarded"
+      }
+     },
+     {
+      "Draw": {
+       "who": {
+        "PlayersWhere": {
+         "who": "EachPlayer",
+         "test": {
+          "Compare": {
+           "left": {
+            "CountOf": {
+             "of": {
+              "Bound": "discarded"
+             },
+             "filter": [
+              {
+               "OwnedBy": "You"
+              }
+             ]
+            }
+           },
+           "op": "Ge",
+           "right": 1
+          }
+         }
+        }
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CountOf": {
+           "of": {
+            "Bound": "discarded"
+           },
+           "filter": [
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Moogle",
+            "colors": [
+             "White"
+            ],
+            "types": [
+             "Creature"
+            ],
+            "subtypes": [
+             "Moogle"
+            ],
+            "power": 1,
+            "toughness": 2,
+            "abilities": [
+             {
+              "Keyword": "Lifelink"
+             }
+            ]
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CountOf": {
+           "of": {
+            "Bound": "discarded"
+           },
+           "filter": [
+            {
+             "Not": {
+              "Type": "Creature"
+             }
+            }
+           ]
+          }
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "PutCounters": {
+          "on": {
+           "Each": [
+            {
+             "Subtype": "Moogle"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ]
+          },
+          "counter": "+1/+1"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Dance — At the beginning of your end step, each player may discard a card. Each player who discarded a card this way draws a card. If a creature card was discarded this way, you create a 1/2 white Moogle creature token with lifelink. Then if a noncreature card was discarded this way, put a +1/+1 counter on each Moogle you control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "Mana": "{X}"
+        },
+        {
+         "XAtMost": {
+          "Tallied": {
+           "who": "You",
+           "what": "LifeLost"
+          }
+         }
+        }
+       ],
+       "paid": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Astartes Warrior",
+            "colors": [
+             "Black"
+            ],
+            "types": [
+             "Creature"
+            ],
+            "subtypes": [
+             "Astartes",
+             "Warrior"
+            ],
+            "power": 2,
+            "toughness": 2,
+            "abilities": [
+             {
+              "Keyword": "Menace"
+             }
+            ]
+           }
+          },
+          "count": "X"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Primarch of the Death Guard — At the beginning of your end step, you may pay {X}. If you do, create X 2/2 black Astartes Warrior creature tokens with menace. X can't be greater than the amount of life you lost this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "from": "Battlefield",
+      "to": "Graveyard"
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": {
+        "Battlefield": {
+         "tapped": true,
+         "transformed": true,
+         "counters": [
+          [
+           {
+            "Other": "time"
+           },
+           3
+          ]
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When ~ dies, return it to the battlefield tapped and transformed under its owner's control with three time counters on it."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
       "step": "Upkeep",
       "whose": "AttachedPlayer"
      }
@@ -472,6 +1068,146 @@
    }
   },
   "At the beginning of enchanted player's first upkeep each turn, that player gets an additional upkeep step after this step."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 6,
+       "results": [
+        {
+         "from": 1,
+         "effects": [
+          {
+           "PutCounters": {
+            "on": "This",
+            "counter": {
+             "Other": "luck"
+            },
+            "count": {
+             "DieResult": "Only"
+            }
+           }
+          },
+          {
+           "CreateToken": {
+            "token": {
+             "Named": "treasure"
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Counters": {
+           "counter": {
+            "Other": "luck"
+           },
+           "on": "This"
+          }
+         },
+         "op": "Ge",
+         "right": 6
+        }
+       },
+       "then": [
+        {
+         "ClaimPrize": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Roll a six-sided die. Put a number of luck counters on ~ equal to the result and create a Treasure token. Then if there are six or more luck counters on ~, claim the prize!"
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Prize": {}
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Named": "treasure"
+       },
+       "count": 2
+      }
+     },
+     {
+      "Sacrifice": {
+       "filter": [
+        "This"
+       ]
+      }
+     },
+     {
+      "OpenAttraction": {}
+     }
+    ]
+   }
+  },
+  "Prize — Create two Treasure tokens, then sacrifice ~ and open an Attraction."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 2
+     }
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "Discard": {}
+        }
+       ],
+       "paid": [
+        {
+         "ExileTop": {
+          "count": 2,
+          "as": "impulse"
+         }
+        },
+        {
+         "Rule": {
+          "rule": {
+           "MayCast": {
+            "from": "Exile",
+            "only": {
+             "Bound": "impulse"
+            },
+            "play": true
+           }
+          },
+          "duration": "UntilEndOfYourNextTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "II — You may discard a card. If you do, exile the top two cards of your library. You may play them until the end of your next turn."
  ],
  [
   {
@@ -519,6 +1255,65 @@
    }
   },
   "At the beginning of each end step, if your team gained life this turn, create two 1/1 white Warrior creature tokens."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Search": {
+          "zone": "Library",
+          "also": [
+           "Graveyard"
+          ],
+          "filter": [
+           {
+            "Subtype": "Shrine"
+           }
+          ],
+          "as": "found"
+         }
+        },
+        {
+         "Move": {
+          "what": {
+           "Bound": "found"
+          },
+          "to": {
+           "Battlefield": {}
+          }
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Searched": {
+            "zone": "Library"
+           }
+          },
+          "then": [
+           {
+            "Shuffle": {}
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, you may search your library and/or graveyard for a Shrine card and put it onto the battlefield. If you search your library this way, shuffle."
  ],
  [
   {
@@ -657,6 +1452,628 @@
    }
   },
   "At the beginning of your upkeep, if a player has more cards in hand than each other player, the player who has the most cards in hand gains control of this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Visit": {}
+    },
+    "effects": [
+     {
+      "ExileTop": {
+       "count": {
+        "Tallied": {
+         "who": "You",
+         "what": "AttractionsVisited"
+        }
+       },
+       "as": "ride"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "MayCast": {
+         "from": "Exile",
+         "only": {
+          "Bound": "ride"
+         },
+         "play": true
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "once": true,
+       "effects": [
+        {
+         "Move": {
+          "what": {
+           "Each": [
+            {
+             "Is": {
+              "Bound": "ride"
+             }
+            },
+            {
+             "In": "Exile"
+            }
+           ]
+          },
+          "to": {
+           "Library": {
+            "place": "Bottom",
+            "order": "Chosen"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Visit — Exile the top X cards of your library, where X is the number of Attractions you've visited this turn. You may play those cards this turn. At the beginning of the next end step, if any of those cards remain exiled, put them on the bottom of your library in any order."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 1
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "EachPlayer",
+       "as": "player",
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": {
+              "Bound": "player"
+             }
+            },
+            {
+             "AnyOf": [
+              {
+               "Type": "Instant"
+              },
+              {
+               "Type": "Sorcery"
+              }
+             ]
+            }
+           ]
+          },
+          "as": "card"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "card"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "I — Exile an instant or sorcery card from each graveyard."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 2
+     }
+    },
+    "effects": [
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       },
+       "optional": true,
+       "as": "discarded"
+      }
+     },
+     {
+      "CreateToken": {
+       "token": {
+        "Named": "clue"
+       },
+       "count": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "Count": [
+           {
+            "Is": {
+             "Bound": "discarded"
+            }
+           },
+           {
+            "AnyOf": [
+             {
+              "In": "Battlefield"
+             },
+             {
+              "In": "Hand"
+             },
+             {
+              "In": "Library"
+             },
+             {
+              "In": "Graveyard"
+             },
+             {
+              "In": "Exile"
+             },
+             {
+              "In": "Stack"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "II — Discard any number of cards, then investigate twice for each card discarded this way."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Mill": {
+       "count": 5,
+       "as": "milled"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Is": {
+           "Bound": "milled"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "Type": "Enchantment"
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "kept"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "kept"
+       },
+       "to": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, mill five cards. Put up to one enchantment card milled this way into your hand."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 4
+     }
+    },
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "Fixed": [
+         "White",
+         "White",
+         "Blue",
+         "Blue",
+         "Black",
+         "Black",
+         "Red",
+         "Red",
+         "Green",
+         "Green"
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": "This",
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "IV — Add {W}{W}, {U}{U}, {B}{B}, {R}{R}, and {G}{G}. Exile ~, then return it to the battlefield."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 2
+     }
+    },
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Draw": {
+          "who": {
+           "Target": 0
+          },
+          "count": 3
+         }
+        },
+        {
+         "Draw": {
+          "count": 3
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "II — You may have target opponent draw three cards. If you do, draw three cards."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Untapped": {
+      "what": [
+       "This"
+      ],
+      "untap_step": true
+     }
+    },
+    "effects": [
+     {
+      "AddStep": {
+       "step": "Upkeep"
+      }
+     }
+    ]
+   }
+  },
+  "Into the TARDIS — Whenever ~ becomes untapped during your untap step, you get an additional upkeep step after this step."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 1
+     }
+    },
+    "effects": [
+     {
+      "Scry": {
+       "count": 4
+      }
+     },
+     {
+      "May": {
+       "effects": [
+        {
+         "Bind": {
+          "what": {
+           "Each": [
+            {
+             "In": "Library"
+            },
+            {
+             "OwnedBy": "You"
+            },
+            "TopOfLibrary"
+           ]
+          },
+          "as": "top"
+         }
+        },
+        {
+         "Reveal": {
+          "what": {
+           "Bound": "top"
+          }
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Matches": {
+            "subject": {
+             "Bound": "top"
+            },
+            "selector": [
+             {
+              "Type": "Planeswalker"
+             }
+            ]
+           }
+          },
+          "then": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "top"
+             },
+             "to": "Hand"
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "I — Scry 4, then you may reveal the top card of your library. If a planeswalker card is revealed this way, put it into your hand."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 1
+     }
+    },
+    "effects": [
+     {
+      "Mill": {
+       "count": 10,
+       "as": "milled"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Is": {
+           "Bound": "milled"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 2
+       },
+       "as": "chosen"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "chosen"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "I — Mill ten cards. Put up to two creature cards from among the milled cards onto the battlefield."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 3
+     }
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "mods": [
+        {
+         "GrantAbility": {
+          "Activated": {
+           "cost": "{1}",
+           "targets": [
+            {
+             "what": {
+              "Object": [
+               {
+                "Type": "Creature"
+               },
+               {
+                "Not": {
+                 "ControlledBy": "You"
+                }
+               }
+              ]
+             }
+            }
+           ],
+           "effects": [
+            {
+             "Fight": {
+              "what": "This",
+              "with": {
+               "Target": 0
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Exile": {
+       "what": "This",
+       "as": "exiled"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Battlefield": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "III — Until end of turn, creatures you control gain \"{1}: This creature fights target creature you don't control.\" Exile this Saga, then return it to the battlefield."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Chapter": {
+      "number": 3
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "AddType": "Creature"
+        },
+        {
+         "SetPT": {
+          "power": 4,
+          "toughness": 4
+         }
+        }
+       ],
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "III — Up to one target artifact you control becomes an artifact creature with base power and toughness 4/4 until end of turn."
  ],
  [
   {

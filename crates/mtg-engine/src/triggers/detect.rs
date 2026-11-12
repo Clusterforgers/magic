@@ -2758,9 +2758,9 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         | Event::EffectExpired { .. }
         | Event::Attached { .. }
         | Event::Unattached { .. }
-        | Event::ObjectLeftGame { .. } => true,
         // "Becomes untapped during your untap step" reads the step the untap happened in.
-        Event::PermanentUntapped { .. } => true,
+        | Event::PermanentUntapped { .. }
+        | Event::ObjectLeftGame { .. } => true,
         // An arrival can change who controls a permanent already there, as a departure can (`did::controller_changes`).
         Event::ZoneChanged { from, to, .. } => {
             *from == Zone::Battlefield || *to == Zone::Battlefield
