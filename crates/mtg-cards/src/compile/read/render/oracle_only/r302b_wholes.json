@@ -593,5 +593,499 @@
    }
   },
   "Counter target activated ability from an artifact source."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Each": [
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         },
+         {
+          "SharesName": {
+           "Target": 0
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Search": {
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "zone": "Hand",
+       "also": [
+        "Library"
+       ],
+       "filter": [
+        {
+         "SharesName": {
+          "Target": 0
+         }
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": null
+       },
+       "as": "found"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for all cards with the same name as that spell and exile them. Then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Search": {
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "zone": "Graveyard",
+       "also": [
+        "Hand",
+        "Library"
+       ],
+       "filter": [
+        {
+         "SharesName": {
+          "Target": 0
+         }
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": null
+       },
+       "as": "found"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "found"
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "count": {
+        "Count": [
+         {
+          "Is": {
+           "Bound": "exiled"
+          }
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "ArrivedFrom": "Hand"
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for any number of cards with the same name as that spell and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "Type": "Sorcery"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CardTypes": [
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       },
+       "then": [
+        {
+         "Search": {
+          "of": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          },
+          "zone": "Graveyard",
+          "also": [
+           "Hand",
+           "Library"
+          ],
+          "filter": [
+           {
+            "SharesName": {
+             "Target": 0
+            }
+           }
+          ],
+          "count": {
+           "min": 0,
+           "max": null
+          },
+          "as": "found"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "found"
+          }
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target sorcery spell.\nIf there are four or more card types among cards in your graveyard, search the graveyard, hand, and library of that spell's controller for any number of cards with the same name as that spell, exile those cards, then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Counter": {
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "RevealUntil": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "filter": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ],
+       "as": "found",
+       "revealed_as": "revealed"
+      }
+     },
+     {
+      "CastFromZone": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "what": {
+        "Bound": "found"
+       },
+       "free": true
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Its controller reveals cards from the top of their library until they reveal an instant or sorcery card. That player may cast that card without paying its mana cost. Then the player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": "Opponents"
+            }
+           ]
+          },
+          "as": "card"
+         }
+        },
+        {
+         "Bind": {
+          "what": {
+           "OwnerOf": {
+            "Bound": "card"
+           }
+          },
+          "as": "owner"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "card"
+          },
+          "as": "named"
+         }
+        },
+        {
+         "Search": {
+          "of": {
+           "Bound": "owner"
+          },
+          "zone": "Graveyard",
+          "also": [
+           "Hand",
+           "Library"
+          ],
+          "filter": [
+           {
+            "SharesName": {
+             "Bound": "named"
+            }
+           }
+          ],
+          "count": {
+           "min": 0,
+           "max": null
+          },
+          "as": "found"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "found"
+          },
+          "as": "exiled"
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "Bound": "owner"
+          }
+         }
+        },
+        {
+         "Draw": {
+          "who": {
+           "Bound": "owner"
+          },
+          "count": {
+           "Count": [
+            {
+             "Is": {
+              "Bound": "exiled"
+             }
+            },
+            {
+             "In": "Exile"
+            },
+            {
+             "ArrivedFrom": "Hand"
+            }
+           ]
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Destroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
  ]
 ]

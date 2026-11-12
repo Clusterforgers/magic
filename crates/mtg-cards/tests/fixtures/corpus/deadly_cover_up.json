@@ -112,19 +112,19 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 10716,
-  "penny_rank": 1615,
+  "edhrec_rank": 10822,
+  "penny_rank": 1641,
   "preview": {
     "source": "JeelTV",
     "source_uri": "https://www.twitch.tv/videos/2039203000",
     "previewed_at": "2024-01-21"
   },
   "prices": {
-    "usd": "0.60",
-    "usd_foil": "0.70",
+    "usd": "0.80",
+    "usd_foil": "0.80",
     "usd_etched": null,
-    "eur": "0.51",
-    "eur_foil": "0.69",
+    "eur": "0.68",
+    "eur_foil": "0.74",
     "tix": "0.02"
   },
   "related_uris": {

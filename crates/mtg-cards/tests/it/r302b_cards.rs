@@ -77,14 +77,19 @@ fn report(name: &str) -> mtg_cards::proposal::Report {
 }
 
 #[rstest]
+#[case("Deadly Cover-Up")]
 #[case("Firecat Blitz")]
 #[case("Flash Foliage")]
 #[case("Hurkyl's Final Meditation")]
 #[case("Interdict")]
+#[case("Invasive Surgery")]
+#[case("Quash")]
 #[case("Rust")]
 #[case("Serpentine Spike")]
 #[case("Soulblast")]
+#[case("Spellshift")]
 #[case("Teferi's Response")]
+#[case("Test of Talents")]
 #[case("Trickbind")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);

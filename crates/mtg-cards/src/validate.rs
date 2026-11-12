@@ -3529,7 +3529,7 @@ impl Walker<'_> {
                 if let Some(of) = of {
                     w.uses("Search", "Of");
                     if !also.is_empty() {
-                        w.problem("a search of another player's zone names one zone");
+                        w.uses("Search", "OfZones");
                     }
                     w.at("of", |w| w.reference(of, Kind::Player));
                 }

@@ -204,6 +204,7 @@ const RUNS: &[&str] = &[
     "Effect.Search",
     "Search.Zones",
     "Search.Of",
+    "Search.OfZones",
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
@@ -971,6 +972,7 @@ mod tests {
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
     #[case::searching_another_library("Search.Of", true)]
+    #[case::searching_another_players_zones("Search.OfZones", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
