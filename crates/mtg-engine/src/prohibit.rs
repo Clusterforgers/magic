@@ -66,6 +66,8 @@ pub(crate) enum Doing {
     },
     /// `object` is tapped to pay a crew cost.
     Crew { object: ObjectId },
+    /// `object` becomes suspected.
+    BecomeSuspected { object: ObjectId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `player` plays a land.
@@ -213,6 +215,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::Transform, Doing::Transform { object })
         | (Prohibited::Untap, Doing::Untap { object })
         | (Prohibited::Crew, Doing::Crew { object })
+        | (Prohibited::BecomeSuspected, Doing::BecomeSuspected { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
             covers(who, holder(state, object), Some(object))
         }
@@ -457,6 +460,7 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
         }
         Event::Transformed { object, .. } => found.push(Doing::Transform { object: *object }),
         Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
+        Event::Suspected { object } => found.push(Doing::BecomeSuspected { object: *object }),
         _ => {}
     }
     found
