@@ -68,7 +68,7 @@ export function reportFor(request: CheckRequest, script: CheckScript = {}): Deck
         count: line.count,
         support: chosen ? 'manual' : support,
         reasons: chosen
-          ? [{ face: 0, span: { start: 0, end: 0 }, text: OWNER_BY_HAND }]
+          ? [{ face: 0, span: { start: 0, end: 0 }, text: OWNER_BY_HAND, quote: '' }]
           : [...(script.reasons?.[line.oracle_id] ?? [])],
         ...(chosen ? { by_hand: true } : {}),
         ...(script.drafts?.[line.oracle_id] === undefined ? {} : { draft: script.drafts[line.oracle_id] }),

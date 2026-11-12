@@ -1547,6 +1547,7 @@ dependencies = [
  "mtg-import",
  "mtg-protocol",
  "mtg-testkit",
+ "proptest",
  "reqwest",
  "rstest",
  "serde",

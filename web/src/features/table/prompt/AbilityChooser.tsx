@@ -6,7 +6,7 @@ import type { MenuTarget } from '../manual/menuStore'
 import { containerOf, usePlaced, useReturnFocus } from '../manual/popup'
 import { roomTitle } from '../rooms'
 import { useDoors } from '../useDoors'
-import type { Play } from './activations'
+import type { Blocked, Play } from './activations'
 
 /** Props of `AbilityChooser`. */
 export interface AbilityChooserProps {
@@ -14,6 +14,8 @@ export interface AbilityChooserProps {
   target: MenuTarget
   /** What the card can do, two or more. */
   plays: readonly Play[]
+  /** The abilities it cannot use now, each with why: drawn as disabled lines under the plays. */
+  blocked?: readonly Blocked[]
   onPick(play: Play): void
   onClose(): void
 }
@@ -27,7 +29,7 @@ const items = (panel: HTMLElement): HTMLElement[] => [
  * line on open and back to the card on close; arrows, Home and End move along the lines, Escape, Tab and a press outside
  * close it. It draws inside the dialog its card sits in (a zone's list), else on the page.
  */
-export function AbilityChooser({ target, plays, onPick, onClose }: AbilityChooserProps) {
+export function AbilityChooser({ target, plays, blocked = [], onPick, onClose }: AbilityChooserProps) {
   const panel = useRef<HTMLDivElement>(null)
   const object = usePlay((state) => state.objectsById[target.id])
   const name = roomTitle(object?.name ?? 'the card', useDoors(object))
@@ -107,6 +109,20 @@ export function AbilityChooser({ target, plays, onPick, onClose }: AbilityChoose
               <span className="text-xs break-words text-muted-foreground">{play.detail}</span>
             )}
           </button>
+        ))}
+        {blocked.map((line) => (
+          <div
+            key={`blocked-${line.key}`}
+            role="menuitem"
+            tabIndex={-1}
+            aria-disabled="true"
+            aria-label={`${line.label}, not now: ${line.line}`}
+            data-blocked={line.key}
+            className="flex w-full min-w-0 flex-col rounded-md px-3 py-1.5 text-left text-sm outline-none select-none focus-visible:bg-accent pointer-coarse:min-h-11 pointer-coarse:justify-center"
+          >
+            <span className="break-words text-muted-foreground">{line.label}</span>
+            <span className="text-xs break-words text-muted-foreground">{line.line}</span>
+          </div>
         ))}
       </div>
     </div>,

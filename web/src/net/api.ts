@@ -11,11 +11,19 @@ import type {
   LobbyGame,
   PlayerId,
   SeatDeck,
+  Teams,
   Visibility,
 } from '@/protocol/generated'
 import { isCount, isRecord, isText } from './check'
 import { LobbyError, lobbyFailure } from './lobbyErrors'
-import { readGameInfo, readJoined, readLobbyList, readSeatDeck, readVisibility } from './parseLobbies'
+import {
+  readGameInfo,
+  readJoined,
+  readLobbyList,
+  readSeatDeck,
+  readTeamsBody,
+  readVisibility,
+} from './parseLobbies'
 
 /** One seat of a new game: the name shown to others and, for a seat that starts with one, a deck id from `listDecks`. */
 export interface SeatRequest {
@@ -23,6 +31,8 @@ export interface SeatRequest {
   name: string
   /** The deck the seat starts with; left out, the seat has none until its holder chooses one in the lobby. */
   deck?: string
+  /** A bot plays the seat: a held seat other than seat 0, with a deck; the server names it. */
+  bot?: boolean
 }
 
 /** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */
@@ -175,6 +185,11 @@ export interface Api {
   releaseSeat(game: string, seat: number, as?: SeatCredential): Promise<void>
   /** `PATCH /api/games/{id}`: the host lists the game or hides it again; resolves with the visibility now in force. */
   setVisibility(game: string, visibility: Visibility, as?: SeatCredential): Promise<Visibility>
+  /**
+   * `PUT /api/games/{id}/teams`: the host sets the teams before the start (null: every player alone); resolves with
+   * the teams now in force. Every seat's Ready is taken back.
+   */
+  setTeams(game: string, teams: Teams | null, as?: SeatCredential): Promise<Teams | null>
   /** `DELETE /api/games/{id}`: the host closes a game that is still in its lobby; every socket of it ends with 4002. */
   closeGame(game: string, as?: SeatCredential): Promise<void>
   /**
@@ -366,6 +381,8 @@ export function createApi(options: ApiOptions = {}): Api {
     // `async` so that a token that cannot go into a header rejects like every other failure.
     setVisibility: async (id, visibility, as = {}) =>
       lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
+    setTeams: async (id, teams, as = {}) =>
+      (await lobbyCall(`${game(id)}/teams`, readTeamsBody, change('PUT', as, { teams }))).teams,
     closeGame: async (id, as = {}) => {
       await lobbyCall(game(id), () => true, change('DELETE', as), 204)
     },

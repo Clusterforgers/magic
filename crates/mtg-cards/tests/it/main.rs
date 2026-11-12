@@ -3,6 +3,10 @@
 mod adding_a_card;
 mod assemble;
 mod blocking_and_rules;
+mod by_hand_event;
+mod ce29_companion;
+mod ce29_saga_sheet;
+mod ce29_siege;
 mod chance_tables;
 mod common;
 mod compile;

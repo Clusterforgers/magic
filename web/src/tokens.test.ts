@@ -1,4 +1,4 @@
-// Goal: the design tokens of index.css keep the contrast the design system promises in the light and the dark theme (4.5:1 for text, 3:1 for edges, rings and other non-text parts), including the eight support marks of the deck check as text, edge and tinted pill, both themes define every colour, and the type, radius, elevation, motion and width scales hold their documented values, all computed from the stylesheet itself.
+// Goal: the design tokens of index.css keep the contrast the design system promises in the light and the dark theme (4.5:1 for text, 3:1 for edges, rings and other non-text parts), including the eight support marks of the deck check as text, edge and tinted pill and the four team colours as text and edge, both themes define every colour, and the type, radius, elevation, motion and width scales hold their documented values, all computed from the stylesheet itself.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -47,6 +47,7 @@ function paint(themeName: Theme, name: string, mapping: Mapping): Rgb {
 const SURFACES = ['background', 'surface', 'table', 'raised'] as const
 const FILLS = [...SURFACES, 'muted', 'secondary', 'accent'] as const
 const STATUS = ['success', 'warning', 'destructive'] as const
+const TEAMS = ['1', '2', '3', '4'] as const
 const MANA = ['white', 'blue', 'black', 'red', 'green', 'gold', 'colorless'] as const
 const SUPPORT = [
   'verified',
@@ -95,6 +96,7 @@ text('state', 'destructive', SURFACES)
 text('chosen mark', 'on-selected', ['selected'])
 for (const name of MANA) text(`${name} mana symbol`, `on-mana-${name}`, [`mana-${name}`])
 for (const name of SUPPORT) text(`${name} support mark`, `support-${name}`, SURFACES)
+for (const team of TEAMS) text(`team ${team} label`, `team-${team}`, FILLS)
 
 edge('field and control', 'border-strong', SURFACES)
 edge('field', 'input', SURFACES)
@@ -108,6 +110,7 @@ edge('state', 'destructive', SURFACES)
 // The ring of a chosen card sits on the lanes as well as on the table and the prompt's panels.
 edge('chosen card', 'selected', [...FILLS, 'lane'])
 for (const name of SUPPORT) edge(`${name} support mark`, `support-${name}`, FILLS)
+for (const team of TEAMS) edge(`team ${team} mark`, `team-${team}`, FILLS)
 
 describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName) => {
   it.each(pairs)('$use: $fg on $bg is at least $min:1', ({ fg, bg, min }) => {

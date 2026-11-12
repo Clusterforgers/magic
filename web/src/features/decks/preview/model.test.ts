@@ -197,7 +197,7 @@ describe('adapters', () => {
         reportCard('Odd Card', {
           count: 2,
           support: 'manual',
-          reasons: [{ face: 0, span: { start: 0, end: 4 }, text: 'resolve it by hand' }],
+          reasons: [{ face: 0, span: { start: 0, end: 4 }, text: 'resolve it by hand', quote: '' }],
         }),
       ]),
     })

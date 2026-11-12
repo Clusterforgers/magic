@@ -436,6 +436,14 @@ async fn a_card_the_engine_cannot_play_lists_its_clauses_with_spans(pool: PgPool
     assert_eq!(reasons[0]["face"], 0);
     assert_eq!(reasons[0]["span"]["start"], 0);
     assert!(
+        reasons[0]["quote"]
+            .as_str()
+            .unwrap()
+            .starts_with("Lightning Bolt deals 3 damage"),
+        "the reason quotes the words its span covers: {}",
+        reasons[0]
+    );
+    assert!(
         reasons[0]["text"]
             .as_str()
             .unwrap()

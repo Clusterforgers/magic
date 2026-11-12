@@ -31,10 +31,9 @@ fn game() -> GameState {
             })),
     );
     let mut manual = (*creature("Odd", 1, 1)).clone();
-    manual.manual.push(ManualClause {
-        text: "Odd things happen.".to_owned(),
-        reason: "by hand".to_owned(),
-    });
+    manual
+        .manual
+        .push(ManualClause::new("Odd things happen.", "by hand"));
     state(
         vec![vec![ruled("Flier", r#"{"Keyword":"Flying"}"#)], vec![]],
         vec![

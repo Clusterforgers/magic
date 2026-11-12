@@ -8,6 +8,7 @@ const reason = (start: number, end: number, text = 'why', face = 0): Reason => (
   face,
   span: { start, end },
   text,
+  quote: '',
 })
 
 describe('lineMarks', () => {

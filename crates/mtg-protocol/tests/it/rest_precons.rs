@@ -72,7 +72,9 @@ fn card(name: &str, count: u32, support: Support) -> PreconCardView {
             face: 0,
             span: mtg_cards::card::Span { start: 0, end: 4 },
             text: "left to the table".to_owned(),
+            quote: "Draw".to_owned(),
         }],
+        whole_text: None,
     }
 }
 
