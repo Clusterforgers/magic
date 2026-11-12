@@ -145,7 +145,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (tm1) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
 - [ ] (tm2) Tournaments: an organiser sets up 1v1 or 2v2 Commander rounds (Swiss or single elimination), pairings, results and standings, each match a normal game
-- [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch

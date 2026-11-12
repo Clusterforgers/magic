@@ -13,13 +13,10 @@ import { legalityLines } from '@/features/builder/report'
 import { LegalityWarning } from '@/features/decks/LegalityWarning'
 import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
 import { clauseLines } from '@/features/decks/unvalidated/model'
-import type { FaceTexts } from '@/features/decks/unvalidated/model'
-import { useCardTexts } from '@/features/decks/unvalidated/useCardTexts'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { ToRead } from '@/features/decks/ToRead'
 import { BY_HAND, BY_HAND_TITLE, runsWhole } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
-import type { CardsApi } from '@/net/cards'
 import type { PreconBoard, PreconListItem, PreconView } from '@/protocol/generated'
 import { PreconBadge } from './PreconBadge'
 import {
@@ -27,7 +24,6 @@ import {
   checkLine,
   commandersText,
   copyList,
-  flaggedCards,
   flaggedLine,
   notVerified,
   releaseText,
@@ -41,8 +37,6 @@ interface Props {
   open: boolean
   /** The cards and issues, as far as they have arrived. */
   detail: DetailState
-  /** The card endpoint the clauses of the cards are quoted from. */
-  cards: Pick<CardsApi, 'get'>
   onRetry(): void
   /** Close, Escape and the close button. */
   onCancel(): void
@@ -87,14 +81,10 @@ function Board({
   board,
   precon,
   onlyHand,
-  faces,
-  pending,
 }: {
   board: PreconBoard
   precon: PreconListItem
   onlyHand: boolean
-  faces: FaceTexts
-  pending: boolean
 }) {
   const cards = onlyHand ? board.cards.filter((card) => !runsWhole(card.support)) : board.cards
   if (cards.length === 0) return null
@@ -159,11 +149,7 @@ function Board({
                 {flagged === null ? null : (
                   <div className="grid gap-1">
                     {card.reasons.length > 0 ? <p className="text-sm font-medium">{BY_HAND_TITLE}:</p> : null}
-                    <ClauseList
-                      lines={clauseLines(flagged, faces.get(flagged.oracleId))}
-                      support={card.support}
-                      pending={pending}
-                    />
+                    <ClauseList lines={clauseLines(flagged)} support={card.support} />
                   </div>
                 )}
               </div>
@@ -176,13 +162,9 @@ function Board({
 }
 
 /** The cards of a view, with the switch that narrows them to the cards played by hand and the button that copies those. */
-function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'> }) {
+function Cards({ view }: { view: PreconView }) {
   const [onlyHand, setOnlyHand] = useState(false)
   const hand = notVerified(view)
-  const { faces, pending } = useCardTexts(
-    cards,
-    flaggedCards(view).flatMap((card) => (card.oracleId.startsWith('name:') ? [] : [card.oracleId])),
-  )
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
@@ -198,12 +180,8 @@ function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'>
             Only cards {BY_HAND}
           </Label>
         </div>
-        {hand === 0 ? null : pending ? (
-          <Button type="button" variant="outline" size="sm" disabled loading>
-            Reading card text…
-          </Button>
-        ) : (
-          <CopyButton text={copyList(view, faces)} label={`Copy list of the cards ${BY_HAND}`}>
+        {hand === 0 ? null : (
+          <CopyButton text={copyList(view)} label={`Copy list of the cards ${BY_HAND}`}>
             Copy list
           </CopyButton>
         )}
@@ -212,14 +190,7 @@ function Cards({ view, cards }: { view: PreconView; cards: Pick<CardsApi, 'get'>
         <p className="text-sm text-muted-foreground">The game plays every card of this deck as written.</p>
       ) : null}
       {view.boards.map((board) => (
-        <Board
-          key={board.board}
-          board={board}
-          precon={view.precon}
-          onlyHand={onlyHand}
-          faces={faces}
-          pending={pending}
-        />
+        <Board key={board.board} board={board} precon={view.precon} onlyHand={onlyHand} />
       ))}
     </div>
   )
@@ -234,7 +205,6 @@ export function PreconDialog({
   precon,
   open,
   detail,
-  cards,
   onRetry,
   onCancel,
   onClosed,
@@ -295,7 +265,7 @@ export function PreconDialog({
               </div>
             </Alert>
           ) : null}
-          {view === null ? null : <Cards view={view} cards={cards} />}
+          {view === null ? null : <Cards view={view} />}
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2 border-t px-6 py-4">
           <Button type="button" variant="outline" onClick={onCancel}>

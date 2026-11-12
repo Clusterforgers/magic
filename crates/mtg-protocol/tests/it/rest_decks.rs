@@ -83,6 +83,7 @@ fn report() -> DeckReport {
             draft: None,
             differs: Vec::new(),
             reasons: vec![],
+            whole_text: None,
             by_hand: false,
         }],
         summary: summary(),

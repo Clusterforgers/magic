@@ -19,7 +19,7 @@ const draftOf = (lines: Line[]): Draft => ({ name: 'D', format: 'commander', not
 const NONE: ReadonlyMap<string, LineCheck> = new Map()
 const check = (support: LineCheck['support'], ...texts: string[]): LineCheck => ({
   support,
-  reasons: texts.map((text) => ({ face: 0, span: { start: 0, end: 1 }, text })),
+  reasons: texts.map((text) => ({ face: 0, span: { start: 0, end: 1 }, text, quote: '' })),
 })
 
 describe('previewFromDraft', () => {

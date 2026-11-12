@@ -34,7 +34,7 @@ A card without an implementation counts as `Manual` unless it has no rules text,
 
 ## The report
 
-`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, draft?, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, legal, counts, zones, issues, to_read}` with copies by support state overall and per zone, `state` one of `verified`, `read`, `manual_play` (a report is never `blocked` or `unchecked`) and `legal` false while `legality` holds an issue.
+`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, draft?, reasons: [{face, span, text, quote}], whole_text?}], summary }`; `summary` is `{format, state, legal, counts, zones, issues, to_read}` with copies by support state overall and per zone, `state` one of `verified`, `read`, `manual_play` (a report is never `blocked` or `unchecked`) and `legal` false while `legality` holds an issue. A reason's `quote` is the words of its face's text the span covers; `whole_text` is the card's text for a card left to the table whole (no clause of its own), so a client reads no card to quote one.
 
 - One pure function in `mtg-cards` (`deck_report` in the `deck` module) over the deck, the facts of its cards and the rules library serves the deck endpoints, the CLI and tests.
 - Legality is its own section (`legality`, a list of `Issue {code, message, zone, oracle_id, name}`), so "illegal" and "not implemented" never blur. Every issue is a warning. The rules:

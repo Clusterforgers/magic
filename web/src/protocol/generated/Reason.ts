@@ -16,4 +16,8 @@ span: Span,
 /**
  * Why it is left to the table, in plain words.
  */
-text: string, };
+text: string, 
+/**
+ * The words of the face's oracle text the span covers; empty when it covers none or the text is not known.
+ */
+quote: string, };
