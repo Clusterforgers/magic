@@ -1,7 +1,7 @@
 {
   "oracle_id": "82ea519f-0e14-43d3-bf46-a1c5352e9600",
   "name": "The Jolly Balloon Man",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Jolly Balloon Man",
@@ -9,9 +9,38 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 6, "end": 274 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 1, "toughness": 1 } },
+                        { "AddColors": ["Red"] },
+                        { "AddType": "Creature" },
+                        { "AddSubtype": "Balloon" },
+                        { "AddKeyword": "Flying" },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                }
+              }
+            ]
           }
         }
       ]

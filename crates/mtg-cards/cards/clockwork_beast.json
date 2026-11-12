@@ -1,7 +1,7 @@
 {
   "oracle_id": "eb97c8db-ac6c-476c-b14d-87785e9c82f0",
   "name": "Clockwork Beast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clockwork Beast",
@@ -37,9 +37,66 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 154, "end": 345 }
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, "X"] }, "as": "n" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          { "ChosenAs": "n" },
+                          { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
+                        ]
+                      },
+                      "op": "Le",
+                      "right": 7
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": { "Other": "+1/+0" },
+                        "count": { "ChosenAs": "n" }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Counters": { "on": "This", "counter": { "Other": "+1/+0" } }
+                            },
+                            "op": "Lt",
+                            "right": 7
+                          }
+                        },
+                        "then": [
+                          {
+                            "PutCounters": {
+                              "on": "This",
+                              "counter": { "Other": "+1/+0" },
+                              "count": {
+                                "Difference": [
+                                  7,
+                                  { "Counters": { "on": "This", "counter": { "Other": "+1/+0" } } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -377,6 +377,9 @@ mod r7c_searches;
 mod r283_wholes;
 mod r287_wholes;
 mod rmt5_wholes;
+// r30-0
+mod r300_wholes;
+pub(super) use r300_wholes::r300_whole;
 
 use crate::ability::Ability;
 

@@ -749,6 +749,9 @@ fn written_ordered(ability: &Ability) -> Vec<String> {
 
 /// Every wording of an ability, its selectors in the order given.
 fn written_as_given(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = oracle_only::r300_whole(ability) {
+        return texts;
+    }
     if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
         return texts;
     }

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "71a176ce-cbe7-4cec-a2ca-58abf59ad964",
+  "name": "Pyromancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromancy",
+      "oracle_fingerprint": "cf0dc5e37f54988da4c503c835d9f7af",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, { "DiscardRandom": 1 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

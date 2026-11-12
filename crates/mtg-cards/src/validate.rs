@@ -5697,6 +5697,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Craft { .. }
                 | CostItem::Forage
                 | CostItem::ExileTop(_)
+                | CostItem::DiscardRandom(_)
         ),
     })
 }

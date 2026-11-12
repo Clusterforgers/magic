@@ -1,0 +1,74 @@
+{
+  "oracle_id": "1cfeb5c4-a2d0-4872-a907-a6d484be85a5",
+  "name": "Urza's Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Avenger",
+      "oracle_fingerprint": "4855180b2f80f2c117439e5f5633973d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "ModifyPT": { "power": -1, "toughness": -1 } },
+                            { "AddKeyword": "Banding" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "ModifyPT": { "power": -1, "toughness": -1 } },
+                            { "AddKeyword": "Flying" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "ModifyPT": { "power": -1, "toughness": -1 } },
+                            { "AddKeyword": "FirstStrike" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "ModifyPT": { "power": -1, "toughness": -1 } },
+                            { "AddKeyword": "Trample" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

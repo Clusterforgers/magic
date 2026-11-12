@@ -1,0 +1,65 @@
+{
+  "oracle_id": "f002be6a-e459-49c4-b765-062e30107439",
+  "name": "Tomb of Urami",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb of Urami",
+      "oracle_fingerprint": "3572aaf9db36b2f93b03fde0682344e6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Black"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Ogre" }, { "ControlledBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}{B}" },
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Urami",
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Demon", "Spirit"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
