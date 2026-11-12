@@ -1,7 +1,9 @@
 //! Wordings of pack r30-2c: whole spells no other writer words, each from the shape its effects take: an exchange of
 //! two targets that share a card type, a life auction for control of a target, one exile per player that its
-//! controller pays for with a cloak, a look at the top cards that plots one and keeps the rest, and a shield that
-//! doubles the damage a target permanent deals.
+//! controller pays for with a cloak, a look at the top cards that plots one and keeps the rest, a shield that doubles
+//! the damage a target permanent deals, a shield that exiles what would die and returns it at the next end step, and the
+//! rules of a spell on the stack: can't be countered after a reveal or under X, its damage can't be prevented, and
+//! split second when kicked.
 
 use serde_json::{Value, json};
 
@@ -25,6 +27,7 @@ pub(super) fn r302c_wordings(ability: &Ability, texts: &mut Vec<String>) {
         double_from_target(&value),
         uncounterable_if(ability),
         kicked_split_second(&value),
+        exile_and_return(&value),
     ];
     for text in found.into_iter().flatten() {
         if !texts.contains(&text) {
@@ -221,6 +224,27 @@ pub(super) fn r302c_pair_texts(first: &Ability, second: &Ability) -> Vec<String>
     vec![format!(
         "If X is {least} or more, this spell can't be countered and the damage can't be prevented."
     )]
+}
+
+/// "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. Return it
+/// to the battlefield under its owner's control at the beginning of the next end step."
+fn exile_and_return(value: &Value) -> Option<String> {
+    let shape = json!({ "Spell": { "effects": [{ "Shield": {
+        "when": { "ZoneChange": { "what": [{ "ControlledBy": "You" }], "from": "Battlefield", "to": "Graveyard" } },
+        "by": { "Instead": [
+            { "Exile": { "what": "Triggering", "as": "exiled" } },
+            { "DelayedTrigger": {
+                "when": { "StepBegins": { "step": "End" } },
+                "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }]
+            } }
+        ] },
+        "duration": "UntilEndOfTurn"
+    } }] } });
+    (value == &shape).then(|| {
+        "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. \
+         Return it to the battlefield under its owner's control at the beginning of the next end step."
+            .to_owned()
+    })
 }
 
 /// "If this spell was kicked, it has split second.": the spell gives itself the keyword on the stack.

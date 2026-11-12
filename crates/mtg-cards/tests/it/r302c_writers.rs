@@ -169,3 +169,20 @@ fn r302c_banefire_rules_read_as_one_sentence(
         .any(|text| same_written_text(text, BANEFIRE));
     assert_eq!(found, reads);
 }
+
+fn intervention(who: &str, to: &str, duration: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"effects":[{{"Shield":{{"when":{{"ZoneChange":{{"what":[{{"ControlledBy":"{who}"}}],"from":"Battlefield","to":"{to}"}}}},"by":{{"Instead":[{{"Exile":{{"what":"Triggering","as":"exiled"}}}},{{"DelayedTrigger":{{"when":{{"StepBegins":{{"step":"End"}}}},"effects":[{{"Move":{{"what":{{"Bound":"exiled"}},"to":{{"Battlefield":{{}}}}}}}}]}}}}]}},"duration":"{duration}"}}}}]}}}}"#
+    )
+}
+
+const INTERVENTION: &str = "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead. Return it to the battlefield under its owner's control at the beginning of the next end step.";
+
+#[rstest]
+#[case::cosmic_intervention(intervention("You", "Graveyard", "UntilEndOfTurn"), true)]
+#[case::opponents_permanents(intervention("Opponents", "Graveyard", "UntilEndOfTurn"), false)]
+#[case::to_a_hand(intervention("You", "Hand", "UntilEndOfTurn"), false)]
+#[case::forever(intervention("You", "Graveyard", "Forever"), false)]
+fn r302c_exiled_instead_and_returned(#[case] json: String, #[case] reads: bool) {
+    assert_eq!(writes(&json, INTERVENTION), reads);
+}
