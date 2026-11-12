@@ -641,6 +641,7 @@ pub(super) fn top_text(count: &Amount) -> Option<String> {
             "the top {} cards",
             count_word(u32::try_from(*number).ok()?)?
         )),
+        Amount::X => Some("the top X cards".to_owned()),
         _ => None,
     }
 }
