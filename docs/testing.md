@@ -20,6 +20,21 @@ How the checks run, what they test and how a new worktree gets a warm build.
 - The first failing binary kills the rest. The run ends with the failure section of that binary and the names of the failing tests; a binary over `MTG_TEST_TIMEOUT` minutes (40) is killed and the tests that ran over 60 s are named.
 - Every phase result is a stamp in `~/.cache/mtg-check/stamps`, keyed by content: the sources of the crate and of its workspace dependencies, `Cargo.lock`, the toolchain, `.cargo`, `clippy.toml`, the Postgres crates' `.sqlx`, and for the tests of `mtg-protocol` the fixtures and bindings in `web/src/protocol`; the web key hashes `web/`, the lock files and the node version. Docs and unrelated crates do not change a key, so a merge reruns only the crates whose key changed, worktrees with equal content share stamps, and a checked commit needs no new check for a release. The working tree is hashed with a temporary index (tracked and untracked files, not ignored ones); `--force` reruns. A gate pass leaves a `gate-test` stamp that `affected` does not accept.
 
+## Game modes and tournaments
+
+End-to-end suites of the game modes, in `crates/mtg-server/tests/it/` unless named otherwise.
+
+| Area | Suite |
+| --- | --- |
+| Free-for-all Commander at 2, 3, 4 and 6 seats: lobby to result over sockets, handicaps, replaced and dropped sockets, a spectator, the record and the replay | `pg_ffa_games.rs` |
+| Two-Headed Giant and 2v2/3v3 team games of Commander: teams shown, turn order, draws, land plays, shared life and loss, the team result | `pg_team_games.rs` |
+| Bot tables at every level, free-for-all and in teams | `bot_seats.rs`, `pg_bot_seats.rs` |
+| Tournaments: sign-up, pairings, match games, results from played games, corrections, byes, drops, tiebreakers, elimination, team matches | `pg_tournaments.rs`, `src/tournaments/pairing.rs` |
+| Spectators, reconnects, replays, house rules and handicaps, the tutorial | `pg_spectators.rs`, `reconnect.rs`, `ws_games.rs`, `pg_replay.rs`, `house_rules.rs`, `tutorial.rs` |
+| Browser flows on the accounts server (`E2E_DATABASE_URL`): a tournament, watching and replays | `web/e2e/tournaments.spec.ts`, `web/e2e/watch-replay.spec.ts` |
+
+A test that waits for another piece of work is `#[ignore = "<piece>"]` and runs with `--include-ignored` once it lands.
+
 ## Costs
 
 - Every card file lives in `mtg-cards`, and every crate except `mtg-core`, `mtg-import` and `mtg-db` depends on it, so `affected` for one card or engine change selects nearly the whole workspace; the gate tests the changed crate only. A protocol change selects `mtg-protocol`, `mtg-server` and the whole web check.

@@ -1,11 +1,13 @@
-//! Goal: bot seats play whole games on their own: a table of 2 to 4 seats whose other seats are bots starts once the creator alone is ready, never stalls without any clock to push it, and ends in a result every seat is told; the recipe names the bot seats so a resumed game hands them to bots again; a change of teams, which takes every Ready back, leaves the bots ready.
+//! Goal: bot seats play whole games on their own: a table of 2 to 4 seats whose other seats are bots at every level, free-for-all or in teams (2v2, Two-Headed Giant), starts once the creator alone is ready, never stalls without any clock to push it, and ends in a result every seat is told; the recipe names the bot seats so a resumed game hands them to bots again; a change of teams, which takes every Ready back, leaves the bots ready.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::time::Duration;
 
 use crate::common::{self, Client, roomy};
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::{TeamMode, Teams};
+use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, ServerMessage};
 use mtg_server::bots::{BotLevel, BotSeat};
 use mtg_server::config::ServerConfig;
@@ -46,12 +48,41 @@ fn bots(seats: usize, level: BotLevel) -> Vec<BotSeat> {
 #[case::easy_three(3, BotLevel::Easy)]
 #[case::easy_four(4, BotLevel::Easy)]
 #[case::normal_duel(2, BotLevel::Normal)]
+#[case::hard_duel(2, BotLevel::Hard)]
 #[case::hard_three(3, BotLevel::Hard)]
+#[case::normal_four(4, BotLevel::Normal)]
 #[tokio::test(start_paused = true)]
 async fn a_table_of_bots_plays_to_the_end(#[case] seats: usize, #[case] level: BotLevel) {
+    play_against_bots(seats, level, None).await;
+}
+
+#[rstest]
+#[case::two_v_two_easy(TeamMode::Teams, BotLevel::Easy)]
+#[case::two_v_two_hard(TeamMode::Teams, BotLevel::Hard)]
+#[case::giant_easy(TeamMode::TwoHeadedGiant, BotLevel::Easy)]
+#[case::giant_normal(TeamMode::TwoHeadedGiant, BotLevel::Normal)]
+#[tokio::test(start_paused = true)]
+async fn a_team_table_of_bots_plays_to_a_team_result(
+    #[case] mode: TeamMode,
+    #[case] level: BotLevel,
+) {
+    let teams = Teams::even(mode, 2, 2);
+    let result = play_against_bots(4, level, Some(teams)).await;
+    assert!(
+        matches!(result, GameResult::Team(0 | 1) | GameResult::Draw),
+        "{result:?}"
+    );
+}
+
+/// Seat 0 keeps its hand and passes while bots play the other seats; answers the result.
+async fn play_against_bots(seats: usize, level: BotLevel, teams: Option<Teams>) -> GameResult {
     let registry = registry();
     let options = GameOptions {
         bots: bots(seats, level),
+        house_rules: HouseRules {
+            teams,
+            ..HouseRules::default()
+        },
         ..GameOptions::default()
     };
     let created = registry
@@ -86,6 +117,7 @@ async fn a_table_of_bots_plays_to_the_end(#[case] seats: usize, #[case] level: B
     let status = handle.status().await.unwrap();
     assert_eq!(status.result, Some(result));
     assert!(status.started);
+    result
 }
 
 #[tokio::test(start_paused = true)]
