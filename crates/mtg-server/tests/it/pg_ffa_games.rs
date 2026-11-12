@@ -91,6 +91,31 @@ async fn watch_to_the_end(mut socket: WsClient) -> Watched {
     }
 }
 
+/// Opens a stranger's watch at the opening, which the last seat holds up: it has its handicapped life and hand.
+async fn watch_opening(
+    server: &TestServer,
+    game: &str,
+    stranger: &Browser,
+    seats: usize,
+) -> WsClient {
+    let path = format!("/ws/{game}/watch");
+    let mut watching = open(server.addr, &path, &[("Cookie", stranger.cookie.as_str())]).await;
+    assert_eq!(watching.welcome(game).await, PlayerId::from_index(seats));
+    let ServerMessage::Snapshot { state, .. } = watching.message().await else {
+        panic!("a watcher starts with a snapshot");
+    };
+    public_only(&state.table);
+    assert_eq!(state.table.format, "commander");
+    let last = seats - 1;
+    for (seat, player) in state.table.players.iter().enumerate() {
+        let life = if seat == last { 12 } else { 8 };
+        assert_eq!(player.life, life, "seat {seat}");
+        assert_eq!(player.commanders.len(), 1, "seat {seat}");
+    }
+    assert_eq!(state.table.players[last].hand.count, 6);
+    watching
+}
+
 /// Waits until the seat's socket is gone from the table.
 async fn until_gone(server: &TestServer, game: GameId, seat: usize) {
     let handle = server.registry.handle(game).unwrap();
@@ -142,6 +167,37 @@ async fn six_seats_with_three_bots_run_from_lobby_to_result(pool: PgPool) {
     free_for_all(pool, 6, 3, "easy").await;
 }
 
+/// A Commander lobby the first player hosts: seat 0, then the bot seats, then the open seats the other players join;
+/// the last seat is handicapped. Answers the game and the seat of each player.
+async fn lobby(
+    server: &TestServer,
+    players: &[(Browser, String)],
+    seats: usize,
+    bots: usize,
+    level: &str,
+) -> (String, Vec<usize>) {
+    let mut seat_list = vec![json!({"name": "ann", "deck": players[0].1})];
+    for _ in 0..bots {
+        seat_list.push(json!({"deck": on(BEAST), "bot": true, "level": level}));
+    }
+    seat_list.resize(seats, json!({}));
+    let mut body = create_body(&seat_list, 1 + bots);
+    body["house_rules"] = json!({
+        "starting_life": 8,
+        "turn_limit": 10,
+        "handicaps": [{ "seat": seats - 1, "starting_life": 12, "opening_hand_size": 6 }],
+    });
+    let (game, _) = players[0].0.create_game(server.addr, &body).await;
+    let mut seat_of = vec![0];
+    for (who, deck) in &players[1..] {
+        let joined = join(server, who, &game, deck).await;
+        assert_eq!(joined.status, 200, "{}", joined.text());
+        seat_of.push(usize::try_from(joined.json()["seat"].as_u64().unwrap()).unwrap());
+    }
+    assert_eq!(seat_of, [vec![0], (1 + bots..seats).collect()].concat());
+    (game, seat_of)
+}
+
 /// Plays a Commander game of `seats` seats, `bots` of them server bots at `level`, to its end.
 async fn free_for_all(pool: PgPool, seats: usize, bots: usize, level: &str) {
     let seed = 11;
@@ -155,28 +211,9 @@ async fn free_for_all(pool: PgPool, seats: usize, bots: usize, level: &str) {
     }
     let stranger = register(server.addr, "eve", PASSWORD).await;
 
-    // The host holds seat 0 and the bot seats; the other players take the open seats behind them.
     let last = seats - 1;
-    let mut seat_list = vec![json!({"name": "ann", "deck": players[0].1})];
-    for _ in 0..bots {
-        seat_list.push(json!({"deck": on(BEAST), "bot": true, "level": level}));
-    }
-    seat_list.resize(seats, json!({}));
-    let mut body = create_body(&seat_list, 1 + bots);
-    body["house_rules"] = json!({
-        "starting_life": 8,
-        "turn_limit": 10,
-        "handicaps": [{ "seat": last, "starting_life": 12, "opening_hand_size": 6 }],
-    });
-    let (game, _) = players[0].0.create_game(server.addr, &body).await;
+    let (game, seat_of) = lobby(&server, &players, seats, bots, level).await;
     let id: GameId = game.parse().unwrap();
-    let mut seat_of = vec![0];
-    for (who, deck) in &players[1..] {
-        let joined = join(&server, who, &game, deck).await;
-        assert_eq!(joined.status, 200, "{}", joined.text());
-        seat_of.push(joined.json()["seat"].as_u64().unwrap() as usize);
-    }
-    assert_eq!(seat_of, [vec![0], (1 + bots..seats).collect()].concat());
     let watch_path = format!("/ws/{game}/watch");
     let mut early = open(
         server.addr,
@@ -210,25 +247,8 @@ async fn free_for_all(pool: PgPool, seats: usize, bots: usize, level: &str) {
     assert_eq!(victim.play().await, Stop::Paused);
 
     // A stranger watches from the opening: the handicapped seat has its own life and hand size.
-    let mut watching = open(
-        server.addr,
-        &watch_path,
-        &[("Cookie", stranger.cookie.as_str())],
-    )
-    .await;
-    assert_eq!(watching.welcome(&game).await, PlayerId::from_index(seats));
-    let ServerMessage::Snapshot { state, .. } = watching.message().await else {
-        panic!("a watcher starts with a snapshot");
-    };
-    public_only(&state.table);
-    assert_eq!(state.table.format, "commander");
-    for (seat, player) in state.table.players.iter().enumerate() {
-        let life = if seat == last { 12 } else { 8 };
-        assert_eq!(player.life, life, "seat {seat}");
-        assert_eq!(player.commanders.len(), 1, "seat {seat}");
-    }
-    assert_eq!(state.table.players[last].hand.count, 6);
-    let watcher = tokio::spawn(watch_to_the_end(watching));
+    let watching = watch_opening(&server, &game, &stranger, seats).await;
+    let watch_task = tokio::spawn(watch_to_the_end(watching));
 
     // The last seat opens a second socket (the first is closed), then plays on and hangs up mid-game.
     let cookie = players[humans - 1].0.cookie.clone();
@@ -252,7 +272,7 @@ async fn free_for_all(pool: PgPool, seats: usize, bots: usize, level: &str) {
         assert_eq!(report.result, result, "seat {}", report.seat.index());
         assert_eq!(report.errors, [], "seat {}", report.seat.index());
     }
-    let watched = watcher.await.unwrap();
+    let watched = watch_task.await.unwrap();
     assert_eq!(watched.result, result);
     assert!(watched.attacks > 0, "nobody attacked in ten rounds");
     if let GameResult::Winner(winner) = result {
