@@ -1,7 +1,7 @@
 {
   "oracle_id": "54400ec3-f2ab-4cdf-9731-e04281bf7e90",
   "name": "Overencumbered",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Overencumbered",
@@ -19,9 +19,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 113, "end": 276 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "AttachedPlayer",
+                  "cost": "{1}",
+                  "times": {
+                    "Count": [{ "Type": "Artifact" }, { "ControlledBy": "AttachedPlayer" }]
+                  },
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": ["CantAttack"],
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "34fb2206-241a-46c6-9f48-af72119ee8bd",
+  "oracle_id": "6874be51-623d-4eaf-a67a-2fcbb9a8ceca",
+  "multiverse_ids": [],
+  "name": "Tempt with Bunnies",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/34fb2206-241a-46c6-9f48-af72119ee8bd",
+  "scryfall_uri": "https://scryfall.com/card/plst/BLC-13/tempt-with-bunnies?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-25T17:02:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339",
+    "normal": "https://cards.scryfall.io/normal/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339",
+    "large": "https://cards.scryfall.io/large/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339",
+    "png": "https://cards.scryfall.io/png/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.png?1787677339",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.webp?1787677339",
+    "grid": "https://cards.scryfall.io/grid/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.webp?1787677339",
+    "display": "https://cards.scryfall.io/display/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.webp?1787677339",
+    "art": "https://cards.scryfall.io/art/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.webp?1787677339",
+    "crop": "https://cards.scryfall.io/crop/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.webp?1787677339",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/4/34fb2206-241a-46c6-9f48-af72119ee8bd.jpg?1787677339"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Tempting Offer — Draw a card and create a 1/1 white Rabbit creature token. Then each opponent may draw a card and create a 1/1 white Rabbit creature token. For each opponent who does, you draw a card and you create a 1/1 white Rabbit creature token.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Tempting offer"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "34fb2206-241a-46c6-9f48-af72119ee8bd",
+      "component": "combo_piece",
+      "name": "Tempt with Bunnies",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/34fb2206-241a-46c6-9f48-af72119ee8bd"
+    },
+    {
+      "object": "related_card",
+      "id": "63ae4f9c-ad6e-4d6a-89f1-653916bf5373",
+      "component": "token",
+      "name": "Rabbit",
+      "type_line": "Token Creature — Rabbit",
+      "uri": "https://api.scryfall.com/cards/63ae4f9c-ad6e-4d6a-89f1-653916bf5373"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set": "plst",
+  "set_name": "The List",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/67e47ba2-b019-4181-9005-fe9fc021de44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplst&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plst?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/34fb2206-241a-46c6-9f48-af72119ee8bd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6874be51-623d-4eaf-a67a-2fcbb9a8ceca&unique=prints",
+  "collector_number": "BLC-13",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Wootten",
+  "artist_ids": [
+    "31cdca96-ecde-4245-bfb6-653929d57d9c"
+  ],
+  "illustration_id": "df8ce53b-fef8-41b9-84b8-2fa435a45b8d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1962,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTempt%2Bwith%2BBunnies",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTempt%2Bwith%2BBunnies",
+    "edhrec": "https://edhrec.com/route/?cc=Tempt+with+Bunnies"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DTempt%2Bwith%2BBunnies%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Tempt+with+Bunnies&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Tempt+with+Bunnies&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

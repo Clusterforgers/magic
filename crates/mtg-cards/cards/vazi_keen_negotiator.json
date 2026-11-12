@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 6, "end": 117 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Tally": {
+                      "event": "TokenCreated",
+                      "who": "You",
+                      "filter": [{ "Subtype": "Treasure" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

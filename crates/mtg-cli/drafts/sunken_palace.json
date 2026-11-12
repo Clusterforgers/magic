@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c098c507-5154-423a-a70b-f6dfd4959cf6",
+  "name": "Sunken Palace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunken Palace",
+      "oracle_fingerprint": "f76f8708389cccde896ef6f5997fe29a",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [], "count": 7 } }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue"] },
+                  "when_spent": {
+                    "spell": {},
+                    "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -92,6 +92,28 @@ fn tag_of<T: Serialize>(value: &T) -> String {
     }
 }
 
+/// The name of a part of a cost that takes all of a kind the payer has, with nothing to choose: "discard your hand"
+/// (`Cost.Discard.Hand`), "sacrifice all permanents you control" (`Cost.Sacrifice.All`).
+fn r303c_whole(item: &CostItem) -> Option<&'static str> {
+    match item {
+        CostItem::Discard {
+            count: Amount::Count(counted),
+            filter: None,
+        } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
+            Some("Discard.Hand")
+        }
+        CostItem::Sacrifice {
+            filter,
+            count: Amount::Count(counted),
+        } if counted.0.split_last()
+            == Some((&Pred::ControlledBy(Ref::You), filter.0.as_slice())) =>
+        {
+            Some("Sacrifice.All")
+        }
+        _ => None,
+    }
+}
+
 /// Whether the part of a cost that counts holds a fixed number or the X announced: the engine pays no other amount
 /// (`Cost.PayLife.Counted`).
 fn is_fixed(item: &CostItem) -> bool {
@@ -1410,7 +1432,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// The cost of an `Effect::Pay`: life or damage of a counted amount ("pay that much life", "have ~ deal that much
+    /// damage to them") and a counted draw the controller
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
@@ -1422,7 +1445,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) if !is_fixed(item) && *amount != Amount::X => {
+                CostItem::PayLife(amount) | CostItem::DamageToYou(amount)
+                    if !is_fixed(item) && *amount != Amount::X =>
+                {
                     Some((i, amount))
                 }
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
@@ -1450,6 +1475,7 @@ impl<'a> Walker<'a> {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
+                | CostItem::DamageToYou(count)
                 | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
@@ -1473,7 +1499,10 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                if !is_fixed(item) {
+                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
+                if let Some(whole) = r303c_whole(item).filter(|_| w.choosing && !w.activated_cost) {
+                    w.uses("Cost", whole);
+                } else if !is_fixed(item) {
                     let activated = match (w.activated_cost, w.rather_cost) {
                         (true, _) => ".Activated",
                         (false, true) => ".Rather",
@@ -3886,6 +3915,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("with", |w| w.reference(with, Kind::Player));
             }
+            Effect::ExchangeLifeWithToughness { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RepeatWhile {
                 condition,
@@ -4179,6 +4212,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Rule", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -4251,6 +4287,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Shield", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Shield", "Duration.WhileYouControlSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
@@ -4595,6 +4634,8 @@ impl Walker<'_> {
         // A keyword a player has is given to the player: "You have hexproof."
         let kind = if gives_player_keywords(affected, mods) {
             Kind::Player
+        } else if r305c_players_and_objects(affected, mods) {
+            Kind::Either
         } else {
             Kind::Object
         };
@@ -5678,12 +5719,23 @@ impl Walker<'_> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except, .. } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                counters,
+                ..
+            } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
+                for (index, entry) in counters.iter().enumerate() {
+                    self.at(format!("counters[{index}]"), |w| {
+                        w.amount(&entry.count);
+                        w.selector(&entry.of);
+                    });
+                }
             }
             _ => {}
         }
@@ -5781,6 +5833,27 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         affected,
         Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
     ) && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
+}
+
+/// Whether a static ability gives keywords a player can have to players and to the objects a selector names together:
+/// "You and permanents you control have protection from Salamanders."
+fn r305c_players_and_objects(affected: &Ref, mods: &[Modification]) -> bool {
+    let Ref::Union(parts) = affected else {
+        return false;
+    };
+    let players = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::You | Ref::Opponents | Ref::EachPlayer))
+        .count();
+    let objects = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::Each(_)))
+        .count();
+    players > 0
+        && objects > 0
+        && players + objects == parts.len()
+        && !mods.is_empty()
         && mods.iter().all(Modification::is_player_keyword)
 }
 
@@ -6622,6 +6695,7 @@ mod tests {
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::r306c_counted_damage_an_opponent_takes(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":{"Counters":{"on":"This","counter":"+1/+1"}}}],"unpaid":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}"#, &["Ability.Triggered", "Cost.DamageToYou", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.Counted", "Trigger.Attacks"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
@@ -6629,6 +6703,9 @@ mod tests {
     #[case::r5g_a_discard_counted_by_a_condition(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Discard":{"count":{"When":{"condition":"YourTurn","then":2,"otherwise":1}}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Amount.When", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
     #[case::e19_ward_of_life_equal_to_its_power(r#"{"Keyword":{"Ward":[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]}}"#, &["Cost.PayLife", "Effect.Pay.Counted", "Keyword.Ward"])]
     #[case::e19_ward_of_a_blight(r#"{"Keyword":{"Ward":[{"Blight":2}]}}"#, &["Cost.Blight", "Keyword.Ward"])]
+    #[case::r303c_a_spell_costing_the_hand_and_every_permanent(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}},{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Discard", "Cost.Discard.Hand", "Cost.Sacrifice", "Cost.Sacrifice.All"])]
+    #[case::r303c_half_the_lands_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Half":{"of":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"up":true}}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
+    #[case::r303c_all_of_another_kind_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
     #[case::e19_ward_of_a_counted_discard(r#"{"Keyword":{"Ward":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}"#, &["Cost.Discard", "Cost.Discard.Counted", "Keyword.Ward"])]
     #[case::r5g_untapping_the_source(r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Untap", "Effect.Draw"])]
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]

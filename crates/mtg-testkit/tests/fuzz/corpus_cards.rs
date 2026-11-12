@@ -35,13 +35,11 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Conflagrate", Partial, 1),
     ("Disrupting Shoal", Partial, 1),
     ("Firecat Blitz", Partial, 1),
-    ("Kaervek's Spite", Partial, 1),
     ("Flash of Insight", Partial, 1),
     ("Nourishing Shoal", Partial, 1),
     ("Shining Shoal", Partial, 1),
     ("Sickening Shoal", Partial, 1),
     ("Soulblast", Partial, 1),
-    ("Vexing Puzzlebox", Partial, 2),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3108a4fe-b18a-4d02-9545-b19812454362",
+  "name": "Rosheen, Roaring Prophet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rosheen, Roaring Prophet",
+      "oracle_fingerprint": "4d6d01e018454b7001c3375ebe5bdfa2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 6, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }, "XInCost"]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, "XInCost"] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "times": { "CountOf": { "of": { "Bound": "revealed" }, "filter": [] } },
+                  "only": ["CostWithX"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

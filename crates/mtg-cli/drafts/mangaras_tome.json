@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f515c691-07be-47ea-8bc0-46221eab8b46",
+  "name": "Mangara's Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mangara's Tome",
+      "oracle_fingerprint": "dcb453a7cad7012771481993d4e89027",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 5, "max": 5 }, "as": "found" } },
+              { "ExileHidden": { "what": { "Bound": "found" }, "as": "pile" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "ChooseAtRandom": {
+                          "from": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                          "as": "top"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

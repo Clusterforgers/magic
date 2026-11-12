@@ -1,0 +1,68 @@
+{
+  "oracle_id": "e5345c28-7046-4ff3-a5d6-eeb7a0fb230b",
+  "name": "Flickerform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flickerform",
+      "oracle_fingerprint": "47f504355bcf3b208f1a4830962dc940",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Activated": {
+            "cost": "{2}{W}{W}",
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Exile": { "what": "Attached", "as": "creature" } },
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "Subtype": "Aura" }, { "AttachedTo": "Attached" }] },
+                        "as": "auras"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "creature" },
+                        "to": { "Battlefield": {} },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "returned" },
+                            "selector": [{ "In": "Battlefield" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "auras" },
+                              "to": { "BattlefieldAttached": { "to": { "Bound": "returned" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

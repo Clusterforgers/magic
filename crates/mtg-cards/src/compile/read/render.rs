@@ -569,6 +569,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
     super::r302c_writers::r302c_wordings(ability, &mut texts);
     super::r305b_writers::r305b_wordings(ability, &mut texts);
@@ -579,6 +580,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
     super::l31a_events::l31a_wordings(ability, &mut texts);
+    super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
+    super::r301b_writers::r301b_flip_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -1067,7 +1070,8 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
+            limit:
+                limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone | Limit::OncePerGame)),
             from,
             targets,
             effects,
@@ -1635,6 +1639,7 @@ fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
     tail.extend(limit.map(|limit| match limit {
         Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        Limit::OncePerGame => "This ability triggers only once.".to_owned(),
         _ => "This ability triggers only once each turn.".to_owned(),
     }));
     tail

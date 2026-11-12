@@ -1,0 +1,47 @@
+{
+  "oracle_id": "78a2972c-14f4-41f3-99f9-167948bdd73a",
+  "name": "Petrified Hamlet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Petrified Hamlet",
+      "oracle_fingerprint": "9eb2ca66f7a0957469dbebbd04c91940",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [{ "Type": "Land" }] }, "as": "name" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": { "Each": ["ChosenName"] }, "action": { "Activate": [] } } }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, "ChosenName"] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

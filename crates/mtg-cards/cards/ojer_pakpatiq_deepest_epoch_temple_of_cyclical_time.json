@@ -1,7 +1,7 @@
 {
   "oracle_id": "34ef174e-1b3d-43d5-9f72-3d35befbdd7f",
   "name": "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ojer Pakpatiq, Deepest Epoch",
@@ -9,15 +9,38 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 197 }
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Instant" }, { "CastFrom": "Hand" }], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Rebound" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 198, "end": 332 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true,
+                      "transformed": true,
+                      "counters": [[{ "Other": "time" }, 3]]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

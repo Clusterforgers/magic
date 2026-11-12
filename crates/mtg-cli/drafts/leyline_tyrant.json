@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f92aaa00-6ece-4033-b3df-b2fc2c4718d9",
+  "name": "Leyline Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline Tyrant",
+      "oracle_fingerprint": "7c4f55d2322bc401010edccfb88b0c01",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Red" } } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{X}" }, { "XColor": "Red" }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

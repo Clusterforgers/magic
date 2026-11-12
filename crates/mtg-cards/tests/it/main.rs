@@ -56,6 +56,7 @@ mod r288_probe;
 mod r288_wordings;
 mod r300b_writers;
 mod r300c_cards;
+mod r301b_cards;
 mod r302_cards;
 mod r302b_cards;
 mod r302c_writers;

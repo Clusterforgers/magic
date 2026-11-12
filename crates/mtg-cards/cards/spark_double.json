@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8dcb35e5-ae44-455f-86e3-4a77d496ff34",
+  "name": "Spark Double",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spark Double",
+      "oracle_fingerprint": "ca737855ffe27476a140da5be205d845",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "except": [{ "RemoveSupertype": "Legendary" }],
+                "counters": [
+                  { "counter": "+1/+1", "of": [{ "Type": "Creature" }] },
+                  { "counter": "loyalty", "of": [{ "Type": "Planeswalker" }] }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

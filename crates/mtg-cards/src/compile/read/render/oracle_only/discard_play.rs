@@ -56,6 +56,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
+        any_cast: false,
     };
     if !targets.is_empty() || *permission != wanted {
         return;

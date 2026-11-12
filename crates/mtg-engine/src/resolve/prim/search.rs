@@ -238,6 +238,7 @@ fn exiled_as_found(
                     rather: None,
                     spend_as: SpendAs::AnyColor,
                     when: None,
+                    any_cast: false,
                 },
                 duration: Duration::Forever,
                 source,

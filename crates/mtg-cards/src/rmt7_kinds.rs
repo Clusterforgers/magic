@@ -1,5 +1,5 @@
 //! Kinds of keywords that one modification takes away whatever their parameter: "loses all landwalk abilities",
-//! "lose ... protection ... and ward".
+//! "lose ... protection ... and ward", "loses all \"bands with other\" abilities".
 
 use serde::{Deserialize, Serialize};
 
@@ -14,6 +14,8 @@ pub enum KeywordKind {
     Protection,
     /// Every ward ability, whatever its cost.
     Ward,
+    /// Every "bands with other" ability, whatever it bands with (CR 702.22c).
+    BandsWithOther,
 }
 
 impl KeywordKind {
@@ -27,6 +29,7 @@ impl KeywordKind {
                     Keyword::Protection(_) | Keyword::ProtectionSparing { .. }
                 )
                 | (KeywordKind::Ward, Keyword::Ward(_))
+                | (KeywordKind::BandsWithOther, Keyword::BandsWithOther(_))
         )
     }
 
@@ -36,6 +39,7 @@ impl KeywordKind {
             KeywordKind::Landwalk => "all landwalk abilities",
             KeywordKind::Protection => "protection",
             KeywordKind::Ward => "ward",
+            KeywordKind::BandsWithOther => "all \"bands with other\" abilities",
         }
     }
 }
@@ -66,6 +70,8 @@ mod tests {
     #[case::hexproof_is_no_protection(KeywordKind::Protection, Keyword::Hexproof, false)]
     #[case::ward(KeywordKind::Ward, Keyword::Ward(Cost::default()), true)]
     #[case::shroud_is_no_ward(KeywordKind::Ward, Keyword::Shroud, false)]
+    #[case::bands_with_other(KeywordKind::BandsWithOther, Keyword::BandsWithOther(island()), true)]
+    #[case::banding_is_no_bands_with_other(KeywordKind::BandsWithOther, Keyword::Banding, false)]
     fn a_kind_covers_its_keywords(
         #[case] kind: KeywordKind,
         #[case] keyword: Keyword,

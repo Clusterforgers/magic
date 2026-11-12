@@ -1,0 +1,76 @@
+{
+  "oracle_id": "00ba0c24-a671-493e-ba46-13e45d1818f1",
+  "name": "Ogre Battlecaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Battlecaster",
+      "oracle_fingerprint": "c4b1b1f80e79a12f06eec800c58b248c",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}{R}",
+                  "paid": [
+                    { "CastFromZone": { "what": { "Target": 0 }, "as": "cast" } },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "SpellCast": { "what": [{ "Is": { "Bound": "cast" } }], "by": "You" }
+                        },
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                                    "toughness": 0
+                                  }
+                                }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -108,6 +108,7 @@ const KEYWORD_KIND_WORDS = {
   Landwalk: 'all landwalk abilities',
   Protection: 'protection',
   Ward: 'ward',
+  BandsWithOther: 'all "bands with other" abilities',
 } as const
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
@@ -257,6 +258,7 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
+    UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     WhileYouControlSource:
