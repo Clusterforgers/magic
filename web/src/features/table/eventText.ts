@@ -966,6 +966,20 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
+  if ('Investigated' in event) return line(`${n.seat(event.Investigated.player)} investigates`)
+  if ('Discovered' in event) {
+    const { player, value, card } = event.Discovered
+    const found = card === null ? '' : `, finding ${n.card(card)}`
+    return line(`${n.seat(player)} discovers ${value}${found}`)
+  }
+  if ('DreadManifested' in event) {
+    const { player, card } = event.DreadManifested
+    const buried = card === null ? '' : ` and puts ${n.card(card)} into their graveyard`
+    return line(`${n.seat(player)} manifests dread${buried}`)
+  }
+  if ('GiftGiven' in event) {
+    return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
+  }
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)

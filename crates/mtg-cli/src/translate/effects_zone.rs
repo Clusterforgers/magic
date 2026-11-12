@@ -296,6 +296,7 @@ pub fn manifest_dread(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             json!({"Choose": {"who": who, "from": {"Bound": looked}, "as": kept, "rest_as": rest}}),
             json!({"Move": {"what": {"Bound": rest}, "to": "Graveyard"}}),
             manifest,
+            json!({"Performed": {"action": "ManifestedDread", "who": who, "card": {"Bound": rest}}}),
         ]);
     }
     Ok(effects)

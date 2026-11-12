@@ -100,6 +100,14 @@ pub enum Action {
     ActivatedBoast,
     /// A player clashed (CR 701.23), won or lost; `Amount::Triggering` is 1 when they won and 0 when they lost.
     Clashed,
+    /// A player investigated (CR 701.16a), once for each Clue token the investigation made.
+    Investigated,
+    /// A player discovered (CR 701.57); `what` is the card discovered and the amount the discover value.
+    Discovered,
+    /// A player manifested dread (CR 701.62); `what` is the card they put into their graveyard this way.
+    ManifestedDread,
+    /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
+    GaveGift,
 }
 
 impl Action {
@@ -191,6 +199,10 @@ impl Action {
             ),
             Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
             Action::Clashed => ("clash", "clashes"),
+            Action::Investigated => ("investigate", "investigates"),
+            Action::Discovered => ("discover", "discovers"),
+            Action::ManifestedDread => ("manifest dread", "manifests dread"),
+            Action::GaveGift => ("give a gift", "gives a gift"),
         }
     }
 

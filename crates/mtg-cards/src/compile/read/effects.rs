@@ -368,7 +368,8 @@ fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             r.attempt(|r| {
                 let found = template(r)?;
                 // A chain of steps is not one choice: "may" would have to say which steps it covers.
-                (found.len() == 1).then(|| {
+                let one = found.len() == 1 || super::l31a_performed::is_investigation(&found);
+                one.then(|| {
                     vec![Effect::May {
                         who: Ref::You,
                         effects: found,
@@ -731,7 +732,9 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
-        return Some(vec![create::clue(who.clone())]);
+        return Some(super::l31a_performed::investigation(create::clue(
+            who.clone(),
+        )));
     }
     predicate(r, who).map(|effect| vec![effect])
 }

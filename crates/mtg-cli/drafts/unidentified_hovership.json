@@ -53,6 +53,13 @@
                   "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } }
                 }
               },
+              {
+                "Performed": {
+                  "action": "ManifestedDread",
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                  "card": { "Bound": "rest3" }
+                }
+              },
               { "Forget": { "slot": "remembered" } }
             ]
           }

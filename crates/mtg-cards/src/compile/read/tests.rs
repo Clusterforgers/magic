@@ -345,6 +345,7 @@ mod l291_dice;
 mod l291_nth_counter;
 mod l292_reads;
 mod l293_triggers;
+mod l31a_events;
 mod land_types;
 mod lands;
 mod leave_combat;
