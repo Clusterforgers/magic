@@ -207,6 +207,7 @@ mod r307c_events;
 mod r372_suspend;
 mod r375_events;
 mod r375_phase;
+mod r403_hooks;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -549,6 +550,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    if let Some(found) =
+        r403_hooks::r403_read(text, kind, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)

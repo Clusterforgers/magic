@@ -69,7 +69,11 @@ fn entry_texts(ability: &Ability) -> Vec<String> {
             counter,
             count,
             mods,
+            also,
         } => {
+            if !also.is_empty() {
+                return Vec::new();
+            }
             let [Modification::GrantAbility(granted)] = mods.as_slice() else {
                 return plain();
             };

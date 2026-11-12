@@ -588,6 +588,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_flip_wordings(&mut texts);
     super::us38_quotes::us38_nested_wordings(&mut texts);
+    super::r403_hooks::r403_wordings(ability, written_variants, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.

@@ -1,0 +1,383 @@
+//! r40-3 wordings read from a twin another reader reads and written from that twin's wordings: "tap enchanted creature
+//! and remove it from combat" (the twin names the creature again in a sentence of its own) and "As long as enchanted
+//! creature isn't legendary, it doesn't untap ..." (the twin names the creature again after the condition); "enters with
+//! your choice of a +1/+1, first strike, or vigilance counter on it" (the twin names "counter" with each kind), "enters with
+//! two +1/+1 counters and a trample counter on it" (the twin names the first kind alone) and "put the same number of each
+//! kind of counter on that creature" (the twin draws a card).
+
+use super::ClauseKind;
+use super::tokens::{Reader, tokenize};
+use crate::ability::Ability;
+use crate::effect::Effect;
+use crate::refs::Ref;
+use crate::trigger::{MoreCounters, ReplaceBy};
+use crate::value::{Amount, CounterKind};
+
+/// The step a trigger that copies the counters of the card is written with.
+const R403_SAME_COUNTERS: &str = "put the same number of each kind of counter on that creature";
+/// The condition of a trigger that the card has a counter of any kind, as the trigger writes it after its head.
+const R403_HAS_COUNTERS: &str = ", if ~ has counters on it, ";
+/// The step its twin is written with.
+const R403_DRAW: &str = "draw a card";
+
+/// The nouns an Aura or Equipment calls the permanent it is attached to.
+const R403_ATTACHED: [&str; 3] = [
+    "enchanted creature",
+    "equipped creature",
+    "enchanted permanent",
+];
+
+/// The joined form "tap N and remove it from combat" of the twin "tap N. Remove N from combat".
+fn r403_combat_pairs() -> impl Iterator<Item = (String, String)> {
+    R403_ATTACHED.iter().map(|noun| {
+        (
+            format!("tap {noun} and remove it from combat"),
+            format!("tap {noun}. Remove {noun} from combat"),
+        )
+    })
+}
+
+/// The twin of "As long as N ..., it S" with N again in place of "it", when the condition names the attached permanent.
+fn r403_it_twin(text: &str) -> Option<String> {
+    let rest = text.strip_prefix("As long as ")?;
+    let noun = R403_ATTACHED.iter().find(|noun| rest.starts_with(**noun))?;
+    let (condition, body) = rest.split_once(", it ")?;
+    Some(format!("As long as {condition}, {noun} {body}"))
+}
+
+/// The ability a twin of `text` reads as, for the wordings of this pack; `read` reads a clause of the same kind.
+pub(super) fn r403_read(
+    text: &str,
+    kind: ClauseKind,
+    read: impl Fn(&str) -> Option<Ability>,
+) -> Option<Ability> {
+    if kind == ClauseKind::Triggered
+        && let Some((joined, twin)) =
+            r403_combat_pairs().find(|(joined, _)| text.contains(joined.as_str()))
+    {
+        return read(&text.replacen(&joined, &twin, 1));
+    }
+    if kind == ClauseKind::Triggered
+        && let Some((head, body)) = text.split_once(R403_HAS_COUNTERS)
+    {
+        let mut ability = read(&format!("{head}, {body}"))?;
+        let Ability::Triggered { intervening_if, .. } = &mut ability else {
+            return None;
+        };
+        intervening_if.is_none().then_some(())?;
+        *intervening_if = Some(r403_has_counters());
+        return Some(ability);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(head) = text.strip_suffix(&format!("{R403_SAME_COUNTERS}."))
+    {
+        let mut ability = read(&format!("{head}{R403_DRAW}."))?;
+        let Ability::Triggered { effects, .. } = &mut ability else {
+            return None;
+        };
+        (effects.as_slice() == [r403_draw()]).then_some(())?;
+        *effects = vec![r403_same_counters()];
+        return Some(ability);
+    }
+    if kind == ClauseKind::Static
+        && let Some(twin) = r403_it_twin(text)
+    {
+        return read(&twin);
+    }
+    if let Some(found) = r403_different_read(text) {
+        return Some(found);
+    }
+    if let Some(twin) = r403_choice_twin(text) {
+        return read(&twin);
+    }
+    r403_also_read(text, &read)
+}
+
+/// The card has one or more counters of any kind.
+fn r403_has_counters() -> crate::value::Condition {
+    crate::value::Condition::Compare {
+        left: Amount::AnyCounters(Ref::This),
+        op: crate::value::Cmp::Ge,
+        right: Amount::Fixed(1),
+    }
+}
+
+/// A draw of one card by the controller.
+fn r403_draw() -> Effect {
+    Effect::Draw {
+        who: Ref::You,
+        count: Amount::Fixed(1),
+        bind: None,
+    }
+}
+
+/// The counters of the card put on the creature the trigger is about, as many of each kind.
+fn r403_same_counters() -> Effect {
+    Effect::PutCountersOf {
+        on: Ref::Triggering,
+        of: Ref::This,
+        each: None,
+        one_kind: false,
+        per_kind: None,
+    }
+}
+
+/// "your choice of a A, B, or C counter" as "your choice of a A counter, a B counter, or a C counter".
+fn r403_choice_twin(text: &str) -> Option<String> {
+    let (head, rest) = text.split_once("your choice of a ")?;
+    let (list, tail) = rest.split_once(" counter on ")?;
+    let (firsts, last) = list.rsplit_once(", or ")?;
+    let mut kinds: Vec<&str> = firsts.split(", ").collect();
+    kinds.push(last);
+    (kinds.len() >= 3 && !kinds.iter().any(|kind| kind.contains("counter"))).then_some(())?;
+    let named: Vec<String> = kinds
+        .iter()
+        .map(|kind| format!("{} {kind} counter", r403_article(kind)))
+        .collect();
+    let (all_but, end) = named.split_at(named.len() - 1);
+    Some(format!(
+        "{head}your choice of {}, or {} on {tail}",
+        all_but.join(", "),
+        end[0]
+    ))
+}
+
+/// The words of a choice of different counters, around its count and its kinds.
+const R403_DIFFERENT: (&str, &str, &str) = (
+    "~ enters with your choice of ",
+    " different counters on it from among ",
+    ".",
+);
+
+/// "~ enters with your choice of two different counters on it from among menace, deathtouch, and lifelink."
+fn r403_different_read(text: &str) -> Option<Ability> {
+    let (head, middle, end) = R403_DIFFERENT;
+    let rest = text.strip_prefix(head)?;
+    let (number, rest) = rest.split_once(middle)?;
+    let list = rest.strip_suffix(end)?;
+    let count = super::amounts::number_word(number)?;
+    let (firsts, last) = list.rsplit_once(", and ")?;
+    let mut kinds = Vec::new();
+    for name in firsts.split(", ").chain(std::iter::once(last)) {
+        let tokens = tokenize(name);
+        let mut r = Reader::new(&tokens, false);
+        kinds.push(super::counters::kind(&mut r)?);
+        r.end().then_some(())?;
+    }
+    Some(Ability::Replacement {
+        when: crate::trigger::ReplaceWhen::Enters {
+            what: crate::refs::Selector::this(),
+        },
+        by: ReplaceBy::WithCountersOf { kinds, count },
+        condition: None,
+        from: crate::refs::ZoneKind::Battlefield,
+    })
+}
+
+/// The wording `r403_different_read` reads.
+fn r403_different_text(kinds: &[CounterKind], count: u32) -> Option<String> {
+    let (head, middle, end) = R403_DIFFERENT;
+    let names: Option<Vec<&str>> = kinds.iter().map(super::counters::kind_text).collect();
+    let names = names?;
+    let (last, firsts) = names.split_last()?;
+    let number = super::amounts::count_word(count)?;
+    Some(format!(
+        "{head}{number}{middle}{}, and {last}{end}",
+        firsts.join(", ")
+    ))
+}
+
+/// The article before a word.
+fn r403_article(word: &str) -> &'static str {
+    if word.starts_with(['a', 'e', 'i', 'o', 'u']) {
+        "an"
+    } else {
+        "a"
+    }
+}
+
+/// "your choice of a A counter, a B counter, or a C counter" as "your choice of a A, B, or C counter".
+fn r403_choice_joined(text: &str) -> Option<String> {
+    let (head, rest) = text.split_once("your choice of ")?;
+    let (list, tail) = rest.split_once(" counter on ")?;
+    let (firsts, last) = list.rsplit_once(" counter, or ")?;
+    let mut kinds: Vec<&str> = firsts.split(" counter, ").collect();
+    kinds.push(last);
+    (kinds.len() >= 3).then_some(())?;
+    let bare: Option<Vec<&str>> = kinds
+        .iter()
+        .map(|named| named.split_once(' ').map(|(_, kind)| kind))
+        .collect();
+    let bare = bare?;
+    let (all_but, end) = bare.split_at(bare.len() - 1);
+    Some(format!(
+        "{head}your choice of {} {}, or {} counter on {tail}",
+        r403_article(bare[0]),
+        all_but.join(", "),
+        end[0]
+    ))
+}
+
+/// "enters with A and B on it" read as the twin "enters with A on it" with the counters B besides.
+fn r403_also_read(text: &str, read: &impl Fn(&str) -> Option<Ability>) -> Option<Ability> {
+    let (head, rest) = text.split_once(" enters with ")?;
+    let (counted, tail) = rest.split_once(" on it")?;
+    let (first, more) = counted.split_once(" and ")?;
+    let tokens = tokenize(more);
+    let mut r = Reader::new(&tokens, false);
+    let (counter, count) = super::counters::entering(&mut r)?;
+    r.end().then_some(())?;
+    let mut ability = read(&format!("{head} enters with {first} on it{tail}"))?;
+    let Ability::Replacement {
+        by: ReplaceBy::WithCountersAnd { also, .. },
+        ..
+    } = &mut ability
+    else {
+        return None;
+    };
+    also.push(MoreCounters { counter, count });
+    Some(ability)
+}
+
+/// Whether the ability taps the attached permanent and then removes it from combat.
+fn r403_taps_then_removes(ability: &Ability) -> bool {
+    ability.effects().windows(2).any(|pair| {
+        matches!(
+            pair,
+            [
+                Effect::Tap {
+                    what: Ref::Attached,
+                    bind: None
+                },
+                Effect::RemoveFromCombat {
+                    what: Ref::Attached
+                }
+            ]
+        )
+    })
+}
+
+/// The wordings of this pack added to `texts`, the wordings of `ability` so far.
+pub(super) fn r403_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    let mut more = Vec::new();
+    if r403_taps_then_removes(ability) {
+        for text in texts.iter() {
+            for (joined, twin) in r403_combat_pairs() {
+                if text.contains(twin.as_str()) {
+                    more.push(text.replacen(&twin, &joined, 1));
+                }
+            }
+        }
+    }
+    if let Ability::Static {
+        affected: Ref::Attached,
+        condition:
+            Some(crate::value::Condition::Matches {
+                subject: Ref::Attached,
+                ..
+            }),
+        ..
+    } = ability
+    {
+        for text in texts.iter() {
+            let Some(rest) = text.strip_prefix("As long as ") else {
+                continue;
+            };
+            let Some(noun) = R403_ATTACHED.iter().find(|noun| rest.starts_with(**noun)) else {
+                continue;
+            };
+            if let Some((condition, body)) = rest.split_once(&format!(", {noun} ")) {
+                more.push(format!("As long as {condition}, it {body}"));
+            }
+        }
+    }
+    r403_counter_wordings(ability, written, &mut more, texts);
+    texts.extend(more);
+}
+
+/// The wordings of a choice of three or more kinds of counters and of an entry with counters of two kinds, and of a
+/// trigger that copies the counters of the card.
+fn r403_counter_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    more: &mut Vec<String>,
+    texts: &[String],
+) {
+    if let Ability::Replacement {
+        when: crate::trigger::ReplaceWhen::Enters { what },
+        by: ReplaceBy::WithCountersOf { kinds, count },
+        condition: None,
+        from: crate::refs::ZoneKind::Battlefield,
+    } = ability
+        && *what == crate::refs::Selector::this()
+    {
+        more.extend(r403_different_text(kinds, *count));
+    }
+    if let Ability::Replacement {
+        by: ReplaceBy::WithCounterOf(kinds),
+        ..
+    } = ability
+        && kinds.len() >= 3
+    {
+        more.extend(texts.iter().filter_map(|text| r403_choice_joined(text)));
+    }
+    if let Ability::Replacement {
+        by: ReplaceBy::WithCountersAnd { also, .. },
+        ..
+    } = ability
+        && let [MoreCounters { counter, count }] = also.as_slice()
+        && let Some(words) = super::counters::entering_text(counter, count)
+    {
+        let mut twin = ability.clone();
+        if let Ability::Replacement {
+            by: ReplaceBy::WithCountersAnd { also, .. },
+            ..
+        } = &mut twin
+        {
+            also.clear();
+        }
+        for text in written(&twin) {
+            let Some((head, rest)) = text.split_once(" enters with ") else {
+                continue;
+            };
+            if let Some((first, tail)) = rest.split_once(" on it") {
+                more.push(format!(
+                    "{head} enters with {first} and {words} on it{tail}"
+                ));
+            }
+        }
+    }
+    if let Ability::Triggered {
+        intervening_if: Some(condition),
+        ..
+    } = ability
+        && *condition == r403_has_counters()
+    {
+        let mut twin = ability.clone();
+        if let Ability::Triggered { intervening_if, .. } = &mut twin {
+            *intervening_if = None;
+        }
+        for text in written(&twin) {
+            if let Some((head, body)) = text.split_once(", ") {
+                more.push(format!("{head}{R403_HAS_COUNTERS}{body}"));
+            }
+        }
+    }
+    if let Ability::Triggered { effects, .. } = ability
+        && effects.as_slice() == [r403_same_counters()]
+    {
+        let mut twin = ability.clone();
+        if let Ability::Triggered { effects, .. } = &mut twin {
+            *effects = vec![r403_draw()];
+        }
+        for text in written(&twin) {
+            if let Some(head) = text.strip_suffix(&format!("{R403_DRAW}.")) {
+                more.push(format!("{head}{R403_SAME_COUNTERS}."));
+            }
+        }
+    }
+}
