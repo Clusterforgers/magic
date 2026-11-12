@@ -1,28 +1,16 @@
 {
   "oracle_id": "65d9b8b6-5215-4037-8e50-e0ca80c5dc9e",
   "name": "Valiant Changeling",
-  "impl_status": "Full",
+  "impl_status": "Partial",
   "faces": [
     {
       "name": "Valiant Changeling",
       "oracle_fingerprint": "445e3f31b16e1450794c4233f7bfba7b",
       "abilities": [
         {
-          "CostModifier": {
-            "applies_to": ["This"],
-            "change": "Reduce",
-            "mana": "{1}",
-            "per": {
-              "AtMost": {
-                "of": {
-                  "Distinct": {
-                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
-                    "stat": "CreatureType"
-                  }
-                },
-                "most": 5
-              }
-            }
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 164 }
           }
         },
         { "Keyword": "Changeling" },

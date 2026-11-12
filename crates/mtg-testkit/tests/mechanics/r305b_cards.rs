@@ -1,7 +1,10 @@
 //! Goal: the r30-5b cards play their counts as printed at two to four seats: Yavimaya Kavu's power and toughness are
 //! defined alone (red creatures, green creatures, every player's, itself included) on the battlefield and in a hand,
-//! Fungal Behemoth counts the +1/+1 counters on its controller's creatures only, and Lumbering Megasloth costs {1} less
-//! for each counter on any player or permanent.
+//! Fungal Behemoth counts the +1/+1 counters on its controller's creatures only, Lumbering Megasloth costs {1} less
+//! for each counter on any player or permanent, Aven Interrupter taxes opponents' casts from graveyards, Hinata changes
+//! costs by the targets announced, Rampant Frogantua grows for each player who lost, Avenge costs less after an attack on
+//! its caster, a spell being cast targets the player it announced, stun counters stay on opponents' permanents under
+//! Fear of Sleep Paralysis, and Case of the Locked Hothouse is solved with seven lands.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -388,40 +391,6 @@ fn r305b_stun_counters_cant_be_removed_from_opponents_permanents(
         (counters, tapped),
         if fear { (1, true) } else { (0, false) }
     );
-    Ok(())
-}
-
-/// A 1/1 creature of one creature type.
-fn of_type(subtype: &str) -> Arc<CardDefinition> {
-    Arc::new(
-        CardDefinition::new(subtype)
-            .with_type(CardType::Creature)
-            .with_subtype(subtype)
-            .with_power_toughness(1, 1),
-    )
-}
-
-#[rstest]
-#[case::none(&[], "{5}{W}{W}")]
-#[case::three_types(&["Elf", "Goblin", "Human"], "{2}{W}{W}")]
-#[case::a_repeated_type(&["Elf", "Elf"], "{4}{W}{W}")]
-#[case::five_types(&["Elf", "Goblin", "Human", "Wizard", "Bear"], "{W}{W}")]
-#[case::seven_types_reduce_five(&["Elf", "Goblin", "Human", "Wizard", "Bear", "Cat", "Dog"], "{W}{W}")]
-fn r305b_valiant_changeling_reduces_at_most_five(
-    #[values(2, 4)] seats: usize,
-    #[case] types: &[&str],
-    #[case] cost: &str,
-) -> Result<(), ScriptError> {
-    let mine = lands(7, mtg_testkit::cards::plains)
-        .into_iter()
-        .chain(types.iter().map(|subtype| ready(of_type(subtype))));
-    let scenario = Scenario::new(seats)
-        .hand(0, [card("Valiant Changeling").unwrap()])
-        .battlefield(0, mine)
-        .battlefield(1, [ready(of_type("Dragon"))]);
-    let mut driver = Driver::from_scenario(scenario)?;
-    driver.begin_cast("Valiant Changeling")?;
-    assert_eq!(driver.pay_options()?.cost.to_string(), cost);
     Ok(())
 }
 
