@@ -131,14 +131,14 @@ fn compact(name: &str) -> String {
 #[case::absolver_enchantment("Absolver Thrull", r#""Enchantment""#, r#""Artifact""#)]
 #[case::blind_hunter_two(
     "Blind Hunter",
-    r#""amount":2}},{"GainLife""#,
-    r#""amount":3}},{"GainLife""#
+    r#"{"GainLife":{"amount":2}}"#,
+    r#"{"GainLife":{"amount":3}}"#
 )]
 #[case::euthanist_damaged("Orzhov Euthanist", r#""event":"Damaged""#, r#""event":"Attacked""#)]
 #[case::graven_other(
     "Graven Dominator",
-    r#",{"Type":"Creature"}]"#,
-    r#",{"Type":"Creature"},"Other"]"#
+    r#"{"Type":"Creature"},"Other"]"#,
+    r#"{"Type":"Creature"}]"#
 )]
 #[case::pontiff_minus("Orzhov Pontiff", r#""power":-1"#, r#""power":-2"#)]
 #[case::robot_third("Robot Domination", r#""reaching":3"#, r#""reaching":4"#)]
@@ -167,6 +167,16 @@ fn compact(name: &str) -> String {
     r#"{"Drew":{"who":"You"}}"#,
     r#"{"Drew":{"who":"Opponents"}}"#
 )]
+#[case::kitnap_stun("Kitnap", r#""count":3"#, r#""count":2"#)]
+#[case::motion_tapped("Motion Sickness", r#","Tapped"]"#, r#"]"#)]
+#[case::antelope_plains("Graceful Antelope", r#""Plains""#, r#""Island""#)]
+#[case::amalia_twenty("Amalia Benavides Aguirre", r#""right":20"#, r#""right":10"#)]
+#[case::veil_morph(
+    "Master of the Veil",
+    r#"{"HasKeywordNamed":"Morph"}"#,
+    r#"{"HasKeywordNamed":"Disguise"}"#
+)]
+#[case::cerberus_hand("Underworld Cerberus", r#""to":"Hand""#, r#""to":"Exile""#)]
 fn r289_a_card_reads_back_and_a_near_miss_does_not(
     #[case] name: &str,
     #[case] from: &str,

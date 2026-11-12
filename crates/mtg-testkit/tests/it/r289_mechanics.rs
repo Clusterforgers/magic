@@ -199,12 +199,7 @@ fn the_haunted_creature_dying_triggers_from_exile(
     let victim = driver.id_of("Victim")?;
     driver.begin_ability("Slayer", 0)?;
     settle_choosing(&mut driver, &[haunter, victim])?;
-    let exiled = driver.state().object(haunter).map(|o| o.zone());
-    assert_eq!(
-        life(&driver, 0),
-        22,
-        "dying haunts and gains nothing: {exiled:?}"
-    );
+    assert_eq!(life(&driver, 0), 22, "dying haunts and gains nothing");
     driver.begin_ability("Slayer", 0)?;
     settle_choosing(&mut driver, &[victim])?;
     assert_eq!(life(&driver, 0), 24, "the haunted creature died");
