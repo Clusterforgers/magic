@@ -15,7 +15,10 @@
               {
                 "Pay": {
                   "cost": [{ "Discard": {} }],
-                  "paid": [{ "CreateToken": { "token": { "Named": "clue" }, "count": 2 } }]
+                  "paid": [
+                    { "CreateToken": { "token": { "Named": "clue" }, "count": 2 } },
+                    { "Performed": { "action": "Investigated", "times": 2 } }
+                  ]
                 }
               }
             ]

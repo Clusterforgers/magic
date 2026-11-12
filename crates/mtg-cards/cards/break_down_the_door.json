@@ -32,7 +32,10 @@
                           }
                         },
                         { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
-                        { "Manifest": {} }
+                        { "Manifest": {} },
+                        {
+                          "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest3" } }
+                        }
                       ]
                     }
                   ]

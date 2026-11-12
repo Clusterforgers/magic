@@ -810,7 +810,39 @@ player: PlayerId, } } | { "EvidenceCollected": {
 /**
  * Who collected it.
  */
-player: PlayerId, } } | { "DieRolled": { 
+player: PlayerId, } } | { "Investigated": { 
+/**
+ * Who investigated.
+ */
+player: PlayerId, } } | { "Discovered": { 
+/**
+ * Who discovered.
+ */
+player: PlayerId, 
+/**
+ * The discover value.
+ */
+value: number, 
+/**
+ * The card discovered, when one was found and still exists.
+ */
+card: ObjectId | null, } } | { "DreadManifested": { 
+/**
+ * Who manifested dread.
+ */
+player: PlayerId, 
+/**
+ * The card they put into their graveyard this way, if any.
+ */
+card: ObjectId | null, } } | { "GiftGiven": { 
+/**
+ * Who gave it.
+ */
+player: PlayerId, 
+/**
+ * The player it was given to.
+ */
+to: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.
  */
