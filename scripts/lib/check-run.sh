@@ -304,6 +304,19 @@ report_units() {
     echo "warning: tests over ${slow_limit}s that $slow_file does not name (add them or make them faster):"
     echo "$warn"
   fi
-  for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn | first 4 |
-    awk '{ printf "%s%s %ss", (NR > 1 ? ", " : "slowest units: "), $2, $1 } END { print "" }'
+  slowest_tests
+  for name in "${!unit_secs[@]}"; do echo "${unit_secs[$name]} $name"; done | sort -rn |
+    awk '{ printf "%s%s %ss", (NR > 1 ? ", " : "units: "), $2, $1 } END { print "" }'
+}
+
+# slowest_tests: the 20 slowest tests of every test binary that ran, slowest first.
+slowest_tests() {
+  local name list=""
+  for name in "${!unit_secs[@]}"; do
+    [[ "${u_kind[$name]}" == web ]] && continue
+    list+=$(awk -v label="$name" '/^test .* \.\.\. ok <[0-9.]+s>$/ {
+      t = $NF; gsub(/[<>s]/, "", t); printf "%s   %s: %s %.1fs\n", t, label, $2, t }' "${u_log[$name]}")$'\n'
+  done
+  list=$(printf '%s' "$list" | sed '/^$/d' | sort -rn | first 20 | cut -d' ' -f2-)
+  [[ -z "$list" ]] || printf 'slowest tests:\n%s\n' "$list"
 }

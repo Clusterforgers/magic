@@ -129,7 +129,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1e) The release images build while the batch run of the release commit runs, both images at once, and `scripts/release.sh` reuses them from the build cache (release after the check: 600 s to about 120 s; `scripts/release.sh`, `docs/deploy.md`; after ts1d)
 - [ ] (ts1f) A diff of card files only tests those cards, the test modules and fixture decks that name them and a fixed sample, and the batch run tests the whole corpus (a card change to about 3 min; `scripts/check.sh`; after ts1a)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
-- [ ] (ts1k) The check ends with the seconds of each test binary and the 20 slowest tests, and the tag run sets `MTG_FUZZ_GAMES` to the long count (`scripts/check.sh`, `docs/testing.md`; after ts1b)
+- [ ] (ts1o) The tag run (`scripts/check.sh all`) sets `MTG_FUZZ_GAMES` to the long count and the fuzz binary still ends within the run cap (`scripts/check.sh`, `docs/testing.md`)
 - [ ] (ts1n) `scripts/check.sh` puts `scripts/warm-bin` first in `PATH` for its cargo calls and runs `scripts/tests/warm_target.sh` with its script tests, so a warm worktree needs no prefix (`scripts/check.sh`; after ts1a to ts1d)
 - [ ] (ts1m) A workspace-hack crate (cargo-hakari) fixes the dependency features, so every package selection shares one build and `cargo test -p mtg-engine` in a warm worktree compiles nothing (now 86 s; `Cargo.toml`, `crates/`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
