@@ -30,9 +30,14 @@ pub(super) fn r301b_wordings(
         let Some(added) = added.strip_suffix('.') else {
             continue;
         };
+        // A restriction on the mana follows as a sentence of its own ("Spend this mana only on costs that contain {X}.").
+        let (added, rest) = match added.split_once(". ") {
+            Some((added, rest)) => (added, format!(" {rest}.")),
+            None => (added, String::new()),
+        };
         for said in &reveal {
             found.push(format!(
-                "{head}: {said}. Add {added} for each card revealed this way."
+                "{head}: {said}. Add {added} for each card revealed this way.{rest}"
             ));
         }
     }
@@ -89,19 +94,32 @@ fn revealed_for_mana(ability: &Ability) -> Option<(Vec<String>, Ability)> {
             .collect(),
     );
     (!kind.0.is_empty()).then_some(())?;
+    // The kind as a group of cards in a hand, said as the writers say it, without where they are.
     let mut cards = kind.clone();
     cards.0.push(Pred::In(ZoneKind::Hand));
-    let named = phrase_text(&cards, Form::All)?;
-    let named = named.strip_suffix(" in hand").unwrap_or(&named).to_owned();
-    let named = if named.contains(" cards") {
-        named
-    } else {
-        format!("{named} cards")
-    };
-    let kinds = vec![
-        format!("{named} in your hand"),
-        format!("{named} from your hand"),
-    ];
+    let mut kinds = Vec::new();
+    for form in [Form::All, Form::Count] {
+        for selector in [selector, &cards] {
+            let Some(named) = phrase_text(selector, form) else {
+                continue;
+            };
+            let named = ["in your hand", "from your hand", "in hand", "in a hand"]
+                .iter()
+                .find_map(|zone| named.strip_suffix(&format!(" {zone}")))
+                .unwrap_or(&named)
+                .to_owned();
+            if !named.contains("cards") || named.contains(" in ") {
+                continue;
+            }
+            for from in ["in", "from"] {
+                let said = format!("{named} {from} your hand");
+                if !kinds.contains(&said) {
+                    kinds.push(said);
+                }
+            }
+        }
+    }
+    (!kinds.is_empty()).then_some(())?;
     let mut plain = ability.clone();
     if let Ability::Activated { effects, .. } = &mut plain {
         let mut added = effects.pop()?;

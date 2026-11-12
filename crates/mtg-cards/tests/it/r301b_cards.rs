@@ -88,10 +88,15 @@ fn compiled() {
 #[case("Hivis of the Scale")]
 #[case("Jasmine Boreal of the Seven")]
 #[case("Keldon Battlewagon")]
+#[case("Metalworker")]
+#[case("Rasputin, the Oneiromancer")]
+#[case("Rosheen, Roaring Prophet")]
 #[case("Rubinia Soulsinger")]
+#[case("Sacellum Godspeaker")]
 #[case("Shelkin Brownie")]
 #[case("Tolaria")]
 #[case("Urza's Engine")]
+#[case("Vazi, Keen Negotiator")]
 #[case("Vexing Puzzlebox")]
 #[case("Vodalian Mystic")]
 #[case("Willow Satyr")]
@@ -141,6 +146,19 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#",{"Ability":{}}"#
 )]
 #[case::blocking_too("Urza's Engine", r#""Attacking","#, "")]
+#[case::creature_cards("Metalworker", r#""Artifact""#, r#""Creature""#)]
+#[case::one_mana("Metalworker", r#"["Colorless","Colorless"]"#, r#"["Colorless"]"#)]
+#[case::power_four("Sacellum Godspeaker", r#""to":5"#, r#""to":4"#)]
+#[case::at_least_one("Sacellum Godspeaker", r#""min":0"#, r#""min":1"#)]
+#[case::two_or_more("Rasputin, the Oneiromancer", r#"{"XAtLeast":1}"#, r#"{"XAtLeast":2}"#)]
+#[case::mill_five("Rosheen, Roaring Prophet", r#""count":6"#, r#""count":5"#)]
+#[case::any_cost("Rosheen, Roaring Prophet", r#","only":["CostWithX"]"#, "")]
+#[case::clues(
+    "Vazi, Keen Negotiator",
+    r#"{"Subtype":"Treasure"}"#,
+    r#"{"Subtype":"Clue"}"#
+)]
+#[case::opponents_treasures("Vazi, Keen Negotiator", r#""who":"You"}"#, r#""who":"Opponents"}"#)]
 #[case::four_damage(
     "Chandra, Fire of Kaladesh // Chandra, Roaring Flame",
     r#""right":3"#,
@@ -149,4 +167,25 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
+}
+
+/// Prints the wordings of each ability of the cards named in `R301B_WORDS` (separated by `|`); a tool for writers.
+#[test]
+fn words() {
+    let Ok(list) = std::env::var("R301B_WORDS") else {
+        return;
+    };
+    for name in list.split('|') {
+        let path = common::cards_dir().join(format!("{}.json", slug(name)));
+        let card: mtg_cards::card::Card =
+            serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+        for face in &card.faces {
+            for ability in &face.abilities {
+                println!("== {name}");
+                for text in mtg_cards::compile::written_variants(ability).iter().take(8) {
+                    println!("  {text}");
+                }
+            }
+        }
+    }
 }
