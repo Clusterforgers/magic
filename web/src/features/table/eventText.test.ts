@@ -918,6 +918,10 @@ describe('events with more than one shape', () => {
     ],
     [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
     [
+      effect('AllCreatures', 'LoseAbilitiesExceptMana', 'Forever'),
+      'All creatures lose all abilities except mana abilities',
+    ],
+    [
       effect(objects(2), 'SwitchPowerToughness', 'UntilEndOfTurn'),
       'Hill Giant has power and toughness switched until end of turn',
     ],
@@ -1126,6 +1130,8 @@ describe('events with more than one shape', () => {
       "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
     ],
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
+    [ruleEffect('ManaBurn', 'Forever'), 'A player losing unspent mana loses that much life'],
+    [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
     [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
     [
       ruleEffect({ CantLoseGame: { who: [0], winless: [], life_only: true } }, 'Forever'),

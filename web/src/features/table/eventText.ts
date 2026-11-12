@@ -127,6 +127,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if (typeof modification === 'string') {
     return {
       LoseAbilities: `${loses} all abilities`,
+      LoseAbilitiesExceptMana: `${loses} all abilities except mana abilities`,
       SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
       CantAttack: "can't attack",
       CantBlock: "can't block",
@@ -289,8 +290,13 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     joinWords(objects.map((object) => n.card(object.id)))
   const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
   let what: string
-  if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
-  else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
+  if (typeof rule === 'string') {
+    what = {
+      GraveyardCardsUntargetable: "Cards in graveyards can't be targeted",
+      DamageAsWither: 'Damage is dealt as though its source had wither',
+      ManaBurn: 'A player losing unspent mana loses that much life',
+    }[rule]
+  } else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
   else if ('MustAttackPlayers' in rule)
     what = rule.MustAttackPlayers.map(
       ([object, player]) => `${n.card(object.id)} must attack ${n.seat(player)} if able`,
@@ -1149,7 +1155,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
   }
-  if ('StepAdded' in event) return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)
+  if ('StepAdded' in event)
+    return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
   if ('AnnouncementRewound' in event) {
     const { player, object, reason } = event.AnnouncementRewound
