@@ -1,16 +1,27 @@
 {
   "oracle_id": "e9a08492-3d2c-4c7a-8198-ef4193f5758a",
   "name": "Storm of Forms",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Storm of Forms",
       "oracle_fingerprint": "a070ed668c6ba5bb7b3ac870d0ece4b1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 131 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "This",
+                  "count": {
+                    "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "CounterKinds" }
+                  },
+                  "new_targets": true
+                }
+              }
+            ]
           }
         },
         {

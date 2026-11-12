@@ -1,7 +1,7 @@
 {
   "oracle_id": "49d149d6-de94-48cf-974b-6bb4a37ce77c",
   "name": "Rangers' Aetherhive",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rangers' Aetherhive",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 119 }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedExhaust", "who": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Crew": 1 } }

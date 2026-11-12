@@ -1,7 +1,7 @@
 {
   "oracle_id": "8dac693b-c5c5-4d80-9739-a3b95949a213",
   "name": "Graceful Antelope",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Graceful Antelope",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": { "Landwalk": [{ "Subtype": "Plains" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 231 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetLandTypes": ["Plains"] }],
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

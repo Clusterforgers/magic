@@ -1,7 +1,7 @@
 {
   "oracle_id": "b4d19e3a-c2f8-4503-bcfa-1b46bde972e5",
   "name": "Afterburner Expert",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Afterburner Expert",
@@ -15,9 +15,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 105, "end": 203 }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedExhaust", "who": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
           }
         }
       ]

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b850015f-527f-4e5a-87a6-46a0814bdb70",
+  "name": "Hypnox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypnox",
+      "oracle_fingerprint": "624cc2906f4a235c97070a8a6a96713b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You", "from": "Hand" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Exile": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

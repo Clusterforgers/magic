@@ -43,7 +43,7 @@ pub enum W2aSkip {
     Merge(&'static str),
     /// Accepted, but with a state that is not promoted (`Partial` is, with `--partial`).
     State(Support),
-    /// The rules name a card without a corpus file (a partner), so the corpus would not load.
+    /// The rules name a card with neither a corpus file nor a draft (a partner), so the corpus would not load.
     NamesOutside,
     /// A clause left to the table (`Manual`) does not cut whole sentences out of the card's text.
     Clauses,
@@ -76,7 +76,7 @@ impl W2aSkip {
             W2aSkip::Compiled => "the compiler makes it Verified".into(),
             W2aSkip::Rejected(verdict) => verdict.word().to_owned(),
             W2aSkip::State(state) => format!("accepted {state:?}"),
-            W2aSkip::NamesOutside => "names a card outside the corpus".into(),
+            W2aSkip::NamesOutside => "names a card with neither a corpus file nor a draft".into(),
             W2aSkip::Clauses => "a clause left to the table is not a whole sentence".into(),
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
@@ -137,7 +137,7 @@ pub struct W2aBasis<'a> {
     pub library: &'a Library,
     /// The lowercase names a rule may name.
     pub names: &'a BTreeSet<String>,
-    /// The lowercase names of the corpus cards and their faces: the names a corpus card may name.
+    /// The lowercase names a corpus card may name: the corpus and draft cards and their faces.
     pub corpus: &'a BTreeSet<String>,
     /// What the engine runs.
     pub caps: &'a Caps,
@@ -290,16 +290,19 @@ impl W2aBasis<'_> {
     }
 }
 
-/// The lowercase names of the cards of a library and of their faces.
-pub fn w2a_corpus_names(library: &Library) -> BTreeSet<String> {
-    library
-        .cards()
-        .flat_map(|card| std::iter::once(&card.name).chain(card.faces.iter().map(|f| &f.name)))
-        .map(|name| name.to_lowercase())
-        .collect()
+/// The lowercase card and face names a corpus card may name: the cards of a library and the drafts.
+pub fn w2a_known_names(library: &Library) -> BTreeSet<String> {
+    let mut names = drafts::names().clone();
+    names.extend(
+        library
+            .cards()
+            .flat_map(|card| std::iter::once(&card.name).chain(card.faces.iter().map(|f| &f.name)))
+            .map(|name| name.to_lowercase()),
+    );
+    names
 }
 
-/// Whether the rules fail their checks once only the corpus names count: they name a card without a corpus file.
+/// Whether the rules fail their checks once only the corpus and draft names count: they name a card with neither.
 pub fn w2a_names_outside(
     library: &Library,
     rules: &Card,
@@ -568,7 +571,7 @@ pub async fn w2a_promote_against(
     let cards = stored_cards(db).await?;
     let names = names_of(&cards);
     let caps = mtg_engine::caps();
-    let corpus = w2a_corpus_names(library);
+    let corpus = w2a_known_names(library);
     let basis = W2aBasis {
         cards: &cards,
         library,
@@ -606,8 +609,8 @@ pub async fn w2a_promote_against(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a card whose rules name a partner is promoted only when the partner is a corpus card, and rules that name
-    //! no card always pass; the corpus names are the lowercase card and face names; a clause left to the table must be
+    //! Goal: a card whose rules name a partner is promoted only when the partner is a corpus card or a draft, and rules that name
+    //! no card always pass; the known names are the lowercase card and face names of the corpus and the drafts; a clause left to the table must be
     //! a whole sentence, in order and without overlap.
     #![allow(clippy::unwrap_used)]
 
@@ -689,12 +692,13 @@ mod tests {
     }
 
     #[test]
-    fn the_corpus_names_are_the_lowercase_card_and_face_names() {
-        let names = w2a_corpus_names(builtin::library().unwrap());
+    fn the_known_names_are_the_lowercase_card_and_face_names_of_corpus_and_drafts() {
+        let names = w2a_known_names(builtin::library().unwrap());
         assert!(
             names.contains("lightning bolt")
                 && names.contains("fire")
                 && names.contains("fire // ice")
+                && names.contains("chandra, flame's catalyst")
         );
         assert!(names.iter().all(|name| *name == name.to_lowercase()));
     }

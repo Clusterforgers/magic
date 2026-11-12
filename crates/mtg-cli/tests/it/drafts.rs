@@ -104,7 +104,7 @@ pub fn items() -> (Vec<Item>, Vec<String>) {
 /// against the Oracle Cards file.
 fn names_of(items: &[Item]) -> BTreeSet<String> {
     let library = builtin::library().unwrap();
-    let mut names = mtg_cli::w2a_promote::w2a_corpus_names(library);
+    let mut names = mtg_cli::w2a_promote::w2a_known_names(library);
     for item in items {
         names.insert(item.printed.name.to_lowercase());
         names.extend(item.printed.faces.iter().map(|f| f.name.to_lowercase()));
@@ -346,13 +346,13 @@ fn judge_draft(
         Verdict::Accepted if proof.is_some() => {}
         Verdict::Unchecked => {}
         Verdict::Mismatch if trusted => {}
-        // A draft that names a card without a corpus file cannot join the corpus, whose cards name corpus cards only.
+        // A draft that names a card with neither a corpus file nor a draft cannot join the corpus.
         Verdict::Accepted
             if mtg_cli::w2a_promote::w2a_names_outside(
                 library,
                 &item.card,
                 &item.printed,
-                &mtg_cli::w2a_promote::w2a_corpus_names(library),
+                &mtg_cli::w2a_promote::w2a_known_names(library),
             ) => {}
         Verdict::Accepted => problems.push(format!(
             "{slug}: the checker accepts it now: promote it as a corpus card and delete the draft"
