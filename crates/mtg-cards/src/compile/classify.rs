@@ -58,7 +58,8 @@ const SPELL_RULES: [&str; 6] = [
 /// Whether a line of a spell is a rule about the spell itself: one of `SPELL_RULES`, or the cast "If you control a commander, you
 /// may cast this spell without paying its mana cost.", or an alternative cost "..., you may pay 4 life rather than pay
 /// this spell's mana cost.", or a permission to cast it as though it had flash ("You may cast this spell as though it had flash if ...",
-/// "If there are two or more ..., you may cast this spell as though it had flash.").
+/// "If there are two or more ..., you may cast this spell as though it had flash."), or a condition under which the spell
+/// can't be countered and nothing more ("If you controlled a Dragon as you cast this spell, this spell can't be countered.").
 fn is_spell_rule(body: &str) -> bool {
     SPELL_RULES.iter().any(|rule| body.starts_with(rule))
         || (body.starts_with("If ")
@@ -67,6 +68,7 @@ fn is_spell_rule(body: &str) -> bool {
         || (body.starts_with("You may cast ") && body.contains(" as though it had flash"))
         || (body.starts_with("If ")
             && body.contains(", you may cast this spell as though it had flash"))
+        || (body.starts_with("If ") && body.ends_with(", this spell can't be countered."))
 }
 
 const CHAPTERS: [&str; 10] = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -297,6 +299,17 @@ mod tests {
 
     #[rstest]
     #[case::flying("Flying", false, Keyword)]
+    #[case::r302_uncounterable_under_a_condition(
+        "If you controlled a Dragon as you cast this spell, this spell can't be countered.",
+        true,
+        Static
+    )]
+    #[case::r302_uncounterable_and_more(
+        "If X is 5 or more, this spell can't be countered and the damage can't be prevented.",
+        true,
+        Spell
+    )]
+    #[case::r302_a_condition_on_an_effect("If X is 5 or more, draw a card.", true, Spell)]
     #[case::next_cast_on_a_spell(
         "When you next cast an instant spell this turn, copy it.",
         true,

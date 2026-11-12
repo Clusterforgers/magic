@@ -143,19 +143,19 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 1296,
-  "penny_rank": 10597,
+  "edhrec_rank": 1310,
+  "penny_rank": 10822,
   "preview": {
     "source": "MTGGoldfish",
     "source_uri": "https://www.mtggoldfish.com/articles/exclusive-strixhaven-preview-wandering-archaic-explore-the-vastlands",
     "previewed_at": "2021-03-30"
   },
   "prices": {
-    "usd": "7.80",
-    "usd_foil": "11.88",
+    "usd": "8.80",
+    "usd_foil": "11.37",
     "usd_etched": null,
-    "eur": "7.65",
-    "eur_foil": "10.19",
+    "eur": "8.52",
+    "eur_foil": "10.12",
     "tix": "0.02"
   },
   "related_uris": {

@@ -73,7 +73,46 @@ fn report(rules: &Path, fixture: &Path) -> (Vec<String>, bool) {
 }
 
 /// The cards of the pack whose rules are whole: each reads back clause by clause.
-const WHOLE: &[&str] = &[];
+const WHOLE: &[&str] = &[
+    "horobis_whisper",
+    "sowing_salt",
+    "crumble_to_dust",
+    "quash",
+    "test_of_talents",
+    "invasive_surgery",
+    "shifting_loyalties",
+    "bilbo_luckwearer_burglars_plot",
+    "firecat_blitz",
+    "teferis_time_twist",
+    "soulblast",
+    "vanish_into_memory",
+    "flash_of_insight",
+    "make_your_own_luck",
+    "chandra_spark_hunter",
+    "lukka_bound_to_ruin",
+    "jace_reawakened",
+    "kaya_geist_hunter",
+    "vraska_scheming_gorgon",
+    "gideon_the_oathsworn",
+    "deadly_cover_up",
+    "display_of_power",
+    "see_double",
+    "season_of_gathering",
+    "season_of_loss",
+    "season_of_the_bold",
+    "season_of_the_burrow",
+    "season_of_weaving",
+    "rust",
+    "interdict",
+    "trickbind",
+    "teferis_response",
+    "earth_rumble",
+    "augmenter_pugilist_echoing_equation",
+    "wandering_archaic_explore_the_vastlands",
+    "flash_foliage",
+    "monk_of_the_open_hand",
+    "dragonlords_prerogative",
+];
 
 #[test]
 fn the_whole_cards_of_the_pack_read_back_as_their_oracle_text() {
@@ -98,6 +137,38 @@ fn the_whole_cards_of_the_pack_read_back_as_their_oracle_text() {
         }
     }
     assert!(wrong.is_empty(), "{}", wrong.join("\n"));
+}
+
+/// The wordings of the pack's table, each beside a near miss: an ability one part away that must not read as it.
+#[rstest::rstest]
+#[case::cant_be_copied(
+    r#"{"Rule":{"rule":"CantBeCopied"}}"#,
+    r#"{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}}"#,
+    "This spell can't be copied."
+)]
+#[case::pawprints(
+    r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":0,"max":5},"repeat":true,"pawprints":[1,2,3],"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Choose":{"from":{"Each":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"}]},{"ControlledBy":"You"}]},"as":"chosen"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"chosen"}}}}}]},{"effects":[{"Move":{"what":{"Each":[{"Not":{"Type":"Land"}},{"Not":"Token"}]},"to":"Hand"}}]}]}}]}}"#,
+    r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":0,"max":5},"repeat":true,"pawprints":[1,1,3],"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Choose":{"from":{"Each":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"}]},{"ControlledBy":"You"}]},"as":"chosen"}},{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"chosen"}}}}}]},{"effects":[{"Move":{"what":{"Each":[{"Not":{"Type":"Land"}},{"Not":"Token"}]},"to":"Hand"}}]}]}}]}}"#,
+    "{P}{P} — Choose an artifact or creature you control. Create a token that's a copy of it."
+)]
+#[case::token_doubling(
+    r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Shield":{"when":{"TokenCreation":{}},"by":{"Multiply":2},"duration":"UntilEndOfTurn"}}]}}"#,
+    r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Shield":{"when":{"TokenCreation":{}},"by":{"Multiply":2},"duration":"UntilYourNextTurn"}}]}}"#,
+    "−2: Until end of turn, if one or more tokens would be created under your control, twice that many of those tokens are created instead."
+)]
+fn the_packs_wordings_name_their_ability_and_not_a_near_miss(
+    #[case] ability: &str,
+    #[case] near: &str,
+    #[case] words: &str,
+) {
+    let reads = |json: &str| {
+        let ability: mtg_cards::ability::Ability = serde_json::from_str(json).unwrap();
+        mtg_cards::compile::written_variants(&ability)
+            .iter()
+            .any(|text| text.split('\n').any(|line| line == words))
+    };
+    assert!(reads(ability), "{words}");
+    assert!(!reads(near), "a near miss reads as {words}");
 }
 
 /// Prints the read back of the cards `R302` names (slugs, comma separated), and the compiler's reading with `R302_COMPILE`.

@@ -550,6 +550,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.Who",
     "Effect.Modal.ModeCosts",
     "Effect.Modal.ExtraModeCost",
+    "Effect.Modal.Pawprints",
     "Effect.Modal.DifferentPlayers",
     "Effect.Planechase",
     "Effect.VillainousChoice",
@@ -1178,6 +1179,8 @@ mod tests {
     #[case::modes_not_chosen_twice_ever("Effect.Modal.OnceEver", true)]
     #[case::modes_with_costs("Effect.Modal.ModeCosts", true)]
     #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
+    #[case::r302_modes_counted_in_pawprints("Effect.Modal.Pawprints", true)]
+    #[case::r302_a_spell_that_cant_be_copied("Rule.CantBeCopied", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]
     #[case::a_kept_number("Effect.Let", true)]

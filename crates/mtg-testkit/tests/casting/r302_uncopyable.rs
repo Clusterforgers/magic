@@ -65,6 +65,10 @@ fn a_spell_that_cant_be_copied_gets_no_copy(
         driver.answer_passively()?;
     }
     let lost = before - driver.state().player(pid(1)).unwrap().life();
-    assert_eq!(lost, if uncopyable { 1 } else { 2 }, "uncopyable {uncopyable}");
+    assert_eq!(
+        lost,
+        if uncopyable { 1 } else { 2 },
+        "uncopyable {uncopyable}"
+    );
     Ok(())
 }

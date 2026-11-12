@@ -1,0 +1,86 @@
+{
+  "oracle_id": "8e013e51-1684-4f58-8fe1-3588b6fbb5b5",
+  "name": "Season of the Burrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Season of the Burrow",
+      "oracle_fingerprint": "b5fd11d0626760629b0c30dc6009eed5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 5 },
+                  "repeat": true,
+                  "pawprints": [1, 2, 3],
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Rabbit",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Rabbit"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 } } },
+                        { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": {
+                              "Battlefield": { "counters": [[{ "Other": "indestructible" }, 1]] }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

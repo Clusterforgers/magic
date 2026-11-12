@@ -291,6 +291,12 @@ pub enum Pred {
     Spell,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).
     Ability(AbilityKind),
+    /// Is an ability on the stack whose source matches the selector ("activated ability from an artifact source"): the
+    /// source as it is now, or as it last existed once it has left; written beside `Ability`, which keeps it to the stack.
+    AbilityFrom(Selector),
+    /// Is the source of one of the abilities on the stack the reference names, as the same object ("that permanent": the
+    /// source of the ability a spell counters).
+    SourceOf(Ref),
     /// Has an ability of the kind ("creatures with no abilities", "an artifact with a mana ability"): the abilities it
     /// has now on the battlefield, its printed ones elsewhere.
     HasAbility(HeldAbility),

@@ -768,6 +768,7 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::Is(r)
+            | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
@@ -814,7 +815,9 @@ impl<'a> Walker<'a> {
                     self.at("to", |w| w.reference(to, Kind::Either));
                 }
             }
-            Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
+            Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
+                self.selector(inner);
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
@@ -4248,8 +4251,10 @@ impl Walker<'_> {
                 all_if,
                 mode_costs,
                 extra_mode_cost,
+                pawprints,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                w.r302_pawprints(pawprints, choose, modes.len());
                 if *different_players {
                     w.uses("Effect", "Modal.DifferentPlayers");
                     if *repeat {
@@ -4274,6 +4279,23 @@ impl Walker<'_> {
                 }
             }
         });
+    }
+
+    /// The pawprints of the modes: one number of at least one for each mode or none, under a fixed most to take.
+    fn r302_pawprints(&mut self, pawprints: &[u32], choose: &Bounds, modes: usize) {
+        if pawprints.is_empty() {
+            return;
+        }
+        self.uses("Effect", "Modal.Pawprints");
+        if pawprints.len() != modes {
+            self.problem("a modal effect with pawprints has a number of them for each mode");
+        }
+        if pawprints.contains(&0) {
+            self.problem("a mode takes at least one pawprint");
+        }
+        if !matches!(choose.max, Some(Amount::Fixed(_))) {
+            self.problem("the pawprints of the modes are taken from a fixed most");
+        }
     }
 
     /// The costs of the modes: one for each mode or none, and an extra cost needs a choice of more than one mode.

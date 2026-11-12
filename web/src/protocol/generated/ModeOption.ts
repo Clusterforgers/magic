@@ -15,4 +15,8 @@ label: string | null,
 /**
  * What choosing the mode adds to the cost, when it has a cost of its own (Spree, Tiered).
  */
-cost?: string | null, };
+cost?: string | null, 
+/**
+ * The pawprints ({P}) choosing the mode takes from the most, when the modes are counted so; else it counts one.
+ */
+weight?: number, };

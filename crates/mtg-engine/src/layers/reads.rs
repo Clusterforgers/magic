@@ -344,7 +344,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::DamagedBy(who)
         | Pred::AttachedTo(who)
         | Pred::PairedWith(who)
-        | Pred::SameCard(who) => reads_of_ref(who),
+        | Pred::SameCard(who)
+        | Pred::SourceOf(who) => reads_of_ref(who),
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
         Pred::Type(_) => Traits::TYPES,
@@ -361,7 +362,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
-        Pred::Targeting(inner) | Pred::HasAttached(inner) => reads_of_selector(inner),
+        Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
+            reads_of_selector(inner)
+        }
         Pred::AnyOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),

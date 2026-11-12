@@ -19,9 +19,10 @@ use crate::common::pid;
 
 /// An artifact with one activated ability that costs `{T}` and does `effects`.
 fn rig(name: &str, effects: &str) -> Arc<CardDefinition> {
-    let ability: Ability =
-        serde_json::from_str(&format!(r#"{{"Activated":{{"cost":["Tap"],"effects":{effects}}}}}"#))
-            .unwrap();
+    let ability: Ability = serde_json::from_str(&format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":{effects}}}}}"#
+    ))
+    .unwrap();
     artifact_with(name, vec![ability])
 }
 
@@ -41,7 +42,8 @@ fn run(driver: &mut Driver, name: &str) -> Result<(), ScriptError> {
     Err(ScriptError::Stuck("a finished resolution".to_owned()))
 }
 
-const DOUBLER: &str = r#"[{"Shield":{"when":{"TokenCreation":{}},"by":{"Multiply":2},"duration":"UntilEndOfTurn"}}]"#;
+const DOUBLER: &str =
+    r#"[{"Shield":{"when":{"TokenCreation":{}},"by":{"Multiply":2},"duration":"UntilEndOfTurn"}}]"#;
 
 /// The tokens each seat controls.
 fn tokens(driver: &Driver, seats: usize) -> Vec<usize> {
@@ -78,7 +80,11 @@ fn a_token_doubling_shield_doubles_your_runs_this_turn(
     #[values(2, 3, 4)] seats: usize,
     #[values(Run::Yours, Run::Theirs, Run::NoShield, Run::NextTurn)] made: Run,
 ) -> Result<(), ScriptError> {
-    let who = if matches!(made, Run::Theirs) { "Opponents" } else { "You" };
+    let who = if matches!(made, Run::Theirs) {
+        "Opponents"
+    } else {
+        "You"
+    };
     let maker = format!(
         r#"[{{"CreateToken":{{"who":"{who}","token":{{"Named":"clue"}},"count":{}}}}}]"#,
         if matches!(made, Run::Theirs) { 1 } else { 2 }

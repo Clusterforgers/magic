@@ -1168,10 +1168,12 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             all_if,
             mode_costs,
             extra_mode_cost: None,
+            pawprints,
         },
     ] = effects
     {
-        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() {
+        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() || !pawprints.is_empty()
+        {
             return Vec::new();
         }
         let flags = choices::C11dFlags {

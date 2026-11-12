@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b2faa8b6-e433-4171-9774-9170484530c4",
+  "name": "Teferi's Response",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Response",
+      "oracle_fingerprint": "8cec3a0974ad96b45977a8194ab0a5e5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "Opponents" },
+                    { "Targeting": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "SourceOf": { "Target": 0 } }] } } },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

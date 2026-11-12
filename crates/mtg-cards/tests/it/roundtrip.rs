@@ -1245,6 +1245,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     all_if: None,
                     mode_costs: Vec::new(),
                     extra_mode_cost: None,
+                    pawprints: Vec::new(),
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {

@@ -27,6 +27,7 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r302_sources;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1756,6 +1757,8 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Ability(kind) => is_ability(seen, *kind),
+            Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
+            Pred::SourceOf(named) => self.r302_source_of(named, reference)?,
             Pred::HasAbility(held) => ep31_has_ability(state, seen, *held),
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),

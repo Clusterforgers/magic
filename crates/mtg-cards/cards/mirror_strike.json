@@ -1,0 +1,58 @@
+{
+  "oracle_id": "184fdd23-8235-4500-b2f5-d3b0b93a8f35",
+  "name": "Mirror Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Strike",
+      "oracle_fingerprint": "8b7ab0a64fe1157b461b45ab8186f574",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    "Unblocked"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [
+                        {
+                          "Is": {
+                            "Target": 0
+                          }
+                        }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": {
+                    "Redirect": {
+                      "to": {
+                        "ControllerOf": {
+                          "Target": 0
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
