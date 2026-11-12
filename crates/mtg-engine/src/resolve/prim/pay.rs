@@ -29,7 +29,10 @@ use crate::zones::Zone;
 /// The players in the order they are asked. The player whose answer opens the journal is asked first even when the
 /// effect no longer names them, because paying can change whom it names ("unless its controller pays" after the payment
 /// sacrificed that permanent); every other answer must belong to a named player.
-fn asked_order(mut named: Vec<PlayerId>, journal: &[(PlayerId, Choice)]) -> Vec<PlayerId> {
+pub(super) fn asked_order(
+    mut named: Vec<PlayerId>,
+    journal: &[(PlayerId, Choice)],
+) -> Vec<PlayerId> {
     if let Some((first, _)) = journal.first()
         && !named.contains(first)
     {
@@ -59,6 +62,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Pay"));
     };
     let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(usize::MAX);
+    if let [mtg_cards::cost::CostItem::OneOf(alternatives)] = cost.0.as_slice()
+        && times == 1
+    {
+        return super::r281_pay_one_of::run(cx, who, alternatives);
+    }
     // A cost paid no times is paid, and nobody is asked.
     if times == 0 {
         return Ok(Run::Done {
@@ -127,7 +135,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 /// draw ("you may draw cards equal to its power") and the cards of a counted
 /// discard ("discard your hand") counted as the
 /// effect resolves (CR 119.4, CR 608.2h); a negative count pays nothing.
-fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
+pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
         if let CostItem::Discard { count: amount, .. } = item
@@ -223,7 +231,7 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
     )
 }
 
-fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
+pub(super) fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
     ResolveError::Invalid(format!(
         "{answer:?} is no answer to the payment put to {player:?}"
     ))
@@ -289,7 +297,7 @@ fn source_leaves(state: &GameState, source: ObjectId, leaves: Leaves) -> Option<
 /// The price of a cost an effect asks for: mana, with the `{X}` the payer announces once they say yes, and the parts the
 /// engine pays (life, counters removed from the source, energy, objects picked). A cost that loses the source, taps it or
 /// has a part that counts X is refused by name.
-fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
+pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
     let price = Price::announced(cost).map_err(ResolveError::Unsupported)?;
     // Only an activated ability untaps its source as a cost.
     if price.untap {
@@ -369,7 +377,7 @@ fn needs_hand(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
 }
 
 /// What the cost asks, part by part: "Pay {1}", "Pay 2 life", "Discard a card".
-fn said(price: &Price) -> Vec<String> {
+pub(super) fn said(price: &Price) -> Vec<String> {
     price
         .mana
         .iter()
@@ -384,7 +392,7 @@ fn said(price: &Price) -> Vec<String> {
 }
 
 /// Where a player who said yes stands.
-enum Settled {
+pub(super) enum Settled {
     /// The next question: which objects to take, or the payment of the mana.
     Ask(Decision),
     /// Everything is paid, with these events.
@@ -393,7 +401,7 @@ enum Settled {
 
 /// The picks of the parts and the payment of the mana of a player who said yes, read from the journal in the order
 /// they were asked.
-fn settle<'a>(
+pub(super) fn settle<'a>(
     cx: &Cx<'_>,
     player: PlayerId,
     price: &Price,

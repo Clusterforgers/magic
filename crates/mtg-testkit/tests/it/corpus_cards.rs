@@ -34,7 +34,6 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Bebop, Skull & Crossbones", Partial, 2),
     ("Blazing Shoal", Partial, 1),
     ("Conflagrate", Partial, 1),
-    ("Indulgent Tormentor", Partial, 1),
     ("Nourishing Shoal", Partial, 1),
     (
         "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",

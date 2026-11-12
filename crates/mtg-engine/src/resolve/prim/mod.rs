@@ -113,6 +113,7 @@ mod phase_out;
 mod prepare;
 mod proliferate;
 mod put_counters;
+mod r281_pay_one_of;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;

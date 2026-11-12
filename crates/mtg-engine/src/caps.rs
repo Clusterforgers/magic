@@ -247,6 +247,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.AnyColor",
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
+    "Cost.OneOf.Pay",
     "Ability.ManaAbility.Other",
     "Ability.ManaAbility.From",
     "Effect.PutCounters",
@@ -1270,6 +1271,8 @@ mod tests {
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
+    #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
+    #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]

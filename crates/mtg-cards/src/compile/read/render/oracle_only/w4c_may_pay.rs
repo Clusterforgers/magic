@@ -119,7 +119,9 @@ fn unless(ability: &Ability, who: &Ref, cost: &Cost, unpaid: &[Effect], texts: &
     let Some(payer) = payer_text(who) else {
         return;
     };
-    let Some(tail) = unless_text(payer, who, cost) else {
+    let Some(tail) = unless_text(payer, who, cost)
+        .or_else(|| super::super::super::r281_unless::r281_unless_sacrifice_or_text(who, cost))
+    else {
         return;
     };
     for body in w4c_bodies::bodies(ability, unpaid) {
