@@ -344,6 +344,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_BIND` | `127.0.0.1:8080` | Listen address, `ip:port`. |
 | `MTG_ALLOWED_ORIGINS` | none | Comma list of `http(s)://host[:port]` origins besides the server's own host (sockets, state-changing requests, CORS). |
 | `MTG_MAX_GAMES` | 100 | Most games alive at once, at least 1. |
+| `MTG_BOT_THINKERS` | cores − 1 | Bots searching at once across the server, at least 1 ([Bot seats](#bot-seats)). |
 | `MTG_AUTO_PASS` | on | `1`, `on`, `true` or `0`, `off`, `false`. Off starts every seat in `Held`. |
 | `MTG_RESPONSE_SECS` | 10 | Response clock; `0` for none, at most 86 400. |
 | `MTG_BLOCK_SECS` | 45 | Clock for declaring blockers; same range. |

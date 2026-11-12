@@ -350,8 +350,8 @@ struct Shared {
     cards: Option<CardSource>,
     /// Join code lookups that missed, per client address.
     throttle: Throttle,
-    /// How long a bot seat waits before each answer.
-    bot_delay: Duration,
+    /// How bot seats answer: their delay and the server's thinking slots.
+    bots: crate::bots::BotPace,
 }
 
 /// The games of one server, by id. Cheap to clone.
@@ -396,7 +396,10 @@ impl Registry {
                 records,
                 cards,
                 throttle: Throttle::new(config.auth.limits),
-                bot_delay: config.bot_delay,
+                bots: crate::bots::BotPace {
+                    delay: config.bot_delay,
+                    thinkers: crate::bots::Thinkers::new(config.bot_thinkers),
+                },
             }),
         }
     }
@@ -845,7 +848,7 @@ impl Registry {
     ) {
         let removed = self.games().get(&id).map(|entry| entry.alive.subscribe());
         if let Some(removed) = removed {
-            crate::bots::spawn_bot_seats(handle, seats, seed, self.shared.bot_delay, &removed);
+            crate::bots::spawn_bot_seats(handle, seats, seed, &self.shared.bots, &removed);
         }
     }
 

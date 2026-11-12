@@ -56,7 +56,7 @@ pub fn window(seen: &Seen<'_>) -> Window {
 }
 
 /// The plays the seat may make now, likeliest worth first (the costliest spells).
-fn plays(seen: &Seen<'_>, options: &PriorityOptions) -> Vec<PriorityAction> {
+pub fn plays(seen: &Seen<'_>, options: &PriorityOptions) -> Vec<PriorityAction> {
     let mut casts: Vec<ObjectId> = options.castable.clone();
     casts.sort_by_key(|id| std::cmp::Reverse(seen.mana_value(*id)));
     let mut plays: Vec<PriorityAction> = casts.into_iter().map(PriorityAction::CastSpell).collect();
@@ -156,7 +156,7 @@ pub fn plan_priority(
     } else {
         Horizon::Settle
     };
-    let follow_ups = window == Window::Main && search.settings().lookahead;
+    let follow_ups = window == Window::Main && search.settings().sequences;
     let pass = Answer::Priority(PriorityAction::Pass);
     let Some(baseline) = search.outcome(engine, pass, horizon) else {
         return PriorityAction::Pass;

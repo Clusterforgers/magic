@@ -26,6 +26,9 @@ pub enum ConfigError {
     /// `MTG_MAX_GAMES` is not a whole number of at least 1.
     #[error("MTG_MAX_GAMES must be a whole number of at least 1, got {0:?}")]
     BadMaxGames(String),
+    /// `MTG_BOT_THINKERS` is not a whole number of at least 1.
+    #[error("MTG_BOT_THINKERS must be a whole number of at least 1, got {0:?}")]
+    BadBotThinkers(String),
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
@@ -283,6 +286,8 @@ pub struct ServerConfig {
     pub images: ImageConfig,
     /// How long a bot seat waits before each answer ([`crate::bots::BOT_DELAY`]).
     pub bot_delay: Duration,
+    /// How many bots may think at once across the server (`MTG_BOT_THINKERS`; one fewer than the cores by default).
+    pub bot_thinkers: usize,
 }
 
 impl Default for ServerConfig {
@@ -299,12 +304,13 @@ impl Default for ServerConfig {
             auth: AuthConfig::default(),
             images: ImageConfig::default(),
             bot_delay: crate::bots::BOT_DELAY,
+            bot_thinkers: crate::bots::Thinkers::for_machine(),
         }
     }
 }
 
 impl ServerConfig {
-    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
+    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
     /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
     /// `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
@@ -330,6 +336,12 @@ impl ServerConfig {
             config.max_games = match text.trim().parse::<usize>() {
                 Ok(n) if n >= 1 => n,
                 _ => return Err(ConfigError::BadMaxGames(text)),
+            };
+        }
+        if let Some(text) = get("MTG_BOT_THINKERS") {
+            config.bot_thinkers = match text.trim().parse::<usize>() {
+                Ok(n) if n >= 1 => n,
+                _ => return Err(ConfigError::BadBotThinkers(text)),
             };
         }
         if let Some(text) = get("MTG_ALLOWED_ORIGINS") {
@@ -536,6 +548,20 @@ mod tests {
         assert_eq!(
             load(&[("MTG_MAX_GAMES", text)]),
             Err(ConfigError::BadMaxGames(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_BOT_THINKERS", text)]),
+            Err(ConfigError::BadBotThinkers(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("1", 1)]
+    #[case(" 6 ", 6)]
+    fn bot_thinkers_are_read(#[case] text: &str, #[case] expected: usize) {
+        assert_eq!(
+            load(&[("MTG_BOT_THINKERS", text)]).map(|c| c.bot_thinkers),
+            Ok(expected)
         );
     }
 

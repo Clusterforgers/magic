@@ -37,8 +37,9 @@ export interface SeatRequest {
   level?: BotLevel
 }
 
-/** How well a server bot plays: random legal plays, heuristics with a short search, or a deeper search. */
-export type BotLevel = 'easy' | 'normal' | 'hard'
+/** How well a server bot plays: random legal plays, heuristics with a short search, a deeper search, or a Monte Carlo
+ * search over the cards it cannot see. */
+export type BotLevel = 'easy' | 'normal' | 'hard' | 'very_hard'
 
 /** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */
 export interface CreateGameRequest {
