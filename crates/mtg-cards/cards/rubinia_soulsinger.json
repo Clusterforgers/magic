@@ -1,17 +1,53 @@
 {
   "oracle_id": "bd3eeaba-964b-49ea-bb11-5875a78b8a4c",
   "name": "Rubinia Soulsinger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rubinia Soulsinger",
       "oracle_fingerprint": "868ff6e40e5359b93c6ce4df73c704f2",
       "abilities": [
-        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 71, "end": 192 }
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": "MayStayTapped"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "SetController": "You"
+                    }
+                  ],
+                  "duration": "WhileYouControlSourceTapped"
+                }
+              }
+            ]
           }
         }
       ]

@@ -364,6 +364,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
+    "Duration.WhileYouControlSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",

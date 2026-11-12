@@ -1,0 +1,63 @@
+{
+  "oracle_id": "13a3e61d-c9ff-447d-9016-09a183b7af1d",
+  "name": "Tazri, Stalwart Survivor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tazri, Stalwart Survivor",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": {
+              "start": 0,
+              "end": 204
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{W}{U}{B}{R}{G}"
+              },
+              "Tap"
+            ],
+            "effects": [
+              {
+                "Mill": {
+                  "count": 5,
+                  "as": "milled"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Is": {
+                          "Bound": "milled"
+                        }
+                      },
+                      {
+                        "In": "Graveyard"
+                      },
+                      {
+                        "Type": "Creature"
+                      },
+                      {
+                        "HasAbility": "NonManaActivated"
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "oracle_id": "cd8ccb10-a2c8-4a84-aa41-6ce6018f9bb7",
+  "name": "Crystal Shard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Shard",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{3}"
+              },
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": {
+                    "ControllerOf": {
+                      "Target": 0
+                    }
+                  },
+                  "cost": "{1}",
+                  "unpaid": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Target": 0
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{U}"
+              },
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": {
+                    "ControllerOf": {
+                      "Target": 0
+                    }
+                  },
+                  "cost": "{1}",
+                  "unpaid": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Target": 0
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

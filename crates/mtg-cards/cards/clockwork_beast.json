@@ -1,7 +1,7 @@
 {
   "oracle_id": "eb97c8db-ac6c-476c-b14d-87785e9c82f0",
   "name": "Clockwork Beast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clockwork Beast",
@@ -9,13 +9,30 @@
       "abilities": [
         {
           "Replacement": {
-            "when": { "Enters": { "what": ["This"] } },
-            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 7 } }
+            "when": {
+              "Enters": {
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": {
+                  "Other": "+1/+0"
+                },
+                "count": 7
+              }
+            }
           }
         },
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "EndCombat" } },
+            "when": {
+              "StepBegins": {
+                "step": "EndCombat"
+              }
+            },
             "if": {
               "Compare": {
                 "left": {
@@ -23,8 +40,18 @@
                     "This",
                     {
                       "AnyOf": [
-                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
-                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                        {
+                          "DidThisTurn": {
+                            "event": "Attacked",
+                            "combat": true
+                          }
+                        },
+                        {
+                          "DidThisTurn": {
+                            "event": "Blocked",
+                            "combat": true
+                          }
+                        }
                       ]
                     }
                   ]
@@ -33,13 +60,94 @@
                 "right": 1
               }
             },
-            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": {
+                    "Other": "+1/+0"
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 154, "end": 345 }
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{X}"
+              },
+              "Tap"
+            ],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Step": "Upkeep"
+                }
+              ]
+            },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [
+                      0,
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": "X",
+                              "op": "Le",
+                              "right": {
+                                "Difference": [
+                                  7,
+                                  {
+                                    "Counters": {
+                                      "on": "This",
+                                      "counter": {
+                                        "Other": "+1/+0"
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "then": "X",
+                          "otherwise": {
+                            "Difference": [
+                              7,
+                              {
+                                "Counters": {
+                                  "on": "This",
+                                  "counter": {
+                                    "Other": "+1/+0"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "n"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": {
+                    "Other": "+1/+0"
+                  },
+                  "count": {
+                    "ChosenAs": "n"
+                  }
+                }
+              }
+            ]
           }
         }
       ]

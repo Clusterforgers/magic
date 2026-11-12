@@ -139,6 +139,7 @@ pub mod priority;
 pub mod prohibit;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
+mod r300c_activation_spent;
 pub mod r286_joins;
 pub mod replace;
 pub mod resolve;

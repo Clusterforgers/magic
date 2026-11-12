@@ -1,0 +1,85 @@
+{
+  "oracle_id": "64d4bdc5-ff40-469d-bb25-82de0a49dfa4",
+  "name": "Heartwood Shard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heartwood Shard",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{3}"
+              },
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "AddKeyword": "Trample"
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{G}"
+              },
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "AddKeyword": "Trample"
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

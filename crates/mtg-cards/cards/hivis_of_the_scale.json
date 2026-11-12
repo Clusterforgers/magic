@@ -1,17 +1,53 @@
 {
   "oracle_id": "797adc7e-03a9-4221-bdaf-4c46dcb95701",
   "name": "Hivis of the Scale",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hivis of the Scale",
       "oracle_fingerprint": "7978234ba782d1c6b9d3c6f4720ff543",
       "abilities": [
-        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 58, "end": 151 }
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": "MayStayTapped"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Subtype": "Dragon"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "SetController": "You"
+                    }
+                  ],
+                  "duration": "WhileYouControlSourceTapped"
+                }
+              }
+            ]
           }
         }
       ]

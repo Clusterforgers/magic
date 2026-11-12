@@ -256,6 +256,10 @@ function durationWords(
         : ` while its controller controls ${n.card(source.id)}`,
     WhileSourceTapped:
       source === null ? ' while its source stays tapped' : ` while ${n.card(source.id)} stays tapped`,
+    WhileYouControlSourceTapped:
+      source === null
+        ? ' while its controller controls its source and it stays tapped'
+        : ` while its controller controls ${n.card(source.id)} and it stays tapped`,
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',

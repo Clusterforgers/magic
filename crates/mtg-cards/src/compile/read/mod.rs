@@ -211,6 +211,8 @@ mod restrictions;
 mod reveal;
 mod reveal_until;
 mod rmt0_chroma;
+mod r300c_cost_pairs;
+mod r300c_writers;
 mod rmt0_hand_pick;
 mod rmt0_kinds;
 mod rmt0_x_is;

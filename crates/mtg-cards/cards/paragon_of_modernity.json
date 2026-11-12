@@ -1,17 +1,55 @@
 {
   "oracle_id": "c1c62704-1f20-48cf-8588-47e7fca85f7b",
   "name": "Paragon of Modernity",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Paragon of Modernity",
       "oracle_fingerprint": "8ae84b95cd8cde751dc1308be6d9481c",
       "abilities": [
-        { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 159 }
+          "Keyword": "Flying"
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": "ColorsSpent",
+                      "op": "Eq",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

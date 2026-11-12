@@ -1,17 +1,65 @@
 {
   "oracle_id": "78f22413-4e61-4191-9d30-7b5d6538446e",
   "name": "Helm of Possession",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Helm of Possession",
       "oracle_fingerprint": "42020a9d2a2b42a3d8a9015e563a2317",
       "abilities": [
-        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 204 }
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": "MayStayTapped"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{2}"
+              },
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Target": 0
+                  },
+                  "mods": [
+                    {
+                      "SetController": "You"
+                    }
+                  ],
+                  "duration": "WhileYouControlSourceTapped"
+                }
+              }
+            ]
           }
         }
       ]

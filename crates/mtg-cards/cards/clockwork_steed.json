@@ -1,7 +1,7 @@
 {
   "oracle_id": "1d6a1dab-8724-4b07-b109-c6ba2a7ea1ad",
   "name": "Clockwork Steed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clockwork Steed",
@@ -9,19 +9,47 @@
       "abilities": [
         {
           "Replacement": {
-            "when": { "Enters": { "what": ["This"] } },
-            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 4 } }
+            "when": {
+              "Enters": {
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": {
+                  "Other": "+1/+0"
+                },
+                "count": 4
+              }
+            }
           }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [{ "CantBeBlockedBy": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  {
+                    "Type": "Artifact"
+                  },
+                  {
+                    "Type": "Creature"
+                  }
+                ]
+              }
+            ]
           }
         },
         {
           "Triggered": {
-            "when": { "StepBegins": { "step": "EndCombat" } },
+            "when": {
+              "StepBegins": {
+                "step": "EndCombat"
+              }
+            },
             "if": {
               "Compare": {
                 "left": {
@@ -29,8 +57,18 @@
                     "This",
                     {
                       "AnyOf": [
-                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
-                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                        {
+                          "DidThisTurn": {
+                            "event": "Attacked",
+                            "combat": true
+                          }
+                        },
+                        {
+                          "DidThisTurn": {
+                            "event": "Blocked",
+                            "combat": true
+                          }
+                        }
                       ]
                     }
                   ]
@@ -39,13 +77,94 @@
                 "right": 1
               }
             },
-            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": {
+                    "Other": "+1/+0"
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 207, "end": 397 }
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{X}"
+              },
+              "Tap"
+            ],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Step": "Upkeep"
+                }
+              ]
+            },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [
+                      0,
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": "X",
+                              "op": "Le",
+                              "right": {
+                                "Difference": [
+                                  4,
+                                  {
+                                    "Counters": {
+                                      "on": "This",
+                                      "counter": {
+                                        "Other": "+1/+0"
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "then": "X",
+                          "otherwise": {
+                            "Difference": [
+                              4,
+                              {
+                                "Counters": {
+                                  "on": "This",
+                                  "counter": {
+                                    "Other": "+1/+0"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "n"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": {
+                    "Other": "+1/+0"
+                  },
+                  "count": {
+                    "ChosenAs": "n"
+                  }
+                }
+              }
+            ]
           }
         }
       ]

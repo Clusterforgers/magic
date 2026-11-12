@@ -41,6 +41,9 @@ pub enum StatKind {
     CreatureType,
     /// The kinds of counters on it: no number, so only `Amount::Distinct` reads it (each kind once among the objects).
     CounterKinds,
+    /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
+    /// planeswalker types among planeswalkers you control").
+    Subtypes,
 }
 
 /// A comparison between two numbers.

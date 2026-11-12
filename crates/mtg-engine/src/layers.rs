@@ -869,8 +869,10 @@ fn compute(state: &GameState) -> Layers {
     loop {
         let layers = compute_with(state, &registered);
         let lost = registered.iter().position(|effect| {
-            effect.duration == Duration::WhileYouControlSource
-                && !effect.source.is_some_and(|source| {
+            matches!(
+                effect.duration,
+                Duration::WhileYouControlSource | Duration::WhileYouControlSourceTapped
+            ) && !effect.source.is_some_and(|source| {
                     layers
                         .get(source.id)
                         .map(|held| held.controller)

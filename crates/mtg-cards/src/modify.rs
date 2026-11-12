@@ -252,6 +252,9 @@ pub enum Duration {
     /// For as long as the source stays tapped ("for as long as ~ remains tapped", CR 611.2b): it ends when the source untaps, leaves
     /// the battlefield or is another object, and does not come back when it is tapped again. Only a continuous effect lasts this long.
     WhileSourceTapped,
+    /// For as long as the controller of the effect controls the source and the source stays tapped ("for as long as you
+    /// control ~ and ~ remains tapped", CR 611.2b): it ends when either stops. Only a continuous effect lasts this long.
+    WhileYouControlSourceTapped,
     /// Until a player who is an opponent of the controller becomes the monarch (an exile that lasts that long).
     UntilOpponentBecomesMonarch,
     /// Through the next untap step of the player who controls a permanent it applies to ("doesn't untap during its
@@ -540,6 +543,10 @@ pub enum SpellBenefit {
     /// It can't be countered (CR 101.2) for as long as it is on the stack: "the next spell you cast this turn can't be
     /// countered".
     Uncounterable,
+    /// It may be cast by paying this cost rather than its mana cost (CR 118.9): "Rather than pay the mana cost of the next
+    /// spell you cast this turn, you may pay life equal to that spell's mana value"; an amount in it counts the card cast
+    /// as `This`.
+    Rather(crate::cost::Cost),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
