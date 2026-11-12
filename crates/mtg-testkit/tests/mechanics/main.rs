@@ -2,6 +2,7 @@
 
 mod activation_moments;
 mod affected_amounts;
+mod bz39_blast_zone;
 mod c10_any_cards;
 mod c10_dice_per_player;
 mod c10_pa_monstrous;
