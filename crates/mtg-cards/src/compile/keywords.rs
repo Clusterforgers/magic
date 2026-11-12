@@ -81,6 +81,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("hexproof from", Params::Text),
     ("protection", Params::Text),
     ("affinity for", Params::Text),
+    ("offering", Params::Text),
     ("bands with other", Params::Text),
     ("intimidate", Params::None),
     ("fear", Params::None),
@@ -267,6 +268,17 @@ fn find(item: &str) -> Option<Found<'_>> {
         let rest = item.get(name.len()..)?.trim_start();
         return Some(Found { name, params, rest });
     }
+    // "Fox offering", "Artifact offering": the quality comes first (CR 702.48a).
+    if let Some((quality, "offering")) = item.split_once(' ')
+        && quality.chars().all(|c| c.is_ascii_alphabetic())
+        && quality.starts_with(|c: char| c.is_ascii_uppercase())
+    {
+        return Some(Found {
+            name: "offering",
+            params: Params::Text,
+            rest: quality,
+        });
+    }
     let word = item.split([' ', '\u{2014}']).next()?.to_ascii_lowercase();
     let spelled = |suffix: &str| {
         word.len() > suffix.len()
@@ -419,6 +431,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "buyback" => spell_cost(rest).map(Keyword::Buyback),
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
+        "offering" => Some(offering(rest)),
         "madness" => spell_cost(rest).map(Keyword::Madness),
         "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => positive(rest).map(Keyword::Dredge),
@@ -505,6 +518,14 @@ pub fn read(item: &str) -> Option<Keyword> {
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// The quality of an offering: a card type ("Artifact offering") or a subtype ("Fox offering").
+fn offering(quality: &str) -> Keyword {
+    let lower = quality.to_ascii_lowercase();
+    let pred = super::read::offering_type(&lower)
+        .map_or_else(|| Pred::Subtype(Subtype(quality.to_owned())), Pred::Type);
+    Keyword::Offering(Selector(vec![pred]))
 }
 
 /// Backup N as its keyword line reads: the abilities it gives are not part of the line.
@@ -1779,6 +1800,8 @@ mod tests {
         "Companion \u{2014} Your starting deck contains at least twenty cards more than the minimum deck size.",
         Keyword::companion(DeckCondition::ExtraCards(20))
     )]
+    #[case::fox_offering("Fox offering", Keyword::Offering(Selector(vec![Pred::Subtype(Subtype("Fox".into()))])))]
+    #[case::artifact_offering("Artifact offering", Keyword::Offering(Selector(vec![Pred::Type(CardType::Artifact)])))]
     #[case::bloodthirst_x(
         "Bloodthirst X",
         Keyword::MacroX {
@@ -1850,6 +1873,9 @@ mod tests {
         "Companion \u{2014} Each permanent card in your starting deck has a triggered ability."
     )]
     #[case::companion_without_a_condition("Companion")]
+    #[case::offering_with_a_cost("Fox offering {2}")]
+    #[case::offering_of_two_words("Fox Monk offering")]
+    #[case::offering_alone("Offering")]
     #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]
     #[case::splice_onto_a_made_up_kind("Splice onto Banana {1}")]
     #[case::splice_without_a_cost("Splice onto Arcane")]
@@ -2129,16 +2155,19 @@ mod tests {
             "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
+            "Fox offering",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                matches!(keyword.name(), "Landwalk" | "Typecycling" | "Equip to")
-                    || sample
-                        .to_ascii_lowercase()
-                        .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
+                matches!(
+                    keyword.name(),
+                    "Landwalk" | "Typecycling" | "Equip to" | "Offering"
+                ) || sample
+                    .to_ascii_lowercase()
+                    .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );

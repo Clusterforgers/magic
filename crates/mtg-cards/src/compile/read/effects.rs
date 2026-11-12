@@ -656,7 +656,7 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
 }
 
 /// "half their life, rounded up", "half your life, rounded down": the life total of the player who loses it, halved.
-fn half_life(r: &mut Reader<'_>, who: &Ref) -> Option<Amount> {
+pub(super) fn half_life(r: &mut Reader<'_>, who: &Ref) -> Option<Amount> {
     r.attempt(|r| {
         r.need("half")?;
         let own = match who {

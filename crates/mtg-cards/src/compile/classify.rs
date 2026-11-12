@@ -98,7 +98,9 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     }
     let head = text.lines().next().unwrap_or_default();
     // A cost change of the equip or cycling abilities a player activates opens with the keyword's name but is a rule.
-    if ((head.starts_with("Equip ") || head.starts_with("Cycling "))
+    if ((head.starts_with("Equip ")
+        || head.starts_with("Cycling ")
+        || head.starts_with("Ninjutsu "))
         && head.contains(" abilities you activate "))
         || head.starts_with("Equip costs you pay ")
         || r301c_way_costs(head)

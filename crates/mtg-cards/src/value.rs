@@ -126,6 +126,8 @@ pub enum CastWay {
     Mutate,
     /// Warp (the alternative cost table): a card cast from a hand for its warp cost, which its abilities read as "if its warp cost was paid".
     Warp,
+    /// Offering (CR 702.48): a spell cast from a hand for its mana cost less that of the permanent sacrificed.
+    Offering,
     /// Surge: a spell cast from a hand for its surge cost after the caster cast another spell this turn.
     Surge,
     /// Web-slinging: a spell cast from a hand for its web-slinging cost, which returns a tapped creature the caster controls.
@@ -1514,6 +1516,7 @@ mod tests {
     #[case::face_down(CastWay::FaceDown, true)]
     #[case::warp(CastWay::Warp, true)]
     #[case::surge(CastWay::Surge, true)]
+    #[case::offering(CastWay::Offering, true)]
     #[case::web_slinging(CastWay::WebSlinging, true)]
     #[case::impending(CastWay::Impending, true)]
     #[case::free(CastWay::Free, true)]

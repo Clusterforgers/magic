@@ -22,6 +22,16 @@ const OTHER_EQUIPMENT: &str = r#"[{"Subtype":"Equipment"},"Other",{"ControlledBy
     "Cycling abilities you activate cost {2} less to activate.",
     true
 )]
+#[case::r301c_silver_fur_master(
+    modifier("Ninjutsu", YOURS, "Reduce", "{1}", ""),
+    "Ninjutsu abilities you activate cost {1} less to activate.",
+    true
+)]
+#[case::r301c_ninjutsu_is_not_cycling(
+    modifier("Ninjutsu", YOURS, "Reduce", "{1}", ""),
+    "Cycling abilities you activate cost {1} less to activate.",
+    false
+)]
 #[case::bureau_headmaster(
     modifier("Equip", YOURS, "Reduce", "{1}", ""),
     "Equip abilities you activate cost {1} less to activate.",

@@ -65,6 +65,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
+    let mana = super::r301c_offering_reduce::r301c_offering_reduce(ctx, choices, mana);
     let spell = match ctx.what {
         What::Spell(spell) => Some(*spell),
         _ => None,

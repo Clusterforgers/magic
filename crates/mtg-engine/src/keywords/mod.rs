@@ -559,6 +559,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Horsemanship => &horsemanship::Horsemanship,
         Keyword::Phasing => &w7e_phasing::Phasing,
         Keyword::Spectacle(_)
+        | Keyword::Offering(_)
         | Keyword::Freerunning(_)
         | Keyword::Assist
         | Keyword::Prototype { .. } => &spectacle::Spectacle,
@@ -1034,6 +1035,7 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(cost()),
+            Keyword::Offering(Selector::default()),
             Keyword::Freerunning(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
@@ -1450,6 +1452,7 @@ mod tests {
     #[case::spectacle(Keyword::Spectacle(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::freerunning(Keyword::Freerunning(Cost::mana("{1}{B}".parse().unwrap())), Hooks::none())]
     #[case::assist(Keyword::Assist, Hooks::none())]
+    #[case::offering(Keyword::Offering(mtg_cards::refs::Selector::default()), Hooks::none())]
     #[case::craft(Keyword::Craft(Cost::mana("{2}{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::prototype(Keyword::Prototype { cost: Cost::mana("{1}{U}{U}".parse().unwrap()), power: 2, toughness: 1 }, Hooks::none())]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]

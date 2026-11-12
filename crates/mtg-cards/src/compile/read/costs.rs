@@ -95,6 +95,10 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         if let Some(energy) = r.attempt(energy) {
             return Some(CostItem::PayEnergy(energy));
         }
+        // "Pay half your life, rounded up." (recover)
+        if let Some(half) = super::effects::half_life(r, &Ref::You) {
+            return Some(CostItem::PayLife(half));
+        }
         let amount = points(r)?;
         r.word("life").then_some(())?;
         return Some(CostItem::PayLife(amount));
@@ -490,6 +494,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Mana(mana) => mana.to_string(),
         CostItem::Tap => "{T}".to_owned(),
         CostItem::Untap => "{Q}".to_owned(),
+        CostItem::PayLife(Amount::Half { of, up }) if **of == Amount::Life(Ref::You) => format!(
+            "Pay half your life, rounded {}",
+            if *up { "up" } else { "down" }
+        ),
         CostItem::PayLife(amount) => format!("Pay {} life", points_text(amount)?),
         CostItem::SacrificeSelf => "Sacrifice ~".to_owned(),
         CostItem::ExileSelf => "Exile ~ from your graveyard".to_owned(),

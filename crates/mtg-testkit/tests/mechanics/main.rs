@@ -108,6 +108,7 @@ mod r285_pieces;
 mod r2a_doubling;
 mod r2d;
 mod r301c_bloodthirst_x;
+mod r301c_recover_life;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

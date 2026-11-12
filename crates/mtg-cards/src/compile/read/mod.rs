@@ -420,6 +420,11 @@ fn wf26_enchant_either(text: &str) -> Option<Selector> {
     Some(Selector(vec![Pred::AnyOf(either)]))
 }
 
+/// The card type an offering names in lower case ("artifact"), if the word is one.
+pub fn offering_type(word: &str) -> Option<mtg_core::card::CardType> {
+    selectors::card_type(word)
+}
+
 /// What an affinity counts, from the words after "Affinity for" ("artifacts", "artifact creatures", "Equipment",
 /// "Islands", "tokens"), when all of the text reads.
 pub fn affinity_filter(text: &str) -> Option<Selector> {

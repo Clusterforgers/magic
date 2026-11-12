@@ -2039,7 +2039,12 @@ impl<'a> Walker<'a> {
                     self.at("payable", |w| w.condition(payable));
                 }
             }
-            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
+            // The trigger recover adds pays its cost as it resolves, so a counted life ("half your life") is counted then.
+            Keyword::Recover(cost) => {
+                self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::You));
+                self.payment_of_the_source(cost);
+            }
+            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
@@ -2119,6 +2124,7 @@ impl<'a> Walker<'a> {
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
             | Keyword::BandsWithOther(quality)
+            | Keyword::Offering(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
