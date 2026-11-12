@@ -114,6 +114,18 @@ pub enum Action {
     ManifestedDread,
     /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
     GaveGift,
+    /// A player paid life (CR 119.4), as a cost or for an effect; the amount is the life paid.
+    PaidLife,
+    /// A creature exploited a creature that was not a token (CR 702.110b), judged as the battlefield was before the
+    /// sacrifice; `what` is the creature that exploited.
+    ExploitedNontoken,
+    /// An opponent of a player gained control of a permanent that player controlled (CR 613.1b); the player is the one
+    /// who lost control, `what` the permanent.
+    ControlTakenByOpponent,
+    /// A creature explored and revealed a land card (CR 701.44); `what` is the creature.
+    ExploredLand,
+    /// A creature explored and revealed a card that is not a land card (CR 701.44); `what` is the creature.
+    ExploredNonland,
 }
 
 impl Action {
@@ -212,6 +224,17 @@ impl Action {
             Action::Discovered => ("discover", "discovers"),
             Action::ManifestedDread => ("manifest dread", "manifests dread"),
             Action::GaveGift => ("give a gift", "gives a gift"),
+            Action::PaidLife => ("pay life", "pays life"),
+            Action::ExploitedNontoken => (
+                "exploit a nontoken creature",
+                "exploits a nontoken creature",
+            ),
+            Action::ExploredLand => ("explore a land card", "explores a land card"),
+            Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
+            Action::ControlTakenByOpponent => (
+                "have an opponent gain control of a permanent from you",
+                "has an opponent gain control of a permanent from them",
+            ),
         }
     }
 
@@ -229,6 +252,7 @@ impl Action {
                 | Action::Exiled
                 | Action::Sacrificed
                 | Action::Exploited
+                | Action::ExploitedNontoken
                 | Action::LostGame
         )
     }

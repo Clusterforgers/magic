@@ -892,6 +892,10 @@ pub enum Effect {
         /// "Tap that creature as it phases in this way": each phases in tapped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         tapped: bool,
+        /// How long the permanents phased out this way can't phase in ("Until the end of your next turn, they can't phase
+        /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        held: Option<Duration>,
     },
     /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
     Attach {
@@ -1354,6 +1358,16 @@ pub enum Effect {
         /// Who time travels.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// The cards in exile `what` names gain suspend (CR 702.62): at each of its owner's upkeeps a time counter is removed,
+    /// and when the last is, they may cast it without paying its mana cost; a creature cast so has haste. The suspend lasts
+    /// while the card stays in exile.
+    GainSuspend {
+        /// The exiled cards.
+        what: Ref,
+        /// Only a card that does not have suspend gains it ("If it doesn't have suspend, it gains suspend.").
+        #[serde(default, skip_serializing_if = "is_false")]
+        unless_has: bool,
     },
     /// The player takes extra turns after this one (CR 500.7): the latest added is taken first.
     ExtraTurn {

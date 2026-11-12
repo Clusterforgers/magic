@@ -1,0 +1,40 @@
+{
+  "oracle_id": "16a44586-ea1d-45f1-b9de-da1c11f729df",
+  "name": "Rory Williams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rory Williams",
+      "oracle_fingerprint": "d97a33f8225ad9c97fecf63fd1d4e46d",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Amy Pond" } },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": ["This", { "Not": { "WasCast": { "from": "Exile" } } }],
+                "by": "You"
+              }
+            },
+            "from": "Stack",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              },
+              { "GainSuspend": { "what": { "Bound": "exiled" } } },
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

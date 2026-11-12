@@ -211,6 +211,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
+        return texts;
+    }
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
@@ -584,6 +587,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l31a_events::l31a_wordings(ability, &mut texts);
     super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_flip_wordings(&mut texts);
+    super::us38_quotes::us38_nested_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -603,6 +607,7 @@ fn ep23_written_anew(ability: &Ability) -> Vec<String> {
 }
 
 /// [`written_variants`] without the table of abilities written already.
+#[allow(clippy::too_many_lines)]
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
     rmt3_enters::rmt3_variants(&mut texts);
@@ -701,6 +706,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
+    super::r375_phase::r375_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1425,6 +1431,13 @@ fn written(
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // An exile with time counters and the suspend the card gains are one sentence or a run of sentences.
+        if let Some((text, used)) = super::r372_suspend::text(&effects[start..]) {
+            unsplit(mask, start, used)?;
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
         if let Some((text, used)) = cast::sentence_text(&effects[start..])
@@ -3338,6 +3351,7 @@ impl Writer<'_> {
                 what,
                 duration,
                 tapped,
+                held: None,
             } => self.w7e_phase_out_text(what, duration.clone(), *tapped)?,
             Effect::Attach {
                 what: Ref::This,
@@ -3351,6 +3365,14 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
+            // The card an earlier step exiled and named is "it".
+            Effect::GainSuspend {
+                what: Ref::Bound(_),
+                unless_has,
+            } => super::r372_suspend::gain_text("it", *unless_has),
+            Effect::GainSuspend { what, unless_has } => {
+                super::r372_suspend::gain_text(&self.object(what)?, *unless_has)
+            }
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

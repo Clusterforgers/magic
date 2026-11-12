@@ -136,18 +136,18 @@
   "promo_types": [
     "universesbeyond"
   ],
-  "edhrec_rank": 13793,
+  "edhrec_rank": 13914,
   "preview": {
     "source": "Wizards of the Coast",
     "source_uri": "",
     "previewed_at": "2023-10-03"
   },
   "prices": {
-    "usd": "0.33",
+    "usd": "0.31",
     "usd_foil": "0.40",
     "usd_etched": null,
-    "eur": "0.19",
-    "eur_foil": "0.72",
+    "eur": "0.27",
+    "eur_foil": "0.69",
     "tix": null
   },
   "related_uris": {

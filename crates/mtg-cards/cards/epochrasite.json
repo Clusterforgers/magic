@@ -1,7 +1,7 @@
 {
   "oracle_id": "54e2d2ff-51d2-48a5-ab2e-7d9de8c78b7e",
   "name": "Epochrasite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Epochrasite",
@@ -18,9 +18,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 91, "end": 177 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              },
+              { "GainSuspend": { "what": { "Bound": "exiled" } } }
+            ]
           }
         }
       ]

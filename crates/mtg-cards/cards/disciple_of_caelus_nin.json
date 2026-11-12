@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2e5440ef-6887-4c79-98f5-49db82406d71",
+  "name": "Disciple of Caelus Nin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Disciple of Caelus Nin",
+      "oracle_fingerprint": "d77704fccc02b06833845ff8085fe1fd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 181 }
+          }
+        },
+        { "Rule": { "rule": { "Cant": { "who": "EachPlayer", "action": "PhaseIn" } } } }
+      ]
+    }
+  ]
+}
