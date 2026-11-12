@@ -180,6 +180,7 @@ fn step_text(ctx: &Ctx, step: TurnStep, whose: &Ref) -> String {
 }
 
 /// The event a triggered ability waits for.
+#[allow(clippy::too_many_lines)]
 pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
     match when {
         TriggerPattern::ZoneChange { what, from, to } => {

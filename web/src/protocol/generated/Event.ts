@@ -446,7 +446,19 @@ object: ObjectId, } } | { "DamageRemoved": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "ShieldUsed": { 
+object: ObjectId, } } | { "DamagePrevented": { 
+/**
+ * The source of the damage.
+ */
+source: ObjectId, 
+/**
+ * Who or what it would have been dealt to.
+ */
+target: DamageTarget, 
+/**
+ * How much was prevented.
+ */
+amount: number, } } | { "ShieldUsed": { 
 /**
  * The shield, one of the rule changes (they share the counter of continuous effects).
  */

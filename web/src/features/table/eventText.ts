@@ -258,6 +258,8 @@ function durationWords(
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
+    WhileSourceAttached:
+      source === null ? ' while its source stays attached' : ` while ${n.card(source.id)} stays attached`,
     WhileYouControlSource:
       source === null
         ? ' while its controller controls its source'
