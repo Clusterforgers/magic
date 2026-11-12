@@ -136,6 +136,7 @@ pub(crate) fn assemble_record(
         (None, _) => face_of(0),
     };
     definition.pairing = crate::identity::pairing_keywords(printed);
+    definition.activated = crate::identity::has_activated_ability(printed);
     Assembled {
         definition,
         support: record,
@@ -1280,6 +1281,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         faces: Vec::new(),
         identity: None,
         pairing: Vec::new(),
+        activated: false,
     }
 }
 

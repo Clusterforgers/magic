@@ -200,6 +200,10 @@ pub struct CardDefinition {
     /// support; never serialized, so fingerprints and stored rules do not see it.
     #[serde(skip)]
     pub pairing: Vec<Keyword>,
+    /// Whether the printed card has an activated ability (CR 602), read from its text whatever its support, for the
+    /// companion conditions that ask it; never serialized.
+    #[serde(skip)]
+    pub activated: bool,
     /// Which printed card this is, on the card and on each of its faces; never serialized, so fingerprints and stored
     /// rules do not see it.
     #[serde(skip)]
@@ -248,6 +252,7 @@ impl CardDefinition {
             faces: Vec::new(),
             identity: None,
             pairing: Vec::new(),
+            activated: false,
         }
     }
 
