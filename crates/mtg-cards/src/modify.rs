@@ -480,6 +480,9 @@ pub enum Prohibited {
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
     Crew,
+    /// Phase in (CR 702.26): a phased-out permanent covered stays phased out through its controller's untap step and any
+    /// other moment it would phase in.
+    PhaseIn,
     /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
     EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.

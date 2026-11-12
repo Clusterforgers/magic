@@ -682,6 +682,7 @@ Flowerfoot Swordmaster
 Fog
 Follow the Bodies
 Followed Footsteps
+Font of Agonies
 Fool's Demise
 Forbidding Spirit
 Forced March
@@ -1234,6 +1235,7 @@ Nettlecyst
 Neverwinter Dryad
 New Horizons
 Niblis of Frost
+Nicanzil, Current Conductor
 Nick Valentine, Private Eye
 Night Clubber
 Night Market Guard
@@ -1646,6 +1648,7 @@ Skirk Prospector
 Skitter Eel
 Skittering Crustacean
 Skizzik Surger
+Skull Skaab
 Skullbriar, the Walking Grave
 Skullclamp
 Skullmulcher
@@ -2016,6 +2019,7 @@ Verdant Confluence
 Veronica, Dissident Scribe
 Vestige of Emrakul
 Vesuva
+Veteran Motorist
 Veteran's Powerblade
 Viashino Weaponsmith
 Vibranium Strike Gauntlets

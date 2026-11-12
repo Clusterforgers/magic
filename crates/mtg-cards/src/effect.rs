@@ -892,6 +892,10 @@ pub enum Effect {
         /// "Tap that creature as it phases in this way": each phases in tapped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         tapped: bool,
+        /// How long the permanents phased out this way can't phase in ("Until the end of your next turn, they can't phase
+        /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        held: Option<Duration>,
     },
     /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
     Attach {

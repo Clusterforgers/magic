@@ -31,6 +31,7 @@ pub fn w7e_phase_out(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         what,
         duration,
         tapped,
+        held: None,
     }])
 }
 
@@ -76,6 +77,7 @@ pub fn w7e_phased_and_protected_text(effects: &[Effect]) -> Option<(String, usiz
             what: Ref::Each(selector),
             duration: None,
             tapped: false,
+            held: None,
         },
         rest @ ..,
     ] = effects

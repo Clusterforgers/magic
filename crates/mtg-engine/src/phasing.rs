@@ -129,12 +129,17 @@ pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
         else {
             continue;
         };
-        if own.indirect && hosts_waiting(*id) {
+        if own.indirect && hosts_waiting(*id) || held(state, *id) {
             continue;
         }
         events.extend(w11b_with_attachments(state, *id));
     }
     events
+}
+
+/// Whether a rule in force keeps the phased-out permanent `id` from phasing in ("they can't phase in", CR 702.26).
+fn held(state: &GameState, id: ObjectId) -> bool {
+    crate::prohibit::forbidden(state, crate::prohibit::Doing::PhaseIn { object: id })
 }
 
 /// The events that phase in `id` and, after it, what phased out with it.
@@ -174,6 +179,7 @@ pub(crate) fn w11b_releases(state: &GameState) -> Vec<Event> {
                 .and_then(PermanentState::phasing)
                 .and_then(|own| own.until)
                 .is_some_and(|by| !crate::exile_return::holds(state, by))
+                && !held(state, **id)
         })
         .flat_map(|id| w11b_with_attachments(state, *id))
         .collect()

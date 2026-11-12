@@ -186,6 +186,8 @@ mod r284_rules;
 mod r285_writers;
 mod r287_facts;
 mod r303_forms;
+mod r375_events;
+mod r375_phase;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -542,6 +544,28 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if let Some(found) =
         l31d_x_color::l31d_x_color_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r375_phase::r375_no_phase_in_read(text)
+    {
+        return Some(found);
+    }
+    if let Some(found) =
+        r375_phase::r375_held_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            r375_events::r375_crew_read(text, |twin| clause_with(twin, kind, x_free, own))
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))

@@ -953,7 +953,11 @@ object: ObjectId,
 /**
  * Its controller, who revealed the card.
  */
-player: PlayerId, } } | { "Amassed": { 
+player: PlayerId, 
+/**
+ * Whether the card revealed was a land card; none when the library was empty and nothing was revealed.
+ */
+land?: boolean, } } | { "Amassed": { 
 /**
  * The Army that got the counters.
  */
