@@ -1,7 +1,7 @@
 {
   "oracle_id": "7721e800-fba6-4ae7-855e-631b2ecc8d6b",
   "name": "Chandra, Flame's Catalyst",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chandra, Flame's Catalyst",
@@ -22,8 +22,8 @@
                   "Object": [
                     { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
                     { "Color": "Red" },
-                    { "In": "Graveyard" },
-                    { "OwnedBy": "You" }
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
                   ]
                 }
               }
@@ -47,9 +47,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 184, "end": 316 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 7 } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Hand",
+                      "free": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

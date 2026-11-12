@@ -1,7 +1,7 @@
 {
   "oracle_id": "4cbce730-7b70-41bd-b463-bfec46afe3b0",
   "name": "Gideon, Martial Paragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gideon, Martial Paragon",
@@ -25,9 +25,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 253 }
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Soldier" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

@@ -342,11 +342,23 @@ impl Library {
 
     /// Checks every card that has an imported counterpart against it; a card with none is a problem too.
     pub fn check_printed(&self, printed: &[PrintedCard]) -> Vec<LoadError> {
-        let names: BTreeSet<String> = printed
-            .iter()
-            .flat_map(|p| std::iter::once(&p.name).chain(p.faces.iter().map(|f| &f.name)))
-            .map(|n| n.to_lowercase())
-            .collect();
+        self.check_printed_naming(printed, &BTreeSet::new())
+    }
+
+    /// `check_printed`, where a rule may also name one of `others`: the lowercase names of known cards without a
+    /// file here (drafts, imported cards).
+    pub fn check_printed_naming(
+        &self,
+        printed: &[PrintedCard],
+        others: &BTreeSet<String>,
+    ) -> Vec<LoadError> {
+        let mut names = others.clone();
+        names.extend(
+            printed
+                .iter()
+                .flat_map(|p| std::iter::once(&p.name).chain(p.faces.iter().map(|f| &f.name)))
+                .map(|n| n.to_lowercase()),
+        );
         let token_ids: BTreeSet<String> = self.tokens.keys().cloned().collect();
         let by_id: BTreeMap<&str, &PrintedCard> =
             printed.iter().map(|p| (p.oracle_id.as_str(), p)).collect();
