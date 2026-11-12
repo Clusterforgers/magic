@@ -18,7 +18,12 @@ export function soundCueBetween(prev: PlayState, next: PlayState): SoundCue | nu
   const after = next.view?.turn
   if (before !== undefined && after !== undefined && after.number !== before.number && after.active === seat)
     return 'turn'
-  if (prev.view !== null && prev.pending === null && next.pending !== null && next.pending.decision.player === seat)
+  if (
+    prev.view !== null &&
+    prev.pending === null &&
+    next.pending !== null &&
+    next.pending.decision.player === seat
+  )
     return 'decision'
   return null
 }

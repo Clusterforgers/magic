@@ -46,7 +46,13 @@ describe('the sound preference', () => {
   })
 })
 
-function Listener({ store, play }: { store: ReturnType<typeof createPlayStore>; play: (cue: SoundCue) => void }) {
+function Listener({
+  store,
+  play,
+}: {
+  store: ReturnType<typeof createPlayStore>
+  play: (cue: SoundCue) => void
+}) {
   useSoundCues(store, true, play)
   return null
 }

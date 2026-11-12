@@ -188,13 +188,14 @@ describe('the result', () => {
 })
 
 describe('the ways on', () => {
-  it('offers a new game and the Play page to a guest, and nothing about My games', async () => {
+  it('offers a new game, the replay and the Play page to a guest, and nothing about My games', async () => {
     await renderInRouter(shown(endedGame({ result: { Winner: 0 }, lost: { 1: 'ZeroLife' } })))
     const links = screen
       .getAllByRole('link')
       .filter((link) => link.closest('main, [data-slot="page"]') !== null)
     expect(links.map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
       ['Create another game', '/new'],
+      ['Watch the replay', '/replay/over'],
       ['Back to Play', '/'],
     ])
   })
@@ -214,7 +215,7 @@ describe('the ways on', () => {
       within(page)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Create another game', 'Back to Play', 'My games'])
+    ).toEqual(['Create another game', 'Watch the replay', 'Back to Play', 'My games'])
   })
 
   it('makes the new game the one primary button and the others outlined', async () => {

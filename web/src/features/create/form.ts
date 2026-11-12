@@ -240,7 +240,8 @@ export function toRequest(draft: Draft, botDecks: readonly string[] = []): Creat
   return {
     format: draft.format,
     seats: draft.seats.map((seat, index) => {
-      if (index !== 0 && index <= bots) return { name: 'Bot', deck: botDecks[index - 1] ?? seat.deck, bot: true }
+      if (index !== 0 && index <= bots)
+        return { name: 'Bot', deck: botDecks[index - 1] ?? seat.deck, bot: true }
       if (index !== 0) return { name: `Player ${index + 1}` }
       return draft.format === 'normal'
         ? { name: seat.name.trim(), deck: seat.deck }

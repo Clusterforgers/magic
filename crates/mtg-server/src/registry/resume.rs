@@ -52,8 +52,8 @@ struct Unpacked {
 
 /// Why a stored game cannot be loaded: the `detail` for the log and the record's `failure`, the
 /// `cause` its players read, and the seat it is about when it is about one.
-struct Unloadable {
-    detail: String,
+pub(super) struct Unloadable {
+    pub(super) detail: String,
     cause: Cause,
     seat: Option<usize>,
 }
@@ -191,9 +191,7 @@ impl Registry {
         };
         self.games()
             .insert(id, Entry::new(handle.clone(), parts, created));
-        if let Some(removed) = self.removal(id) {
-            crate::bots::spawn_bot_seats(&handle, &bots.0, bots.1, self.shared.bot_delay, &removed);
-        }
+        self.spawn_bots(id, &handle, &bots.0, bots.1);
         if checked {
             tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
         } else {
@@ -213,7 +211,7 @@ impl Registry {
 impl Registry {
     /// The definitions of the cards a recipe names by oracle id, assembled from the database as it
     /// is now; none (and no database access) for a recipe that names none.
-    async fn catalog_of(&self, recipe: &GameRecipe) -> Result<Catalog, Unloadable> {
+    pub(super) async fn catalog_of(&self, recipe: &GameRecipe) -> Result<Catalog, Unloadable> {
         let ids = recipe.oracle_ids();
         match (&self.shared.cards, ids.is_empty()) {
             (_, true) => Ok(Catalog::default()),
@@ -235,7 +233,7 @@ fn replay_failed(detail: String) -> Unloadable {
 }
 
 /// Decodes the stored recipe.
-fn decode(record: &GameRecord) -> Result<GameRecipe, Unloadable> {
+pub(super) fn decode(record: &GameRecord) -> Result<GameRecipe, Unloadable> {
     serde_json::from_value(record.recipe.clone()).map_err(|error| {
         let detail = format!("the recipe does not decode: {error}");
         Unloadable::new(detail, Cause::Setup)

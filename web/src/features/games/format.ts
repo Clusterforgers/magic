@@ -57,6 +57,12 @@ export function continueLabel(game: MyGame): string {
   return others === '' ? 'Continue your game' : `Continue your game with ${others}`
 }
 
+/** What a Replay link is called for a screen reader: the visible word, then which game. */
+export function replayLabel(game: MyGame): string {
+  const others = othersText(game)
+  return others === '' ? 'Replay your game' : `Replay your game with ${others}`
+}
+
 /** What a Remove button is called for a screen reader: the visible word, then which game. */
 export function removeLabel(game: MyGame): string {
   const others = othersText(game)

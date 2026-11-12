@@ -73,6 +73,7 @@ mod pg_prefs;
 mod pg_reads;
 mod pg_records;
 mod pg_relaxed_decks;
+mod pg_replay;
 mod pg_resume;
 mod pg_resume_decks;
 mod pg_seat_decks;

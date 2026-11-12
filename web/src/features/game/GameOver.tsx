@@ -40,7 +40,7 @@ const EYEBROW: Record<EndKind, string> = {
  */
 export function GameOver({ onReview }: { onReview?: () => void }) {
   useFitWindow()
-  const { lookup } = useGame()
+  const { game, lookup } = useGame()
   const { result, seat, view } = usePlay(
     useShallow((state) => ({ result: state.result, seat: state.seat, view: state.view })),
   )
@@ -129,6 +129,14 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
               Look at the table and log
             </Button>
           )}
+          <Link
+            to="/replay/$gameId"
+            params={{ gameId: game }}
+            data-slot="replay-open"
+            className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}
+          >
+            Watch the replay
+          </Link>
           <Link
             to="/"
             className={cn(

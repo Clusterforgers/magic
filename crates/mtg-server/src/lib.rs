@@ -124,6 +124,7 @@ mod recipe;
 mod recorder;
 mod records;
 pub mod registry;
+pub mod replay;
 mod running;
 mod seat_deck;
 mod seats;

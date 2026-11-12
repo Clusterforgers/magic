@@ -27,7 +27,9 @@ describe('the bots of the form', () => {
     request.seats.slice(1, 1 + made).forEach((seat, at) => {
       expect(seat).toEqual({ name: 'Bot', deck: draft.seats[at + 1]?.deck, bot: true })
     })
-    expect(request.seats.slice(1 + made).every((seat) => seat.bot === undefined && seat.deck === undefined)).toBe(true)
+    expect(
+      request.seats.slice(1 + made).every((seat) => seat.bot === undefined && seat.deck === undefined),
+    ).toBe(true)
   })
 
   it('has none with a link per seat', () => {
@@ -65,10 +67,11 @@ describe('the Bots field', () => {
   it('runs from none to every other seat and follows the seat count', async () => {
     const { user } = await openCreateForm({}, 'normal')
     expect(bots()).toHaveValue('0')
-    expect(within(bots()).getAllByRole('option').map((option) => option.textContent)).toEqual([
-      'No bots',
-      '1 — every other seat',
-    ])
+    expect(
+      within(bots())
+        .getAllByRole('option')
+        .map((option) => option.textContent),
+    ).toEqual(['No bots', '1 — every other seat'])
     await typeSeats(user, 4)
     await user.selectOptions(bots(), '3')
     await typeSeats(user, 3)
@@ -91,7 +94,10 @@ describe('the Bots field', () => {
 
   it('gives Commander bots a precon each', async () => {
     const precons = [preconItem({ code: 'one' })]
-    const { user, server } = await openCreateForm({ precons: () => jsonResponse(200, { precons }) }, 'default')
+    const { user, server } = await openCreateForm(
+      { precons: () => jsonResponse(200, { precons }) },
+      'default',
+    )
     await user.selectOptions(bots(), '3')
     await user.click(create())
     await waitFor(() => expect(server.creates).toHaveLength(1))

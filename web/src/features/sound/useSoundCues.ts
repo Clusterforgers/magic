@@ -10,7 +10,11 @@ import { playCue } from './synth'
 export const SOUNDS_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Subscribes to `store` while `enabled` and hands each cue to `play` (the synthesizer by default) unless muted. */
-export function useSoundCues(store: PlayStore, enabled: boolean, play: (cue: SoundCue) => void = playCue): void {
+export function useSoundCues(
+  store: PlayStore,
+  enabled: boolean,
+  play: (cue: SoundCue) => void = playCue,
+): void {
   useEffect(() => {
     if (!enabled) return undefined
     return store.subscribe((next, prev) => {

@@ -11,8 +11,8 @@ export function SoundToggle() {
       </h2>
       <label className="flex items-center justify-between gap-4 text-sm">
         <span>
-          Play a short, quiet sound when your turn starts, when a decision waits for you and when you win. Kept in this
-          browser.
+          Play a short, quiet sound when your turn starts, when a decision waits for you and when you win.
+          Kept in this browser.
         </span>
         <Switch data-slot="sounds-toggle" checked={on} onCheckedChange={setSoundsOn} />
       </label>

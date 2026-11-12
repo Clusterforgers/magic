@@ -16,6 +16,7 @@ mod cause;
 mod claims;
 mod departure;
 mod listing;
+mod replays;
 mod resume;
 
 use std::collections::HashMap;
@@ -59,6 +60,7 @@ pub const MAX_LISTED_GAMES: usize = 100;
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
+pub use replays::ReplayRefusal;
 pub use resume::ResumeReport;
 
 pub(crate) use cause::Cause;
@@ -534,9 +536,7 @@ impl Registry {
         let (created, handle) = self
             .admit(setup, names, Some(recipe), host, options, Some(decks))
             .await?;
-        if let Some(removed) = self.removal(created.id) {
-            crate::bots::spawn_bot_seats(&handle, &bots, seed, self.shared.bot_delay, &removed);
-        }
+        self.spawn_bots(created.id, &handle, &bots, seed);
         Ok(created)
     }
 
@@ -813,9 +813,12 @@ impl Registry {
         Ok(found)
     }
 
-    /// What tells game `id`'s bots and sockets that the registry let it go, while it holds it.
-    pub(crate) fn removal(&self, id: GameId) -> Option<watch::Receiver<Removal>> {
-        self.games().get(&id).map(|entry| entry.alive.subscribe())
+    /// Hands `seats` of game `id`, which the registry holds, to bots that stop when it lets the game go.
+    fn spawn_bots(&self, id: GameId, handle: &GameHandle, seats: &[PlayerId], seed: u64) {
+        let removed = self.games().get(&id).map(|entry| entry.alive.subscribe());
+        if let Some(removed) = removed {
+            crate::bots::spawn_bot_seats(handle, seats, seed, self.shared.bot_delay, &removed);
+        }
     }
 
     /// The actor of a game, for tests and admin views.

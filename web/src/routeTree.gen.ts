@@ -34,6 +34,7 @@ import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
 import { Route as JoinCodeRouteImport } from './routes/join.$code'
 import { Route as ReadBulkRouteImport } from './routes/read_.bulk'
+import { Route as ReplayGameIdRouteImport } from './routes/replay.$gameId'
 import { Route as DecksDeckIdUnvalidatedRouteImport } from './routes/decks_.$deckId_.unvalidated'
 
 const IndexRoute = IndexRouteImport.update({
@@ -161,6 +162,11 @@ const ReadBulkRoute = ReadBulkRouteImport.update({
   path: '/read/bulk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReplayGameIdRoute = ReplayGameIdRouteImport.update({
+  id: '/replay/$gameId',
+  path: '/replay/$gameId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DecksDeckIdUnvalidatedRoute = DecksDeckIdUnvalidatedRouteImport.update({
   id: '/decks_/$deckId_/unvalidated',
   path: '/decks/$deckId/unvalidated',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read/bulk': typeof ReadBulkRoute
+  '/replay/$gameId': typeof ReplayGameIdRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesByTo {
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read/bulk': typeof ReadBulkRoute
+  '/replay/$gameId': typeof ReplayGameIdRoute
   '/decks/$deckId/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRoutesById {
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/game/$gameId': typeof GameGameIdRoute
   '/join/$code': typeof JoinCodeRoute
   '/read_/bulk': typeof ReadBulkRoute
+  '/replay/$gameId': typeof ReplayGameIdRoute
   '/decks_/$deckId_/unvalidated': typeof DecksDeckIdUnvalidatedRoute
 }
 export interface FileRouteTypes {
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read/bulk'
+    | '/replay/$gameId'
     | '/decks/$deckId/unvalidated'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read/bulk'
+    | '/replay/$gameId'
     | '/decks/$deckId/unvalidated'
   id:
     | '__root__'
@@ -336,6 +347,7 @@ export interface FileRouteTypes {
     | '/game/$gameId'
     | '/join/$code'
     | '/read_/bulk'
+    | '/replay/$gameId'
     | '/decks_/$deckId_/unvalidated'
   fileRoutesById: FileRoutesById
 }
@@ -365,6 +377,7 @@ export interface RootRouteChildren {
   GameGameIdRoute: typeof GameGameIdRoute
   JoinCodeRoute: typeof JoinCodeRoute
   ReadBulkRoute: typeof ReadBulkRoute
+  ReplayGameIdRoute: typeof ReplayGameIdRoute
   DecksDeckIdUnvalidatedRoute: typeof DecksDeckIdUnvalidatedRoute
 }
 
@@ -545,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReadBulkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/replay/$gameId': {
+      id: '/replay/$gameId'
+      path: '/replay/$gameId'
+      fullPath: '/replay/$gameId'
+      preLoaderRoute: typeof ReplayGameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/decks_/$deckId_/unvalidated': {
       id: '/decks_/$deckId_/unvalidated'
       path: '/decks/$deckId/unvalidated'
@@ -581,6 +601,7 @@ const rootRouteChildren: RootRouteChildren = {
   GameGameIdRoute: GameGameIdRoute,
   JoinCodeRoute: JoinCodeRoute,
   ReadBulkRoute: ReadBulkRoute,
+  ReplayGameIdRoute: ReplayGameIdRoute,
   DecksDeckIdUnvalidatedRoute: DecksDeckIdUnvalidatedRoute,
 }
 export const routeTree = rootRouteImport

@@ -143,7 +143,7 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
         seats: created.seats
           .filter((seat) => request.seats[seat.seat]?.bot !== true)
           .map((seat) => ({
-          seat: seat.seat,
+            seat: seat.seat,
             name: request.seats[seat.seat]?.name ?? `Seat ${seat.seat + 1}`,
             token: seat.token,
           })),

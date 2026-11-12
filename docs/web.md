@@ -326,6 +326,13 @@ The dock's form (`DockForm`, `dockForm(regions)` in `layout.ts`) decides how muc
 
 Space and Enter act only when nothing has the keyboard (`isFocusFree`: no field, button, link, menu or dialog has focus, no modifier is held, the key is not repeating); a focused card plays itself instead. `useFullControlKeys` follows the same rule and `ModifierChords` fires on release, so Ctrl+Shift+I and Ctrl-click do not count.
 
+## Replays
+
+- `/replay/$gameId` (`features/replay/ReplayPage`) loads `GET /api/games/{id}/replay` (`net/replays.ts`, with the session cookie; `readReplay` checks the shape) and draws the real `GameTable` over a store it writes itself and a session that refuses every action (`replaySession`). No sound cue and no tour run; the animations of each step play as at the table.
+- `createCursor(steps)` (`replayModel.ts`, pure) gives the view and the log after any step, folding with `applyBatch` and `appendLog` from a frame kept every `CHECKPOINT_EVERY` (20) steps, so a step forward costs one fold and a jump back at most twenty.
+- A toolbar over the table holds First, Back, Play or Pause (a step every `PLAY_STEP_MS`, 900 ms, stopping at the end), Forward, Last, a step slider, "N / M" and "Seen from": `withPerspective` turns the table to that seat and keeps the view a spectator's, so nothing at the table can act. The view keeps what the server sent: the asker's own seat's hidden cards, else none.
+- A finished game in My games has a Replay link and the game-over screen "Watch the replay"; a game without a replay (not ended, not recorded, a tutorial) says so with a link to My games.
+
 ## Accounts and games pages
 
 Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.md](protocol.md)). A guest needs no account: a seat link opens a seat. A server without `DATABASE_URL` answers 503 `accounts_unavailable`, and the app then offers no sign-in anywhere.

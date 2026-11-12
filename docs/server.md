@@ -128,6 +128,12 @@ A game has a visibility and each seat a state, so a visitor can claim an open se
 - `spawn_bot_seat` joins the seat, sends `Ready` and answers each decision of its seat after `ServerConfig.bot_delay` (`BOT_DELAY`, 800 ms) through `GameHandle`, as a client would, so every answer is checked, logged and paced like a player's. It keeps reading while it waits, and joins again a second after its connection is dropped.
 - `BotBrain` plays a land whenever it can and otherwise answers with `RandomBot` (`mtg-testkit`), seeded from the game's seed and the seat. After `TURN_ANSWERS` (120) answers in a turn it only passes until the turn changes. A refused answer is followed by the table's fallback (`pace::fallback`); a refused fallback, or a decision with none, concedes the seat. A bot therefore never stalls a game, with or without clocks.
 
+### Replays
+
+- `GET /api/games/{id}/replay` (`Registry::replay`) answers a recorded game whose record is `finished` as `Replay {seat, names, result, steps}`; an unknown, malformed or unfinished game, and a server without a database, are one 404. The game is rebuilt from its recipe and log as a resume does, so it replays under the cards it was played with.
+- The account that held a seat (`seats.user_id`, from the session cookie) gets the steps as that seat saw them, its hidden cards included; anybody else, signed in or not, gets the spectator's (`StateView::for_spectator`), so a replay shows no hand, library or face-down card that seat could not see.
+- `replay::cut` cuts the log into steps: a step ends where a player is given priority after an event that is not bookkeeping (priority, an empty pool, the start of a turn or step), so every step shows a change. `replay::steps` projects each with `project_events` from the state before it; the first is at `from_seq` 0, and the steps fold into the viewer's view of the final state exactly as the live batches did.
+
 ### Game browser endpoints
 
 `lobbies.rs` puts the registry's calls on HTTP.
