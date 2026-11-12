@@ -449,11 +449,11 @@ pub(crate) fn lasts(
         | Duration::UntilTurnSkipped
         // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
         | Duration::UntilSkipped
-        | Duration::UntilSkippedThisTurn => true,
+        | Duration::UntilSkippedThisTurn
+        // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
+        // later turn on (`r377_waits`).
+        | Duration::TheirNextTurn => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
-        // It ends with the first later turn of the player it names (`r377_skips`), and applies only from a later turn on
-        // (`r377_waits`).
-        Duration::TheirNextTurn => true,
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
             state.is_alive(controller)

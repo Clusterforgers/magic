@@ -1771,6 +1771,7 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     }])
 }
 
+#[allow(clippy::too_many_lines)]
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     if let Some(texts) = ep27_rule_texts(rule, condition, from) {
         return texts;
@@ -2235,6 +2236,7 @@ fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<St
 
 /// "can't attack or block", "gets +1/+1 and has flying", "have haste". The card itself gets a bonus or a keyword only
 /// under a condition, and a restriction is not read under one.
+#[allow(clippy::too_many_lines)]
 pub(super) fn predicate(
     mods: &[Modification],
     plural: bool,
