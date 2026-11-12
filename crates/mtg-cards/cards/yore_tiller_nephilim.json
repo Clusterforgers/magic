@@ -5,54 +5,21 @@
   "faces": [
     {
       "name": "Yore-Tiller Nephilim",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "128392df586a99d418f890335965b5c4",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Attacks": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Attacks": { "what": ["This"] } },
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],
             "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true
-                    }
-                  }
-                }
-              },
-              {
-                "JoinAttack": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "tapped": true } } } },
+              { "JoinAttack": { "what": { "Target": 0 } } }
             ]
           }
         }

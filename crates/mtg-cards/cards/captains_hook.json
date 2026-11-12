@@ -11,44 +11,19 @@
           "Static": {
             "affected": "Attached",
             "mods": [
-              {
-                "ModifyPT": {
-                  "power": 2,
-                  "toughness": 0
-                }
-              },
-              {
-                "AddKeyword": "Menace"
-              },
-              {
-                "AddSubtype": "Pirate"
-              }
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "Menace" },
+              { "AddSubtype": "Pirate" }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "Unattached": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "effects": [
-              {
-                "Destroy": {
-                  "what": "Triggering"
-                }
-              }
-            ]
+            "when": { "Unattached": { "what": ["This"] } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
           }
         },
-        {
-          "Keyword": {
-            "Equip": "{1}"
-          }
-        }
+        { "Keyword": { "Equip": "{1}" } }
       ]
     }
   ]

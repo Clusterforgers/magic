@@ -5,21 +5,12 @@
   "faces": [
     {
       "name": "Legion Angel",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "29606c53a270c6fb65826bcb5f96671f",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
                 "May": {
@@ -27,26 +18,12 @@
                     {
                       "Search": {
                         "zone": "Outside",
-                        "filter": [
-                          {
-                            "OwnedBy": "You"
-                          },
-                          {
-                            "Named": "Legion Angel"
-                          }
-                        ],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Legion Angel" }],
                         "reveal": true,
                         "as": "found"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "found"
-                        },
-                        "to": "Hand"
-                      }
-                    }
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
                   ]
                 }
               }

@@ -5,30 +5,17 @@
   "faces": [
     {
       "name": "Orzhov Pontiff",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "84e9a7504884ef5b4056fdfbc77cefd5",
       "abilities": [
-        {
-          "Keyword": "Haunt"
-        },
+        { "Keyword": "Haunt" },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "HauntedBy": "This"
-                      }
-                    ],
+                    "what": [{ "HauntedBy": "This" }],
                     "from": "Battlefield",
                     "to": "Graveyard"
                   }
@@ -44,23 +31,9 @@
                         {
                           "Continuous": {
                             "affected": {
-                              "Each": [
-                                {
-                                  "Type": "Creature"
-                                },
-                                {
-                                  "ControlledBy": "You"
-                                }
-                              ]
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
                             },
-                            "mods": [
-                              {
-                                "ModifyPT": {
-                                  "power": 1,
-                                  "toughness": 1
-                                }
-                              }
-                            ],
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
                             "duration": "UntilEndOfTurn"
                           }
                         }
@@ -71,25 +44,9 @@
                         {
                           "Continuous": {
                             "affected": {
-                              "Each": [
-                                {
-                                  "Type": "Creature"
-                                },
-                                {
-                                  "Not": {
-                                    "ControlledBy": "You"
-                                  }
-                                }
-                              ]
+                              "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
                             },
-                            "mods": [
-                              {
-                                "ModifyPT": {
-                                  "power": -1,
-                                  "toughness": -1
-                                }
-                              }
-                            ],
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
                             "duration": "UntilEndOfTurn"
                           }
                         }

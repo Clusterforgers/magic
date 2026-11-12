@@ -5,20 +5,13 @@
   "faces": [
     {
       "name": "Pir, Imaginative Rascal",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "7a8808ddbd2fbd853f1d07317ea525a0",
       "abilities": [
-        {
-          "Keyword": {
-            "PartnerWith": "Toothy, Imaginary Friend"
-          }
-        },
+        { "Keyword": { "PartnerWith": "Toothy, Imaginary Friend" } },
         {
           "Manual": {
             "reason": "you apply this static ability by hand",
-            "span": {
-              "start": 146,
-              "end": 306
-            }
+            "span": { "start": 146, "end": 306 }
           }
         }
       ]

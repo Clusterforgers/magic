@@ -7,28 +7,15 @@
       "name": "Exhumer Thrull",
       "oracle_fingerprint": "88609881d9598afb0d15ef0129ff9ef0",
       "abilities": [
-        {
-          "Keyword": "Haunt"
-        },
+        { "Keyword": "Haunt" },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "HauntedBy": "This"
-                      }
-                    ],
+                    "what": [{ "HauntedBy": "This" }],
                     "from": "Battlefield",
                     "to": "Graveyard"
                   }
@@ -38,30 +25,11 @@
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],
-            "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": "Hand"
-                }
-              }
-            ]
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }
       ]

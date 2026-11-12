@@ -5,51 +5,20 @@
   "faces": [
     {
       "name": "Toothy, Imaginary Friend",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "84389735354a28319496d4635017c783",
       "abilities": [
+        { "Keyword": { "PartnerWith": "Pir, Imaginative Rascal" } },
         {
-          "Keyword": {
-            "PartnerWith": "Pir, Imaginative Rascal"
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "Drew": {
-                "who": "You"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
             "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "Draw": {
-                  "count": {
-                    "Counters": {
-                      "on": "This",
-                      "counter": "+1/+1"
-                    }
-                  }
-                }
-              }
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
             ]
           }
         }

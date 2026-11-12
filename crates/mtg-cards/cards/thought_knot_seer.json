@@ -5,96 +5,37 @@
   "faces": [
     {
       "name": "Thought-Knot Seer",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "23da99e644ce045a08ef33d33c2a30ab",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": "Opponent"
-              }
-            ],
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               {
-                "Reveal": {
-                  "what": {
-                    "Each": [
-                      {
-                        "OwnedBy": {
-                          "Target": 0
-                        }
-                      },
-                      {
-                        "In": "Hand"
-                      }
-                    ]
-                  }
-                }
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
               },
               {
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "OwnedBy": {
-                          "Target": 0
-                        }
-                      },
-                      {
-                        "In": "Hand"
-                      },
-                      {
-                        "Not": {
-                          "Type": "Land"
-                        }
-                      }
+                      { "OwnedBy": { "Target": 0 } },
+                      { "In": "Hand" },
+                      { "Not": { "Type": "Land" } }
                     ]
                   },
                   "as": "chosen"
                 }
               },
-              {
-                "Exile": {
-                  "what": {
-                    "Bound": "chosen"
-                  }
-                }
-              }
+              { "Exile": { "what": { "Bound": "chosen" } } }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": "Opponent"
-              }
-            ],
-            "effects": [
-              {
-                "Draw": {
-                  "who": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 } } }]
           }
         }
       ]

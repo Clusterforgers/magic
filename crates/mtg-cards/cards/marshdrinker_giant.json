@@ -5,48 +5,22 @@
   "faces": [
     {
       "name": "Marshdrinker Giant",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "7c427a95d9b735e86d19b43d81b2bc66",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "targets": [
               {
                 "what": {
                   "Object": [
-                    {
-                      "AnyOf": [
-                        {
-                          "Subtype": "Island"
-                        },
-                        {
-                          "Subtype": "Swamp"
-                        }
-                      ]
-                    },
-                    {
-                      "ControlledBy": "Opponents"
-                    }
+                    { "AnyOf": [{ "Subtype": "Island" }, { "Subtype": "Swamp" }] },
+                    { "ControlledBy": "Opponents" }
                   ]
                 }
               }
             ],
-            "effects": [
-              {
-                "Destroy": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

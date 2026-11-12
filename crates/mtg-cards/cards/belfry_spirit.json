@@ -5,33 +5,18 @@
   "faces": [
     {
       "name": "Belfry Spirit",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "abf95583a41cfa7f89b0e63c6a5d9535",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": "Haunt"
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haunt" },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "HauntedBy": "This"
-                      }
-                    ],
+                    "what": [{ "HauntedBy": "This" }],
                     "from": "Battlefield",
                     "to": "Graveyard"
                   }
@@ -44,22 +29,12 @@
                   "token": {
                     "Custom": {
                       "name": "Bat",
-                      "colors": [
-                        "Black"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Bat"
-                      ],
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bat"],
                       "power": 1,
                       "toughness": 1,
-                      "abilities": [
-                        {
-                          "Keyword": "Flying"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Flying" }]
                     }
                   },
                   "count": 2

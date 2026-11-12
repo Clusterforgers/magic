@@ -5,33 +5,18 @@
   "faces": [
     {
       "name": "Graven Dominator",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "9fd0a2e8c0d7b5b46a4002375aa48201",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": "Haunt"
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haunt" },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "HauntedBy": "This"
-                      }
-                    ],
+                    "what": [{ "HauntedBy": "This" }],
                     "from": "Battlefield",
                     "to": "Graveyard"
                   }
@@ -41,22 +26,8 @@
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      "Other"
-                    ]
-                  },
-                  "mods": [
-                    {
-                      "SetPT": {
-                        "power": 1,
-                        "toughness": 1
-                      }
-                    }
-                  ],
+                  "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }],
                   "duration": "UntilEndOfTurn"
                 }
               }

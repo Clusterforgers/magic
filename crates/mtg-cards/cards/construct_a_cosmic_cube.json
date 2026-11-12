@@ -9,90 +9,38 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Nth": {
-                "event": {
-                  "Drew": {
-                    "who": "You"
-                  }
-                },
-                "nth": 2
-              }
-            },
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
                     "Custom": {
                       "name": "Villain",
-                      "colors": [
-                        "Black"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Villain"
-                      ],
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Villain"],
                       "power": 2,
                       "toughness": 1,
-                      "abilities": [
-                        {
-                          "Keyword": "Menace"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Menace" }]
                     }
                   }
                 }
               },
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": {
-                    "Other": "plan"
-                  }
-                }
-              }
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
             ]
           }
         },
         {
           "Triggered": {
             "when": {
-              "CountersPut": {
-                "what": [
-                  "This"
-                ],
-                "counter": {
-                  "Other": "plan"
-                },
-                "reaching": 7
-              }
+              "CountersPut": { "what": ["This"], "counter": { "Other": "plan" }, "reaching": 7 }
             },
             "effects": [
-              {
-                "Sacrifice": {
-                  "filter": [
-                    "This"
-                  ]
-                }
-              },
+              { "Sacrifice": { "filter": ["This"] } },
               {
                 "Reflexive": {
-                  "targets": [
-                    {
-                      "what": "Opponent"
-                    }
-                  ],
-                  "effects": [
-                    {
-                      "ControlPlayer": {
-                        "who": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  ]
+                  "targets": [{ "what": "Opponent" }],
+                  "effects": [{ "ControlPlayer": { "who": { "Target": 0 } } }]
                 }
               }
             ]

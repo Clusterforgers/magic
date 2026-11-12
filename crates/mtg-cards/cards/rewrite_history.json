@@ -10,98 +10,37 @@
         {
           "Triggered": {
             "when": {
-              "Batch": {
-                "Tapped": {
-                  "what": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "You"
-                    }
-                  ]
-                }
-              }
+              "Batch": { "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
             },
             "effects": [
-              {
-                "Draw": {}
-              },
-              {
-                "Discard": {}
-              },
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": {
-                    "Other": "plan"
-                  }
-                }
-              }
+              { "Draw": {} },
+              { "Discard": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
             ]
           }
         },
         {
           "Triggered": {
             "when": {
-              "CountersPut": {
-                "what": [
-                  "This"
-                ],
-                "counter": {
-                  "Other": "plan"
-                },
-                "reaching": 4
-              }
+              "CountersPut": { "what": ["This"], "counter": { "Other": "plan" }, "reaching": 4 }
             },
             "effects": [
-              {
-                "Sacrifice": {
-                  "filter": [
-                    "This"
-                  ]
-                }
-              },
+              { "Sacrifice": { "filter": ["This"] } },
               {
                 "Reflexive": {
                   "targets": [
                     {
                       "what": {
                         "Object": [
-                          {
-                            "AnyOf": [
-                              {
-                                "Type": "Instant"
-                              },
-                              {
-                                "Type": "Sorcery"
-                              }
-                            ]
-                          },
-                          {
-                            "In": "Graveyard"
-                          },
-                          {
-                            "OwnedBy": "You"
-                          }
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
                         ]
                       },
-                      "bounds": {
-                        "min": 0,
-                        "max": 2
-                      }
+                      "bounds": { "min": 0, "max": 2 }
                     }
                   ],
-                  "effects": [
-                    {
-                      "Move": {
-                        "what": {
-                          "Target": 0
-                        },
-                        "to": "Hand"
-                      }
-                    }
-                  ]
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
                 }
               }
             ]

@@ -5,38 +5,20 @@
   "faces": [
     {
       "name": "Cacophony Unleashed",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "91dce669810327bf8cc2b8b54896e7ab",
       "abilities": [
         {
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  "This",
-                  {
-                    "WasCast": {
-                      "by": "You"
-                    }
-                  }
-                ],
+                "what": ["This", { "WasCast": { "by": "You" } }],
                 "to": "Battlefield"
               }
             },
             "effects": [
               {
                 "Destroy": {
-                  "what": {
-                    "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Not": {
-                          "Type": "Enchantment"
-                        }
-                      }
-                    ]
-                  }
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Enchantment" } }] }
                 }
               }
             ]
@@ -45,10 +27,7 @@
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": {
-              "start": 84,
-              "end": 290
-            }
+            "span": { "start": 84, "end": 290 }
           }
         }
       ]

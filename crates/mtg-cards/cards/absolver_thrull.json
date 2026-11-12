@@ -5,56 +5,25 @@
   "faces": [
     {
       "name": "Absolver Thrull",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "ea177d231b63b6ad41eb860137a2ee99",
       "abilities": [
-        {
-          "Keyword": "Haunt"
-        },
+        { "Keyword": "Haunt" },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "HauntedBy": "This"
-                      }
-                    ],
+                    "what": [{ "HauntedBy": "This" }],
                     "from": "Battlefield",
                     "to": "Graveyard"
                   }
                 }
               ]
             },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Enchantment"
-                    }
-                  ]
-                }
-              }
-            ],
-            "effects": [
-              {
-                "Destroy": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         }
       ]

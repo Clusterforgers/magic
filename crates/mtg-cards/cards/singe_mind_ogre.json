@@ -5,61 +5,24 @@
   "faces": [
     {
       "name": "Singe-Mind Ogre",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "1a4a072f45ce0e82cba6fcfdd43a855a",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "targets": [
-              {
-                "what": "Player"
-              }
-            ],
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
             "effects": [
               {
                 "ChooseAtRandom": {
-                  "from": {
-                    "Each": [
-                      {
-                        "OwnedBy": {
-                          "Target": 0
-                        }
-                      },
-                      {
-                        "In": "Hand"
-                      }
-                    ]
-                  },
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
                   "as": "revealed"
                 }
               },
-              {
-                "Reveal": {
-                  "what": {
-                    "Bound": "revealed"
-                  }
-                }
-              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
               {
                 "LoseLife": {
-                  "who": {
-                    "Target": 0
-                  },
-                  "amount": {
-                    "Stat": {
-                      "of": {
-                        "Bound": "revealed"
-                      },
-                      "stat": "ManaValue"
-                    }
-                  }
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
                 }
               }
             ]

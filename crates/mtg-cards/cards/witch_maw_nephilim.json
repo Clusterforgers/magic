@@ -5,27 +5,15 @@
   "faces": [
     {
       "name": "Witch-Maw Nephilim",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "e8188122261150005c5c90528b5adaf8",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {
-                "by": "You"
-              }
-            },
+            "when": { "SpellCast": { "by": "You" } },
             "effects": [
               {
                 "May": {
-                  "effects": [
-                    {
-                      "PutCounters": {
-                        "on": "This",
-                        "counter": "+1/+1",
-                        "count": 2
-                      }
-                    }
-                  ]
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
                 }
               }
             ]
@@ -33,24 +21,13 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Attacks": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Attacks": { "what": ["This"] } },
             "effects": [
               {
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "Stat": {
-                          "of": "This",
-                          "stat": "Power"
-                        }
-                      },
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
                       "op": "Ge",
                       "right": 10
                     }
@@ -59,11 +36,7 @@
                     {
                       "Continuous": {
                         "affected": "This",
-                        "mods": [
-                          {
-                            "AddKeyword": "Trample"
-                          }
-                        ],
+                        "mods": [{ "AddKeyword": "Trample" }],
                         "duration": "UntilEndOfTurn"
                       }
                     }
