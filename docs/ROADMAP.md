@@ -131,7 +131,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1g) The `mtg-testkit` `it` binary splits into about six binaries by family, so one test edit rebuilds in about 30 s instead of 136 s and the families run side by side (`crates/mtg-testkit/tests`; after ts1c)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
 - [ ] (ts1k) The check ends with the seconds of each test binary and the 20 slowest tests, and the tag run sets `MTG_FUZZ_GAMES` to the long count (`scripts/check.sh`, `docs/testing.md`; after ts1b)
-- [ ] (ts1l) A change to `web/src/protocol/` (bindings, fixtures) selects the `mtg-protocol` tests in `affected` and the gate, whose tests read those files (their stamp key already hashes them; `scripts/lib/check-plan.sh`, `scripts/tests/check_select.sh`; no dependency)
 - [ ] (ts1n) `scripts/check.sh` puts `scripts/warm-bin` first in `PATH` for its cargo calls and runs `scripts/tests/warm_target.sh` with its script tests, so a warm worktree needs no prefix (`scripts/check.sh`; after ts1a to ts1d)
 - [ ] (ts1m) A workspace-hack crate (cargo-hakari) fixes the dependency features, so every package selection shares one build and `cargo test -p mtg-engine` in a warm worktree compiles nothing (now 86 s; `Cargo.toml`, `crates/`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)

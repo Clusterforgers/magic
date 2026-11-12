@@ -33,12 +33,16 @@ load_graph() {
 
 # --- Selection ---------------------------------------------------------------------------------------------------
 
-declare -A hit=()
+declare -A hit=() input_hit=()
 select_all=0 web_sel=none gate=0
 
 # classify <path>: mark what a changed file can break. The gate leaves the check scripts to the script tests.
 classify() {
   local f="$1" name
+  # A crate whose tests read the file (extra_inputs) is tested; its dependents do not read it.
+  for name in "${!extra_inputs[@]}"; do
+    [[ "$f" != "${extra_inputs[$name]}"/* ]] || input_hit[$name]=1
+  done
   case "$f" in
     scripts/check.sh | scripts/lib/check-*.sh) ((gate)) || select_all=1 ;;
     Cargo.toml | Cargo.lock | rust-toolchain | rust-toolchain.toml | .cargo/*) select_all=1 ;;

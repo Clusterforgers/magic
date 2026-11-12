@@ -27,7 +27,8 @@ case_diff "mtg-cards" "mtg-cards mtg-engine mtg-protocol mtg-testkit" "mtg-cli m
 case_diff "mtg-core" "$all_other" "$all_pg" none -- crates/mtg-core/src/lib.rs
 case_diff "only web" - - changed -- web/src/lib/flash.ts
 case_diff "web config" - - full -- web/src/lib/flash.ts web/package.json
-case_diff "bindings" - - full -- web/src/protocol/generated/Rule.ts
+case_diff "bindings" mtg-protocol - full -- web/src/protocol/generated/Rule.ts
+case_diff "protocol fixture" mtg-protocol - changed -- web/src/protocol/fixtures/probe.json
 case_diff "mtg-protocol" "mtg-protocol" "mtg-server" full -- crates/mtg-protocol/src/lib.rs
 case_diff "Cargo.lock" "$all_other" "$all_pg" full -- Cargo.lock
 case_diff "check.sh" "$all_other" "$all_pg" full -- scripts/check.sh

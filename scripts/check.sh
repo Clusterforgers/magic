@@ -111,6 +111,7 @@ case "$mode" in
     else
       close_over_dependents
     fi
+    for name in "${!input_hit[@]}"; do hit[$name]=1; done
     ;;
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
