@@ -1,0 +1,71 @@
+{
+  "oracle_id": "d808262d-43ca-46f8-ab8b-b584773f9c58",
+  "name": "Test of Talents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Talents",
+      "oracle_fingerprint": "e72cafa3e1ac65a806e54835f36790fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 }, "as": "named" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "grave"
+                }
+              },
+              { "Exile": { "what": { "Bound": "grave" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "hand"
+                }
+              },
+              { "Exile": { "what": { "Bound": "hand" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "named" } }],
+                  "count": { "min": 0, "max": null },
+                  "as": "library"
+                }
+              },
+              { "Exile": { "what": { "Bound": "library" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } },
+              {
+                "Draw": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "count": { "CountOf": { "of": { "Bound": "hand" }, "filter": [] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

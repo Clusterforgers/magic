@@ -1,0 +1,1976 @@
+[
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Exile": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "hand",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "hand"
+       }
+      }
+     },
+     {
+      "Search": {
+       "as": "library",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "filter": [
+        {
+         "SharesName": {
+          "Bound": "named"
+         }
+        }
+       ],
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "library"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Land"
+        },
+        {
+         "Not": {
+          "Supertype": "Basic"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Exile target nonbasic land. Search its controller's graveyard, hand, and library for all cards with the same name as that land and exile them. Then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Exile": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "grave",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "grave"
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "hand",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "hand"
+       }
+      }
+     },
+     {
+      "Search": {
+       "as": "library",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "filter": [
+        {
+         "SharesName": {
+          "Bound": "named"
+         }
+        }
+       ],
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "library"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Land"
+        },
+        {
+         "Not": {
+          "Supertype": "Basic"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Exile target nonbasic land. Search its controller's graveyard, hand, and library for any number of cards with the same name as that land and exile them. Then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "hand",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "hand"
+       }
+      }
+     },
+     {
+      "Search": {
+       "as": "library",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "filter": [
+        {
+         "SharesName": {
+          "Bound": "named"
+         }
+        }
+       ],
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "library"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for all cards with the same name as that spell and exile them. Then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "grave",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "grave"
+       }
+      }
+     },
+     {
+      "Choose": {
+       "as": "hand",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "SharesName": {
+           "Bound": "named"
+          }
+         },
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "hand"
+       }
+      }
+     },
+     {
+      "Search": {
+       "as": "library",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "filter": [
+        {
+         "SharesName": {
+          "Bound": "named"
+         }
+        }
+       ],
+       "of": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "library"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "CountOf": {
+         "filter": [],
+         "of": {
+          "Bound": "hand"
+         }
+        }
+       },
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell. Search its controller's graveyard, hand, and library for any number of cards with the same name as that spell and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CardTypes": [
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       },
+       "then": [
+        {
+         "Choose": {
+          "as": "grave",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": {
+              "ControllerOf": {
+               "Target": 0
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "grave"
+          }
+         }
+        },
+        {
+         "Choose": {
+          "as": "hand",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": {
+              "ControllerOf": {
+               "Target": 0
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "hand"
+          }
+         }
+        },
+        {
+         "Search": {
+          "as": "library",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "filter": [
+           {
+            "SharesName": {
+             "Bound": "named"
+            }
+           }
+          ],
+          "of": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "library"
+          }
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "Type": "Sorcery"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target sorcery spell.\nDelirium — If there are four or more card types among cards in your graveyard, search the graveyard, hand, and library of that spell's controller for any number of cards with the same name as that spell, exile those cards, then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExchangeControl": {
+       "duration": "Forever",
+       "what": [
+        {
+         "Target": 0
+        },
+        {
+         "Target": 1
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": []
+      }
+     },
+     {
+      "what": {
+       "Another": {
+        "earlier": [
+         0
+        ],
+        "what": {
+         "Object": [
+          {
+           "SharesType": {
+            "Target": 0
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Exchange control of two target permanents that share a card type."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ExchangeControl": {
+       "duration": "Forever",
+       "what": [
+        {
+         "Target": 0
+        },
+        {
+         "Target": 1
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Another": {
+        "earlier": [
+         0
+        ],
+        "what": {
+         "Object": [
+          {
+           "Not": {
+            "Type": "Land"
+           }
+          },
+          {
+           "SharesType": {
+            "Target": 0
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Exchange control of two target nonland permanents that share a card type."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CreateToken": {
+       "as": "cats",
+       "count": "X",
+       "token": {
+        "Custom": {
+         "abilities": [
+          {
+           "Keyword": "Haste"
+          }
+         ],
+         "colors": [
+          "Red"
+         ],
+         "name": "Elemental Cat",
+         "power": 1,
+         "subtypes": [
+          "Elemental",
+          "Cat"
+         ],
+         "toughness": 1,
+         "types": [
+          "Creature"
+         ]
+        }
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "cats"
+          }
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Create X 1/1 red Elemental Cat creature tokens with haste. Exile them at the beginning of the next end step."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Exile": {
+       "as": "exiled",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "If": {
+          "condition": {
+           "CountOf": {
+            "op": "Ge",
+            "right": 1,
+            "selector": [
+             {
+              "Type": "Creature"
+             }
+            ],
+            "subject": {
+             "Bound": "exiled"
+            }
+           }
+          },
+          "otherwise": [
+           {
+            "Move": {
+             "to": {
+              "Battlefield": {}
+             },
+             "what": {
+              "Bound": "exiled"
+             }
+            }
+           }
+          ],
+          "then": [
+           {
+            "Move": {
+             "to": {
+              "Battlefield": {
+               "counters": [
+                [
+                 "+1/+1",
+                 1
+                ]
+               ]
+              }
+             },
+             "what": {
+              "Bound": "exiled"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Exile target permanent you control. Return that card to the battlefield under its owner's control at the beginning of the next end step. If it enters as a creature, it enters with an additional +1/+1 counter on it."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "count": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, sacrifice all creatures you control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "DealDamage": {
+       "amount": {
+        "Stat": {
+         "of": "Paid",
+         "stat": "Power"
+        }
+       },
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "AnyTarget"
+     }
+    ]
+   }
+  },
+  "~ deals damage to any target equal to the total power of the sacrificed creatures."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Exile": {
+       "as": "exiled",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Draw": {
+       "count": {
+        "Stat": {
+         "of": {
+          "Target": 0
+         },
+         "stat": "Power"
+        }
+       }
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Move": {
+          "as": "returned",
+          "to": {
+           "Battlefield": {}
+          },
+          "what": {
+           "Bound": "exiled"
+          }
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "CountOf": {
+            "op": "Ge",
+            "right": 1,
+            "selector": [],
+            "subject": {
+             "Bound": "returned"
+            }
+           }
+          },
+          "then": [
+           {
+            "Discard": {
+             "count": {
+              "Stat": {
+               "of": {
+                "Bound": "returned"
+               },
+               "stat": "Toughness"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "Upkeep",
+         "whose": "You"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Exile target creature. You draw cards equal to that creature's power. At the beginning of your next upkeep, return that card to the battlefield under its owner's control. If you do, discard cards equal to that creature's toughness."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "top",
+       "count": "X"
+      }
+     },
+     {
+      "Choose": {
+       "as": "kept",
+       "from": {
+        "Bound": "top"
+       },
+       "rest_as": "rest"
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "kept"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Library": {
+         "order": "Chosen",
+         "place": "Bottom"
+        }
+       },
+       "what": {
+        "Bound": "rest"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Look at the top X cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "top",
+       "count": 3
+      }
+     },
+     {
+      "Choose": {
+       "as": "card",
+       "count": {
+        "max": 1,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "Is": {
+           "Bound": "top"
+          }
+         },
+         {
+          "In": "Library"
+         },
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Plot": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": "Hand",
+       "what": {
+        "Bound": "top"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Look at the top three cards of your library. You may exile a nonland card from among them. If you do, it becomes plotted. Put the rest into your hand."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 2
+    },
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "OneOf": [
+          [
+           {
+            "Sacrifice": {
+             "filter": [
+              {
+               "Type": "Artifact"
+              }
+             ]
+            }
+           }
+          ],
+          [
+           {
+            "Discard": {}
+           }
+          ]
+         ]
+        }
+       ],
+       "paid": [
+        {
+         "Draw": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+2: You may sacrifice an artifact or discard a card. If you do, draw a card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 4
+    },
+    "effects": [
+     {
+      "DealDamage": {
+       "amount": "Divided",
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": {
+        "Greatest": {
+         "of": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ],
+         "stat": "Power"
+        }
+       },
+       "min": 0
+      },
+      "divide": {
+       "Greatest": {
+        "of": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ],
+        "stat": "Power"
+       }
+      },
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Type": "Planeswalker"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−4: ~ deals X damage divided as you choose among any number of target creatures and/or planeswalkers, where X is the greatest power among creatures you control as you activate this ability."
+ ],
+ [
+  {
+   "CastOnly": {
+    "condition": {
+     "Any": [
+      {
+       "Not": "YourTurn"
+      },
+      {
+       "Compare": {
+        "left": {
+         "TurnsTaken": "You"
+        },
+        "op": "Ge",
+        "right": 4
+       }
+      }
+     ]
+    }
+   }
+  },
+  "You can't cast ~ during your first, second, or third turns of the game."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 6
+    },
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "CopySpell": {
+          "new_targets": true,
+          "what": "Triggering"
+         }
+        }
+       ],
+       "once": false,
+       "this_turn": true,
+       "when": {
+        "SpellCast": {
+         "by": "You"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−6: Until end of turn, whenever you cast a spell, copy it. You may choose new targets for the copy."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 2
+    },
+    "effects": [
+     {
+      "Shield": {
+       "by": {
+        "Multiply": 2
+       },
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "TokenCreation": {}
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−2: Until end of turn, if one or more tokens would be created under your control, twice that many of those tokens are created instead."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 10
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Deathtouch"
+        },
+        {
+         "GrantAbility": {
+          "Triggered": {
+           "effects": [
+            {
+             "LoseGame": {
+              "who": "Triggering"
+             }
+            }
+           ],
+           "when": {
+            "DealsDamage": {
+             "source": [
+              "This"
+             ],
+             "to": "Opponents"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−10: Until end of turn, creatures you control gain deathtouch and \"Whenever this creature deals damage to an opponent, that player loses the game.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 2
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddType": "Creature"
+        },
+        {
+         "SetColors": [
+          "White"
+         ]
+        },
+        {
+         "SetCreatureTypes": [
+          "Soldier"
+         ]
+        },
+        {
+         "SetPT": {
+          "power": 5,
+          "toughness": 5
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": "This"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+2: Until end of turn, ~ becomes a 5/5 white Soldier creature that's still a planeswalker. Prevent all damage that would be dealt to him this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Counter": {
+       "as": "named",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "CardTypes": [
+           {
+            "In": "Graveyard"
+           },
+           {
+            "OwnedBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 4
+        }
+       },
+       "then": [
+        {
+         "Choose": {
+          "as": "grave",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": {
+              "ControllerOf": {
+               "Target": 0
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "grave"
+          }
+         }
+        },
+        {
+         "Choose": {
+          "as": "hand",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": {
+              "ControllerOf": {
+               "Target": 0
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "hand"
+          }
+         }
+        },
+        {
+         "Search": {
+          "as": "library",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "filter": [
+           {
+            "SharesName": {
+             "Bound": "named"
+            }
+           }
+          ],
+          "of": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "library"
+          }
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "ControllerOf": {
+            "Target": 0
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "Type": "Sorcery"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target sorcery spell.\nIf there are four or more card types among cards in your graveyard, search the graveyard, hand, and library of that spell's controller for any number of cards with the same name as that spell, exile those cards, then that player shuffles."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Each": [
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": "AdditionalCostPaid",
+       "then": [
+        {
+         "Choose": {
+          "as": "card",
+          "from": {
+           "Each": [
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": "Opponents"
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "as": "named",
+          "what": {
+           "Bound": "card"
+          }
+         }
+        },
+        {
+         "Choose": {
+          "as": "grave",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Graveyard"
+            },
+            {
+             "OwnedBy": {
+              "OwnerOf": {
+               "Bound": "named"
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "grave"
+          }
+         }
+        },
+        {
+         "Choose": {
+          "as": "hand",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "from": {
+           "Each": [
+            {
+             "SharesName": {
+              "Bound": "named"
+             }
+            },
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": {
+              "OwnerOf": {
+               "Bound": "named"
+              }
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "hand"
+          }
+         }
+        },
+        {
+         "Search": {
+          "as": "library",
+          "count": {
+           "max": null,
+           "min": 0
+          },
+          "filter": [
+           {
+            "SharesName": {
+             "Bound": "named"
+            }
+           }
+          ],
+          "of": {
+           "OwnerOf": {
+            "Bound": "named"
+           }
+          }
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "library"
+          }
+         }
+        },
+        {
+         "Shuffle": {
+          "who": {
+           "OwnerOf": {
+            "Bound": "named"
+           }
+          }
+         }
+        },
+        {
+         "Draw": {
+          "count": {
+           "CountOf": {
+            "filter": [],
+            "of": {
+             "Bound": "hand"
+            }
+           }
+          },
+          "who": {
+           "OwnerOf": {
+            "Bound": "named"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Destroy all creatures. If evidence was collected, exile a card from an opponent's graveyard. Then search its owner's graveyard, hand, and library for any number of cards with that name and exile them. That player shuffles, then draws a card for each card exiled from their hand this way."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": "CantBeCopied"
+   }
+  },
+  "This spell can't be copied."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "CopySpell": {
+       "new_targets": true,
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": null,
+       "min": 0
+      },
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Copy any number of target instant and/or sorcery spells. You may choose new targets for the copies."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "all_if": {
+        "Compare": {
+         "left": {
+          "Players": {
+           "PlayersWhere": {
+            "test": {
+             "Compare": {
+              "left": {
+               "Count": [
+                {
+                 "In": "Graveyard"
+                },
+                {
+                 "OwnedBy": "You"
+                }
+               ]
+              },
+              "op": "Ge",
+              "right": 8
+             }
+            },
+            "who": "Opponents"
+           }
+          }
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "modes": [
+        {
+         "effects": [
+          {
+           "CopySpell": {
+            "new_targets": true,
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             "Spell"
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "token": {
+             "CopyOf": {
+              "of": {
+               "Target": 0
+              }
+             }
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose one. If an opponent has eight or more cards in their graveyard, you may choose both instead.\n• Copy target spell. You may choose new targets for the copy.\n• Create a token that's a copy of target creature."
+ ]
+]

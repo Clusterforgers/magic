@@ -869,6 +869,7 @@ const RUNS: &[&str] = &[
     "Rule.AnyNumberInDeck",
     "Rule.UpToInDeck",
     "Rule.Draft",
+    "Rule.CantBeCopied",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",

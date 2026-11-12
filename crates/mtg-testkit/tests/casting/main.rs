@@ -50,6 +50,7 @@ mod e14b_pay_or_graveyard;
 mod e14b_x_at_least;
 mod e14c_choices;
 mod e14e_copy_each_target;
+mod r302_uncopyable;
 mod e14e_rather_cost;
 mod e14e_targeted_equip;
 mod e14g_counted_mana;

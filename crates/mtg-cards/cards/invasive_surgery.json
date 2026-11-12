@@ -1,0 +1,72 @@
+{
+  "oracle_id": "545f56c6-b10f-4868-8aa8-ea3154980854",
+  "name": "Invasive Surgery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasive Surgery",
+      "oracle_fingerprint": "cedebb0256a56d765a68f3d87e9182f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Sorcery" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 }, "as": "named" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "named" } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "grave"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "grave" } } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "named" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "hand"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "hand" } } },
+                    {
+                      "Search": {
+                        "of": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "SharesName": { "Bound": "named" } }],
+                        "count": { "min": 0, "max": null },
+                        "as": "library"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "library" } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

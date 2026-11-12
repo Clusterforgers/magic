@@ -1,0 +1,58 @@
+{
+  "oracle_id": "131d2b70-959d-4814-b0c8-38031f141718",
+  "name": "Sowing Salt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sowing Salt",
+      "oracle_fingerprint": "e8bf22d0ecfbd88d84777ba8bd460446",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "named" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "hand"
+                }
+              },
+              { "Exile": { "what": { "Bound": "hand" } } },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "named" } }],
+                  "count": { "min": 0, "max": null },
+                  "as": "library"
+                }
+              },
+              { "Exile": { "what": { "Bound": "library" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

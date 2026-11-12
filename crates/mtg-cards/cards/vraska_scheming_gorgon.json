@@ -1,7 +1,7 @@
 {
   "oracle_id": "83045a9c-57da-411f-80aa-56178d14856b",
   "name": "Vraska, Scheming Gorgon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vraska, Scheming Gorgon",
@@ -29,9 +29,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 84, "end": 231 }
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Deathtouch" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+                          "effects": [{ "LoseGame": { "who": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

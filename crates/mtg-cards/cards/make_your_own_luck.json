@@ -1,0 +1,35 @@
+{
+  "oracle_id": "41246140-4b44-40c4-b92b-501e49c50bf7",
+  "name": "Make Your Own Luck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make Your Own Luck",
+      "oracle_fingerprint": "ecbc4f24e356e2ad4e1cb820d54ed076",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "Plot": { "what": { "Bound": "card" } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

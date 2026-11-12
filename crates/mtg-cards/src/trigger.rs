@@ -1172,6 +1172,10 @@ impl ShieldShape {
             {
                 Some(Self::Class)
             }
+            // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
+            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
+                Some(Self::Class)
+            }
             (
                 ReplaceWhen::Damage { .. },
                 ReplaceBy::Prevent

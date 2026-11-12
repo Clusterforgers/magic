@@ -1,0 +1,79 @@
+{
+  "oracle_id": "04e2afbe-0c08-42bc-93e6-662066a958bf",
+  "name": "Deadly Cover-Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Cover-Up",
+      "oracle_fingerprint": "5a7f48c1219340ee41e3c3965bcfacfb",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "named" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "named" } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "OwnerOf": { "Bound": "named" } } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "grave"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "grave" } } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "named" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "OwnerOf": { "Bound": "named" } } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": null },
+                        "as": "hand"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "hand" } } },
+                    {
+                      "Search": {
+                        "of": { "OwnerOf": { "Bound": "named" } },
+                        "filter": [{ "SharesName": { "Bound": "named" } }],
+                        "count": { "min": 0, "max": null },
+                        "as": "library"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "library" } } },
+                    { "Shuffle": { "who": { "OwnerOf": { "Bound": "named" } } } },
+                    {
+                      "Draw": {
+                        "who": { "OwnerOf": { "Bound": "named" } },
+                        "count": { "CountOf": { "of": { "Bound": "hand" }, "filter": [] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

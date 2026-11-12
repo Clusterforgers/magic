@@ -801,6 +801,8 @@ pub enum GameRule {
     UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
+    CantBeCopied,
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).

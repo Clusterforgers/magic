@@ -93,6 +93,7 @@ mod w20b_reflexive;
 mod w21_spell_grants;
 mod w5d_replaced_event;
 mod w6c_x_triggers;
+mod r302_token_shield;
 mod w8b_mill_triggers;
 mod w9c_replacement_pieces;
 mod zone_abilities;

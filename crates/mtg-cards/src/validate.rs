@@ -4087,6 +4087,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::CantBeCopied) {
+                    w.problem("a spell can't be copied by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
@@ -4901,7 +4904,10 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
+            GameRule::CanBeCommander
+            | GameRule::AnyNumberInDeck
+            | GameRule::Draft(_)
+            | GameRule::CantBeCopied => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5101,7 +5107,10 @@ impl Walker<'_> {
             }),
             _ if matches!(
                 rule,
-                GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_) | GameRule::Draft(_)
+                GameRule::AnyNumberInDeck
+                    | GameRule::UpToInDeck(_)
+                    | GameRule::Draft(_)
+                    | GameRule::CantBeCopied
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),

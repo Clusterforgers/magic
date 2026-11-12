@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "ffaab905-0b97-42c2-a1a3-1e72275caa82",
+  "oracle_id": "9196c8dc-bca6-4c35-949e-8c14a699a41d",
+  "multiverse_ids": [
+    29831
+  ],
+  "mtgo_id": 17466,
+  "mtgo_foil_id": 17467,
+  "tcgplayer_id": 10200,
+  "cardmarket_id": 2166,
+  "name": "Flash of Insight",
+  "lang": "en",
+  "released_at": "2002-05-27",
+  "uri": "https://api.scryfall.com/cards/ffaab905-0b97-42c2-a1a3-1e72275caa82",
+  "scryfall_uri": "https://scryfall.com/card/jud/40/flash-of-insight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:18:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129",
+    "normal": "https://cards.scryfall.io/normal/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129",
+    "large": "https://cards.scryfall.io/large/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129",
+    "png": "https://cards.scryfall.io/png/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.png?1783945129",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.webp?1783945129",
+    "grid": "https://cards.scryfall.io/grid/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.webp?1783945129",
+    "display": "https://cards.scryfall.io/display/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.webp?1783945129",
+    "art": "https://cards.scryfall.io/art/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.webp?1783945129",
+    "crop": "https://cards.scryfall.io/crop/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.webp?1783945129",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/f/ffaab905-0b97-42c2-a1a3-1e72275caa82.jpg?1783945129"
+  },
+  "mana_cost": "{X}{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Look at the top X cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.\nFlashback—{1}{U}, Exile X blue cards from your graveyard. (You may cast this card from your graveyard for its flashback cost, then exile it. You can't exile Flash of Insight to pay for its own flashback cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set": "jud",
+  "set_name": "Judgment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajud&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jud?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ffaab905-0b97-42c2-a1a3-1e72275caa82/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9196c8dc-bca6-4c35-949e-8c14a699a41d&unique=prints",
+  "collector_number": "40",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Thompson",
+  "artist_ids": [
+    "f3116c88-57f4-4fd1-95f3-cfd163977661"
+  ],
+  "illustration_id": "8996eee4-0187-4f51-a393-13ff73625471",
+  "border_color": "black",
+  "frame": "1997",
+  "frame_effects": [
+    "tombstone"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21475,
+  "penny_rank": 3041,
+  "prices": {
+    "usd": "1.92",
+    "usd_foil": "92.74",
+    "usd_etched": null,
+    "eur": "1.85",
+    "eur_foil": "41.22",
+    "tix": "0.46"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=29831&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlash%2Bof%2BInsight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlash%2Bof%2BInsight",
+    "edhrec": "https://edhrec.com/route/?cc=Flash+of+Insight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10200%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2166&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17466?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

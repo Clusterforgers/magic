@@ -1484,6 +1484,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::UpToInDeck(_) => return Err(ResolveError::Unsupported("Rule.UpToInDeck")),
         // A draft rule works only during a booster draft; nothing changes in a game.
         GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
+        // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
+        GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
