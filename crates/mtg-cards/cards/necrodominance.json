@@ -12,13 +12,7 @@
           "Triggered": {
             "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "effects": [
-              { "ChooseValue": { "kind": { "Number": [0, { "Life": "You" }] }, "as": "life" } },
-              {
-                "Pay": {
-                  "cost": [{ "PayLife": { "ChosenAs": "life" } }],
-                  "paid": [{ "Draw": { "count": { "ChosenAs": "life" } } }]
-                }
-              }
+              { "Pay": { "cost": [{ "PayLife": "X" }], "paid": [{ "Draw": { "count": "X" } }] } }
             ]
           }
         },

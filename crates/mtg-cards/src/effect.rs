@@ -676,6 +676,10 @@ pub enum Effect {
         value: Amount,
         /// The name of the memory.
         slot: String,
+        /// The player the number is kept for, each apart ("the amount of mana they paid this way"); `Amount::Remembered`
+        /// with the same `per` reads it. None keeps one number for everyone.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per: Option<Ref>,
     },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {

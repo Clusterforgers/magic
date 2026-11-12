@@ -151,6 +151,7 @@ mod l292_hand_reads;
 mod l292_haunt;
 mod l292_twins;
 mod l293_events;
+mod l31b_any_amount;
 mod land_types;
 mod lands;
 mod leave_combat;
