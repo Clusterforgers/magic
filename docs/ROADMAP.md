@@ -7,9 +7,9 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, deployment.
+- Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, sound cues, deployment.
 - In progress: M3 card system and M6 coverage. A card the compiler does not read whole is played through by-hand clauses. The owner's Moxfield deck is fully Verified. Run `mtg-cli compile` and `coverage` for the current numbers before quoting any.
-- Open: spectators, handicaps, an off-queen copy of the backups (M7), sounds, replays and solo play (M8).
+- Open: spectators, handicaps, an off-queen copy of the backups (M7), replays and solo play (M8).
 
 ## Order of work
 
@@ -156,6 +156,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M8 Polish and deploy
 
-- [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
+- [ ] Animations beyond the table feedback (`docs/web.md`), replays, solo play against bots
 - [ ] Performance profile on real hardware with real card art
 - [ ] (p1a) Block options test evasion once per attacker and per blocker (0.4 s at 1,500 against 1,500 today), and a death re-derives the layers only when an effect reads it

@@ -263,6 +263,15 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 - `turn.css`: the banner's fades and the ticker line's rise; only opacity changes outside the no-preference block (`turnCss.test.ts`). `cueTokens.test.ts` holds the contrast of the cue tokens, the seat edges and the priority dot, in both themes.
 - Tests drive a table with `renderCueTable` (`test-utils/cueTable.tsx`: cues on, a manual clock, `deliver(events, to)`) and build batches from `test-utils/turnEvents.ts`.
 
+## Sounds
+
+`features/sound/` plays a few short, quiet cues at the table, synthesized with WebAudio, so no sound file ships.
+
+- `soundCueBetween(prev, next)` (`cues.ts`, pure) gives at most one cue per change of the play store, the strongest first: `won` when the result names the viewer, `turn` when the viewer's own turn begins, `decision` when a decision for the viewer arrives while none was pending. A first view, a spectator's table and any other seat's turn, decision or win give none.
+- `playCue` (`synth.ts`) plays one to three sine notes of 160 ms at a peak gain of 0.05 through one lazily made `AudioContext`; a browser without WebAudio, or before the page was clicked, plays nothing and throws nothing.
+- The cues are on until muted: `mtg.sounds` in `localStorage` (`soundPrefs.ts`, every access in try/catch) is `off` while muted, followed by every tab. The switches are "Play sounds" in the Full Control menu and Sounds on the settings page.
+- `useSoundCues` runs in `GameTable` while `TableOptions.sounds` is on (everywhere but under vitest and the replay viewer).
+
 ## Pace controls
 
 The Priority prompt's controls (`prompt/PassControls.tsx`, drawn in the controls dock of the table, 44 px high), over the wire rules in [protocol.md](protocol.md) (Pace of play) and the privacy rules in [ui-design.md](ui-design.md) (Priority, stops and information leaks).

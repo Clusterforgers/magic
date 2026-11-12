@@ -2,7 +2,8 @@ import { memo, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useFullBleed } from '@/components/appChrome'
-import { usePlay } from '@/features/game/gameContext'
+import { useGame, usePlay } from '@/features/game/gameContext'
+import { SOUNDS_BY_DEFAULT, useSoundCues } from '@/features/sound/useSoundCues'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
@@ -50,6 +51,7 @@ const Table = memo(function Table() {
   const options = useContext(TableOptionsContext)
   const viewport = useViewport(options.viewport)
   useFullBleed()
+  useSoundCues(useGame().session.store, options.sounds ?? SOUNDS_BY_DEFAULT)
   const { seat, seatCount, ready } = usePlay(
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
   )
