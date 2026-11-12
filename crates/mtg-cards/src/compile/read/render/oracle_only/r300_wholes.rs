@@ -5,11 +5,46 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R300_WHOLES: [(&str, &str); 20] = [
+const R300_WHOLES: [(&str, &str); 31] = [
+    // arcee_sharpshooter_arcee_acrobatic_coupe
+    (
+        r#"{"Keyword":{"MoreThanMeetsTheEye":"{R}{W}"}}"#,
+        r"More Than Meets the Eye {R}{W}",
+    ),
+    // arcee_sharpshooter_arcee_acrobatic_coupe
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},{"RemoveCounters":{"counter":"+1/+1","count":"X"}},{"XAtLeast":1}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"RemovedThisWay":"+1/+1"}}},{"Transform":{"what":"This"}}]}}"#,
+        r"{1}, Remove one or more +1/+1 counters from ~: It deals that much damage to target creature. Convert ~.",
+    ),
     // ashen_ghoul
     (
         r#"{"Activated":{"cost":"{B}","from":"Graveyard","condition":{"All":["YourTurn",{"Step":"Upkeep"},{"Compare":{"left":{"CardsAbove":{"filter":[{"Type":"Creature"}],"directly":false}},"op":"Ge","right":3}}]},"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#,
         r"{B}: Return this card from your graveyard to the battlefield. Activate only during your upkeep and only if three or more creature cards are above this card.",
+    ),
+    // blaster_combat_dj_blaster_morale_booster
+    (
+        r#"{"Keyword":{"MoreThanMeetsTheEye":"{1}{R}{G}"}}"#,
+        r"More Than Meets the Eye {1}{R}{G}",
+    ),
+    // blaster_combat_dj_blaster_morale_booster
+    (
+        r#"{"Static":{"affected":{"Each":[{"Type":"Artifact"},{"AnyOf":[{"Type":"Creature"},{"Subtype":"Vehicle"}]},{"Not":"Token"},"Other",{"ControlledBy":"You"}]},"mods":[{"AddKeyword":{"Macro":{"name":"modular","amount":1}}}]}}"#,
+        r"Other nontoken artifact creatures and Vehicles you control have modular 1.",
+    ),
+    // blaster_combat_dj_blaster_morale_booster
+    (
+        r#"{"Triggered":{"when":{"Caused":{"inner":{"Batch":{"CountersPut":{"what":["This"],"counter":"+1/+1"}}},"by":"You"}},"effects":[{"Transform":{"what":"This"}}]}}"#,
+        r"Whenever you put one or more +1/+1 counters on ~, convert it.",
+    ),
+    // blaster_combat_dj_blaster_morale_booster
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},"Tap"],"timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Artifact"},"Other"]}}],"effects":[{"MoveCounters":{"from":"This","to":{"Target":0},"counter":"+1/+1","count":"X"}},{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Haste"}],"duration":"UntilEndOfTurn"}},{"If":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Eq","right":0}},"then":[{"Transform":{"what":"This"}}]}}]}}"#,
+        r"{X}, {T}: Move X +1/+1 counters from ~ onto another target artifact. That artifact gains haste until end of turn. If ~ has no +1/+1 counters on it, convert it. Activate only as a sorcery.",
+    ),
+    // bullseye_death_dealer
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Pay":{"cost":[{"OneOf":[[{"Sacrifice":{"filter":[{"Type":"Artifact"}]}}],[{"Discard":{"filter":[{"Not":{"Type":"Land"}}]}}]]}],"paid":[{"Reflexive":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}]}}"#,
+        r"When ~ enters, you may sacrifice an artifact or discard a nonland card. When you do, ~ deals 2 damage to any target.",
     ),
     // chromatic_orrery
     (
@@ -50,6 +85,16 @@ const R300_WHOLES: [(&str, &str); 20] = [
     (
         r#"{"Activated":{"cost":["Tap"],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Beast","colors":["Red","Green","White"],"types":["Creature"],"subtypes":["Beast"],"power":8,"toughness":8}}}}]}}"#,
         r"{T}: Create an 8/8 Beast creature token that's red, green, and white.",
+    ),
+    // heart_shaped_herb
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap","SacrificeSelf"],"effects":[{"May":{"effects":[{"Sacrifice":{"filter":[{"Type":"Creature"}],"as":"s"}},{"If":{"condition":{"Compare":{"left":{"Bound":"s~moved"},"op":"Ge","right":1}},"then":[{"Move":{"what":{"Arrived":{"of":{"Bound":"s"},"zone":"Graveyard"}},"to":{"Battlefield":{"counters":[["+1/+1",3]]}}}},{"BecomeMonarch":{}}]}}]}}]}}"#,
+        r"{2}, {T}, Sacrifice this artifact: You may sacrifice a creature. If you do, return that card to the battlefield under its owner's control with three +1/+1 counters on it and you become the monarch.",
+    ),
+    // master_of_the_hunt
+    (
+        r#"{"Activated":{"cost":"{2}{G}{G}","effects":[{"CreateToken":{"token":{"Custom":{"name":"Wolves of the Hunt","colors":["Green"],"types":["Creature"],"subtypes":["Wolf"],"power":1,"toughness":1,"abilities":[{"Keyword":{"BandsWithOther":[{"Named":"Wolves of the Hunt"}]}}]}}}}]}}"#,
+        r#"{2}{G}{G}: Create a 1/1 green Wolf creature token named Wolves of the Hunt. It has "bands with other creatures named Wolves of the Hunt.""#,
     ),
     // natures_blessing
     (
@@ -96,6 +141,16 @@ const R300_WHOLES: [(&str, &str); 20] = [
         r#"{"Activated":{"cost":"{1}{B}","targets":[{"what":{"Object":["Spell",{"Color":"Black"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"OneOf":["{B}","{3}"]}],"unpaid":[{"Counter":{"what":{"Target":0}}}]}}]}}"#,
         r"{1}{B}: Counter target black spell unless that spell's controller pays {B} or {3}.",
     ),
+    // tomb_of_urami
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{2}{B}{B}"},"Tap",{"Sacrifice":{"filter":[{"Type":"Land"},{"ControlledBy":"You"}],"count":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]}}}],"effects":[{"CreateToken":{"token":{"Custom":{"name":"Urami","colors":["Black"],"supertypes":["Legendary"],"types":["Creature"],"subtypes":["Demon","Spirit"],"power":5,"toughness":5,"abilities":[{"Keyword":"Flying"}]}}}}]}}"#,
+        r"{2}{B}{B}, {T}, Sacrifice all lands you control: Create Urami, a legendary 5/5 black Demon Spirit creature token with flying.",
+    ),
+    // tomb_of_urami
+    (
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Ogre"},{"ControlledBy":"You"}]},"op":"Eq","right":0}},"then":[{"DealDamage":{"to":"You","amount":1}}]}}]}}"#,
+        r"{T}: Add {B}. ~ deals 1 damage to you if you don't control an Ogre.",
+    ),
     // urzas_avenger
     (
         r#"{"Activated":{"cost":"{0}","effects":[{"OneOf":{"options":[[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":-1,"toughness":-1}},{"AddKeyword":"Banding"}],"duration":"UntilEndOfTurn"}}],[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":-1,"toughness":-1}},{"AddKeyword":"Flying"}],"duration":"UntilEndOfTurn"}}],[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":-1,"toughness":-1}},{"AddKeyword":"FirstStrike"}],"duration":"UntilEndOfTurn"}}],[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":-1,"toughness":-1}},{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]]}}]}}"#,
@@ -116,13 +171,15 @@ static R300_SHAPES: LazyLock<Vec<(Ability, &str)>> = LazyLock::new(|| {
         .collect()
 });
 
-/// Adds the wording of an ability that one of the entries matches whole.
-pub(super) fn r300_add_wholes(ability: &Ability, texts: &mut Vec<String>) {
-    for (shape, text) in R300_SHAPES.iter() {
-        if shape == ability {
-            texts.push((*text).to_owned());
-        }
-    }
+/// The wordings of an ability that one of the entries matches whole, before any other writer (a reflexive trigger's
+/// writer answers alone); `None` when no entry matches.
+pub(in crate::compile::read::render) fn r300_whole(ability: &Ability) -> Option<Vec<String>> {
+    let texts: Vec<String> = R300_SHAPES
+        .iter()
+        .filter(|(shape, _)| shape == ability)
+        .map(|(_, text)| (*text).to_owned())
+        .collect();
+    (!texts.is_empty()).then_some(texts)
 }
 
 #[cfg(test)]
