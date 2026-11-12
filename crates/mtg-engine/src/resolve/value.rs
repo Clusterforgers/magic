@@ -1915,7 +1915,7 @@ impl<'a> Scope<'a> {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
             // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
-            StatKind::Name | StatKind::CreatureType => None,
+            StatKind::Name | StatKind::CreatureType | StatKind::CounterKinds => None,
         }
     }
 
@@ -2371,6 +2371,22 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(colors.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::CounterKinds {
+            // Each kind of counter once among the objects ("for each kind of counter among permanents you control").
+            let mut kinds = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    kinds.extend(
+                        seen.counters
+                            .g12b_kinds()
+                            .into_iter()
+                            .filter(|(_, n)| *n > 0)
+                            .map(|(kind, _)| kind.name().to_owned()),
+                    );
+                }
+            }
+            return Ok(i64::try_from(kinds.len()).unwrap_or(i64::MAX));
         }
         if stat == StatKind::Name {
             let mut names = BTreeSet::new();

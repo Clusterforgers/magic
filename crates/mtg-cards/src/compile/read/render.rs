@@ -1406,11 +1406,11 @@ fn written(
             .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
+            .or_else(|| writer.l292_hand(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.rmt0_hand_pick(&effects[start..]))
-            .or_else(|| writer.l292_hand(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -2430,7 +2430,8 @@ impl Writer<'_> {
                 of,
                 each,
                 one_kind,
-            } => self.g12b_counters_of(on, of, each.as_ref(), *one_kind)?,
+                per_kind,
+            } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
             Effect::MoveCounters {
                 from,
                 to,
@@ -3676,6 +3677,27 @@ impl Writer<'_> {
         let (text, used) = super::rmt0_hand_pick::rmt0_sequence(effects, self.targets)?;
         self.named = true;
         Some((vec![text], used))
+    }
+
+    /// The counters of another put on a holder, plain (`g12b_counters_of`) or chosen kind by kind (`per_kind`).
+    fn l292_counters_of(
+        &mut self,
+        on: &Ref,
+        of: &Ref,
+        each: Option<&Amount>,
+        one_kind: bool,
+        per_kind: Option<crate::effect::PerKind>,
+    ) -> Option<String> {
+        let Some(per_kind) = per_kind else {
+            return self.g12b_counters_of(on, of, each, one_kind);
+        };
+        (each == Some(&Amount::Fixed(1)) && !one_kind).then_some(())?;
+        let target = if *on == Ref::Target(0) && self.single(on) {
+            Some(self.name_target()?)
+        } else {
+            None
+        };
+        super::l292_hand_reads::l292_per_kind_text(on, of, per_kind, target.as_deref())
     }
 
     /// A target player's hand revealed and the card you exile from it, or a card of it revealed at random and its mana

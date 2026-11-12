@@ -487,6 +487,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dramatist's Puppet
 Dread Fugue
 Dreadship Reef
 Dream Chisel
@@ -1360,6 +1361,7 @@ Pygmy Kavu
 Pygmy Troll
 Pyreswipe Hawk
 Quantum Misalignment
+Quarry Hauler
 Quest for the Goblin Lord
 Questing Beast
 Quick Fixer

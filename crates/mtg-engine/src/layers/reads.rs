@@ -370,9 +370,11 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty | StatKind::ManaSpent | StatKind::Name => {
-            Traits::NONE
-        }
+        StatKind::ManaValue
+        | StatKind::Loyalty
+        | StatKind::ManaSpent
+        | StatKind::Name
+        | StatKind::CounterKinds => Traits::NONE,
     }
 }
 

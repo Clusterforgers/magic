@@ -3747,7 +3747,19 @@ impl Walker<'_> {
                 plus,
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
-            Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
+            Effect::FlipCoin {
+                who,
+                win,
+                lose,
+                won_as,
+                ..
+            } => {
+                w.flip_coin(who, win, lose);
+                if let Some(bind) = won_as {
+                    w.at("won_as", |w| w.bind(bind, Kind::Either));
+                    w.scope.numbers.insert(bind.clone());
+                }
+            }
             Effect::Clash {
                 who,
                 win,

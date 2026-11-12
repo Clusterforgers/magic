@@ -8,7 +8,21 @@
       "oracle_fingerprint": "c13d4aae37177a30920a67a08e82d9f8",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 81 } }
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
         },
         {
           "Manual": {

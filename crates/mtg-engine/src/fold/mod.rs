@@ -19,6 +19,8 @@ mod g13a_atoms;
 mod g13b_left;
 #[cfg(test)]
 mod g8a_faces;
+#[cfg(test)]
+mod l292_counter_kinds;
 mod opening;
 #[cfg(test)]
 mod p12_amounts;

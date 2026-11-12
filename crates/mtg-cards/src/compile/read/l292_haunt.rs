@@ -1,5 +1,5 @@
-//! The event of a haunt creature (CR 702.55c): "When ~ enters or the creature it haunts dies", one trigger of two events,
-//! read and written as one head.
+//! The event of a haunt creature (CR 702.55c): "When ~ enters or the creature it haunts dies", one trigger of
+//! two events, read and written as one head.
 
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};

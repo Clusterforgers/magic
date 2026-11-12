@@ -79,6 +79,8 @@ mod flip_coin;
 mod gain_life;
 mod goad;
 mod if_then;
+mod l292_flips_won;
+mod l292_put_or_remove;
 mod learn;
 mod look_at_hand;
 mod look_at_top;
