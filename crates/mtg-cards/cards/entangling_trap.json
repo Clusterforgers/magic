@@ -1,0 +1,38 @@
+{
+  "oracle_id": "229b1e23-8e91-46e8-b0c3-1c5b2c9411da",
+  "name": "Entangling Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Entangling Trap",
+      "oracle_fingerprint": "bb2c4a4e90e2a905ed3db25a6dee832a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Clashed", "who": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 1 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

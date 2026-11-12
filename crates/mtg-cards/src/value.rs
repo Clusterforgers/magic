@@ -39,6 +39,8 @@ pub enum StatKind {
     Name,
     /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
     CreatureType,
+    /// The kinds of counters on it: no number, so only `Amount::Distinct` reads it (each kind once among the objects).
+    CounterKinds,
 }
 
 /// A comparison between two numbers.
@@ -415,6 +417,9 @@ pub enum TallyEvent {
     /// ability that countered it): "if a creature spell you cast this turn was countered by a spell or ability an opponent
     /// controlled".
     Countered,
+    /// A card was discarded (the card as it lies in the graveyard it went to, for the player who discarded it): "the first
+    /// time each turn you discard one or more nonland cards".
+    Discarded,
 }
 
 /// Which result of the latest die roll an amount reads.

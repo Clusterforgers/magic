@@ -1,14 +1,17 @@
 {
   "oracle_id": "8e7ac64d-42c3-4e3b-9a20-9f09ee9d8a7a",
   "name": "Rangers' Refueler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rangers' Refueler",
       "oracle_fingerprint": "f89ee7ad247f32b9acf54a4d62039ba2",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 54 } }
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedExhaust", "who": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
         },
         {
           "Activated": {

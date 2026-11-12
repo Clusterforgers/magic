@@ -1,7 +1,7 @@
 {
   "oracle_id": "5bf01e86-d5f2-4639-9a07-f442fd1c3bb4",
   "name": "Veronica, Dissident Scribe",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Veronica, Dissident Scribe",
@@ -15,9 +15,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 82, "end": 330 }
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "Batch": { "Discarded": { "what": [{ "Not": { "Type": "Land" } }], "by": "You" } }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "junk" } } }]
           }
         }
       ]

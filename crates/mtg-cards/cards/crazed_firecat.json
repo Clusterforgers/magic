@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ba7cc6be-e575-4592-ada7-bbad3ae2225b",
+  "name": "Crazed Firecat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crazed Firecat",
+      "oracle_fingerprint": "fccc6015f732d91b9fd8d815318d77d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "FlipCoin": { "until": true, "won_as": "won" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": { "Bound": "won" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

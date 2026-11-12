@@ -1,7 +1,7 @@
 {
   "oracle_id": "cd2ae326-1a74-4b67-9718-92b6a209303b",
   "name": "Exhumer Thrull",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Exhumer Thrull",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Keyword": "Haunt" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 68, "end": 187 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "HauntedBy": "This" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }
       ]

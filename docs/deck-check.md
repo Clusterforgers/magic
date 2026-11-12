@@ -19,7 +19,7 @@ A card without an implementation counts as `Manual` unless it has no rules text,
   - `Verified`: every card of every zone is `Verified`, the sideboard included.
   - `Whole deck runs` (`read`): every card is `Verified`, `Read`, `Forge` or `Unverified`, at least one not `Verified`; a quiet line names the copies from Forge, unverified and read.
   - `Played by hand` (`manual_play`): some cards the game does not run whole (no rules, `Partial`, `Unplayable`, a card the database lacks, a `wrong` read); the table plays them with the manual panel.
-  - `Blocked`: kept for checks stored before legality became a warning; no report is in it.
+  - `Blocked`: a stored value no report produces.
   - `Unchecked`: never checked.
 - Not legal (`summary.legal` false): the deck breaks a rule of its format or of the table; the issues are listed as warnings ("Not legal in Commander: 2 banned cards, colour identity") and every play button stays enabled.
 - To read: a card whose current draft no player has judged runs as `Unverified` (a whole draft) and is counted in `summary.to_read` (distinct cards, any zone). A draft is `pending` while nobody judged it, and again once it or the card's text changed since the last read. Each card of the report that has such a draft carries `draft: pending`; a card with a wrong read carries `draft: wrong` and an approved one `draft: approved`. A card has no `draft` while a rules file or a `Verified` row outranks the draft, or the engine could not run the draft whole.
