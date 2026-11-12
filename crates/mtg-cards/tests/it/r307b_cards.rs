@@ -407,5 +407,9 @@ fn if_you_do_after_a_conversion_runs(#[case] first: &str, #[case] waits: bool) {
     );
     let ability: Ability = mtg_cards::load::parse_json("ability", &json).unwrap();
     let used = mtg_cards::validate::used_primitives(&ability);
-    assert_eq!(used.iter().any(|p| p == "Condition.Performed.Other"), waits, "{used:?}");
+    assert_eq!(
+        used.iter().any(|p| p == "Condition.Performed.Other"),
+        waits,
+        "{used:?}"
+    );
 }

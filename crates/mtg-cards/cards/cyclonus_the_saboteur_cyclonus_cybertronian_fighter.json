@@ -7,52 +7,23 @@
       "name": "Cyclonus, the Saboteur",
       "oracle_fingerprint": "24cea345ac69f17e75aa34918fe3fc76",
       "abilities": [
-        {
-          "Keyword": {
-            "MoreThanMeetsTheEye": "{5}{U}{B}"
-          }
-        },
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": { "MoreThanMeetsTheEye": "{5}{U}{B}" } },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": "EachPlayer",
-                "combat": true
-              }
-            },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
-              {
-                "Connive": {
-                  "what": "This"
-                }
-              },
+              { "Connive": { "what": "This" } },
               {
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": {
-                        "Stat": {
-                          "of": "This",
-                          "stat": "Power"
-                        }
-                      },
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
                       "op": "Ge",
                       "right": 5
                     }
                   },
-                  "then": [
-                    {
-                      "Transform": {
-                        "what": "This"
-                      }
-                    }
-                  ]
+                  "then": [{ "Transform": { "what": "This" } }]
                 }
               }
             ]
@@ -64,46 +35,17 @@
       "name": "Cyclonus, Cybertronian Fighter",
       "oracle_fingerprint": "d930974cfd0b9f99866777ab5b847ad5",
       "abilities": [
-        {
-          "Keyword": {
-            "Macro": {
-              "name": "living metal",
-              "amount": 0
-            }
-          }
-        },
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": "EachPlayer",
-                "combat": true
-              }
-            },
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
             "effects": [
-              {
-                "Transform": {
-                  "what": "This"
-                }
-              },
+              { "Transform": { "what": "This" } },
               {
                 "If": {
                   "condition": "Performed",
-                  "then": [
-                    {
-                      "AddPhase": {
-                        "phases": [
-                          "Beginning"
-                        ]
-                      }
-                    }
-                  ]
+                  "then": [{ "AddPhase": { "phases": ["Beginning"] } }]
                 }
               }
             ]
