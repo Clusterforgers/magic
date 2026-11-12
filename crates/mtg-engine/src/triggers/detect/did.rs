@@ -28,6 +28,17 @@ const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>)
     }
 }
 
+/// A clash of `player`, its amount 1 when they won and 0 when they lost.
+const fn clashed(player: PlayerId, won: bool) -> Happened {
+    Happened::Did {
+        action: Action::Clashed,
+        player: Some(player),
+        object: None,
+        ability: None,
+        amount: if won { 1 } else { 0 },
+    }
+}
+
 /// The ability the activation of the `index`th ability of `source` from `origin` put on the stack: the newest such ability
 /// object on the stack after the batch.
 fn activated_on_stack(
@@ -65,6 +76,7 @@ const fn moved_action(cause: ZoneCause) -> Option<Action> {
 
 /// The actions `event` is, given what the batch already found about it (`fresh`). `pre` and `post` are the states before
 /// and after the batch.
+#[allow(clippy::too_many_lines)] // one arm for each event
 pub(super) fn did_happened(
     pre: &GameState,
     post: &GameState,
@@ -111,6 +123,19 @@ pub(super) fn did_happened(
                     ability: on_stack,
                     amount: 0,
                 });
+                for action in rules
+                    .as_deref()
+                    .map(Action::activation_kinds)
+                    .unwrap_or_default()
+                {
+                    found.push(Happened::Did {
+                        action,
+                        player: Some(*player),
+                        object: Some(source.id),
+                        ability: on_stack,
+                        amount: 0,
+                    });
+                }
                 if rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. })) {
                     found.push(Happened::Did {
                         action: Action::ActivatedLoyalty,
@@ -163,6 +188,7 @@ pub(super) fn did_happened(
         Event::EvidenceCollected { player } => {
             found.push(did(Action::CollectedEvidence, Some(*player), None));
         }
+        Event::Clashed { player, won, .. } => found.push(clashed(*player, *won)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));

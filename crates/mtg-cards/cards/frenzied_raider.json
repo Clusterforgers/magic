@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1207881c-4c03-48e1-9ca7-a2330e8053d1",
+  "name": "Frenzied Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frenzied Raider",
+      "oracle_fingerprint": "e2ca666b75fd35f27df18f9625e22514",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "ActivatedBoast", "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

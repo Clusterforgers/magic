@@ -33,6 +33,7 @@ mod flow;
 mod free_activation;
 #[cfg(test)]
 mod help_tests;
+mod l292_haunt;
 mod land_types;
 mod layers;
 mod legal_declaration;

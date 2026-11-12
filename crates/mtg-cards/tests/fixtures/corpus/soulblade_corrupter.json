@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "3d65c040-42f5-4ea0-a313-0e2b364e55df",
+  "oracle_id": "8d708573-10b8-44fb-b61b-9ad65e3eb465",
+  "multiverse_ids": [
+    445985
+  ],
+  "mtgo_id": 68762,
+  "tcgplayer_id": 167622,
+  "cardmarket_id": 358402,
+  "name": "Soulblade Corrupter",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/3d65c040-42f5-4ea0-a313-0e2b364e55df",
+  "scryfall_uri": "https://scryfall.com/card/bbd/17/soulblade-corrupter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873",
+    "normal": "https://cards.scryfall.io/normal/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873",
+    "large": "https://cards.scryfall.io/large/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873",
+    "png": "https://cards.scryfall.io/png/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.png?1783934873",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.webp?1783934873",
+    "grid": "https://cards.scryfall.io/grid/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.webp?1783934873",
+    "display": "https://cards.scryfall.io/display/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.webp?1783934873",
+    "art": "https://cards.scryfall.io/art/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.webp?1783934873",
+    "crop": "https://cards.scryfall.io/crop/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.webp?1783934873",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/d/3d65c040-42f5-4ea0-a313-0e2b364e55df.jpg?1783934873"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Partner with Soulblade Renewer (When this creature enters, target player may put Soulblade Renewer into their hand from their library, then shuffle.)\nDeathtouch\nWhenever a creature with a +1/+1 counter on it attacks one of your opponents, that creature gains deathtouch until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Partner with",
+    "Partner",
+    "Deathtouch"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8897c406-fdec-44af-bc66-eacf245874a8",
+      "component": "combo_piece",
+      "name": "Soulblade Renewer",
+      "type_line": "Creature — Elf Warrior",
+      "uri": "https://api.scryfall.com/cards/8897c406-fdec-44af-bc66-eacf245874a8"
+    },
+    {
+      "object": "related_card",
+      "id": "3d65c040-42f5-4ea0-a313-0e2b364e55df",
+      "component": "combo_piece",
+      "name": "Soulblade Corrupter",
+      "type_line": "Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/3d65c040-42f5-4ea0-a313-0e2b364e55df"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3d65c040-42f5-4ea0-a313-0e2b364e55df/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8d708573-10b8-44fb-b61b-9ad65e3eb465&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Suzanne Helmigh",
+  "artist_ids": [
+    "65d77b0b-6cca-4adf-a7ee-610c96d02371"
+  ],
+  "illustration_id": "e80eaee0-9a88-4faa-8157-5c4d70b119e1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27234,
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.36",
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=445985&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSoulblade%2BCorrupter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSoulblade%2BCorrupter",
+    "edhrec": "https://edhrec.com/route/?cc=Soulblade+Corrupter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167622%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358402&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68762?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

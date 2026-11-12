@@ -1,7 +1,7 @@
 {
   "oracle_id": "cb479ce1-59e8-4531-9a21-f7c97d334817",
   "name": "Blinding Angel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blinding Angel",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 180 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "Triggering", "action": "SkipCombat" } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
           }
         }
       ]

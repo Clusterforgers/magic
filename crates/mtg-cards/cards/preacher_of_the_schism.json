@@ -1,7 +1,7 @@
 {
   "oracle_id": "74947e47-c4ff-4f47-9845-befa7403cbde",
   "name": "Preacher of the Schism",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Preacher of the Schism",
@@ -31,9 +31,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 152, "end": 275 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "AtTrigger": { "Among": "MostLife" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         }
       ]

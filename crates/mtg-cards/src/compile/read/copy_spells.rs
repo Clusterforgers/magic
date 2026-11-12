@@ -265,7 +265,11 @@ fn tail_text(count: &Amount, new_targets: bool, except: &[Modification]) -> Opti
             format!(" {} times", count_word(u32::try_from(*number).ok()?)?)
         }
         Amount::X => " X times".to_owned(),
-        counted @ Amount::CommanderCasts(_) => format!(" for each {}", for_each_text(counted)?),
+        counted @ (Amount::CommanderCasts(_)
+        | Amount::Distinct {
+            stat: crate::value::StatKind::CounterKinds,
+            ..
+        }) => format!(" for each {}", for_each_text(counted)?),
         _ => return None,
     };
     let except = if except.is_empty() {
