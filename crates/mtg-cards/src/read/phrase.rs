@@ -78,6 +78,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
+        Ref::SourceOf(of) => format!("the source of {}", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
         Ref::Union(parts) => parts
             .iter()

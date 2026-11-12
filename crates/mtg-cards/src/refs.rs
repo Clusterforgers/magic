@@ -157,6 +157,9 @@ pub enum Ref {
     /// an earlier step destroyed reads the controller they had. Each is named by what it was, as the resolution saw it
     /// leave; one with no such record (it moved twice, or came from a hidden zone) is nobody.
     Departed(Box<Ref>),
+    /// The source of each ability on the stack the reference names, as the object it was when the ability was put there
+    /// ("that permanent" of a countered ability); a spell or any other object names nobody.
+    SourceOf(Box<Ref>),
     /// Every object matching the selector when the effect runs.
     Each(Selector),
     /// Every player and object any of these references names, as one recipient ("you and/or permanents you control"): a
@@ -496,6 +499,9 @@ pub enum Pred {
     Blocks(Ref),
     /// Is a target of one of the spells or abilities on the stack the reference names.
     TargetedBy(Ref),
+    /// Is an activated or triggered ability on the stack whose source matches the selector, as the source is now or, once
+    /// it has left its zone, as it last existed ("activated ability from an artifact source", CR 113.7a).
+    FromSource(Selector),
     /// Is a spell or ability on the stack with exactly one target (CR 115.7: "a spell with a single target").
     SingleTarget,
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).

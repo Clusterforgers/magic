@@ -29,6 +29,7 @@ pub fn exile_until(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::ExileUntil {
         who: Ref::You,
         filter: nonland_up_to(count),
+        total: None,
         bind: FOUND.to_owned(),
         exiled_as: EXILED.to_owned(),
     }])
@@ -139,6 +140,7 @@ pub fn discover_text(effects: &[Effect]) -> Option<(String, usize)> {
     let [
         Effect::ExileUntil {
             filter: Selector(preds),
+            total: None,
             ..
         },
         ..,
@@ -396,6 +398,7 @@ pub fn text(effect: &Effect) -> Option<String> {
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),
+            total: None,
             bind,
             exiled_as,
         } if bind == FOUND && exiled_as == EXILED => {

@@ -649,7 +649,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Either));
             }
-            Ref::Arrived { of, .. } | Ref::Departed(of) => {
+            Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => {
                 self.expect(Kind::Object, want);
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
@@ -713,6 +713,10 @@ impl<'a> Walker<'a> {
             Pred::TargetedBy(who) => {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
+            }
+            Pred::FromSource(source) => {
+                self.uses("Pred", "FromSource");
+                self.at("source", |w| w.selector(source));
             }
             Pred::GreatestAmong { group, .. } => {
                 self.uses("Pred", "GreatestAmong");
@@ -839,6 +843,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
@@ -2985,6 +2990,7 @@ impl Walker<'_> {
             | Ref::Convoked
             | Ref::Arrived { .. }
             | Ref::Departed(_)
+            | Ref::SourceOf(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
@@ -3583,7 +3589,7 @@ impl Walker<'_> {
                 if let Some(of) = of {
                     w.uses("Search", "Of");
                     if !also.is_empty() {
-                        w.problem("a search of another player's zone names one zone");
+                        w.uses("Search", "OfZones");
                     }
                     w.at("of", |w| w.reference(of, Kind::Player));
                 }
@@ -3603,11 +3609,16 @@ impl Walker<'_> {
             Effect::ExileUntil {
                 who,
                 filter,
+                total,
                 bind,
                 exiled_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
+                if let Some(total) = total {
+                    w.uses("ExileUntil", "Total");
+                    w.at("total", |w| w.amount(total));
+                }
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("exiled_as", |w| w.bind(exiled_as, Kind::Object));
             }

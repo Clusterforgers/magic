@@ -27,6 +27,7 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r302b_sources;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1185,6 +1186,7 @@ impl<'a> Scope<'a> {
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
+            Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
@@ -1730,6 +1732,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .filter_map(|card| self.state.object(card.id))
                 .any(|card| card.zone() == Zone::Exile && card.haunting() == Some(reference)),
+            Pred::FromSource(source) => self.r302b_from_source(source, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),

@@ -205,6 +205,7 @@ const RUNS: &[&str] = &[
     "Effect.Search",
     "Search.Zones",
     "Search.Of",
+    "Search.OfZones",
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
@@ -212,6 +213,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
     "Effect.ExileUntil",
+    "ExileUntil.Total",
     "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
@@ -907,6 +909,7 @@ const RUNS: &[&str] = &[
     "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
+    "Pred.FromSource",
     "Pred.SingleTarget",
     "Pred.GreatestAmong",
     "Pred.LeastAmong",
@@ -986,6 +989,7 @@ mod tests {
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
     #[case::searching_another_library("Search.Of", true)]
+    #[case::searching_another_players_zones("Search.OfZones", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
@@ -1275,6 +1279,7 @@ mod tests {
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
+    #[case::exiling_until_a_total_mana_value("ExileUntil.Total", true)]
     #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]

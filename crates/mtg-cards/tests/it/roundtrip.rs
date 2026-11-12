@@ -1064,14 +1064,20 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         amount().prop_map(|count| Effect::Bolster { count }),
         reference().prop_map(|what| Effect::Explore { what }),
         (reference(), simple_amount()).prop_map(|(what, count)| Effect::Connive { what, count }),
-        (who(), selector(), bound_name(), bound_name()).prop_map(
-            |(who, filter, bind, exiled_as)| Effect::ExileUntil {
+        (
+            who(),
+            selector(),
+            proptest::option::of(amount()),
+            bound_name(),
+            bound_name()
+        )
+            .prop_map(|(who, filter, total, bind, exiled_as)| Effect::ExileUntil {
                 who,
                 filter,
+                total,
                 bind,
                 exiled_as
-            }
-        ),
+            }),
         (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
             |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
                 who,
