@@ -37,6 +37,7 @@ mod group_becomes;
 mod hand_returns;
 mod has_counter;
 mod instead;
+mod l294_turn_window;
 mod library_steps;
 mod loyalty;
 mod may_flicker;
@@ -88,6 +89,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r301_phasing;
 mod r307c_words;
 mod rmt3_enters;
 mod rmt3_skips;
@@ -698,6 +700,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     super::l32a_paid::l32a_still_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
     super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
+    super::r289_writers::r289_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -762,6 +765,9 @@ fn written_ordered(ability: &Ability) -> Vec<String> {
 
 /// Every wording of an ability, its selectors in the order given.
 fn written_as_given(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = oracle_only::r300_whole(ability) {
+        return texts;
+    }
     if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
         return texts;
     }
@@ -3088,6 +3094,9 @@ impl Writer<'_> {
         {
             return self.r5c_held_down(affected);
         }
+        if let Some(text) = self.l294_turn_window(effect) {
+            return Some(text);
+        }
         self.graveyard_exile(effect)
             .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
@@ -3292,6 +3301,10 @@ impl Writer<'_> {
                 self.player(who)?,
                 if *who == Ref::You { "win" } else { "wins" }
             ),
+            // "you lose the game" is left to the writers of its own sentences (a pact's upkeep payment).
+            Effect::LoseGame { who } if *who != Ref::You => {
+                format!("{} loses the game", self.player(who)?)
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -3630,6 +3643,7 @@ impl Writer<'_> {
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
             .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

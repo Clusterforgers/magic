@@ -253,6 +253,10 @@ pub enum Duration {
     UntilYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
+    /// Only during the next turn of the player who controls the permanent it applies to as it begins ("that creature can't
+    /// attack during its controller's next turn"): it changes nothing before that turn and ends with it. Only a continuous
+    /// effect lasts this way.
+    DuringItsControllersNextTurn,
     /// Until the end of combat on the controller's next turn: it ends as that turn's postcombat main phase begins
     /// ("Until end of combat on your next turn, you may play that card").
     UntilEndOfCombatOnYourNextTurn,
@@ -501,6 +505,8 @@ pub enum Prohibited {
     Exile,
     /// Transform (CR 701.28).
     Transform,
+    /// Phase out (CR 702.26).
+    PhaseOut,
     /// Become untapped, by an untap step, an effect or a {Q} cost.
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
@@ -1006,6 +1012,35 @@ pub enum DraftRule {
     LastCardsPassed,
     /// Trade a card after the draft.
     TradeAfterDraft,
+    /// Reveal it as drafted; its drafter may then add a booster pack to the draft.
+    AddBoosterPack,
+    /// Reveal it as drafted and note how many cards its drafter has drafted this round, itself included.
+    NoteDraftedCount,
+    /// Reveal it as drafted and note the player who passed it.
+    NotePasser,
+    /// Reveal it as drafted, then reveal the next card drafted and note its name.
+    NoteNextName,
+    /// Reveal it as drafted, then guess the name of the next card drafted from its booster pack.
+    GuessNextPick,
+    /// Turn it face down during the draft to look at the next card a chosen player drafts.
+    LookAtNextDrafted,
+    /// Turn it face down during the draft to look at an unopened booster pack or one nobody looks at.
+    LookAtAnyPack,
+    /// Draft a whole booster pack in place of one card, then draft no more cards that round.
+    DraftWholePack,
+    /// Draft an additional card from a pack, putting this card into it.
+    DraftAdditional,
+    /// Draft an additional card from a pack, turning this card face down and passing the next pack without a pick.
+    DraftAdditionalPassNext,
+    /// Remove a card drafted from the draft, face down or face up.
+    RemoveDrafted {
+        /// It is removed face up.
+        face_up: bool,
+    },
+    /// Reveal a drafted card and note its name, then turn this card face down.
+    NoteName,
+    /// Reveal a drafted creature card and note its creature types, then turn this card face down.
+    NoteCreatureTypes,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

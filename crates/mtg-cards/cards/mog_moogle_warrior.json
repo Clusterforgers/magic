@@ -1,7 +1,7 @@
 {
   "oracle_id": "f18cce8c-8fb6-49a7-8f79-2529c0ee3ecc",
   "name": "Mog, Moogle Warrior",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mog, Moogle Warrior",
@@ -9,9 +9,89 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 9, "end": 341 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Discard": { "who": "EachPlayer", "optional": true, "as": "discarded" } },
+              {
+                "Draw": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "CountOf": {
+                              "of": { "Bound": "discarded" },
+                              "filter": [{ "OwnedBy": "You" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Bound": "discarded" },
+                          "filter": [{ "Type": "Creature" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Moogle",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Moogle"],
+                            "power": 1,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Lifelink" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Bound": "discarded" },
+                          "filter": [{ "Not": { "Type": "Creature" } }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Subtype": "Moogle" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

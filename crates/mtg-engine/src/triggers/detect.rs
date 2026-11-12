@@ -131,7 +131,12 @@ enum Happened {
         declared: bool,
     },
     /// A permanent became untapped.
-    Untapped { object: ObjectId },
+    Untapped {
+        /// The permanent.
+        object: ObjectId,
+        /// It untapped in the untap step (CR 502.3).
+        untap_step: bool,
+    },
     /// A permanent phased out; judged as it was before (CR 702.26).
     PhasedOut { object: ObjectId },
     /// A permanent phased in.
@@ -831,6 +836,18 @@ fn c11e_first_die(earlier: &[Event], player: PlayerId) -> bool {
         .any(|event| matches!(event, Event::DieRolled { player: rolled, .. } if *rolled == player))
 }
 
+/// The step the game is in at the event: the last step begun earlier in its batch, else the step before the batch.
+fn step_at(look: Look<'_>) -> crate::turn::Step {
+    look.earlier
+        .iter()
+        .rev()
+        .find_map(|event| match event {
+            Event::StepBegan { step } => Some(*step),
+            _ => None,
+        })
+        .unwrap_or_else(|| look.pre.turn().step())
+}
+
 /// Where an event stands in its batch: the state before the batch, the state after it and the events that come before and after the event.
 #[derive(Clone, Copy)]
 struct Look<'a> {
@@ -1134,7 +1151,10 @@ fn about_players_and_permanents(
             tapped.push(*object);
             found.push(e16a_tapped(look, *object));
         }
-        Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
+        Event::PermanentUntapped { object } => found.push(Happened::Untapped {
+            object: *object,
+            untap_step: step_at(look) == crate::turn::Step::Untap,
+        }),
         Event::PermanentPhasedOut { object, .. } => {
             found.push(Happened::PhasedOut { object: *object });
         }
@@ -1879,6 +1899,24 @@ fn matching_permanents(
     happened: &Happened,
     scope: &Scope<'_>,
 ) -> Option<Cause> {
+    // "Becomes untapped during your untap step": the untap step of the turn of the ability's controller.
+    if let (
+        TriggerPattern::Untapped {
+            what,
+            untap_step: true,
+        },
+        Happened::Untapped {
+            object,
+            untap_step: during,
+        },
+    ) = (pattern, happened)
+    {
+        let state = scope.state;
+        let mine = state.active_player() == Some(scope.controller);
+        let reference = state.object(*object).map(GameObject::reference)?;
+        let picked = scope.selects(what, reference).ok()?;
+        return (*during && mine && picked).then(|| cause(state, vec![Target::Object(reference)]));
+    }
     let state = scope.state;
     let object = |id: ObjectId| state.object(id).map(GameObject::reference);
     let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
@@ -1997,7 +2035,13 @@ fn matching_permanents(
                 ..
             },
         )
-        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped })
+        | (
+            TriggerPattern::Untapped {
+                what,
+                untap_step: false,
+            },
+            Happened::Untapped { object: tapped, .. },
+        )
         | (TriggerPattern::PhasedOut { what }, Happened::PhasedOut { object: tapped })
         | (TriggerPattern::PhasedIn { what }, Happened::PhasedIn { object: tapped }) => {
             let tapped = object(*tapped)?;
@@ -2782,6 +2826,8 @@ pub(crate) fn needs_before(events: &[Event]) -> bool {
         | Event::EffectExpired { .. }
         | Event::Attached { .. }
         | Event::Unattached { .. }
+        // "Becomes untapped during your untap step" reads the step the untap happened in.
+        | Event::PermanentUntapped { .. }
         | Event::ObjectLeftGame { .. } => true,
         // An arrival can change who controls a permanent already there, as a departure can (`did::controller_changes`).
         Event::ZoneChanged { from, to, .. } => {

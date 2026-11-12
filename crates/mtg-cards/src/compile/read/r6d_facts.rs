@@ -58,6 +58,7 @@ pub(super) fn texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             .chain(super::e16a_history::texts(left, op, number))
             .chain(super::e18a_first::texts(left, op, number))
             .chain(super::r287_facts::texts(left, op, number))
+            .chain(super::l294_damage_facts::texts(left, op, number))
             .collect(),
     }
 }

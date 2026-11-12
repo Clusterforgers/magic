@@ -165,8 +165,56 @@ fn draft_texts(ability: &Ability) -> Vec<String> {
                                         player may offer you one card in their card pool in exchange. You may accept any \
                                         one offer."
             .to_owned(),
+        DraftRule::AddBoosterPack => {
+            "Reveal ~ as you draft it. After you draft ~, you may add a booster pack to the draft.".to_owned()
+        }
+        DraftRule::NoteDraftedCount => "Reveal ~ as you draft it and note how many cards you've drafted this draft \
+                                         round, including ~."
+            .to_owned(),
+        DraftRule::NotePasser => {
+            "Reveal ~ as you draft it and note the player who passed it to you.".to_owned()
+        }
+        DraftRule::NoteNextName => {
+            "Reveal ~ as you draft it. Reveal the next card you draft and note its name.".to_owned()
+        }
+        DraftRule::GuessNextPick => "Reveal ~ as you draft it. The next time a player drafts a card from this \
+                                      booster pack, guess that card's name. Then that player reveals the drafted card."
+            .to_owned(),
+        DraftRule::LookAtNextDrafted => "During the draft, you may turn ~ face down. If you do, look at the next card \
+                                         drafted by a player of your choice."
+            .to_owned(),
+        DraftRule::LookAtAnyPack => "During the draft, you may turn ~ face down. If you do, look at any unopened \
+                                     booster pack in the draft or any booster pack not being looked at by another player."
+            .to_owned(),
+        DraftRule::DraftWholePack => "Instead of drafting a card from a booster pack, you may draft each card in that \
+                                      booster pack, one at a time. If you do, turn ~ face down and you can't draft cards \
+                                      for the rest of this draft round."
+            .to_owned(),
+        DraftRule::DraftAdditional => "As you draft a card, you may draft an additional card from that booster pack. If \
+                                       you do, put ~ into that booster pack."
+            .to_owned(),
+        DraftRule::DraftAdditionalPassNext => "As you draft a card, you may draft an additional card from that booster \
+                                               pack. If you do, turn ~ face down, then pass the next booster pack without \
+                                               drafting a card from it."
+            .to_owned(),
+        DraftRule::RemoveDrafted { face_up } => format!(
+            "As you draft a card, you may remove it from the draft face {}.",
+            if *face_up { "up" } else { "down" }
+        ),
+        DraftRule::NoteName => {
+            "As you draft a card, you may reveal it, note its name, then turn ~ face down.".to_owned()
+        }
+        DraftRule::NoteCreatureTypes => "As you draft a creature card, you may reveal it, note its creature types, then \
+                                         turn ~ face down."
+            .to_owned(),
     };
-    vec![text]
+    // The newer printings say "this card" where the older ones name the card.
+    let this_card = text.replace('~', "this card");
+    if this_card == text {
+        vec![text]
+    } else {
+        vec![text, this_card]
+    }
 }
 
 /// A count as the cards spell it.

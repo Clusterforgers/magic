@@ -99,6 +99,14 @@ const SOLDIER: &str = "Legendary Creature \u{2014} Human Soldier";
     ),
     Some(ImplStatus::Partial)
 )]
+#[case::a_plot_of_another_card_left_to_the_table(
+    printed(
+        "Aven Interrupter", "Creature \u{2014} Bird Rogue", "{1}{W}{W}",
+        "Flash\nFlying\nWhen this creature enters, exile target spell. It becomes plotted. (Its owner may cast it as a sorcery on a later turn without paying its mana cost.)\nSpells your opponents cast from graveyards or from exile cost {2} more to cast.",
+        &["Flash", "Flying", "Plot"],
+    ),
+    Some(ImplStatus::Partial)
+)]
 #[case::a_grant_to_a_type_of_creature(
     printed(
         "Zur, Eternal Schemer", "Legendary Creature \u{2014} Human Wizard", "{W}{U}{B}",

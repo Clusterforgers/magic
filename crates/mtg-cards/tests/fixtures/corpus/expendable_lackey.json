@@ -1,39 +1,38 @@
 {
   "object": "card",
-  "id": "9515329a-0738-4b23-a326-ff417f47da77",
+  "id": "9e671b0f-55b9-4bff-b02a-0be1f6db193f",
   "oracle_id": "6f6cbcd4-7a4b-4a38-bf29-995e82e658ce",
   "multiverse_ids": [
-    555244
+    682595
   ],
-  "mtgo_id": 98305,
-  "arena_id": 80194,
-  "tcgplayer_id": 269057,
-  "cardmarket_id": 652166,
+  "arena_id": 93091,
+  "tcgplayer_id": 590523,
+  "cardmarket_id": 796378,
   "name": "Expendable Lackey",
   "lang": "en",
-  "released_at": "2022-04-29",
-  "uri": "https://api.scryfall.com/cards/9515329a-0738-4b23-a326-ff417f47da77",
-  "scryfall_uri": "https://scryfall.com/card/snc/43/expendable-lackey?utm_source=api",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/9e671b0f-55b9-4bff-b02a-0be1f6db193f",
+  "scryfall_uri": "https://scryfall.com/card/j25/308/expendable-lackey?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T06:12:25Z",
+  "image_updated_at": "2026-07-13T02:12:51Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145",
-    "normal": "https://cards.scryfall.io/normal/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145",
-    "large": "https://cards.scryfall.io/large/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145",
-    "png": "https://cards.scryfall.io/png/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.png?1783923145",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145",
-    "thumb": "https://cards.scryfall.io/thumb/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.webp?1783923145",
-    "grid": "https://cards.scryfall.io/grid/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.webp?1783923145",
-    "display": "https://cards.scryfall.io/display/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.webp?1783923145",
-    "art": "https://cards.scryfall.io/art/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.webp?1783923145",
-    "crop": "https://cards.scryfall.io/crop/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.webp?1783923145",
-    "jpeg": "https://cards.scryfall.io/normal/front/9/5/9515329a-0738-4b23-a326-ff417f47da77.jpg?1783923145"
+    "small": "https://cards.scryfall.io/small/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.png?1783908771",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.webp?1783908771",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.webp?1783908771",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.webp?1783908771",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.webp?1783908771",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.webp?1783908771",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e671b0f-55b9-4bff-b02a-0be1f6db193f.jpg?1783908771"
   },
   "mana_cost": "{U}",
-  "cmc": 1.0,
+  "cmc": 1,
   "type_line": "Creature — Human Citizen",
   "oracle_text": "{1}{U}, Exile this card from your graveyard: Create a 1/1 blue Fish creature token with \"This token can't be blocked.\" Activate only as a sorcery.",
   "power": "1",
@@ -56,11 +55,11 @@
     },
     {
       "object": "related_card",
-      "id": "9515329a-0738-4b23-a326-ff417f47da77",
+      "id": "9e671b0f-55b9-4bff-b02a-0be1f6db193f",
       "component": "combo_piece",
       "name": "Expendable Lackey",
       "type_line": "Creature — Human Citizen",
-      "uri": "https://api.scryfall.com/cards/9515329a-0738-4b23-a326-ff417f47da77"
+      "uri": "https://api.scryfall.com/cards/9e671b0f-55b9-4bff-b02a-0be1f6db193f"
     }
   ],
   "legalities": {
@@ -90,31 +89,29 @@
   },
   "games": [
     "paper",
-    "mtgo",
     "arena"
   ],
   "reserved": false,
   "game_changer": false,
-  "foil": true,
+  "foil": false,
   "nonfoil": true,
   "finishes": [
-    "nonfoil",
-    "foil"
+    "nonfoil"
   ],
   "oversized": false,
   "promo": false,
-  "reprint": false,
+  "reprint": true,
   "variation": false,
-  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
-  "set": "snc",
-  "set_name": "Streets of New Capenna",
-  "set_type": "expansion",
-  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/9515329a-0738-4b23-a326-ff417f47da77/rulings",
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e671b0f-55b9-4bff-b02a-0be1f6db193f/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6f6cbcd4-7a4b-4a38-bf29-995e82e658ce&unique=prints",
-  "collector_number": "43",
+  "collector_number": "308",
   "digital": false,
   "rarity": "common",
   "flavor_text": "\"Altonio? No, I'm sorry. No one by that name works here.\"\n—Raffine",
@@ -128,27 +125,27 @@
   "frame": "2015",
   "full_art": false,
   "textless": false,
-  "booster": true,
+  "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 21964,
-  "penny_rank": 11527,
+  "edhrec_rank": 22137,
+  "penny_rank": 11548,
   "prices": {
-    "usd": "0.14",
-    "usd_foil": "0.25",
+    "usd": "0.25",
+    "usd_foil": null,
     "usd_etched": null,
     "eur": "0.09",
-    "eur_foil": "0.08",
-    "tix": "0.01"
+    "eur_foil": null,
+    "tix": null
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555244&printed=false",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=682595&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExpendable%2BLackey",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExpendable%2BLackey",
     "edhrec": "https://edhrec.com/route/?cc=Expendable+Lackey"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269057%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652166&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/98305?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590523%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=796378&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Expendable+Lackey&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

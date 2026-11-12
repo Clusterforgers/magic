@@ -1,7 +1,7 @@
 {
   "oracle_id": "711cd80d-c58d-4c2a-87db-d2e4c75f60d3",
   "name": "Ertai's Familiar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ertai's Familiar",
@@ -20,9 +20,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 221, "end": 280 }
+          "Activated": {
+            "cost": "{U}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "This", "action": "PhaseOut" } },
+                  "duration": "UntilYourNextUpkeep"
+                }
+              }
+            ]
           }
         }
       ]

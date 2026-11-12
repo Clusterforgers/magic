@@ -117,6 +117,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
   DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
   GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
+  Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -163,6 +164,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Monstrous: [{ Monstrous: { object: 3, player: 1 } }, 'Forest becomes monstrous'],
   Devoured: [{ Devoured: { object: 3, count: 2 } }, 'Forest devours 2'],
   Renowned: [{ Renowned: { object: 3, player: 1 } }, 'Forest becomes renowned'],
+  Enlisted: [{ Enlisted: { object: 3, enlisted: 1, player: 1 } }, 'Forest enlists Grizzly Bears'],
   Exploited: [{ Exploited: { object: 3, sacrificed: 1, player: 1 } }, 'Forest exploits Grizzly Bears'],
   Crewed: [
     { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
@@ -197,6 +199,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
     '2 additional phase(s) follow this phase',
   ],
+  StepAdded: [{ StepAdded: { step: 'Upkeep' } }, 'An additional upkeep follows this step'],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],
   NothingToDo: [{ NothingToDo: { player: 0, kind: 'Attack' } }, 'Ana has no possible attackers'],
   AnnouncementRewound: [
@@ -212,6 +215,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PermanentUntapped: [{ PermanentUntapped: { object: 3 } }, 'Forest becomes untapped'],
   PermanentPhasedOut: [{ PermanentPhasedOut: { object: 3, controller: 0 } }, 'Forest phases out'],
   PermanentPhasedIn: [{ PermanentPhasedIn: { object: 3 } }, 'Forest phases in'],
+  ManaAbilityActivated: [
+    { ManaAbilityActivated: { player: 0, source: { id: 3, counter: 0 } } },
+    'Ana activates a mana ability of Forest',
+  ],
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],

@@ -530,6 +530,39 @@ impl TournamentStore {
         Ok(done.rows_affected() == 1)
     }
 
+    /// Whether `game` is the game of a tournament match.
+    pub(crate) async fn is_match_game(&self, game: GameId) -> Result<bool, RecordError> {
+        let found = sqlx::query_scalar!(
+            r#"SELECT EXISTS (SELECT 1 FROM tournament_matches WHERE game_id = $1) AS "found!""#,
+            game.uuid(),
+        )
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(found)
+    }
+
+    /// Forgets `game` as the game of a match that has no result, so a new one can be made; false when it was not.
+    pub(crate) async fn clear_game(
+        &self,
+        id: Uuid,
+        round: u32,
+        table: u32,
+        game: GameId,
+    ) -> Result<bool, RecordError> {
+        let done = sqlx::query!(
+            "UPDATE tournament_matches SET game_id = NULL
+             WHERE tournament_id = $1 AND round = $2 AND table_no = $3
+               AND game_id = $4 AND outcome IS NULL",
+            id,
+            int(round),
+            int(table),
+            game.uuid(),
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(done.rows_affected() == 1)
+    }
+
     /// Notes a match's result. A result from the game fills only an empty one; the organiser's
     /// (`corrected`) always wins. False when no played match was changed.
     pub(crate) async fn set_outcome(

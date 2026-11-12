@@ -1,7 +1,7 @@
 {
   "oracle_id": "20418984-bc6d-42e5-ada6-30b5281925c0",
   "name": "Heart-Shaped Herb",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heart-Shaped Herb",
@@ -14,9 +14,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 85, "end": 282 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "s" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "s~moved" }, "op": "Ge", "right": 1 }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Arrived": { "of": { "Bound": "s" }, "zone": "Graveyard" } },
+                              "to": { "Battlefield": { "counters": [["+1/+1", 3]] } }
+                            }
+                          },
+                          { "BecomeMonarch": {} }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

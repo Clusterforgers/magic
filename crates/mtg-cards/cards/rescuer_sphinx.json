@@ -1,7 +1,7 @@
 {
   "oracle_id": "d4c4ad11-7e71-4ad0-aee7-58ac7b1b38f8",
   "name": "Rescuer Sphinx",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rescuer Sphinx",
@@ -9,9 +9,31 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 159 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [
+                  {
+                    "May": {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                            },
+                            "as": "returned"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                      ]
+                    }
+                  }
+                ],
+                "counter": "+1/+1",
+                "count": { "CountOf": { "of": { "Bound": "returned" }, "filter": [] } }
+              }
+            }
           }
         }
       ]

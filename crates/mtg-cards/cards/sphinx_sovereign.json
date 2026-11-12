@@ -1,0 +1,35 @@
+{
+  "oracle_id": "41907508-9ffc-4e01-969a-4f9c35cdf548",
+  "name": "Sphinx Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx Sovereign",
+      "oracle_fingerprint": "fa71719bd1ae21293a9d28db5b7026f6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": ["Untapped"],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }],
+                  "otherwise": [{ "LoseLife": { "who": "Opponents", "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

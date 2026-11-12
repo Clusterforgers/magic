@@ -1,0 +1,15 @@
+{
+  "oracle_id": "ec0d964e-ca2c-4252-8551-cf1916576653",
+  "name": "Cogwork Librarian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cogwork Librarian",
+      "oracle_fingerprint": "c134fa60bb024fa5436559e389e5381f",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "DraftAdditional" } } }
+      ]
+    }
+  ]
+}

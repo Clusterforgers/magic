@@ -12,7 +12,7 @@ use std::time::Instant;
 use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
-use axum::http::header::{AUTHORIZATION, ETAG, IF_NONE_MATCH, RETRY_AFTER};
+use axum::http::header::{AUTHORIZATION, ETAG, IF_NONE_MATCH, RETRY_AFTER, VARY};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use mtg_core::ids::PlayerId;
@@ -150,8 +150,8 @@ fn game_of(path: Result<Path<String>, PathRejection>) -> Result<GameId, ApiError
 
 // --- the listing ---------------------------------------------------------------------------
 
-/// `GET /api/lobbies`: the public games still in their lobby, then the running games (to watch), each newest first,
-/// at most 50 of each.
+/// `GET /api/lobbies`: the public games still in their lobby, then, for a signed-in visitor, the running games (to
+/// watch), each newest first, at most 50 of each. A guest, who may not watch, never sees who plays a running game.
 ///
 /// The `ETag` is a digest of what the rows say apart from their age, so a poll that finds
 /// nothing new gets a `304` however long the games have been waiting.
@@ -177,7 +177,14 @@ pub(crate) async fn list(
             )
         })?;
     let mut listed = app.registry().lobbies().await;
-    listed.extend(app.registry().running().await);
+    // A session that cannot be read counts as a guest's: the list is still given, without the running games.
+    let signed_in = matches!(
+        app.auth().session_user(request.headers()).await,
+        Ok(Some(_))
+    );
+    if signed_in {
+        listed.extend(app.registry().running().await);
+    }
     let tag = listing_tag(&listed);
     let Ok(header) = HeaderValue::from_str(&tag) else {
         return Err(failure(
@@ -190,7 +197,11 @@ pub(crate) async fn list(
         return Ok((StatusCode::NOT_MODIFIED, [(ETAG, header)]).into_response());
     }
     let games = listed.into_iter().map(view).collect();
-    Ok(([(ETAG, header)], Json(LobbyList { games })).into_response())
+    Ok((
+        [(ETAG, header), (VARY, HeaderValue::from_static("cookie"))],
+        Json(LobbyList { games }),
+    )
+        .into_response())
 }
 
 /// A listed game as the wire shows it.
@@ -384,6 +395,27 @@ async fn holder(app: &AppState, headers: &HeaderMap, game: GameId) -> Result<Pla
         .ok_or_else(ApiError::not_found)
 }
 
+/// [`holder`] for what only the host may do. A tournament match has no player host, so its seat 0 asks as any other
+/// seat would; a database that cannot say is a 503.
+async fn as_host(app: &AppState, headers: &HeaderMap, game: GameId) -> Result<PlayerId, ApiError> {
+    let seat = holder(app, headers, game).await?;
+    if seat != HOST {
+        return Ok(seat);
+    }
+    let Some(tournaments) = app.tournaments() else {
+        return Ok(seat);
+    };
+    match tournaments.is_match_game(game).await {
+        Ok(false) => Ok(seat),
+        Ok(true) => Err(forbidden(
+            "a tournament game has no host; its organiser runs the match",
+        )),
+        Err(error) => {
+            tracing::error!(%error, %game, "could not tell whether a game is a tournament match");
+            Err(ApiError::unavailable())
+        }
+    }
+}
 /// The token of an `Authorization: Bearer` header. Another scheme (a proxy's basic auth) is not
 /// a seat token and is left alone.
 fn bearer(headers: &HeaderMap) -> Option<&str> {
@@ -420,7 +452,7 @@ pub(crate) async fn release(
     if app.stopping() {
         return Err(shutting_down());
     }
-    let by = holder(&app, &headers, game).await?;
+    let by = as_host(&app, &headers, game).await?;
     if by != HOST {
         return Err(forbidden("only the host can remove a player"));
     }
@@ -478,7 +510,7 @@ pub(crate) async fn set_visibility(
     }
     let headers = request.headers().clone();
     let body = read_json::<VisibilityBody>(request).await?;
-    let by = holder(&app, &headers, game).await?;
+    let by = as_host(&app, &headers, game).await?;
     app.registry()
         .set_visibility(game, by, body.visibility)
         .await?;
@@ -497,7 +529,7 @@ pub(crate) async fn set_teams(
     }
     let headers = request.headers().clone();
     let body = read_json::<TeamsBody>(request).await?;
-    let by = holder(&app, &headers, game).await?;
+    let by = as_host(&app, &headers, game).await?;
     app.registry()
         .set_teams(game, by, body.teams.clone())
         .await?;
@@ -515,7 +547,7 @@ pub(crate) async fn close(
     if app.stopping() {
         return Err(shutting_down());
     }
-    let by = holder(&app, &headers, game).await?;
+    let by = as_host(&app, &headers, game).await?;
     app.registry().close(game, by).await?;
     Ok(StatusCode::NO_CONTENT)
 }

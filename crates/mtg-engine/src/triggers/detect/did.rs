@@ -2,6 +2,7 @@
 //! the event itself or off what the batch already found about it.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::assemble::mana_shape;
 use mtg_cards::did::Action;
 use mtg_cards::refs::{Ref, Selector};
 use mtg_cards::trigger::TriggerPattern;
@@ -114,57 +115,12 @@ pub(super) fn did_happened(
             source,
             ability,
             origin,
-        } => {
-            // A mana ability does not use the stack (CR 605.3b), so it is no activation that triggers; only a limit logs
-            // its use.
-            let address = AbilityRef {
-                object: source.id,
-                ability: *ability,
-                source: *origin,
-            };
-            let rules = ability_reader::ability(pre, address);
-            let on_stack = activated_on_stack(post, source.id, *ability, *origin);
-            // "Without {T} in its activation cost" counts a mana ability too: the engine logs those that do not tap.
-            if rules.as_deref().is_some_and(without_tap) {
-                found.push(Happened::Did {
-                    action: Action::ActivatedWithoutTap,
-                    player: Some(*player),
-                    object: Some(source.id),
-                    ability: on_stack,
-                    amount: 0,
-                });
-            }
-            if !rules.as_ref().is_some_and(|rules| rules.is_mana_ability()) {
-                found.push(Happened::Did {
-                    action: Action::Activated,
-                    player: Some(*player),
-                    object: Some(source.id),
-                    ability: on_stack,
-                    amount: 0,
-                });
-                for action in rules
-                    .as_deref()
-                    .map(Action::activation_kinds)
-                    .unwrap_or_default()
-                {
-                    found.push(Happened::Did {
-                        action,
-                        player: Some(*player),
-                        object: Some(source.id),
-                        ability: on_stack,
-                        amount: 0,
-                    });
-                }
-                if rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. })) {
-                    found.push(Happened::Did {
-                        action: Action::ActivatedLoyalty,
-                        player: Some(*player),
-                        object: Some(source.id),
-                        ability: on_stack,
-                        amount: 0,
-                    });
-                }
-            }
+        } => found.extend(activated(pre, post, *player, source.id, *ability, *origin)),
+        Event::Enlisted { object, player, .. } => {
+            found.push(did(Action::Enlisted, Some(*player), Some(*object)));
+        }
+        Event::ManaAbilityActivated { player, source } => {
+            found.push(did(Action::ActivatedAny, Some(*player), Some(source.id)));
         }
         Event::AbilityTriggered(triggered) => found.push(did(
             Action::AbilityTriggered,
@@ -247,6 +203,7 @@ pub(super) fn did_happened(
             found.push(did(Action::ManifestedDread, Some(*player), *card));
         }
         Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
+        Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));
@@ -428,4 +385,68 @@ fn chosen(
         return Some(true);
     }
     scope.selects(what, reference?).ok()
+}
+
+/// The actions an `AbilityActivated` of the `index`th ability of `source` from `origin` is: an activation that isn't of
+/// a mana ability, of any ability, of its kinds (exhaust, boast) and of a loyalty ability.
+fn activated(
+    pre: &GameState,
+    post: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    index: usize,
+    origin: AbilitySource,
+) -> Vec<Happened> {
+    let address = AbilityRef {
+        object: source,
+        ability: index,
+        source: origin,
+    };
+    let rules = ability_reader::ability(pre, address);
+    let mana = rules.as_ref().is_some_and(|rules| rules.is_mana_ability());
+    // "Without {T} in its activation cost" counts a mana ability too: a mana ability that does not tap logs this event
+    // beside `ManaAbilityActivated`.
+    let untapped = rules
+        .as_deref()
+        .is_some_and(without_tap)
+        .then(|| Happened::Did {
+            action: Action::ActivatedWithoutTap,
+            player: Some(player),
+            object: Some(source),
+            ability: activated_on_stack(post, source, index, origin),
+            amount: 0,
+        });
+    // A mana ability of a shape the payment runs logs its activation as `ManaAbilityActivated`, and this event stands
+    // for it only for a limit; one of another shape is announced, and this event is its activation.
+    if mana {
+        let announced = rules
+            .as_ref()
+            .is_some_and(|rules| mana_shape(rules).is_none());
+        let mut found = if announced {
+            vec![did(Action::ActivatedAny, Some(player), Some(source))]
+        } else {
+            Vec::new()
+        };
+        found.extend(untapped);
+        return found;
+    }
+    let on_stack = activated_on_stack(post, source, index, origin);
+    let kinds = rules
+        .as_deref()
+        .map(Action::activation_kinds)
+        .unwrap_or_default();
+    let loyalty = rules.is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
+    [Action::Activated, Action::ActivatedAny]
+        .into_iter()
+        .chain(kinds)
+        .chain(loyalty.then_some(Action::ActivatedLoyalty))
+        .map(|action| Happened::Did {
+            action,
+            player: Some(player),
+            object: Some(source),
+            ability: on_stack,
+            amount: 0,
+        })
+        .chain(untapped)
+        .collect()
 }

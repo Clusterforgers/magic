@@ -161,7 +161,9 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
-        Event::AbilityLeftToTable(_) | Event::ByHandDue(_) => Ok(()),
+        Event::AbilityLeftToTable(_) | Event::ManaAbilityActivated { .. } | Event::ByHandDue(_) => {
+            Ok(())
+        }
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -371,6 +373,9 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.r306_steps.clear();
+    state.turn.r306_seen = 0;
+    state.turn.r306_again = 0;
     state.turn.ending = false;
     crate::player_control::turn_began(state, number, active);
     if !extra && (before == 0 || state.opens_round(previous, active)) {
@@ -419,7 +424,13 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::PhasesAdded { steps } => add_phases(state, steps)?,
+        Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
+            // A step added after the one that ends begins next, and its entry is spent.
+            if state.turn.r306_steps.first() == Some(step) {
+                state.turn.r306_steps.remove(0);
+            }
+            state.turn.r306_note_step(*step);
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.ahead.remove(0);
@@ -458,6 +469,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::PlayerControlGained { .. }
         | Event::ExtraTurnSkipped { .. }
         | Event::PhasesAdded { .. }
+        | Event::StepAdded { .. }
         | Event::StepBegan { .. } => apply_turn(state, event)?,
         Event::SpellControlGained { object, player } => {
             let spell = state
@@ -481,6 +493,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::Foraged { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }
@@ -826,7 +839,7 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
 fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::Renowned { object, .. } => c6_kw_set_renowned(state, *object),
-        Event::Exploited { .. } | Event::PrizeClaimed { .. } => Ok(()),
+        Event::Exploited { .. } | Event::Enlisted { .. } | Event::PrizeClaimed { .. } => Ok(()),
         Event::EmblemCreated(emblem) => crate::w6b_emblems::fold(state, emblem),
         Event::Exerted { object, player } => {
             crate::w11a_exert::w11a_fold_exerted(state, *object, *player)

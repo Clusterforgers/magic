@@ -1,0 +1,24 @@
+{
+  "id": "030f4058-54e5-4333-bd6c-2789c334bf12",
+  "oracle_id": "cd83f886-c651-4ad7-82ca-2446c60c8f94",
+  "name": "Rowan, Fearless Sparkmage",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "304",
+  "rarity": "mythic",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Rowan",
+  "oracle_text": "+1: Up to one target creature gets +3/+0 and gains first strike until end of turn.\n−2: Rowan deals 1 damage to each of up to two target creatures. Those creatures can't block this turn.\n−9: Gain control of all creatures until end of turn. Untap them. They gain haste until end of turn.",
+  "loyalty": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

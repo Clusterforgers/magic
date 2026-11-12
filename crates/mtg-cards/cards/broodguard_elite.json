@@ -1,7 +1,7 @@
 {
   "oracle_id": "c90da077-de8c-4402-abfc-b63dd15853da",
   "name": "Broodguard Elite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Broodguard Elite",
@@ -22,10 +22,30 @@
             "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } }]
           }
         },
+        { "AltCast": { "way": "Warp", "cost": "{X}{G}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 142, "end": 320 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

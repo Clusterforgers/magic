@@ -134,3 +134,53 @@ fn powerleech_ignores_its_controllers_own_artifacts(
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), 20 + gained);
     Ok(())
 }
+
+/// An Elemental creature with "{T}: Add {C}." and "{0}: You gain 1 life."
+fn elemental() -> Arc<CardDefinition> {
+    let rules = [
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}"#,
+        r#"{"Activated":{"cost":"{0}","effects":[{"GainLife":{"amount":1}}]}}"#,
+    ];
+    let mut definition = CardDefinition::new("Trinket")
+        .with_type(CardType::Creature)
+        .with_subtype("Elemental")
+        .with_power_toughness(1, 1);
+    for rule in rules {
+        definition = definition.with_rules(serde_json::from_str::<Ability>(rule).unwrap());
+    }
+    Arc::new(definition)
+}
+
+#[rstest]
+#[case::mana_ability(0)]
+#[case::other_ability(2)]
+fn searblades_grow_for_every_ability_of_an_elemental(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] ability: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(elemental()),
+            ready(card("Ceaseless Searblades").unwrap()),
+        ],
+    );
+    let setup = scenario.clone().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario)?;
+    // The elemental's second ability is its index 1; `activate` reads 2 as "the {0} ability" of the trinket.
+    if ability == 0 {
+        activate(&mut driver, 0)?;
+    } else {
+        driver.begin_ability("Trinket", 1)?;
+        settle(&mut driver)?;
+    }
+    let blades = driver.id_of("Ceaseless Searblades")?;
+    let power = mtg_engine::characteristics::characteristics(driver.state(), blades)
+        .unwrap()
+        .power;
+    let printed = card("Ceaseless Searblades").unwrap().power.unwrap_or(0);
+    assert_eq!(power, Some(printed + 1));
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.engine().state_hash());
+    Ok(())
+}

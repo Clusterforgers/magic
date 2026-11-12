@@ -169,6 +169,7 @@ const RUNS: &[&str] = &[
     "Cost.ReturnToHand",
     "Cost.ExilePermanents",
     "Cost.ExileFromHand",
+    "Cost.Pick.FilterX",
     "Cost.RevealFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
@@ -187,6 +188,7 @@ const RUNS: &[&str] = &[
     "Cost.Waterbend",
     "Cost.XAtLeast",
     "Cost.XColor",
+    "Cost.XAtMost",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",
@@ -298,6 +300,7 @@ const RUNS: &[&str] = &[
     "Effect.ExtraTurn",
     "Effect.EndTurn",
     "Effect.AddPhase",
+    "Effect.AddStep",
     "Effect.Surveil",
     "Effect.Proliferate",
     "Effect.TimeTravel",
@@ -312,6 +315,7 @@ const RUNS: &[&str] = &[
     "Effect.Monstrosity",
     "Effect.Renown",
     "Effect.Exploit",
+    "Effect.Enlist",
     "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
@@ -379,6 +383,7 @@ const RUNS: &[&str] = &[
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
+    "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
@@ -472,6 +477,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Discard",
     "Rule.Cant.Exile",
     "Rule.Cant.Transform",
+    "Rule.Cant.PhaseOut",
     "Rule.Cant.Untap",
     "Rule.Cant.Crew",
     "Rule.Cant.BecomeSuspected",
@@ -619,9 +625,11 @@ const RUNS: &[&str] = &[
     "Ability.FreeActivation",
     "Ability.InstantActivation",
     "Ability.AltCast",
+    "Ability.AltCast.X",
     "Ability.CastOnly",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
+    "Keyword.Flashback.Cost.Discard.X",
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
@@ -702,6 +710,7 @@ const RUNS: &[&str] = &[
     "Amount.Tally",
     "Amount.CommanderColors",
     "Amount.Remembered",
+    "Amount.DamageDealtByTo",
     "Amount.TurnNumber",
     "Amount.Stickers",
     "Amount.StickerVowels",
@@ -818,6 +827,8 @@ const RUNS: &[&str] = &[
     "Keyword.Hideaway",
     "Keyword.Gift",
     "ReplaceBy.Devour",
+    "ReplaceBy.AsEnters",
+    "ReplaceBy.AsEntersWith",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -880,6 +891,7 @@ const RUNS: &[&str] = &[
     "Keyword.Exploit",
     "Keyword.Soulbond",
     "Keyword.Emerge",
+    "Keyword.Offering",
     "Keyword.Harmonize",
     "Keyword.ReadAhead",
     "Keyword.Recover",
@@ -899,6 +911,7 @@ const RUNS: &[&str] = &[
     "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
+    "Condition.FirstStep",
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
@@ -1203,6 +1216,7 @@ mod tests {
     #[case::a_logged_tally("Amount.Tally", true)]
     #[case::commander_colors("Amount.CommanderColors", true)]
     #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::damage_dealt_by_to("Amount.DamageDealtByTo", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::among_players("Condition.Among", true)]
@@ -1342,6 +1356,7 @@ mod tests {
     #[case::cant_discard("Rule.Cant.Discard", true)]
     #[case::cant_exile("Rule.Cant.Exile", true)]
     #[case::cant_transform("Rule.Cant.Transform", true)]
+    #[case::r301_cant_phase_out("Rule.Cant.PhaseOut", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
     #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]
