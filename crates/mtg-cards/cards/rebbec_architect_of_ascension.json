@@ -9,30 +9,14 @@
       "abilities": [
         {
           "Static": {
-            "affected": {
-              "Each": [
-                {
-                  "Type": "Artifact"
-                },
-                {
-                  "ControlledBy": "You"
-                }
-              ]
-            },
+            "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
             "mods": [
               {
                 "AddKeyword": {
                   "Protection": [
                     {
                       "SharesManaValue": {
-                        "Each": [
-                          {
-                            "Type": "Artifact"
-                          },
-                          {
-                            "ControlledBy": "You"
-                          }
-                        ]
+                        "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
                       }
                     }
                   ]
@@ -41,9 +25,7 @@
             ]
           }
         },
-        {
-          "Keyword": "Partner"
-        }
+        { "Keyword": "Partner" }
       ]
     }
   ]

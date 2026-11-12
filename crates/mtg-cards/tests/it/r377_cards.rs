@@ -189,8 +189,16 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#""who":"This""#,
     r#""who":{"Each":[{"Subtype":"Wall"}]}"#
 )]
-#[case::colors("Rebbec, Architect of Ascension", r#""SharesManaValue""#, r#""SharesColor""#)]
-#[case::creatures("Rebbec, Architect of Ascension", r#"{"Type":"Artifact"}"#, r#"{"Type":"Creature"}"#)]
+#[case::colors(
+    "Rebbec, Architect of Ascension",
+    r#""SharesManaValue""#,
+    r#""SharesColor""#
+)]
+#[case::creatures(
+    "Rebbec, Architect of Ascension",
+    r#"{"Type":"Artifact"}"#,
+    r#"{"Type":"Creature"}"#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
