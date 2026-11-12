@@ -159,12 +159,14 @@ async fn as_organiser(
 }
 
 /// The match's outcome from a game's result: seats alternate between the two entrants, the first
-/// entrant on the even seats.
+/// entrant on the even seats and team 0.
 fn outcome_of(result: GameResult) -> MatchOutcome {
     match result {
         GameResult::Winner(seat) if seat.index() % 2 == 0 => MatchOutcome::A,
         GameResult::Winner(_) => MatchOutcome::B,
         GameResult::Draw => MatchOutcome::Draw,
+        GameResult::Team(0) => MatchOutcome::A,
+        GameResult::Team(_) => MatchOutcome::B,
     }
 }
 
@@ -908,6 +910,8 @@ mod tests {
     #[case(GameResult::Winner(PlayerId::from_index(2)), MatchOutcome::A)]
     #[case(GameResult::Winner(PlayerId::from_index(3)), MatchOutcome::B)]
     #[case(GameResult::Draw, MatchOutcome::Draw)]
+    #[case(GameResult::Team(0), MatchOutcome::A)]
+    #[case(GameResult::Team(1), MatchOutcome::B)]
     fn results_map_to_the_seat_parity(#[case] result: GameResult, #[case] outcome: MatchOutcome) {
         assert_eq!(outcome_of(result), outcome);
     }
