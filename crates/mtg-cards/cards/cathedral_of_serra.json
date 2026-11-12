@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4b9922b9-c5b5-467e-8a5b-1e45e862194d",
+  "name": "Cathedral of Serra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathedral of Serra",
+      "oracle_fingerprint": "6d635a1b3d58cc1bb9e6e738f5f4e1b1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Color": "White" },
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "BandsWithOther": [{ "Supertype": "Legendary" }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

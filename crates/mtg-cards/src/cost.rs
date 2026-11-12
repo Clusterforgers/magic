@@ -167,6 +167,8 @@ pub enum CostItem {
     },
     /// The source deals damage to the payer ("{CARDNAME} deals 2 damage to you").
     DamageToYou(Amount),
+    /// Each other player gains this much life ("you may have each other player gain 6 life").
+    OthersGainLife(u32),
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
     /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,

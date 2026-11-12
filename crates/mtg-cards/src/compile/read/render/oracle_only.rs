@@ -196,6 +196,7 @@ mod quote_commas;
 mod r280_wordings;
 mod r282_wholes;
 mod r284_wordings;
+mod r286_wordings;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -499,6 +500,7 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     rmt8_wordings::add(ability, texts);
     r280_wordings::add(ability, texts);
     r284_wordings::add(ability, texts);
+    r286_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's

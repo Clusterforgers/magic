@@ -867,6 +867,7 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::Stickered
             | Pred::Harnessed
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
@@ -1508,6 +1509,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
+                    | CostItem::OthersGainLife(_)
                     | CostItem::Forage => {}
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cef37acf-ee97-48bf-a605-b17efcce5ce8",
+  "name": "Fortified Area",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortified Area",
+      "oracle_fingerprint": "c8e5449fe7c3d4ebfd3cee18599ce2ae",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Wall" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Banding" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -170,6 +170,21 @@ fn t16a_flavour_name(word: &str) -> bool {
         })
 }
 
+/// Whether the text is a flavour name that opens with a number written with thousands commas ("10,000 Needles"): the
+/// number, then words that each begin with a capital letter.
+fn r286_numbered_name(word: &str) -> bool {
+    let Some((number, rest)) = word.split_once(' ') else {
+        return false;
+    };
+    number.starts_with(|c: char| c.is_ascii_digit())
+        && number.chars().all(|c| c.is_ascii_digit() || c == ',')
+        && !rest.is_empty()
+        && rest
+            .split(' ')
+            .all(|part| part.chars().next().is_some_and(char::is_uppercase))
+        && w20b_ability_letters(rest)
+}
+
 /// Whether the word is the ability word Descend with its number ("Descend 4", CR 207.2c).
 fn r6e_descend(word: &str) -> bool {
     word.strip_prefix("Descend ")
@@ -185,9 +200,12 @@ pub(crate) fn ability_word_len(line: &str) -> Option<usize> {
     let is_word = word
         .chars()
         .next()
-        .is_some_and(|c| c.is_uppercase() || c == '~')
+        .is_some_and(|c| c.is_uppercase() || c == '~' || c.is_ascii_digit())
         && word.chars().count() <= 40
-        && (w20b_ability_letters(word) || t16a_flavour_name(word) || r6e_descend(word))
+        && (w20b_ability_letters(word)
+            || t16a_flavour_name(word)
+            || r6e_descend(word)
+            || r286_numbered_name(word))
         && !word.starts_with("Choose");
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)

@@ -148,6 +148,7 @@ Behold the Multiverse
 Belisarius Cawl
 Bespoke Battlewagon
 Big Mother Mouser
+Big Winner
 Bighorner Rancher
 Bilious Skulldweller
 Binding the Old Gods
@@ -355,6 +356,7 @@ Crawlspace
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Croakid Amphibonaut
 Crocanura
 Crop Rotation
 Crown of Skemfar
@@ -767,6 +769,7 @@ Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
+Grabby Tabby
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
@@ -938,6 +941,7 @@ Jodah's Codex
 Join the Maestros
 Jolting Merfolk
 Judoon Enforcers
+Jumbo Cactuar
 Jungle Lion
 Junk Winder
 Jyoti, Moag Ancient
@@ -1494,6 +1498,7 @@ Sandsteppe Scavenger
 Sandwurm Convergence
 Sangromancer
 Sanguine Bond
+Sanguine Sipper
 Sanitarium Skeleton
 Saproling Symbiosis
 Sarah Jane Smith
@@ -1506,6 +1511,7 @@ Savage Ventmaw
 Savor the Moment
 Saw It Coming
 Sawtusk Demolisher
+Scared Stiff
 Scarring Memories
 Scatter to the Winds
 Scavenging Ooze
@@ -1999,6 +2005,7 @@ Warmonger Hellkite
 Warrior's Sword
 Wash Away
 Wasteland Raider
+Wastes
 Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear

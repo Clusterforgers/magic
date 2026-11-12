@@ -21,6 +21,7 @@ import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { usePrimaryKey } from '../usePrimaryKey'
 import { useObjects } from '../useCombatNames'
+import { brokenJoins, joinWords } from '../r286Joins'
 
 /**
  * DeclareBlockers: creatures that may block are legal, the rest of the hand and battlefield dimmed. A click on a
@@ -152,6 +153,8 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     return markCards([...own, ...attackersShown], [...legal, ...choices], [...pairs.keys(), choosing])
   }, [own, legal, attackersShown, choices, pairs, choosing])
 
+  // The blockers whose join rule the blocks break: Confirm waits for them.
+  const broken = useMemo(() => brokenJoins(options.joins, [...pairs.keys()]), [options.joins, pairs])
   const notes = useMemo<CardNotes>(() => {
     const written = new Map<ObjectId, { label?: string; words: string; cue?: 'active' }>()
     for (const [blocker, attacker] of pairs) {
@@ -182,11 +185,17 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       if (blockerLists.has(attacker)) continue
       written.set(attacker, { label: `Needs ${needed}+ blockers`, words: `needs ${blockersNeeded(needed)}` })
     }
+    for (const rule of broken) {
+      written.set(rule.object, {
+        label: rule.alone ? 'Alone' : 'Needs others',
+        words: joinWords(rule, 'block'),
+      })
+    }
     if (choosing !== undefined) {
       written.set(choosing, { words: 'choose the attacker it blocks', cue: 'active' })
     }
     return written
-  }, [pairs, blockerLists, minimums, byId, choosing, controllerOf, required, unblocking, unserved])
+  }, [pairs, blockerLists, minimums, byId, choosing, controllerOf, required, unblocking, unserved, broken])
 
   const pair = (blocker: ObjectId, attacker: ObjectId): void => {
     setPairs((current) => new Map(current).set(blocker, attacker))
@@ -229,7 +238,12 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     return () => window.removeEventListener('keydown', onKey)
   }, [choosing, selection])
 
-  const ready = pairs.size > 0 && short.length === 0 && unblocking.length === 0 && unserved.length === 0
+  const ready =
+    pairs.size > 0 &&
+    short.length === 0 &&
+    unblocking.length === 0 &&
+    unserved.length === 0 &&
+    broken.length === 0
   const confirm = (): void => {
     if (ready) answer({ DeclareBlockers: [...pairs] })
   }

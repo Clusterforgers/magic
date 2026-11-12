@@ -1,7 +1,7 @@
 {
   "oracle_id": "653e4b68-3184-4352-ac91-127f7e6d7c12",
   "name": "Port Razer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Port Razer",
@@ -19,9 +19,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 144, "end": 214 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "DidThisTurn": { "event": "Attacked", "to": "You" } }]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       ]

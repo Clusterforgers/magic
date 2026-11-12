@@ -168,6 +168,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPower",
     "Cost.Changed",
     "Cost.DamageToYou",
+    "Cost.OthersGainLife",
     "Cost.Unattach",
     "Cost.ExileTop",
     "Cost.Draw",

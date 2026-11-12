@@ -580,6 +580,7 @@ mod tests {
             blockers: Vec::new(),
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -631,6 +632,7 @@ mod tests {
             most: None,
             most_at: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),
@@ -1252,6 +1254,7 @@ mod tests {
             ],
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: vec![ObjectId(2)],

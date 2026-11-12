@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d99e1d08-32ca-49c5-97cc-e064d661202f",
+  "name": "Orcish Conscripts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Conscripts",
+      "oracle_fingerprint": "d670a9156470233a8416ff3416bd6f11",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": { "who": "This", "quirk": { "AttackWithOthers": { "others": 2 } } }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "BlockWithOthers": { "others": 2 } } } }
+          }
+        }
+      ]
+    }
+  ]
+}

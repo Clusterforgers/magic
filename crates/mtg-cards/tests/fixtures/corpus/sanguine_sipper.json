@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "c2b8ae57-74d4-4484-aead-56fe125f26f8",
+  "oracle_id": "ea787e29-5e24-4136-bdf6-bee338899e34",
+  "multiverse_ids": [
+    580626
+  ],
+  "tcgplayer_id": 287986,
+  "cardmarket_id": 677290,
+  "name": "Sanguine Sipper",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/c2b8ae57-74d4-4484-aead-56fe125f26f8",
+  "scryfall_uri": "https://scryfall.com/card/unf/26/sanguine-sipper?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:30:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606",
+    "large": "https://cards.scryfall.io/large/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606",
+    "png": "https://cards.scryfall.io/png/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.png?1783920606",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.webp?1783920606",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.webp?1783920606",
+    "display": "https://cards.scryfall.io/display/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.webp?1783920606",
+    "art": "https://cards.scryfall.io/art/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.webp?1783920606",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.webp?1783920606",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c2b8ae57-74d4-4484-aead-56fe125f26f8.jpg?1783920606"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Vampire Guest",
+  "oracle_text": "This creature has lifelink as long as you control a stickered permanent.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c2b8ae57-74d4-4484-aead-56fe125f26f8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aea787e29-5e24-4136-bdf6-bee338899e34&unique=prints",
+  "collector_number": "26",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The midway offers every flavor under the sun, even to guests who need to stay out of it.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ernanda Souza",
+  "artist_ids": [
+    "e87a8b19-f97f-4df0-9dda-1310ab0257bb"
+  ],
+  "illustration_id": "8eed9309-04fd-4036-89d9-832c35fc6eea",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31486,
+  "prices": {
+    "usd": "0.05",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.06",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580626&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSanguine%2BSipper",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSanguine%2BSipper",
+    "edhrec": "https://edhrec.com/route/?cc=Sanguine+Sipper"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287986%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=677290&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Sanguine+Sipper&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

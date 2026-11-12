@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c00adb98-81dc-490f-9e0f-7f8546ef22ce",
+  "name": "Rakavolver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakavolver",
+      "oracle_fingerprint": "0553f6d7f2e2d48ff14da899561de8d8",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        { "Keyword": { "Kicker": "{U}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                        "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "condition": { "KickedWith": "{1}{W}" }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [{ "AddKeyword": "Flying" }]
+              }
+            },
+            "condition": { "KickedWith": "{U}" }
+          }
+        }
+      ]
+    }
+  ]
+}

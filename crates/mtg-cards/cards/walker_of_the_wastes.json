@@ -1,0 +1,31 @@
+{
+  "oracle_id": "fb818376-6e87-4aa3-a050-4b5f82942593",
+  "name": "Walker of the Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walker of the Wastes",
+      "oracle_fingerprint": "41ec02af0647f970ea98e070bf917465",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, { "Named": "Wastes" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, { "Named": "Wastes" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

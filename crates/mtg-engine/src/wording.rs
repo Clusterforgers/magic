@@ -89,6 +89,7 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
         Pred::Solved => "solved",
+        Pred::Stickered => "stickered",
         Pred::Harnessed => "harnessed",
         Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",

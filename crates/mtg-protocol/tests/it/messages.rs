@@ -292,6 +292,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             most: None,
             most_at: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],
@@ -308,6 +309,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             }],
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -321,6 +323,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             }],
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: vec![(b, 2)],
             max_blockers: Vec::new(),
             required: vec![a],
@@ -1139,7 +1142,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -1154,7 +1157,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
         },
         deadline_ms: None,
         show_after_ms: None,

@@ -14,9 +14,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 50, "end": 157 }
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "RemoveCounters": { "from": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            }
           }
         },
         {
