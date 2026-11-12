@@ -1159,6 +1159,7 @@ describe('events with more than one shape', () => {
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
     [ruleEffect('DamageAsWither', 'Forever'), 'Damage is dealt as though its source had wither'],
     [ruleEffect('ManaBurn', 'Forever'), 'Unspent mana makes its player lose that much life'],
+    [ruleEffect('ReverseTurnOrder', 'Forever'), 'Turn order is reversed'],
     [
       ruleEffect({ AttackAsThoughHasteAt: [1] }, 'Forever'),
       'Creatures can attack Bo as though they had haste',

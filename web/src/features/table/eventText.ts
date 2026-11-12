@@ -314,6 +314,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   if (rule === 'GraveyardCardsUntargetable') what = "Cards in graveyards can't be targeted"
   else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
   else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
+  else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
