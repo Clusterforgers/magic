@@ -27,6 +27,7 @@ mod lobby_roster;
 mod manual_message;
 mod manual_play;
 mod many_seats;
+mod many_seat_pace;
 mod net;
 mod open_seats;
 mod opening_together;
