@@ -1,0 +1,58 @@
+{
+  "oracle_id": "31b5d0ad-3a4d-4f43-b0a9-c9f7a362680f",
+  "name": "Season of Loss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Season of Loss",
+      "oracle_fingerprint": "4b31de42d2ae155d8f175f404b686102",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 5 },
+                  "repeat": true,
+                  "pawprints": [1, 2, 3],
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Draw": {
+                            "count": { "Tallied": { "who": "You", "what": "CreaturesDiedUnder" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "LoseLife": {
+                            "who": "Opponents",
+                            "amount": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": "You" }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

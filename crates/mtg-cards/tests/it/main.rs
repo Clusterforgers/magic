@@ -62,6 +62,7 @@ mod r302c_writers;
 mod r305b_writers;
 mod r304c_cards;
 mod r300c_cards;
+mod r302_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

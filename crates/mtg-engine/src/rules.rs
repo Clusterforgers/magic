@@ -1528,6 +1528,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::DamageAsWither => Rule::DamageAsWither,
         GameRule::ManaBurn => Rule::ManaBurn,
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
+        // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
+        GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }

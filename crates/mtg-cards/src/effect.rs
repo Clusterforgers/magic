@@ -1893,6 +1893,10 @@ pub enum Effect {
         /// The cost added for each mode chosen beyond the first (Escalate).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         extra_mode_cost: Option<Cost>,
+        /// The pawprints ({P}) each mode takes, parallel to `modes` ("Choose up to five {P} worth of modes"): the modes
+        /// chosen take at most the most of `choose` in all; empty when each mode counts one.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pawprints: Vec<u32>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
