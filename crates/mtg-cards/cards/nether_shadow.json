@@ -13,7 +13,7 @@
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "if": {
               "Compare": {
-                "left": { "CardsAbove": { "filter": [{ "Type": "Creature" }] } },
+                "left": { "CardsAbove": { "filter": [{ "Type": "Creature" }], "directly": false } },
                 "op": "Ge",
                 "right": 3
               }

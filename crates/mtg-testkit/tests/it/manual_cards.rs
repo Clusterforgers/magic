@@ -211,6 +211,15 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
         {
             continue;
         }
+        // A card that may be cast only at some times ("can't cast this during your first three turns") is cast by
+        // its own tests.
+        if card
+            .rules
+            .iter()
+            .any(|rule| matches!(**rule, mtg_cards::ability::Ability::CastOnly { .. }))
+        {
+            continue;
+        }
         let mut driver = table(vec![card]);
         // A land is played, every other card cast; what it puts on the stack (a storm copy, a door's trigger) resolves,
         // and an enters trigger may exile the card itself.
@@ -254,7 +263,15 @@ fn more_lands() -> Vec<PresetPermanent> {
 fn table(hand: Vec<Arc<CardDefinition>>) -> Driver {
     let corpus = |name: &str| mtg_testkit::corpus::card(name).unwrap();
     let mut own = more_lands();
-    own.extend(["Grizzly Bears", "Sol Ring", "Glorious Anthem"].map(|name| ready(corpus(name))));
+    own.extend(
+        [
+            "Grizzly Bears",
+            "Sol Ring",
+            "Glorious Anthem",
+            "Jace Beleren",
+        ]
+        .map(|name| ready(corpus(name))),
+    );
     Driver::from_scenario(
         Scenario::new(2)
             .hand(0, hand)
