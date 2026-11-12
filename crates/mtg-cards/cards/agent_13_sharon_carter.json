@@ -12,7 +12,10 @@
             "when": {
               "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
             },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         }
       ]

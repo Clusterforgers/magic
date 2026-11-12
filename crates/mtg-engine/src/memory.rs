@@ -283,6 +283,11 @@ pub(crate) fn recall_players(state: &GameState, source: ObjectRef, slot: &str) -
 }
 
 /// The numbers the source remembers in the slot, in the order remembered.
+/// The slot a number kept for one player lives in (`Effect::RememberValue` with `per`): the slot name and the player.
+pub(crate) fn player_slot(slot: &str, player: PlayerId) -> String {
+    format!("{slot}@{}", player.0)
+}
+
 pub(crate) fn recall_numbers(state: &GameState, source: ObjectRef, slot: &str) -> Vec<i64> {
     state
         .memory

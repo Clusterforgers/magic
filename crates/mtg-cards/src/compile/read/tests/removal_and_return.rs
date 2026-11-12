@@ -32,7 +32,7 @@ fn activated(text: &str) -> Option<Ability> {
 )]
 #[case::the_controller_investigates(
     "Destroy target creature or planeswalker. Its controller investigates.",
-    r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"CreateToken":{"who":{"ControllerOf":{"Target":0}},"token":{"Named":"clue"}}}]}}"#
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"CreateToken":{"who":{"ControllerOf":{"Target":0}},"token":{"Named":"clue"}}},{"Performed":{"action":"Investigated","who":{"ControllerOf":{"Target":0}}}}]}}"#
 )]
 fn the_spells_read_in_the_shape_of_the_hand_written_files(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Spell, false, json);

@@ -30,7 +30,10 @@
                 "right": 1
               }
             },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         }
       ]

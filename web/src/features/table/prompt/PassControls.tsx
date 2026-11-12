@@ -170,6 +170,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
       {label === null ? null : (
         <Button
           data-slot="primary-action"
+          data-label={label}
           className={cn('h-11 min-w-0 max-sm:basis-full', padding)}
           disabled={!free}
           title={yieldKey ? 'Space' : 'Space or Enter'}
