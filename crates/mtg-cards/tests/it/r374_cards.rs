@@ -48,6 +48,7 @@ fn file(name: &str) -> String {
 #[case("Kodama of the Center Tree")]
 #[case("Mistbind Clique")]
 #[case("Paladin of Prahv")]
+#[case("Plagiarize")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &file(name));
     assert_eq!(
@@ -86,6 +87,7 @@ fn reads_back_whole(#[case] name: &str) {
     r#""to":"Exile","what":[{"Subtype":"Goblin"}]"#
 )]
 #[case::paladin_every_turn("Paladin of Prahv", r#""this_turn":true"#, r#""this_turn":false"#)]
+#[case::plagiarize_you("Plagiarize", r#"{"Draw":{"who":{"Target":0}}}"#, r#"{"Draw":{"who":"You"}}"#)]
 fn a_changed_piece_reads_otherwise(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let text = file(name);
     assert!(text.contains(from), "{name} holds {from}");
