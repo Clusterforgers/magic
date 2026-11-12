@@ -133,7 +133,10 @@ fn r371_attacks_unsacrificed_reads_as_three_abilities(#[case] text: &str, #[case
     let written = super::super::r371_owner::r371_three_texts(&read[0], &read[1], &read[2]);
     assert!(written.iter().any(|w| same_text(w, text)), "{written:?}");
     let other = ability(r#"{"Rule":{"rule":{"Cant":{"who":"This","action":"Discard"}}}}"#);
-    assert!(super::super::r371_owner::r371_three_texts(&read[0], &other, &read[2]).is_empty());
+    assert_eq!(
+        super::super::r371_owner::r371_three_texts(&read[0], &other, &read[2]),
+        Vec::<String>::new()
+    );
     assert_eq!(
         static_pair(
             "~ attacks each combat if able, can't be sacrificed, and can't attack you.",

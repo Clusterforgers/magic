@@ -264,18 +264,18 @@ async fn a_cards_printings_list_newest_first_with_their_look(pool: PgPool) {
     let oldest = printings.last().unwrap();
     assert_eq!(oldest.frame.as_deref(), Some("1993"));
     assert!(!oldest.full_art);
-    assert!(
+    assert_eq!(
         repo(&pool)
             .printings_of(&OracleId("nope".into()))
             .await
-            .unwrap()
-            .is_empty()
+            .unwrap(),
+        Vec::<mtg_db::Printing>::new()
     );
-    assert!(
+    assert_eq!(
         repo(&pool)
             .printings_of(&OracleId(Uuid::from_u128(5).to_string()))
             .await
-            .unwrap()
-            .is_empty()
+            .unwrap(),
+        Vec::<mtg_db::Printing>::new()
     );
 }
