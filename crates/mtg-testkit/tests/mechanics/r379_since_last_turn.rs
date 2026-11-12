@@ -124,7 +124,9 @@ fn r379_premature_burial_targets_what_entered_since_your_last_turn(
             DecisionKind::PayMana(_) => {
                 driver.answer(Answer::PayMana(PayChoice::Auto))?;
             }
-            _ => driver.answer(Driver::passive_answer(&decision)).map(|_| ())?,
+            _ => driver
+                .answer(Driver::passive_answer(&decision))
+                .map(|_| ())?,
         }
     }
     let state = driver.state();
@@ -193,7 +195,7 @@ fn r379_marchesa_draws_unless_hurt_in_combat(
             }
             driver.attack(&[("Raider", 0)])?;
         }
-        _ => {}
+        _ => r379_main_of(&mut driver, 1, Step::Main1)?,
     }
     let hand = driver.state().zone(Zone::Hand(pid(0))).len();
     let life = driver.state().player(pid(0)).unwrap().life();
@@ -201,9 +203,17 @@ fn r379_marchesa_draws_unless_hurt_in_combat(
     let state = driver.state();
     let drawn = state.zone(Zone::Hand(pid(0))).len() - hand;
     let lost = life - state.player(pid(0)).unwrap().life();
-    assert_eq!(drawn, if draws { 2 } else { 1 }, "the draw step and the trigger");
+    assert_eq!(
+        drawn,
+        if draws { 2 } else { 1 },
+        "the draw step and the trigger"
+    );
     let hurt_later = if what == "attack" { 2 } else { 0 };
-    assert_eq!(lost, i32::from(draws) + hurt_later, "1 life lost with the card");
+    assert_eq!(
+        lost,
+        i32::from(draws) + hurt_later,
+        "1 life lost with the card"
+    );
     r379_replays(&driver, r379_watch_table(seats));
     Ok(())
 }
