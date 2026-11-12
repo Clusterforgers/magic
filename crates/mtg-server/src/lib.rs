@@ -85,6 +85,7 @@ mod auth;
 mod auto_skips;
 mod auto_yields;
 mod bank;
+pub mod bots;
 mod bulk_reads;
 mod card_api;
 mod cards;

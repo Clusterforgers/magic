@@ -237,6 +237,9 @@ struct NewSeat {
     /// made without one has none until its holder chooses.
     #[serde(default)]
     deck: Option<String>,
+    /// A bot plays the seat (`bots.rs`): a held seat other than the creator's, with a deck; the server names it.
+    #[serde(default)]
+    bot: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -506,13 +509,24 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
             "held must be 1 to {count}: the creator's seat is always held"
         )));
     }
+    let mut bots = Vec::new();
+    for (index, seat) in body.seats.iter().enumerate().filter(|(_, seat)| seat.bot) {
+        if index == 0 || index >= held || seat.deck.is_none() {
+            return Err(ApiError::invalid(format!(
+                "seat {index}: a bot plays a held seat other than seat 0, with a deck"
+            )));
+        }
+        bots.push(PlayerId::from_index(index));
+    }
     let seats = body
         .seats
         .iter()
         .enumerate()
         .map(|(index, seat)| {
             // An open seat takes the name of whoever joins it; what was sent is never used.
-            let name = if index < held {
+            let name = if seat.bot {
+                bot_name(&bots, index)
+            } else if index < held {
                 let name = seat.name.trim();
                 let length = name.chars().count();
                 if length == 0 || length > MAX_NAME_CHARS || name.chars().any(is_unsafe_in_names) {
@@ -535,8 +549,17 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         house_rules: body.house_rules.clone(),
         format,
         pace: None,
+        bots,
     };
     Ok((seats, options))
+}
+
+/// The name of the bot at seat `index`: "Bot", numbered when the table has more than one.
+fn bot_name(bots: &[PlayerId], index: usize) -> String {
+    match bots.iter().position(|seat| seat.index() == index) {
+        Some(at) if bots.len() > 1 => format!("Bot {}", at + 1),
+        _ => "Bot".to_owned(),
+    }
 }
 
 /// Control characters and invisible or direction-changing marks, which could make a name

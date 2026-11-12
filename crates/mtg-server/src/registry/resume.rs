@@ -46,6 +46,8 @@ struct Unpacked {
     checked: bool,
     /// The decks of the seats if the game turns out to be in its lobby.
     decks: SeatDecks,
+    /// The seats bots play, with the seed their choices come from.
+    bots: (Vec<mtg_core::ids::PlayerId>, u64),
 }
 
 /// Why a stored game cannot be loaded: the `detail` for the log and the record's `failure`, the
@@ -119,6 +121,7 @@ impl Registry {
             seats,
             checked,
             decks,
+            bots,
         } = match unpacked {
             Ok(unpacked) => unpacked,
             Err(unloadable) => return give_up(records, id, unloadable).await,
@@ -186,7 +189,11 @@ impl Registry {
             recorded: true,
             seats,
         };
-        self.games().insert(id, Entry::new(handle, parts, created));
+        self.games()
+            .insert(id, Entry::new(handle.clone(), parts, created));
+        if let Some(removed) = self.removal(id) {
+            crate::bots::spawn_bot_seats(&handle, &bots.0, bots.1, self.shared.bot_delay, &removed);
+        }
         if checked {
             tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
         } else {
@@ -274,6 +281,7 @@ fn unpack(
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
         decks: SeatDecks::of_recipe(recipe),
+        bots: (recipe.bots.clone(), recipe.seed),
         format: recipe.format,
         seats: record
             .seats
