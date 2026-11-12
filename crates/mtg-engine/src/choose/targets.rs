@@ -337,11 +337,7 @@ pub(crate) fn legal_from(
         Target::Object(object) => {
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
                 && !forbidden_target(state, Target::Object(*object), source)
-                && !(r377_walls_only(&spec.what)
-                    && crate::prohibit::forbidden(
-                        state,
-                        crate::prohibit::Doing::BeTargetedByWallsOnly { object: object.id },
-                    ))
+                && !r377_walls_shut_out(state, &spec.what, object.id)
                 && !keywords::protects(state, object.id, source.id, controller)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
@@ -357,6 +353,15 @@ pub(crate) fn legal_from(
     legal.sort_unstable();
     legal.dedup();
     legal
+}
+
+/// Whether a rule keeps an object from being the target of a spec that can target only Walls.
+fn r377_walls_shut_out(state: &GameState, what: &Targetable, object: ObjectId) -> bool {
+    r377_walls_only(what)
+        && crate::prohibit::forbidden(
+            state,
+            crate::prohibit::Doing::BeTargetedByWallsOnly { object },
+        )
 }
 
 /// Whether a specification can target only Walls: each kind of object it allows is a Wall.
