@@ -1,0 +1,34 @@
+{
+  "oracle_id": "143a269a-b9ee-48ba-bd7b-4aa46eb36778",
+  "name": "Rakdos, Lord of Riots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos, Lord of Riots",
+      "oracle_fingerprint": "7f1f072625c1465bd1d7fa4e1f953a8d",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+          }
+        }
+      ]
+    }
+  ]
+}

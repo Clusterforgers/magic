@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b181f5f7-d857-4ed0-996c-bb65b37bfb1b",
+  "name": "Big Winner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Big Winner",
+      "oracle_fingerprint": "6b708947bdff7ad71f2b1ea0d547f9e2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Stickered", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

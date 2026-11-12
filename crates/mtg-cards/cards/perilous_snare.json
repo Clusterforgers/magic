@@ -1,0 +1,56 @@
+{
+  "oracle_id": "cff7499a-44b0-4a2a-b96c-ed2cafb1a90d",
+  "name": "Perilous Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Snare",
+      "oracle_fingerprint": "2cff1919441f2e0e22e9c0d0ba0a40b6",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "timing": "Sorcery",
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

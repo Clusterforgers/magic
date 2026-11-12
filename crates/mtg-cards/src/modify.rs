@@ -381,6 +381,25 @@ pub enum CombatQuirk {
     CantAttackAlone,
     /// They can't block unless another creature blocks too.
     CantBlockAlone,
+    /// They can't attack unless at least `others` other creatures the selector picks attack too (CR 508.1c): "can't
+    /// attack unless at least two other creatures attack"; the selector reads the creature itself as `This`.
+    AttackWithOthers {
+        /// How many other attackers at least.
+        others: u32,
+        /// The others that count; any creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        among: Selector,
+    },
+    /// They can't block unless at least `others` other creatures the selector picks block too (CR 509.1b).
+    BlockWithOthers {
+        /// How many other blockers at least.
+        others: u32,
+        /// The others that count; any creature when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        among: Selector,
+    },
+    /// They can attack only alone (CR 508.1c).
+    AttackAlone,
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
     /// They can block as though they were untapped.

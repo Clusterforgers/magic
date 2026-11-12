@@ -648,6 +648,13 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
     match quirk {
         CombatQuirk::CantAttackAlone => format!("{who} can't attack alone"),
         CombatQuirk::CantBlockAlone => format!("{who} can't block alone"),
+        CombatQuirk::AttackWithOthers { others, .. } => {
+            format!("{who} can't attack unless at least {others} other chosen creatures attack")
+        }
+        CombatQuirk::BlockWithOthers { others, .. } => {
+            format!("{who} can't block unless at least {others} other chosen creatures block")
+        }
+        CombatQuirk::AttackAlone => format!("{who} can attack only alone"),
         CombatQuirk::AttackDespiteDefender => {
             format!("{who} can attack as though they didn't have defender")
         }

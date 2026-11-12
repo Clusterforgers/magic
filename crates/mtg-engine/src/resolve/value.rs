@@ -1740,6 +1740,10 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::Stickered => {
+                matches!(seen.counters, Counted::Live(_))
+                    && !state.stickers_on(reference.id).is_empty()
+            }
             Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
             Pred::FoughtSinceYourLastUpkeep {
                 attacked,

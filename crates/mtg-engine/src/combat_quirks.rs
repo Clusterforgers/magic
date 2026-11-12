@@ -68,6 +68,11 @@ impl QuirkRules {
         }
     }
 
+    /// The combat rules on the creature.
+    pub(crate) fn of(&self, id: ObjectId) -> &[CombatQuirk] {
+        self.quirks.get(&id).map_or(&[], Vec::as_slice)
+    }
+
     pub(crate) fn has(&self, id: ObjectId, wanted: impl Fn(&CombatQuirk) -> bool) -> bool {
         self.quirks
             .get(&id)

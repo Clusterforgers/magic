@@ -1,0 +1,19 @@
+{
+  "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+  "name": "Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wastes",
+      "oracle_fingerprint": "1e39776a27d528f18d8e8fa7b94cf267",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

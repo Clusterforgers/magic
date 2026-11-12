@@ -156,6 +156,7 @@ export type { Issue } from "./Issue";
 export type { IssueCode } from "./IssueCode";
 export type { JoinCodeRequest } from "./JoinCodeRequest";
 export type { JoinRequest } from "./JoinRequest";
+export type { JoinRule } from "./JoinRule";
 export type { Joined } from "./Joined";
 export type { Kept } from "./Kept";
 export type { Layer } from "./Layer";

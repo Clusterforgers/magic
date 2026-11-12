@@ -432,6 +432,15 @@ pub struct AttackOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub cant_alone: Vec<ObjectId>,
+    /// The creatures among `attackers` that take part only beside enough others of a kind, or only alone, each with
+    /// the creatures that count (CR 508.1c, 509.1b); a declaration that breaks one is refused. Left out while there are
+    /// none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<crate::r286_joins::JoinRule>>", optional)
+    )]
+    pub joins: Vec<crate::r286_joins::JoinRule>,
 }
 
 impl AttackOptions {
@@ -525,6 +534,15 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub cant_alone: Vec<ObjectId>,
+    /// The creatures among `blockers` that take part only beside enough others of a kind, or only alone, each with
+    /// the creatures that count (CR 508.1c, 509.1b); a declaration that breaks one is refused. Left out while there are
+    /// none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<crate::r286_joins::JoinRule>>", optional)
+    )]
+    pub joins: Vec<crate::r286_joins::JoinRule>,
 }
 
 impl BlockOptions {
@@ -853,6 +871,7 @@ mod tests {
                 .collect(),
             must_be_blocked: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
             max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
@@ -966,6 +985,7 @@ mod tests {
             most: None,
             most_at: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -983,6 +1003,7 @@ mod tests {
             most: None,
             most_at: Vec::new(),
             cant_alone: Vec::new(),
+            joins: Vec::new(),
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7d72a2f4-cce6-4a2b-9507-0ee1c3e1e4ae",
+  "name": "Dire Wolves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dire Wolves",
+      "oracle_fingerprint": "07bcfb4e48f7de88b7d3a6b6698fd66a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Banding" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

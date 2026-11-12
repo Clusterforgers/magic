@@ -457,6 +457,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             .filter(|(target, _)| defenders.contains(target))
             .collect(),
         cant_alone: Vec::new(),
+        joins: Vec::new(),
     };
     attack_tax::describe(state, player, &mut options);
     options.cant_alone = options
@@ -465,6 +466,12 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .map(|option| option.object)
         .filter(|object| cant_attack_alone(state, *object))
         .collect();
+    let offered: Vec<ObjectId> = options
+        .attackers
+        .iter()
+        .map(|option| option.object)
+        .collect();
+    options.joins = crate::r286_joins::r286_joins(state, &offered, true);
     // A creature that can't attack any defender is not required to (it is "able" only with one to attack), nor is one
     // that can attack only by paying a cost: a requirement never makes a player pay (CR 508.1d).
     options.required = options
@@ -473,6 +480,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .filter(|option| {
             option.free_defender().is_some()
                 && !cant_attack_alone(state, option.object)
+                && !crate::r286_joins::r286_bound(&options.joins, option.object)
                 && (must_attack(state, option.object)
                     || !goaded_by(state, option.object).is_empty()
                     || paired_defender(state, option.object, &defenders).is_some())
@@ -511,6 +519,7 @@ pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
 ///
 /// An attacker that needs several blockers (menace) is offered only while enough of `player`'s creatures could
 /// block it, so a creature that could only join a block that cannot be made is not offered for it.
+#[allow(clippy::too_many_lines)]
 pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions {
     let blockable: Vec<ObjectId> = state
         .combat()
@@ -594,11 +603,14 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .collect();
     let (mut must_be_blocked, forced) = name_requirements(state, &mut blockers);
     let cant_alone = cant_block_alone_of(state, &blockers);
+    let offered: Vec<ObjectId> = blockers.iter().map(|option| option.object).collect();
+    let joins = crate::r286_joins::r286_joins(state, &offered, false);
     crate::block_tax::unbind_attackers(state, &blockers, &mut must_be_blocked);
     let required = blockers
         .iter()
         .filter(|option| !crate::block_tax::costs_to_block(state, option))
         .map(|option| option.object)
+        .filter(|object| !crate::r286_joins::r286_bound(&joins, *object))
         .filter(|object| {
             forced.contains(object)
                 || (must_block(state, *object) && !cant_block_alone(state, *object))
@@ -612,6 +624,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         must_be_blocked,
         most,
         cant_alone,
+        joins,
     }
 }
 
@@ -687,6 +700,7 @@ pub(crate) fn check_attackers(
     let excused = w8a_check_limit(options.most, &options.required, &declared)?;
     w10a_check_limits_at(&options.most_at, answer)?;
     options.check_attack_alone(&declared)?;
+    crate::r286_joins::r286_check(&options.joins, &declared, "attacker")?;
     // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must, unless the limit on
     // the declaration or those at each defender it may attack for nothing are filled with creatures that must.
     if !excused
@@ -706,6 +720,7 @@ pub(crate) fn check_blockers(
 ) -> Result<(), IllegalAnswer> {
     w14c_check_pairs(options, answer)?;
     options.check_block_alone(answer)?;
+    crate::r286_joins::r286_check(&options.joins, &w14c_distinct_blockers(answer), "blocker")?;
     for (_, attacker) in answer {
         let got = answer.iter().filter(|(_, a)| a == attacker).count();
         let needed = options.needed_for(*attacker);

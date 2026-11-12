@@ -193,6 +193,7 @@ mod put_into;
 mod put_into_graveyard;
 mod put_that_card;
 mod quote_commas;
+mod r286_wordings;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -492,6 +493,7 @@ pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     add_e17a(ability, texts);
     f29_wordings::add(ability, texts);
     rmt8_wordings::add(ability, texts);
+    r286_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's

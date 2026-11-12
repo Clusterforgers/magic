@@ -8,9 +8,49 @@
       "oracle_fingerprint": "fd658105809751bdf1b335f2b7d5cd78",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 143 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Not": "Token" }],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Draw": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          },
+                          {
+                            "Mill": {
+                              "count": {
+                                "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "af147bb6-aa46-4fc9-af96-de3740c19fd5",
+  "name": "Mountain Stronghold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mountain Stronghold",
+      "oracle_fingerprint": "d7d6667d5583766480a5ecb7528730a1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Color": "Red" },
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "BandsWithOther": [{ "Supertype": "Legendary" }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

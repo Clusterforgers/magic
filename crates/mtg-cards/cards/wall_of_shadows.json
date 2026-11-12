@@ -9,9 +9,14 @@
       "abilities": [
         { "Keyword": "Defender" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 39, "end": 122 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Creature" }, { "BlockedBy": "This" }]
+              }
+            },
+            "by": "Prevent"
           }
         },
         {

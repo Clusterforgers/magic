@@ -72,6 +72,7 @@ fn block_offer(
         required,
         most,
         cant_alone,
+        joins: Vec::new(),
         blockers: rows.into_iter().map(|(b, _)| b).collect(),
     }
 }
@@ -129,6 +130,7 @@ proptest! {
             most,
             most_at: Vec::new(),
             cant_alone,
+            joins: Vec::new(),
         };
         let attack = options.legal_attack();
         prop_assert_eq!(check_attackers(&options, &attack), Ok(()), "{:?} {:?}", options, attack);
@@ -150,6 +152,7 @@ fn an_attacker_that_must_be_blocked_brings_a_second_blocker_to_one_that_cant_blo
         must_be_blocked: vec![id(100)],
         most: None,
         cant_alone: vec![id(1)],
+        joins: Vec::new(),
     };
     let blocks = options.legal_blocks();
     assert!(options.accepts(&blocks) && !blocks.is_empty(), "{blocks:?}");

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "22a93a6d-fe58-4135-8ac2-6b92e9bb75a3",
+  "name": "Sylvia Brightspear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvia Brightspear",
+      "oracle_fingerprint": "1aebcea1ba3817e5fd3083294f3e9903",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Khorvath Brightflame" } },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        }
+      ]
+    }
+  ]
+}

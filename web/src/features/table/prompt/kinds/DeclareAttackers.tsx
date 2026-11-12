@@ -28,6 +28,7 @@ import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { usePrimaryKey } from '../usePrimaryKey'
 import { useObjects, useTargetNames } from '../useCombatNames'
+import { brokenJoins, joinWords } from '../r286Joins'
 
 /** The attacker's defender that is `aim`, else its first defender; undefined for an attacker with none. */
 function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackTarget | undefined {
@@ -210,6 +211,13 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
             : { ...(label === undefined ? {} : { label }), words: `attacking ${names.long(target)}${owed}` },
       )
     }
+    // A creature whose join rule the attack breaks says what it needs.
+    for (const rule of brokenJoins(
+      options.joins,
+      declared.map((entry) => entry.object),
+    )) {
+      map.set(rule.object, { label: rule.alone ? 'Alone' : 'Needs others', words: joinWords(rule, 'attack') })
+    }
     // A creature in a band, or picked for the band being formed, says so.
     for (const [members, label, words] of [
       ...bands.map((band) => [band, 'Band', 'attacks in a band'] as const),
@@ -225,7 +233,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       }
     }
     return map
-  }, [declared, names, held, required, offered, aim, selection.ids, costs, bands, building])
+  }, [declared, names, held, required, offered, aim, selection.ids, costs, bands, building, options.joins])
 
   const aimAll = (ids: readonly ObjectId[], target: AttackTarget | undefined): void => {
     setTargets((current) => {
@@ -322,7 +330,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   }
   const elsewhere = aim !== undefined && declared.some(({ target }) => !sameTarget(target, aim))
   const confirm = (): void => {
-    if (declared.length === 0) return
+    if (declared.length === 0 || brokenJoins(options.joins, declaredIds).length > 0) return
     const attackers = declared.map(({ object, target }): [ObjectId, AttackTarget] => [object, target])
     answer(
       exerting.length > 0 || bands.length > 0
@@ -471,7 +479,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         label="Confirm attack"
         word="Attack"
         keepWord
-        disabled={declared.length === 0}
+        disabled={declared.length === 0 || brokenJoins(options.joins, declaredIds).length > 0}
         onClick={confirm}
       />
       {/* A rule that requires an attacker leaves no empty attack to choose. */}

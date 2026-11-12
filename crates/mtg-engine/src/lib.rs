@@ -136,6 +136,7 @@ pub mod player;
 pub mod player_control;
 pub mod priority;
 pub mod prohibit;
+pub mod r286_joins;
 pub mod replace;
 pub mod resolve;
 mod restart;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e971249a-64a3-4a9b-9a0c-e9d858ca8a55",
   "name": "Bloodthirster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bloodthirster",
@@ -16,9 +16,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 137, "end": 207 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Not": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "DidThisTurn": { "event": "Attacked", "to": "You" } }]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       ]

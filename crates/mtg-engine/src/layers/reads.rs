@@ -271,6 +271,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Prepared
         | Pred::Suspected
         | Pred::Solved
+        | Pred::Stickered
         | Pred::Harnessed
         | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
