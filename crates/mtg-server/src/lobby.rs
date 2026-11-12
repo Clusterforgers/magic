@@ -531,12 +531,13 @@ mod tests {
         handle.status().await.unwrap();
         drain(&mut inbox);
 
-        let lonely = Teams {
+        // Any grouping is kept while players choose; a team the table cannot have is refused.
+        let nowhere = Teams {
             mode: TeamMode::Teams,
-            seats: vec![0, 0, 0, 0],
+            seats: vec![0, 1, 0, 7],
         };
         assert!(matches!(
-            handle.set_teams(Some(lonely)).await,
+            handle.set_teams(Some(nowhere)).await,
             Ok(Err(TeamsRefusal::Invalid(_)))
         ));
         assert_eq!(
