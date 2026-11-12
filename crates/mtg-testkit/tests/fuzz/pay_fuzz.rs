@@ -46,7 +46,12 @@ impl Seen {
                     let taps = events[at + 2..]
                         .iter()
                         .take_while(|e| {
-                            matches!(e, Event::PermanentTapped { .. } | Event::ManaAdded { .. })
+                            matches!(
+                                e,
+                                Event::PermanentTapped { .. }
+                                    | Event::ManaAdded { .. }
+                                    | Event::ManaAbilityActivated { .. }
+                            )
                         })
                         .filter(|e| matches!(e, Event::PermanentTapped { .. }))
                         .count();

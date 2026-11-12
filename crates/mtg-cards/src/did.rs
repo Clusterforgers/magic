@@ -11,6 +11,8 @@ pub enum Action {
     Activated,
     /// A loyalty ability was activated (CR 606.4); `what` is its source.
     ActivatedLoyalty,
+    /// Any ability was activated, a mana ability (CR 605.3b) included; `what` is its source.
+    ActivatedAny,
     /// A triggered ability triggered; `what` is its source.
     AbilityTriggered,
     /// A land was played (CR 305.1), never one put onto the battlefield by an effect; `what` is the land.
@@ -82,6 +84,8 @@ pub enum Action {
     BecameRenowned,
     /// A creature exploited a creature.
     Exploited,
+    /// A creature enlisted a creature (CR 702.154a); `what` is the creature that enlisted.
+    Enlisted,
     /// A permanent was exerted.
     Exerted,
     /// A creature mutated.
@@ -141,7 +145,7 @@ impl Action {
     #[must_use]
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
-            // The engine logs no activation of a mana ability (CR 605.3b), so the words say so.
+            // `Activated` leaves out the mana abilities (CR 605.3b), so the words say so; `ActivatedAny` counts them.
             Action::Activated => (
                 "activate an ability that isn't a mana ability",
                 "activates an ability that isn't a mana ability",
@@ -149,6 +153,7 @@ impl Action {
             Action::ActivatedLoyalty => {
                 ("activate a loyalty ability", "activates a loyalty ability")
             }
+            Action::ActivatedAny => ("activate an ability", "activates an ability"),
             Action::AbilityTriggered => ("trigger an ability", "triggers an ability"),
             Action::PlayedLand => ("play a land", "plays a land"),
             Action::Transformed => ("transform a permanent", "transforms a permanent"),
@@ -187,6 +192,7 @@ impl Action {
             Action::BecameMonstrous => ("become monstrous", "becomes monstrous"),
             Action::BecameRenowned => ("become renowned", "becomes renowned"),
             Action::Exploited => ("exploit a creature", "exploits a creature"),
+            Action::Enlisted => ("enlist a creature", "enlists a creature"),
             Action::Exerted => ("exert a creature", "exerts a creature"),
             Action::Mutated => ("mutate", "mutates"),
             Action::Learned => ("learn", "learns"),
@@ -215,6 +221,7 @@ impl Action {
                 | Action::ActivatedLoyalty
                 | Action::ActivatedExhaust
                 | Action::ActivatedBoast
+                | Action::ActivatedAny
                 | Action::Destroyed
                 | Action::Exiled
                 | Action::Sacrificed
@@ -233,6 +240,7 @@ mod tests {
     #[rstest]
     #[case::activated(Action::Activated, true)]
     #[case::loyalty(Action::ActivatedLoyalty, false)]
+    #[case::any(Action::ActivatedAny, false)]
     fn an_activation_says_it_is_no_mana_ability(#[case] action: Action, #[case] says: bool) {
         let (you, they) = action.verbs();
         for words in [you, they] {

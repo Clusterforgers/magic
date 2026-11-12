@@ -751,6 +751,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "commits" } else { "commit" } {
         r.need("a crime")?;
         Some(TriggerPattern::W11cCrime { who: by })
+    } else if verb == if third { "activates" } else { "activate" } {
+        super::l294_activations::event(r, by)
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;

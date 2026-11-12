@@ -213,7 +213,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
     for effect in state.effects() {
         let from_an_earlier_turn =
             effect.duration == Duration::UntilEndOfTurn && effect.turn != state.turn().number();
-        if from_an_earlier_turn || !effect.is_active(state) {
+        if from_an_earlier_turn || effect.ended(state) {
             return Err(Violation::Bookkeeping(format!(
                 "{:?} is over but still listed",
                 effect.id

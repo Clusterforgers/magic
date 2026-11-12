@@ -57,6 +57,9 @@ const THIS_ABILITY_BECOMES_ONLY: &str =
 const C7_UNTAP_ONLY: &str =
     "only a permanent that doesn't untap waits for its controller's next untap step";
 
+/// Only a continuous effect waits for the next turn of the controller of what it changes.
+const L294_TURN_ONLY: &str = "only a continuous effect applies during its controller's next turn";
+
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
 /// Only the rule that a player skips a step or combat lasts until it is skipped.
@@ -1150,6 +1153,11 @@ impl<'a> Walker<'a> {
                 if let Some(per) = per {
                     self.at("per", |w| w.reference(per, Kind::Player));
                 }
+            }
+            Amount::DamageDealtByTo { by, to } => {
+                self.uses("Amount", "DamageDealtByTo");
+                self.at("by", |w| w.reference(by, Kind::Object));
+                self.at("to", |w| w.reference(to, Kind::Either));
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
@@ -3712,6 +3720,9 @@ impl Walker<'_> {
                 value,
                 to,
             } => w.l31a_performed(*action, who, times, (card.as_ref(), value.as_ref(), to.as_ref())),
+            Effect::Enlist { what } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::Pair { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -4070,6 +4081,9 @@ impl Walker<'_> {
                 if *duration == Duration::NextUntapStep && mods.as_slice() != [Modification::DoesntUntap] {
                     w.problem(C7_UNTAP_ONLY);
                 }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.uses("Duration", "DuringItsControllersNextTurn");
+                }
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(duration, Duration::WhileHasCounter(_)) {
@@ -4091,6 +4105,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
@@ -4122,6 +4139,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
@@ -4189,6 +4209,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
+                }
+                if *duration == Duration::DuringItsControllersNextTurn {
+                    w.problem(L294_TURN_ONLY);
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);

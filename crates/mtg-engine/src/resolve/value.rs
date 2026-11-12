@@ -2145,6 +2145,11 @@ impl<'a> Scope<'a> {
                 }
                 total
             }
+            Amount::DamageDealtByTo { by, to } => {
+                let dealers = self.objects(by)?;
+                let named = self.refs(to)?;
+                self.l294_damage_by_to(&dealers, &named)
+            }
             Amount::Triggering => self
                 .cause
                 .map(|cause| i64::from(cause.amount))

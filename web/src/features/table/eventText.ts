@@ -248,6 +248,7 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
+    DuringItsControllersNextTurn: " during its controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     WhileYouControlSource:
@@ -1055,6 +1056,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Monstrous' in event) return line(`${n.card(event.Monstrous.object)} becomes monstrous`)
   if ('Devoured' in event) return line(`${n.card(event.Devoured.object)} devours ${event.Devoured.count}`)
   if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)
+  if ('Enlisted' in event)
+    return line(`${n.card(event.Enlisted.object)} enlists ${n.card(event.Enlisted.enlisted)}`)
   if ('Exploited' in event)
     return line(`${n.card(event.Exploited.object)} exploits ${n.card(event.Exploited.sacrificed)}`)
   if ('Crewed' in event) {
@@ -1171,6 +1174,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.card(object)} phases out${held}`)
   }
   if ('PermanentPhasedIn' in event) return line(`${n.card(event.PermanentPhasedIn.object)} phases in`)
+  if ('ManaAbilityActivated' in event) {
+    const { player, source } = event.ManaAbilityActivated
+    return quiet(`${n.seat(player)} activates a mana ability of ${n.card(source.id)}`)
+  }
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded
     const from = source === null ? '' : ` from ${n.card(source)}`

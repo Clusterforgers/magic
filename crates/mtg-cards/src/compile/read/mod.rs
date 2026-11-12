@@ -155,6 +155,8 @@ mod l31a_events;
 pub(crate) mod l31a_performed;
 mod l31b_any_amount;
 mod l32a_paid;
+mod l294_activations;
+mod l294_damage_facts;
 mod land_types;
 mod lands;
 mod leave_combat;
