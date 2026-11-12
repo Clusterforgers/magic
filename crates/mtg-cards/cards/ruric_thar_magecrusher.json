@@ -1,7 +1,7 @@
 {
   "oracle_id": "453b2b3c-7df5-4515-9565-82f603cf451b",
   "name": "Ruric Thar, Magecrusher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ruric Thar, Magecrusher",
@@ -12,9 +12,12 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 57, "end": 203 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Not": { "Matches": { "subject": "This", "selector": ["DealtCombatDamageYet"] } }
+            }
           }
         }
       ]

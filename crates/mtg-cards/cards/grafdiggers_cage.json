@@ -1,0 +1,40 @@
+{
+  "oracle_id": "753cb2b2-24ce-484f-a2d0-be6fd2c67ebd",
+  "name": "Grafdigger's Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grafdigger's Cage",
+      "oracle_fingerprint": "f5420d3679159b9872fda725b1026678",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "Union": [
+                    { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                    { "Each": [{ "Type": "Creature" }, { "In": "Library" }] }
+                  ]
+                },
+                "action": "EnterBattlefield"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "AnyOf": [{ "In": "Graveyard" }, { "In": "Library" }] }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

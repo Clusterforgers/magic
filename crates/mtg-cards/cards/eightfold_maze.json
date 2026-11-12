@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9097457c-ceb3-4944-8f01-c28ddefbb270",
+  "name": "Eightfold Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eightfold Maze",
+      "oracle_fingerprint": "da7a1d7572279e258dbaf95c1113180e",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

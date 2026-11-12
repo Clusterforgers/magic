@@ -383,6 +383,8 @@ pub enum CombatQuirk {
     CantBlockAlone,
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
+    /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."
+    AttackAsThoughHaste,
     /// They can block as though they were untapped.
     BlockWhileTapped,
     /// Their controller may choose not to untap them during their untap step (CR 502.3): asked for each one that is tapped.
@@ -451,6 +453,12 @@ pub enum Prohibited {
     Exile,
     /// Transform (CR 701.28).
     Transform,
+    /// Become untapped, by an untap step, an effect or a {Q} cost.
+    Untap,
+    /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
+    Crew,
+    /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
+    EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
     SkipStep(Step),
     /// Skip their turns (CR 614.10).

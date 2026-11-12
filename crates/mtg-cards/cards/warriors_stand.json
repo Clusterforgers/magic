@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1f08072d-7dec-4f0d-b465-dda62eb17630",
+  "name": "Warrior's Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior's Stand",
+      "oracle_fingerprint": "52593d686e1bc5c1b3a5ddbe91e512d0",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

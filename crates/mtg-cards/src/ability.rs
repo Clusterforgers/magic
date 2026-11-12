@@ -131,6 +131,8 @@ pub enum ActivationKind {
     Mana,
     /// Every activated ability, mana abilities included (CR 605.1a).
     Every,
+    /// An activated ability with {T} in its cost, a mana ability included ("activated abilities with {T} in their costs").
+    TapCost,
 }
 
 /// Whether a count is zero, so serialization can leave it out.

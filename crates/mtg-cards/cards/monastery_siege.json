@@ -1,0 +1,40 @@
+{
+  "oracle_id": "240a33a8-23a0-4cb2-a9fd-1a2a21966bb8",
+  "name": "Monastery Siege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monastery Siege",
+      "oracle_fingerprint": "efbf9d767caa19e5486f3bf5f1f88249",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Khans", "Dragons"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "if": { "EnteredAs": "Khans" },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "Opponents" },
+              {
+                "AnyOf": [{ "TargetsPlayer": "You" }, { "Targeting": [{ "ControlledBy": "You" }] }]
+              }
+            ],
+            "change": "Increase",
+            "mana": "{2}",
+            "condition": { "EnteredAs": "Dragons" }
+          }
+        }
+      ]
+    }
+  ]
+}

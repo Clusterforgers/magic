@@ -1,0 +1,51 @@
+{
+  "oracle_id": "984f92dd-cb9b-4421-a8e6-75bfe566be10",
+  "name": "Rite of the Raging Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of the Raging Storm",
+      "oracle_fingerprint": "be626124f08c6f10bc70bfed49aa800d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Named": "Lightning Rager" }] },
+            "mods": [{ "CantAttackYou": "Both" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Lightning Rager",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 5,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Trample" },
+                        { "Keyword": "Haste" },
+                        {
+                          "Triggered": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

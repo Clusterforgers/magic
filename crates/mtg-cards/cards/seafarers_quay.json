@@ -1,0 +1,32 @@
+{
+  "oracle_id": "f71f01bc-caae-426b-a25a-bfbfeb9feb67",
+  "name": "Seafarer's Quay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seafarer's Quay",
+      "oracle_fingerprint": "a7e8a36e1ec1152e5c54334017beebf6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Color": "Blue" },
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "BandsWithOther": [{ "Supertype": "Legendary" }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

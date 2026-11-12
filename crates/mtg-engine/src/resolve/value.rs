@@ -1764,6 +1764,14 @@ impl<'a> Scope<'a> {
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::AttackedLastTurn => state.attacked_last_turn(reference),
+            Pred::DealtDamageYet | Pred::DealtCombatDamageYet => state
+                .object(reference.id)
+                .filter(|object| object.reference() == reference)
+                .and_then(GameObject::permanent)
+                .is_some_and(|permanent| {
+                    permanent.designations.dealt[usize::from(*pred == Pred::DealtCombatDamageYet)]
+                }),
             Pred::DidThisTurn {
                 event,
                 by,
@@ -2758,6 +2766,10 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
+            Condition::AttackedThisCombat(who) => self.r285_attacked_this_combat(who)?,
+            Condition::SorceryTiming => {
+                crate::priority::sorcery_timing(self.state, self.controller)
+            }
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

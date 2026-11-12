@@ -4,7 +4,10 @@
 
 use std::collections::BTreeMap;
 
+use mtg_cards::value::TallyEvent;
 use mtg_core::ids::PlayerId;
+
+use crate::object::ObjectRef;
 
 use crate::state::{GameState, Tally};
 
@@ -15,6 +18,8 @@ pub struct TurnSummary {
     pub(crate) cast: Vec<u32>,
     /// The counts of each player during the turn ("if you lost life last turn").
     pub(crate) tallies: BTreeMap<(PlayerId, Tally), u32>,
+    /// The creatures declared as attackers during the turn, as the objects they were.
+    pub(crate) attackers: Vec<ObjectRef>,
 }
 
 impl GameState {
@@ -24,9 +29,30 @@ impl GameState {
             .map(|seat| self.tallied(PlayerId::from_index(seat), Tally::Cast))
             .collect();
         let tallies = self.tallies.players.clone();
-        self.seat_turns
-            .insert(active, TurnSummary { cast, tallies });
+        let attackers = self
+            .tallies
+            .records
+            .iter()
+            .filter(|record| record.event == TallyEvent::Attacked)
+            .filter_map(|record| record.subject)
+            .collect();
+        self.seat_turns.insert(
+            active,
+            TurnSummary {
+                cast,
+                tallies,
+                attackers,
+            },
+        );
         self.last_turn_of = Some(active);
+    }
+
+    /// Whether the object attacked during its controller's latest finished turn (`Pred::AttackedLastTurn`).
+    pub(crate) fn attacked_last_turn(&self, object: ObjectRef) -> bool {
+        self.object(object.id)
+            .map(crate::object::GameObject::controller)
+            .and_then(|controller| self.seat_turns.get(&controller))
+            .is_some_and(|summary| summary.attackers.contains(&object))
     }
 
     /// How many events of the kind the player had during the turn that ended last; 0 before any turn has ended.

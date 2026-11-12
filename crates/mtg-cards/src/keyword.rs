@@ -6,6 +6,7 @@ use crate::ability::Ability;
 use crate::companion::DeckCondition;
 use crate::cost::Cost;
 use crate::refs::Selector;
+use crate::value::Amount;
 
 /// A keyword ability with its parameters (CR 702).
 ///
@@ -421,6 +422,14 @@ pub enum Keyword {
         /// The number printed after the name.
         amount: u32,
     },
+    /// A keyword of the macro table whose number is X, worked out where the expansion reads it: "Firebending X, where X
+    /// is ~'s power".
+    MacroX {
+        /// The name in the table.
+        name: String,
+        /// What X is.
+        x: Amount,
+    },
 }
 
 /// The spells a card with splice may be spliced onto (CR 702.47a).
@@ -621,6 +630,7 @@ impl Keyword {
         "Splice",
         "Cleave",
         "Macro",
+        "Macro X",
     ];
 
     /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`,
@@ -628,7 +638,7 @@ impl Keyword {
     pub fn shown_name(&self) -> String {
         match self {
             Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
-            Keyword::Macro { name, .. } => {
+            Keyword::Macro { name, .. } | Keyword::MacroX { name, .. } => {
                 let mut chars = name.chars();
                 chars
                     .next()
@@ -820,12 +830,14 @@ impl Keyword {
             Keyword::Splice { .. } => "Splice",
             Keyword::Cleave { .. } => "Cleave",
             Keyword::Macro { .. } => "Macro",
+            Keyword::MacroX { .. } => "Macro X",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
         }
     }
 
-    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on; the keywords a
+    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on, and the
+    /// `OwnManaValue` part as generic mana of its mana value; the keywords a
     /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
     #[must_use]
     pub fn with_own_mana_cost(mut self, mana: &mtg_core::mana::ManaCost) -> Keyword {
@@ -840,6 +852,11 @@ impl Keyword {
                 if matches!(item, crate::cost::CostItem::OwnManaCost) {
                     *item =
                         crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, mana.clone()));
+                } else if matches!(item, crate::cost::CostItem::OwnManaValue) {
+                    let generic = mtg_core::mana::ManaCost::from_symbols([
+                        mtg_core::mana::ManaSymbol::Generic(mana.mana_value()),
+                    ]);
+                    *item = crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, generic));
                 }
             }
         }
@@ -1089,6 +1106,10 @@ mod tests {
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
+            },
+            Keyword::MacroX {
+                name: "firebending".to_owned(),
+                x: Amount::Fixed(1),
             },
         ]
     }

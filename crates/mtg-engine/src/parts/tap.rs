@@ -26,6 +26,21 @@ pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> 
     )
 }
 
+/// The candidates of a crew or saddle cost: those of a tap, less the creatures a rule keeps from crewing when the source
+/// crews.
+pub(super) fn crew_candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> {
+    let crews = crate::keywords::keywords_of(payer.state, payer.source)
+        .iter()
+        .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Crew(_)));
+    let mut found = candidates(payer, filter);
+    if crews {
+        found.retain(|&object| {
+            !crate::prohibit::forbidden(payer.state, crate::prohibit::Doing::Crew { object })
+        });
+    }
+    found
+}
+
 /// The permanent becomes tapped.
 pub(super) const fn event(object: ObjectId) -> Event {
     Event::PermanentTapped { object }

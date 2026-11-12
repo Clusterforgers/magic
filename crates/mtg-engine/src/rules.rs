@@ -661,6 +661,9 @@ pub(crate) struct RulesInForce {
     block_limit_each: BTreeMap<PlayerId, u32>,
     /// The prohibitions (`prohibit.rs`).
     pub(crate) cants: Vec<crate::prohibit::Banned>,
+    /// The spell cost rules of static abilities, with their controllers and sources; those of resolved effects are read
+    /// from the effects (`announce/modifiers.rs`).
+    pub(crate) static_spell_costs: Vec<(Rule, PlayerId, ObjectRef)>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
@@ -1603,10 +1606,13 @@ fn gather(state: &GameState) -> RulesInForce {
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
     // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
     // it had flash if ...", CR 601.2a, 113.6) from there.
+    // A rule that works from the command zone ("as long as ~ is in the command zone or on the battlefield") works
+    // from its owner's command zone.
     let graveyards = state.players().iter().flat_map(|player| {
         [
             (Zone::Graveyard(player.id()), ZoneKind::Graveyard),
             (Zone::Hand(player.id()), ZoneKind::Hand),
+            (Zone::Command(player.id()), ZoneKind::Command),
         ]
     });
     for (zone, from) in [
@@ -1647,6 +1653,11 @@ fn gather(state: &GameState) -> RulesInForce {
                 }
                 if let Ok(lowered) = lower_rule(&scope, rule) {
                     found.put(&lowered, controller, Some(object.reference()));
+                    if matches!(lowered, Rule::SpellCost { .. }) {
+                        found
+                            .static_spell_costs
+                            .push((lowered, controller, object.reference()));
+                    }
                 }
             }
         }
@@ -1709,6 +1720,7 @@ static NONE: RulesInForce = RulesInForce {
     block_limit: None,
     block_limit_each: BTreeMap::new(),
     cants: Vec::new(),
+    static_spell_costs: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
 };
 

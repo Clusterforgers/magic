@@ -1,0 +1,64 @@
+{
+  "oracle_id": "d760f2f0-6653-47c4-bd7b-aab2f398ddf2",
+  "name": "Ruxa, Patient Professor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruxa, Patient Professor",
+      "oracle_fingerprint": "3c96da87ccb2faf1005e33e61ab56157",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "HasAbility": "Any" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "HasAbility": "Any" } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "HasAbility": "Any" } }
+                  ]
+                },
+                "quirk": "AssignsAsUnblocked"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

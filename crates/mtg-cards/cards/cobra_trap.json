@@ -1,16 +1,28 @@
 {
   "oracle_id": "f3953f48-01c0-4647-9e4a-d70708d01e33",
   "name": "Cobra Trap",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cobra Trap",
       "oracle_fingerprint": "6e60532ed0fe1ecf9623fd5b1d0b383b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 171 }
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Destroyed",
+                    "who": "Opponents",
+                    "filter": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{G}"
           }
         },
         {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c3a865a-88b1-43e0-b326-17c45670da54",
   "name": "Niv-Mizzet, Supreme",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Niv-Mizzet, Supreme",
@@ -12,9 +12,16 @@
           "Keyword": { "HexproofFrom": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }] }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 34, "end": 243 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "JumpStart" }]
           }
         }
       ]

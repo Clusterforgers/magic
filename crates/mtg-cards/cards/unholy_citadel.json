@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d410027b-1c22-461e-939d-06a2c851352e",
+  "name": "Unholy Citadel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unholy Citadel",
+      "oracle_fingerprint": "a934c3e825252d653f7a57e9265542bc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Color": "Black" },
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "BandsWithOther": [{ "Supertype": "Legendary" }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

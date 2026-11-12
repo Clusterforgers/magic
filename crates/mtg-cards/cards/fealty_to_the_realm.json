@@ -1,7 +1,7 @@
 {
   "oracle_id": "c0128941-240a-4ca1-9816-b32f47523fdb",
   "name": "Fealty to the Realm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fealty to the Realm",
@@ -14,18 +14,9 @@
             "effects": [{ "BecomeMonarch": {} }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 64, "end": 104 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 105, "end": 173 }
-          }
-        }
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "Monarch" }] } },
+        { "Rule": { "rule": { "MustAttack": "Attached" } } },
+        { "Static": { "affected": "Attached", "mods": [{ "CantAttackYou": "Player" }] } }
       ]
     }
   ]

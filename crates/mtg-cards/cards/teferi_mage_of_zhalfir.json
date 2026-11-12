@@ -15,9 +15,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 72, "end": 142 }
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "Opponents", "action": { "Cast": { "unless": "SorceryTiming" } } }
+            }
           }
         }
       ]

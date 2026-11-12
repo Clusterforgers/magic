@@ -870,6 +870,9 @@ impl<'a> Walker<'a> {
             | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
+            | Pred::AttackedLastTurn
+            | Pred::DealtDamageYet
+            | Pred::DealtCombatDamageYet
             | Pred::Attacking
             | Pred::AttackingAlone
             | Pred::AttackingBattle
@@ -1335,6 +1338,8 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
+            Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -1473,6 +1478,7 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::Mana(_)
                     | CostItem::OwnManaCost
+                    | CostItem::OwnManaValue
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap
@@ -1878,6 +1884,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A macro keyword with X: the table names it with a number, and its expansion is walked as written.
+    fn keyword_macro_x(&mut self, name: &str, x: &Amount) {
+        let Some(abilities) = crate::macros::keyword_abilities_of(name, x) else {
+            self.problem(format!("`{name}` is not a keyword macro with a number"));
+            return;
+        };
+        let saved = std::mem::take(&mut self.scope);
+        for ability in &abilities {
+            self.ability(ability);
+        }
+        self.scope = saved;
+    }
+
     /// A companion condition may only ask about the card itself, since the deck check reads it from the card alone.
     fn companion(&mut self, condition: &crate::companion::DeckCondition) {
         for pred in condition.unreadable() {
@@ -2043,6 +2062,7 @@ impl<'a> Walker<'a> {
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
             Keyword::Macro { name, amount } => self.keyword_macro(name, *amount),
+            Keyword::MacroX { name, x } => self.keyword_macro_x(name, x),
             Keyword::Companion(condition) => self.companion(condition),
             Keyword::PartnerWith(name) => {
                 self.names
@@ -4978,7 +4998,7 @@ impl Walker<'_> {
 
     /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
     /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
-    /// from its owner's hand as though it had flash from the hand.
+    /// from its owner's hand as though it had flash from the hand; a spell cost change also works from the command zone.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
         let c8_eg_itself = matches!(
@@ -4996,6 +5016,8 @@ impl Walker<'_> {
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
+            // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
+            ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),

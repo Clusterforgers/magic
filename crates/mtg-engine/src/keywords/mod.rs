@@ -582,7 +582,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::BandsWithOther(_) => &banding::BandsWithOther,
         Keyword::Splice { .. } => &splice::Splice,
         Keyword::Cleave { .. } => &cleave::Cleave,
-        Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
+        Keyword::Macro { .. } | Keyword::MacroX { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
     }
@@ -1014,6 +1014,10 @@ mod tests {
                 name: "bushido".to_owned(),
                 amount: 2,
             },
+            Keyword::MacroX {
+                name: "firebending".to_owned(),
+                x: mtg_cards::value::Amount::Fixed(1),
+            },
         ]
     }
 
@@ -1135,6 +1139,7 @@ mod tests {
         "Keyword.Splice",
         "Keyword.Cleave",
         "Keyword.Macro",
+        "Keyword.MacroX",
         "Keyword.Station",
         "Keyword.Myriad",
         "Keyword.Squad",

@@ -199,6 +199,14 @@ pub fn keyword_abilities(name: &str, amount: u32) -> Option<Vec<Ability>> {
     serde_json::from_str(&fill(entry.template, &amount, &Ref::This)?).ok()
 }
 
+/// The abilities a keyword macro stands for with any number ("firebending X, where X is ~'s power"); `None` for a name
+/// that is not in the table or a template without a number.
+pub fn keyword_abilities_of(name: &str, x: &Amount) -> Option<Vec<Ability>> {
+    let entry = find(KEYWORDS, name)?;
+    entry.template.contains("$N").then_some(())?;
+    serde_json::from_str(&fill(entry.template, x, &Ref::This)?).ok()
+}
+
 /// The effects a keyword action stands for on the object `on`; `None` for a name that is not in the table.
 pub fn action_effects(name: &str, amount: u32, on: &Ref) -> Option<Vec<Effect>> {
     let amount = Amount::Fixed(i32::try_from(amount).ok()?);

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fed05740-01b2-4c7a-8b97-55e64837c07f",
+  "name": "Feast of Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast of Blood",
+      "oracle_fingerprint": "58d909e6e3ef28394882c81b96bea207",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

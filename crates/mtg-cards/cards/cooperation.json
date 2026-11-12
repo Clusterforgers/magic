@@ -1,19 +1,14 @@
 {
   "oracle_id": "19f7a0f2-aa3f-4253-be44-b08056918a26",
   "name": "Cooperation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cooperation",
       "oracle_fingerprint": "a29796d88021937c39e8a8a59c107722",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 382 }
-          }
-        }
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Banding" }] } }
       ]
     }
   ]

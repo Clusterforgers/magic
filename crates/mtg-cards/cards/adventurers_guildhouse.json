@@ -1,0 +1,32 @@
+{
+  "oracle_id": "bf29b215-d4f5-4641-97ef-b65d4c463e72",
+  "name": "Adventurers' Guildhouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adventurers' Guildhouse",
+      "oracle_fingerprint": "c7c482017905bcdad297c8a1b55e5737",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Color": "Green" },
+                { "Supertype": "Legendary" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "BandsWithOther": [{ "Supertype": "Legendary" }, { "Type": "Creature" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

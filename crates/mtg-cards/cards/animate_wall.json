@@ -1,0 +1,17 @@
+{
+  "oracle_id": "c7a6a165-b709-46e0-ae42-6f69a17c0621",
+  "name": "Animate Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animate Wall",
+      "oracle_fingerprint": "d634aef0f08e9ffb3348b9e28f3befd8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Wall" }] } },
+        {
+          "Rule": { "rule": { "Combat": { "who": "Attached", "quirk": "AttackDespiteDefender" } } }
+        }
+      ]
+    }
+  ]
+}
