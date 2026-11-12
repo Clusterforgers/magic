@@ -11,6 +11,8 @@
 # Test binaries and the web checks run side by side within a thread budget: the cores (MTG_TEST_THREADS) split among
 # the checks running, the biggest binary first with the most threads (RUST_TEST_THREADS fixes them); a binary is killed
 # after MTG_TEST_TIMEOUT minutes (default 40; a float is fine). CARGO_BUILD_JOBS (default 4) bounds the compiles.
+# Each Postgres test binary gets a throwaway server (docker); without docker or with MTG_PG_SHARED=1 they share
+# DATABASE_URL one at a time under a machine-wide lock.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -40,7 +42,7 @@ fi
 
 phases=("fmt" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
 declare -A secs=()
-trap 'kill_units; [[ -z "$run_dir" ]] || rm -rf "$run_dir"; rm -f "$lease_dir/run.$$"' EXIT
+trap 'kill_units; pg_stop_all; [[ -z "$run_dir" ]] || rm -rf "$run_dir"; rm -f "$lease_dir/run.$$"' EXIT
 trap 'exit 130' INT TERM
 
 # --- Diff --------------------------------------------------------------------------------------------------------
@@ -109,6 +111,7 @@ case "$mode" in
     else
       close_over_dependents
     fi
+    for name in "${!input_hit[@]}"; do hit[$name]=1; done
     ;;
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
@@ -256,8 +259,9 @@ if ((${#other_sel[@]} + ${#pg_sel[@]})); then
   phase "test build" cargo test "${pkgs[@]}" --quiet --no-run --message-format=json-render-diagnostics >"$json"
   reap_done
   if ((${#pg_sel[@]})); then
-    # Reuse a Postgres that is already listening (e.g. another worktree started one).
-    if command -v docker >/dev/null && [[ -f docker-compose.yml ]] && ! (exec 3<>/dev/tcp/127.0.0.1/5432) 2>/dev/null; then
+    pg_pick_mode
+    # Shared mode: reuse a Postgres that is already listening (e.g. another worktree started one).
+    if [[ "$pg_mode" == shared ]] && command -v docker >/dev/null && [[ -f docker-compose.yml ]] && ! (exec 3<>/dev/tcp/127.0.0.1/5432) 2>/dev/null; then
       docker compose up -d --wait db >/dev/null
     fi
     export DATABASE_URL="${DATABASE_URL:-postgres://magic:magic@localhost:5432/magic}"

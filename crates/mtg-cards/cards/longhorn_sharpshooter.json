@@ -1,7 +1,7 @@
 {
   "oracle_id": "6a0a7b02-10e6-4dbf-8356-659095519480",
   "name": "Longhorn Sharpshooter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Longhorn Sharpshooter",
@@ -9,7 +9,12 @@
       "abilities": [
         { "Keyword": "Reach" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 70 } }
+          "Triggered": {
+            "when": { "Did": { "action": "Plotted", "what": ["This"] } },
+            "from": "Exile",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
         },
         { "Keyword": { "Plot": "{3}{R}" } }
       ]

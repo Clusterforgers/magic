@@ -124,7 +124,8 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
             | TriggerPattern::Untapped { .. }
             | TriggerPattern::Unattached { .. }
     );
-    if triggers::targeted_itself(&when) {
+    // "When the fourth plan counter is put on this enchantment, sacrifice it": the card the counters are on.
+    if triggers::targeted_itself(&when) || matches!(when, TriggerPattern::NthCounterPut { .. }) {
         r.it = Some(Ref::This);
     }
     note_attacks_and_casts(r, &when);

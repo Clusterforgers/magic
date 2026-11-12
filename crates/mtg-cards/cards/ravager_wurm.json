@@ -1,7 +1,7 @@
 {
   "oracle_id": "40b872b5-3ec2-4fcc-b152-91966f67c2be",
   "name": "Ravager Wurm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ravager Wurm",
@@ -9,9 +9,37 @@
       "abilities": [
         { "Keyword": "Riot" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 74, "end": 252 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Land" }, { "HasAbility": "NonManaActivated" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -244,11 +244,12 @@ enum Happened {
     CoinFlipWon { player: PlayerId },
     /// A player won a clash.
     W15cClashWon { player: PlayerId },
-    /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces.
+    /// A player rolled a die: `first` for the first die of a roll, `highest` when it rolled its number of faces, and the result.
     DiceRolled {
         player: PlayerId,
         first: bool,
         highest: bool,
+        result: u32,
     },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
@@ -1245,6 +1246,7 @@ fn about_players_and_permanents(
             player: *player,
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
+            result: *result,
         }),
         Event::Clashed {
             player, won: true, ..
@@ -1622,11 +1624,17 @@ fn matching_player_action(
             && (!*fully || *last))
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (
-            TriggerPattern::DiceRolled { who, highest },
+            TriggerPattern::DiceRolled { who, results, .. },
+            Happened::DiceRolled { player, result, .. },
+        ) if !results.is_empty() => (by(who, player) && results.contains(result))
+            .then(|| counted(state, vec![Target::Player(*player)], *result)),
+        (
+            TriggerPattern::DiceRolled { who, highest, .. },
             Happened::DiceRolled {
                 player,
                 first,
                 highest: rolled_highest,
+                ..
             },
         ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
@@ -1644,8 +1652,11 @@ fn matching_player_action(
                 && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
             .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
-        (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, .. })
-        | (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
+        // The number rolled is the amount ("if you roll a 6").
+        (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, result }) => {
+            by(who, player).then(|| counted(state, vec![Target::Player(*player)], *result))
+        }
+        (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
         | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
@@ -1989,6 +2000,27 @@ fn matching_permanents(
                 && before < number
                 && *number <= after
                 && !crate::saga::w2b_read_past(state, on.id, *number)
+                && picks(&Selector::this(), on)?)
+            .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
+        }
+        // "When the fourth plan counter is put on ~" triggers when counters of its kind take the permanent from below the
+        // number to the number or more, as a chapter does.
+        (
+            TriggerPattern::NthCounterPut { counter, number },
+            Happened::Counters {
+                on,
+                counter: kind,
+                delta,
+                before,
+                ..
+            },
+        ) => {
+            let on = object(*on)?;
+            let after = before.saturating_add(delta.unsigned_abs());
+            (*delta > 0
+                && kind == counter
+                && before < number
+                && *number <= after
                 && picks(&Selector::this(), on)?)
             .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }

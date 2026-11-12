@@ -1,7 +1,7 @@
 {
   "oracle_id": "6ded956d-30ed-49ca-8653-cbaaae676b0c",
   "name": "Imminent Doom",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Imminent Doom",
@@ -14,9 +14,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 51, "end": 250 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Eq",
+                      "to": { "Counters": { "on": "This", "counter": { "Other": "doom" } } }
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": { "Other": "doom" } } }
+            ]
           }
         }
       ]

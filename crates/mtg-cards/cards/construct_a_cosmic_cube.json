@@ -1,7 +1,7 @@
 {
   "oracle_id": "369aa9a6-af8a-432c-adff-ced2bb203dc7",
   "name": "Construct a Cosmic Cube",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Construct a Cosmic Cube",
@@ -31,9 +31,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 144, "end": 355 }
+          "Triggered": {
+            "when": { "NthCounterPut": { "counter": { "Other": "plan" }, "number": 7 } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "Reflexive": {
+                  "targets": [{ "what": "Opponent" }],
+                  "effects": [{ "ControlPlayer": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
           }
         }
       ]

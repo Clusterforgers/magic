@@ -41,6 +41,7 @@ gate_case "sqlx metadata" - mtg-db "mtg-cli mtg-server" none -- .sqlx/query-prob
 gate_case "two crates" mtg-engine mtg-db "mtg-cli mtg-protocol mtg-server mtg-testkit" none \
   -- crates/mtg-engine/src/lib.rs crates/mtg-db/src/lib.rs
 gate_case "web" - - - changed -- web/src/lib/flash.ts
+gate_case "protocol fixture" mtg-protocol - - changed -- web/src/protocol/fixtures/probe.json
 gate_case "root lock" "mtg-cards mtg-core mtg-engine mtg-import mtg-protocol mtg-testkit" "mtg-cli mtg-db mtg-server" - full -- Cargo.lock
 
 # --- Slow list -----------------------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Goal: the closing report of `scripts/check.sh` returns 0 and prints its listings whole under pipefail, however long
-# the slow-test warnings and the unit list are, and a failed unit still lists its failed tests.
+# the slow-test warnings and the unit list are, names every unit with its seconds and the 20 slowest tests, and a failed
+# unit still lists its failed tests.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 # shellcheck source=probe.bash
@@ -44,12 +45,17 @@ for size in "1 1" "6 3" "40 200"; do
   read -r units tests <<<"$size"
   report "$units" "$tests"
   check "exit code ($size)" "$rc" 0
-  check "slowest units line ($size)" "$(grep -c '^slowest units: ' <<<"$out")" 1
+  check "units line ($size)" "$(grep -c '^units: ' <<<"$out")" 1
+  check "every unit ($size)" "$(grep '^units: ' <<<"$out" | grep -o ' [0-9]*s' | wc -l)" "$units"
   want=$((units * tests < 20 ? units * tests : 20))
-  check "warning lines ($size)" "$(grep -c '^  unit' <<<"$out")" "$want"
+  check "warning lines ($size)" "$(sed '/^slowest tests:/,$d' <<<"$out" | grep -c '^  unit')" "$want"
+  check "slowest test lines ($size)" "$(sed -n '/^slowest tests:/,/^units:/p' <<<"$out" | grep -c '^  unit')" "$want"
 done
 report 40 200
-check "slowest first" "$(sed -n 's/^slowest units: \([^ ]*\) .*/\1/p' <<<"$out")" unit40
+check "slowest unit first" "$(sed -n 's/^units: \([^ ]*\) .*/\1/p' <<<"$out")" unit40
+echo "test probe::slowest ... ok <99.0s>" >>"$scratch/unit7.log"
+strict report_units
+check "slowest test first" "$(sed -n '/^slowest tests:/{n;p;}' <<<"$out")" "  unit7: probe::slowest 99.0s"
 
 check "first reads to the end" "$( (seq 1 200000 | first 3 | tr '\n' ' ') && echo ok)" "1 2 3 ok"
 

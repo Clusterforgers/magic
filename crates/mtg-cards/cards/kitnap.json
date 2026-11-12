@@ -1,7 +1,7 @@
 {
   "oracle_id": "a1bd1e83-40ac-449f-838c-ef308f275a5d",
   "name": "Kitnap",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kitnap",
@@ -10,9 +10,25 @@
         { "Keyword": { "Gift": "Card" } },
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 135, "end": 241 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Tap": { "what": "Attached" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 0 } },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": "Attached",
+                        "counter": { "Other": "stun" },
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2016 # the cases hand code to `eval` in single quotes
 # Goal: the unit scheduler of `scripts/check.sh` runs binaries side by side within the thread budget, one Postgres unit
-# at a time, stops at the first failure with the failing names last, and kills a unit over the run cap.
+# at a time on the shared server or side by side on servers of their own, stops at the first failure with the failing
+# names last, and kills a unit over the run cap.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 # shellcheck source=probe.bash
@@ -60,6 +61,23 @@ check "budget: threads taper" "$(cat "$scratch"/thr.u{1,2,3,4,5,6,7} | tr '\n' '
 sched 'for i in 1 2 3; do unit p$i pg "$(work p$i 0.3)"; done'
 check "postgres units run one at a time" "$(peak)" 1
 check "postgres units all run" "$(grep -c ' e$' "$scratch/events")" 3
+
+# With a server each, the Postgres units run side by side past a held lock, each on its own URL, and stop their servers.
+pg_start() { echo "srv$BASHPID postgres://fake/$BASHPID"; }
+pg_stop() { echo "$1" >>"$scratch/stopped"; }
+: >"$scratch/events"
+: >"$scratch/stopped"
+flock "$pg_lock" sleep 3 &
+sleep 0.3
+pg_mode=own sched 'for i in 1 2 3; do unit p$i pg "$(work p$i 0.5); echo \$DATABASE_URL >'"$scratch"'/url.p$i"; done'
+kill %1 2>/dev/null || true
+check "own servers: side by side" "$(peak)" 3
+check "own servers: no lock wait" "$((elapsed < 2 ? 1 : 0))" 1
+check "own servers: one URL each" "$(sort -u "$scratch"/url.p? | grep -c '^postgres://fake/')" 3
+check "own servers: all stopped" "$(sort -u "$scratch/stopped" | wc -l)" 3
+pg_start() { return 1; }
+pg_mode=own sched 'unit p1 pg "touch '"$scratch"'/ran.p1"'
+check "own servers: a server that does not start fails the unit" "$rc $(grep -c 'could not start a Postgres server' <<<"$out") $([[ -e "$scratch/ran.p1" ]] && echo ran || echo not)" "1 1 not"
 
 # Another check holds the Postgres lock: the other units run meanwhile and the Postgres unit follows.
 : >"$scratch/events"

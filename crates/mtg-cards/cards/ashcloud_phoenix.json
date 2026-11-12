@@ -1,7 +1,7 @@
 {
   "oracle_id": "fb2d7c3d-b68f-410e-9a73-cfcbfe702ade",
   "name": "Ashcloud Phoenix",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashcloud Phoenix",
@@ -9,7 +9,12 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 90 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Move": { "what": "This", "to": { "BattlefieldFaceDown": { "under": "You" } } } }
+            ]
+          }
         },
         { "Keyword": { "Morph": "{4}{R}{R}" } },
         {
