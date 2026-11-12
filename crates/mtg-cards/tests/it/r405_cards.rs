@@ -79,6 +79,18 @@ fn compiled_text() {
 
 #[rstest]
 #[case("Titans' Nest")]
+#[case("Unblinking Observer")]
+#[case("Magewright's Stone")]
+#[case("Break the Ice")]
+#[case("Freya Crescent")]
+#[case("Throne of Eldraine")]
+#[case("Animal Attendant")]
+#[case("Enthralling Hold")]
+#[case("Dream Leash")]
+#[case("Infinite Coursework")]
+#[case("Biblioplex Tomekeeper")]
+#[case("Vizier of the Anointed")]
+#[case("Case File Auditor")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -101,6 +113,26 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 
 #[rstest]
 #[case::any_spell("Titans' Nest", r#""Colored","#, "")]
+#[case::x_allowed("Titans' Nest", r#","NoXInCost""#, "")]
+#[case::no_disturb("Unblinking Observer", r#""Disturb""#, r#""Flashback""#)]
+#[case::any_creature("Magewright's Stone", r#",{"HasAbility":"TapCost"}"#, "")]
+#[case::mana_ability("Magewright's Stone", r#""TapCost""#, r#""Mana""#)]
+#[case::snow_only("Break the Ice", r#",{"CouldProduce":"Colorless"}"#, "")]
+#[case::produce_green("Break the Ice", r#""CouldProduce":"Colorless""#, r#""CouldProduce":"Green""#)]
+#[case::any_ability("Freya Crescent", r#"{"Ability":{"facts":["Equip"]}}"#, r#"{"Ability":{}}"#)]
+#[case::multicolored("Throne of Eldraine", r#""Monocolored""#, r#""Colored""#)]
+#[case::any_color("Throne of Eldraine", r#","chosen_color":true"#, "")]
+#[case::any_mana_draws("Throne of Eldraine", r#","ChosenColorOnly""#, "")]
+#[case::humans_too("Animal Attendant", r#","not_subtypes":["Human"]"#, "")]
+#[case::not_elves("Animal Attendant", r#""Human""#, r#""Elf""#)]
+#[case::tapped_hold("Enthralling Hold", r#""Untapped""#, r#""Tapped""#)]
+#[case::tapped_leash("Dream Leash", r#""Untapped""#, r#""Tapped""#)]
+#[case::prepared("Infinite Coursework", r#""Unprepare""#, r#""Prepare""#)]
+#[case::two_unprepares("Biblioplex Tomekeeper", r#""Prepare""#, r#""Unprepare""#)]
+#[case::embalm_only("Vizier of the Anointed", r#"{"HasKeywordNamed":"Eternalize"},"#, "")]
+#[case::any_activation("Vizier of the Anointed", r#""ActivatedEternalizeOrEmbalm""#, r#""ActivatedExhaust""#)]
+#[case::any_case_spell("Case File Auditor", r#""Subtype":"Case""#, r#""Subtype":"Clue""#)]
+#[case::scry_on_solve("Case File Auditor", r#""SolvedCase""#, r#""Scried""#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(
@@ -108,5 +140,19 @@ fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case
         Verdict::Accepted,
         "{name}: {to}: {:#?}",
         report.clauses
+    );
+}
+
+/// Ronin keeps its sacrifice of an attached Equipment by hand; its mana ability reads back alone.
+#[test]
+fn ronin_reads_its_mana_ability() {
+    let report = report("Ronin, Shadow Stalker");
+    assert!(
+        matches!(
+            report.clauses[0].state,
+            mtg_cards::proposal::ClauseState::Reads { .. }
+        ),
+        "{:?}",
+        report.clauses[0].state
     );
 }

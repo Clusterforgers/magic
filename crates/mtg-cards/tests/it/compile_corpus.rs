@@ -571,6 +571,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::AdditionalCost { .. }
             | Ability::FreeCast { .. }
             | Ability::CastOnly { .. }
+            | Ability::CantTargetAsCast { .. }
             | Ability::OpeningHand
             | Ability::OpeningHandWith { .. }
             | Ability::FreeActivation { .. }

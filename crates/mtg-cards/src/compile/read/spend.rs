@@ -762,9 +762,9 @@ pub(super) fn more(text: &str) -> Vec<String> {
             });
     }
     // "cast an Equipment spell or activate an equip ability".
-    if let Some(head) = text.strip_suffix(" or activate equip abilities") {
+    if let Some((head, tail)) = text.split_once(" or activate equip abilities") {
         return singular(head)
-            .map(|one| format!("{one} or activate an equip ability"))
+            .map(|one| format!("{one} or activate an equip ability{tail}"))
             .into_iter()
             .collect();
     }

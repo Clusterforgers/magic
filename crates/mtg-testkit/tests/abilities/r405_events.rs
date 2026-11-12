@@ -1,7 +1,6 @@
 //! Goal: the r40-5 trigger events play as printed at tables of two, three and four seats: Vizier of the Anointed draws
 //! when its controller activates an embalm ability and not when an opponent does; Case File Auditor triggers when its
-//! controller solves a Case; Infinite Coursework taps the creature it enters on and unprepares it; and the log replays
-//! to the state it was played to.
+//! controller solves a Case; and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;

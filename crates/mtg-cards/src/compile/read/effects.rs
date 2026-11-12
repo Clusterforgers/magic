@@ -1725,6 +1725,12 @@ fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce>
             Produce::AnyColor(count)
         } else if r.words("one mana of the chosen color") {
             Produce::ChosenColor(1)
+        } else if let Some(count) = r.attempt(|r| {
+            let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+            r.need("mana of the chosen color")?;
+            Some(count)
+        }) {
+            Produce::ChosenColor(count)
         } else if let Some(mana) = r.attempt(|r| {
             let mana = mana_type(r.symbol()?)?;
             r.need("or one mana of the chosen color")?;

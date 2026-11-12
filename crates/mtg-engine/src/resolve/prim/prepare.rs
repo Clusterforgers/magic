@@ -55,7 +55,7 @@ pub(super) fn run_unprepare(cx: &Cx<'_>, effect: &Effect) -> Result<Run, Resolve
 
 #[cfg(test)]
 mod tests {
-    //! Goal: preparing makes each unprepared prepare card it names on the battlefield prepared, in the order the reference lists them, and passes over a prepared one, a card of another layout, a card in another zone and a player; it binds nothing and goes on to the next effect, and it refuses another effect by name.
+    //! Goal: preparing makes each unprepared prepare card it names on the battlefield prepared, in the order the reference lists them, and passes over a prepared one, a card of another layout, a card in another zone and a player; unpreparing makes only prepared ones unprepared; each binds nothing and goes on to the next effect, and refuses another effect by name.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -195,6 +195,40 @@ mod tests {
         apply_event(&mut game, &Event::Prepared { object: owl.id }).unwrap();
         assert!(apply_event(&mut game, &Event::Prepared { object: owl.id }).is_err());
         apply_event(&mut game, &Event::Unprepared { object: owl.id }).unwrap();
+    }
+
+    /// Runs `Effect::Unprepare` from the json with seat 0's Source.
+    fn run_unprepare_effect(game: &GameState, json: &str) -> Vec<Event> {
+        let effect: Effect = serde_json::from_str(json).unwrap();
+        let source = named(game, "Source");
+        let resolving = Resolving::begin(source.id);
+        let cx = Cx {
+            scope: Scope::announcing(game, ME, source),
+            resolving: &resolving,
+        };
+        let Run::Done { events, next, .. } = run_unprepare(&cx, &effect).unwrap() else {
+            panic!("unpreparing needs no answer");
+        };
+        assert_eq!(next, Next::Sibling);
+        events
+    }
+
+    #[rstest]
+    #[case::the_prepared_one(r#"{"Unprepare":{"what":{"Each":[{"Named":"Owl Creature"}]}}}"#, 1)]
+    #[case::an_unprepared_one(r#"{"Unprepare":{"what":{"Each":[{"Named":"Fox Creature"}]}}}"#, 0)]
+    #[case::every_permanent(r#"{"Unprepare":{"what":{"Each":[{"ControlledBy":"You"}]}}}"#, 1)]
+    #[case::a_player(r#"{"Unprepare":{"what":"You"}}"#, 0)]
+    fn unpreparing_unprepares_only_prepared_permanents(#[case] json: &str, #[case] count: usize) {
+        let mut game = game();
+        let owl = named(&game, "Owl");
+        apply_event(&mut game, &Event::Prepared { object: owl.id }).unwrap();
+        let events = run_unprepare_effect(&game, json);
+        assert_eq!(events.len(), count);
+        for event in &events {
+            assert_eq!(*event, Event::Unprepared { object: owl.id });
+            apply_event(&mut game, event).unwrap();
+        }
+        assert!(!game.object(owl.id).unwrap().permanent().unwrap().prepared() || count == 0);
     }
 
     #[test]

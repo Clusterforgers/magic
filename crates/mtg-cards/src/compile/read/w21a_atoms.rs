@@ -332,6 +332,14 @@ fn w21a_amount_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// "with eternalize or embalm"; read before the keyword suffixes, which would take "with eternalize" alone.
+pub(super) fn eternalize_or_embalm() -> Pred {
+    Pred::AnyOf(vec![
+        Pred::HasKeywordNamed("Eternalize".to_owned()),
+        Pred::HasKeywordNamed("Embalm".to_owned()),
+    ])
+}
+
 /// "that is snow or could produce {C}".
 fn snow_or_colorless() -> Pred {
     Pred::AnyOf(vec![
@@ -354,6 +362,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::Targeting(objects) => {
             format!("that targets {}", w21a_a(&g13a_in_play(objects, form))?)
         }
+        pred if *pred == eternalize_or_embalm() => "with eternalize or embalm".to_owned(),
         pred if *pred == snow_or_colorless() && !form.plural() => {
             "that is snow or could produce {C}".to_owned()
         }

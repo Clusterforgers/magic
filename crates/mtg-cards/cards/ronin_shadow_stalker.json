@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8ceb1acf-5ff3-4f1a-af04-9f07ad454526",
+  "name": "Ronin, Shadow Stalker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ronin, Shadow Stalker",
+      "oracle_fingerprint": "e347f35dfb84ead80ee2e72d96018640",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 2 }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [
+                    { "Spell": { "subtypes": ["Equipment"] } },
+                    { "Ability": { "facts": ["Equip"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 148, "end": 268 }
+          }
+        }
+      ]
+    }
+  ]
+}

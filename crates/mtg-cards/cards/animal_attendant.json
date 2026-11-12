@@ -1,0 +1,33 @@
+{
+  "oracle_id": "787e6cc6-d97a-4229-97d1-ec2377d138d3",
+  "name": "Animal Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animal Attendant",
+      "oracle_fingerprint": "a5d6adaf4defd1632fd292a9dbee9214",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"], "not_subtypes": ["Human"] },
+                        "counters": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

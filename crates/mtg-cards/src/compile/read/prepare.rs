@@ -44,3 +44,19 @@ pub fn becomes_prepared_text(effect: &Effect, what: &str) -> Option<String> {
         _ => None,
     }
 }
+
+/// "tap enchanted creature. It becomes unprepared." for "tap enchanted creature and enchanted creature becomes
+/// unprepared": the object a step names is "it" in a sentence of its own after it.
+pub fn r405_it_becomes(texts: &[String]) -> Vec<String> {
+    texts
+        .iter()
+        .filter_map(|text| {
+            let (head, tail) = text.split_once(" and enchanted creature becomes ")?;
+            // The step before names the same enchanted object, which the second step calls a creature.
+            let head = head
+                .strip_suffix(" enchanted permanent")
+                .or_else(|| head.strip_suffix(" enchanted creature"))?;
+            Some(format!("{head} enchanted creature. It becomes {tail}"))
+        })
+        .collect()
+}

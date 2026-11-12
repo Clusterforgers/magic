@@ -14,7 +14,11 @@ pub(super) fn r405_cant_target(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("you can't choose")?;
     (r.word("a") || r.word("an")).then_some(())?;
     let what = phrase(r, Form::Subject)?;
-    r.need(TAIL)?;
+    r.need("as")?;
+    // "this spell's" is the source and its possessive in the tokens.
+    let own = r.words("this spell's") || (r.source() && r.punct('\'') && r.word("s"));
+    own.then_some(())?;
+    r.need("target as you cast it")?;
     Some(Ability::CantTargetAsCast { what })
 }
 
