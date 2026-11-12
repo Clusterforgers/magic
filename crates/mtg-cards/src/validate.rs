@@ -6135,6 +6135,8 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
                         || (keyword.eq_ignore_ascii_case("Typecycling")
                             && names_typecycling(clause))
                         || (keyword.eq_ignore_ascii_case("Landwalk") && names_landwalk(clause))
+                        // Scryfall lists `Plot` for a card that plots another ("It becomes plotted").
+                        || (keyword.eq_ignore_ascii_case("Plot") && names_keyword(clause, "plotted"))
                 }),
             _ => false,
         })
