@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7ce28a3c-5f93-4434-918e-1e74f9fc71d8",
+  "name": "Time to Reflect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time to Reflect",
+      "oracle_fingerprint": "79325fc400b13b2fbf3e7f424517c339",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "BlockedThisTurn": [{ "Subtype": "Zombie" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -189,6 +189,13 @@ pub(super) fn did_happened(
             found.push(did(Action::CollectedEvidence, Some(*player), None));
         }
         Event::Clashed { player, won, .. } => found.push(clashed(*player, *won)),
+        Event::VotesFinished { .. } => found.push(Happened::Did {
+            action: Action::FinishedVoting,
+            player: None,
+            object: None,
+            ability: None,
+            amount: u32::try_from(post.r379_votes.len()).unwrap_or(u32::MAX),
+        }),
         Event::Discovered {
             player,
             value,

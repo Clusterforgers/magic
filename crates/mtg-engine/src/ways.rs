@@ -175,12 +175,17 @@ pub(crate) fn cost_words(mana: &ManaCost, parts: &[Part]) -> String {
 }
 
 /// Whether `player` can give what the parts of a way take besides mana for the card `id`.
+/// A part whose filter compares to X ("a red card with mana value X") is payable when some X lets it be paid.
 fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Part]) -> bool {
-    parts.is_empty()
-        || Price::casting(parts.to_vec())
-            .claimed(state, player, id)
-            .is_some()
+    let price = Price::casting(parts.to_vec());
+    if parts.iter().any(Part::r379_filter_reads_x) {
+        return (0..=R379_MOST_X).any(|x| price.at(x).claimed(state, player, id).is_some());
+    }
+    parts.is_empty() || price.claimed(state, player, id).is_some()
 }
+
+/// The largest X tried for a part whose filter compares to X, as the announcement of X allows.
+const R379_MOST_X: u32 = 1_000;
 
 /// The help `base` offers when the spell `id` is cast with `parts` as costs besides its mana: what the parts take is not
 /// there to help pay. Before the picks are made the player is assumed to give what leaves the most help.
@@ -690,7 +695,9 @@ fn keyword_way(
             | CastWay::Mutate
             | CastWay::Prototype
     ) {
-        cast_cost(cost)?
+        // A part that counts X is paid at the X of the mana cost, announced for the cast (Conflagrate's flashback).
+        let counted = state.object(id)?.card().x_in_cost > 0;
+        cast_cost_counting(cost, counted)?
     } else if matches!(
         way,
         CastWay::Cleave | CastWay::Freerunning | CastWay::Foretold

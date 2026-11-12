@@ -423,6 +423,7 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    *state.r379_cast_game.entry(player).or_insert(0) += 1;
     if state
         .objects
         .get(&object)

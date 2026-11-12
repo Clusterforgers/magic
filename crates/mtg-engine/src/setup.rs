@@ -549,6 +549,8 @@ impl GameState {
             loyalty_used: BTreeSet::new(),
             modes_ever: BTreeSet::new(),
             tallies: Tallies::default(),
+            r379_votes: Vec::new(),
+            r379_cast_game: BTreeMap::new(),
             triggers_possible: false,
             statics_possible: false,
             layers: LayersCache::default(),

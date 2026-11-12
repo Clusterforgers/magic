@@ -442,6 +442,9 @@ pub enum Pred {
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         combat: bool,
     },
+    /// Blocked or was blocked this turn by a creature the selector matches as it was when the block was declared ("that
+    /// blocked or was blocked by a Zombie this turn"); by any creature when the selector is empty.
+    BlockedThisTurn(Selector),
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),

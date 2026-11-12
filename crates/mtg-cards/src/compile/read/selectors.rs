@@ -711,6 +711,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     .or_else(|| super::w21a_atoms::w21a_suffix(r))
     .or_else(|| super::w19d_suffixes::w19d_suffix(r))
     .or_else(|| super::r283_atoms::r283_suffix(r, form))
+    .or_else(|| super::r379_atoms::r379_suffix(r, form))
 }
 
 /// "greater power", "power less than this creature's power": a stat compared with the same stat of the source.
@@ -860,7 +861,8 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => {
             return super::w21a_atoms::w21a_suffix_text(pred, form)
-                .or_else(|| super::r283_atoms::r283_suffix_text(pred, form));
+                .or_else(|| super::r283_atoms::r283_suffix_text(pred, form))
+                .or_else(|| super::r379_atoms::r379_suffix_text(pred, form));
         }
     })
 }

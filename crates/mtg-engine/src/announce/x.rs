@@ -22,7 +22,7 @@ use crate::triggers::{PendingTrigger, x_read};
 use crate::ways;
 
 /// The most the search for the largest X goes on: a payment this large is more mana than any game has.
-const MOST_X: u32 = 1_000;
+pub(super) const MOST_X: u32 = 1_000;
 
 /// The X a spell or ability asks for.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -101,6 +101,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if work.choices.way.is_some_and(CastWay::replaces_cost)
         && ctx.needs.x != Some(XCost::Parts)
         && alternative_symbols(ctx, work.choices.way) == Some(0)
+        && !parts::r379_reads_x(ctx, work.choices)
     {
         work.choices.x = Some(0);
         work.done.x = true;
@@ -126,6 +127,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     };
     // A value of X that leaves a target specification without a target cannot be announced (CR 601.2b, 601.2c).
     let Some(offer) = Offer::of(ctx, work.choices, max) else {
+        return Some(Next::Drop);
+    };
+    let Some(offer) = offer.r379_payable(ctx, work.choices) else {
         return Some(Next::Drop);
     };
     // Nothing to choose between: X is the one value left.
@@ -295,6 +299,23 @@ pub(crate) fn least_of(cost: &mtg_cards::cost::Cost) -> u32 {
 }
 
 impl Offer {
+    /// The offer less the values of X at which a part of the cost whose filter compares to X cannot be paid ("Exile a red
+    /// card with mana value X from your hand"); `None` when no value is left.
+    fn r379_payable(self, ctx: &Ctx<'_>, choices: &Choices) -> Option<Offer> {
+        if !parts::r379_filter_reads_x(ctx, choices) {
+            return Some(self);
+        }
+        let met: Vec<u32> = (self.min..=self.max)
+            .filter(|x| self.except.binary_search(x).is_err())
+            .filter(|x| total_payable(ctx, choices, *x))
+            .collect();
+        let (min, max) = (*met.first()?, *met.last()?);
+        let except = (min..=max)
+            .filter(|x| met.binary_search(x).is_err())
+            .collect();
+        Some(Offer { min, max, except })
+    }
+
     /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
     /// none. A target specification that does not read X is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
@@ -388,12 +409,23 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 .permanent()?
                 .counters_of(&CounterKind::Loyalty),
         ),
+        // What a filter that compares to X can take is no run of values from 0: every value is tried.
+        XCost::Mana { .. } if parts::r379_filter_reads_x(ctx, choices) => {
+            (0..=MOST_X).rev().find(|x| total_payable(ctx, choices, *x))
+        }
         XCost::Mana { .. } => {
             let payable = largest_payable(ctx, choices)?;
             Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
         }
         XCost::Parts => parts::most(ctx, choices),
     }
+}
+
+/// Whether the player can pay the total cost with X at `x`.
+fn total_payable(ctx: &Ctx<'_>, choices: &Choices, x: u32) -> bool {
+    let mut trial = choices.clone();
+    trial.x = Some(x);
+    total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
 }
 
 /// The largest X whose total cost the player can pay. More X is more generic mana, so what can be paid for is a run of

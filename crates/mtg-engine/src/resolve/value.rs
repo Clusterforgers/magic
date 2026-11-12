@@ -473,7 +473,10 @@ impl<'a> Scope<'a> {
         if last
             && matches!(
                 what,
-                TurnTally::DungeonsCompleted | TurnTally::DamageDealtTo | TurnTally::CountersPut
+                TurnTally::DungeonsCompleted
+                    | TurnTally::SpellsCastThisGame
+                    | TurnTally::DamageDealtTo
+                    | TurnTally::CountersPut
             )
         {
             return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
@@ -504,6 +507,12 @@ impl<'a> Scope<'a> {
             TurnTally::DungeonsCompleted => {
                 let total: u32 = (self.players(who)?.into_iter())
                     .map(|player| self.state.w11d_completed(player))
+                    .sum();
+                return Ok(i64::from(total));
+            }
+            TurnTally::SpellsCastThisGame => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.r379_cast_game.get(&player).copied().unwrap_or(0))
                     .sum();
                 return Ok(i64::from(total));
             }
@@ -1808,6 +1817,7 @@ impl<'a> Scope<'a> {
                 to,
                 combat,
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
+            Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
             Pred::DamagedBy(named) => self.objects(named)?.iter().any(|source| {
                 state.damaged_by(reference, *source)
                     || state.damaged_by_departed(reference, *source)
@@ -2066,6 +2076,7 @@ impl<'a> Scope<'a> {
             Amount::CardsAbove { filter, directly } => self.r287_cards_above(filter, *directly)?,
             Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
+            Amount::GreatestCast { who, of, stat } => self.r379_greatest_cast(who, of, *stat)?,
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
             Amount::Distinct { of, stat } => self.w2c_distinct(of, *stat)?,
             Amount::CardTypes(of) => self.card_types_among(of)?,
@@ -2289,6 +2300,38 @@ impl<'a> Scope<'a> {
     }
 
     /// A characteristic of each object the selector matches that has one.
+    fn r379_greatest_cast(
+        &self,
+        who: &Ref,
+        of: &Selector,
+        stat: StatKind,
+    ) -> Result<i64, ResolveError> {
+        let players = self.players(who)?;
+        let mut greatest = 0;
+        for (_, _, shot) in self
+            .state
+            .tallies
+            .logged
+            .iter()
+            .filter(|(event, player, _)| {
+                *event == TallyEvent::SpellCast && players.contains(player)
+            })
+        {
+            // Each spell is judged as it was cast, by its own snapshot put first.
+            let mut one = self.clone();
+            one.as_was = true;
+            one.snapshots.insert(0, shot);
+            let reference = shot.reference();
+            if !of.is_empty() && !one.selects(of, reference)? {
+                continue;
+            }
+            if let Some(value) = one.seen(reference).and_then(|seen| Self::stat(&seen, stat)) {
+                greatest = greatest.max(value);
+            }
+        }
+        Ok(greatest)
+    }
+
     fn stats(&self, of: &Selector, stat: StatKind) -> Result<Vec<i64>, ResolveError> {
         Ok(self
             .matching(of)?
@@ -2724,6 +2767,28 @@ impl<'a> Scope<'a> {
         }))
     }
 
+    /// Whether "you" voted, in the vote that triggered the ability, for a choice a player `with` names voted for (`same`),
+    /// or for a choice none of them voted for; false outside such a trigger.
+    fn r379_voted_as(&self, with: &Ref, same: bool) -> Result<bool, ResolveError> {
+        let others = self.players(with)?;
+        let Some(ballots) = self
+            .cause
+            .and_then(|cause| usize::try_from(cause.amount).ok()?.checked_sub(1))
+            .and_then(|at| self.state.r379_votes.get(at))
+        else {
+            return Ok(false);
+        };
+        let theirs: Vec<u32> = ballots
+            .iter()
+            .filter(|(voter, _)| others.contains(voter))
+            .map(|(_, choice)| *choice)
+            .collect();
+        Ok(ballots
+            .iter()
+            .filter(|(voter, _)| *voter == self.controller)
+            .any(|(_, choice)| theirs.contains(choice) == same))
+    }
+
     /// Whether a player `who` names searched their own zone of the kind earlier in the resolution (also for no card found).
     fn searched(&self, who: &Ref, zone: ZoneKind) -> Result<bool, ResolveError> {
         let Some(resolving) = self.state.resolving.as_ref() else {
@@ -2808,6 +2873,7 @@ impl<'a> Scope<'a> {
             Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
+            Condition::VotedAs { with, same } => self.r379_voted_as(with, *same)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)

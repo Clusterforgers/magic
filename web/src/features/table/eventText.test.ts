@@ -127,6 +127,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Bo rolls a d20: 14',
   ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
+  VotesFinished: [{ VotesFinished: { ballots: [[1, 0], [2, 1]] } }, 'The players finish voting'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
   EnduringStoryGained: [{ EnduringStoryGained: { player: 1 } }, 'Bo gets an enduring story'],
   SpeedChanged: [{ SpeedChanged: { player: 1, speed: 2 } }, "Bo's speed becomes 2"],

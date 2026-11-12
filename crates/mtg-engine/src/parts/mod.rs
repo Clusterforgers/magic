@@ -22,6 +22,7 @@ mod exiled;
 pub(crate) mod forage;
 mod life;
 pub(crate) mod mill;
+mod r379_x_filter;
 mod random;
 mod rmt5_top_shots;
 pub(crate) use rmt5_top_shots::rmt5_top_shots;
@@ -480,7 +481,7 @@ impl Part {
                 }),
                 Part::X(_) => self.clone(),
             },
-            other => other.clone(),
+            other => other.clone().r379_fix_filter(x),
         }
     }
 

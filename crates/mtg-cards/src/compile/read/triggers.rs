@@ -236,6 +236,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if !(r.word("when") || r.word("whenever")) {
         return None;
     }
+    if let Some(found) = r.attempt(super::r379_atoms::r379_voting) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::w9d_exert::w9d_event) {
         return Some(found);
     }
@@ -1656,7 +1659,8 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
         TriggerPattern::SpellCast { what, by } => spell_cast_text(pattern, what, by),
-        TriggerPattern::Did { .. } => super::r7e_events::r7e_did_text(pattern),
+        TriggerPattern::Did { .. } => super::r379_atoms::r379_voting_text(pattern)
+            .or_else(|| super::r7e_events::r7e_did_text(pattern)),
         TriggerPattern::SpellCopied { what, by } => super::w2e_copied::w2e_copy_text(what, by),
         TriggerPattern::Sacrificed { what, by } => Some(format!(
             "Whenever {} {}",

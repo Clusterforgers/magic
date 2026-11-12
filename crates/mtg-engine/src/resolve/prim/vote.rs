@@ -8,6 +8,7 @@ use super::wrong_effect;
 use crate::choose::{
     ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections,
 };
+use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
 /// The ballots of a vote, the controller first, in turn order; a player who has left the game does not vote. A player
@@ -55,10 +56,11 @@ fn w17c_choosers(
         .collect()
 }
 
-/// The step is done with these names bound and goes on with the next effect.
-fn done(bound: Vec<(String, Vec<Target>)>) -> Run {
+/// The step is done with these names bound and goes on with the next effect; the ballots are logged as the vote
+/// finishing.
+fn done(bound: Vec<(String, Vec<Target>)>, ballots: Vec<(PlayerId, u32)>) -> Run {
     Run::Done {
-        events: Vec::new(),
+        events: vec![Event::VotesFinished { ballots }],
         bound,
         snapshots: Vec::new(),
         next: Next::Sibling,
@@ -108,7 +110,16 @@ fn named(cx: &Cx<'_>, names: &[String], secret: bool) -> Result<Run, ResolveErro
             (name.clone(), for_it)
         })
         .collect();
-    Ok(done(bound))
+    let ballots = taken
+        .iter()
+        .map(|(player, index)| (*player, place(*index)))
+        .collect();
+    Ok(done(bound, ballots))
+}
+
+/// The place of a choice among the options, as a ballot holds it.
+fn place(index: usize) -> u32 {
+    u32::try_from(index).unwrap_or(u32::MAX)
 }
 
 /// The targets with the most votes, each once, in the order they were first voted for.
@@ -140,7 +151,7 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
         ));
     }
     let seats = voters(cx);
-    let votes: Vec<Target> = if candidates.is_empty() {
+    let votes: Vec<(PlayerId, Target)> = if candidates.is_empty() {
         Vec::new()
     } else if objects.is_empty() {
         let options: Vec<ChoiceOption> = players.iter().map(|p| ChoiceOption::Player(*p)).collect();
@@ -150,7 +161,12 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
             Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
             Optioned::Done(taken) => taken
                 .into_iter()
-                .filter_map(|(_, index)| players.get(index).copied().map(Target::Player))
+                .filter_map(|(voter, index)| {
+                    players
+                        .get(index)
+                        .copied()
+                        .map(|player| (voter, Target::Player(player)))
+                })
                 .collect(),
         }
     } else {
@@ -169,17 +185,27 @@ fn of(cx: &Cx<'_>, of: &mtg_cards::refs::Ref, bind: &str) -> Result<Run, Resolve
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
                 .into_iter()
-                .flat_map(|(_, cards)| cards)
-                .filter_map(|id| {
+                .flat_map(|(voter, cards)| cards.into_iter().map(move |id| (voter, id)))
+                .filter_map(|(voter, id)| {
                     candidates
                         .iter()
                         .find(|t| t.object().is_some_and(|o| o.id == id))
+                        .map(|target| (voter, *target))
                 })
-                .copied()
                 .collect(),
         }
     };
-    Ok(done(vec![(bind.to_owned(), leaders(&votes))]))
+    let ballots = votes
+        .iter()
+        .filter_map(|(voter, target)| {
+            candidates
+                .iter()
+                .position(|candidate| candidate == target)
+                .map(|index| (*voter, place(index)))
+        })
+        .collect();
+    let votes: Vec<Target> = votes.into_iter().map(|(_, target)| target).collect();
+    Ok(done(vec![(bind.to_owned(), leaders(&votes))], ballots))
 }
 
 /// The players vote: on named choices each name is bound to the players who voted for it, once for each of their votes;

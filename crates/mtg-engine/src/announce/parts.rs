@@ -58,15 +58,17 @@ fn price_of<'a>(ctx: &'a Ctx<'_>, choices: &Choices) -> Option<Cow<'a, Price>> {
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let price = price_of(ctx, work.choices)?;
+    // A part whose filter compares to X is judged once X is announced, at the values the offer of X leaves.
     if work.choices.cost_picks().is_empty()
+        && !price.parts.iter().any(Part::r379_filter_reads_x)
         && price.claimed(ctx.state, ctx.player, ctx.source).is_none()
     {
         return Some(Next::Drop);
     }
     let mut settled = 0;
     for part in &price.parts {
-        // A counted part needs X first, which is asked when the parts come to it (CR 601.2b).
-        if part.is_counted()
+        // A counted part, or one whose filter compares to X, needs X first, which is asked when the parts come to it (CR 601.2b).
+        if part.reads_x()
             && let Some(next) = x::run(ctx, work)
         {
             return Some(next);
@@ -151,4 +153,14 @@ pub(super) fn weak(
         })
         .nth(choices.cost_picks().len())?
         .weak(state, cards)
+}
+
+/// Whether some part of the cost picks by a filter that compares to X, so only the values of X it can be paid at are offered.
+pub(super) fn r379_filter_reads_x(ctx: &Ctx<'_>, choices: &Choices) -> bool {
+    price_of(ctx, choices).is_some_and(|price| price.parts.iter().any(Part::r379_filter_reads_x))
+}
+
+/// Whether some part of the cost takes the X announced: counted, or picked by a filter that compares to X.
+pub(super) fn r379_reads_x(ctx: &Ctx<'_>, choices: &Choices) -> bool {
+    price_of(ctx, choices).is_some_and(|price| price.parts.iter().any(Part::reads_x))
 }

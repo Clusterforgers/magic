@@ -185,6 +185,7 @@ const RUNS: &[&str] = &[
     "Cost.Waterbend",
     "Cost.XAtLeast",
     "Cost.XColor",
+    "Cost.Alternative.X",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",
@@ -815,6 +816,8 @@ const RUNS: &[&str] = &[
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
     "Condition.EnduringStory",
+    "Condition.VotedAs",
+    "Amount.GreatestCast",
     "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -888,6 +891,7 @@ const RUNS: &[&str] = &[
     "Pred.GravedThisTurn",
     "Pred.ArrivedFrom",
     "Pred.DidThisTurn",
+    "Pred.BlockedThisTurn",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.Test",
@@ -1254,6 +1258,7 @@ mod tests {
     #[case::the_ring_tempting_triggers("Trigger.RingTempts", true)]
     #[case::the_ring_bearer("Pred.RingBearer", true)]
     #[case::did_this_turn("Pred.DidThisTurn", true)]
+    #[case::r379_blocked_either_way("Pred.BlockedThisTurn", true)]
     #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
@@ -1392,6 +1397,8 @@ mod tests {
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
     #[case::rmt6_an_enduring_story("Condition.EnduringStory", true)]
+    #[case::r379_how_players_voted("Condition.VotedAs", true)]
+    #[case::r379_greatest_among_spells_cast("Amount.GreatestCast", true)]
     #[case::rmt6_a_draft_rule("Rule.Draft", true)]
     #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
@@ -1559,6 +1566,7 @@ mod tests {
     #[case::squad("Keyword.Squad", true)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
+    #[case::r379_x_of_an_alternative_cost("Cost.Alternative.X", true)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", true)]
     #[case::paying_energy_of_a_chosen_amount_in_an_effect("Effect.Pay.X.Energy", true)]
     #[case::paying_a_part_that_counts_x_in_an_effect("Effect.Pay.X.Parts", false)]

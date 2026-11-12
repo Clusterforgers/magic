@@ -387,6 +387,8 @@ struct Walker<'a> {
     r283_keyword_x: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
+    /// Whether the walk is in an alternative cost of a spell, whose parts read the X the caster announces.
+    r379_alt_x: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
@@ -432,6 +434,7 @@ impl<'a> Walker<'a> {
             x_free: false,
             r283_keyword_x: false,
             x_now: false,
+            r379_alt_x: false,
             choosing: false,
             r281_paying: false,
             amounting: Amounting::Other,
@@ -818,6 +821,10 @@ impl<'a> Walker<'a> {
                     self.at("to", |w| w.reference(to, Kind::Either));
                 }
             }
+            Pred::BlockedThisTurn(with) => {
+                self.uses("Pred", "BlockedThisTurn");
+                self.at("BlockedThisTurn", |w| w.selector(with));
+            }
             Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
             Pred::Modified
             | Pred::RingBearer
@@ -985,23 +992,27 @@ impl<'a> Walker<'a> {
         self.at("by", |w| w.amount(by));
     }
 
+    /// An X: the effects and targets of the spell or ability that has the X read it, and so do the delayed triggers it sets
+    /// up and, for a permanent, its enters trigger and the counters it enters with (CR 107.3m); what else it creates or
+    /// carries does not remember it. An alternative cost of a spell reads the X announced as it is cast (CR 601.2b).
+    fn x_amount(&mut self) {
+        if !self.x_free && !self.counts_x {
+            self.x_uses.push((self.face, self.current_path()));
+        }
+        if self.r379_alt_x {
+            self.uses("Cost", "Alternative.X");
+        } else if !self.x_now {
+            self.uses("Amount", "X.Elsewhere");
+        }
+    }
+
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
         match amount {
             Amount::Fixed(_) | Amount::Chosen => {}
             Amount::ChosenAs(name) => self.chosen_as(name),
-            Amount::X => {
-                if !self.x_free && !self.counts_x {
-                    self.x_uses.push((self.face, self.current_path()));
-                }
-                // The effects and targets of the spell or ability that has the X read it, and so do the delayed triggers
-                // it sets up and, for a permanent, its enters trigger and the counters it enters with (CR 107.3m);
-                // what else it creates or carries does not remember it.
-                if !self.x_now {
-                    self.uses("Amount", "X.Elsewhere");
-                }
-            }
+            Amount::X => self.x_amount(),
             Amount::Count(selector) => self.selector(selector),
             Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Life(who) => self.reference(who, Kind::Player),
@@ -1058,6 +1069,10 @@ impl<'a> Walker<'a> {
             }
             Amount::Greatest { of, .. } => {
                 self.uses("Amount", "Greatest");
+                self.at("of", |w| w.selector(of));
+            }
+            Amount::GreatestCast { who, of, .. } => {
+                self.player_amount("GreatestCast", who);
                 self.at("of", |w| w.selector(of));
             }
             Amount::Total { of, .. } => {
@@ -1136,6 +1151,7 @@ impl<'a> Walker<'a> {
                     TurnTally::CountersPut
                         | TurnTally::DamageDealtTo
                         | TurnTally::DungeonsCompleted
+                        | TurnTally::SpellsCastThisGame
                 ) {
                     self.problem("last turn is kept for the counts of players only");
                 }
@@ -1203,6 +1219,7 @@ impl<'a> Walker<'a> {
             | Amount::TargetCount(_)
             | Amount::Devotion(_)
             | Amount::Greatest { .. }
+            | Amount::GreatestCast { .. }
             | Amount::Total { .. }
             | Amount::Distinct { .. }
             | Amount::CardTypes(_)
@@ -1351,6 +1368,7 @@ impl<'a> Walker<'a> {
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
             Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
+            Condition::VotedAs { with, .. } => self.player_condition("VotedAs", with),
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
@@ -1645,7 +1663,9 @@ impl<'a> Walker<'a> {
     /// The cost a spell is cast for in place of its mana cost: paid by the caster as the spell is announced, so it holds
     /// no X and nothing the spell itself would pay (a tap, a sacrifice of itself).
     fn w14c_alternative_cost(&mut self, cost: &Cost) {
+        let held = std::mem::replace(&mut self.r379_alt_x, true);
         self.at("cost", |w| w.cost(cost));
+        self.r379_alt_x = held;
         if cost.0.is_empty() {
             self.problem("an alternative cost names what is paid; leave it out for a free cast");
         }
@@ -2061,8 +2081,13 @@ impl<'a> Walker<'a> {
             | Keyword::Freerunning(cost)
             | Keyword::Spectacle(cost)
             | Keyword::Splice { cost, .. } => {
+                let held = self.r379_alt_x;
+                self.r379_alt_x = r379_replaces_cost(keyword);
                 self.at("cost", |w| w.cost(cost));
-                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, false);
+                self.r379_alt_x = held;
+                // A cost paid in place of the mana cost pays its counted parts at the X announced for the cast.
+                let x_paid = r379_replaces_cost(keyword);
+                self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost, x_paid);
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
                 self.turn_up_cost(cost);
@@ -5702,6 +5727,27 @@ fn picks(cost: &Cost) -> bool {
 }
 
 /// Whether a payment an effect asks announces an X: an `{X}` in its mana, or energy or life of that count.
+/// Whether the keyword's cost is paid in place of the mana cost of the spell (CR 118.9), so its parts read the X announced.
+const fn r379_replaces_cost(keyword: &Keyword) -> bool {
+    matches!(
+        keyword,
+        Keyword::Flashback(_)
+            | Keyword::Escape(_)
+            | Keyword::Evoke(_)
+            | Keyword::Dash(_)
+            | Keyword::Blitz(_)
+            | Keyword::Prowl(_)
+            | Keyword::Spectacle(_)
+            | Keyword::Disturb(_)
+            | Keyword::Mayhem(_)
+            | Keyword::Emerge(_)
+            | Keyword::Harmonize(_)
+            | Keyword::Freerunning(_)
+            | Keyword::Bestow(_)
+            | Keyword::MoreThanMeetsTheEye(_)
+    )
+}
+
 fn announces_x(cost: &Cost) -> bool {
     has_x_mana(cost)
         || cost.0.iter().any(|item| {

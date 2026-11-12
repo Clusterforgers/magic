@@ -186,6 +186,7 @@ mod r284_rules;
 mod r285_writers;
 mod r287_facts;
 mod r303_forms;
+mod r379_atoms;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

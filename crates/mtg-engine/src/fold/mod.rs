@@ -483,6 +483,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::GiftGiven { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
+        Event::VotesFinished { ballots } => state.r379_votes.push(ballots.clone()),
         Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
         | Event::Sought { .. }

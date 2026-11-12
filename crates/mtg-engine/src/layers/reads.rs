@@ -315,7 +315,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TopCreatureOfGraveyard
         | Pred::Kicked
         | Pred::AdditionalCostPaid
-        | Pred::Suspended => Traits::NONE,
+        | Pred::Suspended
+        | Pred::BlockedThisTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
             .iter()
@@ -419,6 +420,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
+        | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
         | Amount::Speed(who)
         | Amount::Counters { on: who, .. }
@@ -524,6 +526,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Among(who)
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. }
+        | Condition::VotedAs { with: who, .. }
         | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

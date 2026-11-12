@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b65e1dff-9423-4840-a6af-78cb3e6f4f31",
+  "name": "Erestor of the Council",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erestor of the Council",
+      "oracle_fingerprint": "b968cbce891bb22aad008ef7c43c4e7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "FinishedVoting" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "VotedAs": { "with": "Asker", "same": true } }
+                    }
+                  },
+                  "token": { "Named": "treasure" }
+                }
+              },
+              {
+                "Scry": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": { "VotedAs": { "with": "Asker", "same": false } }
+                      }
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -108,6 +108,9 @@ pub enum Action {
     ManifestedDread,
     /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
     GaveGift,
+    /// The players finished a vote (CR 701.38); the amount is the number of the vote in the game, which
+    /// `Condition::VotedAs` reads.
+    FinishedVoting,
 }
 
 impl Action {
@@ -203,6 +206,7 @@ impl Action {
             Action::Discovered => ("discover", "discovers"),
             Action::ManifestedDread => ("manifest dread", "manifests dread"),
             Action::GaveGift => ("give a gift", "gives a gift"),
+            Action::FinishedVoting => ("finish voting", "finish voting"),
         }
     }
 
