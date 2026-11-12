@@ -1,7 +1,7 @@
 {
   "oracle_id": "f91c860e-3feb-4a5a-b7ef-4e7d38d61c75",
   "name": "Rewrite History",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rewrite History",
@@ -20,9 +20,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 135, "end": 305 }
+          "Triggered": {
+            "when": { "NthCounterPut": { "counter": { "Other": "plan" }, "number": 4 } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      "bounds": { "min": 0, "max": 2 }
+                    }
+                  ],
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
           }
         }
       ]

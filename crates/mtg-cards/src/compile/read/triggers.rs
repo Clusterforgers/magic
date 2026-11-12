@@ -245,6 +245,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(attached_tapped_for_mana) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::l291_nth_counter::event) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(counter_event) {
         return Some(found);
     }
@@ -712,13 +715,20 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     {
         Some(found)
     } else if verb == if third { "rolls" } else { "roll" } {
+        if let Some(found) = r.attempt(|r| super::l291_dice::results(r, by.clone())) {
+            return Some(found);
+        }
         let highest = if r.words("one or more dice") {
             false
         } else {
             r.need("a die's highest natural result")?;
             true
         };
-        Some(TriggerPattern::DiceRolled { who: by, highest })
+        Some(TriggerPattern::DiceRolled {
+            who: by,
+            highest,
+            results: Vec::new(),
+        })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
     } else if verb == if third { "amasses" } else { "amass" } {
@@ -1619,6 +1629,7 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
+        TriggerPattern::NthCounterPut { .. } => super::l291_nth_counter::text(pattern),
         TriggerPattern::BecomesBlocked {
             by, once: false, ..
         } if !by.0.is_empty() => super::g9a_blocks::g9a_pair_text(pattern),
@@ -1663,7 +1674,20 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::CoinFlipWon { who } => {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))
         }
-        TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
+        TriggerPattern::DiceRolled {
+            who,
+            highest: false,
+            results,
+        } if !results.is_empty() => Some(format!(
+            "Whenever {} {}",
+            player_verb(who, "roll")?,
+            super::l291_dice::results_text(results)?
+        )),
+        TriggerPattern::DiceRolled {
+            who,
+            highest,
+            results,
+        } if results.is_empty() => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }

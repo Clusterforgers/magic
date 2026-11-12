@@ -1,0 +1,40 @@
+{
+  "oracle_id": "018627e1-ba32-4452-b3d1-6c2a39759aff",
+  "name": "Complaints Clerk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Complaints Clerk",
+      "oracle_fingerprint": "55f86ee3888d629b185b293b091d933e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [1] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Clown Robot",
+                      "colors": ["White"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Clown", "Robot"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

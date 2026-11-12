@@ -368,6 +368,14 @@ pub enum TriggerPattern {
         /// The chapter number.
         number: u32,
     },
+    /// The counters of a kind on `This` reach or pass a number as counters of that kind are put on it ("When the fourth
+    /// plan counter is put on this enchantment"); `Triggering` is the permanent.
+    NthCounterPut {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// The number the counters reach, from 1.
+        number: u32,
+    },
     /// An Aura, Equipment or Fortification becomes attached to a permanent.
     Attached {
         /// The attachment; any when empty.
@@ -424,7 +432,7 @@ pub enum TriggerPattern {
     /// the result is a number lit up on the source; `Triggering` is that player.
     Visit {},
     /// A player rolls to visit their Attractions ("whenever you roll to visit your Attractions", CR 701.52);
-    /// `Triggering` is that player.
+    /// `Triggering` is that player and `Amount::Triggering` the number rolled.
     RolledToVisit {
         /// Who rolls.
         #[serde(
@@ -528,8 +536,9 @@ pub enum TriggerPattern {
         who: Ref,
     },
     /// A player rolls one or more dice ("whenever you roll one or more dice"), once for each roll; with `highest`, once
-    /// for each die that rolls its highest natural result ("whenever you roll a die's highest natural result", CR 706.2).
-    /// `Triggering` is that player.
+    /// for each die that rolls its highest natural result ("whenever you roll a die's highest natural result", CR 706.2);
+    /// with `results`, once for each die whose result is one of them ("whenever you roll a 1 or 2"), and `Amount::Triggering`
+    /// is that result. `Triggering` is that player.
     DiceRolled {
         /// Who rolls.
         #[serde(
@@ -540,6 +549,9 @@ pub enum TriggerPattern {
         /// Only a die that rolls its number of faces.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         highest: bool,
+        /// Only a die whose result is one of these.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        results: Vec<u32>,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {

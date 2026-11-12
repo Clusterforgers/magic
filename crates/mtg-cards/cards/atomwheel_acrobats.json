@@ -1,14 +1,19 @@
 {
   "oracle_id": "0e9551ef-8aee-46ed-b21f-162c64213437",
   "name": "Atomwheel Acrobats",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Atomwheel Acrobats",
       "oracle_fingerprint": "96696cae184ed00f08782213bad6a2cf",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 74 } }
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [1, 2] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
         },
         {
           "Activated": {

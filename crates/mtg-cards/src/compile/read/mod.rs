@@ -144,6 +144,8 @@ mod instead_pairs;
 mod joined;
 mod keyword_actions;
 mod kicked_copies;
+mod l291_dice;
+mod l291_nth_counter;
 mod land_types;
 mod lands;
 mod leave_combat;

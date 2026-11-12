@@ -625,12 +625,19 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} win{s} a coin flip"), false)
         }
-        TriggerPattern::DiceRolled { who: by, highest } => {
+        TriggerPattern::DiceRolled {
+            who: by,
+            highest,
+            results,
+        } => {
             let (name, s) = who(by);
-            let what = if *highest {
-                "a die's highest natural result"
+            let what = if !results.is_empty() {
+                let numbers: Vec<String> = results.iter().map(u32::to_string).collect();
+                format!("a {}", numbers.join(" or "))
+            } else if *highest {
+                "a die's highest natural result".to_owned()
             } else {
-                "one or more dice"
+                "one or more dice".to_owned()
             };
             (format!("{name} roll{s} {what}"), false)
         }
@@ -800,6 +807,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::Chapter { number } => {
             (format!("its lore counters reach chapter {number}"), true)
+        }
+        TriggerPattern::NthCounterPut { counter, number } => {
+            let kind = match counter {
+                mtg_cards::value::CounterKind::PlusOnePlusOne => "+1/+1",
+                mtg_cards::value::CounterKind::MinusOneMinusOne => "-1/-1",
+                mtg_cards::value::CounterKind::Loyalty => "loyalty",
+                mtg_cards::value::CounterKind::Poison => "poison",
+                mtg_cards::value::CounterKind::Charge => "charge",
+                mtg_cards::value::CounterKind::Other(name) => name.as_str(),
+            };
+            (format!("its {kind} counters reach {number}"), true)
         }
         TriggerPattern::Attached { what, to } => {
             let attachment = if what.is_empty() {

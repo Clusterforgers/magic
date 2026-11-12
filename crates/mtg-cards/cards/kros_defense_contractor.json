@@ -1,7 +1,7 @@
 {
   "oracle_id": "debeb004-3157-43cf-95fd-220777417ff7",
   "name": "Kros, Defense Contractor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kros, Defense Contractor",
@@ -19,9 +19,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 346 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }],
+                      "each": true
+                    }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              { "Goad": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

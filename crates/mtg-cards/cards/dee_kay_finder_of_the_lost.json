@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e4a338d5-8cd5-4583-893b-ebbede2280c6",
+  "name": "Dee Kay, Finder of the Lost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dee Kay, Finder of the Lost",
+      "oracle_fingerprint": "3af7bfae9fa3407cd41f1afae8009e31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [2] } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [4] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You", "results": [6] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
