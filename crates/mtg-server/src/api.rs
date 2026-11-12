@@ -578,8 +578,8 @@ pub(crate) fn is_unsafe_in_names(c: char) -> bool {
 }
 
 /// `GET /api/games/{id}/replay`: a finished recorded game step by step. The account that held a seat sees its own hidden
-/// cards; anybody else, signed in or not, the public view a spectator has. A bad id, an unknown game and one that has not
-/// ended look alike (404).
+/// cards; any other signed-in account the public view a spectator has. A bad id is 404 whoever asks; then no session is
+/// 401; then an unknown game and one that has not ended look alike (404).
 pub(crate) async fn replay(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,
@@ -587,15 +587,8 @@ pub(crate) async fn replay(
 ) -> Result<Json<mtg_protocol::Replay>, ApiError> {
     let Path(id) = path.map_err(|_| ApiError::not_found())?;
     let id: GameId = id.parse().map_err(|_| ApiError::not_found())?;
-    // A cookie that names no session is a guest's request, which still gets the public view.
-    let user = app
-        .auth()
-        .session_user(&headers)
-        .await
-        .ok()
-        .flatten()
-        .map(|user| user.id);
-    match app.registry().replay(id, user).await {
+    let user = app.auth().require_user(&headers).await?;
+    match app.registry().replay(id, Some(user.id)).await {
         Ok(replay) => Ok(Json(replay)),
         Err(crate::registry::ReplayRefusal::NotFound) => Err(ApiError::not_found()),
         Err(crate::registry::ReplayRefusal::Failed) => Err(ApiError::internal()),
