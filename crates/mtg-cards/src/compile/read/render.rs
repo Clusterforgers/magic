@@ -571,6 +571,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
     super::r302c_writers::r302c_wordings(ability, &mut texts);
+    super::r305b_writers::r305b_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
     super::r300b_writers::r300b_wordings(ability, written_variants, &mut texts);

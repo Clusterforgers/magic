@@ -9,9 +9,10 @@
       "abilities": [
         { "Keyword": "Myriad" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 70 }
+          "Rule": {
+            "rule": {
+              "NoLegendRuleFor": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }]
+            }
           }
         },
         {

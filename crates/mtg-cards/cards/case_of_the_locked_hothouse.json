@@ -1,7 +1,7 @@
 {
   "oracle_id": "2380fd04-6d19-4f5a-8a9e-c17d9ae09fb6",
   "name": "Case of the Locked Hothouse",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Case of the Locked Hothouse",
@@ -9,15 +9,43 @@
       "abilities": [
         { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 55, "end": 154 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 7
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 155, "end": 312 }
+          "Rule": {
+            "rule": { "LookAtTopAnyTime": "You" },
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Land" }, { "Type": "Creature" }, { "Type": "Enchantment" }]
+                  }
+                ],
+                "from": "Library",
+                "play": true
+              }
+            },
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } }
           }
         }
       ]

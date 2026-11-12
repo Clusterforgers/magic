@@ -76,6 +76,8 @@ pub(crate) enum Doing {
     Sacrifice { player: PlayerId, object: ObjectId },
     /// Counters are put on `on`.
     PutCounter { on: Target, counter: CounterKind },
+    /// Counters of `counter` are removed from `on`.
+    RemoveCounter { on: Target, counter: CounterKind },
     /// `object` becomes attached to `to`.
     Attach { object: ObjectId, to: Target },
     /// `player` discards `object`.
@@ -188,7 +190,8 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             covers(who, Some(player), Some(object))
         }
         (Prohibited::PutCounter, Doing::PutCounter { on, .. }) => counters_on(state, who, on),
-        (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
+        (Prohibited::RemoveCounterOf(kind), Doing::RemoveCounter { on, counter })
+        | (Prohibited::PutCounterOf(kind), Doing::PutCounter { on, counter }) => {
             *kind == counter && counters_on(state, who, on)
         }
         (Prohibited::Attach, Doing::Attach { object, to }) => {
@@ -448,6 +451,12 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
         }
         Event::CountersChanged(changed) if changed.delta > 0 => {
             found.push(Doing::PutCounter {
+                on: changed.on,
+                counter: changed.counter.clone(),
+            });
+        }
+        Event::CountersChanged(changed) if changed.delta < 0 => {
+            found.push(Doing::RemoveCounter {
                 on: changed.on,
                 counter: changed.counter.clone(),
             });

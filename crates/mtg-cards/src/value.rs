@@ -377,6 +377,12 @@ pub enum TurnTally {
     /// The cards the player played from exile this turn: spells cast and lands played from exile ("if you didn't play a
     /// card from exile this turn"). Added up over the players.
     PlayedFromExile,
+    /// The cards the players drew this turn ("for each card your opponents have drawn this turn"). Added up over the
+    /// players.
+    CardsDrawnTotal,
+    /// The noncombat damage the players took this turn ("the total amount of noncombat damage dealt to your opponents
+    /// this turn"). Added up over the players.
+    NoncombatDamageTakenTotal,
 }
 
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
@@ -479,6 +485,14 @@ pub enum Amount {
         by: i32,
         /// The amount multiplied.
         of: Box<Amount>,
+    },
+    /// The amount, but no more than `most` ("This effect can't reduce the amount of mana this spell costs by more than
+    /// {5}" over a reduction of {1} for each).
+    AtMost {
+        /// The amount capped.
+        of: Box<Amount>,
+        /// The most it can be.
+        most: i32,
     },
     /// Half of the amount, rounded up or down, never below zero ("half their life, rounded up").
     Half {
@@ -668,6 +682,11 @@ pub enum Amount {
     TurnNumber,
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
+    /// How many players have lost the game ("for each player who has lost the game").
+    PlayersLost,
+    /// How many targets the spell being cast has, every specification's targets counted ("for each target"): read by a
+    /// cost modifier as the cost is determined (CR 601.2f).
+    CastTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
     DieResult(DieResult),
     /// The first amount when the condition holds when the effect runs, else the second ("X is 3 if you control a Goblin, else 1").
@@ -793,6 +812,10 @@ enum Tagged {
         by: i32,
         of: Box<Amount>,
     },
+    AtMost {
+        of: Box<Amount>,
+        most: i32,
+    },
     Half {
         of: Box<Amount>,
         up: bool,
@@ -879,6 +902,8 @@ enum Tagged {
     CommanderColors(Ref),
     TurnNumber,
     TriggeringTargets,
+    PlayersLost,
+    CastTargets,
     DieResult(DieResult),
     When {
         condition: Box<Condition>,
@@ -939,6 +964,10 @@ enum TaggedRef<'a> {
     Times {
         by: i32,
         of: &'a Amount,
+    },
+    AtMost {
+        of: &'a Amount,
+        most: i32,
     },
     Half {
         of: &'a Amount,
@@ -1026,6 +1055,8 @@ enum TaggedRef<'a> {
     CommanderColors(&'a Ref),
     TurnNumber,
     TriggeringTargets,
+    PlayersLost,
+    CastTargets,
     DieResult(DieResult),
     When {
         condition: &'a Condition,
@@ -1078,6 +1109,7 @@ impl From<Tagged> for Amount {
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
+            Tagged::AtMost { of, most } => Amount::AtMost { of, most },
             Tagged::Half { of, up } => Amount::Half { of, up },
             Tagged::Divided => Amount::Divided,
             Tagged::EvenShare(total) => Amount::EvenShare(total),
@@ -1125,6 +1157,8 @@ impl From<Tagged> for Amount {
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
+            Tagged::PlayersLost => Amount::PlayersLost,
+            Tagged::CastTargets => Amount::CastTargets,
             Tagged::When {
                 condition,
                 then,
@@ -1172,6 +1206,9 @@ impl Serialize for Amount {
             Amount::AnyCounters(on) => TaggedRef::AnyCounters(on).serialize(serializer),
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
+            Amount::AtMost { of, most } => {
+                TaggedRef::AtMost { of, most: *most }.serialize(serializer)
+            }
             Amount::Half { of, up } => TaggedRef::Half { of, up: *up }.serialize(serializer),
             Amount::Divided => TaggedRef::Divided.serialize(serializer),
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
@@ -1249,6 +1286,8 @@ impl Serialize for Amount {
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
+            Amount::PlayersLost => TaggedRef::PlayersLost.serialize(serializer),
+            Amount::CastTargets => TaggedRef::CastTargets.serialize(serializer),
             Amount::When {
                 condition,
                 then,
@@ -1429,6 +1468,9 @@ pub enum Condition {
     /// A player the reference names was the monarch as the turn began: the designation they held before anything in the
     /// turn changed it ("if you were the monarch as the turn began").
     MonarchAtTurnStart(Ref),
+    /// A player the reference names attacked you (not a planeswalker you control) during their latest finished turn
+    /// ("if a player attacked you during their last turn").
+    AttackedYouLastTurn(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
     /// A player the reference names has an enduring story (storied).

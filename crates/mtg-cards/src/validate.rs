@@ -1023,7 +1023,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } | Amount::Half { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1163,6 +1163,8 @@ impl<'a> Walker<'a> {
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            Amount::PlayersLost => self.uses("Amount", "PlayersLost"),
+            Amount::CastTargets => self.uses("Amount", "CastTargets"),
             Amount::When {
                 condition,
                 then,
@@ -1206,6 +1208,7 @@ impl<'a> Walker<'a> {
             | Amount::Quotient { .. }
             | Amount::Difference(..)
             | Amount::Times { .. }
+            | Amount::AtMost { .. }
             | Amount::Half { .. }
             | Amount::Divided
             | Amount::EvenShare(_)
@@ -1358,6 +1361,9 @@ impl<'a> Walker<'a> {
             Condition::Monarch(who) => self.player_condition("Monarch", who),
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
+            Condition::AttackedYouLastTurn(who) => {
+                self.player_condition("AttackedYouLastTurn", who);
+            }
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
             Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
@@ -2304,6 +2310,8 @@ impl<'a> Walker<'a> {
             let defines = matches!(
                 modification,
                 Modification::SetPT { .. }
+                    | Modification::SetPower(_)
+                    | Modification::SetToughness(_)
                     | Modification::SetColors(_)
                     | Modification::AddColors(_)
                     | Modification::AddType(_)

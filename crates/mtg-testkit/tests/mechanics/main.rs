@@ -114,6 +114,7 @@ mod r304b_cards;
 mod r307c_exiled;
 mod r307c_rooms;
 mod r303b_pieces;
+mod r305b_cards;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;
