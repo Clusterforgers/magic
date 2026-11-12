@@ -2,7 +2,8 @@
 //! each round's matches become games whose seats are bound to their players, results come from the
 //! game records and the organiser's corrections, Swiss rounds avoid rematches and hand out byes,
 //! elimination ends with one entrant, drops stop pairings, and strangers, players and guests are
-//! refused what is the organiser's; a match game has no player host, and one dropped without a result is made again;
+//! refused what is the organiser's; a match game has no player host, and one dropped without a result (closed or
+//! expired) is made again when the tournament is read; an entrant dropped mid-game concedes it;
 //! a match played to its end on sockets reports its result by itself, the standings carry the tiebreakers through
 //! draws, drops and corrections, an elimination bracket of three gives a bye, and a 2v2 match is one team game.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -628,26 +629,27 @@ async fn a_match_game_has_no_player_host_and_one_dropped_without_a_result_is_mad
     }
     assert!(server.registry.handle(game.parse().unwrap()).is_some());
 
-    // The lobby is dropped without a result (closed or expired): the organiser's retry makes a new game.
+    // The lobby is dropped without a result (closed): the next read of the tournament makes a new game.
     server
         .registry
         .close(game.parse().unwrap(), mtg_server::registry::HOST)
         .await
         .unwrap();
-    let t = view(&server, &id, &org).await;
-    assert!(
-        round(&t, 1)[0]["game"].is_null(),
-        "the dead game is forgotten"
-    );
-    let retried = act(&server, &id, "games", &org).await;
-    assert_eq!(retried.status, 200, "{}", retried.text());
-    let fresh = round(&retried.json(), 1)[0]["game"]
-        .as_str()
-        .unwrap()
-        .to_owned();
+    let remade = |t: &Value| round(t, 1)[0]["game"].as_str().unwrap().to_owned();
+    let fresh = remade(&view(&server, &id, &org).await);
     assert_ne!(fresh, game);
     assert!(server.registry.handle(fresh.parse().unwrap()).is_some());
     assert_eq!(seat_owners(&pool, &fresh).await.len(), 2);
+
+    // The new lobby expires: a player's read makes another, and the organiser's retry has nothing left to make.
+    let later = std::time::Instant::now() + Duration::from_secs(400 * 24 * 3600);
+    assert_eq!(server.registry.sweep(later).await, 1);
+    let again = remade(&view(&server, &id, &players[1].1).await);
+    assert!(![&game, &fresh].contains(&&again), "{again}");
+    assert!(server.registry.handle(again.parse().unwrap()).is_some());
+    let retried = act(&server, &id, "games", &org).await;
+    assert_eq!(retried.status, 200, "{}", retried.text());
+    assert_eq!(remade(&retried.json()), again);
 }
 
 /// A tournament server that also holds the cards, so players bring Commander decks to their match games.
@@ -657,12 +659,12 @@ async fn start_with_cards(pool: &PgPool) -> TestServer {
     crate::pg_commander::start_with(pool, config).await
 }
 
-#[sqlx::test(migrations = false)]
-async fn a_match_played_to_its_end_on_sockets_reports_its_result_by_itself(pool: PgPool) {
-    let server = start_with_cards(&pool).await;
+/// A one-round Swiss tournament of two players with decks, started: its organiser, id and match, and the players in
+/// the order of the match (entrant a first).
+async fn live_match(server: &TestServer) -> (Browser, String, Value, [(Browser, String); 2]) {
     let org = register(server.addr, "Org", PASSWORD).await;
     let (id, invite) = create(
-        &server,
+        server,
         &org,
         json!({"name": "Live", "format": "commander_1v1", "structure": "swiss", "rounds": 1}),
     )
@@ -670,23 +672,43 @@ async fn a_match_played_to_its_end_on_sockets_reports_its_result_by_itself(pool:
     let mut players = Vec::new();
     for (name, leader) in [("Ann", "Questing Beast"), ("Bob", "Rosheen Meanderer")] {
         let player = register(server.addr, name, PASSWORD).await;
-        let deck = pg_commander::store(&server, &player, &pg_commander::led_by(leader)).await;
-        assert_eq!(join(&server, &invite, &player, json!({})).await.status, 200);
+        let deck = pg_commander::store(server, &player, &pg_commander::led_by(leader)).await;
+        assert_eq!(join(server, &invite, &player, json!({})).await.status, 200);
         players.push((player, deck));
     }
-    let t = act(&server, &id, "start", &org).await.json();
+    let t = act(server, &id, "start", &org).await.json();
     let played = round(&t, 1)[0].clone();
-    let game = played["game"].as_str().unwrap().to_owned();
     let first = entrant_named(&t, played["a"].as_u64().unwrap());
     if players[0].0.username != first {
         players.swap(0, 1);
     }
-    let [(ann, ann_deck), (bob, bob_deck)] = [&players[0], &players[1]].map(|(p, d)| (p, d));
+    let [a, b]: [(Browser, String); 2] = players.try_into().unwrap();
+    (org, id, played, [a, b])
+}
+
+/// The match of round 1 once the tournament has a result for it.
+async fn decided(server: &TestServer, id: &str, who: &Browser) -> Value {
+    let mut synced = Value::Null;
+    for _ in 0..200 {
+        synced = round(&view(server, id, who).await, 1)[0].clone();
+        if !synced["outcome"].is_null() {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(25)).await;
+    }
+    synced
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_match_played_to_its_end_on_sockets_reports_its_result_by_itself(pool: PgPool) {
+    let server = start_with_cards(&pool).await;
+    let (org, id, played, [(ann, ann_deck), (bob, bob_deck)]) = live_match(&server).await;
+    let game = played["game"].as_str().unwrap().to_owned();
 
     // Each player brings a deck to their own seat, and to no other.
-    let other = pg_commander::choose(&server, bob, &game, 0, bob_deck).await;
+    let other = pg_commander::choose(&server, &bob, &game, 0, &bob_deck).await;
     assert_eq!(other.status, 403, "{}", other.text());
-    for (seat, who, deck) in [(0, ann, ann_deck), (1, bob, bob_deck)] {
+    for (seat, who, deck) in [(0, &ann, &ann_deck), (1, &bob, &bob_deck)] {
         let chosen = pg_commander::choose(&server, who, &game, seat, deck).await;
         assert_eq!(chosen.status, 200, "{}", chosen.text());
     }
@@ -708,14 +730,7 @@ async fn a_match_played_to_its_end_on_sockets_reports_its_result_by_itself(pool:
     );
 
     // The tournament reads the result from the game record; nobody enters it.
-    let mut synced = Value::Null;
-    for _ in 0..200 {
-        synced = round(&view(&server, &id, bob).await, 1)[0].clone();
-        if !synced["outcome"].is_null() {
-            break;
-        }
-        tokio::time::sleep(Duration::from_millis(25)).await;
-    }
+    let synced = decided(&server, &id, &bob).await;
     assert_eq!(
         (synced["outcome"].as_str(), synced["corrected"].as_bool()),
         (Some("a"), Some(false))
@@ -725,6 +740,58 @@ async fn a_match_played_to_its_end_on_sockets_reports_its_result_by_itself(pool:
     assert_eq!(t["standings"][0]["entrant"], played["a"]);
     assert_eq!(t["standings"][0]["points"], 3);
     assert_eq!(t["standings"][1]["losses"], 1);
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_player_who_drops_mid_game_concedes_it_and_the_game_records_the_loss(pool: PgPool) {
+    dropped_mid_game(pool, false).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn an_entrant_the_organiser_drops_mid_game_concedes_it_and_the_game_records_the_loss(
+    pool: PgPool,
+) {
+    dropped_mid_game(pool, true).await;
+}
+
+/// The second entrant of a running match game drops out of the tournament, by itself or by the organiser.
+async fn dropped_mid_game(pool: PgPool, by_organiser: bool) {
+    let server = start_with_cards(&pool).await;
+    let (org, id, played, [(ann, ann_deck), (bob, bob_deck)]) = live_match(&server).await;
+    let game = played["game"].as_str().unwrap().to_owned();
+    for (seat, who, deck) in [(0, &ann, &ann_deck), (1, &bob, &bob_deck)] {
+        let chosen = pg_commander::choose(&server, who, &game, seat, deck).await;
+        assert_eq!(chosen.status, 200, "{}", chosen.text());
+    }
+    // Both seats play; the second stops at its first decision and never answers again.
+    let mut seat_a = WsBot::connect_as_user(server.addr, &game, &ann.cookie, 0, 1).await;
+    let mut seat_b = WsBot::connect_as_user(server.addr, &game, &bob.cookie, 1, 1).await;
+    seat_b.pause_at = Some(1);
+    let winner = tokio::spawn(async move {
+        seat_a.ready().await;
+        seat_a.finish().await
+    });
+    seat_b.ready().await;
+    assert_eq!(seat_b.play().await, Stop::Paused);
+
+    let dropped = if by_organiser {
+        let path = format!("/api/tournaments/{id}/entrants/{}/drop", played["b"]);
+        call(&server, "POST", &path, Some(&org), None).await
+    } else {
+        act(&server, &id, "drop", &bob).await
+    };
+    assert_eq!(dropped.status, 200, "{}", dropped.text());
+
+    // The game ends as the dropped player's concession, and the match is the game's result, not a ruling.
+    assert_eq!(
+        winner.await.unwrap().result,
+        GameResult::Winner(PlayerId::from_index(0))
+    );
+    let synced = decided(&server, &id, &ann).await;
+    assert_eq!(
+        (synced["outcome"].as_str(), synced["corrected"].as_bool()),
+        (Some("a"), Some(false))
+    );
 }
 
 /// Ends a match's game: the entrant with the lower number wins.

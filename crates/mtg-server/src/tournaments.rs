@@ -15,6 +15,7 @@ use axum::http::{HeaderMap, StatusCode};
 use mtg_core::house::HouseRules;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::state::GameResult;
+use mtg_protocol::ClientMessage;
 use mtg_protocol::rest::{
     CreateTournament, EntrantView, JoinTournament, MAX_ENTRANTS, MAX_SWISS_ROUNDS,
     MAX_TOURNAMENT_NAME_CHARS, MatchOutcome, MatchView, RoundView, SetMatchOutcome, StandingView,
@@ -195,9 +196,10 @@ fn seated(tournament: &Tournament, played: &MatchRow) -> Option<Vec<(String, Use
 }
 
 /// Fills the results of matches whose games have ended from the game records, and forgets a game that was dropped
-/// without a result (expired, closed, failed or gone), so the organiser's retry makes the match a new one.
-async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(), ApiError> {
+/// without a result (expired, closed, failed or gone), so the match gets a new one. True when it forgot one.
+async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<bool, ApiError> {
     let tournaments = service(app)?;
+    let mut forgot = false;
     for played in &mut tournament.matches {
         let (Some(game), None) = (played.game, played.outcome) else {
             continue;
@@ -219,6 +221,7 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
                     .await
                     .map_err(|e| unavailable(&e))?;
                 played.game = None;
+                forgot = true;
                 continue;
             }
         };
@@ -230,7 +233,7 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
             .map_err(|e| unavailable(&e))?;
         played.outcome = Some(outcome);
     }
-    Ok(())
+    Ok(forgot)
 }
 
 /// The rules of a match game: a team format seats the entrants' players alternately as two teams of separate
@@ -551,7 +554,8 @@ pub(crate) async fn join(
 }
 
 /// `GET /api/tournaments/{id}`: the tournament with its rounds and standings, for its organiser and
-/// players; anybody else gets 404. Results of ended games are filled in first.
+/// players; anybody else gets 404. Results of ended games are filled in first, and a game that ended without one
+/// (expired) is made again.
 pub(crate) async fn get_one(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,
@@ -560,11 +564,15 @@ pub(crate) async fn get_one(
     let tournaments = service(&app)?;
     let user = app.auth().require_user(&headers).await?;
     let id = id_of(path)?;
+    let _turn = tournaments.turn.lock().await;
     let mut tournament = load(tournaments, id).await?;
     if tournament.organiser != user.id && !plays(&tournament, user.id) {
         return Err(not_found());
     }
-    sync_results(&app, &mut tournament).await?;
+    if sync_results(&app, &mut tournament).await? && tournament.status == TournamentStatus::Running
+    {
+        make_games(&app, &mut tournament).await?;
+    }
     Ok(Json(view(&tournament, user.id)))
 }
 
@@ -615,8 +623,33 @@ pub(crate) async fn leave(
     Ok(StatusCode::NO_CONTENT)
 }
 
+/// Concedes the seats of `players` in the running `game` through the normal concession, so the game ends as their
+/// loss. False when the game does not run (a lobby, or gone), which leaves the result to the organiser's ruling.
+async fn concede_game(app: &AppState, game: GameId, players: &[UserId]) -> Result<bool, ApiError> {
+    let running = matches!(
+        app.registry()
+            .record_result(game)
+            .await
+            .map_err(|e| unavailable(&e))?,
+        Some((RecordStatus::Running, _))
+    );
+    if !running {
+        return Ok(false);
+    }
+    for &user in players {
+        if let Some(access) = app.registry().authenticate_user(game, user) {
+            // A game that closed meanwhile has ended on its own; the drop still decides the match.
+            let _ = access
+                .handle
+                .send(access.seat, ClientMessage::Concede)
+                .await;
+        }
+    }
+    Ok(true)
+}
+
 /// Drops `entrant` from a running tournament: it is not paired again, and an undecided match of
-/// the current round goes to its opponent.
+/// the current round goes to its opponent; a running game of that match ends as the entrant's concession.
 async fn drop_entrant(
     app: &AppState,
     tournament: &mut Tournament,
@@ -638,6 +671,12 @@ async fn drop_entrant(
     if !dropped {
         return Err(not_found());
     }
+    let players: Vec<UserId> = tournament
+        .entrants
+        .iter()
+        .filter(|e| e.number == entrant)
+        .flat_map(|e| e.players.iter().map(|p| p.user))
+        .collect();
     let round = tournament.round;
     for played in &mut tournament.matches {
         let Some(b) = played.b else { continue };
@@ -652,13 +691,17 @@ async fn drop_entrant(
         } else {
             MatchOutcome::A
         };
+        let conceded = match played.game {
+            Some(game) => concede_game(app, game, &players).await?,
+            None => false,
+        };
         tournaments
             .store
-            .set_outcome(tournament.id, round, played.table, outcome, true)
+            .set_outcome(tournament.id, round, played.table, outcome, !conceded)
             .await
             .map_err(|e| unavailable(&e))?;
         played.outcome = Some(outcome);
-        played.corrected = true;
+        played.corrected = !conceded;
     }
     if let Some(e) = tournament.entrants.iter_mut().find(|e| e.number == entrant) {
         e.dropped = true;
