@@ -29,6 +29,7 @@ impl KeywordRules for Shroud {
 
     fn restricts_player_targeting(
         &self,
+        _state: &GameState,
         _keyword: &Keyword,
         _holder: PlayerId,
         _controller: PlayerId,

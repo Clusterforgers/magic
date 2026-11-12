@@ -340,7 +340,14 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if !own.is_empty() {
         own
     } else if let Some(written) = triggers::condition_text(condition) {
-        vec![written]
+        let mut texts = vec![written];
+        // "you control at least three other enchantments" beside "three or more" (Invasion of Theros).
+        for control in super::statics::control_texts(condition) {
+            if control.contains(" at least ") && !texts.contains(&control) {
+                texts.push(control);
+            }
+        }
+        texts
     } else {
         holds_texts(condition)
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "d5d91377-fd66-4dbe-a092-07f2ea379ca7",
   "name": "Leovold, Emissary of Trest",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leovold, Emissary of Trest",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Rule": { "rule": { "DrawLimit": { "who": "Opponents", "most": 1 } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 178 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PlayerBecomesTarget": { "who": "You", "by": [{ "ControlledBy": "Opponents" }] } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "by": [{ "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
           }
         }
       ]

@@ -37,7 +37,7 @@ impl Pass<'_> {
         };
         if *except_draw_step == 0
             || self.state.turn.step != Step::Draw
-            || self.state.active_player() != Some(*player)
+            || !self.state.is_active(*player)
         {
             return false;
         }

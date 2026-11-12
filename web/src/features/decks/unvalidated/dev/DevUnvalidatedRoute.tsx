@@ -2,13 +2,7 @@ import { useSearch } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
-import {
-  FIXTURE_DECKS,
-  fixtureCardsApi,
-  fixtureDecksApi,
-  READ_FIXTURE_DECKS,
-  UNVALIDATED_FIXTURE_MARKER,
-} from '../fixture'
+import { FIXTURE_DECKS, fixtureDecksApi, READ_FIXTURE_DECKS, UNVALIDATED_FIXTURE_MARKER } from '../fixture'
 import type { FixtureOptions } from '../fixture'
 import { UnvalidatedPage } from '../UnvalidatedPage'
 import type { DevView } from './unvalidatedSearch'
@@ -27,8 +21,6 @@ function optionsOf(view: DevView): FixtureOptions {
       return { listFails: 'decks_unavailable' }
     case 'failed':
       return { checkFails: ['deck-izzet'] }
-    case 'texts':
-      return { cardsFail: true }
     case 'reads':
       return { decks: READ_FIXTURE_DECKS }
     default:
@@ -39,17 +31,14 @@ function optionsOf(view: DevView): FixtureOptions {
 /**
  * `/dev/unvalidated?view=all`: the real page over four fixture decks in memory, for looking at it. `view` is `all`
  * (every deck, merged by card), `deck` (the page of one deck), `clean` (a deck that runs whole), `none` (no decks),
- * `loading` (the list never arrives), `error`, `unavailable`, `failed` (one deck's check fails), `texts` (the card
- * texts cannot be read, so the clauses show without quotes) or `reads` (drafts wait for a read).
+ * `loading` (the list never arrives), `error`, `unavailable`, `failed` (one deck's check fails) or `reads`
+ * (drafts wait for a read).
  */
 export function DevUnvalidatedRoute() {
   const { view } = useSearch({ from: '/dev/unvalidated' })
   const world = useMemo(() => {
     const decks = fixtureDecksApi(optionsOf(view))
-    return {
-      decks: view === 'loading' ? { ...decks, list: () => never } : decks,
-      cards: fixtureCardsApi(optionsOf(view)),
-    }
+    return { decks: view === 'loading' ? { ...decks, list: () => never } : decks }
   }, [view])
   const auth = useMemo(
     () =>
@@ -64,12 +53,7 @@ export function DevUnvalidatedRoute() {
       <p className="sr-only" data-fixture={UNVALIDATED_FIXTURE_MARKER}>
         Development list of cards that are not validated
       </p>
-      <UnvalidatedPage
-        key={view}
-        {...(view === 'deck' ? { deckId: 'deck-izzet' } : {})}
-        api={world.decks}
-        cards={world.cards}
-      />
+      <UnvalidatedPage key={view} {...(view === 'deck' ? { deckId: 'deck-izzet' } : {})} api={world.decks} />
     </AuthContext>
   )
 }

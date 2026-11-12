@@ -53,6 +53,7 @@ const DECK_CODES: Record<DeckErrorCode, true> = {
   internal: true,
   rate_limited: true,
   stale_read: true,
+  fix_mark_limit: true,
 }
 
 /** True for a code the card and deck endpoints send. */
@@ -261,6 +262,7 @@ export const isClause = (value: unknown): value is Reason =>
   isRecord(value) &&
   isCount(value.face) &&
   isText(value.text) &&
+  isText(value.quote) &&
   isRecord(value.span) &&
   isCount(value.span.start) &&
   isCount(value.span.end)
@@ -273,7 +275,8 @@ const isReportCard = (value: unknown): value is ReportCard =>
   isCount(value.count) &&
   isSupport(value.support) &&
   (value.draft === undefined || isReadState(value.draft)) &&
-  isListOf(value.reasons, isClause)
+  isListOf(value.reasons, isClause) &&
+  (value.whole_text === undefined || isText(value.whole_text))
 
 const isIssueBody = (value: unknown): boolean =>
   isRecord(value) && isText(value.code) && isText(value.message)

@@ -1,7 +1,15 @@
-// Goal: the house rules table reads field text into the request's rules exactly within the server's ranges, names only what differs from the format's own values, and shows Commander's rules only in Commander.
+// Goal: the house rules table reads field text into the request's rules exactly within the server's ranges (handicaps per seat of the table, in seat order), names only what differs from the format's own values, and shows Commander's rules only in Commander.
 import { describe, expect, it } from 'vitest'
 import type { HouseRules } from '@/protocol/generated'
-import { describeRules, gameFormat, requestRules, RULES, ruleGroups, rulesFromTexts } from './houseRules'
+import {
+  describeRules,
+  gameFormat,
+  handicapId,
+  requestRules,
+  RULES,
+  ruleGroups,
+  rulesFromTexts,
+} from './houseRules'
 import type { GameFormat } from './houseRules'
 
 describe('reading field text', () => {
@@ -154,5 +162,84 @@ describe('the table of rules', () => {
   it('groups the rules in the order of the table', () => {
     const titles = ruleGroups('commander').map((group) => group.title)
     expect(new Set(titles).size).toBe(titles.length)
+  })
+})
+
+describe('reading handicaps', () => {
+  const life = (seat: number) => handicapId(seat, 'starting_life')
+  const hand = (seat: number) => handicapId(seat, 'opening_hand_size')
+  const cases: [string, Record<string, string>, number, HouseRules][] = [
+    ['none typed', {}, 4, {}],
+    ['blank texts', { [life(0)]: ' ', [hand(1)]: '' }, 4, {}],
+    ['one seat’s life', { [life(1)]: '30' }, 4, { handicaps: [{ seat: 1, starting_life: 30 }] }],
+    [
+      'both values of a seat',
+      { [life(0)]: '10', [hand(0)]: ' 5 ' },
+      2,
+      {
+        handicaps: [{ seat: 0, starting_life: 10, opening_hand_size: 5 }],
+      },
+    ],
+    [
+      'seats in table order',
+      { [hand(3)]: '8', [life(0)]: '25' },
+      4,
+      {
+        handicaps: [
+          { seat: 0, starting_life: 25 },
+          { seat: 3, opening_hand_size: 8 },
+        ],
+      },
+    ],
+    [
+      'a seat the table no longer has',
+      { [life(3)]: '30', [life(1)]: '9' },
+      2,
+      {
+        handicaps: [{ seat: 1, starting_life: 9 }],
+      },
+    ],
+    [
+      'with a table rule',
+      { starting_life: '30', [life(1)]: '40' },
+      2,
+      {
+        starting_life: 30,
+        handicaps: [{ seat: 1, starting_life: 40 }],
+      },
+    ],
+  ]
+  it.each(cases)('%s', (_name, texts, seats, rules) => {
+    const read = rulesFromTexts(texts, 'commander', seats)
+    expect(read.problems).toEqual({})
+    expect(read.rules).toEqual(rules)
+    expect(requestRules(texts, 'normal', seats)).toEqual(Object.keys(rules).length === 0 ? undefined : rules)
+  })
+
+  it.each([
+    [life(0), '0'],
+    [life(0), '1001'],
+    [life(1), '-5'],
+    [hand(0), '0'],
+    [hand(1), '21'],
+    [hand(1), 'six'],
+  ])('refuses %s = %j and sends nothing for it', (id, text) => {
+    const read = rulesFromTexts({ [id]: text }, 'commander', 2)
+    expect(Object.keys(read.problems)).toEqual([id])
+    expect(read.rules.handicaps).toBeUndefined()
+  })
+
+  it.each([
+    [life(0), '1'],
+    [life(0), '1000'],
+    [hand(1), '1'],
+    [hand(1), '20'],
+  ])('takes %s = %j at the edge of its range', (id, text) => {
+    expect(rulesFromTexts({ [id]: text }, 'commander', 2).problems).toEqual({})
+  })
+
+  it('names the seats with a handicap last', () => {
+    const rules = rulesFromTexts({ [life(0)]: '30', [hand(2)]: '6' }, 'commander', 4).rules
+    expect(describeRules(rules, 'commander')).toEqual(['Handicaps for 2 players'])
   })
 })

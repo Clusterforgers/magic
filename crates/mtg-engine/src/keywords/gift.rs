@@ -86,7 +86,7 @@ const fn label(kind: GiftKind) -> &'static str {
     }
 }
 
-/// The effects that give the gift to the player it was promised to.
+/// The effects that give the gift to the player it was promised to, then the log of the gift (CR 702.174).
 pub(crate) fn given(kind: GiftKind) -> Vec<Effect> {
     let who = Ref::Promised;
     let token = |token: TokenRef, tapped: bool| Effect::CreateToken {
@@ -99,22 +99,32 @@ pub(crate) fn given(kind: GiftKind) -> Vec<Effect> {
         blocking: None,
         bind: None,
     };
-    vec![match kind {
-        GiftKind::Card => Effect::Draw {
-            bind: None,
-            who,
-            count: Amount::one(),
+    vec![
+        match kind {
+            GiftKind::Card => Effect::Draw {
+                bind: None,
+                who,
+                count: Amount::one(),
+            },
+            GiftKind::Treasure => token(TokenRef::Named("treasure".to_owned()), false),
+            GiftKind::Food => token(TokenRef::Named("food".to_owned()), false),
+            GiftKind::TappedFish => token(creature("Fish", 1), true),
+            GiftKind::Octopus => token(creature("Octopus", 8), false),
+            GiftKind::ExtraTurn => Effect::ExtraTurn {
+                who,
+                count: Amount::one(),
+                skip_untap: false,
+            },
         },
-        GiftKind::Treasure => token(TokenRef::Named("treasure".to_owned()), false),
-        GiftKind::Food => token(TokenRef::Named("food".to_owned()), false),
-        GiftKind::TappedFish => token(creature("Fish", 1), true),
-        GiftKind::Octopus => token(creature("Octopus", 8), false),
-        GiftKind::ExtraTurn => Effect::ExtraTurn {
-            who,
-            count: Amount::one(),
-            skip_untap: false,
+        Effect::Performed {
+            action: mtg_cards::did::Action::GaveGift,
+            who: Ref::You,
+            times: Amount::one(),
+            card: None,
+            value: None,
+            to: Some(Ref::Promised),
         },
-    }]
+    ]
 }
 
 /// A blue creature token of the subtype whose power and toughness are both `size`.

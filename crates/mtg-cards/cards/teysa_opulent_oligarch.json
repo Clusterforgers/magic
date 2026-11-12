@@ -30,6 +30,25 @@
                     }
                   }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             ]
           }

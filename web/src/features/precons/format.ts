@@ -4,7 +4,7 @@ import { notLegalText } from '@/features/decks/legality'
 import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
 import { runsBreakdown, WHOLE_DECK_RUNS } from '@/lib/toRead'
 import { copyText } from '@/features/decks/unvalidated/model'
-import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
+import type { FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
 /** How a game runs a precon: the whole deck (`read`: some of it not Verified), or with cards played by hand. */
@@ -151,6 +151,7 @@ export function flaggedLine(card: PreconCardView, precon: PreconListItem): Flagg
     name: card.name,
     support: card.support,
     reasons: card.reasons,
+    ...(card.whole_text === undefined ? {} : { wholeText: card.whole_text }),
     decks: [{ id: precon.code, name: precon.name }],
   }
 }
@@ -163,8 +164,7 @@ export const flaggedCards = (view: PreconView): FlaggedCard[] =>
  * The cards that are not Verified as plain text in the format of the list of unvalidated cards (a block each, the
  * quoted clause beside its reason once the texts of the cards are known). Empty when every card is verified.
  */
-export const copyList = (view: PreconView, texts: FaceTexts = new Map()): string =>
-  copyText(flaggedCards(view), texts)
+export const copyList = (view: PreconView): string => copyText(flaggedCards(view))
 
 /** How many cards `copyList` writes. */
 export const notVerified = (view: PreconView): number => flaggedCards(view).length

@@ -206,6 +206,7 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
     },
     resync: () => false,
     dismissNotice: () => store.setState({ notice: null }),
+    clearDueLines: () => store.setState({ dueLines: [] }),
   }
 }
 

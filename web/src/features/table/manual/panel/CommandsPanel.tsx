@@ -16,6 +16,7 @@ import { GAME_OVER, MANA_KINDS, OUT_OF_GAME } from '../offers'
 import { AmountField } from './AmountField'
 import { pendingLook } from './arrange'
 import { CardGroup } from './CardGroup'
+import { DueGroup } from './DueGroup'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { panelGroups, previewOf, startDraft } from './commands'
@@ -102,8 +103,8 @@ function PanelClock() {
 }
 
 /**
- * The Commands panel: what the seat does by hand, grouped as You, Library and Make, each command a row that opens in
- * place with its amount, the change it will make and one Apply button. Nothing is sent before Apply. A viewer that is
+ * The Commands panel: what the seat does by hand, opened by the lines due by hand (`DueGroup`) and grouped as You,
+ * Library and Make, each command a row that opens in place with its amount, the change it will make and one Apply button. Nothing is sent before Apply. A viewer that is
  * no seat of the game has no panel.
  */
 export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId | null }) {
@@ -119,6 +120,7 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
       className="grid h-full min-h-0 content-start gap-1 overflow-y-auto overscroll-contain pr-1"
     >
       <PanelClock />
+      <DueGroup />
       {input.off === undefined ? null : (
         <p data-slot="commands-off" className="px-2 text-xs text-muted-foreground">
           {input.off}

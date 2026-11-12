@@ -1,4 +1,4 @@
-// Goal: the house rules of a game browser row and of a game lookup are read rule by rule, every rule that is there must have the right kind of value, unknown rules are dropped, and the rules reach the lookup and the listing.
+// Goal: the house rules of a game browser row and of a game lookup are read rule by rule, every rule that is there must have the right kind of value, unknown rules are dropped, and the rules (teams too) and a team's win reach the lookup and the listing.
 import { describe, expect, it } from 'vitest'
 import { readHouseRules } from './houseRules'
 import { readGameInfo, readLobbyGame } from './parseLobbies'
@@ -27,6 +27,16 @@ describe('reading house rules', () => {
       { handicaps: [{ seat: 1, starting_life: 10 }] },
       { handicaps: [{ seat: 1, starting_life: 10 }] },
     ],
+    [
+      'Two-Headed Giant teams',
+      { teams: { mode: 'two_headed_giant', seats: [0, 0, 1, 1] } },
+      { teams: { mode: 'two_headed_giant', seats: [0, 0, 1, 1] } },
+    ],
+    [
+      'teams',
+      { teams: { mode: 'teams', seats: [0, 1, 0, 1] } },
+      { teams: { mode: 'teams', seats: [0, 1, 0, 1] } },
+    ],
     ['an unknown rule, dropped', { starting_life: 30, future_rule: 1 }, { starting_life: 30 }],
   ]
   it.each(good)('reads %s', (_name, body, rules) => {
@@ -45,6 +55,9 @@ describe('reading house rules', () => {
     ['a deck size that is text', { deck: { deck_size: '60' } }],
     ['a handicap without a seat', { handicaps: [{ starting_life: 10 }] }],
     ['handicaps that are not a list', { handicaps: {} }],
+    ['teams of an unknown mode', { teams: { mode: 'pairs', seats: [0, 1] } }],
+    ['teams without seats', { teams: { mode: 'teams' } }],
+    ['a team that is negative', { teams: { mode: 'teams', seats: [0, -1] } }],
   ]
   it.each(bad)('refuses %s', (_name, body) => {
     expect(readHouseRules(body)).toBeNull()
@@ -85,6 +98,13 @@ describe('the rules in a lookup and a listing', () => {
       open_hands: true,
     })
     expect(readLobbyGame(row)).not.toHaveProperty('house_rules')
+  })
+
+  it('reads the teams and a team result of a finished lookup', () => {
+    const teams = { mode: 'two_headed_giant', seats: [0, 0, 1, 1] }
+    const info = readGameInfo({ ...lookup, started: true, result: { Team: 1 }, house_rules: { teams } })
+    expect(info).toMatchObject({ result: { Team: 1 }, house_rules: { teams } })
+    expect(readGameInfo({ ...lookup, result: { Team: 'one' } })).toBeNull()
   })
 
   it('refuses a lookup and a row whose rules are wrong', () => {

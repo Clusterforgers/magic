@@ -112,6 +112,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
+  Investigated: [{ Investigated: { player: 1 } }, 'Bo investigates'],
+  Discovered: [{ Discovered: { player: 1, value: 3, card: 3 } }, 'Bo discovers 3, finding Forest'],
+  DreadManifested: [{ DreadManifested: { player: 0, card: null } }, 'Ana manifests dread'],
+  GiftGiven: [{ GiftGiven: { player: 0, to: 1 } }, 'Ana gives Bo a gift'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -363,6 +367,12 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AbilityLeftToTable: [
     { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 0, text: 'Draw a card.' } },
     "Jace Beleren's ability could not be run by the game: apply its text by hand",
+  ],
+  ByHandDue: [
+    {
+      ByHandDue: { source: { id: 6, counter: 0 }, controller: 0, text: 'Whenever a creature dies, juggle.' },
+    },
+    'Jace Beleren has a line to apply by hand now: “Whenever a creature dies, juggle.”',
   ],
   ZoneChanged: [
     { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Destroyed' } },
@@ -849,6 +859,10 @@ describe('events with more than one shape', () => {
 
   it('says a draw', () => {
     expect(say({ GameEnded: { result: 'Draw' } })).toBe('The game ends in a draw')
+  })
+
+  it("says a team's win by its label", () => {
+    expect(say({ GameEnded: { result: { Team: 1 } } })).toBe('Team 2 wins the game')
   })
 
   it.each([

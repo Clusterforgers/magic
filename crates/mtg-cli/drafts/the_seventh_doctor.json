@@ -67,11 +67,17 @@
                       "CastFromZone": {
                         "what": { "Bound": "card" },
                         "free": true,
-                        "otherwise": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                        "otherwise": [
+                          { "CreateToken": { "token": { "Named": "clue" } } },
+                          { "Performed": { "action": "Investigated" } }
+                        ]
                       }
                     }
                   ],
-                  "otherwise": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                  "otherwise": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
                 }
               }
             ]

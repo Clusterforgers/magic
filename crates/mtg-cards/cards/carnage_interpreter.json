@@ -12,7 +12,8 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
-              { "CreateToken": { "token": { "Named": "clue" }, "count": 4 } }
+              { "CreateToken": { "token": { "Named": "clue" }, "count": 4 } },
+              { "Performed": { "action": "Investigated", "times": 4 } }
             ]
           }
         },

@@ -156,6 +156,7 @@ describe('failures', () => {
     internal: 500,
     rate_limited: 429,
     stale_read: 409,
+    fix_mark_limit: 409,
   }
 
   it.each(DECK_ERROR_CODES)('keeps the code, status and sentence of %s on every call', async (code) => {

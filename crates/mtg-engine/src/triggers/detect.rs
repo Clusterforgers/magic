@@ -16,9 +16,12 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
+mod by_hand;
 mod did;
 mod l293_discards;
 mod r288_final_chapter;
+
+pub use by_hand::{ByHandDue, due};
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
@@ -200,6 +203,8 @@ enum Happened {
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
+    /// A player investigated (CR 701.16a), the `nth` time this turn.
+    Investigated { player: PlayerId, nth: u32 },
     /// The Ring tempted a player, who chose `bearer`.
     RingTempted {
         player: PlayerId,
@@ -374,6 +379,14 @@ impl Happened {
             {
                 Some(*nth_any)
             }
+            (
+                Happened::Did {
+                    action: Action::Investigated,
+                    amount,
+                    ..
+                },
+                TriggerPattern::Did { .. },
+            ) => Some(*amount),
             _ => self.nth(),
         }
     }
@@ -756,6 +769,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
         | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
+        | (Tally::L31aInvestigated, Event::Investigated { player: who })
         | (
             Tally::Tokens,
             Event::TokenCreated(TokenCreated {
@@ -795,9 +809,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
 
 /// Which card of the draw step under way a draw by `player` is, when it is their own draw step (CR 504.1); 0 otherwise.
 fn draw_step_ordinal(look: Look<'_>, player: PlayerId) -> u32 {
-    if look.post.turn().step() != crate::turn::Step::Draw
-        || look.post.active_player() != Some(player)
-    {
+    if look.post.turn().step() != crate::turn::Step::Draw || !look.post.is_active(player) {
         return 0;
     }
     ordinal(look.post, look.later, player, Tally::C6BlkDrawStepDrawn)
@@ -1191,6 +1203,10 @@ fn about_players_and_permanents(
             player: surveilled.player,
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
+        Event::Investigated { player } => found.push(Happened::Investigated {
+            player: *player,
+            nth: ordinal(look.post, look.later, *player, Tally::L31aInvestigated),
+        }),
         Event::RingTempted { player, bearer, .. } => found.push(Happened::RingTempted {
             player: *player,
             bearer: *bearer,
@@ -1562,6 +1578,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 None
             } else if scope.players(whose).ok()?.contains(active) {
                 Some(cause(state, vec![Target::Player(*active)]))
+            } else if let Some(mate) = scope
+                .players(whose)
+                .ok()?
+                .into_iter()
+                .find(|player| state.is_alive(*player) && state.is_active(*player))
+            {
+                // A teammate who shares the turn has the step too (CR 805.3).
+                Some(cause(state, vec![Target::Player(mate)]))
             } else if whose.is_each_player() && !state.is_alive(*active) {
                 // The steps of a turn without an active player still begin (CR 800.4) but name no player.
                 Some(cause(state, Vec::new()))

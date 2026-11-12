@@ -1,9 +1,10 @@
-//! Goal: the lobby roster and `NotReady` keep their documented wire shape, survive a JSON round trip for any table of 2 to 12 seats in any mix of states, refuse malformed bodies, and reach the TypeScript bindings.
+//! Goal: the lobby roster (with the table's teams when it has them) and `NotReady` keep their documented wire shape, survive a JSON round trip for any table of 2 to 12 seats in any mix of states, refuse malformed bodies, and reach the TypeScript bindings.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::generated;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -28,6 +29,7 @@ fn the_roster_has_the_documented_wire_shape() {
             seat(2, "Cy", false, false),
         ],
         needed: 2,
+        teams: None,
     };
     let value = serde_json::to_value(&message).unwrap();
     assert_eq!(
@@ -41,6 +43,25 @@ fn the_roster_has_the_documented_wire_shape() {
             ],
             "needed": 2,
         })
+    );
+    assert_eq!(
+        serde_json::from_value::<ServerMessage>(value).unwrap(),
+        message
+    );
+}
+
+#[test]
+fn a_roster_of_a_table_with_teams_carries_them() {
+    let teams = Teams::even(TeamMode::TwoHeadedGiant, 2, 2);
+    let message = ServerMessage::Lobby {
+        seats: (0..4).map(|n| seat(n, "P", true, false)).collect(),
+        needed: 4,
+        teams: Some(teams),
+    };
+    let value = serde_json::to_value(&message).unwrap();
+    assert_eq!(
+        value["teams"],
+        json!({"mode": "two_headed_giant", "seats": [0, 0, 1, 1]})
     );
     assert_eq!(
         serde_json::from_value::<ServerMessage>(value).unwrap(),
@@ -144,7 +165,7 @@ proptest! {
     #[test]
     fn any_table_round_trips_in_seat_order(seats in table()) {
         let needed = u32::try_from(seats.iter().filter(|s| !s.ready).count()).unwrap();
-        let message = ServerMessage::Lobby { seats, needed };
+        let message = ServerMessage::Lobby { seats, needed, teams: None };
         let text = serde_json::to_string(&message).unwrap();
         let back: ServerMessage = serde_json::from_str(&text).unwrap();
         prop_assert_eq!(&back, &message);

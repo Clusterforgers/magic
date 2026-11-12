@@ -28,7 +28,10 @@ export function formatName(key: string): string {
 export const seatsText = (game: LobbyGame): string => `${game.filled} of ${game.total}`
 
 /** Whether every seat is taken. */
-export const isFull = (game: LobbyGame): boolean => game.filled >= game.total
+export const isFull = (game: LobbyGame): boolean => game.running !== true && game.filled >= game.total
+
+/** The name of a running game's Watch link: "Watch Bo's game". */
+export const watchLabel = (game: LobbyGame): string => `Watch ${game.host}'s game`
 
 /** The name of a row's Join button: "Join Bo's game, 2 of 4 seats". */
 export const joinLabel = (game: LobbyGame): string =>
