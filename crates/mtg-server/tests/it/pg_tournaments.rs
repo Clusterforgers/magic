@@ -522,3 +522,38 @@ async fn a_server_without_a_database_keeps_no_tournaments() {
         (503, "accounts_unavailable")
     );
 }
+
+async fn rows(pool: &PgPool, table: &str) -> i64 {
+    // `table` is always one of this file's own names.
+    sqlx::query_scalar(sqlx::AssertSqlSafe(format!("SELECT count(*) FROM {table}")))
+        .fetch_one(pool)
+        .await
+        .unwrap()
+}
+
+async fn bye(server: &TestServer, who: &Browser) -> Reply {
+    let body = json!({"password": PASSWORD});
+    call(server, "DELETE", "/api/auth/account", Some(who), Some(body)).await
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_deleted_account_takes_its_tournament_rows_with_it(pool: PgPool) {
+    let server = start(&pool).await;
+    let org = register(server.addr, "Org", PASSWORD).await;
+    let ann = register(server.addr, "Ann", PASSWORD).await;
+    let (id, invite) = create(
+        &server,
+        &org,
+        json!({"name": "Gone", "format": "commander_1v1", "structure": "swiss"}),
+    )
+    .await;
+    assert_eq!(join(&server, &invite, &ann, json!({})).await.status, 200);
+    assert_eq!(rows(&pool, "tournament_players").await, 1);
+    assert_eq!(bye(&server, &ann).await.status, 204);
+    assert_eq!(rows(&pool, "tournament_players").await, 0);
+    assert_eq!(view(&server, &id, &org).await["entrants"], json!([]));
+    assert_eq!(bye(&server, &org).await.status, 204);
+    for table in ["tournaments", "tournament_entrants", "tournament_matches"] {
+        assert_eq!(rows(&pool, table).await, 0, "{table}");
+    }
+}

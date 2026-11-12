@@ -1,4 +1,4 @@
-//! Goal: the tournament bodies keep their documented wire shape: snake_case formats and outcomes, optional fields left out, unknown fields refused in requests, a view that survives a JSON round trip, and bindings for every body.
+//! Goal: the tournament bodies keep their documented wire shape: lower-case formats and outcomes, optional fields left out, unknown fields refused in requests, a view that survives a JSON round trip, and bindings for every body.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 

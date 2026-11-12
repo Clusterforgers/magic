@@ -48,6 +48,10 @@ async fn the_server_alone_creates_only_its_own_tables_and_can_rerun(pool: PgPool
                 "games",
                 "seats",
                 "sessions",
+                "tournament_entrants",
+                "tournament_matches",
+                "tournament_players",
+                "tournaments",
                 "users"
             ]
         );

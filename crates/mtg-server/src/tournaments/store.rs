@@ -275,6 +275,16 @@ impl TournamentStore {
                 });
             }
         }
+        let status =
+            TournamentStatus::parse(&row.status).ok_or_else(|| corrupt("status", &row.status))?;
+        // An entrant whose players all deleted their accounts is gone before the start and
+        // dropped after it.
+        if status == TournamentStatus::Signup {
+            entrants.retain(|e| !e.players.is_empty());
+        }
+        for entrant in &mut entrants {
+            entrant.dropped |= entrant.players.is_empty();
+        }
         let match_rows = sqlx::query!(
             "SELECT round, table_no, a, b, game_id, outcome, corrected FROM tournament_matches
              WHERE tournament_id = $1 ORDER BY round, table_no",
@@ -312,8 +322,7 @@ impl TournamentStore {
             structure: TournamentStructure::parse(&row.structure)
                 .ok_or_else(|| corrupt("structure", &row.structure))?,
             rounds: row.rounds.map(number),
-            status: TournamentStatus::parse(&row.status)
-                .ok_or_else(|| corrupt("status", &row.status))?,
+            status,
             round: number(row.round),
             seed: u64::from_ne_bytes(row.seed.to_ne_bytes()),
             invite: row.invite,
