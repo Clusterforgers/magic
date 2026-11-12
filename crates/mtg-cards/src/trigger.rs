@@ -271,6 +271,9 @@ pub enum TriggerPattern {
     Untapped {
         /// The permanent.
         what: Selector,
+        /// Only in the untap step of the turn of the ability's controller ("becomes untapped during your untap step").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        untap_step: bool,
     },
     /// A permanent matching the selector phases out (CR 702.26); judged as it was before it phased out.
     PhasedOut {
@@ -1179,6 +1182,22 @@ pub enum ShieldShape {
     /// ("the next time you would draw a card this turn, ... instead", "the next time you would lose the game this turn,
     /// instead ..."; CR 614.1a).
     Next,
+}
+
+/// "<subject> becomes untapped", with " during your untap step" for an untap in the controller's untap step; an empty
+/// subject gives the verb alone.
+#[must_use]
+pub fn untapped_words(subject: &str, untap_step: bool) -> String {
+    let during = if untap_step {
+        " during your untap step"
+    } else {
+        ""
+    };
+    if subject.is_empty() {
+        format!("becomes untapped{during}")
+    } else {
+        format!("{subject} becomes untapped{during}")
+    }
 }
 
 impl ShieldShape {

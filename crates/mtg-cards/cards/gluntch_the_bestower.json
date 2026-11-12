@@ -1,7 +1,7 @@
 {
   "oracle_id": "0222dc7c-459b-4909-a037-72b2eb248599",
   "name": "Gluntch, the Bestower",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gluntch, the Bestower",
@@ -9,9 +9,58 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 211 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Choose": { "from": "EachPlayer", "as": "first" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "first" },
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "first" } }]
+                  },
+                  "as": "creature"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "creature" }, "counter": "+1/+1", "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "Bound": "first" } } }
+                    }
+                  },
+                  "as": "second"
+                }
+              },
+              { "Draw": { "who": { "Bound": "second" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Not": {
+                          "Any": [
+                            { "Among": { "Bound": "first" } },
+                            { "Among": { "Bound": "second" } }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "as": "third"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Bound": "third" },
+                  "token": { "Named": "treasure" },
+                  "count": 2
+                }
+              }
+            ]
           }
         }
       ]

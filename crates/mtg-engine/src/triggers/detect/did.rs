@@ -204,6 +204,7 @@ pub(super) fn did_happened(
             found.push(did(Action::ManifestedDread, Some(*player), *card));
         }
         Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
+        Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
         Event::CountersChanged(changed) => {
             if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
                 found.push(of(Action::Evolved, object));

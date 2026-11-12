@@ -55,6 +55,7 @@ mod r305_probe;
 mod r305_writers;
 mod r307_cards;
 mod r304_writers;
+mod r306_writers;
 mod r6e;
 mod read_sheet;
 mod read_tier;

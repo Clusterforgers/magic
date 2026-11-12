@@ -513,6 +513,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AfterBlockers
         | Condition::InCombat
         | Condition::FirstCombat
+        | Condition::FirstStep
         | Condition::SorceryTiming
         | Condition::AfterCombat
         | Condition::NeitherDayNorNight

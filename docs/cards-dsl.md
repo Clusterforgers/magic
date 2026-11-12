@@ -243,6 +243,9 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Costs that read X | A flashback part counted by X takes the spell's X; an alternative cost whose pick filter reads X asks X first and offers only values with a card to pick; an `AltCast` may hold `{X}`. |
 | Companion conditions | Besides `Each`, `Distinct` and `ExtraCards`: `ShareCardType`, `ManaValueParity { even }` and `NoRepeatedSymbol`. |
 | Cleave | `Cleave { cost, spell }`: the keyword carries the `Spell` ability without the bracketed words, which a spell cast for the cleave cost announces and resolves instead of the printed one (CR 702.148); an `{X}` of the cleave cost is announced for that cast only. The compiler and the read back check each version against its text. |
+| Forage trigger | `Action::Foraged` ("whenever you forage"): the payment of a `Forage` cost, a Food sacrificed or three graveyard cards exiled, logs `Foraged` once (CR 701.61), as collecting evidence logs `EvidenceCollected` (`r306_forage.rs`). |
+| X held to a cap | `CostItem::XAtMost(amount)` in the cost of an `Effect::Pay` ("you may pay {X}. ... X can't be greater than the amount of life you gained this turn"): the X asked runs up to the least of what the payer can pay and the amount, read as the payment is asked; anywhere else it is `XAtMost.Elsewhere`. |
+| Added steps | `Effect::AddStep` ("you get an additional upkeep step after this step") puts a step right after the current one, before any added earlier; `Condition::FirstStep` holds in the first step of its kind this turn ("first upkeep each turn", "if it's the first end step of the turn"); `Untapped { untap_step }` is "becomes untapped during your untap step" (`r306_steps.rs`). |
 
 ## Validation
 

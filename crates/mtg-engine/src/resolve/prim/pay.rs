@@ -101,10 +101,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         match asked {
             Choice::YesNo(false) => {}
             Choice::YesNo(true) => {
-                let (price, x) = match w6c_pay_x::announced(cx, player, &template, &mut journal)? {
-                    w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
-                    w6c_pay_x::Announced::Price(price, x) => (price, x),
-                };
+                let cap = w6c_pay_x::r306_cap(cx, cost)?;
+                let (price, x) =
+                    match w6c_pay_x::announced(cx, player, &template, cap, &mut journal)? {
+                        w6c_pay_x::Announced::Ask(decision) => return Ok(Run::Ask(decision)),
+                        w6c_pay_x::Announced::Price(price, x) => (price, x),
+                    };
                 match settle(cx, player, &price, &mut journal)? {
                     Settled::Ask(decision) => return Ok(Run::Ask(decision)),
                     Settled::Paid(events) => {

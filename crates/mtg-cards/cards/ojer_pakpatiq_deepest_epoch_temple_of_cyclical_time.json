@@ -15,9 +15,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 198, "end": 332 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true,
+                      "transformed": true,
+                      "counters": [[{ "Other": "time" }, 3]]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

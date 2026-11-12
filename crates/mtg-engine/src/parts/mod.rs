@@ -747,6 +747,10 @@ impl Part {
                 if pick.kind == Kind::Evidence {
                     events.push(Event::EvidenceCollected { player });
                 }
+                // The Food sacrificed or the cards exiled are the forage (CR 701.61a); "whenever you forage" waits for it.
+                if pick.kind == Kind::Forage {
+                    events.push(Event::Foraged { player });
+                }
                 events
             }
             Part::X(inner) => inner.w2f_events(state, (player, source), picked, kinds),

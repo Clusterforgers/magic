@@ -1362,6 +1362,12 @@ pub enum Effect {
         /// The phases added.
         phases: Vec<PhaseKind>,
     },
+    /// A step is added right after the current step, before any step added earlier ("you get an additional upkeep step
+    /// after this step", "there is an additional end step after this step"); nothing is added before the first turn.
+    AddStep {
+        /// The step added.
+        step: crate::trigger::Step,
+    },
     /// The player wins the game.
     WinGame {
         /// Who wins.

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "43ce339e-c595-4215-bdb3-d93d0808417e",
+  "name": "Pick-a-Beeble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pick-a-Beeble",
+      "oracle_fingerprint": "a7d4bef0db2d8446c024e8c62c6581a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "This",
+                            "counter": { "Other": "luck" },
+                            "count": { "DieResult": "Only" }
+                          }
+                        },
+                        { "CreateToken": { "token": { "Named": "treasure" } } }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "luck" } } },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [{ "ClaimPrize": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Prize": {} },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } },
+              { "Sacrifice": { "filter": ["This"] } },
+              { "OpenAttraction": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

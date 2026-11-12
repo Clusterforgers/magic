@@ -167,7 +167,11 @@ kept: Array<ObjectId>, } } | { "PhasesAdded": {
 /**
  * The first step of each added phase.
  */
-steps: Array<Step>, } } | { "StepBegan": { 
+steps: Array<Step>, } } | { "StepAdded": { 
+/**
+ * The step added.
+ */
+step: Step, } } | { "StepBegan": { 
 /**
  * The step.
  */

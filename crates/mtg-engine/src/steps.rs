@@ -383,8 +383,13 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let natural = next_step(state, step);
     // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
     let ends_phase = natural.phase() != step.phase();
-    let (next, through) = match state.turn().phases_ahead().first() {
-        Some(added) if ends_phase => (*added, ManaLasts::Combat),
+    let (next, through) = match (
+        state.turn().steps_ahead().first(),
+        state.turn().phases_ahead().first(),
+    ) {
+        // A step added after this one comes first; its phase goes on (an additional upkeep step).
+        (Some(step_added), _) => (*step_added, ManaLasts::Step),
+        (None, Some(added)) if ends_phase => (*added, ManaLasts::Combat),
         _ if ends_phase => (natural, ManaLasts::Combat),
         _ => (natural, ManaLasts::Step),
     };

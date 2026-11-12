@@ -100,6 +100,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
         CostItem::XColor(_) => "Cost.XColor",
+        CostItem::XAtMost(_) => "Cost.XAtMost",
     }
 }
 
@@ -211,8 +212,9 @@ impl Price {
                 CostItem::Tap => tap = true,
                 CostItem::Untap => untap = true,
                 CostItem::Changed { .. } => changes.push(item.clone()),
-                // The least X is read where X is announced (`announce/x.rs`).
-                CostItem::XAtLeast(_) => {}
+                // The least X is read where X is announced (`announce/x.rs`), the most where an effect asks the payment
+                // (`resolve/prim/w6c_pay_x.rs`).
+                CostItem::XAtLeast(_) | CostItem::XAtMost(_) => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(number) => {

@@ -1457,6 +1457,9 @@ pub enum Condition {
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
     FirstCombat,
+    /// The current step is the first of its kind this turn, before any added one: "if it's the first end step of the
+    /// turn", "at the beginning of enchanted player's first upkeep each turn" (CR 500.8).
+    FirstStep,
     /// A player the reference names was attacked in the combat phase in progress, directly or through a planeswalker
     /// they control or a battle they protect (CR 506.2); an attacker that left combat still counts: "if you've been
     /// attacked this step" in the declare attackers step.

@@ -177,6 +177,11 @@ pub enum Event {
         /// The first step of each added phase.
         steps: Vec<Step>,
     },
+    /// A step was added right after the current one, before any step added earlier (`Effect::AddStep`).
+    StepAdded {
+        /// The step added.
+        step: Step,
+    },
     /// A step began.
     StepBegan {
         /// The step.
@@ -891,6 +896,11 @@ pub enum Event {
         /// The player it was given to.
         to: PlayerId,
     },
+    /// A player foraged (CR 701.61): the Food sacrificed or the cards exiled are the moves that come before it.
+    Foraged {
+        /// Who foraged.
+        player: PlayerId,
+    },
     /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
     DieRolled {
         /// Who rolled.
@@ -1346,6 +1356,7 @@ impl Event {
             | Event::ExtraTurnSkipped { .. }
             | Event::PlayerControlGained { .. }
             | Event::PhasesAdded { .. }
+            | Event::StepAdded { .. }
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
             | Event::AnnouncementRewound { .. }
@@ -1363,6 +1374,7 @@ impl Event {
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
+            | Event::Foraged { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }

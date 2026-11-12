@@ -14,9 +14,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 230, "end": 310 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+                    { "Draw": { "count": 3 } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

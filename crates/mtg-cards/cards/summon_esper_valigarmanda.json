@@ -8,9 +8,31 @@
       "oracle_fingerprint": "67ca8a7186cf0c0f0360a7d433d204de",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 88, "end": 145 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" } } }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

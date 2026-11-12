@@ -110,6 +110,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::TimeTravel { .. }
         | Effect::ExtraTurn { .. }
         | Effect::AddPhase { .. }
+        | Effect::AddStep { .. }
         | Effect::WinGame { .. }
         | Effect::ChangeTargets { .. }
         | Effect::CopySpell { .. }

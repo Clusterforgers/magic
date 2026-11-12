@@ -2828,6 +2828,7 @@ impl<'a> Scope<'a> {
             Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
+            Condition::FirstStep => !self.state.turn().step_began_again(),
             Condition::AttackedThisCombat(who) => self.r285_attacked_this_combat(who)?,
             Condition::SorceryTiming => {
                 crate::priority::sorcery_timing(self.state, self.controller)
