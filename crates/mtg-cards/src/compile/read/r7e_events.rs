@@ -127,6 +127,9 @@ pub(super) fn r7e_player_batch(inner: &TriggerPattern) -> Option<String> {
             let cards = match what.0.as_slice() {
                 [] => "cards".to_owned(),
                 [Pred::Type(_)] => format!("{} cards", phrase_text(what, Form::Subject)?),
+                [Pred::Not(not)] if **not == Pred::Type(CardType::Land) => {
+                    "nonland cards".to_owned()
+                }
                 _ => return None,
             };
             Some(format!(
@@ -185,7 +188,7 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
             Ref::You => return None,
             _ => format!("{} the game", player_verb(who, "lose")?),
         },
-        _ => return None,
+        _ => return super::l293_events::l293_player_action(action, who),
     })
 }
 
@@ -223,6 +226,9 @@ fn land_played(what: &Selector) -> Option<String> {
 
 /// The event of `TriggerPattern::Did` as the card words it.
 pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
+    if let Some(text) = super::l290_writers::l290_did_text(pattern) {
+        return Some(text);
+    }
     let TriggerPattern::Did { action, who, what } = pattern else {
         return None;
     };

@@ -38,6 +38,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::BasePower => "base power",
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
+        StatKind::CounterKinds => "kinds of counters",
     }
 }
 
@@ -458,6 +459,19 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                     subject(what)
                 ),
                 what.0 == [Pred::This],
+            )
+        }
+        TriggerPattern::PlayerBecomesTarget { who: player, by } => {
+            let (name, _) = who(player);
+            let whose = match by.0.as_slice() {
+                [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
+                [Pred::ControlledBy(Ref::You)] => " you control",
+                _ => "",
+            };
+            let verb = if name == "you" { "become" } else { "becomes" };
+            (
+                format!("{name} {verb} the target of a spell or ability{whose}"),
+                false,
             )
         }
         TriggerPattern::SpellCast { what, by } | TriggerPattern::SpellCopied { what, by } => {

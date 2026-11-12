@@ -27,14 +27,15 @@ fn counters_put_all(ctx: &Ctx, p: &Params) -> Tr<Value> {
     counters(ctx, &line, "CountersPut").map(|inner| batch(&inner))
 }
 
-/// "Whenever you clash and win" (`Won$ True`); a clash of any outcome needs its result at resolution and stays a gap.
+/// "Whenever you clash and win" (`Won$ True`) and "whenever you clash" (no `Won$`, any result); only a lost clash stays a gap.
 fn clashed(p: &Params) -> Tr<Value> {
     keys(p, "Clashed", &["ValidPlayer", "Won"])?;
-    if p.get("Won") != Some("True") {
-        return unmapped("trigger:Clashed");
-    }
     let who = super::triggers::player_ref(p.get("ValidPlayer"))?;
-    Ok(json!({"W15cClashWon": {"who": who}}))
+    match p.get("Won") {
+        Some("True") => Ok(json!({"W15cClashWon": {"who": who}})),
+        None => Ok(json!({"Did": {"action": "Clashed", "who": who}})),
+        _ => unmapped("trigger:Clashed"),
+    }
 }
 
 /// The line of a card's own discard ("When you discard this card") without `TriggerController$ TriggeredCardController`:

@@ -80,6 +80,9 @@ pub fn cast_if(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// "there are five or more hatchling counters on ~", "... two or fewer ... on it": a count of the counters on the
 /// card, which "it" names when the sentence before acted on the card.
 fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(won) = r.attempt(super::l293_events::l293_won_condition) {
+        return Some(won);
+    }
     if let Some(paid) = r.attempt(|r| triggers::cost_paid(r, true)) {
         return Some(paid);
     }
@@ -188,6 +191,9 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
 
 /// The condition as the card words it, after "if", one text for each wording.
 pub fn condition_texts(condition: &Condition) -> Vec<String> {
+    if let Some(won) = super::l293_events::l293_condition_text(condition) {
+        return vec![won];
+    }
     if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
         return vec![turns];
     }

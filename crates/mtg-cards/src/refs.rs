@@ -489,6 +489,9 @@ pub enum Pred {
     TopCreatureOfGraveyard,
     /// Is an attacking creature blocked by one of the creatures the reference names.
     BlockedBy(Ref),
+    /// Is an attacking creature in the band of one of the creatures the reference names, other than that creature
+    /// ("all creatures banded with it", CR 702.22c).
+    BandedWith(Ref),
     /// Is a creature blocking one of the creatures the reference names.
     Blocks(Ref),
     /// Is a target of one of the spells or abilities on the stack the reference names.

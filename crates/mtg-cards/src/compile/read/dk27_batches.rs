@@ -5,6 +5,7 @@ use super::selectors::{Form, phrase};
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector};
 use crate::trigger::TriggerPattern;
+use mtg_core::card::CardType;
 
 /// After "sacrifice(s) one or more": the permanents, which the batch of that player's sacrifices holds.
 pub(super) fn dk27_sacrificed_batch(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
@@ -17,6 +18,8 @@ pub(super) fn dk27_sacrificed_batch(r: &mut Reader<'_>, by: Ref) -> Option<Trigg
 pub(super) fn dk27_discarded_batch(r: &mut Reader<'_>, by: Ref) -> Option<TriggerPattern> {
     let what = if r.word("cards") {
         Selector::default()
+    } else if r.words("nonland cards") {
+        Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
     } else {
         let what = phrase(r, Form::Subject)?;
         (matches!(what.0.as_slice(), [Pred::Type(_)]) && r.word("cards")).then_some(what)?

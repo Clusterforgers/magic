@@ -15,6 +15,17 @@ use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::zones::Zone;
 
 impl Scope<'_> {
+    /// Whether the object attacks in the band of one of the creatures `named` names, other than that creature.
+    fn l290_banded_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let combat = self.state.combat();
+        Ok(self.objects(named)?.iter().any(|other| {
+            other.id != reference.id
+                && combat
+                    .band_of(other.id)
+                    .is_some_and(|band| band.contains(&reference.id))
+        }))
+    }
+
     /// Whether a predicate of this module holds for the object; false for any other predicate.
     pub(super) fn fe1a_pred(
         &self,
@@ -65,6 +76,7 @@ impl Scope<'_> {
                     && self.state.zone(seen.zone).last() == Some(&reference.id)
             }
             Pred::TopCreatureOfGraveyard => self.top_creature_of_graveyard(reference, seen)?,
+            Pred::BandedWith(named) => self.l290_banded_with(named, reference)?,
             Pred::BlockedBy(named) => {
                 let blockers = self.objects(named)?;
                 self.state.combat().attackers().iter().any(|attacker| {

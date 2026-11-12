@@ -1,0 +1,51 @@
+{
+  "oracle_id": "26edbbb8-331e-42a6-a550-acc7e9efb32c",
+  "name": "Witch-Maw Nephilim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch-Maw Nephilim",
+      "oracle_fingerprint": "e8188122261150005c5c90528b5adaf8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 10 } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

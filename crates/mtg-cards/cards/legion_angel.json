@@ -1,0 +1,30 @@
+{
+  "oracle_id": "843c9962-dee1-449d-8106-6383df32bcf6",
+  "name": "Legion Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Angel",
+      "oracle_fingerprint": "29606c53a270c6fb65826bcb5f96671f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Legion Angel" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

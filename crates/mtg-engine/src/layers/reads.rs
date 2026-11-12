@@ -328,6 +328,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Goaded => Traits::GOADED,
         Pred::Is(who)
         | Pred::BlockedBy(who)
+        | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
         | Pred::TargetsPlayer(who)
@@ -375,9 +376,11 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::Toughness | StatKind::BaseToughness => Traits::TOUGHNESS,
         StatKind::Colors => Traits::COLORS,
         StatKind::BasicLandTypes | StatKind::CreatureType => Traits::SUBTYPES,
-        StatKind::ManaValue | StatKind::Loyalty | StatKind::ManaSpent | StatKind::Name => {
-            Traits::NONE
-        }
+        StatKind::ManaValue
+        | StatKind::Loyalty
+        | StatKind::ManaSpent
+        | StatKind::Name
+        | StatKind::CounterKinds => Traits::NONE,
     }
 }
 

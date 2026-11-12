@@ -26,7 +26,11 @@ pub(crate) fn side(seed: u64, index: u64) -> CoinSide {
 /// A flip until a loss flips again after a win: after the `win` list (the tree comes back to the flip), or at once.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::FlipCoin {
-        who, win, until, ..
+        who,
+        win,
+        until,
+        won_as,
+        ..
     } = effect
     else {
         return Err(wrong_effect("FlipCoin"));
@@ -63,7 +67,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let won = call == side;
     // A won flip until a loss runs its `win` list again: the names the last pass bound are freed for this one.
-    let bound = if won && *until {
+    let mut bound: Vec<(String, Vec<crate::choose::Target>)> = if won && *until {
         let held = cx.resolving.bindings();
         let inside = format!(
             "{}.",
@@ -82,6 +86,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     } else {
         Vec::new()
     };
+    super::l292_flips_won::l292_count_win(cx, won_as.as_deref(), won, &mut bound)?;
     Ok(Run::Done {
         events: vec![Event::CoinFlipped {
             player,
