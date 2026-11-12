@@ -45,10 +45,10 @@
                             { "Type": "Land" }
                           ]
                         },
-                        "as": "card"
+                        "as": "owners_land"
                       }
                     },
-                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                    { "Move": { "what": { "Bound": "owners_land" }, "to": { "Battlefield": {} } } }
                   ]
                 }
               }
