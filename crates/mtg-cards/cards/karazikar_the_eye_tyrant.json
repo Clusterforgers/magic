@@ -11,77 +11,27 @@
           "Triggered": {
             "when": {
               "GroupAttacksAt": {
-                "what": [
-                  {
-                    "Type": "Creature"
-                  },
-                  {
-                    "ControlledBy": "You"
-                  }
-                ],
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
                 "at": "EachPlayer"
               }
             },
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "Against"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Against" }] } }
             ],
             "effects": [
-              {
-                "Tap": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              },
-              {
-                "Goad": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Goad": { "what": { "Target": 0 } } }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "PlayerAttacks": {
-                "by": "Opponents",
-                "at": "Opponents"
-              }
-            },
+            "when": { "PlayerAttacks": { "by": "Opponents", "at": "Opponents" } },
             "effects": [
-              {
-                "Draw": {}
-              },
-              {
-                "Draw": {
-                  "who": "Triggering"
-                }
-              },
-              {
-                "LoseLife": {
-                  "amount": 1
-                }
-              },
-              {
-                "LoseLife": {
-                  "who": "Triggering",
-                  "amount": 1
-                }
-              }
+              { "Draw": {} },
+              { "Draw": { "who": "Triggering" } },
+              { "LoseLife": { "amount": 1 } },
+              { "LoseLife": { "who": "Triggering", "amount": 1 } }
             ]
           }
         }

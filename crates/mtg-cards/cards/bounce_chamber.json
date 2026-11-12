@@ -5,39 +5,22 @@
   "faces": [
     {
       "name": "Bounce Chamber",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "30b53874845308d5fca9d7b6b40cb0ab",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "Visit": {}
-            },
+            "when": { "Visit": {} },
             "effects": [
               {
                 "Choose": {
                   "from": {
                     "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Not": {
-                          "ControlledBy": "You"
-                        }
-                      },
+                      { "Type": "Creature" },
+                      { "Not": { "ControlledBy": "You" } },
                       {
                         "LeastAmong": {
                           "stat": "Toughness",
-                          "group": [
-                            {
-                              "Type": "Creature"
-                            },
-                            {
-                              "Not": {
-                                "ControlledBy": "You"
-                              }
-                            }
-                          ]
+                          "group": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
                         }
                       }
                     ]
@@ -45,14 +28,7 @@
                   "as": "bounced"
                 }
               },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "bounced"
-                  },
-                  "to": "Hand"
-                }
-              }
+              { "Move": { "what": { "Bound": "bounced" }, "to": "Hand" } }
             ]
           }
         }
