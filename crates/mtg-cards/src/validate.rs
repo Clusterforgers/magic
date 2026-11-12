@@ -990,6 +990,7 @@ impl<'a> Walker<'a> {
         self.at("by", |w| w.amount(by));
     }
 
+    #[allow(clippy::too_many_lines)]
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -5053,7 +5054,7 @@ impl Walker<'_> {
             | GameRule::LoyaltyOnceMore(who)
             | GameRule::LoyaltyAsInstant(who)
             | GameRule::LoyaltyCostMore { who, .. } => {
-                self.at(tag, |w| w.reference(who, Kind::Player))
+                self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::MustTarget { who, what } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));

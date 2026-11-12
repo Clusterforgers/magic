@@ -271,14 +271,14 @@ fn keywords_of(
     let mut found: Vec<mtg_cards::keyword::Keyword> = Vec::new();
     for donor in scope.objects(from)? {
         for keyword in crate::keywords::keywords_of(scope.state, donor.id) {
-            let named = names.iter().any(|name| {
+            let listed = names.iter().any(|name| {
                 *name == keyword.name()
                     || (name == "Protection"
                         && mtg_cards::rmt7_kinds::KeywordKind::Protection.covers(keyword))
                     || (name == "Hexproof"
                         && matches!(keyword, mtg_cards::keyword::Keyword::HexproofFrom(_)))
             });
-            if named && !found.contains(keyword) {
+            if listed && !found.contains(keyword) {
                 found.push(keyword.clone());
             }
         }

@@ -192,12 +192,12 @@ const MODIFICATIONS: [&str; 34] = [
     r#"{"SetLandTypes":["Mountain"]}"#,
     r#"{"LockKeyword":"Flying"}"#,
     r#"{"GainAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
-    r#"{"KeywordsOf":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"names":["Flying"]}}"#,
     r#"{"AddColors":["Blue"]}"#,
     r#"{"SetPower":5}"#,
     r#"{"SetToughness":1}"#,
     r#"{"RemoveKeywordKind":"Landwalk"}"#,
     r#"{"BlocksAdditionalPer":2}"#,
+    r#"{"KeywordsOf":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"names":["Flying"]}}"#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.

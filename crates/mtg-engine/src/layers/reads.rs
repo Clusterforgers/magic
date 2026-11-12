@@ -112,6 +112,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetColorsChosen(_)
         | Wanted::SetChosenColor => Traits::COLORS,
         Wanted::AddKeyword(_)
+        | Wanted::KeywordsOf { .. }
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
@@ -127,7 +128,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
-        Wanted::KeywordsOf { .. } => Traits::KEYWORDS,
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::SetName(_)

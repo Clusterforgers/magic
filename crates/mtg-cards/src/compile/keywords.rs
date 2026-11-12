@@ -2107,6 +2107,7 @@ mod tests {
             "Splice onto Arcane {1}{R}",
             "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
+            "Fortify {3}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

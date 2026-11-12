@@ -507,6 +507,7 @@ const RUNS: &[&str] = &[
     "Mod.LockKeyword",
     "Mod.GrantAbility",
     "Mod.GainAbilitiesOf",
+    "Mod.KeywordsOf",
     "Mod.LoseAbilities",
     "Mod.LoseThisAbility",
     "Mod.LosePrinted",

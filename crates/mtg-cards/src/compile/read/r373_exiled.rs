@@ -82,7 +82,9 @@ pub(super) fn r373_exiled_wordings(ability: &Ability, texts: &mut Vec<String>) {
             [init @ .., last] => format!("{}, and {last}", init.join(", ")),
             [] => return,
         };
-        sentence.push_str(&format!(" The same is true for {listed}."));
+        sentence.push_str(" The same is true for ");
+        sentence.push_str(&listed);
+        sentence.push('.');
     }
     texts.push(sentence);
 }
