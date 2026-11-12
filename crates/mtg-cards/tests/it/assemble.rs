@@ -178,7 +178,10 @@ fn only_what_the_engine_runs_is_verified() {
         );
     }
     verified.sort();
-    assert_eq!(verified, ["Forest", "Grizzly Bears", "Llanowar Elves"]);
+    assert_eq!(
+        verified,
+        ["Forest", "Grizzly Bears", "Llanowar Elves", "Wastes"]
+    );
     assert_eq!(state_of(&library, "Sol Ring", &caps), Support::Manual);
     assert_eq!(state_of(&library, "Gaea's Cradle", &caps), Support::Manual);
 }
