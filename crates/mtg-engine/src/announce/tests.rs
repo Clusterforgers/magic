@@ -228,13 +228,21 @@ fn the_payment_of_an_activation_announces_it_between_the_life_and_the_mana(
             Event::PermanentTapped { .. } => "tapped",
             Event::AbilityActivated { .. } => "activated",
             Event::AbilityPutOnStack(_) => "on the stack",
+            Event::ManaAbilityActivated { .. } => "mana ability",
             Event::ManaAdded { .. } => "mana",
             Event::ManaSpent { .. } => "spent",
             other => panic!("unexpected {other:?}"),
         })
         .collect();
     let mut expected = if taps { vec!["tapped"] } else { Vec::new() };
-    expected.extend(["activated", "on the stack", "tapped", "mana", "spent"]);
+    expected.extend([
+        "activated",
+        "on the stack",
+        "tapped",
+        "mana",
+        "mana ability",
+        "spent",
+    ]);
     assert_eq!(kinds, expected);
     // The source is photographed before anything is tapped.
     let put = events.iter().find_map(|event| match event {

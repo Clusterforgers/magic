@@ -475,31 +475,35 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
-    // A permanent kept from entering takes the facts of its entry (`Entered`) out with its move.
-    let mut kept_out = Vec::new();
+    // A card that may not enter stays where it is, so how it would have entered (tapped, under whom, transformed) goes too.
+    let mut stays = Vec::new();
     let mut stayed: Vec<ObjectId> = Vec::new();
     let kept: Vec<Event> = events
         .into_iter()
-        .filter(|event| {
-            if let Event::Entered { object, .. } = event {
-                return !kept_out.contains(object);
-            }
-            let banned = doings(state, event)
-                .into_iter()
-                .any(|doing| forbidden(state, doing));
-            if banned
-                && let Event::ZoneChanged {
-                    object,
-                    to: Zone::Battlefield,
-                    ..
-                } = event
+        .filter(|event| match event {
+            Event::Entered { object, .. } | Event::Transformed { object, .. }
+                if stays.contains(object) =>
             {
-                kept_out.push(*object);
+                false
             }
-            if banned && let Event::PermanentPhasedOut { object, .. } = event {
-                stayed.push(*object);
+            _ => {
+                let banned = doings(state, event)
+                    .into_iter()
+                    .any(|doing| forbidden(state, doing));
+                if banned
+                    && let Event::ZoneChanged {
+                        object,
+                        to: Zone::Battlefield,
+                        ..
+                    } = event
+                {
+                    stays.push(*object);
+                }
+                if banned && let Event::PermanentPhasedOut { object, .. } = event {
+                    stayed.push(*object);
+                }
+                !banned
             }
-            !banned
         })
         .collect();
     r301_attached_stay(state, kept, stayed)
@@ -721,6 +725,33 @@ mod tests {
             vec![other.clone(), wanted, other]
         };
         assert_eq!(kept, expected);
+    }
+
+    #[test]
+    fn a_card_that_may_not_enter_does_not_enter_tapped_either() {
+        let game =
+            game(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"}]},"action":"EnterBattlefield"}}"#);
+        let bear = id(&game, "Bear");
+        let other = Event::LifeGained {
+            player: ME,
+            amount: 1,
+        };
+        let events = vec![
+            Event::ZoneChanged {
+                object: bear,
+                from: Zone::Graveyard(FOE),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+            Event::Entered {
+                object: bear,
+                tapped: true,
+                controller: FOE,
+                chosen: None,
+            },
+            other.clone(),
+        ];
+        assert_eq!(filter(&game, events), vec![other]);
     }
 
     #[rstest]

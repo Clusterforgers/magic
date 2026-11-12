@@ -151,6 +151,8 @@ mod l292_hand_reads;
 mod l292_haunt;
 mod l292_twins;
 mod l293_events;
+mod l294_activations;
+mod l294_damage_facts;
 mod l31a_events;
 pub(crate) mod l31a_performed;
 mod l31b_any_amount;

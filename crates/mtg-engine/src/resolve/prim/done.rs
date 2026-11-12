@@ -95,6 +95,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Monstrosity { .. }
         | Effect::Renown { .. }
         | Effect::Exploit { .. }
+        | Effect::Enlist { .. }
         | Effect::Pair { .. }
         | Effect::BecomeLevel { .. }
         | Effect::Adapt { .. }

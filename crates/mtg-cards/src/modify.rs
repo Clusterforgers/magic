@@ -253,6 +253,10 @@ pub enum Duration {
     UntilYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
+    /// Only during the next turn of the player who controls the permanent it applies to as it begins ("that creature can't
+    /// attack during its controller's next turn"): it changes nothing before that turn and ends with it. Only a continuous
+    /// effect lasts this way.
+    DuringItsControllersNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).

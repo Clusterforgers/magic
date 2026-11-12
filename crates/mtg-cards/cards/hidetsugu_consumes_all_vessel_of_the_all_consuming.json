@@ -1,7 +1,7 @@
 {
   "oracle_id": "5b8be856-c08d-4356-925d-fce843565189",
   "name": "Hidetsugu Consumes All // Vessel of the All-Consuming",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hidetsugu Consumes All",
@@ -58,9 +58,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 72, "end": 200 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "if": {
+              "Compare": {
+                "left": { "DamageDealtByTo": { "by": "This", "to": "Triggering" } },
+                "op": "Ge",
+                "right": 10
+              }
+            },
+            "effects": [{ "LoseGame": { "who": "Triggering" } }]
           }
         }
       ]

@@ -282,7 +282,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
     let mut expired: Vec<Event> = state
         .effects()
         .iter()
-        .filter(|e| !e.is_active(state))
+        .filter(|e| e.ended(state))
         .map(|e| Event::EffectExpired { id: e.id })
         .collect();
     expired.extend(

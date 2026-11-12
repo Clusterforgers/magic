@@ -410,7 +410,7 @@ pub(crate) fn pay_answer(
             &unusable(state, player, options),
             choice,
             Vec::new(),
-            &|option, taken| mana_ability::activation(state, player, option, taken),
+            &|option, taken| mana_ability::logged_activation(state, player, option, taken),
             &|id| state.object(id).map(crate::object::GameObject::reference),
         )?;
         return Ok(match outcome {
@@ -431,7 +431,7 @@ pub(crate) fn pay_answer(
         &unusable(state, player, options),
         choice,
         announced,
-        &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|option, taken| mana_ability::logged_activation(state, player, option, taken),
         &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     Ok(match outcome {
@@ -797,7 +797,7 @@ pub(crate) fn auto_pay_events(
         &unusable(state, player, options),
         PayChoice::Auto,
         Vec::new(),
-        &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|option, taken| mana_ability::logged_activation(state, player, option, taken),
         &|id| state.object(id).map(crate::object::GameObject::reference),
     )?;
     match outcome {

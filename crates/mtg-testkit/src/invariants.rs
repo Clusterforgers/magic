@@ -213,7 +213,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
     for effect in state.effects() {
         let from_an_earlier_turn =
             effect.duration == Duration::UntilEndOfTurn && effect.turn != state.turn().number();
-        if from_an_earlier_turn || !effect.is_active(state) {
+        if from_an_earlier_turn || effect.ended(state) {
             return Err(Violation::Bookkeeping(format!(
                 "{:?} is over but still listed",
                 effect.id
@@ -1326,8 +1326,8 @@ impl InvariantChecker {
     }
 
     /// A loyalty ability and an ability that may be activated only as a sorcery (Equip, Reconfigure) are activated by the
-    /// active player in a main step with an empty stack (CR 606.3, 307.1), and a loyalty ability once for each planeswalker
-    /// each turn.
+    /// active player in a main step with an empty stack (CR 606.3, 307.1), unless a permanent lets its controller activate
+    /// that kind at instant speed, and a loyalty ability once for each planeswalker each turn.
     fn check_loyalty_activation(
         &mut self,
         player: PlayerId,
@@ -1357,7 +1357,16 @@ impl InvariantChecker {
             return Ok(());
         }
         let turn = self.shadow.turn();
-        if turn.active() != player || !turn.step().is_main() || !self.shadow.stack().is_empty() {
+        // A permanent may let its controller activate a kind of sorcery-speed ability at instant speed (Forge Anew).
+        let open = sorcery
+            && rules.as_ref().is_some_and(|rules| {
+                mtg_engine::priority::sorcery_activation_open(&self.shadow, player, address, rules)
+            });
+        if !open
+            && (turn.active() != player
+                || !turn.step().is_main()
+                || !self.shadow.stack().is_empty())
+        {
             return Err(Violation::Bookkeeping(format!(
                 "{player:?} activated a sorcery-speed ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
                 turn.step(),

@@ -518,6 +518,14 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
         origin: AbilitySource,
     },
+    /// A player activated a mana ability (CR 605.3b); it uses no stack, so the log alone keeps the activation for the
+    /// abilities that trigger on it.
+    ManaAbilityActivated {
+        /// Who activated it.
+        player: PlayerId,
+        /// The object it comes from.
+        source: ObjectRef,
+    },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
     /// A player put the triggered abilities they would put on the stack together in the order they go on in.
@@ -1019,6 +1027,15 @@ pub enum Event {
         /// Its controller.
         player: PlayerId,
     },
+    /// A creature enlisted a creature (CR 702.154a): its enlist tapped the creature, the event before it.
+    Enlisted {
+        /// The creature that enlisted.
+        object: ObjectId,
+        /// The creature tapped for it.
+        enlisted: ObjectId,
+        /// The controller of the enlisting creature.
+        player: PlayerId,
+    },
     /// A creature exploited a creature (CR 702.110b): its exploit ability resolved and the sacrifice is the event
     /// before it.
     Exploited {
@@ -1393,6 +1410,7 @@ impl Event {
             | Event::PlayerLost { .. }
             | Event::GameEnded { .. }
             | Event::AbilityActivated { .. }
+            | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)
             | Event::TriggersOrdered { .. }
             | Event::TriggerRemoved { .. }
@@ -1487,6 +1505,7 @@ impl Event {
             | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }
             | Event::Exploited { object, .. }
+            | Event::Enlisted { object, .. }
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }

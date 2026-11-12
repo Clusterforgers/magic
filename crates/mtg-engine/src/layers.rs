@@ -572,6 +572,7 @@ pub(crate) fn leaves_alone(event: &Event) -> bool {
         Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
             | Event::ManaAdded { .. }
+            | Event::ManaAbilityActivated { .. }
             | Event::ManaSpent { .. }
             | Event::ManaPoolEmptied { .. }
             | Event::TriggersOrdered { .. }

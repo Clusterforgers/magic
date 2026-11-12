@@ -172,6 +172,7 @@ impl Delayed {
             // controls the source, and only a permanent that doesn't untap waits for an untap step; a delayed trigger never
             // does.
             Duration::UntilOpponentBecomesMonarch
+            | Duration::DuringItsControllersNextTurn
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
             | Duration::WhileYouControlSourceTapped
