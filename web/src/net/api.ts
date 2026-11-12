@@ -195,6 +195,11 @@ export interface Api {
    * the teams now in force. Every seat's Ready is taken back.
    */
   setTeams(game: string, teams: Teams | null, as?: SeatCredential): Promise<Teams | null>
+  /**
+   * `PUT /api/games/{id}/seats/{n}/team`: puts one seat on a team before the start, the host for any seat and a player
+   * for their own; resolves with the teams now in force. Every seat's Ready is taken back.
+   */
+  setSeatTeam(game: string, seat: number, team: number, as?: SeatCredential): Promise<Teams | null>
   /** `DELETE /api/games/{id}`: the host closes a game that is still in its lobby; every socket of it ends with 4002. */
   closeGame(game: string, as?: SeatCredential): Promise<void>
   /**
@@ -388,6 +393,11 @@ export function createApi(options: ApiOptions = {}): Api {
       lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
     setTeams: async (id, teams, as = {}) =>
       (await lobbyCall(`${game(id)}/teams`, readTeamsBody, change('PUT', as, { teams }))).teams,
+    setSeatTeam: async (id, seat, team, as = {}) => {
+      if (!isCount(seat)) throw new LobbyError('invalid_request', 0, 'That is not a seat number.')
+      return (await lobbyCall(`${game(id)}/seats/${seat}/team`, readTeamsBody, change('PUT', as, { team })))
+        .teams
+    },
     closeGame: async (id, as = {}) => {
       await lobbyCall(game(id), () => true, change('DELETE', as), 204)
     },

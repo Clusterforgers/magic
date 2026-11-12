@@ -1,3 +1,5 @@
+import type { TeamMode } from '@/protocol/generated'
+
 /** The address parameters of `/dev/lobby`, read leniently: whatever makes no sense is ignored. */
 export interface DevLobbySearch {
   /** How many seats the table has, 2 or more; 4 when missing or wrong. */
@@ -29,6 +31,8 @@ export interface DevLobbySearch {
   list?: 'empty' | 'loading' | 'failed'
   /** The cards of a deck: `slow` answers after 2.5 s, `failed` refuses. */
   detail?: 'slow' | 'failed'
+  /** A team game, `two_headed_giant` or `teams`, with that mode's default teams. */
+  mode?: TeamMode
 }
 
 const FEWEST_SEATS = 2
@@ -50,7 +54,7 @@ function seatList(value: unknown, seats: number): number[] {
   return [...new Set(found)].sort((a, b) => a - b)
 }
 
-/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&invites=&format=&rules=&decks=&list=&detail=`; the router has already parsed numbers and lists. */
+/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=&invites=&format=&rules=&decks=&list=&detail=&mode=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
   const seats = asked === undefined || asked < FEWEST_SEATS ? 4 : asked
@@ -75,5 +79,6 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
         ? search.list
         : undefined,
     detail: search.detail === 'slow' || search.detail === 'failed' ? search.detail : undefined,
+    mode: search.mode === 'two_headed_giant' || search.mode === 'teams' ? search.mode : undefined,
   }
 }
