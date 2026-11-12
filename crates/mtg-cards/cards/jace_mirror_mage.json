@@ -1,7 +1,7 @@
 {
   "oracle_id": "7ca99e2f-faf2-4301-a0ae-7cb880ba965b",
   "name": "Jace, Mirror Mage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jace, Mirror Mage",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Keyword": { "Kicker": "{2}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 11, "end": 143 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": "This",
+                            "except": [{ "RemoveSupertype": "Legendary" }, { "SetLoyalty": 1 }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Scry": { "count": 2 } }] } },

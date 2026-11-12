@@ -316,7 +316,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
         Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
-        Wanted::SetName(_) | Wanted::ThisAbility => {
+        Wanted::SetName(_) | Wanted::ThisAbility | Wanted::SetLoyalty(_) => {
             return Err(ResolveError::Unsupported(
                 "Mod.RemoveSupertype outside the exceptions of a copy",
             ));
@@ -368,6 +368,12 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             you: scope.controller,
             attacked: *attacked,
         },
+        Wanted::CantAttackOwner(attacked) => Modification::CantAttackOwner {
+            attacked: *attacked,
+        },
+        Wanted::CantBeBlockedUnlessAttackingOwner => {
+            Modification::CantBeBlockedUnlessAttackingOwner
+        }
         Wanted::CantBlock => Modification::CantBlock,
         Wanted::DoesntUntap => Modification::DoesntUntap,
         Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,

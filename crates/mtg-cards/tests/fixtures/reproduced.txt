@@ -1020,6 +1020,7 @@ Korozda Monitor
 Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
+Kraum, Violent Cacophony
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
 Krosan Cloudscraper
@@ -1225,6 +1226,7 @@ Nardole, Resourceful Cyborg
 Narset's Rebuke
 Nature's Embrace
 Necklace of Girion
+Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
@@ -1274,6 +1276,7 @@ Okiba Reckoner Raid // Nezumi Road Captain
 Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
+Ondu Spiritdancer
 Oona's Blackguard
 Opposition Agent
 Opt
@@ -1433,6 +1436,7 @@ Rampant Growth
 Ramses Overdark
 Rancor
 Ransom Note
+Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
 Ray Fillet, Wave Warrior
@@ -1493,6 +1497,7 @@ Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Righteous Confluence
+Riku of Two Reflections
 Rionya, Fire Dancer
 Riptide Survivor
 Rishkar's Expertise
@@ -1590,6 +1595,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Setessan Champion
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -1783,6 +1789,7 @@ Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
 Sunscorch Regent
+Sunstar Lightsmith
 Suntouched Myr
 Super Combo
 Supernatural Rescue
@@ -1856,6 +1863,7 @@ The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
 The Gaffer
+The Great Henge
 The Locust God
 The Mechanist, Aerial Artisan
 The Modern Age // Vector Glider

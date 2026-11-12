@@ -80,6 +80,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
+        | Modification::CantAttackOwner { .. }
+        | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
         | Modification::DoesntUntap
         | Modification::CantBeTurnedFaceUp
@@ -130,8 +132,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::GainAbilitiesOf(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp
@@ -168,6 +173,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
@@ -192,6 +198,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::LoseAbilities
         | Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp

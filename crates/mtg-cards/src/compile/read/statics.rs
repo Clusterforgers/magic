@@ -759,6 +759,8 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
                 Form::All,
             )?)?)]
         }
+    } else if r.words(super::r371_owner::UNLESS_AT_OWNER) {
+        vec![Modification::CantBeBlockedUnlessAttackingOwner]
     } else if r.words("be blocked") {
         vec![Modification::CantBeBlocked]
     } else if let Some(restriction) = r.attempt(|r| {
@@ -880,6 +882,8 @@ pub(super) fn predicate_mods(r: &mut Reader<'_>, plural: bool) -> Option<Vec<Mod
     let tail = |r: &mut Reader<'_>| {
         if r.words(&format!("and {is} goaded")) {
             Some(Modification::Goaded)
+        } else if r.words(&format!("and can't {}", super::r371_owner::UNLESS_AT_OWNER)) {
+            Some(Modification::CantBeBlockedUnlessAttackingOwner)
         } else if r.words("and can't be blocked by more than one creature") {
             Some(Modification::MaxBlockers(1))
         } else if let Some(restriction) = r.attempt(|r| {
@@ -2205,7 +2209,14 @@ fn last_part(mods: &[Modification], plural: bool) -> (&[Modification], Option<St
         Some((Modification::Goaded, rest)) if !rest.is_empty() => {
             (rest, Some(format!("{is} goaded")))
         }
-        Some((restriction @ Modification::CantAttackYou(_), rest)) if !rest.is_empty() => (
+        Some((Modification::CantBeBlockedUnlessAttackingOwner, rest)) if !rest.is_empty() => (
+            rest,
+            Some(format!("can't {}", super::r371_owner::UNLESS_AT_OWNER)),
+        ),
+        Some((
+            restriction @ (Modification::CantAttackYou(_) | Modification::CantAttackOwner(_)),
+            rest,
+        )) if !rest.is_empty() => (
             rest,
             w6a_attacks_you::w6a_text(restriction).map(str::to_owned),
         ),
@@ -2249,7 +2260,10 @@ pub(super) fn predicate(
             return Some("can't attack or block".to_owned());
         }
         [Modification::CantAttack] => return Some("can't attack".to_owned()),
-        [restriction @ Modification::CantAttackYou(_)] => {
+        [Modification::CantBeBlockedUnlessAttackingOwner] => {
+            return Some(format!("can't {}", super::r371_owner::UNLESS_AT_OWNER));
+        }
+        [restriction @ (Modification::CantAttackYou(_) | Modification::CantAttackOwner(_))] => {
             return w6a_attacks_you::w6a_text(restriction).map(str::to_owned);
         }
         [Modification::CantBlock] => return Some("can't block".to_owned()),

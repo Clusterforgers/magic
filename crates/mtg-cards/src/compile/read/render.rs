@@ -206,8 +206,15 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
-#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    let mut texts = plain_variants(ability);
+    super::r371_copy_except::r371_not_legendary_too(&mut texts);
+    texts
+}
+
+/// [`variants`] before the wordings every copy exception has twice.
+#[allow(clippy::too_many_lines)]
+fn plain_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
         return texts;
     }
@@ -504,6 +511,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     let more = changes::wordings(&texts);
     texts.extend(more);
     let more = joined::wordings(&texts);
+    texts.extend(more);
+    let more = super::r371_owner::r371_and_draw_wordings(&texts);
     texts.extend(more);
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
@@ -2600,6 +2609,8 @@ impl Writer<'_> {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
             Ref::Paid => "the sacrificed creature".to_owned(),
+            // The creature that died, as it last existed: "create a token that's a copy of that creature".
+            Ref::Triggering => "that creature".to_owned(),
             Ref::Target(0) if self.is_a_permanent(of) => {
                 if self.named {
                     "it".to_owned()

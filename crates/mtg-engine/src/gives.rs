@@ -127,7 +127,10 @@ impl Gives {
                 return;
             }
             Modification::CantAttack => GivenRule::CantAttack,
-            Modification::CantAttackYou { .. } => GivenRule::CantAttackYou,
+            Modification::CantAttackYou { .. } | Modification::CantAttackOwner { .. } => {
+                GivenRule::CantAttackYou
+            }
+            Modification::CantBeBlockedUnlessAttackingOwner => GivenRule::CantBeBlockedBy,
             Modification::CantBlock => GivenRule::CantBlock,
             Modification::CanBlockOnly { .. } => GivenRule::CanBlockOnly,
             Modification::CantBeBlocked => GivenRule::CantBeBlocked,

@@ -12,7 +12,7 @@ use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
     ClauseKind, Compiled, compile, either_way_pair_texts, equip_line, escalate_cost,
     escalate_reads, forecast_lines, own_names, reinforce_line, same_written_text,
-    static_pair_texts, written_variants,
+    static_pair_texts, static_three_texts, written_variants,
 };
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::Library;
@@ -422,6 +422,24 @@ fn attached_as_named(ability: &Ability, mut written: Vec<String>) -> Vec<String>
     written
 }
 
+/// Whether three rules of a face are one sentence the card prints.
+fn three_are_written(
+    compiled: &Compiled,
+    face: usize,
+    first: &Ability,
+    second: &Ability,
+    third: &Ability,
+) -> bool {
+    let written = static_three_texts(first, second, third);
+    compiled.clauses.iter().any(|clause| {
+        clause.face == face
+            && clause.kind == ClauseKind::Static
+            && written
+                .iter()
+                .any(|text| same_written_text(text, without_ability_word(&clause.text)))
+    })
+}
+
 /// Whether two abilities of a face are one sentence of the card (two statics, two triggers or two shields) and the card
 /// prints them as one; `None` when they do not read as one sentence at all.
 fn pair_is_written(
@@ -475,10 +493,15 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
     let mut missing = Vec::new();
     let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
     let mut skip_next = false;
+    let mut skip_third = 0_usize;
     // The first static of a pair was printed apart from the second, so the second needs its own line too.
     let mut pair_apart = false;
     for (at, &(face, ability)) in listed.iter().enumerate() {
         if std::mem::take(&mut skip_next) {
+            continue;
+        }
+        if skip_third > 0 {
+            skip_third -= 1;
             continue;
         }
         // Equip abilities with an option (a price, a limit, a reduction) are one keyword line of the card.
@@ -496,6 +519,17 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
         assert_escalate_line(&printed.name, compiled, face, ability);
         // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
         // each must be written as its own line below.
+        // Three rules of the card may be one sentence ("~ attacks each combat if able, can't be sacrificed, and ...").
+        if let (Some(&(same, second)), Some(&(also, third))) =
+            (listed.get(at + 1), listed.get(at + 2))
+            && same == face
+            && also == face
+            && three_are_written(compiled, face, ability, second, third)
+        {
+            skip_third = 2;
+            rendered += 3;
+            continue;
+        }
         let own_line = std::mem::take(&mut pair_apart);
         if let Some(&(same, second)) = listed.get(at + 1)
             && same == face

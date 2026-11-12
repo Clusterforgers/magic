@@ -186,6 +186,8 @@ mod r284_rules;
 mod r285_writers;
 mod r287_facts;
 mod r303_forms;
+mod r371_copy_except;
+mod r371_owner;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -332,6 +334,7 @@ pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use r303_forms::form_text;
+pub use r371_owner::r371_three_texts as static_three_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -463,6 +466,12 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         }
         found
     };
+    if let [first, second, third] = found.as_slice() {
+        return r371_owner::r371_three_texts(first, second, third)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(found);
+    }
     let [first, second] = found.as_slice() else {
         return None;
     };

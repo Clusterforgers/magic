@@ -290,6 +290,8 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         }
     }
     r.attempt(|r| super::joined::and_you(r, effects)).is_some()
+        || r.attempt(|r| super::r371_owner::r371_and_draw(r, effects))
+            .is_some()
         || r.attempt(|r| super::w11a_joins::w11a_and_after(r, effects))
             .is_some()
         || r.attempt(|r| super::joined::then_you(r, effects)).is_some()

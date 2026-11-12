@@ -1062,7 +1062,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
         r.need("damage")?;
         None
     };
-    let to = if r.words("to a player") {
+    let to = if r.words("to its owner") {
+        Some(Ref::OwnerOf(Box::new(Ref::Dealer)))
+    } else if r.words("to a player") {
         Some(Ref::EachPlayer)
     } else if r.words("to an opponent") {
         Some(Ref::Opponents)
@@ -1531,6 +1533,7 @@ fn damage_text(combat: Option<bool>, to: Option<&Ref>) -> Option<String> {
         Some(Ref::EachPlayer) => " to a player",
         Some(Ref::Opponents) => " to an opponent",
         Some(Ref::You) => " to you",
+        Some(Ref::OwnerOf(dealer)) if **dealer == Ref::Dealer => " to its owner",
         Some(_) => return None,
     };
     Some(format!("{kind}{to}"))

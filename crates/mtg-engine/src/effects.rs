@@ -230,6 +230,16 @@ pub enum Modification {
         #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
         attacked: mtg_cards::modify::Attacked,
     },
+    /// The object can't attack its owner, the planeswalkers its owner controls or both: a restriction with no layer that
+    /// the attack declaration reads.
+    CantAttackOwner {
+        /// Whether it protects the owner, their planeswalkers or both.
+        #[cfg_attr(feature = "ts", ts(type = "\"Player\" | \"Planeswalkers\" | \"Both\""))]
+        attacked: mtg_cards::modify::Attacked,
+    },
+    /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls: a restriction with
+    /// no layer that the block declaration reads.
+    CantBeBlockedUnlessAttackingOwner,
     /// The object is goaded by `by` (CR 701.15): a restriction with no layer that the attack declaration reads; it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded {
@@ -270,6 +280,8 @@ impl Modification {
             Modification::SwitchPowerToughness => Layer::PtSwitch,
             Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -373,6 +385,8 @@ impl Modification {
             | Modification::GainAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp

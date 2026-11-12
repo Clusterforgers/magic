@@ -74,6 +74,7 @@ mod mutate_counts;
 mod phasing;
 mod planeswalkers;
 mod proliferate;
+mod r371_copy_except;
 mod r3f_exiled;
 mod r4b_dig;
 mod r4i_can_enchant;

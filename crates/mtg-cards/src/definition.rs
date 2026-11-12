@@ -667,6 +667,16 @@ impl CardDefinition {
                 self.power = Some(*power);
                 self.toughness = Some(*toughness);
             }
+            Modification::AddColors(colors) => {
+                self.color_indicator = Some(
+                    colors
+                        .iter()
+                        .fold(self.colors(), |set, color| set.with(*color)),
+                );
+            }
+            Modification::SetLoyalty(Amount::Fixed(loyalty)) => {
+                self.loyalty = Some(u32::try_from(*loyalty).unwrap_or(0));
+            }
             _ => return false,
         }
         true

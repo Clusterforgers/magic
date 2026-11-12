@@ -394,6 +394,10 @@ fn copied(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() {
         return Some(Ref::This);
     }
+    // The creature another creature's death names, as it last existed (CR 707.2, 111.10).
+    if r.others_died && r.words("that creature") {
+        return Some(Ref::Triggering);
+    }
     if r.word("it") || r.words("that creature") || r.words("that permanent") {
         // In a trigger of the card's own event, "it" is the card.
         return r
@@ -610,7 +614,10 @@ pub(super) fn exceptions(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Mod
 
 /// One part of the exceptions, with the words that name the subject before it.
 fn part(r: &mut Reader<'_>, subject: Subject, mods: &mut Vec<Modification>) -> Option<()> {
-    if subject != Subject::They && r.words(subject.is()) {
+    if let Some(found) = r.attempt(|r| super::r371_copy_except::r371_part(r, subject)) {
+        mods.push(found);
+        Some(())
+    } else if subject != Subject::They && r.words(subject.is()) {
         is(r, mods)
     } else if let Some(gone) = r.attempt(|r| not_legendary(r, subject)) {
         mods.push(gone);
@@ -626,7 +633,9 @@ fn listed(r: &mut Reader<'_>, subject: Subject) -> Option<Vec<Modification>> {
     r.punct(',').then_some(())?;
     r.word("and");
     let mut mods = Vec::new();
-    if subject != Subject::They && r.word("is") {
+    if let Some(found) = r.attempt(|r| super::r371_copy_except::r371_listed(r, subject)) {
+        mods.push(found);
+    } else if subject != Subject::They && r.word("is") {
         is(r, &mut mods)?;
     } else if subject != Subject::They && r.word("isn't") {
         r.need("legendary")?;
@@ -721,6 +730,13 @@ fn is(r: &mut Reader<'_>, mods: &mut Vec<Modification>) -> Option<()> {
     }
     (r.word("a") || r.word("an")).then_some(())?;
     let size = power_toughness(r);
+    if let Some(sized) = size.clone()
+        && let Some(found) =
+            r.attempt(|r| super::r371_copy_except::r371_colors_too(r, sized.clone()))
+    {
+        mods.extend(found);
+        return Some(());
+    }
     // "a 4/4 black Zombie": the size, the colors and the creature types, which replace the others.
     if let Some(sized) = size.clone()
         && let Some(found) = r.attempt(|r| super::g12b_copy_kinds::g12b_kinds(r, sized.clone()))
@@ -923,6 +939,13 @@ fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<V
     let mut parts: Vec<String> = Vec::new();
     let mut rest = mods;
     while let Some(first) = rest.first() {
+        if subject != Subject::They
+            && let Some((run, text)) = super::r371_copy_except::r371_colors_too_text(rest)
+        {
+            parts.push(format!("{} {text}", subject.is()));
+            rest = rest.get(run..)?;
+            continue;
+        }
         // Keywords in a row are one phrase, and so are types and subtypes with the size before them.
         let run = match first {
             // "it has flying and this ability" is one phrase with the keywords before it.
@@ -964,6 +987,9 @@ fn plain_parts(mods: &[Modification], subject: Subject, terse: bool) -> Option<V
                 format!("{} \"{}\"", subject.has(), render::ability(ability)?)
             }
             Modification::ThisAbility => format!("{} this ability", subject.has()),
+            Modification::SetLoyalty(_) => {
+                super::r371_copy_except::r371_loyalty_text(first, subject)?
+            }
             _ if subject == Subject::They => return None,
             Modification::RemoveSupertype(Supertype::Legendary) => {
                 format!("{} legendary", subject.isnt()?)

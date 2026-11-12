@@ -988,6 +988,14 @@ describe('events with more than one shape', () => {
       "Hill Giant can't attack Ana until end of turn",
     ],
     [
+      effect(objects(2), { CantAttackOwner: { attacked: 'Both' } }, 'UntilEndOfTurn'),
+      "Hill Giant can't attack its owner or planeswalkers its owner controls until end of turn",
+    ],
+    [
+      effect(objects(2), 'CantBeBlockedUnlessAttackingOwner', 'UntilEndOfTurn'),
+      "Hill Giant can't be blocked unless it's attacking its owner or a permanent its owner controls until end of turn",
+    ],
+    [
       effect(objects(2), { AddSupertype: 'Legendary' }, 'UntilEndOfTurn'),
       'Hill Giant becomes legendary too until end of turn',
     ],
