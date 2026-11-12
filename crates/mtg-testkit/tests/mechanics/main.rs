@@ -109,6 +109,7 @@ mod r285_pieces;
 mod r2a_doubling;
 mod r2d;
 mod r302b_spells;
+mod r303c_cards;
 mod r303_forms;
 mod r303b_pieces;
 mod r304b_cards;

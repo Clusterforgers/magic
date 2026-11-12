@@ -94,6 +94,17 @@ pub(super) fn free_activation_texts(ability: &Ability) -> Vec<String> {
             {
                 first("during each of your turns")
             }
+            [held, once] if first_of(once) == Some(*kind) && first_of(held).is_none() => {
+                let firsts = first("each turn");
+                as_long_as::texts(held)
+                    .into_iter()
+                    .flat_map(|held| {
+                        firsts
+                            .iter()
+                            .map(move |rest| format!("as long as {held}, {rest}"))
+                    })
+                    .collect()
+            }
             _ => Vec::new(),
         },
         Some(held) if first_of(held).is_none() => as_long_as::texts(held)

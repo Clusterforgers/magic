@@ -191,6 +191,7 @@ mod r300c_writers;
 mod r302c_writers;
 mod r301b_atoms;
 mod r301b_writers;
+mod r303c_writers;
 mod r303_forms;
 mod r303b_statics;
 mod r303b_writers;
