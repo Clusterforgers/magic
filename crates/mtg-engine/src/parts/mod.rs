@@ -389,8 +389,7 @@ impl Part {
             }
             CostItem::Exert => (Part::Exert, false),
             // Read off the card by the layers before any cost is paid: an unread one is a part nobody can pay.
-            CostItem::OwnManaCost => return Err("OwnManaCost"),
-            CostItem::OwnManaValue => return Err("OwnManaValue"),
+            CostItem::OwnManaCost | CostItem::OwnManaValue => return Err(own_part(item)),
             CostItem::RemoveCountersAmong {
                 counter,
                 count,
@@ -1007,4 +1006,13 @@ mod tests;
 fn discards_the_hand(item: &CostItem) -> bool {
     matches!(item, CostItem::Discard { count: Amount::Count(cards), filter: None }
         if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(mtg_cards::refs::Ref::You)])
+}
+
+/// The name of a part of a cost read off the card by the layers: unread, nobody can pay it.
+const fn own_part(item: &CostItem) -> &'static str {
+    if matches!(item, CostItem::OwnManaCost) {
+        "OwnManaCost"
+    } else {
+        "OwnManaValue"
+    }
 }

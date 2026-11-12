@@ -283,6 +283,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasAdventure
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
+        | Pred::AttackedLastTurn
         | Pred::Attacking
         | Pred::AttackingAlone
         | Pred::AttackingBattle

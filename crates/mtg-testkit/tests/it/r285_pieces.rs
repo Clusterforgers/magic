@@ -1,4 +1,4 @@
-//! Goal: the r28-5 engine pieces play as their rules say at tables of two to four seats: a spell cast only by a player attacked this combat, opponents held to the timing of a sorcery, a permanent that can't become untapped, creature cards that can't enter the battlefield from a graveyard, a macro keyword whose number is X, a creature that attacks as though it had haste, a rule from the command zone, and the turn's log of what an opponent destroyed or countered; each game replays to the state it reached.
+//! Goal: the r28-5 engine pieces play as their rules say at tables of two to four seats: a spell cast only by a player attacked this combat, opponents held to the timing of a sorcery, a permanent that can't become untapped, creature cards that can't enter the battlefield from a graveyard, a macro keyword whose number is X, a creature that attacks as though it had haste, a rule from the command zone, encore for a card's mana value, a creature that attacked during its controller's last turn, and the turn's log of what an opponent destroyed or countered; each game replays to the state it reached.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -335,7 +335,6 @@ fn a_spell_cost_rule_works_from_its_owners_command_zone(
         scenario = scenario.hand(0, vec![eminent]);
     }
     let mut driver = Driver::from_scenario(scenario)?;
-    eprintln!("DEBUG {:?}", driver.decision()?);
     let cast = driver.cast("Costly");
     assert_eq!(cast.is_ok(), commanding, "{cast:?}");
     Ok(())
@@ -369,9 +368,18 @@ fn the_log_names_what_an_opponents_spell_destroyed(
     let idol = Arc::new(CardDefinition::new("Idol").with_type(CardType::Artifact));
     let mut scenario = Scenario::new(seats)
         .at(1, caster, Step::Main1)
-        .hand(caster, vec![wreck])
-        .hand(0, vec![trap])
+        .hand(
+            0,
+            if caster == 0 {
+                vec![trap, Arc::clone(&wreck)]
+            } else {
+                vec![trap]
+            },
+        )
         .battlefield(0, vec![ready(idol)]);
+    if caster != 0 {
+        scenario = scenario.hand(caster, vec![wreck]);
+    }
     for seat in 0..seats {
         scenario = scenario.library(seat, (0..5).map(|_| forest()));
     }
@@ -384,13 +392,6 @@ fn the_log_names_what_an_opponents_spell_destroyed(
             .reference(),
     );
     priority_to(&mut driver, caster)?;
-    eprintln!(
-        "DEBUG {:?} hand {:?}",
-        driver.decision()?,
-        driver
-            .state()
-            .zone(mtg_engine::zones::Zone::Hand(pid(caster)))
-    );
     driver.cast_at("Wreck", &[idol])?;
     while !driver.state().stack().is_empty() {
         if matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
@@ -402,6 +403,76 @@ fn the_log_names_what_an_opponents_spell_destroyed(
     priority_to(&mut driver, 0)?;
     let cast = driver.cast("Trap");
     assert_eq!(cast.is_ok(), caster != 0, "{cast:?}");
+    replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn a_card_in_a_graveyard_gets_encore_for_its_mana_value(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(1, 3, 5)] value: u32,
+) -> Result<(), ScriptError> {
+    let grant = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"mods":[{"AddKeyword":{"Encore":["OwnManaValue"]}}]}}"#;
+    let mother = Arc::new(
+        CardDefinition::new("Mother")
+            .with_type(CardType::Artifact)
+            .with_rules(ability(grant)),
+    );
+    let fallen = Arc::new(
+        CardDefinition::new("Fallen")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_mana_cost(cost(value - 1, &[mtg_core::color::Color::Green])),
+    );
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, vec![ready(mother)])
+        .graveyard(0, vec![fallen]);
+    let driver = Driver::from_scenario(scenario)?;
+    let id = named(&driver, "Fallen").id;
+    let keywords = mtg_engine::keywords::keywords_of(driver.state(), id);
+    let wanted: Keyword = serde_json::from_str(&format!(r#"{{"Encore":"{{{value}}}"}}"#)).unwrap();
+    assert!(keywords.contains(&&wanted), "{keywords:?}");
+    Ok(())
+}
+
+#[rstest]
+fn a_creature_that_attacked_last_turn_cant_attack_under_the_rule(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let rule = r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},"AttackedLastTurn"]},"mods":["CantAttack"]}}"#;
+    let halls = Arc::new(
+        CardDefinition::new("Halls")
+            .with_type(CardType::Enchantment)
+            .with_rules(ability(rule)),
+    );
+    let mut scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        vec![
+            ready(free_creature("Raider", 2, 2)),
+            ready(free_creature("Stayer", 2, 2)),
+            ready(halls),
+        ],
+    );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..10).map(|_| forest()));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    driver.attack(&[("Raider", 1)])?;
+    let next = 1 + u32::try_from(seats).unwrap();
+    driver.idle_until(next, Step::Main1)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    let offered: Vec<_> = match &driver.decision()?.kind {
+        DecisionKind::DeclareAttackers(options) => options
+            .attackers
+            .iter()
+            .map(|option| option.object)
+            .collect(),
+        _ => Vec::new(),
+    };
+    assert!(!offered.contains(&driver.id_of("Raider")?));
+    assert!(offered.contains(&driver.id_of("Stayer")?));
     replays(&driver);
     Ok(())
 }

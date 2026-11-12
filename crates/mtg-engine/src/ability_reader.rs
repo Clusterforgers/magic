@@ -282,7 +282,11 @@ pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool 
     let modifier = |rules: &Ability| match rules {
         Ability::CostModifier { .. }
         | Ability::FreeActivation { .. }
-        | Ability::InstantActivation { .. } => true,
+        | Ability::InstantActivation { .. }
+        | Ability::Rule {
+            rule: mtg_cards::modify::GameRule::SpellCost { .. },
+            ..
+        } => true,
         Ability::Static { mods, .. } => {
             mods.iter()
                 .any(|given| matches!(given, WantedModification::AddKeyword(Keyword::Affinity(_))))

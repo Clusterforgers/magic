@@ -320,6 +320,13 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
                         "{}: the text has no enchant opponent",
                         card.name
                     );
+                } else if let Ability::Keyword(Keyword::FlashSacrifice) = ability {
+                    // The flash permission whose permanent is sacrificed at cleanup is a sentence of the card.
+                    assert!(
+                        text.contains("as though it had flash"),
+                        "{}: the text has no flash permission",
+                        card.name
+                    );
                 } else if let Ability::Keyword(Keyword::EquipTo { .. }) = ability {
                     // An equip with a restriction is printed as `Equip legendary creature`.
                     assert!(

@@ -410,6 +410,9 @@ pub enum Pred {
     DamagedThisTurn,
     /// Was declared as an attacker this turn ("creatures that attacked this turn").
     AttackedThisTurn,
+    /// Attacked during its controller's last turn, as the same object ("creatures that attacked during their controller's
+    /// last turn").
+    AttackedLastTurn,
     /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
     DamagedBy(Ref),
     /// Was the object that did the event this turn ("creature that blocked this turn", "creature that dealt damage to you

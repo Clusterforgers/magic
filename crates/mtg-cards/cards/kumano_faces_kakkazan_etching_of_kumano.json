@@ -8,9 +8,21 @@
       "oracle_fingerprint": "00b018119af15ca69c42833f61a81b51",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 68, "end": 149 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Union": [
+                      "Opponents",
+                      { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "Opponents" }] }
+                    ]
+                  },
+                  "amount": 1
+                }
+              }
+            ]
           }
         },
         {

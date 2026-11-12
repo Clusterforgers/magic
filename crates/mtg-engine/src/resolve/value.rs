@@ -1764,6 +1764,7 @@ impl<'a> Scope<'a> {
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
+            Pred::AttackedLastTurn => state.attacked_last_turn(reference),
             Pred::DidThisTurn {
                 event,
                 by,

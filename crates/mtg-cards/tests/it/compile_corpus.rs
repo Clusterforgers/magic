@@ -513,6 +513,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CastOnly { .. }
             | Ability::OpeningHand
             | Ability::OpeningHandWith { .. }
+            | Ability::FreeActivation { .. }
+            | Ability::InstantActivation { .. }
             | Ability::CostModifier { .. } => &[ClauseKind::Static],
             // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
             Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],

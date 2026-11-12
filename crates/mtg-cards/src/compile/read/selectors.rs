@@ -775,6 +775,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         Pred::DrawnThisTurn => "drawn this turn".to_owned(),
         Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
+        Pred::AttackedLastTurn => "that attacked during their controller's last turn".to_owned(),
         Pred::Crewed(Ref::This) => "that crewed it this turn".to_owned(),
         Pred::Saddled(Ref::This) => "that saddled it this turn".to_owned(),
         Pred::DamagedBy(Ref::This) => "dealt damage by ~ this turn".to_owned(),

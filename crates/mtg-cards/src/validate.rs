@@ -870,6 +870,7 @@ impl<'a> Walker<'a> {
             | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
+            | Pred::AttackedLastTurn
             | Pred::Attacking
             | Pred::AttackingAlone
             | Pred::AttackingBattle

@@ -687,7 +687,46 @@ fn sundry(value: &Value) -> Vec<String> {
         { "Subtype": "Assassin" }, { "Subtype": "Mercenary" }, { "Subtype": "Pirate" }, { "Subtype": "Rogue" }, { "Subtype": "Warlock" }
     ] });
     let legends = json!({ "Rule": { "rule": { "NoLegendRuleFor": [{ "Subtype": "Sliver" }, { "ControlledBy": "You" }] } } });
-    let texts: &[&str] = if value == &encore(json!({ "Subtype": "Sliver" })) {
+    let lose = json!({ "Triggered": {
+        "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+        "effects": [{ "LoseGame": {} }]
+    } });
+    let rager = json!({ "Triggered": {
+        "when": { "StepBegins": { "step": "Upkeep" } },
+        "effects": [{ "CreateToken": { "who": "Triggering", "token": { "Custom": {
+            "name": "Lightning Rager", "colors": ["Red"], "types": ["Creature"], "subtypes": ["Elemental"],
+            "power": 5, "toughness": 1,
+            "abilities": [
+                { "Keyword": "Trample" }, { "Keyword": "Haste" },
+                { "Triggered": { "when": { "StepBegins": { "step": "End" } }, "effects": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+        } } } }]
+    } });
+    let rager_cant = json!({ "Static": {
+        "affected": { "Each": [{ "Type": "Creature" }, { "Named": "Lightning Rager" }] },
+        "mods": [{ "CantAttackYou": "Both" }]
+    } });
+    let halls = json!({ "Static": { "affected": { "Each": [{ "Type": "Creature" }, "AttackedLastTurn"] }, "mods": ["CantAttack"] } });
+    let kelp = json!({ "Static": {
+        "affected": "Attached",
+        "mods": ["DoesntUntap"],
+        "condition": { "Matches": { "subject": "Attached", "selector": ["AttackedLastTurn"] } }
+    } });
+    let texts: &[&str] = if value == &halls {
+        &["Creatures that attacked during their controller's last turn can't attack"]
+    } else if value == &kelp {
+        &[
+            "Enchanted creature doesn't untap during its controller's untap step if it attacked during its controller's last turn",
+        ]
+    } else if value == &lose {
+        &["When ~ is put into a graveyard from the battlefield, you lose the game"]
+    } else if value == &rager {
+        &[
+            "At the beginning of each player's upkeep, that player creates a 5/1 red Elemental creature token named Lightning Rager. It has trample, haste, and \"At the beginning of the end step, sacrifice this token.\"",
+        ]
+    } else if value == &rager_cant {
+        &["Creatures named Lightning Rager can't attack you or planeswalkers you control"]
+    } else if value == &encore(json!({ "Subtype": "Sliver" })) {
         &["Each Sliver creature card in your graveyard has encore {X}, where X is its mana value"]
     } else if value == &encore(outlaws) {
         &["Each outlaw creature card in your graveyard has encore {X}, where X is its mana value"]

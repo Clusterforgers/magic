@@ -1,0 +1,64 @@
+{
+  "oracle_id": "35ae7b25-6d0f-49f8-a40d-dd2cf88e6f44",
+  "name": "Reidane, God of the Worthy // Valkmira, Protector's Shield",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Reidane, God of the Worthy",
+      "oracle_fingerprint": "f582fb8da4be2b77be56f7636a430245",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "Supertype": "Snow" },
+                  { "Type": "Land" },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "by": "Tapped"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Not": { "Type": "Creature" } },
+              { "ControlledBy": "Opponents" },
+              { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+            ],
+            "change": "Increase",
+            "mana": "{2}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Valkmira, Protector's Shield",
+      "oracle_fingerprint": "63a4bfd62e9b1e060527754307cb47b7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Union": ["You", { "Each": [{ "ControlledBy": "You" }] }] },
+                "source": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "by": { "PreventUpTo": 1 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 112, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

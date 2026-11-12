@@ -661,6 +661,9 @@ pub(crate) struct RulesInForce {
     block_limit_each: BTreeMap<PlayerId, u32>,
     /// The prohibitions (`prohibit.rs`).
     pub(crate) cants: Vec<crate::prohibit::Banned>,
+    /// The spell cost rules of static abilities, with their controllers and sources; those of resolved effects are read
+    /// from the effects (`announce/modifiers.rs`).
+    pub(crate) static_spell_costs: Vec<(Rule, PlayerId, ObjectRef)>,
     /// The rules about targets in graveyards, losing, casting and combat damage.
     pub(crate) w17b: crate::w17b_statics::W17bRules,
 }
@@ -1650,6 +1653,11 @@ fn gather(state: &GameState) -> RulesInForce {
                 }
                 if let Ok(lowered) = lower_rule(&scope, rule) {
                     found.put(&lowered, controller, Some(object.reference()));
+                    if matches!(lowered, Rule::SpellCost { .. }) {
+                        found
+                            .static_spell_costs
+                            .push((lowered, controller, object.reference()));
+                    }
                 }
             }
         }
@@ -1712,6 +1720,7 @@ static NONE: RulesInForce = RulesInForce {
     block_limit: None,
     block_limit_each: BTreeMap::new(),
     cants: Vec::new(),
+    static_spell_costs: Vec::new(),
     w17b: crate::w17b_statics::W17B_NONE,
 };
 
