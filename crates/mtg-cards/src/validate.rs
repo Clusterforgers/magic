@@ -1144,9 +1144,12 @@ impl<'a> Walker<'a> {
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
-            Amount::Remembered { on, .. } => {
+            Amount::Remembered { on, per, .. } => {
                 self.uses("Amount", "Remembered");
                 self.at("on", |w| w.reference(on, Kind::Object));
+                if let Some(per) = per {
+                    self.at("per", |w| w.reference(per, Kind::Player));
+                }
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
@@ -1398,7 +1401,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                CostItem::PayLife(amount) if !is_fixed(item) && *amount != Amount::X => {
+                    Some((i, amount))
+                }
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
                     if !is_fixed(item)
@@ -1841,12 +1846,19 @@ impl<'a> Walker<'a> {
             self.uses("Effect", "Pay.X");
         }
         // Energy of that count is paid once X is announced; any other part is not.
+        if cost.0.iter().any(|item| {
+            amount_is_x(item)
+                && !matches!(item, CostItem::PayEnergy(_) | CostItem::PayLife(Amount::X))
+        }) {
+            self.uses("Effect", "Pay.X.Parts");
+        }
+        // Life of that count is paid once X is announced ("pay any amount of life").
         if cost
             .0
             .iter()
-            .any(|item| amount_is_x(item) && !matches!(item, CostItem::PayEnergy(_)))
+            .any(|item| matches!(item, CostItem::PayLife(Amount::X)))
         {
-            self.uses("Effect", "Pay.X.Parts");
+            self.uses("Effect", "Pay.X.Life");
         }
         if cost
             .0
@@ -3481,7 +3493,12 @@ impl Walker<'_> {
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
-            Effect::RememberValue { value, .. } => w.at("value", |w| w.amount(value)),
+            Effect::RememberValue { value, per, .. } => {
+                w.at("value", |w| w.amount(value));
+                if let Some(per) = per {
+                    w.at("per", |w| w.reference(per, Kind::Player));
+                }
+            }
             Effect::Encode { what, on } | Effect::Haunt { what, on } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("on", |w| w.reference(on, Kind::Object));
@@ -4222,13 +4239,15 @@ impl Walker<'_> {
                 unpaid,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
-                let saved = w.x_free;
+                let (saved, saved_now) = (w.x_free, w.x_now);
                 w.x_free |= announces_x(cost);
+                // The X of a part of the payment is the one its payer announces as it resolves.
+                w.x_now |= announces_x(cost);
                 w.r281_paying = *times == Amount::one()
                     && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
                 w.r281_paying = false;
-                w.x_free = saved;
+                (w.x_free, w.x_now) = (saved, saved_now);
                 w.at("times", |w| w.amount(times));
                 w.payment_of_the_source(cost);
                 // The source is lost once: the engine refuses a cost that loses it more than one time over.
@@ -5617,13 +5636,15 @@ fn picks(cost: &Cost) -> bool {
     })
 }
 
-/// Whether a payment an effect asks announces an X: an `{X}` in its mana or energy of that count.
+/// Whether a payment an effect asks announces an X: an `{X}` in its mana, or energy or life of that count.
 fn announces_x(cost: &Cost) -> bool {
     has_x_mana(cost)
-        || cost
-            .0
-            .iter()
-            .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
+        || cost.0.iter().any(|item| {
+            matches!(
+                item,
+                CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
+            )
+        })
 }
 
 /// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
@@ -6414,6 +6435,7 @@ mod tests {
     #[case::an_x_in_the_intervening_if_of_another_trigger(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":"X","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::an_x_in_the_intervening_if_of_the_dies_trigger(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"if":{"Compare":{"left":"X","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
     #[case::an_x_in_the_cast_trigger_of_the_spell(r#"{"Triggered":{"when":{"SpellCast":{"what":["This"],"by":"You"}},"from":"Stack","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.From", "Ability.Triggered", "Effect.Draw", "Trigger.SpellCast"])]
+    #[case::l31b_life_of_any_amount(r#"{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}],"paid":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.X.Life", "Trigger.StepBegins"])]
     #[case::an_x_in_the_trigger_on_another_spell_cast(r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.SpellCast"])]
     #[case::an_x_in_the_counters_the_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
     #[case::an_x_in_the_counters_another_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},"Other"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "Amount.X.Elsewhere", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
@@ -6437,7 +6459,7 @@ mod tests {
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::w6c_the_x_a_payment_announces(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.X", "Trigger.Attacks"])]
-    #[case::w6c_a_part_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Parts", "Trigger.StepBegins"])]
+    #[case::w6c_life_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Life", "Trigger.StepBegins"])]
     #[case::w6c_the_x_of_the_cycling_cost(r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.Cycled"])]
     #[case::w6c_the_x_of_a_monstrosity(r#"{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#, &["Ability.Triggered", "Effect.Tap", "Trigger.BecomesMonstrous"])]
     #[case::w6c_the_x_of_another_cards_cycling(r#"{"Triggered":{"when":{"Cycled":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.Cycled"])]

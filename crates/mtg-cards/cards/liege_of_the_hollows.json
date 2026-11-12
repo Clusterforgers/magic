@@ -1,0 +1,79 @@
+{
+  "oracle_id": "bef7441e-5a44-46bc-8141-8e02ecd06fce",
+  "name": "Liege of the Hollows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liege of the Hollows",
+      "oracle_fingerprint": "f87283e7402d4c3d75b800d49806ec91",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{X}",
+                        "paid": [
+                          {
+                            "RememberValue": {
+                              "value": "X",
+                              "slot": "paid",
+                              "per": { "Bound": "player" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "creator",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "creator" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Squirrel",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Squirrel"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              },
+                              "count": {
+                                "Remembered": {
+                                  "on": "This",
+                                  "slot": "paid",
+                                  "per": { "Bound": "creator" }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

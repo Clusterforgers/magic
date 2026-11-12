@@ -26,6 +26,7 @@ mod forge_tier;
 mod generated;
 mod hand_written;
 mod l290_writers;
+mod l31b_writers;
 mod linked_exile;
 mod partial;
 mod partial_draft;
