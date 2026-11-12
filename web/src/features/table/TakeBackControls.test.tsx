@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState, TakeBackNotice, TakeBackRequest } from '@/play/store'
 import type { TakeBackOffer, TakeBackRefusal } from '@/protocol/generated'
 import { renderTable } from '@/test-utils/tableHarness'
-import { TAKE_BACK_NOTICE_MS } from './TakeBackControls'
+import { secondsLeft, TAKE_BACK_NOTICE_MS } from './takeBackText'
 
 const offerOf = (kind: TakeBackOffer['kind'], name: string, player = 0): TakeBackOffer => ({
   player,
@@ -30,6 +30,8 @@ function renderTakeBack(change: Partial<PlayState>, seats = 3) {
   }
   return { ...table, takeBack, voteTakeBack, dismissTakeBackNotice, dock }
 }
+
+const shock = offerOf('Cast', 'Shock')
 
 const request = (offer: TakeBackOffer, waiting: number[]): TakeBackRequest => ({
   offer,
@@ -74,6 +76,21 @@ describe('the Take back button', () => {
   })
 })
 
+describe('the time left', () => {
+  it.each([
+    [0, 15],
+    [999, 15],
+    [1_000, 14],
+    [14_500, 1],
+    [15_000, 0],
+    [20_000, 0],
+    [-60_000, 15],
+  ])('%i ms after the request: %i s', (elapsed, seconds) => {
+    const open: TakeBackRequest = { offer: shock, waiting: [1], deadlineMs: 15_000, at: 100_000 }
+    expect(secondsLeft(open, 100_000 + elapsed)).toBe(seconds)
+  })
+})
+
 describe('an open request', () => {
   it('asks a waiting seat to allow or decline, with the time left', async () => {
     const { voteTakeBack, user } = renderTakeBack({
@@ -115,8 +132,6 @@ describe('an open request', () => {
     expect(screen.getByRole('button', { name: 'Decline' })).toBeDisabled()
   })
 })
-
-const shock = offerOf('Cast', 'Shock')
 
 const NOTICES: [string, TakeBackNotice, string][] = [
   ['Approved', { offer: shock, outcome: { type: 'Approved' } }, 'Approved: Alice takes back casting Shock.'],

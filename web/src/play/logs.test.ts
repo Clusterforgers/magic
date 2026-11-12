@@ -185,17 +185,22 @@ describe('a rewound Snapshot', () => {
     ['a cut in the middle of what the page holds', 10, 6, 3],
     ['a cut that keeps nothing the page held', 6, 0, 2],
     ['a cut with a history longer than the cut', 8, 5, 5],
-  ])('%s: drops the held events from the first position on and takes the history', (_name, held, cut, count) => {
-    const seq = snapshot.seq + cut
-    const { h } = rewound(held, seq, count)
-    const start = seq - count
-    const log = h.state().log
-    expect(log.filter((entry) => entry.seq >= start).map((entry) => entry.event)).toEqual(events(500, count))
-    const kept = Array.from({ length: Math.max(0, start - snapshot.seq) }, (_, i) => snapshot.seq + i)
-    const taken = Array.from({ length: count }, (_, i) => start + i)
-    expect(log.map((entry) => entry.seq)).toEqual([...kept, ...taken])
-    expect(h.state().seq).toBe(seq)
-  })
+  ])(
+    '%s: drops the held events from the first position on and takes the history',
+    (_name, held, cut, count) => {
+      const seq = snapshot.seq + cut
+      const { h } = rewound(held, seq, count)
+      const start = seq - count
+      const log = h.state().log
+      expect(log.filter((entry) => entry.seq >= start).map((entry) => entry.event)).toEqual(
+        events(500, count),
+      )
+      const kept = Array.from({ length: Math.max(0, start - snapshot.seq) }, (_, i) => snapshot.seq + i)
+      const taken = Array.from({ length: count }, (_, i) => start + i)
+      expect(log.map((entry) => entry.seq)).toEqual([...kept, ...taken])
+      expect(h.state().seq).toBe(seq)
+    },
+  )
 
   it('replaces an event the page holds at a position the history covers, which an ordinary Snapshot keeps', () => {
     const plain = started()
@@ -203,7 +208,12 @@ describe('a rewound Snapshot', () => {
     plain.deliver({ type: 'Snapshot', seq: snapshot.seq + 4, state: base, log: events(500, 2) })
     expect(plain.state().log.at(-1)?.event).toEqual(events(snapshot.seq + 3, 1)[0])
     const { h } = rewound(4, snapshot.seq + 4, 2)
-    expect(h.state().log.slice(-2).map((entry) => entry.event)).toEqual(events(500, 2))
+    expect(
+      h
+        .state()
+        .log.slice(-2)
+        .map((entry) => entry.event),
+    ).toEqual(events(500, 2))
     expect(h.state().log).toHaveLength(4)
   })
 

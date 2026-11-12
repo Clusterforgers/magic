@@ -1,6 +1,15 @@
 /** Take-backs in words: what one undoes, how a request ended, and why one was refused. */
 import type { TakeBackKind, TakeBackOffer, TakeBackOutcome, TakeBackRefusal } from '@/protocol/generated'
+import type { TakeBackRequest } from '@/play/store'
 import type { SeatNamer } from './names'
+
+/** How long the notice of an ended or refused take-back stays before it goes by itself. */
+export const TAKE_BACK_NOTICE_MS = 6000
+
+/** Whole seconds left of `request`'s clock at `now`, never below 0; a `now` from before the request counts as its start. */
+export function secondsLeft(request: TakeBackRequest, now: number): number {
+  return Math.max(0, Math.ceil((request.deadlineMs - Math.max(0, now - request.at)) / 1000))
+}
 
 const VERBS: Record<TakeBackKind, string> = { Cast: 'casting', Activation: 'activating', Land: 'playing' }
 

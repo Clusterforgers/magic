@@ -2,25 +2,16 @@ import { useEffect, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from '@/features/game/gameContext'
-import type { TakeBackNotice, TakeBackRequest } from '@/play/store'
+import type { TakeBackNotice } from '@/play/store'
 import { useSeatNamer } from './names'
-import { outcomeWords, REFUSAL_WORDS, takeBackAction } from './takeBackText'
+import { outcomeWords, REFUSAL_WORDS, secondsLeft, TAKE_BACK_NOTICE_MS, takeBackAction } from './takeBackText'
 import type { SeatNamer } from './names'
-
-/** How long the notice of an ended or refused take-back stays before it goes by itself. */
-export const TAKE_BACK_NOTICE_MS = 6000
-
-/** Whole seconds left of `request`'s clock at `now`, never below 0. */
-export function secondsLeft(request: TakeBackRequest, now: number): number {
-  return Math.max(0, Math.ceil((request.deadlineMs - (now - request.at)) / 1000))
-}
 
 /** The time now, read again every second while `running`. */
 function useNow(running: boolean): number {
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
     if (!running) return
-    setNow(Date.now())
     const timer = window.setInterval(() => setNow(Date.now()), 1000)
     return () => window.clearInterval(timer)
   }, [running])
