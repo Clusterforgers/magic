@@ -855,6 +855,34 @@ pub enum Event {
         /// Who collected it.
         player: PlayerId,
     },
+    /// A player investigated (CR 701.16a): the Clue token is the creation before it.
+    Investigated {
+        /// Who investigated.
+        player: PlayerId,
+    },
+    /// A player discovered (CR 701.57): the exile, cast or move to the hand are the events before it.
+    Discovered {
+        /// Who discovered.
+        player: PlayerId,
+        /// The discover value.
+        value: u32,
+        /// The card discovered, when one was found and still exists.
+        card: Option<ObjectId>,
+    },
+    /// A player manifested dread (CR 701.62): the look, the move to the graveyard and the manifest are the events before it.
+    DreadManifested {
+        /// Who manifested dread.
+        player: PlayerId,
+        /// The card they put into their graveyard this way, if any.
+        card: Option<ObjectId>,
+    },
+    /// A player gave a gift (CR 702.174): the gift itself is the events before it.
+    GiftGiven {
+        /// Who gave it.
+        player: PlayerId,
+        /// The player it was given to.
+        to: PlayerId,
+    },
     /// A player rolled a die (CR 706): the number came from the game's random stream, which the roll moved on by one.
     DieRolled {
         /// Who rolled.
@@ -1323,6 +1351,10 @@ impl Event {
             | Event::DungeonCompleted { .. }
             | Event::Learned { .. }
             | Event::EvidenceCollected { .. }
+            | Event::Investigated { .. }
+            | Event::Discovered { .. }
+            | Event::DreadManifested { .. }
+            | Event::GiftGiven { .. }
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }

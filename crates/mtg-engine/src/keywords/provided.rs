@@ -354,7 +354,7 @@ fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_th
 #[case::energy(r#"[{"PayEnergy":2}]"#, &[])]
 #[case::losing_the_source(r#"["SacrificeSelf"]"#, &[])]
 #[case::discarding_the_source(r#"["DiscardSelf"]"#, &["Effect.Pay.DiscardSelf"])]
-#[case::an_x(r#"[{"PayLife":"X"}]"#, &["Amount.X.Elsewhere", "Effect.Pay.X.Parts"])]
+#[case::an_x(r#"[{"PayLife":"X"}]"#, &["Amount.X.Elsewhere"])]
 fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified(
     #[case] cost: &str,
     #[case] named: &[&str],

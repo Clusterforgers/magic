@@ -98,6 +98,8 @@ pub(crate) struct Possible {
 /// ("becomes the target for the first time each turn").
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) enum Tally {
+    /// An investigation (CR 701.16a).
+    L31aInvestigated,
     /// A card drawn.
     Drawn,
     /// A card drawn (counted for the card as it lies in the hand it was drawn into).
