@@ -12,12 +12,14 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
+use mtg_core::house::HouseRules;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
     CreateTournament, EntrantView, JoinTournament, MAX_ENTRANTS, MAX_SWISS_ROUNDS,
     MAX_TOURNAMENT_NAME_CHARS, MatchOutcome, MatchView, RoundView, SetMatchOutcome, StandingView,
-    TournamentCreated, TournamentErrorCode, TournamentInvite, TournamentList, TournamentStatus,
-    TournamentStructure, TournamentSummary, TournamentView,
+    TournamentCreated, TournamentErrorCode, TournamentFormat, TournamentInvite, TournamentList,
+    TournamentStatus, TournamentStructure, TournamentSummary, TournamentView,
 };
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -231,6 +233,17 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
     Ok(())
 }
 
+/// The rules of a match game: a team format seats the entrants' players alternately as two teams of separate
+/// turns (CR 808), the first entrant team 0, which [`outcome_of`] reads back.
+fn match_rules(format: TournamentFormat) -> HouseRules {
+    let size = format.team_size();
+    HouseRules {
+        teams: (size > 1)
+            .then(|| Teams::even(TeamMode::Teams, 2, u32::try_from(size).unwrap_or(u32::MAX))),
+        ..HouseRules::default()
+    }
+}
+
 /// Makes the game of every match of the current round that has none; a game that cannot be made
 /// is logged and left for the organiser's retry.
 async fn make_games(app: &AppState, tournament: &mut Tournament) -> Result<(), ApiError> {
@@ -252,6 +265,7 @@ async fn make_games(app: &AppState, tournament: &mut Tournament) -> Result<(), A
             format: FormatKind::Commander,
             visibility: Visibility::Invite,
             accounts: users.into_iter().map(Some).collect(),
+            house_rules: match_rules(tournament.format),
             ..GameOptions::default()
         };
         let decks = vec![None; names.len()];
@@ -998,6 +1012,17 @@ mod tests {
             names.map(|n| n.into_iter().map(String::from).collect())
         );
         assert_eq!(seated(&t, &row(0, None)), None);
+    }
+
+    #[test]
+    fn a_team_match_seats_two_teams_that_alternate_and_a_duel_none() {
+        let teams = match_rules(TournamentFormat::Commander2v2).teams.unwrap();
+        assert_eq!(teams.mode, TeamMode::Teams);
+        assert_eq!(teams.seats, [0, 1, 0, 1]);
+        assert_eq!(
+            match_rules(TournamentFormat::Commander1v1),
+            HouseRules::default()
+        );
     }
 
     #[rstest]
