@@ -506,3 +506,45 @@ fn quick_reflexes_read_back_only_as_printed(#[case] ability: String, #[case] wri
         wordings(&ability)
     );
 }
+
+const CHOOSE_OPPONENT: &str =
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Opponent"}}}"#;
+const CHOOSE_TYPE: &str =
+    r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"CreatureType"}}}"#;
+const COUNTERS_FOR_CHOSEN_PLAYER: &str = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"-1/-1","count":{"Count":[{"Type":"Creature"},{"ControlledBy":"Chosen"}]}}}}}"#;
+const COUNTERS_FOR_OPPONENTS: &str = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"-1/-1","count":{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}}}}"#;
+const COUNTERS_FOR_CHOSEN_TYPE: &str = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":{"Other":"fellowship"},"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},"ChosenSubtype"]}}}}}"#;
+
+#[rstest]
+#[case::canker(
+    CHOOSE_OPPONENT,
+    COUNTERS_FOR_CHOSEN_PLAYER,
+    "As ~ enters, choose an opponent. ~ enters with a -1/-1 counter on it for each creature that player controls.",
+    true
+)]
+#[case::all_opponents_are_not_that_player(
+    CHOOSE_OPPONENT,
+    COUNTERS_FOR_OPPONENTS,
+    "As ~ enters, choose an opponent. ~ enters with a -1/-1 counter on it for each creature that player controls.",
+    false
+)]
+#[case::banner(
+    CHOOSE_TYPE,
+    COUNTERS_FOR_CHOSEN_TYPE,
+    "As ~ enters, choose a creature type. ~ enters with a fellowship counter on it for each creature you control of the chosen type.",
+    true
+)]
+fn a_choice_and_the_counters_it_counts_read_as_one_clause(
+    #[case] first: &str,
+    #[case] second: &str,
+    #[case] text: &str,
+    #[case] written: bool,
+) {
+    let parse = |json: &str| serde_json::from_str::<Ability>(json).expect("an ability");
+    let texts = mtg_cards::compile::static_pair_texts(&parse(first), &parse(second));
+    assert_eq!(
+        texts.iter().any(|found| found == text),
+        written,
+        "{texts:?}"
+    );
+}

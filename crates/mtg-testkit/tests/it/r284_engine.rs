@@ -251,3 +251,53 @@ fn a_permanent_turned_another_color_stays_that_color(#[values(2, 3, 4)] seats: u
     assert_eq!(colors.iter().collect::<Vec<_>>(), vec![Color::Black]);
     replays(&driver, &setup);
 }
+
+/// A 6/6 for {B} with "As this creature enters, choose an opponent. This creature enters with a -1/-1 counter on it for
+/// each creature that player controls."
+fn canker() -> Arc<CardDefinition> {
+    let rules: [Ability; 2] = [
+        serde_json::from_str(
+            r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"Choose":"Opponent"}}}"#,
+        )
+        .unwrap(),
+        serde_json::from_str(
+            r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"-1/-1","count":{"Count":[{"Type":"Creature"},{"ControlledBy":"Chosen"}]}}}}}"#,
+        )
+        .unwrap(),
+    ];
+    let card = CardDefinition::new("Canker")
+        .with_type(CardType::Creature)
+        .with_mana_cost(ManaCost::parse("{B}").unwrap())
+        .with_power_toughness(6, 6);
+    Arc::new(rules.into_iter().fold(card, CardDefinition::with_rules))
+}
+
+#[rstest]
+fn the_opponent_is_chosen_before_the_counters_are_counted(#[values(2, 3, 4)] seats: usize) {
+    let scenario = || {
+        let mut table = Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [canker()])
+            .battlefield(0, [ready(mtg_testkit::cards::swamp())]);
+        // Opponent `seat` controls `seat` creatures, so every choice counts at least one.
+        for seat in 1..seats {
+            table = table.battlefield(seat, (0..seat).map(|_| ready(bear())));
+        }
+        table
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario()).unwrap();
+    driver.cast("Canker").unwrap();
+    crate::common::copying::settle(&mut driver).unwrap();
+    let id = driver.id_of("Canker").unwrap();
+    let object = driver.state().object(id).unwrap();
+    let counters = object.permanent().map_or(0, |permanent| {
+        permanent.counters_of(&mtg_cards::value::CounterKind::MinusOneMinusOne)
+    });
+    assert_eq!(object.zone(), Zone::Battlefield);
+    assert!(
+        (1..u32::try_from(seats).unwrap()).contains(&counters),
+        "{counters} counters"
+    );
+    replays(&driver, &setup);
+}

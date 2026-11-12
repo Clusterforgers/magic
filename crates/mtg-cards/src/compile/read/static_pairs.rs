@@ -79,6 +79,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !attached.is_empty() {
         return attached;
     }
+    let entering = super::r284_pairs::r284_texts(first, second);
+    if !entering.is_empty() {
+        return entering;
+    }
     let chosen = super::c4_chosen_pairs::texts(first, second);
     if !chosen.is_empty() {
         return chosen;
