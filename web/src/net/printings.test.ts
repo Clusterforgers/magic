@@ -39,14 +39,40 @@ describe('the art client', () => {
     const { calls, api } = serve(200, { printings: [OLD_PRINTING] })
     const printings = await api.printingsOf('o/1')
     expect(calls[0]).toMatchObject({ url: '/api/cards/o%2F1/printings', method: 'GET' })
-    expect(printings).toEqual([{ ...OLD_PRINTING, set_name: null, frame: null, finishes: [], full_art: false }])
+    expect(printings).toEqual([
+      { ...OLD_PRINTING, set_name: null, frame: null, finishes: [], full_art: false },
+    ])
   })
 
   it.each([
-    ['a line', (api: ReturnType<typeof createPrintingsApi>) => api.setLine('d1', 'commander', 'o1', 'p1'), 'PUT', '/api/decks/d1/printing', { zone: 'commander', oracle_id: 'o1', printing_id: 'p1' }],
-    ['a line back to default', (api: ReturnType<typeof createPrintingsApi>) => api.setLine('d1', 'main', 'o1', null), 'PUT', '/api/decks/d1/printing', { zone: 'main', oracle_id: 'o1', printing_id: null }],
-    ['the preferred art', (api: ReturnType<typeof createPrintingsApi>) => api.prefer('o1', 'p1'), 'PUT', '/api/me/printings/o1', { printing_id: 'p1' }],
-    ['no preferred art', (api: ReturnType<typeof createPrintingsApi>) => api.prefer('o1', null), 'DELETE', '/api/me/printings/o1', undefined],
+    [
+      'a line',
+      (api: ReturnType<typeof createPrintingsApi>) => api.setLine('d1', 'commander', 'o1', 'p1'),
+      'PUT',
+      '/api/decks/d1/printing',
+      { zone: 'commander', oracle_id: 'o1', printing_id: 'p1' },
+    ],
+    [
+      'a line back to default',
+      (api: ReturnType<typeof createPrintingsApi>) => api.setLine('d1', 'main', 'o1', null),
+      'PUT',
+      '/api/decks/d1/printing',
+      { zone: 'main', oracle_id: 'o1', printing_id: null },
+    ],
+    [
+      'the preferred art',
+      (api: ReturnType<typeof createPrintingsApi>) => api.prefer('o1', 'p1'),
+      'PUT',
+      '/api/me/printings/o1',
+      { printing_id: 'p1' },
+    ],
+    [
+      'no preferred art',
+      (api: ReturnType<typeof createPrintingsApi>) => api.prefer('o1', null),
+      'DELETE',
+      '/api/me/printings/o1',
+      undefined,
+    ],
   ])('sets %s', async (_what, act, method, url, body) => {
     const { calls, api } = serve(204, undefined)
     await act(api)
@@ -76,7 +102,11 @@ describe('the art client', () => {
 
 describe('the pictures of a deck in a list', () => {
   it.each([
-    ['a chosen printing', [{ oracle_id: 'o', name: 'N', printing_id: 'p' }], [{ oracle_id: 'o', name: 'N', printing_id: 'p' }]],
+    [
+      'a chosen printing',
+      [{ oracle_id: 'o', name: 'N', printing_id: 'p' }],
+      [{ oracle_id: 'o', name: 'N', printing_id: 'p' }],
+    ],
     ['no printing', [{ oracle_id: 'o', name: 'N' }], [{ oracle_id: 'o', name: 'N' }]],
     ['a printing that is no text', [{ oracle_id: 'o', name: 'N', printing_id: 3 }], null],
   ])('reads %s', (_what, given, read) => {

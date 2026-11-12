@@ -22,7 +22,8 @@ function withArt(fixture: Fixture): Fixture {
     const oracle = `id-${object.id}`
     return {
       ...object,
-      identity: object.owner === 0 ? { oracle_id: oracle, printing_id: `art-${object.id}` } : { oracle_id: oracle },
+      identity:
+        object.owner === 0 ? { oracle_id: oracle, printing_id: `art-${object.id}` } : { oracle_id: oracle },
     }
   })
   return { ...fixture, view: { ...fixture.view, objects } }
@@ -39,17 +40,22 @@ describe('the chosen art at the table', () => {
     act(() => h.deliver({ type: 'Snapshot', seq: 1, state: fixture.view }))
     const { container } = renderLiveTable(h.session, fixtureLookup(fixture), { mode: 'grid' })
     const owned = (seat: number) =>
-      fixture.view.objects.filter((o) => o.owner === seat && o.identity !== undefined && o.zone === 'Battlefield')
+      fixture.view.objects.filter(
+        (o) => o.owner === seat && o.identity !== undefined && o.zone === 'Battlefield',
+      )
     for (const seat of [0, 1]) {
       for (const object of owned(seat)) {
         const src = sources(container, `[data-object-id="${object.id}"]`)
         expect(src.length, `object ${object.id}`).toBeGreaterThan(0)
-        const expected = seat === 0 ? `/api/images/printing/art-${object.id}/` : `/api/images/oracle/id-${object.id}/`
+        const expected =
+          seat === 0 ? `/api/images/printing/art-${object.id}/` : `/api/images/oracle/id-${object.id}/`
         for (const url of src) expect(url).toContain(expected)
       }
     }
     if (viewer === 0) {
-      const hand = fixture.view.objects.filter((o) => o.owner === 0 && typeof o.zone === 'object' && 'Hand' in o.zone && o.identity !== undefined)
+      const hand = fixture.view.objects.filter(
+        (o) => o.owner === 0 && typeof o.zone === 'object' && 'Hand' in o.zone && o.identity !== undefined,
+      )
       expect(hand.length).toBeGreaterThan(0)
       for (const object of hand) {
         const src = sources(container, `[data-object-id="${object.id}"]`)

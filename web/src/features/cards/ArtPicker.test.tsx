@@ -35,7 +35,9 @@ describe('the art picker', () => {
     expect(options()[1]).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Default' })).toHaveAttribute('aria-pressed', 'false')
     const img = options()[0]?.querySelector('img')
-    expect(img?.getAttribute('src') ?? img?.getAttribute('data-src') ?? '').toContain('/api/images/printing/p1/0/small')
+    expect(img?.getAttribute('src') ?? img?.getAttribute('data-src') ?? '').toContain(
+      '/api/images/printing/p1/0/small',
+    )
   })
 
   it('filters by set code or name', async () => {

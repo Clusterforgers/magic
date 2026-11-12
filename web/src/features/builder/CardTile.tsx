@@ -35,23 +35,21 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
   const issue = isIssue(check.support)
   const art = actions.art
   const picture = (
-  <span
-    className={cn(
-      'block rounded-[4.75%/3.393%] transition-transform duration-fast ease-out hover:-translate-y-0.5',
-      issue
-        ? `ring-2 ${supportRing(check.support)}`
-        : outside !== null && 'ring-2 ring-destructive',
-    )}
-  >
-    <CardPicture
-      oracleId={card.oracle_id}
-      printingId={art?.of(line) ?? null}
-      name={card.name}
-      size="normal"
-      alt=""
-      className="w-full"
-    />
-  </span>
+    <span
+      className={cn(
+        'block rounded-[4.75%/3.393%] transition-transform duration-fast ease-out hover:-translate-y-0.5',
+        issue ? `ring-2 ${supportRing(check.support)}` : outside !== null && 'ring-2 ring-destructive',
+      )}
+    >
+      <CardPicture
+        oracleId={card.oracle_id}
+        printingId={art?.of(line) ?? null}
+        name={card.name}
+        size="normal"
+        alt=""
+        className="w-full"
+      />
+    </span>
   )
   return (
     <li

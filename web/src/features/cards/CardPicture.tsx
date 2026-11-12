@@ -60,7 +60,11 @@ export function CardPicture({
   return (
     <CardImage
       src={cardImageUrl({ kind: 'card', identity: identityOf(oracleId, printingId) }, face, size)}
-      fallback={printingId === null ? null : cardImageFallbackUrl({ kind: 'card', identity: identityOf(oracleId, printingId) }, face, size)}
+      fallback={
+        printingId === null
+          ? null
+          : cardImageFallbackUrl({ kind: 'card', identity: identityOf(oracleId, printingId) }, face, size)
+      }
       alt={alt ?? name}
       onSettle={onSettle}
       eager={eager}
@@ -207,7 +211,13 @@ export function HoverPicture({
                 maxHeight: shown.at.maxHeight,
               }}
             >
-              <CardPicture oracleId={oracleId} printingId={printingId} name={name} alt="" className="w-full" />
+              <CardPicture
+                oracleId={oracleId}
+                printingId={printingId}
+                name={name}
+                alt=""
+                className="w-full"
+              />
               <span className="grid gap-1">
                 <span className="font-semibold">
                   {name}

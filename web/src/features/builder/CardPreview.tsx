@@ -249,7 +249,13 @@ function Body({
           />
         )}
         {art === undefined ? null : (
-          <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={art.choose}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="justify-self-start"
+            onClick={art.choose}
+          >
             <ImageIcon aria-hidden="true" />
             Choose art
           </Button>

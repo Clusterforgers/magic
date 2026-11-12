@@ -46,7 +46,8 @@ function DeckLoader({
   cards,
   fixMarks,
   printings,
-}: Required<Omit<BuilderPageProps, 'fixMarks' | 'printings'>> & Pick<BuilderPageProps, 'fixMarks' | 'printings'>) {
+}: Required<Omit<BuilderPageProps, 'fixMarks' | 'printings'>> &
+  Pick<BuilderPageProps, 'fixMarks' | 'printings'>) {
   const { state, reload } = useDeckView(api, deckId)
 
   if (state.status === 'ready')
@@ -125,7 +126,13 @@ function DeckLoader({
  * `/decks/$deckId`: the builder for one of the signed-in user's decks. Someone who is not signed in is sent to the
  * sign-in form and back; a server without accounts keeps no decks; a deck that is not the account's reads as missing.
  */
-export function BuilderPage({ deckId, api = decksApi, cards = cardsApi, fixMarks, printings }: BuilderPageProps) {
+export function BuilderPage({
+  deckId,
+  api = decksApi,
+  cards = cardsApi,
+  fixMarks,
+  printings,
+}: BuilderPageProps) {
   usePageTitle('Deck builder')
   const status = useAuth((state) => state.status)
 

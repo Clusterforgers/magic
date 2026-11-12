@@ -3,14 +3,24 @@ import { describe, expect, it } from 'vitest'
 import { filterPrintings, gridMove, printingCaption, printingLabel, printingTraits } from './artChoice'
 import { printingView } from './fakePrintings'
 
-const ALPHA = printingView('a', 'lea', { set_name: 'Limited Edition Alpha', released_at: '1993-08-05', frame: '1993' })
+const ALPHA = printingView('a', 'lea', {
+  set_name: 'Limited Edition Alpha',
+  released_at: '1993-08-05',
+  frame: '1993',
+})
 const LAIR = printingView('s', 'sld', {
   set_name: 'Secret Lair Drop',
   collector_number: '1040',
   full_art: true,
   finishes: ['nonfoil', 'foil', 'etched'],
 })
-const ONLINE = printingView('o', 'om1', { set_name: null, released_at: null, digital: true, lang: 'ja', frame: 'future' })
+const ONLINE = printingView('o', 'om1', {
+  set_name: null,
+  released_at: null,
+  digital: true,
+  lang: 'ja',
+  frame: 'future',
+})
 const ALL = [LAIR, ALPHA, ONLINE]
 
 describe('filterPrintings', () => {
@@ -30,7 +40,12 @@ describe('filterPrintings', () => {
 describe('what a printing is called', () => {
   it.each([
     [ALPHA, 'LEA #1 · 1993', [], 'Limited Edition Alpha #1, 1993, Old frame'],
-    [LAIR, 'SLD #1040 · 2020', ['Full art', 'Foil', 'Etched'], 'Secret Lair Drop #1040, 2020, Full art, Foil, Etched'],
+    [
+      LAIR,
+      'SLD #1040 · 2020',
+      ['Full art', 'Foil', 'Etched'],
+      'Secret Lair Drop #1040, 2020, Full art, Foil, Etched',
+    ],
     [ONLINE, 'OM1 #1', ['Future frame', 'Digital', 'JA'], 'OM1 #1, Future frame, Digital, JA'],
   ])('%#', (printing, caption, traits, label) => {
     expect(printingCaption(printing)).toBe(caption)

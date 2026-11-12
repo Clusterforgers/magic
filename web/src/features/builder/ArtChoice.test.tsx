@@ -9,7 +9,11 @@ import { BOLT, CHAIN, deckLine, renderBuilder } from './renderBuilder'
 const BOLT_ART = {
   [BOLT.oracle_id]: [
     printingView('p-new', 'sld', { set_name: 'Secret Lair Drop', released_at: '2024-02-01', full_art: true }),
-    printingView('p-old', 'lea', { set_name: 'Limited Edition Alpha', released_at: '1993-08-05', frame: '1993' }),
+    printingView('p-old', 'lea', {
+      set_name: 'Limited Edition Alpha',
+      released_at: '1993-08-05',
+      frame: '1993',
+    }),
   ],
 }
 
@@ -22,11 +26,15 @@ describe('choosing the art of a deck line', () => {
   it('stores the choice at once, draws the line in it and leaves nothing unsaved', async () => {
     const art = startPrintings(BOLT_ART)
     const { user } = await renderBuilder({ look: 'pictures', printings: art.api })
-    await user.click(within(deckLine('Lightning Bolt', 'main')).getByRole('button', { name: 'Art of Lightning Bolt' }))
+    await user.click(
+      within(deckLine('Lightning Bolt', 'main')).getByRole('button', { name: 'Art of Lightning Bolt' }),
+    )
     const picker = await screen.findByRole('dialog', { name: 'Art for Lightning Bolt' })
     await user.click(await within(picker).findByRole('button', { name: /^Secret Lair Drop #1/ }))
 
-    expect(art.lines).toEqual([{ deckId: 'deck-1', zone: 'main', oracleId: BOLT.oracle_id, printingId: 'p-new' }])
+    expect(art.lines).toEqual([
+      { deckId: 'deck-1', zone: 'main', oracleId: BOLT.oracle_id, printingId: 'p-new' },
+    ])
     expect(screen.queryByRole('dialog', { name: 'Art for Lightning Bolt' })).toBeNull()
     expect(pictureOf(deckLine('Lightning Bolt', 'main'))).toContain('/api/images/printing/p-new/')
     expect(screen.getByText('All changes saved.')).toBeInTheDocument()
@@ -93,7 +101,9 @@ describe('choosing the art of a deck line', () => {
   it('opens from the preview of a deck card', async () => {
     const art = startPrintings(BOLT_ART)
     const { user } = await renderBuilder({ look: 'pictures', printings: art.api })
-    await user.click(within(deckLine('Lightning Bolt', 'main')).getByRole('button', { name: 'Lightning Bolt' }))
+    await user.click(
+      within(deckLine('Lightning Bolt', 'main')).getByRole('button', { name: 'Lightning Bolt' }),
+    )
     const preview = await screen.findByRole('dialog', { name: 'Lightning Bolt' })
     await user.click(within(preview).getByRole('button', { name: 'Choose art' }))
     expect(await screen.findByRole('dialog', { name: 'Art for Lightning Bolt' })).toBeInTheDocument()
@@ -112,7 +122,9 @@ describe('choosing the art of a deck line', () => {
     if (slot === null) throw new Error('no commander slot')
     await user.click(within(slot).getByRole('button', { name: `Art of ${KRENKO.name}` }))
     await user.click(await screen.findByRole('button', { name: /^M13 #1/ }))
-    expect(art.lines).toEqual([{ deckId: 'deck-1', zone: 'commander', oracleId: KRENKO.oracle_id, printingId: 'p-krenko' }])
+    expect(art.lines).toEqual([
+      { deckId: 'deck-1', zone: 'commander', oracleId: KRENKO.oracle_id, printingId: 'p-krenko' },
+    ])
     expect(pictureOf(slot)).toContain('/printing/p-krenko/')
   })
 

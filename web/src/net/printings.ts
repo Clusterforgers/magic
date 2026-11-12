@@ -39,7 +39,12 @@ export function readPrinting(item: unknown): PrintingView | null {
   const released = item.released_at ?? null
   const setName = item.set_name ?? null
   const frame = item.frame ?? null
-  if (!isNullableText(rarity) || !isNullableText(released) || !isNullableText(setName) || !isNullableText(frame))
+  if (
+    !isNullableText(rarity) ||
+    !isNullableText(released) ||
+    !isNullableText(setName) ||
+    !isNullableText(frame)
+  )
     return null
   const finishes = Array.isArray(item.finishes) ? item.finishes.filter(isText) : []
   return {

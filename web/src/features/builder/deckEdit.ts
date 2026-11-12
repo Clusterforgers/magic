@@ -222,7 +222,12 @@ export function moveLine(
 }
 
 /** Shows the line of `oracleId` in `zone` in the art of `printingId` (null for the default); the same draft when nothing changes. */
-export function setPrinting(draft: Draft, zone: DeckZone, oracleId: string, printingId: string | null): Draft {
+export function setPrinting(
+  draft: Draft,
+  zone: DeckZone,
+  oracleId: string,
+  printingId: string | null,
+): Draft {
   const line = lineIn(draft, zone, oracleId)
   if (line === undefined || line.printingId === printingId) return draft
   return { ...draft, lines: draft.lines.map((each) => (each === line ? { ...each, printingId } : each)) }

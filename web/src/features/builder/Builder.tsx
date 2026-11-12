@@ -214,7 +214,12 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
   }
 
   // A line the server holds is stored at once, and the saved copy follows, so the choice never reads as unsaved.
-  async function chooseArt(zone: DeckZone, card: CardHit, printingId: string | null, everywhere: boolean): Promise<void> {
+  async function chooseArt(
+    zone: DeckZone,
+    card: CardHit,
+    printingId: string | null,
+    everywhere: boolean,
+  ): Promise<void> {
     if (printings === undefined) return
     const id = card.oracle_id
     if (lineIn(stored.draft, zone, id) !== undefined) {
@@ -229,7 +234,9 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
         return printingId === null ? rest : { ...rest, [id]: printingId }
       })
     }
-    setAnnouncement(printingId === null ? `${card.name} shows its default art.` : `Saved the art of ${card.name}.`)
+    setAnnouncement(
+      printingId === null ? `${card.name} shows its default art.` : `Saved the art of ${card.name}.`,
+    )
   }
 
   async function save(): Promise<void> {
