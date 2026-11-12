@@ -4630,6 +4630,8 @@ impl Walker<'_> {
         // A keyword a player has is given to the player: "You have hexproof."
         let kind = if gives_player_keywords(affected, mods) {
             Kind::Player
+        } else if r305c_players_and_objects(affected, mods) {
+            Kind::Either
         } else {
             Kind::Object
         };
@@ -5713,12 +5715,23 @@ impl Walker<'_> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except, .. } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                counters,
+                ..
+            } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
+                for (index, entry) in counters.iter().enumerate() {
+                    self.at(format!("counters[{index}]"), |w| {
+                        w.amount(&entry.count);
+                        w.selector(&entry.of);
+                    });
+                }
             }
             _ => {}
         }
@@ -5816,6 +5829,27 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         affected,
         Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
     ) && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
+}
+
+/// Whether a static ability gives keywords a player can have to players and to the objects a selector names together:
+/// "You and permanents you control have protection from Salamanders."
+fn r305c_players_and_objects(affected: &Ref, mods: &[Modification]) -> bool {
+    let Ref::Union(parts) = affected else {
+        return false;
+    };
+    let players = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::You | Ref::Opponents | Ref::EachPlayer))
+        .count();
+    let objects = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::Each(_)))
+        .count();
+    players > 0
+        && objects > 0
+        && players + objects == parts.len()
+        && !mods.is_empty()
         && mods.iter().all(Modification::is_player_keyword)
 }
 

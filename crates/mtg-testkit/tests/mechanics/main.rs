@@ -117,6 +117,8 @@ mod r304c_replaced;
 mod r305b_cards;
 mod r307c_exiled;
 mod r307c_rooms;
+mod r305c_random_keyword;
+mod r305c_you_and;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

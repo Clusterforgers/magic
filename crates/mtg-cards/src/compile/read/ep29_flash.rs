@@ -24,6 +24,7 @@ fn ep29_permission(mana: ManaCostX) -> CastPermission {
         additional: Some(Cost(vec![CostItem::Mana(mana)])),
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
+        any_cast: false,
     }
 }
 
