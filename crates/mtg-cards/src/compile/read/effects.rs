@@ -233,6 +233,15 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
 
 /// The sentence shapes of `sentence`, tried in order.
 fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
+    for joined in [
+        super::ce29_charm::ce29_with_auras,
+        super::ce29_charm::ce29_destroy_and_lose,
+    ] {
+        if let Some(found) = r.attempt(|r| joined(r).filter(|_| r.sentence_end())) {
+            effects.extend(found);
+            return true;
+        }
+    }
     if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
         return true;
     }

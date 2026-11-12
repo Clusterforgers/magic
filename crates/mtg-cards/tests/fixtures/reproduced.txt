@@ -77,6 +77,7 @@ Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Armguard Familiar
+Arrest
 Arrogant Wurm
 Artful Maneuver
 Artificial Evolution
@@ -433,6 +434,7 @@ Demolition Field
 Demon Bolt
 Demon of Wailing Agonies
 Demonic Embrace
+Demotion
 Dense Canopy
 Deputized Protester
 Desert
@@ -996,6 +998,7 @@ Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
+Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
 Leafkin Druid
@@ -1171,6 +1174,7 @@ Myr Retriever
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
+Nahiri's Binding
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nanogene Conversion
@@ -1239,6 +1243,7 @@ Ordered Migration
 Organic Extinction
 Origin of the Hulk
 Orochi Hatchery
+Orzhov Charm
 Orzhov Enforcer
 Orzhov Locket
 Orzhov Racketeers
@@ -1282,6 +1287,7 @@ Persist
 Personal Sanctuary
 Pestilent Syphoner
 Peter Parker's Camera
+Petrify
 Petting Zookeeper
 Phantasmal Image
 Phantom Nantuko
@@ -1302,6 +1308,7 @@ Pixie Guide
 Plague Drone
 Plague Myr
 Plague Stinger
+Planar Disruption
 Planar Outburst
 Plaxcaster Frogling
 Plaxmanta
@@ -1332,6 +1339,7 @@ Primeval Protector
 Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
+Prison Sentence
 Prize Wall
 Prizefight
 Profane Command
@@ -1511,6 +1519,7 @@ Secluded Courtyard
 Secluded Glen
 Second Harvest
 Secret Rendezvous
+Secure Detention
 Seedglaive Mentor
 Seeds of Renewal
 Seedship Agrarian
@@ -1656,6 +1665,7 @@ Starforged Sword
 Starlit Sanctum
 Starscape Cleric
 Start the TARDIS
+Stasis Cocoon
 Stasis Field
 Steady Progress
 Steam Vents
@@ -1714,6 +1724,7 @@ Sunscorch Regent
 Suntouched Myr
 Super Combo
 Supernatural Rescue
+Suppression Bonds
 Supreme Verdict
 Surgehacker Mech
 Surrak Dragonclaw
@@ -1855,6 +1866,7 @@ Trace of Abundance
 Trade Caravan
 Trailtracker Scout
 Trait Doctoring
+Trapped in the Tower
 Trash for Treasure
 Traumatic Visions
 Traveler's Cloak
@@ -1937,6 +1949,7 @@ Vibranium Strike Gauntlets
 Vigean Hydropon
 Village Pillagers
 Village Rites
+Viper's Kiss
 Viridian Corrupter
 Visage of Dread // Dread Osseosaur
 Vish Kal, Blood Arbiter

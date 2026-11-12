@@ -4,6 +4,7 @@ mod adding_a_card;
 mod assemble;
 mod blocking_and_rules;
 mod ce29_companion;
+mod ce29_saga_sheet;
 mod chance_tables;
 mod common;
 mod compile;
