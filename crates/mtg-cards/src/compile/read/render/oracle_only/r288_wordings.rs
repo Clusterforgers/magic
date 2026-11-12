@@ -1,5 +1,5 @@
-//! Wordings of pack r288: a chapter ability worded as the same steps after "When ~ enters" ("II — Distribute seven
-//! +1/+1 counters among any number of target creatures you control."), a player's life total set to half their
+//! Wordings of pack r288: a chapter that distributes counters ("II — Distribute seven +1/+1 counters among any number
+//! of target creatures you control."), a player's life total set to half their
 //! starting life total ("up to one target player's life total becomes half their starting life total, rounded down"),
 //! a delayed trigger with targets of its own ("III — Whenever an Elf you control attacks this turn, target creature an
 //! opponent controls gets -1/-1 until end of turn.")
@@ -106,33 +106,22 @@ pub(super) fn r288_heads(ability: &Ability) -> Vec<String> {
     heads
 }
 
-/// A chapter ability worded as its steps after "When ~ enters": "II — Distribute seven +1/+1 counters among ...".
+/// A chapter that distributes counters or sets up a delayed trigger with targets: "II — Distribute seven +1/+1 counters among ...".
+/// Other chapters keep the wordings of the renderers.
 fn chapter_twin(ability: &Ability) -> Vec<String> {
     let Ability::Triggered {
         when: TriggerPattern::Chapter { number },
         intervening_if: None,
         limit: None,
-        from,
         targets,
         effects,
+        ..
     } = ability
     else {
         return Vec::new();
     };
     let Some(numeral) = crate::compile::classify::numeral(*number) else {
         return Vec::new();
-    };
-    let twin = Ability::Triggered {
-        when: TriggerPattern::ZoneChange {
-            what: crate::refs::Selector::this(),
-            from: None,
-            to: Some(crate::refs::ZoneKind::Battlefield),
-        },
-        intervening_if: None,
-        limit: None,
-        from: *from,
-        targets: targets.clone(),
-        effects: effects.clone(),
     };
     let mut texts: Vec<String> = distributed(targets, effects)
         .map(|said| format!("{numeral} \u{2014} {}.", capitalize(&said)))
@@ -142,14 +131,6 @@ fn chapter_twin(ability: &Ability) -> Vec<String> {
         let said = format!("{numeral} \u{2014} {said}");
         if !texts.contains(&said) {
             texts.push(said);
-        }
-    }
-    for text in crate::compile::written_variants(&twin) {
-        if let Some(rest) = text.strip_prefix("When ~ enters, ") {
-            let said = format!("{numeral} \u{2014} {}", capitalize(rest));
-            if !texts.contains(&said) {
-                texts.push(said);
-            }
         }
     }
     texts
@@ -195,10 +176,14 @@ fn greater_than_this(ability: &Ability) -> Vec<String> {
         .into_iter()
         .filter_map(|text| {
             let (head, rest) = text.split_once(", ")?;
-            Some(format!(
-                "{head}, if that creature has greater power or toughness than this creature, {rest}"
-            ))
+            Some([
+                format!("{head}, if that creature has greater power or toughness than this creature, {rest}"),
+                format!(
+                    "{head}, if its power is greater than this creature's power or its toughness is greater than this creature's toughness, {rest}"
+                ),
+            ])
         })
+        .flatten()
         .collect()
 }
 

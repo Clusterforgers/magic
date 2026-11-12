@@ -197,6 +197,11 @@ const FIRESONG: &str = "Whenever a white instant or sorcery spell causes you to 
     BOUNCE,
     false
 )]
+#[case::its_power_or_its_toughness(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"to":"Battlefield"}},"if":{"Any":[{"Compare":{"left":{"Stat":{"of":"Triggering","stat":"Power"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Power"}}}},{"Compare":{"left":{"Stat":{"of":"Triggering","stat":"Toughness"}},"op":"Gt","right":{"Stat":{"of":"This","stat":"Toughness"}}}}]},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
+    "Whenever a creature you control enters, if its power is greater than this creature's power or its toughness is greater than this creature's toughness, put a +1/+1 counter on ~.",
+    true
+)]
 fn r288_writers_word_the_shape_and_refuse_near_misses(
     #[case] json: &str,
     #[case] text: &str,
