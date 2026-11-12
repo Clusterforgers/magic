@@ -417,7 +417,7 @@ async fn an_elimination_bracket_needs_a_winner_of_every_match(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = false)]
-async fn teams_sign_up_together_and_wait_for_team_games(pool: PgPool) {
+async fn teams_sign_up_together_and_start_only_complete(pool: PgPool) {
     let server = start(&pool).await;
     let org = register(server.addr, "Org", PASSWORD).await;
     let (id, invite) = create(
@@ -442,12 +442,25 @@ async fn teams_sign_up_together_and_wait_for_team_games(pool: PgPool) {
     assert_eq!((full.status, full.error_code().as_str()), (409, "full"));
     let missing = join(&server, &invite, &cy, json!({"team": 9})).await;
     assert_eq!(missing.status, 404);
-    assert_eq!(view(&server, &id, &org).await["playable"], false);
+    assert_eq!(view(&server, &id, &org).await["playable"], true);
+    // One team is no field, and a second team still missing its mate is not complete.
     let refused = act(&server, &id, "start", &org).await;
     assert_eq!(
         (refused.status, refused.error_code().as_str()),
-        (409, "format_unavailable")
+        (409, "not_enough_entrants")
     );
+    assert_eq!(
+        join(&server, &invite, &cy, json!({"team_name": "Blue"}))
+            .await
+            .status,
+        200
+    );
+    let refused = act(&server, &id, "start", &org).await;
+    assert_eq!(
+        (refused.status, refused.error_code().as_str()),
+        (409, "not_enough_entrants")
+    );
+    assert_eq!(act(&server, &id, "leave", &cy).await.status, 204);
     // Leaving before the start empties a team, which goes with its last player.
     assert_eq!(act(&server, &id, "leave", &ann).await.status, 204);
     assert_eq!(act(&server, &id, "leave", &al).await.status, 204);
@@ -926,7 +939,6 @@ async fn an_elimination_bracket_of_three_gives_a_bye_and_crowns_the_last_winner(
 }
 
 #[sqlx::test(migrations = false)]
-#[ignore = "tm38: team games are off (TEAM_GAMES) until team play works"]
 async fn a_team_tournament_seats_both_teams_in_one_team_game(pool: PgPool) {
     let server = start(&pool).await;
     let org = register(server.addr, "Org", PASSWORD).await;
@@ -956,8 +968,16 @@ async fn a_team_tournament_seats_both_teams_in_one_team_game(pool: PgPool) {
     let t = started.json();
     let played = round(&t, 1)[0].clone();
     let game = played["game"].as_str().unwrap().to_owned();
-    let a = &t["entrants"][0]["players"];
-    let b = &t["entrants"][1]["players"];
+    let players = |side: &str| {
+        t["entrants"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|e| e["entrant"] == played[side])
+            .unwrap()["players"]
+            .clone()
+    };
+    let (a, b) = (players("a"), players("b"));
     let owners: Vec<Value> = seat_owners(&pool, &game)
         .await
         .into_iter()

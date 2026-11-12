@@ -38,9 +38,9 @@ use pairing::{Pairing, Played, Shuffler};
 pub(crate) use store::TournamentStore;
 use store::{Entrant, MatchRow, NewTournament, Signup, Tournament};
 
-/// Whether this server makes team games (Team Commander) for 2v2 matches. Until it does, a 2v2
+/// Whether this server makes team games (Team Commander) for 2v2 matches. Without them, a 2v2
 /// tournament signs teams up but cannot start.
-pub(crate) const TEAM_GAMES: bool = false;
+pub(crate) const TEAM_GAMES: bool = true;
 /// Most tournaments a player's list shows.
 const MAX_LISTED: i64 = 100;
 

@@ -258,9 +258,6 @@ async fn two_headed_giant_teams_share_their_turn_life_and_loss_when_every_seat_a
 }
 
 #[sqlx::test(migrations = false)]
-// Windows decide "own turn" by `turn.active() == seat` (src/windows.rs), so the auto-pass passes for the active
-// player's teammate in its own main phase and it never plays a land.
-#[ignore = "tm38"]
 async fn two_headed_giant_teams_share_their_turn_life_and_loss_under_auto_pass(pool: PgPool) {
     two_headed_giant(pool, config(5)).await;
 }
