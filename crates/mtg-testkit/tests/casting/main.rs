@@ -183,6 +183,7 @@ mod rebound;
 mod refusal_why;
 mod removal_spells;
 mod removal_stack;
+mod r405_pieces;
 mod replicate;
 mod required_costs;
 mod restricted_mana;

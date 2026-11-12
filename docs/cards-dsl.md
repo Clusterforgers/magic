@@ -98,6 +98,9 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A keyword action that abilities wait for ("whenever you investigate", "discover", "manifest dread", "give a gift") is logged by `Effect::Performed` after its steps: the reader adds it after an investigation's Clue tokens, `effect::discover` and the steps of manifest dread end with it, and gift's steps end with it in the engine. The engine logs `Investigated`, `Discovered` (value and card), `DreadManifested` (the card put into the graveyard) and `GiftGiven` (to whom), read as `TriggerPattern::Did`. The writers word the steps; an investigation's log is dropped before its Clue tokens are worded.
 - "Sacrifice any number of ..." is a `SacrificeUpTo` of every match and "discard any number of ..." an optional `Discard` of the hand, each bound by name; `Bound("<name>~moved")` is how many it took ("that many", "for each permanent sacrificed this way").
 - "Spend only black mana on X." is `CostItem::XColor`: the X of the cost is paid with mana of that color; a spell holds it as a required `AdditionalCost` that pays nothing.
+- "Spend only mana of the chosen color to activate this ability." is `CostItem::ChosenColorOnly`: the total of the activation, after the cost modifiers, is paid with mana of the color the source chose.
+- "You can't choose an untapped creature as this spell's target as you cast it." is `Ability::CantTargetAsCast`: the objects it selects are left out of an Aura spell's target as it is cast, and the target is judged without them as the spell resolves.
+- A spend filter reads facts of the spell or ability as well as its kind: one or more colors, no {X} in its mana cost, monocolored, an equip ability, cast for its disturb cost, a subtype it lacks ("non-Human") and the color the source chose ("of that color").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records

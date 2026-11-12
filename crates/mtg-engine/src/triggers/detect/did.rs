@@ -171,6 +171,11 @@ pub(super) fn did_happened(
         }
         Event::GiftGiven { player, .. } => found.push(did(Action::GaveGift, Some(*player), None)),
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        Event::Solved { object } => found.push(did(
+            Action::SolvedCase,
+            controller_of(post, *object),
+            Some(*object),
+        )),
         Event::Explored {
             object,
             player,

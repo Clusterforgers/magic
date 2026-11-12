@@ -758,6 +758,74 @@ mod tests {
         assert_eq!(SpendOn::riders(&kept).count(), 1);
     }
 
+    #[rstest]
+    #[case::colored(r#"{"facts":["Colored"]}"#, 1, false, false, false, true)]
+    #[case::colorless_is_not_colored(r#"{"facts":["Colored"]}"#, 0, false, false, false, false)]
+    #[case::no_x(r#"{"facts":["NoXInCost"]}"#, 2, false, false, false, true)]
+    #[case::x_refused(r#"{"facts":["Colored","NoXInCost"]}"#, 2, true, false, false, false)]
+    #[case::monocolored(r#"{"facts":["Monocolored"]}"#, 1, false, false, false, true)]
+    #[case::two_colors_are_not_monocolored(r#"{"facts":["Monocolored"]}"#, 2, false, false, false, false)]
+    #[case::equip(r#"{"facts":["Equip"]}"#, 0, false, true, false, true)]
+    #[case::another_ability(r#"{"facts":["Equip"]}"#, 0, false, false, false, false)]
+    #[case::disturb(r#"{"facts":["Disturb"]}"#, 1, false, false, true, true)]
+    #[case::cast_from_a_hand(r#"{"facts":["Disturb"]}"#, 1, false, false, false, false)]
+    fn the_r405_facts_read_colors_x_equip_and_disturb(
+        #[case] json: &str,
+        #[case] colors: u8,
+        #[case] x_in_cost: bool,
+        #[case] equip: bool,
+        #[case] disturb: bool,
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter = serde_json::from_str(json).unwrap();
+        let spell = SpendTraits {
+            colors,
+            x_in_cost,
+            equip,
+            disturb,
+            ..SpendTraits::default()
+        };
+        assert_eq!(filter.holds(&spell), holds);
+    }
+
+    #[rstest]
+    #[case::an_elf(&["Elf"], true)]
+    #[case::a_human(&["Human"], false)]
+    #[case::a_human_elf(&["Human", "Elf"], false)]
+    #[case::no_type(&[], true)]
+    fn a_filter_refuses_the_subtypes_it_lacks(#[case] subtypes: &[&str], #[case] holds: bool) {
+        let filter: SpendFilter =
+            serde_json::from_str(r#"{"types":["Creature"],"not_subtypes":["Human"]}"#).unwrap();
+        assert_eq!(
+            filter.holds(&traits(&[CardType::Creature], &[], subtypes, 1)),
+            holds
+        );
+    }
+
+    #[rstest]
+    #[case::the_color_chosen(Some(Color::Red), &[Color::Red], true)]
+    #[case::another_color(Some(Color::Red), &[Color::Green], false)]
+    #[case::no_color_chosen(None, &[Color::Red], false)]
+    fn a_filter_of_the_chosen_color_holds_for_that_color_once_resolved(
+        #[case] chosen: Option<Color>,
+        #[case] colors: &[Color],
+        #[case] holds: bool,
+    ) {
+        let filter: SpendFilter =
+            serde_json::from_str(r#"{"chosen_color":true,"facts":["Monocolored"]}"#).unwrap();
+        let spell = SpendTraits {
+            colors: u8::try_from(colors.len()).unwrap(),
+            color_set: colors.iter().fold(ColorSet::EMPTY, |set, c| set.with(*c)),
+            ..SpendTraits::default()
+        };
+        assert!(!filter.holds(&spell), "unresolved, it holds for nothing");
+        let uses = resolve_color(&[SpendOn::Spell(filter)], chosen);
+        assert_eq!(
+            uses.is_some_and(|uses| matches!(&uses[..], [SpendOn::Spell(f)] if f.holds(&spell))),
+            holds
+        );
+    }
+
     #[test]
     fn a_rider_remembers_the_permanent_that_made_the_mana() {
         let rider = scry_rider(SpendFilter::of_type(CardType::Creature));

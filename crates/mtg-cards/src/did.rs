@@ -128,6 +128,8 @@ pub enum Action {
     ExploredNonland,
     /// An eternalize or embalm ability was activated (CR 702.129, 702.128); `what` is its source.
     ActivatedEternalizeOrEmbalm,
+    /// A player solved a Case (CR 719.3); the player is its controller, `what` the Case.
+    SolvedCase,
 }
 
 impl Action {
@@ -233,6 +235,7 @@ impl Action {
             ),
             Action::ExploredLand => ("explore a land card", "explores a land card"),
             Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
+            Action::SolvedCase => ("solve a Case", "solves a Case"),
             Action::ActivatedEternalizeOrEmbalm => (
                 "activate an eternalize or embalm ability",
                 "activates an eternalize or embalm ability",
