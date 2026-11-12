@@ -1,0 +1,25 @@
+{
+  "oracle_id": "445c46d1-b571-4fe9-92cc-2873242d748f",
+  "name": "Aura Finesse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Finesse",
+      "oracle_fingerprint": "c6711f097a6f450e1a551262bd47ea79",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Attach": { "what": { "Target": 0 }, "to": { "Target": 1 } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

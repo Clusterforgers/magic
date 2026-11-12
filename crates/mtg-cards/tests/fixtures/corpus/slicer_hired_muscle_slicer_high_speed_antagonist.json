@@ -1,0 +1,194 @@
+{
+  "object": "card",
+  "id": "9d9a9350-4734-4cc1-986d-467e6715199f",
+  "oracle_id": "fa716557-8e75-4617-8310-ab23a9ca1af1",
+  "multiverse_ids": [
+    587884,
+    587885
+  ],
+  "mtgo_id": 105570,
+  "tcgplayer_id": 448834,
+  "cardmarket_id": 678552,
+  "name": "Slicer, Hired Muscle // Slicer, High-Speed Antagonist",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/9d9a9350-4734-4cc1-986d-467e6715199f",
+  "scryfall_uri": "https://scryfall.com/card/bot/6/slicer-hired-muscle-slicer-high-speed-antagonist?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:18:28Z",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact Creature — Robot // Legendary Artifact — Vehicle",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Goad",
+    "Living metal",
+    "First strike",
+    "Haste",
+    "Convert",
+    "More Than Meets the Eye",
+    "Double strike"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Slicer, Hired Muscle",
+      "mana_cost": "{4}{R}",
+      "type_line": "Legendary Artifact Creature — Robot",
+      "oracle_text": "More Than Meets the Eye {2}{R} (You may cast this card converted for {2}{R}.)\nDouble strike, haste\nAt the beginning of each opponent's upkeep, you may have that player gain control of Slicer until end of turn. If you do, untap Slicer, goad it, and it can't be sacrificed this turn. If you don't, convert it.",
+      "colors": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "4",
+      "artist": "Volta Creation",
+      "artist_id": "284782c4-ada1-466c-8115-fe00421975eb",
+      "illustration_id": "185657f6-f945-4423-b0f4-babe5dbe8eab",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "normal": "https://cards.scryfall.io/normal/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "large": "https://cards.scryfall.io/large/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "png": "https://cards.scryfall.io/png/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.png?1783919908",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "thumb": "https://cards.scryfall.io/thumb/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "grid": "https://cards.scryfall.io/grid/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "display": "https://cards.scryfall.io/display/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "art": "https://cards.scryfall.io/art/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "crop": "https://cards.scryfall.io/crop/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "jpeg": "https://cards.scryfall.io/normal/front/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Slicer, High-Speed Antagonist",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact — Vehicle",
+      "oracle_text": "Living metal (During your turn, this Vehicle is also a creature.)\nFirst strike, haste\nWhenever Slicer deals combat damage to a player, convert it at end of combat.",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "2",
+      "artist": "Volta Creation",
+      "artist_id": "284782c4-ada1-466c-8115-fe00421975eb",
+      "illustration_id": "77c80fee-fe51-4d42-b2ad-872bca2da830",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "normal": "https://cards.scryfall.io/normal/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "large": "https://cards.scryfall.io/large/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "png": "https://cards.scryfall.io/png/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.png?1783919908",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908",
+        "thumb": "https://cards.scryfall.io/thumb/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "grid": "https://cards.scryfall.io/grid/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "display": "https://cards.scryfall.io/display/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "art": "https://cards.scryfall.io/art/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "crop": "https://cards.scryfall.io/crop/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.webp?1783919908",
+        "jpeg": "https://cards.scryfall.io/normal/back/9/d/9d9a9350-4734-4cc1-986d-467e6715199f.jpg?1783919908"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59ed954b-74c0-4db3-8a2b-1d395e33288e",
+  "set": "bot",
+  "set_name": "Transformers",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/59ed954b-74c0-4db3-8a2b-1d395e33288e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abot&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bot?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9d9a9350-4734-4cc1-986d-467e6715199f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afa716557-8e75-4617-8310-ab23a9ca1af1&unique=prints",
+  "collector_number": "6",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Volta Creation",
+  "artist_ids": [
+    "284782c4-ada1-466c-8115-fe00421975eb"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "convertdfc"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 3527,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-09-30"
+  },
+  "prices": {
+    "usd": "6.98",
+    "usd_foil": "8.99",
+    "usd_etched": null,
+    "eur": "5.15",
+    "eur_foil": "6.69",
+    "tix": "49.75"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=587884&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSlicer%252C%2BHired%2BMuscle%2B%252F%252F%2BSlicer%252C%2BHigh-Speed%2BAntagonist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSlicer%252C%2BHired%2BMuscle%2B%252F%252F%2BSlicer%252C%2BHigh-Speed%2BAntagonist",
+    "edhrec": "https://edhrec.com/route/?cc=Slicer%2C+Hired+Muscle"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F448834%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=678552&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105570?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

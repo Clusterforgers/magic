@@ -33,9 +33,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 224, "end": 314 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "LoseGame": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Supertype": "Legendary" },
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

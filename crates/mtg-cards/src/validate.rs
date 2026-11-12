@@ -1973,6 +1973,12 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
                 self.payment_of_the_source(cost);
             }
+            Keyword::CumulativeUpkeepActs { acts, payable } => {
+                self.effect_list("acts", acts, false);
+                if let Some(payable) = payable {
+                    self.at("payable", |w| w.condition(payable));
+                }
+            }
             Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
@@ -2010,6 +2016,7 @@ impl<'a> Walker<'a> {
             | Keyword::Prowl(cost)
             | Keyword::Mayhem(cost)
             | Keyword::Disturb(cost)
+            | Keyword::MoreThanMeetsTheEye(cost)
             | Keyword::Emerge(cost)
             | Keyword::Harmonize(cost)
             | Keyword::Freerunning(cost)
@@ -2019,6 +2026,15 @@ impl<'a> Walker<'a> {
             }
             Keyword::Morph(cost) | Keyword::Megamorph(cost) | Keyword::Disguise(cost) => {
                 self.turn_up_cost(cost);
+            }
+            // Suspend X: the X is announced as the card is suspended, and the least X with it.
+            Keyword::Suspend { time: 0, cost } if cost.has_x() => {
+                self.uses("Keyword", "Suspend.X");
+                let held = (self.x_now, self.activated_cost);
+                (self.x_now, self.activated_cost) = (true, true);
+                self.at("cost", |w| w.cost(cost));
+                (self.x_now, self.activated_cost) = held;
+                self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Multikicker(cost)
             | Keyword::Overload(cost)
@@ -3408,6 +3424,7 @@ impl Walker<'_> {
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
             | Effect::Harness { what }
+            | Effect::Plot { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -5865,6 +5882,9 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
         // Scryfall lists `Equip` for an Equipment that equips only some creatures as for any other.
         || (matches!(k, Keyword::EquipTo { .. })
             && Keyword::Equip(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Cumulative upkeep` for a cumulative upkeep whose cost is an action.
+        || (matches!(k, Keyword::CumulativeUpkeepActs { .. })
+            && "Cumulative upkeep".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Hexproof` for "hexproof from black" as for plain hexproof.
         || (matches!(k, Keyword::HexproofFrom(_)) && "Hexproof".eq_ignore_ascii_case(keyword))
         // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).

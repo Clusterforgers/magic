@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8dfd9baf-c3cc-4d2f-a0b0-b323b6480562",
+  "name": "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Prowl, Stoic Strategist",
+      "oracle_fingerprint": "aa1ebed177e43f0d62a1dc229e067566",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{2}{W}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 222 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 223, "end": 307 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prowl, Pursuit Vehicle",
+      "oracle_fingerprint": "ddbe6da09114dc51fbf811cbed11315a",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

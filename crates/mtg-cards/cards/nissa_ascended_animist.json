@@ -1,22 +1,33 @@
 {
   "oracle_id": "9c8845d6-fa65-4731-b348-dc724fc2d285",
   "name": "Nissa, Ascended Animist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nissa, Ascended Animist",
       "oracle_fingerprint": "cfc11d520c2a32e96d079fcaab3fcbf7",
       "abilities": [
+        { "Keyword": "Compleated" },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 139 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 140, "end": 224 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "loyalty" } },
+                      "token": {
+                        "name": "Phyrexian Horror",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Horror"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {
@@ -33,9 +44,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 269, "end": 369 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

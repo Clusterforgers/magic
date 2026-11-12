@@ -1,7 +1,7 @@
 {
   "oracle_id": "3a1e85fe-7064-4df7-bc3b-24131cd15d06",
   "name": "Benalish Commander",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Benalish Commander",
@@ -22,9 +22,8 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 95, "end": 129 }
+          "Keyword": {
+            "Suspend": { "time": 0, "cost": [{ "Mana": "{X}{W}{W}" }, { "XAtLeast": 1 }] }
           }
         },
         {

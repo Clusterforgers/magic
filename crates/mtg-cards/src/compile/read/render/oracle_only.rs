@@ -194,6 +194,7 @@ mod put_into_graveyard;
 mod put_that_card;
 mod quote_commas;
 mod r280_wordings;
+mod r282_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -736,6 +737,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
 fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     c11g_wholes::c11g_add_wholes(ability, texts);
     rmt1_wholes::rmt1_add_wholes(ability, texts);
+    r282_wholes::r282_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.

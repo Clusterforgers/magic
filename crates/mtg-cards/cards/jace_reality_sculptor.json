@@ -1,0 +1,47 @@
+{
+  "oracle_id": "bf0e9e00-fba5-448a-9052-ae730aea4bf8",
+  "name": "Jace, Reality Sculptor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jace, Reality Sculptor",
+      "oracle_fingerprint": "44d40b6510af19fb362b889d9bb3eda0",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 188, "end": 337 }
+          }
+        }
+      ]
+    }
+  ]
+}

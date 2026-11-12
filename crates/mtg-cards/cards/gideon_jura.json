@@ -21,9 +21,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 135, "end": 291 }
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Human", "Soldier"] },
+                    { "SetPT": { "power": 6, "toughness": 6 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,3989 @@
+[
+ [
+  {
+   "Keyword": {
+    "Macro": {
+     "amount": 0,
+     "name": "living metal"
+    }
+   }
+  },
+  "Living metal"
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Sized": {
+         "size": {
+          "Counters": {
+           "counter": "loyalty",
+           "on": "This"
+          }
+         },
+         "token": {
+          "colors": [
+           "Green"
+          ],
+          "name": "Phyrexian Horror",
+          "subtypes": [
+           "Phyrexian",
+           "Horror"
+          ],
+          "types": [
+           "Creature"
+          ]
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+1: Create an X/X green Phyrexian Horror creature token, where X is ~'s loyalty."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "top"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "top"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            }
+           ]
+          }
+         ],
+         "subject": {
+          "Bound": "top"
+         }
+        }
+       },
+       "otherwise": [
+        {
+         "May": {
+          "effects": [
+           {
+            "Move": {
+             "to": {
+              "Library": {
+               "place": "Bottom"
+              }
+             },
+             "what": {
+              "Bound": "top"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "then": [
+        {
+         "Move": {
+          "to": "Hand",
+          "what": {
+           "Bound": "top"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Reveal the top card of your library. If it's a creature or planeswalker card, put it into your hand. Otherwise, you may put it on the bottom of your library."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "count": "Divided",
+       "counter": "+1/+1",
+       "on": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Vigilance"
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": 3,
+       "min": 0
+      },
+      "divide": 3,
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−3: Distribute three +1/+1 counters among up to three target creatures. They gain vigilance until end of turn."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 2,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "AnyOf": [
+             {
+              "Subtype": "Demon"
+             },
+             {
+              "Subtype": "Devil"
+             }
+            ]
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "GainLife": {
+          "amount": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Each opponent loses 2 life unless they discard a card. If you control a Demon or Devil, you gain 2 life."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 8
+    },
+    "effects": [
+     {
+      "CreateEmblem": {
+       "abilities": [
+        {
+         "Activated": {
+          "cost": [
+           {
+            "Mana": "{1}{B}"
+           },
+           {
+            "Sacrifice": {
+             "filter": [
+              {
+               "Type": "Creature"
+              }
+             ]
+            }
+           }
+          ],
+          "effects": [
+           {
+            "GainLife": {
+             "amount": {
+              "Stat": {
+               "of": "Paid",
+               "stat": "Power"
+              }
+             }
+            }
+           },
+           {
+            "Draw": {
+             "count": {
+              "Stat": {
+               "of": "Paid",
+               "stat": "Power"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−8: You get an emblem with \"{1}{B}, Sacrifice a creature: You gain X life and draw X cards, where X is the sacrificed creature's power.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 1
+    },
+    "effects": [
+     {
+      "Discard": {
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": null,
+       "min": 0
+      },
+      "what": "Player"
+     }
+    ]
+   }
+  },
+  "−1: Any number of target players each discard a card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "SetLife": {
+       "amount": 10,
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ]
+   }
+  },
+  "−3: Target opponent's life total becomes 10."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "condition": {
+     "All": [
+      "YourTurn",
+      {
+       "Compare": {
+        "left": {
+         "Counters": {
+          "counter": "loyalty",
+          "on": "This"
+         }
+        },
+        "op": "Ge",
+        "right": 1
+       }
+      }
+     ]
+    },
+    "mods": [
+     {
+      "AddType": "Creature"
+     },
+     {
+      "SetCreatureTypes": [
+       "Ninja"
+      ]
+     },
+     {
+      "SetPT": {
+       "power": 3,
+       "toughness": 4
+      }
+     },
+     {
+      "AddKeyword": "Hexproof"
+     }
+    ]
+   }
+  },
+  "During your turn, as long as ~ has one or more loyalty counters on him, he's a 3/4 Ninja creature and has hexproof."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddType": "Creature"
+        },
+        {
+         "SetCreatureTypes": [
+          "Human",
+          "Soldier"
+         ]
+        },
+        {
+         "SetPT": {
+          "power": 6,
+          "toughness": 6
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": "This"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "0: Until end of turn, ~ becomes a 6/6 Human Soldier creature that's still a planeswalker. Prevent all damage that would be dealt to him this turn."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilYourNextTurn",
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ]
+      }
+     },
+     {
+      "Untap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Until your next turn, target creature gains indestructible. Untap that creature."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Draw": {
+       "count": 2
+      }
+     },
+     {
+      "Choose": {
+       "as": "back",
+       "from": {
+        "Each": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Library": {
+         "place": "Bottom"
+        }
+       },
+       "what": {
+        "Bound": "back"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+1: Draw two cards, then put a card from your hand on the bottom of your library."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Surveil": {
+       "count": 2
+      }
+     },
+     {
+      "Pay": {
+       "cost": "{1}",
+       "times": {
+        "Count": [
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       },
+       "unpaid": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell. Surveil 2, then counter the chosen spell unless its controller pays {1} for each card in your graveyard."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "DamageToYou": 4
+        }
+       ],
+       "unpaid": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell unless its controller has ~ deal 4 damage to them."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "giant",
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Giant"
+         },
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Bound": "giant"
+         },
+         "stat": "Power"
+        }
+       },
+       "source": {
+        "Bound": "giant"
+       },
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose a Giant creature you control. It deals damage equal to its power to target creature."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Aura"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Attach": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Target": 1
+       }
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Attach target Aura you control to target creature.\nDraw a card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "MinusX",
+    "effects": [
+     {
+      "Mill": {
+       "count": {
+        "Times": {
+         "by": 3,
+         "of": "X"
+        }
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ]
+   }
+  },
+  "−X: Target player mills three times X cards."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "MinusX",
+    "effects": [
+     {
+      "Exile": {
+       "as": "exiled",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "CreateToken": {
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Bound": "exiled"
+         }
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Creature"
+          },
+          {
+           "Type": "Enchantment"
+          },
+          {
+           "Type": "Planeswalker"
+          },
+          {
+           "Type": "Battle"
+          }
+         ]
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        },
+        {
+         "Compare": {
+          "op": "Eq",
+          "stat": "ManaValue",
+          "to": "X"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−X: Exile target nonland permanent card with mana value X from your graveyard. Create a token that's a copy of that card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 7
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "abilities": [
+          {
+           "CostModifier": {
+            "applies_to": [
+             "Spell",
+             {
+              "ControlledBy": "You"
+             }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+           }
+          },
+          {
+           "Activated": {
+            "cost": [
+             "Tap"
+            ],
+            "effects": [
+             {
+              "Draw": {}
+             }
+            ]
+           }
+          }
+         ],
+         "name": "Tamiyo's Notebook",
+         "subtypes": [
+          "Book"
+         ],
+         "supertypes": [
+          "Legendary"
+         ],
+         "types": [
+          "Artifact"
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−7: Create ~'s Notebook, a legendary colorless Book artifact token with \"Spells you cast cost {2} less to cast\" and \"{T}: Draw a card.\""
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Amass": {
+       "as": "army",
+       "count": 3,
+       "subtype": "Orc"
+      }
+     },
+     {
+      "Mill": {
+       "count": {
+        "Stat": {
+         "of": {
+          "Bound": "army"
+         },
+         "stat": "Power"
+        }
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ]
+   }
+  },
+  "Amass Orcs 3, then target player mills X cards, where X is the amassed Army's power."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "choose": {
+        "max": 3,
+        "min": 3
+       },
+       "modes": [
+        {
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "duration": "UntilEndOfTurn",
+            "mods": [
+             {
+              "ModifyPT": {
+               "power": 3,
+               "toughness": -3
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Exile": {
+            "as": "exiled",
+            "what": {
+             "Target": 0
+            }
+           }
+          },
+          {
+           "Move": {
+            "to": {
+             "Battlefield": {
+              "tapped": true
+             }
+            },
+            "what": {
+             "Bound": "exiled"
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Not": {
+               "Type": "Land"
+              }
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "token": {
+             "Custom": {
+              "abilities": [
+               {
+                "Activated": {
+                 "cost": [
+                  "SacrificeSelf"
+                 ],
+                 "effects": [
+                  {
+                   "AddMana": {
+                    "mana": {
+                     "Fixed": [
+                      "Colorless"
+                     ]
+                    }
+                   }
+                  }
+                 ]
+                }
+               }
+              ],
+              "name": "Eldrazi Scion",
+              "power": 1,
+              "subtypes": [
+               "Eldrazi",
+               "Scion"
+              ],
+              "toughness": 1,
+              "types": [
+               "Creature"
+              ]
+             }
+            }
+           }
+          }
+         ]
+        }
+       ],
+       "repeat": true
+      }
+     }
+    ]
+   }
+  },
+  "Choose three. You may choose the same mode more than once.\n• Target creature gets +3/-3 until end of turn.\n• Exile target nonland permanent, then return it to the battlefield tapped under its owner's control.\n• Create a 1/1 colorless Eldrazi Scion creature token with \"Sacrifice this token: Add {C}.\""
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "choose": {
+        "max": 2,
+        "min": 2
+       },
+       "modes": [
+        {
+         "effects": [
+          {
+           "CreateToken": {
+            "count": "X",
+            "token": {
+             "Custom": {
+              "abilities": [
+               {
+                "Activated": {
+                 "cost": [
+                  "SacrificeSelf"
+                 ],
+                 "effects": [
+                  {
+                   "AddMana": {
+                    "mana": {
+                     "Fixed": [
+                      "Colorless"
+                     ]
+                    }
+                   }
+                  }
+                 ]
+                }
+               }
+              ],
+              "name": "Eldrazi Spawn",
+              "power": 0,
+              "subtypes": [
+               "Eldrazi",
+               "Spawn"
+              ],
+              "toughness": 1,
+              "types": [
+               "Creature"
+              ]
+             }
+            },
+            "who": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": "Player"
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Scry": {
+            "count": "X",
+            "who": {
+             "Target": 0
+            }
+           }
+          },
+          {
+           "Draw": {
+            "who": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": "Player"
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Exile": {
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "Compare": {
+               "op": "Le",
+               "stat": "ManaValue",
+               "to": "X"
+              }
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Exile": {
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "bounds": {
+            "max": "X",
+            "min": 0
+           },
+           "what": {
+            "Object": [
+             {
+              "In": "Graveyard"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose two —\n• Target player creates X 0/1 colorless Eldrazi Spawn creature tokens with \"Sacrifice this token: Add {C}.\"\n• Target player scries X, then draws a card.\n• Exile target creature with mana value X or less.\n• Exile up to X target cards from graveyards."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "modes": [
+        {
+         "effects": [
+          {
+           "Move": {
+            "to": {
+             "Battlefield": {}
+            },
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Planeswalker"
+             },
+             {
+              "In": "Graveyard"
+             },
+             {
+              "OwnedBy": "You"
+             },
+             {
+              "Compare": {
+               "op": "Le",
+               "stat": "ManaValue",
+               "to": "X"
+              }
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "RemoveCounters": {
+            "count": {
+             "Times": {
+              "by": 2,
+              "of": "X"
+             }
+            },
+            "counter": "loyalty",
+            "from": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Planeswalker"
+             },
+             {
+              "ControlledBy": "Opponents"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose one —\n• Return target planeswalker card with mana value X or less from your graveyard to the battlefield.\n• Remove twice X loyalty counters from target planeswalker an opponent controls."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "effects": [
+     {
+      "Exile": {
+       "as": "exiled",
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "CreateToken": {
+       "as": "copy",
+       "token": {
+        "CopyOf": {
+         "of": {
+          "Bound": "exiled"
+         }
+        }
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Bound": "copy"
+       },
+       "duration": "Forever",
+       "mods": [
+        {
+         "AddKeyword": "Haste"
+        }
+       ]
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Exile": {
+          "what": {
+           "Bound": "copy"
+          }
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Subtype": "Equipment"
+          }
+         ]
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        },
+        {
+         "Compare": {
+          "op": "Lt",
+          "stat": "ManaValue",
+          "to": {
+           "Counters": {
+            "counter": "loyalty",
+            "on": "This"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "0: Exile target creature or Equipment card with mana value less than ~'s loyalty from your graveyard. Create a token that's a copy of it. That token gains haste. Exile it at the beginning of the next end step."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": {
+        "Count": [
+         {
+          "Type": "Land"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Not": {
+           "OwnedBy": "You"
+          }
+         }
+        ]
+       },
+       "toughness": {
+        "Count": [
+         {
+          "Type": "Land"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Not": {
+           "OwnedBy": "You"
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "This creature gets +1/+1 for each land you control but don't own."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "RepeatEach": {
+       "as": "land",
+       "effects": [
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "land"
+          },
+          "duration": "Forever",
+          "mods": [
+           {
+            "SetController": {
+             "OwnerOf": {
+              "Bound": "land"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "over": {
+        "Each": [
+         {
+          "Type": "Land"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Not": {
+           "OwnedBy": "You"
+          }
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "from": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When this creature leaves the battlefield, each player gains control of each land they own that you control."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 7
+    },
+    "effects": [
+     {
+      "CreateEmblem": {
+       "abilities": [
+        {
+         "Replacement": {
+          "by": {
+           "PreventAllBut": 1
+          },
+          "when": {
+           "Damage": {
+            "to": {
+             "Union": [
+              "You",
+              {
+               "Each": [
+                {
+                 "Type": "Planeswalker"
+                },
+                {
+                 "ControlledBy": "You"
+                }
+               ]
+              }
+             ]
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−7: You get an emblem with \"If a source would deal damage to you or a planeswalker you control, prevent all but 1 of that damage.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 2
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "Forever",
+       "mods": [
+        {
+         "AddType": "Creature"
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Not": {
+         "Matches": {
+          "selector": [
+           {
+            "Subtype": "Vehicle"
+           }
+          ],
+          "subject": {
+           "Target": 0
+          }
+         }
+        }
+       },
+       "then": [
+        {
+         "Continuous": {
+          "affected": {
+           "Target": 0
+          },
+          "duration": "Forever",
+          "mods": [
+           {
+            "SetPT": {
+             "power": 4,
+             "toughness": 4
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Artifact"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−2: Target artifact becomes an artifact creature. If it isn't a Vehicle, it has base power and toughness 4/4."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Sacrifice": {
+          "filter": [
+           {
+            "Type": "Creature"
+           },
+           {
+            "Compare": {
+             "op": "Ge",
+             "stat": "Power",
+             "to": {
+              "Greatest": {
+               "of": [
+                {
+                 "Type": "Creature"
+                },
+                {
+                 "ControlledBy": {
+                  "Bound": "opponent"
+                 }
+                }
+               ],
+               "stat": "Power"
+              }
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     }
+    ]
+   }
+  },
+  "−3: Each opponent sacrifices a creature with the greatest power among creatures that player controls."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 8
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 3,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     }
+    ]
+   }
+  },
+  "−8: Each opponent may discard a card. If they don't, they lose 3 life. Repeat this process six more times."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Bind": {
+       "as": "cant",
+       "what": {
+        "PlayersWhere": {
+         "test": {
+          "Compare": {
+           "left": {
+            "Count": [
+             {
+              "In": "Hand"
+             },
+             {
+              "OwnedBy": "You"
+             }
+            ]
+           },
+           "op": "Eq",
+           "right": 0
+          }
+         },
+         "who": "Opponents"
+        }
+       }
+      }
+     },
+     {
+      "Discard": {
+       "who": "EachPlayer"
+      }
+     },
+     {
+      "LoseLife": {
+       "amount": 3,
+       "who": {
+        "Bound": "cant"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+1: Each player discards a card. Each opponent who can't loses 3 life."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 2
+    },
+    "effects": [
+     {
+      "Mill": {
+       "count": 3,
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Players": {
+           "PlayersWhere": {
+            "test": {
+             "Compare": {
+              "left": {
+               "Count": [
+                {
+                 "In": "Graveyard"
+                },
+                {
+                 "OwnedBy": "You"
+                }
+               ]
+              },
+              "op": "Ge",
+              "right": 20
+             }
+            },
+            "who": "EachPlayer"
+           }
+          }
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "otherwise": [
+        {
+         "Draw": {}
+        }
+       ],
+       "then": [
+        {
+         "Draw": {
+          "count": 3
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ]
+   }
+  },
+  "−2: Target player mills three cards. Then if a graveyard has twenty or more cards in it, you draw three cards. Otherwise, you draw a card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "SetTypes": [
+          "Creature"
+         ]
+        },
+        {
+         "SetCreatureTypes": [
+          "Dragon"
+         ]
+        },
+        {
+         "SetColors": [
+          "Red"
+         ]
+        },
+        {
+         "SetPT": {
+          "power": 4,
+          "toughness": 4
+         }
+        },
+        {
+         "AddKeyword": "Flying"
+        },
+        {
+         "AddKeyword": "Indestructible"
+        },
+        {
+         "AddKeyword": "Haste"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Until end of turn, ~ becomes a legendary 4/4 red Dragon creature with flying, indestructible, and haste."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 6
+    },
+    "effects": [
+     {
+      "CreateEmblem": {
+       "abilities": [
+        {
+         "Triggered": {
+          "effects": [
+           {
+            "Draw": {
+             "count": 2
+            }
+           }
+          ],
+          "when": {
+           "StepBegins": {
+            "step": "Draw",
+            "whose": "You"
+           }
+          }
+         }
+        },
+        {
+         "Triggered": {
+          "effects": [
+           {
+            "Discard": {
+             "count": {
+              "Count": [
+               {
+                "In": "Hand"
+               },
+               {
+                "OwnedBy": "You"
+               }
+              ]
+             }
+            }
+           }
+          ],
+          "when": {
+           "StepBegins": {
+            "step": "End",
+            "whose": "You"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−6: You get an emblem with \"At the beginning of your draw step, draw two additional cards\" and \"At the beginning of your end step, discard your hand.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 8
+    },
+    "effects": [
+     {
+      "LoseGame": {
+       "who": {
+        "PlayersWhere": {
+         "test": {
+          "Compare": {
+           "left": {
+            "Count": [
+             {
+              "Supertype": "Legendary"
+             },
+             {
+              "AnyOf": [
+               {
+                "Type": "Creature"
+               },
+               {
+                "Type": "Planeswalker"
+               }
+              ]
+             },
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           },
+           "op": "Eq",
+           "right": 0
+          }
+         },
+         "who": "Opponents"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−8: Each opponent who doesn't control a legendary creature or planeswalker loses the game."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 7
+    },
+    "effects": [
+     {
+      "CreateEmblem": {
+       "abilities": [
+        {
+         "Rule": {
+          "rule": {
+           "UntapLimit": {
+            "count": 2,
+            "what": [],
+            "who": "Opponents"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−7: You get an emblem with \"Your opponents can't untap more than two permanents during their untap steps.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "effects": [
+     {
+      "Draw": {
+       "as": "drawn"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "drawn"
+       }
+      }
+     },
+     {
+      "RemoveCounters": {
+       "count": {
+        "Stat": {
+         "of": {
+          "Bound": "drawn"
+         },
+         "stat": "ManaValue"
+        }
+       },
+       "counter": "loyalty",
+       "from": "This"
+      }
+     }
+    ]
+   }
+  },
+  "0: Draw a card and reveal it. Remove a number of loyalty counters equal to that card's mana value from ~."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "AddMana": {
+        "mana": {
+         "Fixed": [
+          "Red"
+         ]
+        }
+       }
+      }
+     ]
+    }
+   }
+  },
+  "Cumulative upkeep—Add {R}."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "Choose": {
+        "as": "opponent",
+        "from": "Opponents"
+       }
+      },
+      {
+       "GainLife": {
+        "amount": 1,
+        "who": {
+         "Bound": "opponent"
+        }
+       }
+      }
+     ]
+    }
+   }
+  },
+  "Cumulative upkeep—An opponent gains 1 life."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "FlipCoin": {}
+      }
+     ]
+    }
+   }
+  },
+  "Cumulative upkeep—Flip a coin."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "Choose": {
+        "as": "land",
+        "from": {
+         "Each": [
+          {
+           "Type": "Land"
+          },
+          {
+           "Not": {
+            "ControlledBy": "You"
+           }
+          }
+         ]
+        }
+       }
+      },
+      {
+       "Continuous": {
+        "affected": {
+         "Bound": "land"
+        },
+        "duration": "Forever",
+        "mods": [
+         {
+          "SetController": "You"
+         }
+        ]
+       }
+      }
+     ],
+     "payable": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Type": "Land"
+         },
+         {
+          "Not": {
+           "ControlledBy": "You"
+          }
+         }
+        ]
+       },
+       "op": "Ge",
+       "right": {
+        "Counters": {
+         "counter": {
+          "Other": "age"
+         },
+         "on": "This"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "Cumulative upkeep—Gain control of a land you don't control."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "Choose": {
+        "as": "opponent",
+        "from": "Opponents"
+       }
+      },
+      {
+       "CreateToken": {
+        "token": {
+         "Custom": {
+          "colors": [
+           "Red"
+          ],
+          "name": "Survivor",
+          "power": 1,
+          "subtypes": [
+           "Survivor"
+          ],
+          "toughness": 1,
+          "types": [
+           "Creature"
+          ]
+         }
+        },
+        "who": {
+         "Bound": "opponent"
+        }
+       }
+      }
+     ]
+    }
+   }
+  },
+  "Cumulative upkeep—Have an opponent create a 1/1 red Survivor creature token."
+ ],
+ [
+  {
+   "Keyword": {
+    "CumulativeUpkeepActs": {
+     "acts": [
+      {
+       "Choose": {
+        "as": "creature",
+        "from": {
+         "Each": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "Opponents"
+          }
+         ]
+        }
+       }
+      },
+      {
+       "PutCounters": {
+        "counter": "+1/+1",
+        "on": {
+         "Bound": "creature"
+        }
+       }
+      }
+     ],
+     "payable": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "op": "Ge",
+       "right": 1
+      }
+     }
+    }
+   }
+  },
+  "Cumulative upkeep—Put a +1/+1 counter on a creature an opponent controls."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{R}"
+   }
+  },
+  "More Than Meets the Eye {2}{R}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ],
+       "when": {
+        "StepBegins": {
+         "step": "EndCombat"
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "combat": true,
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer"
+     }
+    }
+   }
+  },
+  "Whenever ~ deals combat damage to a player, convert it at end of combat."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{B}"
+   }
+  },
+  "More Than Meets the Eye {2}{B}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ],
+    "when": {
+     "Batch": {
+      "DealsDamage": {
+       "combat": true,
+       "source": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "to": "You"
+      }
+     }
+    }
+   }
+  },
+  "Whenever one or more creatures deal combat damage to you, convert ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ],
+    "when": {
+     "BecomesMonarch": {
+      "who": "You"
+     }
+    }
+   }
+  },
+  "Whenever you become the monarch, convert ~."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{1}{W}"
+   }
+  },
+  "More Than Meets the Eye {1}{W}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ],
+    "limit": "OncePerTurn",
+    "when": {
+     "Batch": {
+      "ZoneChange": {
+       "from": "Battlefield",
+       "to": "Graveyard",
+       "what": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "Not": "Token"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  "Whenever one or more nontoken artifacts you control are put into a graveyard from the battlefield, convert ~. This ability triggers only once each turn."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{3}{B}"
+   }
+  },
+  "More Than Meets the Eye {3}{B}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "LoseLife": {
+       "amount": {
+        "Tallied": {
+         "what": "LifeLost",
+         "who": {
+          "Target": 0
+         }
+        }
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": "LifeLostThisWay",
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "then": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "when": {
+     "StepBegins": {
+      "step": "End",
+      "whose": "You"
+     }
+    }
+   }
+  },
+  "At the beginning of your end step, target opponent loses life equal to the life that player lost this turn. If no life is lost this way, convert ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "combat": true,
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer"
+     }
+    }
+   }
+  },
+  "Whenever ~ deals combat damage to a player, convert it."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{W}{U}{R}"
+   }
+  },
+  "More Than Meets the Eye {2}{U}{R}{W}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Move": {
+       "to": {
+        "Battlefield": {
+         "transformed": true
+        }
+       },
+       "what": "This"
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "from": "Battlefield",
+      "to": "Graveyard",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ dies, return it to the battlefield converted under its owner's control."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{W}"
+   }
+  },
+  "More Than Meets the Eye {2}{W}"
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{1}{W}{B}{R}"
+   }
+  },
+  "More Than Meets the Eye {1}{R}{W}{B}"
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{W}{U}"
+   }
+  },
+  "More Than Meets the Eye {W}{U}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     }
+    ],
+    "when": {
+     "Nth": {
+      "event": {
+       "SpellCast": {
+        "by": "You"
+       }
+      },
+      "nth": 2
+     }
+    }
+   }
+  },
+  "Whenever you cast your second spell each turn, convert ~."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{5}{U}{B}"
+   }
+  },
+  "More Than Meets the Eye {5}{U}{B}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Connive": {
+       "what": "This"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Stat": {
+           "of": "This",
+           "stat": "Power"
+          }
+         },
+         "op": "Ge",
+         "right": 5
+        }
+       },
+       "then": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "DealsDamage": {
+      "combat": true,
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer"
+     }
+    }
+   }
+  },
+  "Whenever ~ deals combat damage to a player, it connives. Then if ~'s power is 5 or greater, convert it."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{W}{R}{G}"
+   }
+  },
+  "More Than Meets the Eye {2}{R}{G}{W}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Each": [
+         "Attacking",
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Total": {
+           "of": [
+            "Attacking",
+            {
+             "Type": "Creature"
+            },
+            {
+             "ControlledBy": "You"
+            }
+           ],
+           "stat": "Power"
+          }
+         },
+         "op": "Ge",
+         "right": 8
+        }
+       },
+       "then": [
+        {
+         "Transform": {
+          "what": "This"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Formidable — Whenever ~ attacks, attacking creatures you control gain indestructible until end of turn. If those creatures have total power 8 or greater, convert ~."
+ ],
+ [
+  {
+   "Keyword": {
+    "MoreThanMeetsTheEye": "{2}{W}{U}{B}"
+   }
+  },
+  "More Than Meets the Eye {2}{W}{U}{B}"
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ],
+    "from": "Exile",
+    "when": {
+     "CountersRemoved": {
+      "counter": {
+       "Other": "time"
+      },
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a time counter is removed from this card while it's exiled, draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "from": "Exile",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Land"
+        },
+        {
+         "Not": {
+          "Supertype": "Basic"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "CountersRemoved": {
+      "counter": {
+       "Other": "time"
+      },
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a time counter is removed from this card while it's exiled, destroy target nonbasic land."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "PutCounters": {
+          "counter": "+1/+1",
+          "on": {
+           "Target": 0
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "from": "Exile",
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "CountersRemoved": {
+      "counter": {
+       "Other": "time"
+      },
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a time counter is removed from this card while it's exiled, you may put a +1/+1 counter on target creature."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "defining": true,
+    "mods": [
+     {
+      "SetPT": {
+       "power": {
+        "Sum": [
+         {
+          "Life": "You"
+         },
+         {
+          "Times": {
+           "by": -1,
+           "of": {
+            "HighestLife": "Opponents"
+           }
+          }
+         }
+        ]
+       },
+       "toughness": {
+        "Sum": [
+         {
+          "Life": "You"
+         },
+         {
+          "Times": {
+           "by": -1,
+           "of": {
+            "HighestLife": "Opponents"
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "~'s power and toughness are each equal to your life total minus the life total of an opponent with the most life."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "LoseLife": {
+       "amount": 1,
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "GainLife": {
+       "amount": 1
+      }
+     }
+    ],
+    "from": "Exile",
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "when": {
+     "CountersRemoved": {
+      "counter": {
+       "Other": "time"
+      },
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a time counter is removed from this card while it's exiled, target player loses 1 life and you gain 1 life."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "as": "card",
+          "from": {
+           "Each": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            },
+            {
+             "Not": {
+              "Type": "Land"
+             }
+            },
+            {
+             "Compare": {
+              "op": "Le",
+              "stat": "ManaValue",
+              "to": 3
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Plot": {
+          "what": {
+           "Bound": "card"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: You may exile a nonland card with mana value 3 or less from your hand. If you do, it becomes plotted."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "as": "card",
+          "from": {
+           "Each": [
+            {
+             "In": "Hand"
+            },
+            {
+             "OwnedBy": "You"
+            },
+            {
+             "Not": {
+              "Type": "Land"
+             }
+            },
+            {
+             "Compare": {
+              "op": "Le",
+              "stat": "ManaValue",
+              "to": 3
+             }
+            }
+           ]
+          }
+         }
+        },
+        {
+         "Plot": {
+          "what": {
+           "Bound": "card"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, you may exile a nonland card with mana value 3 or less from your hand. If you do, it becomes plotted."
+ ],
+ [
+  {
+   "FreeCast": {
+    "condition": {
+     "Compare": {
+      "left": {
+       "Tally": {
+        "event": "SpellCast",
+        "filter": [
+         {
+          "Color": "Blue"
+         }
+        ],
+        "who": "Opponents"
+       }
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "cost": "{R}"
+   }
+  },
+  "If an opponent cast a blue spell this turn, you may pay {R} rather than pay this spell's mana cost."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Ability": "Activated"
+        },
+        "SingleTarget"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Another"
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Change the target of target activated ability with a single target.\nDraw a card."
+ ],
+ [
+  {
+   "Keyword": "Compleated"
+  },
+  "Compleated"
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "choose": {
+        "max": 2,
+        "min": 1
+       },
+       "mode_costs": [
+        "{1}",
+        "{1}"
+       ],
+       "modes": [
+        {
+         "effects": [
+          {
+           "CopySpell": {
+            "new_targets": true,
+            "what": {
+             "Target": 0
+            }
+           }
+          },
+          {
+           "CopyAbility": {
+            "new_targets": true,
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "AnyOf": [
+               "Spell",
+               {
+                "Ability": "Activated"
+               },
+               {
+                "Ability": "Triggered"
+               }
+              ]
+             },
+             {
+              "AnyOf": [
+               {
+                "Type": "Instant"
+               },
+               {
+                "Type": "Sorcery"
+               },
+               {
+                "Ability": "Activated"
+               },
+               {
+                "Ability": "Triggered"
+               }
+              ]
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "ChangeTargets": {
+            "to": "Another",
+            "what": {
+             "Target": 0
+            }
+           }
+          }
+         ],
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "AnyOf": [
+               "Spell",
+               {
+                "Ability": "Activated"
+               },
+               {
+                "Ability": "Triggered"
+               }
+              ]
+             },
+             "SingleTarget"
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Spree\n+ {1} — Copy target instant spell, sorcery spell, activated ability, or triggered ability. You may choose new targets for the copy.\n+ {1} — Change the target of target spell or ability with a single target."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "mode_costs": [
+        "{0}",
+        "{1}",
+        "{3}"
+       ],
+       "modes": [
+        {
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "duration": "UntilEndOfTurn",
+            "mods": [
+             {
+              "GrantAbility": {
+               "Triggered": {
+                "effects": [
+                 {
+                  "Move": {
+                   "to": {
+                    "Battlefield": {
+                     "tapped": true
+                    }
+                   },
+                   "what": "This"
+                  }
+                 }
+                ],
+                "when": {
+                 "ZoneChange": {
+                  "from": "Battlefield",
+                  "to": "Graveyard",
+                  "what": [
+                   "This"
+                  ]
+                 }
+                }
+               }
+              }
+             },
+             {
+              "SetPT": {
+               "power": 3,
+               "toughness": 2
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "label": "Galian Beast",
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "duration": "UntilEndOfTurn",
+            "mods": [
+             {
+              "GrantAbility": {
+               "Triggered": {
+                "effects": [
+                 {
+                  "Move": {
+                   "to": {
+                    "Battlefield": {
+                     "tapped": true
+                    }
+                   },
+                   "what": "This"
+                  }
+                 }
+                ],
+                "when": {
+                 "ZoneChange": {
+                  "from": "Battlefield",
+                  "to": "Graveyard",
+                  "what": [
+                   "This"
+                  ]
+                 }
+                }
+               }
+              }
+             },
+             {
+              "SetPT": {
+               "power": 5,
+               "toughness": 2
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "label": "Death Gigas",
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "duration": "UntilEndOfTurn",
+            "mods": [
+             {
+              "GrantAbility": {
+               "Triggered": {
+                "effects": [
+                 {
+                  "Move": {
+                   "to": {
+                    "Battlefield": {
+                     "tapped": true
+                    }
+                   },
+                   "what": "This"
+                  }
+                 }
+                ],
+                "when": {
+                 "ZoneChange": {
+                  "from": "Battlefield",
+                  "to": "Graveyard",
+                  "what": [
+                   "This"
+                  ]
+                 }
+                }
+               }
+              }
+             },
+             {
+              "SetPT": {
+               "power": 7,
+               "toughness": 2
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "label": "Hellmasker",
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "ControlledBy": "You"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Until end of turn, target creature you control gains \"When this creature dies, return it to the battlefield tapped under its owner's control\" and has the chosen base power and toughness.\n• Galian Beast — {0} — 3/2.\n• Death Gigas — {1} — 5/2.\n• Hellmasker — {3} — 7/2."
+ ],
+ [
+  {
+   "Keyword": {
+    "Enchant": [
+     {
+      "Type": "Creature"
+     },
+     {
+      "HasAttached": [
+       {
+        "Subtype": "Aura"
+       },
+       "Other"
+      ]
+     }
+    ]
+   }
+  },
+  "Enchant creature with another Aura attached to it"
+ ],
+ [
+  {
+   "Keyword": {
+    "Enchant": [
+     {
+      "Type": "Land"
+     },
+     {
+      "Supertype": "Snow"
+     },
+     {
+      "ControlledBy": "You"
+     }
+    ]
+   }
+  },
+  "Enchant snow land you control"
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "card",
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "In": "Graveyard"
+         },
+         {
+          "OwnedBy": {
+           "Target": 0
+          }
+         }
+        ]
+       },
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Battlefield": {
+         "under": "You"
+        }
+       },
+       "what": {
+        "Bound": "card"
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ]
+   }
+  },
+  "Target opponent puts a creature card of their choice from their graveyard onto the battlefield under your control."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "LoseLife": {
+       "amount": 1,
+       "who": {
+        "OwnerOf": "Triggering"
+       }
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "from": "Battlefield",
+      "to": "Graveyard",
+      "what": [
+       {
+        "OwnedBy": "Opponents"
+       }
+      ]
+     }
+    }
+   }
+  },
+  "Whenever a permanent is put into an opponent's graveyard, that player loses 1 life."
+ ],
+ [
+  {
+   "Keyword": {
+    "Suspend": {
+     "cost": [
+      {
+       "Mana": "{X}{3}{U}"
+      },
+      {
+       "XAtLeast": 1
+      }
+     ],
+     "time": 0
+    }
+   }
+  },
+  "Suspend X—{X}{3}{U}. X can't be 0."
+ ],
+ [
+  {
+   "Keyword": {
+    "Suspend": {
+     "cost": [
+      {
+       "Mana": "{X}{3}{R}"
+      },
+      {
+       "XAtLeast": 1
+      }
+     ],
+     "time": 0
+    }
+   }
+  },
+  "Suspend X—{X}{3}{R}. X can't be 0."
+ ],
+ [
+  {
+   "Keyword": {
+    "Suspend": {
+     "cost": [
+      {
+       "Mana": "{X}{W}{W}"
+      },
+      {
+       "XAtLeast": 1
+      }
+     ],
+     "time": 0
+    }
+   }
+  },
+  "Suspend X—{X}{W}{W}. X can't be 0."
+ ],
+ [
+  {
+   "Keyword": {
+    "Suspend": {
+     "cost": [
+      {
+       "Mana": "{X}{G}{G}"
+      },
+      {
+       "XAtLeast": 1
+      }
+     ],
+     "time": 0
+    }
+   }
+  },
+  "Suspend X—{X}{G}{G}. X can't be 0."
+ ],
+ [
+  {
+   "Keyword": {
+    "Suspend": {
+     "cost": [
+      {
+       "Mana": "{X}{B}{B}{B}"
+      },
+      {
+       "XAtLeast": 1
+      }
+     ],
+     "time": 0
+    }
+   }
+  },
+  "Suspend X—{X}{B}{B}{B}. X can't be 0."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Counters": {
+        "counter": "loyalty",
+        "on": "This"
+       }
+      },
+      "op": "Ge",
+      "right": 7
+     }
+    },
+    "mods": [
+     {
+      "AddType": "Creature"
+     },
+     {
+      "SetCreatureTypes": [
+       "Dragon",
+       "God"
+      ]
+     },
+     {
+      "SetPT": {
+       "power": 7,
+       "toughness": 7
+      }
+     },
+     {
+      "AddKeyword": "Flying"
+     },
+     {
+      "AddKeyword": "Indestructible"
+     }
+    ]
+   }
+  },
+  "As long as ~ has seven or more loyalty counters on him, he's a 7/7 Dragon God creature with flying and indestructible."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilYourNextTurn",
+       "mods": [
+        "CantAttack",
+        "CantBlock"
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "HasKeyword": "FirstStrike"
+         }
+        },
+        {
+         "Not": {
+          "HasKeyword": "DoubleStrike"
+         }
+        },
+        {
+         "Not": {
+          "HasKeyword": "Vigilance"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Target creature without first strike, double strike, or vigilance can't attack or block until your next turn."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "DelayedTrigger": {
+       "effects": [
+        {
+         "Continuous": {
+          "affected": "Triggering",
+          "duration": "UntilEndOfTurn",
+          "mods": [
+           {
+            "ModifyPT": {
+             "power": -5,
+             "toughness": 0
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "once": false,
+       "until": "UntilYourNextTurn",
+       "when": {
+        "AttacksPlayerOrPlaneswalker": {
+         "at": "You",
+         "what": [
+          {
+           "Type": "Creature"
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "−3: Until your next turn, whenever a creature attacks you or a planeswalker you control, it gets -5/-0 until end of turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "revealed",
+       "count": {
+        "max": null,
+        "min": 0
+       },
+       "from": {
+        "Each": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "revealed"
+       }
+      }
+     },
+     {
+      "GainLife": {
+       "amount": {
+        "Times": {
+         "by": 2,
+         "of": {
+          "ManaSymbols": {
+           "color": "Green",
+           "of": {
+            "Bound": "revealed"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Chroma — Reveal any number of cards in your hand. You gain 2 life for each green mana symbol in those cards' mana costs."
+ ],
+ [
+  {
+   "CostModifier": {
+    "applies_to": [
+     "This"
+    ],
+    "change": "Reduce",
+    "mana": "{3}",
+    "per": {
+     "Tally": {
+      "event": "SpellCast",
+      "filter": [],
+      "who": "EachPlayer"
+     }
+    }
+   }
+  },
+  "This spell costs {3} less to cast for each other spell cast this turn."
+ ]
+]

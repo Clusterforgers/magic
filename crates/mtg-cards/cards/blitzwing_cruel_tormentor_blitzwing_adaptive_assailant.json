@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9a10668a-df42-40c2-88d1-ad3b2aba5b03",
+  "name": "Blitzwing, Cruel Tormentor // Blitzwing, Adaptive Assailant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blitzwing, Cruel Tormentor",
+      "oracle_fingerprint": "87a82a294f793baebd095cab94c0c95b",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{3}{B}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Tallied": { "who": { "Target": 0 }, "what": "LifeLost" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "LifeLostThisWay", "op": "Eq", "right": 0 } },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blitzwing, Adaptive Assailant",
+      "oracle_fingerprint": "da325670d3e04b7355ff7695b950c46a",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 197 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

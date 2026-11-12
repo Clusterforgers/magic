@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cc18e782-a965-404f-96f1-348f3ed799fd",
+  "name": "Soundwave, Sonic Spy // Soundwave, Superior Captain",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Soundwave, Sonic Spy",
+      "oracle_fingerprint": "150fa0afaa98ebe44c36f9ef7576890e",
+      "abilities": [
+        { "Keyword": { "MoreThanMeetsTheEye": "{2}{W}{U}{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 90, "end": 362 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Soundwave, Superior Captain",
+      "oracle_fingerprint": "f82ea473aa5ebdcb6f6a50e20a5e4731",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 174 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 175, "end": 350 }
+          }
+        }
+      ]
+    }
+  ]
+}

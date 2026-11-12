@@ -1,7 +1,7 @@
 {
   "oracle_id": "90249526-1875-450a-882d-bf6f6bfd37a6",
   "name": "Ajani Steadfast",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ajani Steadfast",
@@ -30,15 +30,50 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 109, "end": 223 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "loyalty"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 224, "end": 354 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Replacement": {
+                        "when": {
+                          "Damage": {
+                            "to": {
+                              "Union": [
+                                "You",
+                                { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                              ]
+                            }
+                          }
+                        },
+                        "by": { "PreventAllBut": 1 }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
