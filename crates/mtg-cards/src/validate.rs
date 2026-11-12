@@ -72,6 +72,8 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
     matches!(
         by,
         ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventAmount(_)
+            | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
@@ -87,6 +89,28 @@ fn tag_of<T: Serialize>(value: &T) -> String {
             map.keys().next().cloned().unwrap_or_default()
         }
         _ => String::from("?"),
+    }
+}
+
+/// The name of a part of a cost that takes all of a kind the payer has, with nothing to choose: "discard your hand"
+/// (`Cost.Discard.Hand`), "sacrifice all permanents you control" (`Cost.Sacrifice.All`).
+fn r303c_whole(item: &CostItem) -> Option<&'static str> {
+    match item {
+        CostItem::Discard {
+            count: Amount::Count(counted),
+            filter: None,
+        } if counted.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)] => {
+            Some("Discard.Hand")
+        }
+        CostItem::Sacrifice {
+            filter,
+            count: Amount::Count(counted),
+        } if counted.0.split_last()
+            == Some((&Pred::ControlledBy(Ref::You), filter.0.as_slice())) =>
+        {
+            Some("Sacrifice.All")
+        }
+        _ => None,
     }
 }
 
@@ -649,7 +673,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Either));
             }
-            Ref::Arrived { of, .. } | Ref::Departed(of) => {
+            Ref::Arrived { of, .. } | Ref::Departed(of) | Ref::SourceOf(of) => {
                 self.expect(Kind::Object, want);
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
@@ -714,6 +738,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::FromSource(source) => {
+                self.uses("Pred", "FromSource");
+                self.at("source", |w| w.selector(source));
+            }
             Pred::GreatestAmong { group, .. } => {
                 self.uses("Pred", "GreatestAmong");
                 self.at("group", |w| w.selector(group));
@@ -761,6 +789,7 @@ impl<'a> Walker<'a> {
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::ProtectedBy(r)
+            | Pred::DamagedThisTurnBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
             | Pred::AttackingPlayerOrPlaneswalker(r) => {
@@ -773,6 +802,7 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::Is(r)
+            | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
             | Pred::ExiledWith(r)
             | Pred::EncodedWith(r)
@@ -806,8 +836,8 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
-                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
-                    self.problem("`CastFrom` names a hand or a graveyard");
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard | ZoneKind::Exile) {
+                    self.problem("`CastFrom` names a hand, a graveyard or exile");
                 }
             }
             Pred::DidThisTurn { by, to, .. } => {
@@ -819,7 +849,9 @@ impl<'a> Walker<'a> {
                     self.at("to", |w| w.reference(to, Kind::Either));
                 }
             }
-            Pred::Targeting(inner) | Pred::HasAttached(inner) => self.selector(inner),
+            Pred::Targeting(inner) | Pred::HasAttached(inner) | Pred::AbilityFrom(inner) => {
+                self.selector(inner);
+            }
             Pred::Modified
             | Pred::RingBearer
             | Pred::FaceDown
@@ -840,6 +872,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
@@ -986,6 +1019,7 @@ impl<'a> Walker<'a> {
         self.at("by", |w| w.amount(by));
     }
 
+    #[allow(clippy::too_many_lines)]
     fn amount(&mut self, amount: &Amount) {
         // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
         let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
@@ -1004,7 +1038,9 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::Stat { of, .. } | Amount::CastsFromCommand(of) => {
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
@@ -1016,7 +1052,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } | Amount::Half { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::AtMost { of, .. } => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1156,6 +1192,8 @@ impl<'a> Walker<'a> {
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            Amount::PlayersLost => self.uses("Amount", "PlayersLost"),
+            Amount::CastTargets => self.uses("Amount", "CastTargets"),
             Amount::When {
                 condition,
                 then,
@@ -1191,6 +1229,7 @@ impl<'a> Walker<'a> {
             | Amount::Stat { .. }
             | Amount::Life(_)
             | Amount::CommanderCasts(_)
+            | Amount::CastsFromCommand(_)
             | Amount::Counters { .. }
             | Amount::AnyCounters(_)
             | Amount::Sum(_)
@@ -1198,6 +1237,7 @@ impl<'a> Walker<'a> {
             | Amount::Quotient { .. }
             | Amount::Difference(..)
             | Amount::Times { .. }
+            | Amount::AtMost { .. }
             | Amount::Half { .. }
             | Amount::Divided
             | Amount::EvenShare(_)
@@ -1350,6 +1390,9 @@ impl<'a> Walker<'a> {
             Condition::Monarch(who) => self.player_condition("Monarch", who),
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
+            Condition::AttackedYouLastTurn(who) => {
+                self.player_condition("AttackedYouLastTurn", who);
+            }
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
             Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
@@ -1390,7 +1433,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// The cost of an `Effect::Pay`: life or damage of a counted amount ("pay that much life", "have ~ deal that much
+    /// damage to them") and a counted draw the controller
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
@@ -1402,7 +1446,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) if !is_fixed(item) && *amount != Amount::X => {
+                CostItem::PayLife(amount) | CostItem::DamageToYou(amount)
+                    if !is_fixed(item) && *amount != Amount::X =>
+                {
                     Some((i, amount))
                 }
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
@@ -1430,6 +1476,7 @@ impl<'a> Walker<'a> {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
+                | CostItem::DamageToYou(count)
                 | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
@@ -1453,7 +1500,10 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
-                if !is_fixed(item) {
+                // Only the caster of a spell pays all of a kind with nothing to choose; an effect's payer may be another player.
+                if let Some(whole) = r303c_whole(item).filter(|_| w.choosing && !w.activated_cost) {
+                    w.uses("Cost", whole);
+                } else if !is_fixed(item) {
                     let activated = match (w.activated_cost, w.rather_cost) {
                         (true, _) => ".Activated",
                         (false, true) => ".Rather",
@@ -2136,6 +2186,10 @@ impl<'a> Walker<'a> {
 
     fn modification(&mut self, modification: &Modification) {
         self.uses("Mod", &tag_of(modification));
+        // A name the card's own effect gives ("named Fenric") is a name its other abilities may refer to.
+        if let Modification::SetName(name) = modification {
+            self.rmt7_token_names.insert(name.to_lowercase());
+        }
         match modification {
             Modification::AddSubtype(subtype) => self.known_subtype(subtype),
             Modification::SetCreatureTypes(types) | Modification::SetLandTypes(types) => {
@@ -2196,6 +2250,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::AddCreatureTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
@@ -2206,6 +2261,7 @@ impl<'a> Walker<'a> {
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities
+            | Modification::LoseAbilitiesExceptMana
             | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
@@ -2290,6 +2346,8 @@ impl<'a> Walker<'a> {
             let defines = matches!(
                 modification,
                 Modification::SetPT { .. }
+                    | Modification::SetPower(_)
+                    | Modification::SetToughness(_)
                     | Modification::SetColors(_)
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
@@ -2613,7 +2671,28 @@ fn c6_gap_batch_of_moves(members: &[TriggerPattern]) -> bool {
             member,
             TriggerPattern::ZoneChange { from: Some(from), .. } if *from != ZoneKind::Battlefield
         )
-    })
+    }) || r307c_exiled_together(members)
+}
+
+/// Moves into exile from different zones, the battlefield among them ("cards are put into exile from graveyards and/or
+/// the battlefield"): the engine joins what leaves the battlefield and what leaves other zones into one trigger.
+fn r307c_exiled_together(members: &[TriggerPattern]) -> bool {
+    let mut froms = Vec::new();
+    for member in members {
+        let TriggerPattern::ZoneChange {
+            from: Some(from),
+            to: Some(ZoneKind::Exile),
+            ..
+        } = member
+        else {
+            return false;
+        };
+        if froms.contains(from) {
+            return false;
+        }
+        froms.push(*from);
+    }
+    true
 }
 
 impl Walker<'_> {
@@ -2956,6 +3035,7 @@ impl Walker<'_> {
             | Ref::Convoked
             | Ref::Arrived { .. }
             | Ref::Departed(_)
+            | Ref::SourceOf(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
@@ -3554,7 +3634,7 @@ impl Walker<'_> {
                 if let Some(of) = of {
                     w.uses("Search", "Of");
                     if !also.is_empty() {
-                        w.problem("a search of another player's zone names one zone");
+                        w.uses("Search", "OfZones");
                     }
                     w.at("of", |w| w.reference(of, Kind::Player));
                 }
@@ -3574,11 +3654,16 @@ impl Walker<'_> {
             Effect::ExileUntil {
                 who,
                 filter,
+                total,
                 bind,
                 exiled_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
+                if let Some(total) = total {
+                    w.uses("ExileUntil", "Total");
+                    w.at("total", |w| w.amount(total));
+                }
                 w.at("as", |w| w.bind(bind, Kind::Object));
                 w.at("exiled_as", |w| w.bind(exiled_as, Kind::Object));
             }
@@ -3837,6 +3922,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("with", |w| w.reference(with, Kind::Player));
             }
+            Effect::ExchangeLifeWithToughness { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RepeatWhile {
                 condition,
@@ -4074,6 +4163,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceAttached {
                     w.problem("only a copy effect lasts while its source stays attached");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Duration", "WhileYouControlSourceTapped");
+                }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.uses("Duration", "UntilPaid");
                 }
@@ -4130,6 +4222,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Rule", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -4155,6 +4250,9 @@ impl Walker<'_> {
                 }
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
+                }
+                if matches!(rule, GameRule::CantBeCopied) {
+                    w.problem("a spell can't be copied by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
@@ -4199,6 +4297,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Shield", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Shield", "Duration.WhileYouControlSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);
@@ -4328,8 +4429,10 @@ impl Walker<'_> {
                 all_if,
                 mode_costs,
                 extra_mode_cost,
+                pawprints,
             } => {
                 w.modal(choose, modes, *repeat, only_effect);
+                w.r302_pawprints(pawprints, choose, modes.len());
                 if *different_players {
                     w.uses("Effect", "Modal.DifferentPlayers");
                     if *repeat {
@@ -4354,6 +4457,23 @@ impl Walker<'_> {
                 }
             }
         });
+    }
+
+    /// The pawprints of the modes: one number of at least one for each mode or none, under a fixed most to take.
+    fn r302_pawprints(&mut self, pawprints: &[u32], choose: &Bounds, modes: usize) {
+        if pawprints.is_empty() {
+            return;
+        }
+        self.uses("Effect", "Modal.Pawprints");
+        if pawprints.len() != modes {
+            self.problem("a modal effect with pawprints has a number of them for each mode");
+        }
+        if pawprints.contains(&0) {
+            self.problem("a mode takes at least one pawprint");
+        }
+        if !matches!(choose.max, Some(Amount::Fixed(_))) {
+            self.problem("the pawprints of the modes are taken from a fixed most");
+        }
     }
 
     /// The costs of the modes: one for each mode or none, and an extra cost needs a choice of more than one mode.
@@ -4524,6 +4644,8 @@ impl Walker<'_> {
         // A keyword a player has is given to the player: "You have hexproof."
         let kind = if gives_player_keywords(affected, mods) {
             Kind::Player
+        } else if r305c_players_and_objects(affected, mods) {
+            Kind::Either
         } else {
             Kind::Object
         };
@@ -4549,6 +4671,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::AddCreatureTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
             )
         }) {
@@ -4984,7 +5107,12 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
+            GameRule::CanBeCommander
+            | GameRule::AnyNumberInDeck
+            | GameRule::Draft(_)
+            | GameRule::DamageAsWither
+            | GameRule::ManaBurn
+            | GameRule::CantBeCopied => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -4995,6 +5123,9 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
+            GameRule::AttackAsThoughHasteAt(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
                 w.cant_action(action);
@@ -5152,16 +5283,21 @@ impl Walker<'_> {
         self.scope = Scope::new(&[], false);
         self.at("rule", |w| w.rule(rule));
         if let Some(condition) = condition {
+            // A rule of a spell on the stack reads the X the spell announced ("If X is 5 or more, ...").
+            let saved = std::mem::replace(&mut self.x_now, from == ZoneKind::Stack);
             self.at("condition", |w| w.condition(condition));
+            self.x_now = saved;
         }
         self.rule_zone(rule, from);
     }
 
-    /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
+    /// A rule works from the battlefield, "this spell can't be countered" and "its damage can't be prevented" from the
+    /// stack (CR 113.6b), and a card's
     /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
     /// from its owner's hand as though it had flash from the hand; a spell cost change also works from the command zone.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
-        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
+        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This))
+            || matches!(rule, GameRule::DamageCantBePrevented { source, combat: None } if source.0 == [Pred::This]);
         let c8_eg_itself = matches!(
             rule,
             GameRule::MayCast(permission)
@@ -5184,7 +5320,10 @@ impl Walker<'_> {
             }),
             _ if matches!(
                 rule,
-                GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_) | GameRule::Draft(_)
+                GameRule::AnyNumberInDeck
+                    | GameRule::UpToInDeck(_)
+                    | GameRule::Draft(_)
+                    | GameRule::CantBeCopied
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
@@ -5349,6 +5488,7 @@ impl Walker<'_> {
             ReplaceBy::PreventNext
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }
@@ -5364,9 +5504,12 @@ impl Walker<'_> {
             self.problem("only the counters or the damage of an event are halved");
         }
         match by {
-            ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) if !damage => {
-                self.problem("only damage is lessened or capped");
+            ReplaceBy::Subtract(_)
+                if !damage && !matches!(when, ReplaceWhen::CountersPut { .. }) =>
+            {
+                self.problem("only damage or counters are lessened");
             }
+            ReplaceBy::Cap(_) if !damage => self.problem("only damage is lessened or capped"),
             ReplaceBy::Subtract(0) => self.problem("subtracting nothing changes nothing"),
             ReplaceBy::Cap(0) => self.problem("capping damage at 0 is `Prevent`"),
             _ => {}
@@ -5498,9 +5641,13 @@ impl Walker<'_> {
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
-            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) if zone_move => {
+            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
+            ReplaceBy::AddAmount(amount) | ReplaceBy::PreventAmount(amount) => {
+                self.at("amount", |w| w.amount(amount));
+            }
+            ReplaceBy::PreventAtMost(0) => self.problem("preventing no damage changes nothing"),
             ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
             ReplaceBy::Prevent if zone_move => {
                 self.problem("a zone change or an entering is not prevented");
@@ -5515,6 +5662,10 @@ impl Walker<'_> {
                 self.w5d_instead(when, effects);
             }
             ReplaceBy::RedirectUpTo { most, to } => self.r6f_redirect(when, *most, to),
+            ReplaceBy::RedirectCounted { most, to } => {
+                self.r6f_redirect(when, u32::MAX, to);
+                self.at("most", |w| w.amount(most));
+            }
             ReplaceBy::PreventAnd(effects) => self.w9c_prevent_and(when, effects),
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
@@ -5575,12 +5726,23 @@ impl Walker<'_> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except, .. } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                counters,
+                ..
+            } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
+                for (index, entry) in counters.iter().enumerate() {
+                    self.at(format!("counters[{index}]"), |w| {
+                        w.amount(&entry.count);
+                        w.selector(&entry.of);
+                    });
+                }
             }
             _ => {}
         }
@@ -5678,6 +5840,27 @@ fn gives_player_keywords(affected: &Ref, mods: &[Modification]) -> bool {
         affected,
         Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer
     ) && !mods.is_empty()
+        && mods.iter().all(Modification::is_player_keyword)
+}
+
+/// Whether a static ability gives keywords a player can have to players and to the objects a selector names together:
+/// "You and permanents you control have protection from Salamanders."
+fn r305c_players_and_objects(affected: &Ref, mods: &[Modification]) -> bool {
+    let Ref::Union(parts) = affected else {
+        return false;
+    };
+    let players = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::You | Ref::Opponents | Ref::EachPlayer))
+        .count();
+    let objects = parts
+        .iter()
+        .filter(|part| matches!(part, Ref::Each(_)))
+        .count();
+    players > 0
+        && objects > 0
+        && players + objects == parts.len()
+        && !mods.is_empty()
         && mods.iter().all(Modification::is_player_keyword)
 }
 
@@ -6519,6 +6702,7 @@ mod tests {
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::r306c_counted_damage_an_opponent_takes(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":{"Counters":{"on":"This","counter":"+1/+1"}}}],"unpaid":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}"#, &["Ability.Triggered", "Cost.DamageToYou", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.Counted", "Trigger.Attacks"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
@@ -6526,6 +6710,9 @@ mod tests {
     #[case::r5g_a_discard_counted_by_a_condition(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Discard":{"count":{"When":{"condition":"YourTurn","then":2,"otherwise":1}}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Amount.When", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
     #[case::e19_ward_of_life_equal_to_its_power(r#"{"Keyword":{"Ward":[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]}}"#, &["Cost.PayLife", "Effect.Pay.Counted", "Keyword.Ward"])]
     #[case::e19_ward_of_a_blight(r#"{"Keyword":{"Ward":[{"Blight":2}]}}"#, &["Cost.Blight", "Keyword.Ward"])]
+    #[case::r303c_a_spell_costing_the_hand_and_every_permanent(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}},{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Discard", "Cost.Discard.Hand", "Cost.Sacrifice", "Cost.Sacrifice.All"])]
+    #[case::r303c_half_the_lands_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Half":{"of":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"up":true}}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
+    #[case::r303c_all_of_another_kind_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
     #[case::e19_ward_of_a_counted_discard(r#"{"Keyword":{"Ward":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}"#, &["Cost.Discard", "Cost.Discard.Counted", "Keyword.Ward"])]
     #[case::r5g_untapping_the_source(r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Untap", "Effect.Draw"])]
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]
@@ -6827,7 +7014,7 @@ mod tests {
     )]
     #[case::ep27_tokens_lessened(
         r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
-        "only damage is lessened or capped"
+        "only damage or counters are lessened"
     )]
     #[case::ep27_damage_capped_at_nothing(
         r#"{"Replacement":{"when":{"Damage":{}},"by":{"Cap":0}}}"#,

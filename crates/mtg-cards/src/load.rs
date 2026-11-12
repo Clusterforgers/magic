@@ -488,9 +488,19 @@ impl Library {
         self.drafts.iter().map(|(id, draft)| (id.as_str(), draft))
     }
 
-    /// Whether the rules a card has already (a rules file, or a `Verified` compiled row) decide it before any draft does.
-    fn outranks_drafts(&self, id: &str, rules: Option<&Card>, record: &SupportRecord) -> bool {
-        record.support == Support::Verified || (rules.is_some() && !self.generated.contains(id))
+    /// Whether the rules a card has already decide it before its draft does: a `Verified` reading, or a rules file
+    /// unless it is `Partial`, `Manual` or `Stale` and the draft is whole.
+    fn outranks_draft(
+        &self,
+        id: &str,
+        rules: Option<&Card>,
+        record: &SupportRecord,
+        draft: &Draft,
+    ) -> bool {
+        record.support == Support::Verified
+            || (rules.is_some()
+                && !self.generated.contains(id)
+                && !(draft.proof.is_none() && record.support.yields_to_whole_draft()))
     }
 
     /// What the deck check shows of a card's draft: the read state that counts for `printed` (a verdict on another hash
@@ -531,7 +541,7 @@ impl Library {
         let id = printed.oracle_id.as_str();
         let rules = self.card(id);
         let draft = self.drafts.get(id)?;
-        if self.outranks_drafts(id, rules, &support(rules, printed, caps)) {
+        if self.outranks_draft(id, rules, &support(rules, printed, caps), draft) {
             return None;
         }
         draft.runs(printed, caps)?;
@@ -539,7 +549,7 @@ impl Library {
     }
 
     /// The rules that decide an imported card and their support record, by the precedence of the Read tier: a rules
-    /// file, then a `Verified` compiled row, then a draft in state `Read`, `Forge` or `Unverified`, then a compiled row
+    /// file (one in state `Partial`, `Manual` or `Stale` only before a partial draft), then a `Verified` compiled row, then a draft in state `Read`, `Forge` or `Unverified`, then a compiled row
     /// of any other state, then nothing (a card with no rules text plays as printed).
     ///
     /// Rules that read back as other text than the card (a compiled row or a draft) play by hand with the reason
@@ -582,8 +592,8 @@ impl Library {
                 record = held_back(printed, Some(card), &differs);
             }
         }
-        if !self.outranks_drafts(id, rules, &record)
-            && let Some(draft) = self.drafts.get(id)
+        if let Some(draft) = self.drafts.get(id)
+            && !self.outranks_draft(id, rules, &record, draft)
         {
             if let Some(read) = draft.record(printed, caps) {
                 return (Some(&draft.card), read, true);

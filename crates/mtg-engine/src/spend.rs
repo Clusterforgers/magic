@@ -233,6 +233,13 @@ pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         flashback: keywords
             .iter()
             .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Flashback(_))),
+        freerunning: keywords
+            .iter()
+            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Freerunning(_))),
+        no_abilities: keywords.is_empty()
+            && chars.abilities.is_empty()
+            && crate::ability_reader::abilities_of(state, id).is_empty()
+            && card.manual.is_empty(),
         ..SpendTraits::default()
     }
 }

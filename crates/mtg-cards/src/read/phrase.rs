@@ -78,6 +78,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
+        Ref::SourceOf(of) => format!("the source of {}", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
         Ref::Union(parts) => parts
             .iter()
@@ -443,6 +444,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::BaseToughness => "base toughness",
         StatKind::ManaSpent => "mana spent",
         StatKind::CounterKinds => "kinds of counters",
+        StatKind::Subtypes => "subtypes",
     }
 }
 
@@ -595,10 +597,16 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilYourNextUpkeep => "until your next upkeep".to_owned(),
         Duration::UntilEndOfYourNextTurn => "until the end of your next turn".to_owned(),
+        Duration::UntilEndOfCombatOnYourNextTurn => {
+            "until end of combat on your next turn".to_owned()
+        }
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
         Duration::WhileSourceAttached => "while this stays attached to it".to_owned(),
+        Duration::WhileYouControlSourceTapped => {
+            "while you control this and it stays tapped".to_owned()
+        }
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),

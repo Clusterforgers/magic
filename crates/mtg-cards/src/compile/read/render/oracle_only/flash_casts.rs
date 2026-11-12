@@ -29,8 +29,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         additional,
         spend_as,
         when,
+        any_cast,
     } = permission;
     if *who != Ref::You
+        || *any_cast
         || !spend_as.is_normal()
         || from.is_some()
         || *free

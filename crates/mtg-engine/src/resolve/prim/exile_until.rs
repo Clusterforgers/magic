@@ -14,11 +14,13 @@ use crate::zones::Zone;
 /// match, which stays in exile with the cards before it; a library with no match is exiled whole. The card found is
 /// bound to `as` and every card exiled, the one found included, to `exiled_as`, each as the object it becomes in exile
 /// (CR 400.7). Nothing is bound to `as` when nothing matched. With several players each exiles from their own library, in
-/// turn order, and every card found is bound.
+/// turn order, and every card found is bound. With a `total` the exiling of each player goes on until the cards they
+/// exiled add up to that mana value or more, the last one matching the filter.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::ExileUntil {
         who,
         filter,
+        total,
         bind,
         exiled_as,
     } = effect
@@ -26,6 +28,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("ExileUntil"));
     };
     let state = cx.state();
+    let least = match total {
+        Some(amount) => Some(cx.scope.amount(amount)?),
+        None => None,
+    };
     let mut events = Vec::new();
     let mut found = Vec::new();
     let mut exiled = Vec::new();
@@ -33,6 +39,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         if !state.is_alive(owner) {
             continue;
         }
+        let mut sum: i64 = 0;
         for &id in state.zone(Zone::Library(owner)).iter().rev() {
             let Some(card) = state.object(id) else {
                 continue;
@@ -50,7 +57,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 counter: reference.counter + 1,
             });
             exiled.push(arrived);
-            if cx.scope.selects(filter, reference)? {
+            sum += i64::from(card.mana_value());
+            if least.is_none_or(|least| sum >= least) && cx.scope.selects(filter, reference)? {
                 found.push(arrived);
                 break;
             }

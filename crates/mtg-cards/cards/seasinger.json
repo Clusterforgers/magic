@@ -1,7 +1,7 @@
 {
   "oracle_id": "13745b92-1e30-4075-9733-5d00da11408c",
   "name": "Seasinger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Seasinger",
@@ -25,9 +25,42 @@
         },
         { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 267 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "ControlledBy": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": {
+                                "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }]
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSourceTapped"
+                }
+              }
+            ]
           }
         }
       ]

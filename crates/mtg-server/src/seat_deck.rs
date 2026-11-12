@@ -12,7 +12,6 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
-use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
 use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
@@ -495,7 +494,7 @@ pub(crate) struct SeatDecks {
     defaults: Vec<Option<ChosenDeck>>,
     current: Vec<Option<ChosenDeck>>,
     /// The seats bots play, which every recipe it writes keeps.
-    bots: Vec<PlayerId>,
+    bots: Vec<crate::bots::BotSeat>,
     /// Whether the host set the teams again since the game was made.
     teams_set: bool,
 }
@@ -517,7 +516,7 @@ impl SeatDecks {
 
     /// The lobby of a game whose `bots` seats are played by bots, which every recipe it writes keeps.
     #[must_use]
-    pub(crate) fn with_bots(mut self, bots: Vec<PlayerId>) -> Self {
+    pub(crate) fn with_bots(mut self, bots: Vec<crate::bots::BotSeat>) -> Self {
         self.bots = bots;
         self
     }

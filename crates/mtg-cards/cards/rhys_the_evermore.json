@@ -1,7 +1,7 @@
 {
   "oracle_id": "9f013b5d-fff0-4c50-8621-158b6dc34834",
   "name": "Rhys, the Evermore",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rhys, the Evermore",
@@ -26,9 +26,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 227, "end": 328 }
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "count": { "AnyCounters": { "Target": 0 } },
+                  "up_to": true
+                }
+              }
+            ]
           }
         }
       ]

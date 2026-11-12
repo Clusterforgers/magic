@@ -27,6 +27,9 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r302_sources;
+mod r302b_sources;
+mod r305b_amounts;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -321,6 +324,8 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
 
 #[cfg(test)]
 mod ep31_held_tests;
+#[cfg(test)]
+mod r305b_tallies;
 
 /// Whether `seen` is an ability on the stack of this kind.
 fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {
@@ -522,8 +527,12 @@ impl<'a> Scope<'a> {
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
             | TurnTally::PlayedFromExile
-            | TurnTally::CardsLeftGraveyard => {
+            | TurnTally::CardsLeftGraveyard
+            | TurnTally::CardsDrawnTotal
+            | TurnTally::NoncombatDamageTakenTotal => {
                 let kind = match what {
+                    TurnTally::CardsDrawnTotal => Tally::Drawn,
+                    TurnTally::NoncombatDamageTakenTotal => Tally::E16aNoncombatHurt,
                     TurnTally::CardsExiled => Tally::R287Exiled,
                     TurnTally::PermanentsToHand => Tally::R287ToHand,
                     TurnTally::CardsGravedNotFromBattlefield => Tally::R287GravedElsewhere,
@@ -1185,6 +1194,7 @@ impl<'a> Scope<'a> {
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
+            Ref::SourceOf(of) => self.r302b_sources(of)?,
             Ref::PlayersWhere { who, test } => self.players_where(who, test)?,
             Ref::ControllerOf(inner) => self.seats_of(inner, |seen| seen.controller)?,
             Ref::OwnerOf(inner) => self.seats_of(inner, |seen| seen.owner)?,
@@ -1213,11 +1223,13 @@ impl<'a> Scope<'a> {
 
     /// The object that dealt the damage or blocked, when the cause names one.
     fn dealer(&self) -> Vec<Target> {
-        self.cause
-            .and_then(|cause| cause.source)
-            .map(Target::Object)
-            .into_iter()
-            .collect()
+        let Some(cause) = self.cause else {
+            return Vec::new();
+        };
+        match cause.source {
+            Some(source) => vec![Target::Object(source)],
+            None => cause.dealers.iter().copied().map(Target::Object).collect(),
+        }
     }
 
     /// What the attacker attacks or the blocker blocks, when the cause names it.
@@ -1728,6 +1740,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .filter_map(|card| self.state.object(card.id))
                 .any(|card| card.zone() == Zone::Exile && card.haunting() == Some(reference)),
+            Pred::FromSource(source) => self.r302b_from_source(source, reference)?,
             Pred::Crewed(named) => self.crewed_by(named, false, reference)?,
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
@@ -1757,6 +1770,8 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Ability(kind) => is_ability(seen, *kind),
+            Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
+            Pred::SourceOf(named) => self.r302_source_of(named, reference)?,
             Pred::HasAbility(held) => ep31_has_ability(state, seen, *held),
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
@@ -1792,6 +1807,10 @@ impl<'a> Scope<'a> {
                 .card
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
             Pred::DamagedThisTurn => state.object_tallied(reference, None, Tally::Damaged) > 0,
+            Pred::DamagedThisTurnBy(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| state.object_tallied(reference, Some(*player), Tally::Damaged) > 0),
             Pred::AttackedThisTurn => state.object_tallied(reference, None, Tally::Attacked) > 0,
             Pred::AttackedLastTurn => state.attacked_last_turn(reference),
             Pred::DealtDamageYet | Pred::DealtCombatDamageYet => state
@@ -1962,7 +1981,10 @@ impl<'a> Scope<'a> {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
             // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
-            StatKind::Name | StatKind::CreatureType | StatKind::CounterKinds => None,
+            StatKind::Name
+            | StatKind::CreatureType
+            | StatKind::CounterKinds
+            | StatKind::Subtypes => None,
         }
     }
 
@@ -2017,6 +2039,7 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(|player| i64::from(self.state.commander_casts_by(player)))
                 .sum(),
+            Amount::CastsFromCommand(what) => self.r300b_casts_from_command(what)?,
             Amount::Speed(who) => self
                 .players(who)?
                 .into_iter()
@@ -2032,6 +2055,7 @@ impl<'a> Scope<'a> {
                 sum
             }
             Amount::Times { by, of } => i64::from(*by) * self.amount_of(of, share)?,
+            Amount::AtMost { of, most } => self.amount_of(of, share)?.min(i64::from(*most)),
             Amount::Half { of, up } => {
                 let whole = self.amount_of(of, share)?.max(0);
                 if *up { (whole + 1) / 2 } else { whole / 2 }
@@ -2122,6 +2146,8 @@ impl<'a> Scope<'a> {
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
             Amount::TriggeringTargets => self.triggering_targets()?,
+            Amount::PlayersLost => self.r305b_players_lost(),
+            Amount::CastTargets => self.r305b_cast_targets()?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
             | Amount::ManaColors(_)
@@ -2446,6 +2472,25 @@ impl<'a> Scope<'a> {
             }
             return Ok(i64::try_from(kinds.len()).unwrap_or(i64::MAX));
         }
+        if stat == StatKind::Subtypes {
+            // Each subtype once among the objects, an object of several subtypes adding each of them.
+            let mut subtypes = BTreeSet::new();
+            for object in self.matching(of)? {
+                if let Some(seen) = self.seen(object) {
+                    let printed: &[mtg_core::card::Subtype] =
+                        seen.card.map_or(&[], |card| &card.card().subtypes);
+                    subtypes.extend(
+                        seen.chars
+                            .subtypes
+                            .iter()
+                            .chain(printed)
+                            .filter(|subtype| seen.chars.has_subtype(printed, subtype))
+                            .map(|subtype| subtype.0.clone()),
+                    );
+                }
+            }
+            return Ok(i64::try_from(subtypes.len()).unwrap_or(i64::MAX));
+        }
         if stat == StatKind::Name {
             let mut names = BTreeSet::new();
             for object in self.matching(of)? {
@@ -2672,7 +2717,7 @@ impl<'a> Scope<'a> {
     }
 
     /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
-    /// stack remembers a hand or a graveyard.
+    /// stack remembers a hand, a graveyard or exile.
     fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
         let Some(spell) = seen
             .card
@@ -2686,6 +2731,9 @@ impl<'a> Scope<'a> {
         match kind {
             ZoneKind::Hand => spell.cast_from_hand(),
             ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            ZoneKind::Exile => spell
+                .cast_record()
+                .is_some_and(|(zone, _)| zone == ZoneKind::Exile),
             _ => false,
         }
     }
@@ -2813,6 +2861,7 @@ impl<'a> Scope<'a> {
             Condition::EnteredAs(word) => self.e15f_entered_as(word),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
+            Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)
@@ -3493,6 +3542,7 @@ mod tests {
     fn the_cause_of_a_trigger_is_what_triggering_names() {
         let game = game();
         let cause = crate::abilities::Cause {
+            dealers: Vec::new(),
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),
             amount: 0,

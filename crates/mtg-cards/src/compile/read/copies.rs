@@ -542,6 +542,7 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
             tapped,
             until_end_of_turn,
             must: false,
+            counters: Vec::new(),
         },
         condition: None,
         from: ZoneKind::Battlefield,

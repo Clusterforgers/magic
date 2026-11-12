@@ -1,7 +1,7 @@
 {
   "oracle_id": "78f99c66-cb50-49e3-ab2d-e7755818ffd7",
   "name": "The Trickster-God's Heist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Trickster-God's Heist",
@@ -25,9 +25,39 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 143, "end": 243 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Supertype": "Basic" } }, { "Not": { "Type": "Creature" } }]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Supertype": "Basic" } },
+                    { "Not": { "Type": "Creature" } },
+                    { "SharesType": { "Target": 0 } },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": [{ "Target": 0 }, { "Target": 1 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

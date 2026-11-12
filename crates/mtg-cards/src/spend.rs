@@ -83,6 +83,10 @@ pub enum SpendFact {
     FaceDown,
     /// Its kicker was paid as it was cast ("kicked spells", CR 702.33d).
     Kicked,
+    /// It has freerunning ("a spell that has freerunning", CR 702.173).
+    Freerunning,
+    /// It has no abilities ("creature spells with no abilities", CR 113.1).
+    NoAbilities,
 }
 
 /// A special action (CR 116.2) whose cost restricted mana may pay.
@@ -197,6 +201,14 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub kicked: bool,
+    /// It has freerunning.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub freerunning: bool,
+    /// It has no abilities.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub no_abilities: bool,
 }
 
 impl SpendFilter {
@@ -251,6 +263,8 @@ impl SpendFilter {
                 SpendFact::YourCommander => traits.your_commander,
                 SpendFact::FaceDown => traits.face_down,
                 SpendFact::Kicked => traits.kicked,
+                SpendFact::Freerunning => traits.freerunning,
+                SpendFact::NoAbilities => traits.no_abilities,
             })
     }
 }
@@ -317,6 +331,12 @@ pub struct EntersBonus {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub counters: u32,
+    /// The permanent enters with as many more +1/+1 counters as times it has been cast from the command zone this game,
+    /// this cast included ("it enters with a number of additional +1/+1 counters on it equal to the number of times it's
+    /// been cast from the command zone this game").
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub per_command_cast: bool,
     /// The keyword the permanent gains.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]

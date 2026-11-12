@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ecd8d7f4-7b11-4097-afc0-ef3c81edd90c",
+  "name": "Serra Paragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serra Paragon",
+      "oracle_fingerprint": "27eb585c54b2986db666c54fb2b9f6e7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

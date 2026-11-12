@@ -1,0 +1,74 @@
+{
+  "oracle_id": "79a63064-f25b-4c34-867e-a9d32da97b14",
+  "name": "Krenko's Buzzcrusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krenko's Buzzcrusher",
+      "oracle_fingerprint": "8c866d11d85db726af5013be6f93aa0a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Not": { "Supertype": "Basic" } },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "chosen_land"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "chosen_land" }, "as": "lands", "adds": true } }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Bound": "lands" }, "as": "destroyed" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "land",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "ControllerOf": { "Bound": "land" } },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "ControllerOf": { "Bound": "land" } },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "as": "basic"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "basic" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "ControllerOf": { "Bound": "land" } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

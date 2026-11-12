@@ -88,6 +88,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r307c_words;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -222,6 +223,9 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         return texts;
     }
     if let Some(texts) = super::wf25_writers::wf25_whole(ability) {
+        return texts;
+    }
+    if let Some(texts) = super::r303b_writers::r303b_whole(ability) {
         return texts;
     }
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
@@ -565,11 +569,19 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
+    super::r302c_writers::r302c_wordings(ability, &mut texts);
+    super::r305b_writers::r305b_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
+    super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
+    super::r300b_writers::r300b_wordings(ability, written_variants, &mut texts);
+    super::r300c_writers::r300c_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
     super::l31a_events::l31a_wordings(ability, &mut texts);
+    super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
+    super::r301b_writers::r301b_flip_wordings(&mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -806,6 +818,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
     super::l293_events::l293_wordings(ability, &mut texts);
+    super::r307c_events::r307c_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }
@@ -1057,7 +1070,8 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
+            limit:
+                limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone | Limit::OncePerGame)),
             from,
             targets,
             effects,
@@ -1199,10 +1213,12 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
             all_if,
             mode_costs,
             extra_mode_cost: None,
+            pawprints,
         },
     ] = effects
     {
-        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() {
+        if !targets.is_empty() || modes.len() < 2 || !mode_costs.is_empty() || !pawprints.is_empty()
+        {
             return Vec::new();
         }
         let flags = choices::C11dFlags {
@@ -1623,6 +1639,7 @@ fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
     tail.extend(limit.map(|limit| match limit {
         Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        Limit::OncePerGame => "This ability triggers only once.".to_owned(),
         _ => "This ability triggers only once each turn.".to_owned(),
     }));
     tail
@@ -1635,6 +1652,9 @@ fn spell(sentences: &[String]) -> String {
 
 /// The event and an intervening "if" of a triggered ability, each ending in a comma.
 fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
+    if let Some(head) = super::r307c_events::r307c_head(when, condition) {
+        return Some(vec![head]);
+    }
     if condition == Some(&super::triggers::saddled())
         && matches!(when, TriggerPattern::Attacks { .. })
     {
@@ -3100,6 +3120,7 @@ impl Writer<'_> {
             .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
             .or_else(|| r287_words::r287_text(effect))
+            .or_else(|| r307c_words::r307c_text(effect))
     }
 
     /// An exile face down that no player may look at (CR 406.3) reads as the same exile with "face down" after it: "exile
@@ -3668,6 +3689,9 @@ impl Writer<'_> {
 
     /// "3 life", "X life", "life equal to its power": what is gained or lost.
     fn life(&self, amount: &Amount) -> Option<String> {
+        if let Some(life) = r307c_words::r307c_life(amount) {
+            return Some(life);
+        }
         Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)

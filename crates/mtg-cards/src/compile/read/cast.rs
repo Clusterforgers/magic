@@ -29,6 +29,7 @@ pub fn exile_until(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::ExileUntil {
         who: Ref::You,
         filter: nonland_up_to(count),
+        total: None,
         bind: FOUND.to_owned(),
         exiled_as: EXILED.to_owned(),
     }])
@@ -54,6 +55,8 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
     let leading = r.attempt(|r| {
         let duration = if r.words("until end of turn") {
             Duration::UntilEndOfTurn
+        } else if r.words("until end of combat on your next turn") {
+            Duration::UntilEndOfCombatOnYourNextTurn
         } else {
             r.need("until the end of your next turn")?;
             Duration::UntilEndOfYourNextTurn
@@ -86,6 +89,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
             r.need("without paying its mana cost")?;
             Effect::CastFromZone {
                 rather: None,
+                spend_as: crate::modify::SpendAs::default(),
                 who: Ref::You,
                 what: Ref::Bound(FOUND.to_owned()),
                 free: true,
@@ -138,6 +142,7 @@ pub fn discover_text(effects: &[Effect]) -> Option<(String, usize)> {
     let [
         Effect::ExileUntil {
             filter: Selector(preds),
+            total: None,
             ..
         },
         ..,
@@ -184,6 +189,9 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
         Duration::UntilEndOfTurn => format!("You may play {cards} this turn"),
         Duration::UntilEndOfYourNextTurn => {
             format!("Until the end of your next turn, you may play {cards}")
+        }
+        Duration::UntilEndOfCombatOnYourNextTurn => {
+            format!("Until end of combat on your next turn, you may play {cards}")
         }
         Duration::WhileYouControlSource => {
             format!("You may play {cards} for as long as you control ~")
@@ -270,6 +278,7 @@ fn exiled_with_source() -> Ref {
 fn free_cast(what: Ref, play: bool) -> Effect {
     Effect::CastFromZone {
         rather: None,
+        spend_as: crate::modify::SpendAs::default(),
         who: Ref::You,
         what,
         free: true,
@@ -394,6 +403,7 @@ pub fn text(effect: &Effect) -> Option<String> {
         Effect::ExileUntil {
             who: Ref::You,
             filter: Selector(preds),
+            total: None,
             bind,
             exiled_as,
         } if bind == FOUND && exiled_as == EXILED => {
@@ -413,7 +423,7 @@ pub fn text(effect: &Effect) -> Option<String> {
                 points_text(count)?
             )
         }
-        Effect::CastFromZone { rather: None,
+        Effect::CastFromZone { rather: None, spend_as: crate::modify::SpendAs::Normal,
             who: Ref::You,
             what: Ref::Bound(name),
             free: true,
@@ -473,6 +483,7 @@ pub fn free_cast_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: crate::modify::SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound(FROM_HAND.to_owned()),
             free: true,

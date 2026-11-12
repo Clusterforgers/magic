@@ -377,6 +377,7 @@ fn token(id: u64, controller: PlayerId, attacking: Option<AttackTarget>) -> Toke
 
 fn cause() -> Cause {
     Cause {
+        dealers: Vec::new(),
         subjects: vec![Target::Player(PlayerId(1))],
         snapshots: Vec::new(),
         amount: 0,

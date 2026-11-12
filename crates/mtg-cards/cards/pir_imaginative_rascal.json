@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7683c2b2-a06f-4691-9cc5-1968dc032885",
+  "name": "Pir, Imaginative Rascal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pir, Imaginative Rascal",
+      "oracle_fingerprint": "7a8808ddbd2fbd853f1d07317ea525a0",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Toothy, Imaginary Friend" } },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "ControlledBy": "You" }, { "In": "Battlefield" }] }
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

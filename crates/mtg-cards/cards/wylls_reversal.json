@@ -1,0 +1,66 @@
+{
+  "oracle_id": "8d35cef8-a52d-45fb-8f5f-cccea26826d0",
+  "name": "Wyll's Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wyll's Reversal",
+      "oracle_fingerprint": "343483a6a3925e80476d8ad88ccfed0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "AnyOf": [{ "Targeting": [] }, { "TargetsPlayer": "EachPlayer" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+                    },
+                    {
+                      "from": 15,
+                      "effects": [
+                        { "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": { "subject": { "Target": 0 }, "selector": ["Spell"] }
+                            },
+                            "then": [
+                              { "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }
+                            ],
+                            "otherwise": [
+                              { "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

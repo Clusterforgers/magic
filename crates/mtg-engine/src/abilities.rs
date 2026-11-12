@@ -147,6 +147,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub against: Option<Target>,
+    /// Every object that dealt the damage of a batch ("those creatures", `Ref::Dealer`), in the order dealt; empty for a
+    /// single event, whose dealer is `source`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
+    pub dealers: Vec<ObjectRef>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "087d6330-c9de-42b7-a804-1202bc6aa682",
+  "name": "Primal Adversary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Adversary",
+      "oracle_fingerprint": "951291ee49c7d7f42d38910b5ce2a87f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PayAnyTimes": { "cost": "{1}{G}" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                      "bounds": { "min": 0, "max": "Triggering" }
+                    }
+                  ],
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "AddType": "Creature" },
+                          { "AddSubtype": "Wolf" },
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,6 +17,7 @@ impl Writer<'_> {
             Effect::ExileUntil {
                 who: Ref::Target(0),
                 filter,
+                total: None,
                 bind,
                 exiled_as,
             },
@@ -42,6 +43,7 @@ impl Writer<'_> {
             additional: None,
             spend_as: crate::modify::SpendAs::Normal,
             when: None,
+            any_cast: false,
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))

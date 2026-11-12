@@ -1,0 +1,28 @@
+{
+  "oracle_id": "96bcabee-e84e-409f-8439-80f5308d73e9",
+  "name": "Marble Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marble Priest",
+      "oracle_fingerprint": "6d6f240751e8259136e3a9a97af308c3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": { "who": "This", "quirk": { "MustBeBlockedBy": [{ "Subtype": "Wall" }] } }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "This", "source": [{ "Subtype": "Wall" }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import {
   askerWords,
   modeKeysWords,
   modeLabel,
+  modeWeight,
   modesAnswer,
   modesSentence,
   numberKey,
@@ -31,7 +32,11 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
   const single = min === 1 && max === 1
   // The indices of the chosen modes in the order they were chosen.
   const [chosen, setChosen] = useState<readonly number[]>([])
-  const full = chosen.length >= max
+  const weights = new Map(modes.map((mode) => [mode.index, modeWeight(mode)]))
+  const weight = (index: number): number => weights.get(index) ?? 1
+  const pawprints = modes.some((mode) => mode.weight !== undefined)
+  // What the chosen modes take from the most: one each, or their pawprints.
+  const spent = chosen.reduce((sum, index) => sum + weight(index), 0)
   const first = useRef<HTMLButtonElement>(null)
   const cancel = useRef<HTMLButtonElement>(null)
   useDefaultFocus(canCancel ? cancel : first)
@@ -41,7 +46,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
       void answer({ ChooseMode: { Modes: [index] } })
       return
     }
-    setChosen((current) => pressedMode(current, index, { max, repeat }))
+    setChosen((current) => pressedMode(current, index, { max, repeat, weight }))
   }
   usePromptKeys(
     Object.fromEntries(
@@ -57,7 +62,8 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
     min,
     max,
     repeat,
-    chosen: chosen.length,
+    chosen: spent,
+    pawprints,
   })
   const times = (index: number): number => chosen.filter((mode) => mode === index).length
 
@@ -117,7 +123,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
               aria-label={label}
               aria-keyshortcuts={key}
               aria-pressed={single ? undefined : picked}
-              disabled={!single && full && (repeat || !picked)}
+              disabled={!single && spent + weight(mode.index) > max && (repeat || !picked)}
               focusableWhenDisabled
               onClick={() => press(mode.index)}
             >

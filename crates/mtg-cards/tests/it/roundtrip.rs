@@ -590,6 +590,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     additional: None,
                     spend_as: mtg_cards::modify::SpendAs::Normal,
                     when: None,
+                    any_cast: false,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
@@ -1064,14 +1065,20 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
         amount().prop_map(|count| Effect::Bolster { count }),
         reference().prop_map(|what| Effect::Explore { what }),
         (reference(), simple_amount()).prop_map(|(what, count)| Effect::Connive { what, count }),
-        (who(), selector(), bound_name(), bound_name()).prop_map(
-            |(who, filter, bind, exiled_as)| Effect::ExileUntil {
+        (
+            who(),
+            selector(),
+            proptest::option::of(amount()),
+            bound_name(),
+            bound_name()
+        )
+            .prop_map(|(who, filter, total, bind, exiled_as)| Effect::ExileUntil {
                 who,
                 filter,
+                total,
                 bind,
                 exiled_as
-            }
-        ),
+            }),
         (who(), selector(), amount(), bound_name(), bound_name()).prop_map(
             |(who, filter, count, bind, revealed_as)| Effect::RevealUntil {
                 who,
@@ -1189,6 +1196,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                 .prop_map(|(who, what, free, play, otherwise, way)| {
                     Effect::CastFromZone {
                         rather: None,
+                        spend_as: mtg_cards::modify::SpendAs::default(),
                         who,
                         what,
                         free,
@@ -1245,6 +1253,7 @@ fn effect() -> impl Strategy<Value = Effect> {
                     all_if: None,
                     mode_costs: Vec::new(),
                     extra_mode_cost: None,
+                    pawprints: Vec::new(),
                     modes: modes
                         .into_iter()
                         .map(|(label, targets, effects)| Mode {
@@ -1413,6 +1422,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             tapped,
                             until_end_of_turn,
                             must: false,
+                            counters: Vec::new(),
                         }
                     }),
             ],

@@ -3,6 +3,7 @@
 use mtg_core::house::HouseRuleError;
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
+use mtg_engine::Engine;
 use mtg_engine::state::GameResult;
 use mtg_protocol::{ClientMessage, SeatDeck, ServerMessage};
 use thiserror::Error;
@@ -124,6 +125,10 @@ pub(crate) enum Command {
     },
     Status {
         reply: oneshot::Sender<GameStatus>,
+    },
+    /// A copy of the running engine, for a server bot to search; `None` in the lobby.
+    Table {
+        reply: oneshot::Sender<Option<Box<Engine>>>,
     },
 }
 
@@ -271,6 +276,17 @@ impl GameHandle {
         let (reply, answer) = oneshot::channel();
         self.commands
             .send(Command::Closing { on, reply })
+            .await
+            .map_err(|_| GameClosed)?;
+        answer.await.map_err(|_| GameClosed)
+    }
+
+    /// A copy of the running game's engine for a server bot to search (`bots.rs`), which reads it only as its seat may;
+    /// `None` while the game is in its lobby.
+    pub(crate) async fn table(&self) -> Result<Option<Box<Engine>>, GameClosed> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Table { reply })
             .await
             .map_err(|_| GameClosed)?;
         answer.await.map_err(|_| GameClosed)

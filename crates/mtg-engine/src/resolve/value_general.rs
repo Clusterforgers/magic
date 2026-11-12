@@ -122,6 +122,7 @@ fn the_triggering_spell_has_its_targets(#[case] targets: Vec<Target>, #[case] ex
         ..Choices::default()
     };
     let cause = Cause {
+        dealers: Vec::new(),
         subjects: vec![Target::Object(spell)],
         snapshots: Vec::new(),
         amount: 0,

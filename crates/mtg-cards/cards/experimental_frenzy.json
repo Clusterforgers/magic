@@ -8,12 +8,7 @@
       "oracle_fingerprint": "58dcd43bcc4f0c09d381452c8a3e5734",
       "abilities": [
         { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 55, "end": 119 }
-          }
-        },
+        { "Rule": { "rule": { "MayCast": { "from": "Library", "play": true } } } },
         {
           "Manual": {
             "reason": "you apply this static ability by hand",

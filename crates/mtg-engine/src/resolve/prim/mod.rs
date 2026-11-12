@@ -100,6 +100,7 @@ mod move_counters;
 mod moved_as;
 mod one_of;
 mod pair;
+mod r301b_exchange_toughness;
 mod reflexive;
 mod remember;
 mod restart_game;
@@ -191,6 +192,7 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::DrawGame {} => fe1n_game::draw(cx, effect),
         Effect::SetLife { .. } => fe1n_life::set(cx, effect),
         Effect::ExchangeLife { .. } => fe1n_life::exchange(cx, effect),
+        Effect::ExchangeLifeWithToughness { .. } => r301b_exchange_toughness::run(cx, effect),
         Effect::RemoveDamage { .. } => fe1n_damage::run(cx, effect),
         Effect::RepeatWhile { .. } => fe1n_repeat_while::run(cx, effect),
         Effect::SeparatePiles { .. } => fe1n_piles::run(cx, effect),
@@ -383,7 +385,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"SpellEntersWith":{"spell":"This"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"ExchangeLifeWithToughness":{"what":"This"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Plot":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
@@ -509,6 +511,7 @@ mod tests {
         "Effect.DrawGame",
         "Effect.SetLife",
         "Effect.ExchangeLife",
+        "Effect.ExchangeLifeWithToughness",
         "Effect.RemoveDamage",
         "Effect.RepeatWhile",
         "Effect.SeparatePiles",

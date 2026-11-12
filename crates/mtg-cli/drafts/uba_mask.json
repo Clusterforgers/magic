@@ -1,0 +1,31 @@
+{
+  "oracle_id": "766c644c-04fe-4b01-93dd-09a50d78d01f",
+  "name": "Uba Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uba Mask",
+      "oracle_fingerprint": "30361202e6d1a126f0c93f46bbd345ec",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": { "who": "EachPlayer" } },
+            "by": { "Instead": [{ "ExileTop": { "who": "TriggeringPlayer", "as": "exiled" } }] }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "what": [{ "ExiledWith": "This" }, { "ArrivedFrom": "Library" }],
+                "from": "Exile",
+                "play": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

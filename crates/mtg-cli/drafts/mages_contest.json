@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b0a6bf69-7e21-4d5c-ac72-5946d84fc2ca",
+  "name": "Mages' Contest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mages' Contest",
+      "oracle_fingerprint": "278d3531fef54a48c73e130f7a7db9c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "BidLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "start": 1,
+                  "as": "bid",
+                  "winner": "winner"
+                }
+              },
+              { "LoseLife": { "who": { "Bound": "winner" }, "amount": { "ChosenAs": "bid" } } },
+              {
+                "If": {
+                  "condition": { "Among": { "Bound": "winner" } },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

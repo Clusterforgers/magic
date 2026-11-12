@@ -79,4 +79,12 @@ face_down?: boolean,
 /**
  * Its kicker is paid.
  */
-kicked?: boolean, };
+kicked?: boolean, 
+/**
+ * It has freerunning.
+ */
+freerunning?: boolean, 
+/**
+ * It has no abilities.
+ */
+no_abilities?: boolean, };

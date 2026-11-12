@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "7a938fa9-cba2-4773-9be9-db1e37aa001f",
+  "oracle_id": "8c489e39-b9ff-400f-a855-3cddf7e112e6",
+  "multiverse_ids": [],
+  "resource_id": "F8401BAB3AA7BB820D99E2F0B99EF5CD7EBB38269DD676418B407800C79F7A29",
+  "mtgo_id": 153171,
+  "tcgplayer_id": 621160,
+  "cardmarket_id": 839937,
+  "name": "Sensational Spider-Man",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/7a938fa9-cba2-4773-9be9-db1e37aa001f",
+  "scryfall_uri": "https://scryfall.com/card/spe/25/sensational-spider-man?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:16:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366",
+    "normal": "https://cards.scryfall.io/normal/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366",
+    "large": "https://cards.scryfall.io/large/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366",
+    "png": "https://cards.scryfall.io/png/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.png?1783905366",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.webp?1783905366",
+    "grid": "https://cards.scryfall.io/grid/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.webp?1783905366",
+    "display": "https://cards.scryfall.io/display/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.webp?1783905366",
+    "art": "https://cards.scryfall.io/art/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.webp?1783905366",
+    "crop": "https://cards.scryfall.io/crop/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.webp?1783905366",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/a/7a938fa9-cba2-4773-9be9-db1e37aa001f.jpg?1783905366"
+  },
+  "mana_cost": "{1}{W}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Spider Human Hero",
+  "oracle_text": "Whenever Sensational Spider-Man attacks, tap target creature defending player controls and put a stun counter on it. Then you may remove up to three stun counters from among all permanents. Draw cards equal to the number of stun counters removed this way.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set": "spe",
+  "set_name": "Marvel's Spider-Man Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/57f25bcf-c541-418d-87c2-57361d57d35e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspe&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spe?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7a938fa9-cba2-4773-9be9-db1e37aa001f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8c489e39-b9ff-400f-a855-3cddf7e112e6&unique=prints",
+  "collector_number": "25",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Dos Santos",
+  "artist_ids": [
+    "9b55c657-5b5b-4152-a6e2-51180517bfa9"
+  ],
+  "illustration_id": "cea84d4f-0464-48ce-b4a1-09401e85ac9a",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 9849,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/news/feature/collecting-marvels-spider-man",
+    "previewed_at": "2025-03-01"
+  },
+  "prices": {
+    "usd": "3.61",
+    "usd_foil": "2.75",
+    "usd_etched": null,
+    "eur": "1.69",
+    "eur_foil": "1.64",
+    "tix": "0.45"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSensational%2BSpider-Man",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSensational%2BSpider-Man",
+    "edhrec": "https://edhrec.com/route/?cc=Sensational+Spider-Man"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F621160%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=839937&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/153171?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

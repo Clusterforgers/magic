@@ -397,6 +397,7 @@ fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: mtg_cards::modify::SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound("paradigm".to_owned()),
             free: true,
@@ -717,10 +718,15 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Half => matches!(unit, Unit::Counters { .. } | Unit::Damage { .. }),
-        ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::Half | ReplaceBy::Subtract(_) => {
+            matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
+        }
+        ReplaceBy::Cap(_) | ReplaceBy::PreventAmount(_) | ReplaceBy::PreventAtMost(_) => {
+            matches!(unit, Unit::Damage { .. })
+        }
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
+        | ReplaceBy::AddAmount(_)
         | ReplaceBy::Prevent
         | ReplaceBy::PreventNext => matches!(
             unit,
@@ -768,7 +774,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
             )
         }
-        ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
+        ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
+        | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }
@@ -817,6 +825,8 @@ impl Action {
             Action::Replace(
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
+                    | ReplaceBy::PreventAmount(_)
+                    | ReplaceBy::PreventAtMost(_)
                     | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
                     | ReplaceBy::PreventAnd(_)
@@ -1161,6 +1171,7 @@ impl Pass<'_> {
     }
 
     /// The effects that apply to the item and have not been applied to it, in the order of their addresses.
+    #[allow(clippy::too_many_lines)]
     fn candidates(&self, at: usize) -> Result<Vec<Candidate>, EngineError> {
         let slot = &self.slots[at];
         let unit = self.unit(&slot.item);
@@ -1211,11 +1222,14 @@ impl Pass<'_> {
                     return Ok(());
                 }
             }
+            let Some(by) = step.r304c_fixed(at, by, source)? else {
+                return Ok(());
+            };
             found.push(Candidate {
                 origin,
                 object: source.object,
                 controller: source.controller,
-                action: Action::Replace(by.clone()),
+                action: Action::Replace(by),
                 is_self: is_self(when),
             });
             Ok(())
@@ -2631,6 +2645,7 @@ impl Pass<'_> {
                 until: None,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
                     rather: None,
+                    spend_as: mtg_cards::modify::SpendAs::default(),
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
@@ -2937,6 +2952,7 @@ impl Pass<'_> {
                 tapped: enters_tapped,
                 until_end_of_turn,
                 must,
+                counters,
             } => {
                 let copy =
                     match self.copies(candidate.object, controller, object, (of, *must), except)? {
@@ -2949,7 +2965,9 @@ impl Pass<'_> {
                     if *enters_tapped {
                         tapped(self, at);
                     }
+                    let copied = copy.of;
                     self.begin_copy(at, copy, &applied);
+                    self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
                 }
             }
             _ => {}
@@ -3305,6 +3323,27 @@ impl Pass<'_> {
         Ok(())
     }
 
+    /// The counters a permanent entering as a copy of `copied` enters with: each entry whose selector the copied
+    /// permanent matches as it is copied.
+    fn r305c_copy_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        copied: ObjectRef,
+        counters: &[mtg_cards::trigger::CopyCounters],
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        for entry in counters {
+            let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+            if !entry.of.is_empty() && !scope.selects(&entry.of, copied)? {
+                continue;
+            }
+            self.enter_with_counters(at, candidate, object, &entry.counter, &entry.count, applied)?;
+        }
+        Ok(())
+    }
+
     /// Whether `controller` has the permanent enter with counters: asked yes or no.
     fn takes_counters(
         &mut self,
@@ -3632,6 +3671,7 @@ mod w13a_moved;
 mod w5d_instead;
 
 mod r283_prevent;
+mod r304c_amounts;
 mod w9c_prevent;
 
 #[cfg(test)]

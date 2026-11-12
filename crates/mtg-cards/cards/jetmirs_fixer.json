@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f87df7d4-99e2-4340-9d0a-b96c397555db",
+  "name": "Jetmir's Fixer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jetmir's Fixer",
+      "oracle_fingerprint": "7425be6f772b4556c66b7ba52fa00743",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}{G}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "ManaSpent": { "of": null, "from": { "subtypes": ["Treasure"] } } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -110,7 +110,7 @@ pub enum Misfit {
     Unloadable(String),
     /// Written for another text: a face's name or fingerprint differs from the stored card's.
     Stale,
-    /// A rules file or a `Verified` compiled row already runs the card.
+    /// A `Verified` reading, or a rules file the draft does not outrank, already runs the card.
     Outranked,
 }
 
@@ -120,7 +120,7 @@ impl Misfit {
         match self {
             Misfit::Unloadable(message) => format!("not a loadable whole draft: {message}"),
             Misfit::Stale => "written for another text".into(),
-            Misfit::Outranked => "the card is Verified without it".into(),
+            Misfit::Outranked => "the card runs without it".into(),
         }
     }
 }
@@ -164,8 +164,19 @@ fn broken_rows(left_out: &[LoadError]) -> BTreeMap<&str, String> {
     broken
 }
 
+/// Whether the card's rules file decides it before a draft: always unless it is `Partial`, `Manual` or `Stale` and
+/// the draft is whole.
+pub fn corpus_outranks(library: &Library, printed: &PrintedCard, caps: &Caps, whole: bool) -> bool {
+    library.card(&printed.oracle_id).is_some_and(|rules| {
+        !(whole
+            && support(Some(rules), printed, caps)
+                .support
+                .yields_to_whole_draft())
+    })
+}
+
 /// Whether each draft fits its stored card, in the order of `items`: it loads as a draft (a whole rules file), is
-/// written for the stored text, and no rules file or `Verified` compiled row runs the card without it.
+/// written for the stored text, and no `Verified` reading or rules file ([`corpus_outranks`]) runs the card without it.
 pub fn misfits(
     library: &Library,
     caps: &Caps,
@@ -184,7 +195,7 @@ pub fn misfits_proved(library: &Library, caps: &Caps, items: &[DraftItem]) -> Ve
     let broken = broken_rows(&left_out);
     items
         .iter()
-        .map(|(printed, card, _)| {
+        .map(|(printed, card, proof)| {
             if let Some(message) = broken.get(printed.oracle_id.as_str()) {
                 return Some(Misfit::Unloadable(message.clone()));
             }
@@ -193,7 +204,8 @@ pub fn misfits_proved(library: &Library, caps: &Caps, items: &[DraftItem]) -> Ve
             }
             let compiled = compile(printed).card;
             let verified = support(compiled.as_ref(), printed, caps).support == Support::Verified;
-            (verified || library.card(&printed.oracle_id).is_some()).then_some(Misfit::Outranked)
+            (verified || corpus_outranks(library, printed, caps, proof.is_none()))
+                .then_some(Misfit::Outranked)
         })
         .collect()
 }

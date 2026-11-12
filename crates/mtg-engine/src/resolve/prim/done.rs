@@ -131,6 +131,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::DrawGame {}
         | Effect::SetLife { .. }
         | Effect::ExchangeLife { .. }
+        | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }
         | Effect::Planechase { .. }

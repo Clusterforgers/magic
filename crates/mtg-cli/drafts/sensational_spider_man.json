@@ -1,0 +1,54 @@
+{
+  "oracle_id": "8c489e39-b9ff-400f-a855-3cddf7e112e6",
+  "name": "Sensational Spider-Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sensational Spider-Man",
+      "oracle_fingerprint": "5cf6a6e3c70e59343893604671dc7569",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "HasCounter": { "Other": "stun" } }] },
+                      "selector": [],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "HasCounter": { "Other": "stun" } }] },
+                        "as": "stunned"
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": { "Bound": "stunned" },
+                        "counter": { "Other": "stun" }
+                      }
+                    },
+                    { "Draw": {} }
+                  ],
+                  "most": 3,
+                  "ask": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

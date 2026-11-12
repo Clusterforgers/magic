@@ -549,6 +549,7 @@ pub(crate) fn abilities_now(
                 Activators::Controller => controller == player,
                 Activators::Anyone => true,
                 Activators::Opponents => state.is_opponent(controller, player),
+                Activators::Owner => object.owner() == player,
             };
             if !allowed {
                 continue;

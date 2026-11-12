@@ -65,8 +65,12 @@ export function optionLabel(
 /** One mode as its button names it: the card's name for it, else its place on the card, with the cost it adds. */
 export function modeLabel(mode: ModeOption): string {
   const name = mode.label ?? `Mode ${mode.index + 1}`
-  return mode.cost ? `${name} (${mode.cost})` : name
+  const priced = mode.cost ? `${name} (${mode.cost})` : name
+  return mode.weight === undefined ? priced : `${'{P}'.repeat(mode.weight)} — ${priced}`
 }
+
+/** What choosing a mode takes from the most: its pawprints ({P}), else one. */
+export const modeWeight = (mode: ModeOption): number => mode.weight ?? 1
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
 
@@ -87,12 +91,20 @@ export interface ModesAsked {
   min: number
   max: number
   repeat: boolean
-  /** How many modes are chosen so far, a repeated one counted each time. */
+  /** How many modes are chosen so far, a repeated one counted each time; with pawprints, the pawprints they take. */
   chosen: number
+  /** The modes are counted in pawprints ("Choose up to five {P} worth of modes"). */
+  pawprints?: boolean
 }
 
 /** The live sentence of the mode prompt: the question at first, then what is chosen and what is left to do. */
-export function modesSentence({ asker, min, max, repeat, chosen }: ModesAsked): string {
+export function modesSentence({ asker, min, max, repeat, chosen, pawprints }: ModesAsked): string {
+  if (pawprints) {
+    const worth = `${numberWord(max)} {P} worth of modes`
+    if (chosen === 0) return `${asker}: choose up to ${worth}, a mode more than once if you like, or none.`
+    if (chosen >= max) return `${asker}: ${chosen} {P} chosen. Confirm the modes, or take one back.`
+    return `${asker}: ${chosen} {P} chosen. Confirm the modes, or choose up to ${max - chosen} {P} more.`
+  }
   if (chosen === 0) {
     const more = repeat && max > 1 ? ', a mode more than once if you like' : ''
     return `${asker}: choose ${modeBounds(min, max)}${more}${min === 0 ? ', or none' : ''}.`
@@ -105,15 +117,19 @@ export function modesSentence({ asker, min, max, repeat, chosen }: ModesAsked): 
   return `${head} Confirm the modes, or choose up to ${max - chosen} more.`
 }
 
-/** The modes after a press on `index`: a chosen mode is taken back, unless modes may repeat, when it is chosen again. */
+/**
+ * The modes after a press on `index`: a chosen mode is taken back, unless modes may repeat, when it is chosen again. A
+ * mode is added only while what the chosen modes take, each by its `weight` (one when absent), leaves room for it.
+ */
 export function pressedMode(
   chosen: readonly number[],
   index: number,
-  { max, repeat }: { max: number; repeat: boolean },
+  { max, repeat, weight = () => 1 }: { max: number; repeat: boolean; weight?: (index: number) => number },
 ): number[] {
-  if (repeat) return chosen.length < max ? [...chosen, index] : [...chosen]
+  const room = chosen.reduce((left, mode) => left - weight(mode), max) >= weight(index)
+  if (repeat) return room ? [...chosen, index] : [...chosen]
   if (chosen.includes(index)) return chosen.filter((mode) => mode !== index)
-  return chosen.length < max ? [...chosen, index] : [...chosen]
+  return room ? [...chosen, index] : [...chosen]
 }
 
 /** The answer for the modes chosen: their indices in the order they happen, which is the order on the card. */

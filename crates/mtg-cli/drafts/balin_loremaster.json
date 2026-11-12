@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0d420e41-43e9-41d6-832c-5a9f410c994e",
+  "name": "Balin, Loremaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balin, Loremaster",
+      "oracle_fingerprint": "f32a2bc3ca21e23508487f1b70ddb45f",
+      "abilities": [
+        { "Keyword": "Storied" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": ["This", { "Subtype": "Dwarf" }] }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": {
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "discarded"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": { "CountOf": { "of": { "Bound": "discarded" }, "filter": [] } }
+                }
+              },
+              { "Draw": { "count": { "Bound": "x" } } },
+              {
+                "If": {
+                  "condition": { "EnduringStory": "You" },
+                  "then": [{ "DealDamage": { "to": "Opponents", "amount": { "Bound": "x" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "71d2a0fe-5426-4fa3-85a4-564c37184996",
+  "name": "Smelting Vat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smelting Vat",
+      "oracle_fingerprint": "3cbcc8bc6ddbbb4c3753cecd77829b6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Other"] } }
+            ],
+            "effects": [
+              { "LookAtTop": { "count": 8, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" },
+                      { "Not": { "Type": "Creature" } },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": { "of": [{ "Is": { "Bound": "kept" } }], "stat": "ManaValue" }
+                      },
+                      "op": "Le",
+                      "right": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

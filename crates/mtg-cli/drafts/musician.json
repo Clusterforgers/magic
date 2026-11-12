@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0d6e9468-adb2-4feb-87cf-9113db8717b1",
+  "name": "Musician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Musician",
+      "oracle_fingerprint": "588ffd612959c65522f4a4a4b9a3cd80",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "music" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                          "effects": [
+                            {
+                              "Pay": {
+                                "cost": "{1}",
+                                "times": {
+                                  "Counters": { "on": "This", "counter": { "Other": "music" } }
+                                },
+                                "unpaid": [{ "Destroy": { "what": "This" } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

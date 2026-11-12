@@ -1,0 +1,71 @@
+{
+  "oracle_id": "fe8c2b7e-f80d-4acb-a976-edcf436a78a9",
+  "name": "Kogla and Yidaro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kogla and Yidaro",
+      "oracle_fingerprint": "6a6553d9aa7904ee54f431bbb3f7caf0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Move": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

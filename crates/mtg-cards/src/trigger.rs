@@ -949,6 +949,20 @@ pub enum EntersChoice {
     },
 }
 
+/// Counters a permanent entering as a copy enters with (`ReplaceBy::AsCopy`), when the object it copies matches `of`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CopyCounters {
+    /// The kind of counter.
+    pub counter: CounterKind,
+    /// How many.
+    #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+    pub count: Amount,
+    /// What the copied object must be, judged as it is copied; any object when empty.
+    #[serde(default, skip_serializing_if = "Selector::is_empty")]
+    pub of: Selector,
+}
+
 /// What happens instead.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -1000,6 +1014,14 @@ pub enum ReplaceBy {
     RedirectUpTo {
         /// The most damage redirected in all.
         most: u32,
+        /// The player or permanent the damage is dealt to instead.
+        to: Ref,
+    },
+    /// `RedirectUpTo` with the total an amount counted as the shield begins (CR 611.2c): "the next X damage that would be
+    /// dealt to ~ this turn is dealt to target creature instead"; only a shield uses it.
+    RedirectCounted {
+        /// The most damage redirected in all, counted as the shield begins.
+        most: Amount,
         /// The player or permanent the damage is dealt to instead.
         to: Ref,
     },
@@ -1120,6 +1142,10 @@ pub enum ReplaceBy {
         /// enter as a copy of this creature").
         #[serde(default, skip_serializing_if = "is_false")]
         must: bool,
+        /// Counters it enters with when it is a copy, each only when the copied object matches its selector ("except it
+        /// enters with an additional +1/+1 counter on it if it's a creature").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        counters: Vec<CopyCounters>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
@@ -1150,6 +1176,15 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller mills this many cards (CR 701.17): "As this creature enters, mill three
     /// cards for each time it was kicked."
     Mill(Amount),
+    /// The number in the event is increased by an amount worked out as the event happens ("it deals that much damage
+    /// plus X instead, where X is ~'s power"; `r304c_amounts`).
+    AddAmount(Amount),
+    /// Up to an amount worked out as the event happens of the damage is prevented ("prevent X of that damage, where X
+    /// is the number of creatures you control"); only a static ability uses it.
+    PreventAmount(Amount),
+    /// All of the damage is prevented when it is this much or less ("If a source would deal 3 or less damage to ~,
+    /// prevent that damage"); only a static ability uses it.
+    PreventAtMost(u32),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1203,6 +1238,10 @@ impl ShieldShape {
             {
                 Some(Self::Class)
             }
+            // "Until end of turn, if one or more tokens would be created under your control, twice that many ..."
+            (ReplaceWhen::TokenCreation { .. }, ReplaceBy::Multiply(_) | ReplaceBy::Add(_)) => {
+                Some(Self::Class)
+            }
             (
                 ReplaceWhen::Damage { .. },
                 ReplaceBy::Prevent
@@ -1216,6 +1255,7 @@ impl ShieldShape {
                 | ReplaceBy::Instead(_)
                 | ReplaceBy::InsteadNext(_)
                 | ReplaceBy::RedirectUpTo { .. }
+                | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. },
             ) => Some(Self::Damage),
             (

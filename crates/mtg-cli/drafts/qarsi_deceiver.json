@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e12681cc-c66e-4dac-882c-bd8638a2e12c",
+  "name": "Qarsi Deceiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Qarsi Deceiver",
+      "oracle_fingerprint": "e1951ab25da5d4eab0a3380ff2cbe58b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [
+                    { "Spell": { "types": ["Creature"], "facts": ["FaceDown"] } },
+                    { "Special": "TurnFaceUp" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "020aae46-cdba-4c37-9c54-283727c09994",
+  "name": "Taster of Wares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taster of Wares",
+      "oracle_fingerprint": "270437623c9071d064c2330a01417754",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": { "Count": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "count": { "min": { "Bound": "x" }, "max": { "Bound": "x" } },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              { "Choose": { "from": { "Bound": "revealed" }, "as": "chosen" } },
+              { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        { "Is": { "Bound": "exiled" } },
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                      ],
+                      "from": "Exile",
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

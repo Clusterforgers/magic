@@ -85,6 +85,12 @@ impl Support {
             Support::Verified | Support::Read | Support::Forge | Support::Unverified
         )
     }
+
+    /// Whether a rules file in this state gives way to a whole draft: `Partial`, `Manual` or `Stale` (which counts as
+    /// `Manual`); a partial draft never outranks a rules file.
+    pub const fn yields_to_whole_draft(self) -> bool {
+        matches!(self, Support::Partial | Support::Manual | Support::Stale)
+    }
 }
 
 /// A clause of the oracle text the game cannot run, with the reason in plain words.
