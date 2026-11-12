@@ -480,6 +480,8 @@ pub enum Prohibited {
     Untap,
     /// Crew Vehicles: be tapped to pay a crew cost (CR 702.122).
     Crew,
+    /// Become suspected (CR 701.60): an effect that would suspect it does nothing to it.
+    BecomeSuspected,
     /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
     EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.

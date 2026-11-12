@@ -11,8 +11,8 @@ use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{
     ClauseKind, Compiled, compile, either_way_pair_texts, equip_line, escalate_cost,
-    escalate_reads, forecast_lines, own_names, reinforce_line, same_written_text,
-    static_pair_texts, written_variants,
+    escalate_reads, forecast_lines, own_names, r304b_triple_texts, reinforce_line,
+    same_written_text, static_pair_texts, written_variants,
 };
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::Library;
@@ -433,6 +433,17 @@ fn pair_is_written(
 ) -> Option<bool> {
     let mut pair = static_pair_texts(first, second);
     pair.extend(either_way_pair_texts(first, second));
+    texts_are_written(printed, compiled, face, &pair)
+}
+
+/// Whether one of the wordings `pair` of abilities of a face is a static or triggered sentence of the card; `None` when
+/// there is no wording.
+fn texts_are_written(
+    printed: &PrintedCard,
+    compiled: &Compiled,
+    face: usize,
+    pair: &[String],
+) -> Option<bool> {
     if pair.is_empty() {
         return None;
     }
@@ -475,9 +486,14 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
     let mut missing = Vec::new();
     let listed: Vec<(usize, &Ability)> = by_hand.abilities().collect();
     let mut skip_next = false;
+    let mut skip_two = false;
     // The first static of a pair was printed apart from the second, so the second needs its own line too.
     let mut pair_apart = false;
     for (at, &(face, ability)) in listed.iter().enumerate() {
+        if std::mem::take(&mut skip_two) {
+            skip_next = true;
+            continue;
+        }
         if std::mem::take(&mut skip_next) {
             continue;
         }
@@ -494,6 +510,22 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             continue;
         }
         assert_escalate_line(&printed.name, compiled, face, ability);
+        // Three rules of the attached permanent may be one sentence of the card (Bound in Gold).
+        if let (Some(&(second_face, second)), Some(&(third_face, third))) =
+            (listed.get(at + 1), listed.get(at + 2))
+            && second_face == face
+            && third_face == face
+            && texts_are_written(
+                printed,
+                compiled,
+                face,
+                &r304b_triple_texts(ability, second, third),
+            ) == Some(true)
+        {
+            skip_two = true;
+            rendered += 3;
+            continue;
+        }
         // Two statics with one subject may be one sentence of the card; printed as two sentences (Air Bladder),
         // each must be written as its own line below.
         let own_line = std::mem::take(&mut pair_apart);

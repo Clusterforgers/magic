@@ -99,6 +99,7 @@ pub(super) fn r6b_texts(first: &Ability, second: &Ability) -> Vec<String> {
     let row = |json: &str| serde_json::from_str::<serde_json::Value>(json).ok() == second_value;
     let back_row = BACKS
         .iter()
+        .chain(super::r304b_writers::R304B_BACKS)
         .find(|(json, _)| row(json))
         .map(|(_, back)| *back);
     let tail_row = TAILS.iter().find(|(json, ..)| row(json));
