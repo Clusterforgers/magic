@@ -758,6 +758,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::BecomesChoice(_)
+        | ReplaceBy::Mill(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
@@ -795,6 +796,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::UnderChosenOpponent
                 | ReplaceBy::BecomesChoice(_)
+                | ReplaceBy::Mill(_)
         )
     )
 }
@@ -2906,6 +2908,7 @@ impl Pass<'_> {
                     return Ok(Applied::Ask(decision));
                 }
             }
+            ReplaceBy::Mill(count) => self.r303_mills(at, candidate, controller, count)?,
             ReplaceBy::BecomesChoice(forms) => {
                 match self.r303_becomes_form(at, source, object, controller, forms, &applied)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -3565,6 +3568,7 @@ mod changes;
 mod e15b_counter_of;
 mod e15f_word;
 mod r303_forms;
+mod r303_mills;
 mod riot;
 mod tribute;
 

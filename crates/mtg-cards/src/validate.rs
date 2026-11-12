@@ -5466,6 +5466,12 @@ impl Walker<'_> {
             }
             ReplaceBy::ChooseWord(words) => self.e15f_choose_word(words),
             ReplaceBy::BecomesChoice(forms) => self.r303_becomes_choice(enters, forms),
+            ReplaceBy::Mill(count) => {
+                if !enters {
+                    self.problem("only an `Enters` event mills as it happens");
+                }
+                self.at("count", |w| w.amount(count));
+            }
             ReplaceBy::Devour { counters, of } => {
                 if !enters {
                     self.problem("only an `Enters` event devours");

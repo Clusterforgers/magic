@@ -348,6 +348,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.EntersPrepared",
     "ReplaceBy.ChooseWord",
     "ReplaceBy.BecomesChoice",
+    "ReplaceBy.Mill",
     "ReplaceBy.UnderChosenOpponent",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",

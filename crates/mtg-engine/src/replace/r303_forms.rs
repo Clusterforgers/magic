@@ -78,7 +78,7 @@ impl Pass<'_> {
                 return Err(Self::invalid(format!("{change:?} is no change of a form")));
             }
         }
-        let rule = values.rules.iter().position(|rule| {
+        let rule = crate::ability_reader::printed_rules(&values).position(|rule| {
             matches!(&**rule, Ability::Replacement { by: ReplaceBy::BecomesChoice(same), .. } if same == forms)
         });
         self.begin_copy(

@@ -1123,6 +1123,9 @@ pub enum ReplaceBy {
     /// creature, a 2/2 creature with flying, or a 1/6 creature with defender"): the changes of the chosen form join its
     /// copiable values (CR 707.2), so a copy of it has them too. A form holds only changes a copy effect makes.
     BecomesChoice(Vec<Vec<Modification>>),
+    /// As the permanent enters, its controller mills this many cards (CR 701.17): "As this creature enters, mill three
+    /// cards for each time it was kicked."
+    Mill(Amount),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

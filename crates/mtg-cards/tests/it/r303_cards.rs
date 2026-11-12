@@ -1,5 +1,5 @@
-//! Goal: every card the r30-3 pack made fully automatic reads back as its printed text clause by clause, and each card
-//! it left partial keeps by hand only the clauses it names.
+//! Goal: every card the r30-3 pack made fully automatic reads back as its printed text clause by clause, a near miss of
+//! its rules does not, and a form a copy effect cannot make is refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -131,6 +131,16 @@ fn check_outside() {
 #[case("Last Stand")]
 #[case("Providence")]
 #[case("Psychic Rebuttal")]
+#[case("Enkira, Hostile Scavenger")]
+#[case("Kaervek's Spite")]
+#[case("Pact Weapon")]
+#[case("The Golden Throne")]
+#[case("Archelos, Lagoon Mystic")]
+#[case("Bronze Horse")]
+#[case("Dance of the Manse")]
+#[case("Monstrous War-Leech")]
+#[case("Signal the Clans")]
+#[case("Urborg Lhurgoyf")]
 #[case("Begin the Invasion")]
 #[case("Conflux")]
 #[case("Corrupted Shapeshifter")]
@@ -211,6 +221,32 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::to_you("Harsh Justice", r#""to":{"ControllerOf":"Dealer"}"#, r#""to":"You""#)]
 #[case::not_distinct("Begin the Invasion", r#""distinct":true,"#, "")]
 #[case::not_story("Kíli the Resourceful", r#"{"EnduringStory":"You"}"#, r#""YourTurn""#)]
+#[case::untapped_enters_tapped("Archelos, Lagoon Mystic", r#""by":"Untapped""#, r#""by":"Tapped""#)]
+#[case::no_other_creature("Bronze Horse", r#""right":1"#, r#""right":2"#)]
+#[case::five_or_more("Dance of the Manse", r#""right":6"#, r#""right":5"#)]
+#[case::two_per_kick(
+    "Urborg Lhurgoyf",
+    r#"{"Mill":{"Times":{"by":3"#,
+    r#"{"Mill":{"Times":{"by":2"#
+)]
+#[case::unkicked_mill("Monstrous War-Leech", r#","condition":"Kicked""#, "")]
+#[case::two_names("Signal the Clans", r#""op":"Eq","right":3"#, r#""op":"Ge","right":2"#)]
+#[case::three_zombies(
+    "Enkira, Hostile Scavenger",
+    r#""op":"Ge","right":2"#,
+    r#""op":"Ge","right":3"#
+)]
+#[case::keep_hand(
+    "Kaervek's Spite",
+    r#",{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}"#,
+    ""
+)]
+#[case::any_loss("Pact Weapon", r#"{"life_only":true,"who":"You"}"#, r#"{"who":"You"}"#)]
+#[case::life_two(
+    "The Golden Throne",
+    r#"{"SetLife":{"amount":1}}"#,
+    r#"{"SetLife":{"amount":2}}"#
+)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");

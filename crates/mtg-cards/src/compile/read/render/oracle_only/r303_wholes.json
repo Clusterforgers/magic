@@ -933,5 +933,417 @@
    }
   },
   "As long as you have an enduring story, you may pay {0} rather than pay the equip cost of the first equip ability you activate each turn."
+ ],
+ [
+  {
+   "Replacement": {
+    "by": "Prevent",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        "Other",
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "when": {
+     "Damage": {
+      "source": [
+       "Spell",
+       {
+        "Targeting": [
+         "This"
+        ]
+       }
+      ],
+      "to": "This"
+     }
+    }
+   }
+  },
+  "As long as you control another creature, prevent all damage that would be dealt to ~ by spells that target it."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Move": {
+       "as": "them",
+       "to": {
+        "Battlefield": {}
+       },
+       "what": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": "X",
+         "op": "Ge",
+         "right": 6
+        }
+       },
+       "then": [
+        {
+         "Continuous": {
+          "affected": {
+           "Bound": "them"
+          },
+          "duration": "Forever",
+          "mods": [
+           {
+            "AddType": "Creature"
+           },
+           {
+            "SetPT": {
+             "power": 4,
+             "toughness": 4
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": "X",
+       "min": 0
+      },
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Artifact"
+          },
+          {
+           "Type": "Enchantment"
+          }
+         ]
+        },
+        {
+         "Not": {
+          "Subtype": "Aura"
+         }
+        },
+        {
+         "Compare": {
+          "op": "Le",
+          "stat": "ManaValue",
+          "to": "X"
+         }
+        },
+        {
+         "In": "Graveyard"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Return up to X target artifact and/or non-Aura enchantment cards each with mana value X or less from your graveyard to the battlefield. If X is 6 or more, those permanents are 4/4 creatures in addition to their other types."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Search": {
+       "as": "found",
+       "count": {
+        "max": 3,
+        "min": 3
+       },
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "reveal": true
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Distinct": {
+           "of": [
+            {
+             "Is": {
+              "Bound": "found"
+             }
+            },
+            {
+             "In": "Library"
+            }
+           ],
+           "stat": "Name"
+          }
+         },
+         "op": "Eq",
+         "right": 3
+        }
+       },
+       "then": [
+        {
+         "ChooseAtRandom": {
+          "as": "pick",
+          "count": 1,
+          "from": {
+           "Bound": "found"
+          }
+         }
+        },
+        {
+         "Move": {
+          "to": "Hand",
+          "what": {
+           "Bound": "pick"
+          }
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shuffle": {}
+     }
+    ]
+   }
+  },
+  "Search your library for three creature cards and reveal them. If you reveal three cards with different names, choose one of them at random and put that card into your hand. Shuffle the rest into your library."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "CreateToken": {
+       "count": 2,
+       "token": {
+        "Custom": {
+         "colors": [
+          "Black"
+         ],
+         "name": "Walker",
+         "power": 2,
+         "subtypes": [
+          "Zombie"
+         ],
+         "toughness": 2,
+         "types": [
+          "Creature"
+         ]
+        }
+       }
+      }
+     }
+    ],
+    "when": {
+     "ZoneChange": {
+      "to": "Battlefield",
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "When ~ enters, create two Walker tokens."
+ ],
+ [
+  {
+   "Rule": {
+    "condition": {
+     "Matches": {
+      "selector": [
+       {
+        "HasAttached": [
+         {
+          "Subtype": "Equipment"
+         }
+        ]
+       }
+      ],
+      "subject": "This"
+     }
+    },
+    "rule": {
+     "Combat": {
+      "quirk": {
+       "MustBeBlocked": "AtLeastOne"
+      },
+      "who": "This"
+     }
+    }
+   }
+  },
+  "As long as ~ is equipped, it must be blocked if able."
+ ],
+ [
+  {
+   "Triggered": {
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ]
+      }
+     }
+    ],
+    "if": {
+     "AtTrigger": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Subtype": "Zombie"
+         },
+         "Attacking",
+         "Other"
+        ]
+       },
+       "op": "Ge",
+       "right": 2
+      }
+     }
+    },
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    }
+   }
+  },
+  "Whenever ~ and at least two Zombies attack, ~ gains indestructible until end of turn."
+ ],
+ [
+  {
+   "AdditionalCost": {
+    "cost": [
+     {
+      "Sacrifice": {
+       "count": {
+        "Count": [
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "filter": []
+      }
+     },
+     {
+      "Discard": {
+       "count": {
+        "Count": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    "required": true
+   }
+  },
+  "As an additional cost to cast this spell, sacrifice all permanents you control and discard your hand."
+ ],
+ [
+  {
+   "Rule": {
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "HasAttached": [
+          "This"
+         ]
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "rule": {
+     "CantLoseGame": {
+      "life_only": true,
+      "who": "You"
+     }
+    }
+   }
+  },
+  "As long as this Equipment is attached to a creature, you don't lose the game for having 0 or less life."
+ ],
+ [
+  {
+   "Replacement": {
+    "by": "Prevent",
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        "Attacking"
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    },
+    "when": {
+     "Damage": {
+      "to": "This"
+     }
+    }
+   }
+  },
+  "As long as an artifact creature you control is attacking, prevent all damage that would be dealt to ~."
  ]
 ]

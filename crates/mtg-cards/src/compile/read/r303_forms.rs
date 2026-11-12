@@ -1,5 +1,6 @@
 //! "As this creature enters, it becomes your choice of a 3/3 creature, a 2/2 creature with flying, or a 1/6 creature
-//! with defender": the wording of a choice of forms (`ReplaceBy::BecomesChoice`) and the phrase of one form.
+//! with defender": the wording of a choice of forms (`ReplaceBy::BecomesChoice`) and the phrase of one form; and "As this
+//! creature enters, mill three cards for each time it was kicked" (`ReplaceBy::Mill`).
 
 use mtg_core::card::CardType;
 
@@ -7,7 +8,9 @@ use crate::ability::Ability;
 use crate::modify::Modification;
 use crate::refs::{Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
-use crate::value::Amount;
+use crate::value::{Amount, Condition};
+
+use super::amounts::count_word;
 
 use super::selectors::keyword_text;
 
@@ -72,6 +75,7 @@ fn listed(items: &[String], last: &str) -> String {
 /// Adds "As ~ enters, it becomes your choice of A, B, or C." for a choice of forms of the card itself as it enters,
 /// with and without "in addition to its other types" (the forms only add types either way).
 pub(super) fn r303_wordings(ability: &Ability, texts: &mut Vec<String>) {
+    mill_wordings(ability, texts);
     let Ability::Replacement {
         when: ReplaceWhen::Enters { what },
         by: ReplaceBy::BecomesChoice(forms),
@@ -96,6 +100,45 @@ pub(super) fn r303_wordings(ability: &Ability, texts: &mut Vec<String>) {
     texts.push(format!(
         "As ~ enters, it becomes your choice of {choice} in addition to its other types."
     ));
+}
+
+/// "mill four cards": a fixed count of one or more.
+fn milled(count: &Amount) -> Option<String> {
+    let Amount::Fixed(number) = count else {
+        return None;
+    };
+    match u32::try_from(*number).ok()? {
+        0 => None,
+        1 => Some("mill a card".to_owned()),
+        many => Some(format!("mill {} cards", count_word(many)?)),
+    }
+}
+
+/// Adds "As ~ enters, mill three cards.", "As ~ enters, mill three cards for each time it was kicked." and "As ~ enters,
+/// if it was kicked, mill four cards." for a mill of the card itself as it enters.
+fn mill_wordings(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Replacement {
+        when: ReplaceWhen::Enters { what },
+        by: ReplaceBy::Mill(count),
+        condition,
+        from: ZoneKind::Battlefield,
+    } = ability
+    else {
+        return;
+    };
+    if *what != Selector::this() {
+        return;
+    }
+    let text = match (condition, count) {
+        (None, Amount::Times { by, of }) if **of == Amount::Kicks => milled(&Amount::Fixed(*by))
+            .map(|mill| format!("As ~ enters, {mill} for each time it was kicked.")),
+        (None, _) => milled(count).map(|mill| format!("As ~ enters, {mill}.")),
+        (Some(Condition::Kicked), _) => {
+            milled(count).map(|mill| format!("As ~ enters, if it was kicked, {mill}."))
+        }
+        _ => None,
+    };
+    texts.extend(text);
 }
 
 #[cfg(test)]
