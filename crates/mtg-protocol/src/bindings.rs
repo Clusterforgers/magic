@@ -17,7 +17,7 @@ use crate::rest::{
     DeckList, DeckView, FavouritePrecons, FixMarkBody, FixMarkList, GameInfo, ImportRequest,
     ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList, MyGames,
     PasswordChange, PasswordReset, PreconErrorCode, PreconList, PreconView, ReadBody, ReadCard,
-    ReadQueue, UserPrefs, UserView, VisibilityBody,
+    ReadQueue, Replay, UserPrefs, UserView, VisibilityBody,
 };
 
 /// Where the committed bindings live, relative to the workspace root.
@@ -59,6 +59,7 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     AccountOptions::export_all(&config)?;
     AuthErrorCode::export_all(&config)?;
     MyGames::export_all(&config)?;
+    Replay::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
     DeckBody::export_all(&config)?;

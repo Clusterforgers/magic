@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use crate::effects::Modification;
 use crate::land_types::is_land_type;
 use crate::layers::{Held, outside};
-use crate::object::{GameObject, ObjectKind};
+use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::Scope;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -270,62 +270,102 @@ pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
         })
 }
 
-/// Whether an effect that applies to the attacker `attacker` says the creature `blocker` can't block it ("can't be
-/// blocked", "can't be blocked by creatures with power 2 or less"): the one place the block rules read these restrictions.
-/// The selector judges `blocker` as the layers leave it now, when blockers are declared.
+/// [`cant_be_blocked_between`] for two creatures by id.
+#[cfg(test)]
 pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
-    let Some(blocker) = state.object(blocker).map(GameObject::reference) else {
+    cant_be_blocked_between(
+        state,
+        &BlockSide::of(state, attacker),
+        &BlockSide::of(state, blocker),
+    )
+}
+
+/// A creature of a block declaration read once: the reference a selector judges it by and the effects on it that limit
+/// blocks ("can't be blocked by", "can block only"), so each pair of an attacker and a blocker reads neither again.
+pub(crate) struct BlockSide<'a> {
+    reference: Option<ObjectRef>,
+    limits: Vec<&'a Modification>,
+}
+
+impl<'a> BlockSide<'a> {
+    /// The creature `id` as the layers leave it now.
+    pub(crate) fn of(state: &'a GameState, id: ObjectId) -> BlockSide<'a> {
+        let object = state.object(id);
+        let limits = object
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .and_then(|object| state.layers().get(object.id()))
+            .map(|held| {
+                held.applied
+                    .iter()
+                    .map(|applied| &applied.modification)
+                    .filter(|modification| {
+                        matches!(
+                            modification,
+                            Modification::CantBeBlocked
+                                | Modification::CantBeBlockedBy { .. }
+                                | Modification::CanBlockOnly { .. }
+                        )
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        BlockSide {
+            reference: object.map(GameObject::reference),
+            limits,
+        }
+    }
+}
+
+/// Whether an effect that applies to the attacker says the blocker can't block it ("can't be blocked", "can't be
+/// blocked by creatures with power 2 or less"): the one place the block rules read these restrictions. The selector
+/// judges the blocker as the layers leave it now, when blockers are declared.
+pub(crate) fn cant_be_blocked_between(
+    state: &GameState,
+    attacker: &BlockSide<'_>,
+    blocker: &BlockSide<'_>,
+) -> bool {
+    let Some(blocker) = blocker.reference else {
         return false;
     };
-    state
-        .object(attacker)
-        .filter(|object| object.zone() == Zone::Battlefield)
-        .and_then(|object| state.layers().get(object.id()))
-        .is_some_and(|held| {
-            held.applied
-                .iter()
-                .any(|applied| match &applied.modification {
-                    Modification::CantBeBlocked => true,
-                    Modification::CantBeBlockedBy {
-                        by,
-                        controller,
-                        source,
-                    } => Scope::announcing(state, *controller, *source)
-                        .selects(by, blocker)
-                        .unwrap_or(false),
-                    _ => false,
-                })
+    attacker
+        .limits
+        .iter()
+        .any(|modification| match modification {
+            Modification::CantBeBlocked => true,
+            Modification::CantBeBlockedBy {
+                by,
+                controller,
+                source,
+            } => Scope::announcing(state, *controller, *source)
+                .selects(by, blocker)
+                .unwrap_or(false),
+            _ => false,
         })
 }
 
 /// Whether an effect that applies to the creature `blocker` says it can block only attackers `attacker` is not one of
 /// ("can block only creatures with flying"): the one place the block rules read this restriction. The selector judges
 /// `attacker` as the layers leave it now.
-pub(crate) fn cant_block_attacker(
+pub(crate) fn cant_block_between(
     state: &GameState,
-    blocker: ObjectId,
-    attacker: ObjectId,
+    blocker: &BlockSide<'_>,
+    attacker: &BlockSide<'_>,
 ) -> bool {
-    let Some(attacker) = state.object(attacker).map(GameObject::reference) else {
+    let Some(attacker) = attacker.reference else {
         return false;
     };
-    state
-        .object(blocker)
-        .filter(|object| object.zone() == Zone::Battlefield)
-        .and_then(|object| state.layers().get(object.id()))
-        .is_some_and(|held| {
-            held.applied
-                .iter()
-                .any(|applied| match &applied.modification {
-                    Modification::CanBlockOnly {
-                        only,
-                        controller,
-                        source,
-                    } => !Scope::announcing(state, *controller, *source)
-                        .selects(only, attacker)
-                        .unwrap_or(true),
-                    _ => false,
-                })
+    blocker
+        .limits
+        .iter()
+        .any(|modification| match modification {
+            Modification::CanBlockOnly {
+                only,
+                controller,
+                source,
+            } => !Scope::announcing(state, *controller, *source)
+                .selects(only, attacker)
+                .unwrap_or(true),
+            _ => false,
         })
 }
 

@@ -281,6 +281,8 @@ pub struct ServerConfig {
     pub auth: AuthConfig,
     /// The picture cache and its upstream.
     pub images: ImageConfig,
+    /// How long a bot seat waits before each answer ([`crate::bots::BOT_DELAY`]).
+    pub bot_delay: Duration,
 }
 
 impl Default for ServerConfig {
@@ -296,6 +298,7 @@ impl Default for ServerConfig {
             shutdown_grace: Duration::from_secs(5),
             auth: AuthConfig::default(),
             images: ImageConfig::default(),
+            bot_delay: crate::bots::BOT_DELAY,
         }
     }
 }

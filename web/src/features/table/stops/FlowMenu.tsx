@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
+import { setSoundsOn, useSoundsOn } from '@/features/sound/soundPrefs'
 import { resetDefaultStops, saveDefaultStops, useFlowPrefs } from '@/play/flowPrefs'
 import { defaultStopsWords } from './stopModel'
 
@@ -14,7 +15,7 @@ import { defaultStopsWords } from './stopModel'
  * The pace settings at the foot of the Full Control menu: "End my turn by hand" (the server holds the seat at its own
  * end step until it ends the turn), the decisions the server answers for the seat outside Full Control (its triggers in
  * timestamp order, combat damage lethal in order), smart stops (a step where a permanent of the seat can act is a
- * window), the abilities it always yields to (a click takes one back), and the pinned stops saved as the default of
+ * window), the sound cues (kept in this browser, `features/sound`), the abilities it always yields to (a click takes one back), and the pinned stops saved as the default of
  * every new game, with a reset. The end-turn setting and the default stops are kept in this browser (or on the account)
  * and applied when a game is joined.
  */
@@ -27,6 +28,7 @@ export function FlowMenuItems() {
   const yields = usePlay((state) => state.autoYields)
   const online = usePlay((state) => state.status === 'open')
   const pinned = stops.filter((stop) => stop.keep)
+  const sounds = useSoundsOn()
   return (
     <>
       <DropdownMenuSeparator />
@@ -61,6 +63,9 @@ export function FlowMenuItems() {
         onCheckedChange={(on) => session.setAutoChoices({ ...auto, smart_stops: on })}
       >
         Stop where my permanents can act
+      </DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem data-slot="sounds" checked={sounds} onCheckedChange={setSoundsOn}>
+        Play sounds
       </DropdownMenuCheckboxItem>
       {yields.length === 0 ? null : (
         <>

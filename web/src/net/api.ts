@@ -23,6 +23,8 @@ export interface SeatRequest {
   name: string
   /** The deck the seat starts with; left out, the seat has none until its holder chooses one in the lobby. */
   deck?: string
+  /** A bot plays the seat: a held seat other than seat 0, with a deck; the server names it. */
+  bot?: boolean
 }
 
 /** The body of `createGame`: a Normal game, or a Commander game (2 to 6 seats) for a Commander precon. */

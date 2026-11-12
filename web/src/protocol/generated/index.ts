@@ -257,6 +257,7 @@ export type { Remembered } from "./Remembered";
 export type { ReplacementCandidate } from "./ReplacementCandidate";
 export type { ReplacementChoice } from "./ReplacementChoice";
 export type { ReplacementOptions } from "./ReplacementOptions";
+export type { Replay } from "./Replay";
 export type { ReportCard } from "./ReportCard";
 export type { ResolutionOutcome } from "./ResolutionOutcome";
 export type { Restricted } from "./Restricted";

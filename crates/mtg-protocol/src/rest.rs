@@ -336,3 +336,17 @@ pub struct MyGames {
     /// The games.
     pub games: Vec<MyGame>,
 }
+
+/// The answer of `GET /api/games/{id}/replay`: a finished game step by step, as one viewer may know it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct Replay {
+    /// The seat whose hidden cards the steps show, the asking account's own; null for public information only.
+    pub seat: Option<PlayerId>,
+    /// Every seat's name, in seat order.
+    pub names: Vec<String>,
+    /// How the game ended.
+    pub result: Option<GameResult>,
+    /// The game in steps, each one batch of the log; the first is at `from_seq` 0 and starts the view, each other folds
+    /// into the view before it (`StateView::apply`).
+    pub steps: Vec<crate::events::EventBatch>,
+}

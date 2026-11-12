@@ -12,6 +12,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
+use mtg_core::ids::PlayerId;
 use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
 
@@ -492,6 +493,8 @@ pub(crate) struct SeatDecks {
     /// What each seat plays until its holder chooses, and again once the seat is given back.
     defaults: Vec<Option<ChosenDeck>>,
     current: Vec<Option<ChosenDeck>>,
+    /// The seats bots play, which every recipe it writes keeps.
+    bots: Vec<PlayerId>,
 }
 
 impl SeatDecks {
@@ -504,7 +507,15 @@ impl SeatDecks {
             seed,
             current: defaults.clone(),
             defaults,
+            bots: Vec::new(),
         }
+    }
+
+    /// The lobby of a game whose `bots` seats are played by bots, which every recipe it writes keeps.
+    #[must_use]
+    pub(crate) fn with_bots(mut self, bots: Vec<PlayerId>) -> Self {
+        self.bots = bots;
+        self
     }
 
     /// The lobby of a game played under `house_rules`, which every recipe it writes keeps.
@@ -527,6 +538,7 @@ impl SeatDecks {
             .collect();
         SeatDecks::new(recipe.format, recipe.seed, defaults)
             .with_house_rules(recipe.house_rules.clone())
+            .with_bots(recipe.bots.clone())
     }
 
     /// What the table is told of `seat`'s deck.
@@ -610,6 +622,7 @@ impl SeatDecks {
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),
             reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
             conjured: crate::recipe::fingerprints_of(&self.conjured()).ok()?,
+            bots: self.bots.clone(),
         })
     }
 }
