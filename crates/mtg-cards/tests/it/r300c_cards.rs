@@ -135,13 +135,13 @@ fn altered(name: &str, from: &str, to: &str) -> String {
     r#""AddKeyword":"Flying""#
 )]
 #[case::other_damage("Granite Shard", r#""amount":1"#, r#""amount":2"#)]
-#[case::other_cap("Clockwork Avian", r#"[4,"#, r#"[5,"#)]
+#[case::other_cap("Clockwork Avian", "[4,", "[5,")]
 #[case::other_kind(
     "Clockwork Beast",
     r#""count":{"ChosenAs":"n"},"counter":{"Other":"+1/+0"}"#,
     r#""count":{"ChosenAs":"n"},"counter":"+1/+1""#
 )]
-#[case::exactly_x("Clockwork Steed", r#"[0,"#, r#"[1,"#)]
+#[case::exactly_x("Clockwork Steed", "[0,", "[1,")]
 #[case::any_time(
     "Clockwork Swarm",
     r#""condition":{"All":["YourTurn",{"Step":"Upkeep"}]},"#,

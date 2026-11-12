@@ -5,17 +5,11 @@
   "faces": [
     {
       "name": "Moonsilver Key",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "c0327f445da78bf80236dda9fd17e5cb",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{1}"
-              },
-              "Tap",
-              "SacrificeSelf"
-            ],
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
             "effects": [
               {
                 "Search": {
@@ -25,32 +19,16 @@
                         {
                           "Not": {
                             "AnyOf": [
-                              {
-                                "Not": {
-                                  "Type": "Artifact"
-                                }
-                              },
-                              {
-                                "Not": {
-                                  "HasAbility": "Mana"
-                                }
-                              }
+                              { "Not": { "Type": "Artifact" } },
+                              { "Not": { "HasAbility": "Mana" } }
                             ]
                           }
                         },
                         {
                           "Not": {
                             "AnyOf": [
-                              {
-                                "Not": {
-                                  "Type": "Land"
-                                }
-                              },
-                              {
-                                "Not": {
-                                  "Supertype": "Basic"
-                                }
-                              }
+                              { "Not": { "Type": "Land" } },
+                              { "Not": { "Supertype": "Basic" } }
                             ]
                           }
                         }
@@ -61,17 +39,8 @@
                   "as": "found"
                 }
               },
-              {
-                "Move": {
-                  "what": {
-                    "Bound": "found"
-                  },
-                  "to": "Hand"
-                }
-              },
-              {
-                "Shuffle": {}
-              }
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
             ]
           }
         }

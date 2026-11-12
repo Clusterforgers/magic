@@ -621,7 +621,7 @@ fn returned_from_graveyard(ability: &Ability, written: fn(&Ability) -> Vec<Strin
 }
 
 /// Both predicates, as `AnyOf` and `Not` say it: neither is false.
-fn both(first: Value, second: Value) -> Value {
+fn both(first: &Value, second: &Value) -> Value {
     json!({"Not": {"AnyOf": [{"Not": first}, {"Not": second}]}})
 }
 
@@ -632,8 +632,8 @@ fn mana_artifact_or_basic(ability: &Ability, written: fn(&Ability) -> Vec<String
         return Vec::new();
     };
     let wanted = json!([{"AnyOf": [
-        both(json!({"Type": "Artifact"}), json!({"HasAbility": "Mana"})),
-        both(json!({"Type": "Land"}), json!({"Supertype": "Basic"})),
+        both(&json!({"Type": "Artifact"}), &json!({"HasAbility": "Mana"})),
+        both(&json!({"Type": "Land"}), &json!({"Supertype": "Basic"})),
     ]}]);
     let Some(filter) = value.pointer_mut("/Activated/effects/0/Search/filter") else {
         return Vec::new();
