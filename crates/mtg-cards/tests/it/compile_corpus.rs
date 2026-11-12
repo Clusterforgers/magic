@@ -538,11 +538,22 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
             .map(|clause| without_numerals(without_ability_word(&clause.text)))
             .collect();
-        let wanted = if matches!(ability, Ability::Spell { .. }) {
+        let mut wanted = if matches!(ability, Ability::Spell { .. }) {
             vec![lines.join("\n"), without_die_rows(&lines)]
         } else {
             lines.iter().map(|line| (*line).to_owned()).collect()
         };
+        // The checker reads "if evidence was collected" as the paid additional cost of the face, as written.
+        let paid: Vec<String> = wanted
+            .iter()
+            .filter(|text| text.contains("f evidence was collected"))
+            .map(|text| {
+                text.replace("If evidence was", "If this spell's additional cost was")
+                    .replace("if evidence was", "if this spell's additional cost was")
+                    .replace("additional cost was collected", "additional cost was paid")
+            })
+            .collect();
+        wanted.extend(paid);
         // The clause shows the face's own names as `~`, also inside a token name or a type.
         let names = printed.faces.get(face).map(own_names).unwrap_or_default();
         let shown = |variant: &str| {

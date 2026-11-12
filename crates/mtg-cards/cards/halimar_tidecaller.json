@@ -29,7 +29,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Type": "Creature" }, { "Type": "Land" }, { "ControlledBy": "You" }]
+              "Each": [{ "Type": "Land" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
             },
             "mods": [{ "AddKeyword": "Flying" }]
           }

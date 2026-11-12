@@ -28,8 +28,8 @@
         {
           "Spell": {
             "effects": [
-              { "Search": { "filter": [{ "Subtype": "Doctor" }], "reveal": true, "as": "found" } },
-              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Search": { "filter": [{ "Subtype": "Doctor" }], "reveal": true, "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
               { "Shuffle": {} }
             ]
           }
