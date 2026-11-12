@@ -864,6 +864,7 @@ const RUNS: &[&str] = &[
     "Pred.TopOfGraveyard",
     "Pred.TopCreatureOfGraveyard",
     "Pred.BlockedBy",
+    "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
     "Pred.SingleTarget",

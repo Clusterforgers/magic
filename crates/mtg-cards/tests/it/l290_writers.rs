@@ -77,6 +77,14 @@ fn says(json: &str, text: &str) -> bool {
     r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Enchantment"}],"by":"You"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},{"Named":"Mowu"}]},"op":"Lt","right":1}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Mowu","colors":["Green"],"supertypes":["Legendary"],"types":["Creature"],"subtypes":["Dog"],"power":3,"toughness":3}}}}]}}"#,
     "Whenever you cast an enchantment spell, if you don't control a creature named Mowu, create Mowu, a legendary 3/3 green Dog creature token."
 )]
+#[case::only_walls_block(
+    r#"{"Triggered":{"when":{"BecomesBlocked":{"what":[],"by":["This"]}},"if":{"All":[{"Compare":{"left":{"Count":[{"Subtype":"Wall"},{"Type":"Creature"},"Other",{"Blocks":"Triggering"}]},"op":"Ge","right":1}},{"Compare":{"left":{"Count":[{"Type":"Creature"},{"Not":{"Subtype":"Wall"}},{"Blocks":"Triggering"}]},"op":"Lt","right":1}}]},"effects":[{"Continuous":{"affected":"This","mods":[{"AddKeyword":"Banding"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    "Whenever ~ blocks a creature, if at least one other Wall creature is blocking that creature and no non-Wall creatures are blocking that creature, ~ gains banding until end of turn."
+)]
+#[case::banded(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"BandedWith":"This"}]},"mods":[{"AddKeyword":"FirstStrike"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    "Whenever ~ attacks, all creatures banded with it gain first strike until end of turn."
+)]
 fn a_shape_reads_as_its_card(#[case] json: &str, #[case] text: &str) {
     assert!(
         says(json, text),
@@ -137,6 +145,14 @@ fn a_shape_reads_as_its_card(#[case] json: &str, #[case] text: &str) {
 #[case::exiled_copy_not_an_illusion(
     r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Each":[{"ExiledWith":"This"},{"In":"Exile"}]}}},"tapped":true,"attacking":true,"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"EndCombat"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"copy"}}]}}]}}]}}"#,
     "Whenever ~ attacks, create a tapped and attacking token that's a copy of the exiled card, except it's an Illusion in addition to its other types. Sacrifice that token at end of combat."
+)]
+#[case::any_other_wall(
+    r#"{"Triggered":{"when":{"BecomesBlocked":{"what":[],"by":["This"]}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Wall"},{"Type":"Creature"},"Other",{"Blocks":"Triggering"}]},"op":"Ge","right":1}},"effects":[{"Continuous":{"affected":"This","mods":[{"AddKeyword":"Banding"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    "Whenever ~ blocks a creature, if at least one other Wall creature is blocking that creature and no non-Wall creatures are blocking that creature, ~ gains banding until end of turn."
+)]
+#[case::blocked_by_it(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"BlockedBy":"This"}]},"mods":[{"AddKeyword":"FirstStrike"}],"duration":"UntilEndOfTurn"}}]}}"#,
+    "Whenever ~ attacks, all creatures banded with it gain first strike until end of turn."
 )]
 fn a_near_miss_is_not_worded_as_the_card(#[case] json: &str, #[case] text: &str) {
     assert!(!says(json, text));

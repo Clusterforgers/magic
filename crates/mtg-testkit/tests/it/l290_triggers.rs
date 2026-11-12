@@ -462,3 +462,90 @@ fn mirror_style_master_copies_each_attacking_modified_creature_until_end_of_comb
     assert_eq!(count_named(&driver, "Bear"), 1, "the copy is exiled");
     Ok(())
 }
+
+#[rstest]
+#[case::in_its_band(true, true)]
+#[case::attacking_apart(false, false)]
+fn icatian_skirmishers_give_first_strike_to_the_creatures_banded_with_it(
+    #[case] banded: bool,
+    #[case] strikes_first: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(
+                0,
+                [
+                    ready(card("Icatian Skirmishers").unwrap()),
+                    ready(free("Bear", CardType::Creature, false, &[])),
+                    ready(free("Wolf", CardType::Creature, false, &[])),
+                ],
+            ),
+    )?;
+    let attacks = [("Icatian Skirmishers", 1), ("Bear", 1), ("Wolf", 1)];
+    if banded {
+        driver.attack_in_bands(&attacks, &[&["Icatian Skirmishers", "Bear"]])?;
+    } else {
+        driver.attack(&attacks)?;
+    }
+    settle(&mut driver)?;
+    let first_strike = |name: &str| {
+        let id = driver.id_of(name).unwrap();
+        has_keyword(
+            driver.state(),
+            id,
+            &mtg_cards::keyword::Keyword::FirstStrike,
+        )
+    };
+    assert_eq!(first_strike("Bear"), strikes_first);
+    assert!(!first_strike("Wolf"), "a creature outside the band");
+    Ok(())
+}
+
+#[rstest]
+#[case::with_another_wall("Stone Wall", true)]
+#[case::with_a_bear("Bear", false)]
+fn wall_of_caltrops_gains_banding_when_only_walls_block_with_it(
+    #[case] partner: &str,
+    #[case] bands: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let wall = Arc::new(
+        CardDefinition::new("Stone Wall")
+            .with_type(CardType::Creature)
+            .with_subtype("Wall")
+            .with_power_toughness(0, 8),
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 1, Step::DeclareAttackers)
+            .battlefield(
+                0,
+                [
+                    ready(card("Wall of Caltrops").unwrap()),
+                    ready(wall),
+                    ready(free("Bear", CardType::Creature, false, &[])),
+                ],
+            )
+            .battlefield(1, [ready(free("Raider", CardType::Creature, false, &[]))]),
+    )?;
+    driver.attack(&[("Raider", 0)])?;
+    for _ in 0..20 {
+        if matches!(
+            driver.decision()?.kind,
+            mtg_engine::decision::DecisionKind::DeclareBlockers(_)
+        ) {
+            break;
+        }
+        driver.pass()?;
+    }
+    driver.block(&[("Wall of Caltrops", "Raider"), (partner, "Raider")])?;
+    settle(&mut driver)?;
+    let id = driver.id_of("Wall of Caltrops")?;
+    assert_eq!(
+        has_keyword(driver.state(), id, &mtg_cards::keyword::Keyword::Banding),
+        bands
+    );
+    Ok(())
+}

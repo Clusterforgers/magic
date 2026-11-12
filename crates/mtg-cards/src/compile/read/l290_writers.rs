@@ -142,21 +142,13 @@ pub(super) fn l290_wordings(
     {
         found.push(format!("{head} {tail}."));
     }
-    // An activation that targets a creature or player, copied (Ertha Jo).
-    let targets_creature_or_player = json!({"AtTrigger": {"Matches": {"subject": "Dealer", "selector": [
-        {"AnyOf": [{"Targeting": [{"Type": "Creature"}]}, {"TargetsPlayer": "EachPlayer"}]}
-    ]}}});
-    if body["when"] == json!({"Did": {"action": "Activated", "who": "You"}})
-        && body["if"] == targets_creature_or_player
-        && body["effects"] == json!([{"CopyAbility": {"what": "Dealer", "new_targets": true}}])
-        && untargeted
+    if untargeted
+        && let Some(tail) = banded_gain(&body["effects"])
+        && let Some(head) = head(body, written)
     {
-        found.push(
-            "Whenever you activate an ability that targets a creature or player, copy that ability. You may \
-             choose new targets for the copy."
-                .to_owned(),
-        );
+        found.push(format!("{head} {tail}."));
     }
+    found.extend(fixed_wordings(body));
     // "Whenever this enchantment or a legendary creature you control enters": the card's own entering and another kind's.
     if let Some([own, _]) = body["when"]["AnyOf"].as_array().map(Vec::as_slice)
         && *own == json!({"ZoneChange": {"what": ["This"], "to": "Battlefield"}})
@@ -182,6 +174,25 @@ pub(super) fn l290_wordings(
             texts.push(text);
         }
     }
+}
+
+/// "all creatures banded with it gain first strike until end of turn".
+fn banded_gain(effects: &Value) -> Option<String> {
+    let [step] = effects.as_array()?.as_slice() else {
+        return None;
+    };
+    let granted = step["Continuous"]["mods"][0]["AddKeyword"].clone();
+    let keyword: Keyword = serde_json::from_value(granted.clone()).ok()?;
+    let expected = json!({"Continuous": {
+        "affected": {"Each": [{"Type": "Creature"}, {"BandedWith": "This"}]},
+        "mods": [{"AddKeyword": granted}],
+        "duration": "UntilEndOfTurn"
+    }});
+    (*step == expected).then_some(())?;
+    Some(format!(
+        "all creatures banded with it gain {} until end of turn",
+        super::selectors::keyword_text(&keyword)?.to_lowercase()
+    ))
 }
 
 /// Tapped and attacking token copies that leave at end of combat: of the card the source exiled, an Illusion as well
@@ -243,6 +254,46 @@ fn intervening_count(body: &Value, written: fn(&Ability) -> Vec<String>) -> Opti
     );
     let twin: Ability = serde_json::from_value(json!({ "Triggered": twin })).ok()?;
     written(&twin).into_iter().next()
+}
+
+/// The whole wordings of two abilities with no part another writer words: Wall of Caltrops' banding while only Walls,
+/// and at least one other, block that creature, and Ertha Jo's copy of an activation that targets a creature or player.
+fn fixed_wordings(body: &Value) -> Option<String> {
+    let only_walls = json!({"All": [
+        {"Compare": {
+            "left": {"Count": [{"Subtype": "Wall"}, {"Type": "Creature"}, "Other", {"Blocks": "Triggering"}]},
+            "op": "Ge", "right": 1
+        }},
+        {"Compare": {
+            "left": {"Count": [{"Type": "Creature"}, {"Not": {"Subtype": "Wall"}}, {"Blocks": "Triggering"}]},
+            "op": "Lt", "right": 1
+        }}
+    ]});
+    let banding = json!([{"Continuous": {
+        "affected": "This", "mods": [{"AddKeyword": "Banding"}], "duration": "UntilEndOfTurn"
+    }}]);
+    if body["when"] == json!({"BecomesBlocked": {"what": [], "by": ["This"]}})
+        && body["if"] == only_walls
+        && body["effects"] == banding
+    {
+        return Some(
+            "Whenever ~ blocks a creature, if at least one other Wall creature is blocking that creature and no \
+             non-Wall creatures are blocking that creature, ~ gains banding until end of turn."
+                .to_owned(),
+        );
+    }
+    let targets_creature_or_player = json!({"AtTrigger": {"Matches": {"subject": "Dealer", "selector": [
+        {"AnyOf": [{"Targeting": [{"Type": "Creature"}]}, {"TargetsPlayer": "EachPlayer"}]}
+    ]}}});
+    (body["when"] == json!({"Did": {"action": "Activated", "who": "You"}})
+        && body["if"] == targets_creature_or_player
+        && body["effects"] == json!([{"CopyAbility": {"what": "Dealer", "new_targets": true}}])
+        && body.get("targets").is_none())
+    .then(|| {
+        "Whenever you activate an ability that targets a creature or player, copy that ability. You may choose new \
+         targets for the copy."
+            .to_owned()
+    })
 }
 
 /// The head of the trigger as its twin with one plain step words it: "Whenever ~ attacks,".
