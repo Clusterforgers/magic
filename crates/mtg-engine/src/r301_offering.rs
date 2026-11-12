@@ -126,14 +126,14 @@ pub(crate) fn r301_offering_cost(
     let Some(Part::Pick(pick)) = parts.first() else {
         return cost.clone();
     };
-    let payer = Payer {
+    let sacrificer = Payer {
         state,
         player,
         source: id,
         barred: &[id],
         granter: None,
     };
-    pick.candidates(&payer)
+    pick.candidates(&sacrificer)
         .into_iter()
         .map(|object| r301_reduced_by(cost, &mana_cost_of(state, object)))
         .min_by_key(ManaCost::mana_value)

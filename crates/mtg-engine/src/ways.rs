@@ -353,7 +353,6 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
             state, id, keyword, instant,
         ));
-        ways.extend(crate::r301_offering::r301_offering_way(state, id, keyword));
         if let Some(way) = keyword_way(state, player, id, keyword, instant)
             && !ways.iter().any(|w| w.alternative == way.alternative)
         {
