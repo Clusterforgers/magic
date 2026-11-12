@@ -18,7 +18,9 @@ use crate::common::pid;
 fn walker(minus: u32) -> Arc<CardDefinition> {
     let rules = [
         r#"{"Loyalty":{"cost":{"Plus":1},"effects":[{"GainLife":{"amount":1}}]}}"#.to_owned(),
-        format!(r#"{{"Loyalty":{{"cost":{{"Minus":{minus}}},"effects":[{{"GainLife":{{"amount":5}}}}]}}}}"#),
+        format!(
+            r#"{{"Loyalty":{{"cost":{{"Minus":{minus}}},"effects":[{{"GainLife":{{"amount":5}}}}]}}}}"#
+        ),
     ];
     let mut card = CardDefinition::new("Walker")
         .with_type(CardType::Planeswalker)
@@ -104,7 +106,10 @@ fn a_planeswalker_activates_as_many_loyalty_abilities_as_the_rules_allow(
     }
     assert_eq!(activated, allowed);
     assert_eq!(loyalty(&driver), 3 + u32::try_from(allowed).unwrap());
-    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 20 + i32::try_from(allowed).unwrap());
+    assert_eq!(
+        driver.state().player(pid(0)).unwrap().life(),
+        20 + i32::try_from(allowed).unwrap()
+    );
     Ok(())
 }
 
@@ -191,12 +196,13 @@ fn an_aura_copies_each_loyalty_ability_of_the_planeswalker_it_enchants(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let talent = mtg_testkit::corpus::card("Rowan's Talent").unwrap();
-    let mut driver = Driver::from_scenario(
-        Scenario::new(seats).battlefield(
-            0,
-            [ready(walker(1)), mtg_testkit::attached_to(ready(talent), 0, 0)],
-        ),
-    )?;
+    let mut driver = Driver::from_scenario(Scenario::new(seats).battlefield(
+        0,
+        [
+            ready(walker(1)),
+            mtg_testkit::attached_to(ready(talent), 0, 0),
+        ],
+    ))?;
     driver.begin_ability("Walker", 0)?;
     settle(&mut driver)?;
     assert_eq!(loyalty(&driver), 4, "the copy pays no cost");

@@ -104,10 +104,20 @@ fn the_pool_doubles_by_type(
         driver.tap_for_mana("Forest")?;
     }
     let offered = driver.tap_for_mana("Cube");
-    assert_eq!(offered.is_ok(), swamps + forests > 0, "an empty pool doubles to nothing");
+    assert_eq!(
+        offered.is_ok(),
+        swamps + forests > 0,
+        "an empty pool doubles to nothing"
+    );
     let pool = driver.state().player(pid(0)).unwrap().mana();
-    assert_eq!(pool.get(ManaType::Black), 2 * u32::try_from(swamps).unwrap());
-    assert_eq!(pool.get(ManaType::Green), 2 * u32::try_from(forests).unwrap());
+    assert_eq!(
+        pool.get(ManaType::Black),
+        2 * u32::try_from(swamps).unwrap()
+    );
+    assert_eq!(
+        pool.get(ManaType::Green),
+        2 * u32::try_from(forests).unwrap()
+    );
     Ok(())
 }
 
@@ -210,9 +220,10 @@ fn targetable(driver: &Driver) -> (Vec<String>, u32) {
                 .legal
                 .iter()
                 .filter_map(|target| match target {
-                    mtg_engine::choose::Target::Object(object) => {
-                        driver.state().object(object.id).map(|o| o.card().name.clone())
-                    }
+                    mtg_engine::choose::Target::Object(object) => driver
+                        .state()
+                        .object(object.id)
+                        .map(|o| o.card().name.clone()),
                     mtg_engine::choose::Target::Player(_) => None,
                 })
                 .collect();
@@ -237,11 +248,14 @@ fn an_opponent_targets_a_flagbearer_if_able(
     let mut scenario = Scenario::new(seats)
         .at(1, 1, mtg_engine::turn::Step::Main1)
         .hand(1, [zap()])
-        .battlefield(0, [ready(Arc::new(
-            CardDefinition::new("Grizzly Bear")
-                .with_type(CardType::Creature)
-                .with_power_toughness(2, 2),
-        ))]);
+        .battlefield(
+            0,
+            [ready(Arc::new(
+                CardDefinition::new("Grizzly Bear")
+                    .with_type(CardType::Creature)
+                    .with_power_toughness(2, 2),
+            ))],
+        );
     if let Some(seat) = bearer {
         scenario = scenario.battlefield(seat, [ready(standard)]);
     }
@@ -296,6 +310,9 @@ fn mana_equal_to_a_mana_cost(
     for (mana, count) in added {
         assert_eq!(pool.get(*mana), *count, "{mana:?}");
     }
-    assert_eq!(pool.total(), added.iter().map(|(_, count)| count).sum::<u32>());
+    assert_eq!(
+        pool.total(),
+        added.iter().map(|(_, count)| count).sum::<u32>()
+    );
     Ok(())
 }

@@ -366,7 +366,11 @@ fn rule_mana(
                     .player(player)
                     .map(|seat| seat.mana().every_mana())
                     .unwrap_or_default();
-                if held.is_empty() { Vec::new() } else { vec![held] }
+                if held.is_empty() {
+                    Vec::new()
+                } else {
+                    vec![held]
+                }
             }
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()

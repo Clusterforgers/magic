@@ -351,7 +351,10 @@ struct Added<'a> {
 /// The ways to add mana equal to the mana cost of the object `of` names, each sorted and none twice: one list of
 /// colorless mana for the generic part and the color of each colored or Phyrexian symbol, times one half of each hybrid
 /// symbol; nothing for {X} and no object.
-fn r373_cost_lists(cx: &Cx<'_>, of: &mtg_cards::refs::Ref) -> Result<Vec<Vec<ManaType>>, ResolveError> {
+fn r373_cost_lists(
+    cx: &Cx<'_>,
+    of: &mtg_cards::refs::Ref,
+) -> Result<Vec<Vec<ManaType>>, ResolveError> {
     use mtg_core::mana::ManaSymbol;
     let mut lists: Vec<Vec<ManaType>> = vec![Vec::new()];
     let Some(cost) = cx
@@ -367,7 +370,9 @@ fn r373_cost_lists(cx: &Cx<'_>, of: &mtg_cards::refs::Ref) -> Result<Vec<Vec<Man
         let halves: Vec<Vec<ManaType>> = match *symbol {
             ManaSymbol::Generic(count) => vec![vec![ManaType::Colorless; count as usize]],
             ManaSymbol::Colored(color) | ManaSymbol::Phyrexian(color) => vec![vec![mana_of(color)]],
-            ManaSymbol::Colorless | ManaSymbol::ColorlessPhyrexian => vec![vec![ManaType::Colorless]],
+            ManaSymbol::Colorless | ManaSymbol::ColorlessPhyrexian => {
+                vec![vec![ManaType::Colorless]]
+            }
             ManaSymbol::Hybrid(first, second) | ManaSymbol::HybridPhyrexian(first, second) => {
                 vec![vec![mana_of(first)], vec![mana_of(second)]]
             }

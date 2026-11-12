@@ -5052,7 +5052,9 @@ impl Walker<'_> {
             | GameRule::LoyaltyTwice(who)
             | GameRule::LoyaltyOnceMore(who)
             | GameRule::LoyaltyAsInstant(who)
-            | GameRule::LoyaltyCostMore { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::LoyaltyCostMore { who, .. } => {
+                self.at(tag, |w| w.reference(who, Kind::Player))
+            }
             GameRule::MustTarget { who, what } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.selector(what));

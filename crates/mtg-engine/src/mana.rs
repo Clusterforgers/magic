@@ -91,7 +91,11 @@ impl ManaPool {
         ManaType::ALL
             .into_iter()
             .flat_map(|mana| {
-                let restricted = self.restricted().iter().filter(|unit| unit.mana == mana).count();
+                let restricted = self
+                    .restricted()
+                    .iter()
+                    .filter(|unit| unit.mana == mana)
+                    .count();
                 std::iter::repeat_n(mana, self.get(mana) as usize + restricted)
             })
             .collect()

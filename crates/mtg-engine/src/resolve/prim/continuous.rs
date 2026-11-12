@@ -377,7 +377,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
-        Wanted::KeywordsOf { from, names } => Modification::AddKeywords(keywords_of(scope, from, names)?),
+        Wanted::KeywordsOf { from, names } => {
+            Modification::AddKeywords(keywords_of(scope, from, names)?)
+        }
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {

@@ -2188,14 +2188,22 @@ pub(crate) fn skips_draw_step(state: &GameState, player: PlayerId) -> bool {
 /// under a rule that says so, and one more for each rule that adds one.
 pub(crate) fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
     let rules = state.rules();
-    let base = if rules.loyalty_twice.contains(&player) { 2 } else { 1 };
+    let base = if rules.loyalty_twice.contains(&player) {
+        2
+    } else {
+        1
+    };
     base + rules.loyalty_more.get(&player).copied().unwrap_or(0)
 }
 
 /// Whether a rule makes `player` choose one of some permanents as a target of a spell or ability they cast or activate if
 /// able (Flagbearer).
 pub(crate) fn must_target_applies(state: &GameState, player: PlayerId) -> bool {
-    state.rules().must_target.iter().any(|(who, _)| *who == player)
+    state
+        .rules()
+        .must_target
+        .iter()
+        .any(|(who, _)| *who == player)
 }
 
 /// Whether `target` is a permanent a rule makes `player` choose as a target if able (Flagbearer).
@@ -2223,7 +2231,12 @@ pub(crate) fn loyalty_as_instant(state: &GameState, player: PlayerId) -> bool {
 
 /// The loyalty counters added to each loyalty cost `player` pays (CR 606.4).
 pub(crate) fn loyalty_cost_more(state: &GameState, player: PlayerId) -> u32 {
-    state.rules().loyalty_cost.get(&player).copied().unwrap_or(0)
+    state
+        .rules()
+        .loyalty_cost
+        .get(&player)
+        .copied()
+        .unwrap_or(0)
 }
 
 /// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.
