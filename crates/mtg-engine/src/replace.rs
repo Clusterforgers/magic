@@ -2121,6 +2121,7 @@ impl Pass<'_> {
             }
         }
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
+        r35_mills::r35_fresh_mills(self.state, &mut events);
         g12a_library::g12a_order_shuffles(self.state, &mut events);
         events.extend(used);
         events
@@ -3576,6 +3577,7 @@ mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
 mod g12a_library;
+mod r35_mills;
 
 mod e14b_pay_or_graveyard;
 
