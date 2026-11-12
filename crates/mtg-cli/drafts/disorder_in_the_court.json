@@ -18,6 +18,7 @@
             "effects": [
               { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
               { "CreateToken": { "token": { "Named": "clue" }, "count": "X" } },
+              { "Performed": { "action": "Investigated", "times": "X" } },
               {
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "End" } },

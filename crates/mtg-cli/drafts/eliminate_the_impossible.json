@@ -11,6 +11,7 @@
           "Spell": {
             "effects": [
               { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } },
               {
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },

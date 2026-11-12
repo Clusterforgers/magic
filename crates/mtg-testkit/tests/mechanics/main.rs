@@ -85,6 +85,7 @@ mod kt28_krarks_thumb;
 mod l292_cards;
 mod l292_haunt;
 mod l31b_any_amount;
+mod l31a_keyword_actions;
 mod lifted_gates;
 mod macro_combat;
 mod macro_keywords;

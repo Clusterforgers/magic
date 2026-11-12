@@ -95,6 +95,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - Values (`Ref`, `Selector`, `Amount`, `Condition`) are evaluated when an effect runs or a pattern is matched and produce no events.
 - One reader and one writer turn every object phrase into a `Selector` and back (`selectors::phrase`, `selectors::phrase_text`); every effect, trigger, condition and static reader uses this pair, so a new atom works in all of them.
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.
+- A keyword action that abilities wait for ("whenever you investigate", "discover", "manifest dread", "give a gift") is logged by `Effect::Performed` after its steps: the reader adds it after an investigation's Clue tokens, `effect::discover` and the steps of manifest dread end with it, and gift's steps end with it in the engine. The engine logs `Investigated`, `Discovered` (value and card), `DreadManifested` (the card put into the graveyard) and `GiftGiven` (to whom), read as `TriggerPattern::Did`. The writers word the steps; an investigation's log is dropped before its Clue tokens are worded.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records
@@ -131,7 +132,7 @@ A card the checker cannot prove runs automatically (D14); `Read` and `Unverified
 | Item | Rule |
 |---|---|
 | Draft | A whole rules file (no `Manual` ability) with verdict `Unchecked`: valid, nothing contradicts the text, a construct has no writer. A matched Forge draft may also be `Mismatch` through an ability without a clause, or through a `Differs` clause when its meta marks it `differs` (then `Read` after a player's read, never `Forge`; the deck check shows each such clause beside the engine's words, `ReportCard.differs`). Other `Invalid` and `Mismatch` proposals never become drafts; translator drafts are checked without repairs; `Accepted` ones join the corpus. Drafts live in `crates/mtg-cli/drafts/`. |
-| `read_hash` | SHA-256 (first 16 bytes as 32 hex characters) over the oracle id, each face's current `oracle_fingerprint` and the draft's `implementation_hash`. A changed draft or an erratum gives a new hash; `Caps` do not enter it. |
+| `read_hash` | SHA-256 (first 16 bytes as 32 hex characters) over the oracle id, each face's current `oracle_fingerprint` and the draft's `implementation_hash` without its keyword-action logs (`Effect::Performed`, which change nothing a player reads). A changed draft or an erratum gives a new hash; `Caps` do not enter it. |
 | Verdict | `correct`, or `wrong` with a note, by one account on one `read_hash`; the account's newest verdict on that hash counts ([server.md](server.md), Reads). The server's own `wrong` (a resolution that failed in a game) has no account. |
 | Read state | Per `read_hash`: `wrong` when a counting verdict is `wrong`, else `approved` when one is `correct`, else `pending`. A verdict on another hash counts for nothing, so a changed draft or text is read again. |
 | State | `Read` when the draft is `approved`, `Unverified` when a whole draft is `pending`, both only while its fingerprints are current and `Caps` cover it; otherwise the card keeps the state its file or compiled row gives. |

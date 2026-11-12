@@ -1308,6 +1308,27 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
+    /// Logs a keyword action the steps before it performed, so "whenever you investigate" and the like trigger; it changes
+    /// nothing else (investigate CR 701.16a, discover 701.57, manifest dread 701.62, gift 702.174).
+    Performed {
+        /// What was done: `Investigated`, `Discovered`, `ManifestedDread` or `GaveGift`.
+        action: crate::did::Action,
+        /// Who did it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many times (an investigation for each Clue token made).
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        times: Amount,
+        /// The card it concerns: the card discovered, or the card manifest dread put into the graveyard.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        card: Option<Ref>,
+        /// The discover value.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        value: Option<Amount>,
+        /// The player given the gift.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.
@@ -1960,9 +1981,18 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
 }
 
 /// The steps of discover N (CR 701.57a): the first nonland card of mana value `count` or less is cast free or put into the
-/// hand, and the cards exiled with it go to the bottom of the library.
+/// hand, and the cards exiled with it go to the bottom of the library; then the discover is logged
+/// with the card found and its value.
 pub fn discover(count: Amount) -> Vec<Effect> {
-    exile_cast_bottom(
+    let log = Effect::Performed {
+        action: crate::did::Action::Discovered,
+        who: Ref::You,
+        times: Amount::one(),
+        card: Some(Ref::Bound(FOUND.to_owned())),
+        value: Some(count.clone()),
+        to: None,
+    };
+    let mut steps = exile_cast_bottom(
         Selector(vec![
             Pred::Not(Box::new(Pred::Type(CardType::Land))),
             Pred::Compare {
@@ -1976,7 +2006,9 @@ pub fn discover(count: Amount) -> Vec<Effect> {
             to: Destination::Hand,
             bind: None,
         }],
-    )
+    );
+    steps.push(log);
+    steps
 }
 
 /// The steps of cascade (CR 702.85a): the first nonland card of lesser mana value than the source, the spell that cascades,
