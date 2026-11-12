@@ -24,7 +24,7 @@ use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
-use crate::value::{Amount, Condition, TurnTally};
+use crate::value::{Amount, Condition, StatKind, TurnTally};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -1003,7 +1003,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::Stat { of, stat } => self.r374_stat_of(of, *stat),
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
@@ -1064,7 +1064,7 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Total");
                 self.at("of", |w| w.selector(of));
             }
-            Amount::Distinct { of, .. } => self.w2c_selector_amount("Distinct", of),
+            Amount::Distinct { of, stat } => self.r374_distinct_of(of, *stat),
             Amount::CardTypes(of) => self.w2c_selector_amount("CardTypes", of),
             Amount::Destroyed(of) => self.w2c_selector_amount("Destroyed", of),
             Amount::Exiled(of) => self.w2c_selector_amount("Exiled", of),
@@ -1102,6 +1102,32 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// `Amount::Stat`: the object, and the characteristic when only some engines read it.
+    fn r374_stat_of(&mut self, of: &Ref, stat: StatKind) {
+        self.at("of", |w| w.reference(of, Kind::Object));
+        self.r374_stat(stat);
+    }
+
+    /// `Amount::Distinct`: the objects, and the characteristic when only some engines read it.
+    fn r374_distinct_of(&mut self, of: &Selector, stat: StatKind) {
+        self.w2c_selector_amount("Distinct", of);
+        self.r374_stat(stat);
+    }
+
+    /// Names a characteristic only some engines read (`StatKind::R374*`).
+    fn r374_stat(&mut self, stat: StatKind) {
+        let name = match stat {
+            StatKind::R374Types => "R374Types",
+            StatKind::R374CreatureTypes => "R374CreatureTypes",
+            StatKind::R374Bushido => "R374Bushido",
+            StatKind::R374Toxic => "R374Toxic",
+            StatKind::R374ManaCost => "R374ManaCost",
+            StatKind::R374ColorSet => "R374ColorSet",
+            _ => return,
+        };
+        self.uses("Stat", name);
+    }
+
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
@@ -1112,6 +1138,10 @@ impl<'a> Walker<'a> {
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
+            }
+            Amount::R374AtMost(inner, _) => {
+                self.uses("Amount", "R374AtMost");
+                self.at("0", |w| w.amount(inner));
             }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");

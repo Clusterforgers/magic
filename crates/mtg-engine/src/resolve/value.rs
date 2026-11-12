@@ -27,6 +27,7 @@ use super::share::{OUTSIDE_A_DIVISION, Share};
 
 mod fe1a_atoms;
 mod r287_above;
+mod r374_counts;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1957,7 +1958,15 @@ impl<'a> Scope<'a> {
                 i64::try_from(Self::w7a_basic_land_types(seen).count()).ok()
             }
             // A name and creature types are no numbers; `Amount::Distinct` and `Amount::MostCommon` read them.
-            StatKind::Name | StatKind::CreatureType | StatKind::CounterKinds => None,
+            StatKind::Name
+            | StatKind::CreatureType
+            | StatKind::CounterKinds
+            | StatKind::R374Types
+            | StatKind::R374CreatureTypes
+            | StatKind::R374Bushido
+            | StatKind::R374Toxic
+            | StatKind::R374ManaCost
+            | StatKind::R374ColorSet => None,
         }
     }
 
@@ -1994,6 +2003,16 @@ impl<'a> Scope<'a> {
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
+            Amount::Stat { of, stat } if r374_counts::is_r374(*stat) => {
+                let mut total = 0i64;
+                for object in self.objects(of)? {
+                    if let Some(seen) = self.seen(self.as_it_left(object)) {
+                        total = total.saturating_add(self.r374_stat(&seen, *stat)?);
+                    }
+                }
+                total
+            }
+            Amount::R374AtMost(inner, most) => self.r374_at_most(inner, *most)?,
             Amount::Stat { of, stat } => self
                 .objects(of)?
                 .iter()
@@ -2067,7 +2086,10 @@ impl<'a> Scope<'a> {
             Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
-            Amount::Distinct { of, stat } => self.w2c_distinct(of, *stat)?,
+            Amount::Distinct { of, stat } => match self.r374_distinct(of, *stat)? {
+                Some(found) => found,
+                None => self.w2c_distinct(of, *stat)?,
+            },
             Amount::CardTypes(of) => self.card_types_among(of)?,
             Amount::Players(who) => i64::try_from(self.players(who)?.len())
                 .map_err(|_| ResolveError::Invalid("too many players".into()))?,

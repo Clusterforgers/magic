@@ -121,6 +121,12 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::BasicLandTypes
         | StatKind::Name
         | StatKind::CounterKinds
+        | StatKind::R374Types
+        | StatKind::R374CreatureTypes
+        | StatKind::R374Bushido
+        | StatKind::R374Toxic
+        | StatKind::R374ManaCost
+        | StatKind::R374ColorSet
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness
@@ -181,6 +187,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         }
         if let Some(distinct) = super::w2c_counts::w2c_distinct(r, false) {
             return Some(distinct);
+        }
+        if let Some(own) = super::r374_counts::r374_each(r) {
+            return Some(own);
         }
         let selector = phrase(r, Form::Count)?;
         // A group that no one holds stands on the battlefield.
@@ -278,6 +287,9 @@ fn exiled_this_way(selector: &Selector) -> Option<String> {
 
 /// What "for each" counts, as the card words it after "for each ".
 pub fn for_each_text(counted: &Amount) -> Option<String> {
+    if let Some(text) = super::r374_counts::r374_each_text(counted) {
+        return Some(text);
+    }
     Some(match counted {
         Amount::Count(selector) if exiled_this_way(selector).is_some() => {
             exiled_this_way(selector)?

@@ -41,6 +41,19 @@ pub enum StatKind {
     CreatureType,
     /// The kinds of counters on it: no number, so only `Amount::Distinct` reads it (each kind once among the objects).
     CounterKinds,
+    /// How many supertypes, card types and subtypes it has together ("for each supertype, card type, and subtype it has").
+    R374Types,
+    /// How many creature types it has ("for each of its creature types"); a creature with every creature type has each.
+    R374CreatureTypes,
+    /// The total of its bushido values (CR 702.45b, "for each point of bushido it has").
+    R374Bushido,
+    /// Its total toxic value (CR 702.164c): the total of its toxic values.
+    R374Toxic,
+    /// Its mana cost: no number, so only `Amount::Distinct` reads it ("different mana costs"); a card without one has none.
+    R374ManaCost,
+    /// Its colors as one value: no number, so only `Amount::Distinct` reads it ("different color pairs" among objects of two
+    /// colors); a colorless object has none.
+    R374ColorSet,
 }
 
 /// A comparison between two numbers.
@@ -731,6 +744,8 @@ pub enum Amount {
     },
     /// How far apart the two amounts are, never negative: "the difference between its power and toughness".
     Difference(Box<Amount>, Box<Amount>),
+    /// The amount, but never more than the number ("to a maximum of 10").
+    R374AtMost(Box<Amount>, u32),
     /// The inner amount for the caster as the spell was cast ("for each creature you controlled as you cast this spell"); a
     /// copy that was not cast reads it now.
     CountedAsCast(Box<Amount>),
@@ -910,6 +925,7 @@ enum Tagged {
         up: bool,
     },
     Difference(Box<Amount>, Box<Amount>),
+    R374AtMost(Box<Amount>, u32),
     CountedAsCast(Box<Amount>),
 }
 
@@ -1056,6 +1072,7 @@ enum TaggedRef<'a> {
         up: bool,
     },
     Difference(&'a Amount, &'a Amount),
+    R374AtMost(&'a Amount, u32),
     CountedAsCast(&'a Amount),
 }
 
@@ -1140,6 +1157,7 @@ impl From<Tagged> for Amount {
             Tagged::Product(parts) => Amount::Product(parts),
             Tagged::Quotient { of, by, up } => Amount::Quotient { of, by, up },
             Tagged::Difference(left, right) => Amount::Difference(left, right),
+            Tagged::R374AtMost(inner, most) => Amount::R374AtMost(inner, most),
             Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
         }
     }
@@ -1277,6 +1295,9 @@ impl Serialize for Amount {
             }
             Amount::Difference(left, right) => {
                 TaggedRef::Difference(left, right).serialize(serializer)
+            }
+            Amount::R374AtMost(inner, most) => {
+                TaggedRef::R374AtMost(inner, *most).serialize(serializer)
             }
             Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
         }
