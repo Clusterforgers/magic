@@ -185,6 +185,7 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r300b_writers;
 mod r303_forms;
 mod r304b_writers;
 mod r307c_events;

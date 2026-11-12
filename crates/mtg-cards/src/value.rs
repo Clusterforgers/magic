@@ -456,6 +456,9 @@ pub enum Amount {
     /// How many times the player has cast their commanders from the command zone this game, all of them together
     /// (CR 903.8): the count behind the commander tax.
     CommanderCasts(Ref),
+    /// How many times the commanders the reference names were cast from the command zone this game, each counted
+    /// alone ("the number of times it's been cast from the command zone this game").
+    CastsFromCommand(Ref),
     /// A player's speed (CR 702.179): 0 until start your engines! gives them one, at most 4.
     Speed(Ref),
     /// How many counters of a kind are on the object or player.
@@ -778,6 +781,7 @@ enum Tagged {
     },
     Life(Ref),
     CommanderCasts(Ref),
+    CastsFromCommand(Ref),
     Speed(Ref),
     Counters {
         on: Ref,
@@ -924,6 +928,7 @@ enum TaggedRef<'a> {
     },
     Life(&'a Ref),
     CommanderCasts(&'a Ref),
+    CastsFromCommand(&'a Ref),
     Speed(&'a Ref),
     Counters {
         on: &'a Ref,
@@ -1067,6 +1072,7 @@ impl From<Tagged> for Amount {
             Tagged::Stat { of, stat } => Amount::Stat { of, stat },
             Tagged::Life(who) => Amount::Life(who),
             Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
+            Tagged::CastsFromCommand(what) => Amount::CastsFromCommand(what),
             Tagged::Speed(who) => Amount::Speed(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
@@ -1156,6 +1162,9 @@ impl Serialize for Amount {
             Amount::Stat { of, stat } => TaggedRef::Stat { of, stat: *stat }.serialize(serializer),
             Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
             Amount::CommanderCasts(who) => TaggedRef::CommanderCasts(who).serialize(serializer),
+            Amount::CastsFromCommand(what) => {
+                TaggedRef::CastsFromCommand(what).serialize(serializer)
+            }
             Amount::Speed(who) => TaggedRef::Speed(who).serialize(serializer),
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)

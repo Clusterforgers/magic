@@ -15,6 +15,12 @@ spell: SpendFilter,
  */
 counters?: number, 
 /**
+ * The permanent enters with as many more +1/+1 counters as times it has been cast from the command zone this game,
+ * this cast included ("it enters with a number of additional +1/+1 counters on it equal to the number of times it's
+ * been cast from the command zone this game").
+ */
+per_command_cast?: boolean, 
+/**
  * The keyword the permanent gains.
  */
 keyword?: unknown, 

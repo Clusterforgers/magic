@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "f3a9eac0-cc71-48ae-bb60-ae26160f2000",
+  "oracle_id": "ad43ccce-3052-4817-8c46-f5c23cb49300",
+  "multiverse_ids": [],
+  "mtgo_id": 105915,
+  "tcgplayer_id": 475511,
+  "cardmarket_id": 689797,
+  "name": "Vikya, Scorching Stalwart",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/f3a9eac0-cc71-48ae-bb60-ae26160f2000",
+  "scryfall_uri": "https://scryfall.com/card/slx/11/vikya-scorching-stalwart?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:42:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775",
+    "normal": "https://cards.scryfall.io/normal/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775",
+    "large": "https://cards.scryfall.io/large/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775",
+    "png": "https://cards.scryfall.io/png/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.png?1783917775",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.webp?1783917775",
+    "grid": "https://cards.scryfall.io/grid/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.webp?1783917775",
+    "display": "https://cards.scryfall.io/display/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.webp?1783917775",
+    "art": "https://cards.scryfall.io/art/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.webp?1783917775",
+    "crop": "https://cards.scryfall.io/crop/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.webp?1783917775",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/3/f3a9eac0-cc71-48ae-bb60-ae26160f2000.jpg?1783917775"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Training (Whenever this creature attacks with another creature with greater power, put a +1/+1 counter on this creature.)\n{4}{R}, {Q}, Discard a card: Vikya, Scorching Stalwart deals damage equal to its power to any target. If excess damage was dealt to a creature this way, draw a card. ({Q} is the untap symbol.)",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Training"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f3a9eac0-cc71-48ae-bb60-ae26160f2000/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad43ccce-3052-4817-8c46-f5c23cb49300&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zoltan Boros",
+  "artist_ids": [
+    "1885e6cb-c827-4896-994e-3d0a027d602f"
+  ],
+  "illustration_id": "c747ad88-c6fe-47c0-ae81-ee0bb58f0a0d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 18574,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1678101037",
+    "previewed_at": "2022-12-13"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": "0.22"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVikya%252C%2BScorching%2BStalwart",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVikya%252C%2BScorching%2BStalwart",
+    "edhrec": "https://edhrec.com/route/?cc=Vikya%2C+Scorching+Stalwart"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F475511%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=689797&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/105915?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

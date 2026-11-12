@@ -22,6 +22,7 @@ use crate::snapshot::snapshot;
 use crate::spend::SpendKind;
 use crate::state::GameState;
 use crate::triggers::{DelayedCreated, DelayedId};
+use crate::zones::Zone;
 
 /// The name by which the effects of a rider read the spell.
 const SPELL: &str = "spell";
@@ -164,6 +165,7 @@ fn enters_with(
     spell: ObjectRef,
     taken: usize,
 ) -> Vec<Event> {
+    let casts = r300b_command_casts(state, spell);
     let spell = ObjectRef {
         counter: spell.counter + 1,
         ..spell
@@ -183,7 +185,11 @@ fn enters_with(
                 id: EffectId(state.next_effect + u64::try_from(taken + at).unwrap_or(0)),
                 rule: Rule::EntersWith {
                     spell,
-                    counters: bonus.counters,
+                    counters: if bonus.per_command_cast {
+                        casts
+                    } else {
+                        bonus.counters
+                    },
                     keyword: bonus.keyword.clone(),
                     this_turn: bonus.this_turn,
                 },
@@ -194,6 +200,17 @@ fn enters_with(
             }),
         })
         .collect()
+}
+
+/// How many times the spell `spell` will have been cast from the command zone once this cast completes: the casts
+/// counted so far, and this one while the card still lies in the command zone it is cast from.
+fn r300b_command_casts(state: &GameState, spell: ObjectRef) -> u32 {
+    let this_cast = state.object(spell.id).is_some_and(|card| {
+        matches!(card.zone(), Zone::Command(_)) && state.commanders().any(|id| id == spell.id)
+    });
+    state
+        .commander_casts(spell.id)
+        .saturating_add(u32::from(this_cast))
 }
 
 /// What the spell `id` gets as it resolves into a permanent from the riders of the mana spent to cast it: its
