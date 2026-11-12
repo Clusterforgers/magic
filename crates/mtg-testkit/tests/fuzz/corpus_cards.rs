@@ -22,7 +22,7 @@ use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
 use rstest::rstest;
 
-use Support::{Manual, Partial, Verified};
+use Support::{Partial, Verified};
 
 /// The corpus cards whose state its file cannot give, each with the state its capabilities give it and the number of
 /// abilities its definition carries (mana abilities and rules together): a card the engine cannot yet play as its file
@@ -36,7 +36,6 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Kaervek's Spite", Partial, 1),
     ("Invasion of Amonkhet // Lazotep Convert", Partial, 3),
     ("Nourishing Shoal", Partial, 1),
-    ("Plagiarize", Manual, 0),
     ("Sickening Shoal", Partial, 1),
     ("Vexing Puzzlebox", Partial, 2),
     ("Yurlok of Scorch Thrash", Partial, 2),

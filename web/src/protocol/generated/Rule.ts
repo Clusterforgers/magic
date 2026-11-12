@@ -293,7 +293,12 @@ when: unknown,
 /**
  * What happens instead.
  */
-by: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+by: unknown, 
+/**
+ * The players a draw shield covers, fixed as it began ("if target player would draw a card"); empty when its
+ * event names them.
+ */
+players?: Array<PlayerId>, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */

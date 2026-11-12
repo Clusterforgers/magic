@@ -212,6 +212,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Rebound and paradigm exile a resolved card spell (`Origin::Rebound`, `Origin::Paradigm`) and set up the delayed trigger that casts it or a copy; paradigm only when none waits for that name.
 - A mill is one event (`ReplaceWhen::Mill`): a batch's run of `ZoneCause::Milled` moves of one player's cards. `Multiply` and `Add` take more cards (`replace/e19_mill.rs`); each card's move is still replaced on its own.
 - Shields are `RuleEffect`s (`Rule::PreventDamage`, `Rule::Regenerate`, `Rule::DiesInstead`) made by `Effect::Shield` and `Effect::Regenerate`; `ShieldShape` (mtg-cards) names those the engine plays and the validator makes any other a gap. `DiesInstead` with `leaves` covers any move off the battlefield.
+- A shield over every draw of a targeted player (`Rule::Replaces` with `players`, "until end of turn, if target player would draw a card, instead ...") fixes the players as it begins; the draw it puts in place is not replaced again.
 - The testkit's state-based checks skip a decision of the step: its events are not applied yet.
 
 ## Triggered abilities
