@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f016ad56-4f73-4091-a1c2-937782642ecb",
+  "name": "Mister Immortal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mister Immortal",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "from": "Exile",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

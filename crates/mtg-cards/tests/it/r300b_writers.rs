@@ -1,8 +1,8 @@
-//! Goal: the r30-0b writers word exactly the shapes they stand for (an upkeep return counted by the cards above, a hand shuffled in and drawn again for you or each player, control passed to a player who is not the owner, a mana rider about the commander's casts, the colors among permanents, an ability only the owner activates and damage redirected to the owner, the owner losing half their life, a token copy that is a red Balloon with keywords until the next end step, a draw after excess damage, a search that makes the card a copy, empower Jace) and nothing near them.
+//! Goal: the r30-0b writers word exactly the shapes they stand for (an upkeep return counted by the cards above, a hand shuffled in and drawn again for you or each player, control passed to a player who is not the owner, a mana rider about the commander's casts, the colors among permanents, an ability only the owner activates and damage redirected to the owner, the owner losing half their life, a token copy that is a red Balloon with keywords until the next end step, a draw after excess damage, a search that makes the card a copy, empower Jace, a draw and a land for you and for the owner, counters removed one or more at a time that convert the card, More Than Meets the Eye, a return from a graveyard or from exile) and nothing near them.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
-use mtg_cards::compile::written_variants;
+use mtg_cards::compile::{either_way_pair_texts, written_variants};
 use rstest::rstest;
 
 fn says(json: &str, text: &str) -> bool {
@@ -64,6 +64,18 @@ fn says(json: &str, text: &str) -> bool {
 #[case::empower(
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"op":"Lt","right":1}},"then":[{"CreateToken":{"token":{"Custom":{"name":"Jace","colors":["Blue"],"types":["Planeswalker"],"subtypes":["Jace"],"abilities":[{"Loyalty":{"cost":{"Minus":1},"effects":[{"Surveil":{}}]}},{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{}}]}}]}}}}]}},{"Choose":{"from":{"Each":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"as":"jace"}},{"PutCounters":{"on":{"Bound":"jace"},"counter":"loyalty","count":3}}]}}"#,
     "When ~ enters, empower Jace 3."
+)]
+#[case::owner_also_draws(
+    r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"Draw":{}},{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}},{"Draw":{"who":{"OwnerOf":"This"}}},{"May":{"who":{"OwnerOf":"This"},"effects":[{"Choose":{"who":{"OwnerOf":"This"},"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"OwnerOf":"This"}},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}}]}}"#,
+    "{2}, {T}: Draw a card, then you may put a land card from your hand onto the battlefield. ~'s owner draws a card, then that player may put a land card from their hand onto the battlefield."
+)]
+#[case::remove_one_or_more(
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},{"RemoveCounters":{"counter":"+1/+1","count":"X"}},{"XAtLeast":1}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}},{"Transform":{"what":"This"}}]}}"#,
+    "{1}, Remove one or more +1/+1 counters from ~: It deals that much damage to target creature. Convert ~."
+)]
+#[case::more_than_meets_the_eye(
+    r#"{"Keyword":{"MoreThanMeetsTheEye":"{R}{W}"}}"#,
+    "More Than Meets the Eye {R}{W}"
 )]
 fn the_shape_is_worded_as_the_card_prints_it(#[case] json: &str, #[case] text: &str) {
     assert!(says(json, text), "{text}");
@@ -134,6 +146,42 @@ fn the_shape_is_worded_as_the_card_prints_it(#[case] json: &str, #[case] text: &
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"If":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"op":"Lt","right":1}},"then":[{"CreateToken":{"token":{"Custom":{"name":"Jace","colors":["Blue"],"types":["Planeswalker"],"subtypes":["Jace"],"abilities":[{"Loyalty":{"cost":{"Minus":1},"effects":[{"Surveil":{}}]}},{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{}}]}}]}}}}]}},{"Choose":{"from":{"Each":[{"Subtype":"Jace"},"Token",{"ControlledBy":"You"}]},"as":"jace"}},{"PutCounters":{"on":{"Bound":"jace"},"counter":"loyalty","count":2}}]}}"#,
     "When ~ enters, empower Jace 3."
 )]
+#[case::owner_draws_twice(
+    r#"{"Activated":{"cost":[{"Mana":"{2}"},"Tap"],"effects":[{"Draw":{}},{"May":{"effects":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}},{"Draw":{"who":{"OwnerOf":"This"},"count":2}},{"May":{"who":{"OwnerOf":"This"},"effects":[{"Choose":{"who":{"OwnerOf":"This"},"from":{"Each":[{"In":"Hand"},{"OwnedBy":{"OwnerOf":"This"}},{"Type":"Land"}]},"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}}]}}]}}"#,
+    "{2}, {T}: Draw a card, then you may put a land card from your hand onto the battlefield. ~'s owner draws a card, then that player may put a land card from their hand onto the battlefield."
+)]
+#[case::remove_x_without_least(
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},{"RemoveCounters":{"counter":"+1/+1","count":"X"}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}},{"Transform":{"what":"This"}}]}}"#,
+    "{1}, Remove one or more +1/+1 counters from ~: It deals that much damage to target creature. Convert ~."
+)]
+#[case::remove_one_or_more_no_convert(
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},{"RemoveCounters":{"counter":"+1/+1","count":"X"}},{"XAtLeast":1}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}"#,
+    "{1}, Remove one or more +1/+1 counters from ~: It deals that much damage to target creature. Convert ~."
+)]
 fn a_near_miss_is_not_worded_as_the_card(#[case] json: &str, #[case] text: &str) {
     assert!(!says(json, text), "{text}");
+}
+
+fn pair_says(first: &str, second: &str, text: &str) -> bool {
+    let first: Ability = serde_json::from_str(first).unwrap();
+    let second: Ability = serde_json::from_str(second).unwrap();
+    either_way_pair_texts(&first, &second).iter().any(|written| written == text)
+}
+
+const FROM_GRAVEYARD: &str = r#"{"Activated":{"cost":"{2}{G}","from":"Graveyard","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}}"#;
+const FROM_EXILE: &str = r#"{"Activated":{"cost":"{2}{G}","from":"Exile","effects":[{"Move":{"what":"This","to":{"Battlefield":{"tapped":true}}}}]}}"#;
+const TWO_ZONES: &str = "{2}{G}: Return ~ from your graveyard or from exile to the battlefield tapped.";
+
+#[test]
+fn two_activations_from_a_graveyard_and_exile_are_one_sentence() {
+    assert!(pair_says(FROM_GRAVEYARD, FROM_EXILE, TWO_ZONES));
+}
+
+#[rstest]
+#[case::exile_first(FROM_EXILE, FROM_GRAVEYARD)]
+#[case::both_graveyard(FROM_GRAVEYARD, FROM_GRAVEYARD)]
+#[case::another_cost(FROM_GRAVEYARD, &FROM_EXILE.replace("{2}{G}", "{3}{G}"))]
+#[case::untapped(FROM_GRAVEYARD, &FROM_EXILE.replace(r#""tapped":true"#, r#""tapped":false"#))]
+fn two_activations_that_differ_otherwise_are_not_one_sentence(#[case] first: &str, #[case] second: &str) {
+    assert!(!pair_says(first, second, TWO_ZONES));
 }

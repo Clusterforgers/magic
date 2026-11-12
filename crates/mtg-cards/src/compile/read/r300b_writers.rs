@@ -65,6 +65,11 @@ pub(super) fn r300b_wordings(
         found.extend(excess_draws(body, written));
         found.extend(balloon_copy(body, written));
         found.extend(search_become_copy(body, written));
+        found.extend(owner_also_draws(body, written));
+        found.extend(remove_one_or_more(body, written));
+    }
+    if let Some(cost) = value["Keyword"]["MoreThanMeetsTheEye"].as_str() {
+        found.push(format!("More Than Meets the Eye {cost}"));
     }
     if let Some(body) = value.get("Triggered") {
         found.extend(own_hand_shuffled(body, written));
@@ -466,6 +471,122 @@ fn search_become_copy(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec
             Some(format!(
                 "{head} and put it into your graveyard. If you do, ~ becomes a copy of that card until end of turn. Then shuffle."
             ))
+        })
+        .collect()
+}
+
+/// "Draw a card, then you may put a land card from your hand onto the battlefield." for a player: its JSON.
+fn draw_then_land(who: &Value) -> Value {
+    let mut draw = json!({"Draw": {}});
+    let mut choose = json!({"Choose": {"from": {"Each": [{"In": "Hand"}, {"OwnedBy": who}, {"Type": "Land"}]}, "as": "card"}});
+    let mut may = json!({"May": {"effects": []}});
+    if *who != json!("You") {
+        draw["Draw"]["who"] = who.clone();
+        choose["Choose"]["who"] = who.clone();
+        may["May"]["who"] = who.clone();
+    }
+    may["May"]["effects"] = json!([choose, {"Move": {"what": {"Bound": "card"}, "to": {"Battlefield": {}}}}]);
+    json!([draw, may])
+}
+
+/// "This artifact's owner draws a card, then that player may put a land card from their hand onto the battlefield.":
+/// after the twin in which you do so.
+fn owner_also_draws(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    let Some(steps) = body["effects"].as_array() else {
+        return Vec::new();
+    };
+    let mine = draw_then_land(&json!("You"));
+    let owners = draw_then_land(&json!({"OwnerOf": "This"}));
+    let (Some(mine), Some(owners)) = (mine.as_array(), owners.as_array()) else {
+        return Vec::new();
+    };
+    if steps.len() != 4 || steps[..2] != mine[..] || steps[2..] != owners[..] {
+        return Vec::new();
+    }
+    let mut twin = body.clone();
+    twin["effects"] = json!(mine);
+    let Some(twin) = ability_of(json!({ "Activated": twin })) else {
+        return Vec::new();
+    };
+    written(&twin)
+        .into_iter()
+        .flat_map(|text| {
+            ["this artifact's", "~'s"].map(|owner| {
+                format!("{text} {}{} owner draws a card, then that player may put a land card from their hand onto the battlefield.", owner[..1].to_uppercase(), &owner[1..])
+            })
+        })
+        .collect()
+}
+
+/// "{2}{G}: Return this card from your graveyard or from exile to the battlefield tapped.": two activations equal but
+/// for the zone each works from, a graveyard first and exile second, written from the graveyard's.
+pub(super) fn r300b_two_zone_texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let (Some(graveyard), Some(exile)) = (value_of(first), value_of(second)) else {
+        return Vec::new();
+    };
+    let (Some(from_graveyard), Some(from_exile)) = (graveyard.get("Activated"), exile.get("Activated")) else {
+        return Vec::new();
+    };
+    let mut same = from_exile.clone();
+    same["from"] = json!("Graveyard");
+    if from_graveyard["from"] != json!("Graveyard") || from_exile["from"] != json!("Exile") || same != *from_graveyard
+    {
+        return Vec::new();
+    }
+    super::render::written_variants(first)
+        .into_iter()
+        .filter(|text| !text.contains("ctivate only"))
+        .filter_map(|text| {
+            text.contains(" from your graveyard to the battlefield").then(|| {
+                text.replacen(
+                    " from your graveyard to the battlefield",
+                    " from your graveyard or from exile to the battlefield",
+                    1,
+                )
+            })
+        })
+        .collect()
+}
+
+/// "{1}, Remove one or more +1/+1 counters from ~: It deals that much damage to target creature. Convert ~.": X counters
+/// removed, at least one, written from the twin that removes X and deals X without converting.
+fn remove_one_or_more(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    let Some(cost) = body["cost"].as_array() else {
+        return Vec::new();
+    };
+    let Some(effects) = body["effects"].as_array() else {
+        return Vec::new();
+    };
+    let (Some((last_cost, cost_rest)), Some((last_step, steps))) = (cost.split_last(), effects.split_last()) else {
+        return Vec::new();
+    };
+    let removes_x = cost_rest
+        .iter()
+        .any(|part| part["RemoveCounters"]["count"] == json!("X"));
+    let deals_x = steps
+        .iter()
+        .any(|step| step["DealDamage"]["amount"] == json!("X"));
+    if *last_cost != json!({"XAtLeast": 1})
+        || *last_step != json!({"Transform": {"what": "This"}})
+        || !removes_x
+        || !deals_x
+    {
+        return Vec::new();
+    }
+    let mut twin = body.clone();
+    twin["cost"] = json!(cost_rest);
+    twin["effects"] = json!(steps);
+    let Some(twin) = ability_of(json!({ "Activated": twin })) else {
+        return Vec::new();
+    };
+    written(&twin)
+        .into_iter()
+        .filter(|text| text.contains("Remove X ") && text.contains(" deals X damage "))
+        .map(|text| {
+            let text = text
+                .replacen("Remove X ", "Remove one or more ", 1)
+                .replacen(" deals X damage ", " deals that much damage ", 1);
+            format!("{text} Convert ~.")
         })
         .collect()
 }

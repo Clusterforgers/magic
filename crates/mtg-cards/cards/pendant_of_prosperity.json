@@ -1,19 +1,120 @@
 {
   "oracle_id": "d958321b-789d-4f9a-bdbe-f907166a0216",
   "name": "Pendant of Prosperity",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pendant of Prosperity",
-      "oracle_fingerprint": "b53c15118f024423a5723f3b809d4c3f",
+      "oracle_fingerprint": "",
       "abilities": [
         {
-          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  "This"
+                ]
+              }
+            },
+            "by": "UnderChosenOpponent"
+          }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 70, "end": 269 }
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{2}"
+              },
+              "Tap"
+            ],
+            "effects": [
+              {
+                "Draw": {}
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "In": "Hand"
+                            },
+                            {
+                              "OwnedBy": "You"
+                            },
+                            {
+                              "Type": "Land"
+                            }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Bound": "card"
+                        },
+                        "to": {
+                          "Battlefield": {}
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Draw": {
+                  "who": {
+                    "OwnerOf": "This"
+                  }
+                }
+              },
+              {
+                "May": {
+                  "who": {
+                    "OwnerOf": "This"
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": {
+                          "OwnerOf": "This"
+                        },
+                        "from": {
+                          "Each": [
+                            {
+                              "In": "Hand"
+                            },
+                            {
+                              "OwnedBy": {
+                                "OwnerOf": "This"
+                              }
+                            },
+                            {
+                              "Type": "Land"
+                            }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Bound": "card"
+                        },
+                        "to": {
+                          "Battlefield": {}
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
