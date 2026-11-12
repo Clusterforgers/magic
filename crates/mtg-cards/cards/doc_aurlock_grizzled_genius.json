@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3ca32660-bf5f-4398-bef6-a0ec8bc767cf",
+  "name": "Doc Aurlock, Grizzled Genius",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Doc Aurlock, Grizzled Genius",
+      "oracle_fingerprint": "8332a61f02d0f756061dced015e49742",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "You" },
+              { "AnyOf": [{ "CastFrom": "Graveyard" }, { "CastFrom": "Exile" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 73, "end": 118 }
+          }
+        }
+      ]
+    }
+  ]
+}

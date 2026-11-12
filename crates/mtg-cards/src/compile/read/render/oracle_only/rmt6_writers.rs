@@ -165,6 +165,21 @@ fn draft_texts(ability: &Ability) -> Vec<String> {
                                         player may offer you one card in their card pool in exchange. You may accept any \
                                         one offer."
             .to_owned(),
+        DraftRule::AddBoosterPack => {
+            "Reveal ~ as you draft it. After you draft ~, you may add a booster pack to the draft.".to_owned()
+        }
+        DraftRule::NoteDraftedCount => "Reveal ~ as you draft it and note how many cards you've drafted this draft \
+                                         round, including ~."
+            .to_owned(),
+        DraftRule::NotePasser => {
+            "Reveal ~ as you draft it and note the player who passed it to you.".to_owned()
+        }
+        DraftRule::NoteNextName => {
+            "Reveal ~ as you draft it. Reveal the next card you draft and note its name.".to_owned()
+        }
+        DraftRule::GuessNextPick => "Reveal ~ as you draft it. The next time a player drafts a card from this \
+                                      booster pack, guess that card's name. Then that player reveals the drafted card."
+            .to_owned(),
     };
     vec![text]
 }

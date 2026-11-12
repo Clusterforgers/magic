@@ -9,9 +9,13 @@
       "abilities": [
         { "Keyword": { "MoreThanMeetsTheEye": "{1}{W}{B}{R}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 90, "end": 137 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": { "Cast": { "unless": { "Not": "InCombat" } } }
+              }
+            }
           }
         },
         {

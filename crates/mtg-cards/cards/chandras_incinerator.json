@@ -15,9 +15,25 @@
         },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 126, "end": 288 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": false
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
           }
         }
       ]

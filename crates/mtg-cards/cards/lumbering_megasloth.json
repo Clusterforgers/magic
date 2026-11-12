@@ -1,16 +1,18 @@
 {
   "oracle_id": "6492c381-0fa1-4d43-bf72-d8956d8a34b6",
   "name": "Lumbering Megasloth",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lumbering Megasloth",
       "oracle_fingerprint": "2d425253aed9ae0098db51b4d2b356e5",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 80 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Sum": [{ "AnyCounters": "EachPlayer" }, { "AnyCounters": { "Each": [] } }] }
           }
         },
         { "Keyword": "Trample" },

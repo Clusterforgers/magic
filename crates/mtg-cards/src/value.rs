@@ -663,6 +663,8 @@ pub enum Amount {
     },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
+    /// How many players have lost the game (CR 104.3, "for each player who has lost the game").
+    LostPlayers,
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
@@ -874,6 +876,7 @@ enum Tagged {
     },
     CommanderColors(Ref),
     TurnNumber,
+    LostPlayers,
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1020,6 +1023,7 @@ enum TaggedRef<'a> {
     },
     CommanderColors(&'a Ref),
     TurnNumber,
+    LostPlayers,
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1118,6 +1122,7 @@ impl From<Tagged> for Amount {
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::LostPlayers => Amount::LostPlayers,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::When {
                 condition,
@@ -1239,6 +1244,7 @@ impl Serialize for Amount {
             .serialize(serializer),
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::LostPlayers => TaggedRef::LostPlayers.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::When {
                 condition,
@@ -1565,6 +1571,7 @@ mod tests {
     #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned(), per: None }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
+    #[case::lost_players(Amount::LostPlayers, r#""LostPlayers""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
     #[case::when(
         Amount::When { condition: Box::new(Condition::YourTurn), then: Box::new(Amount::Fixed(3)), otherwise: Box::new(Amount::X) },

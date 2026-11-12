@@ -964,6 +964,16 @@ pub enum DraftRule {
     LastCardsPassed,
     /// Trade a card after the draft.
     TradeAfterDraft,
+    /// Reveal it as drafted; its drafter may then add a booster pack to the draft.
+    AddBoosterPack,
+    /// Reveal it as drafted and note how many cards its drafter has drafted this round, itself included.
+    NoteDraftedCount,
+    /// Reveal it as drafted and note the player who passed it.
+    NotePasser,
+    /// Reveal it as drafted, then reveal the next card drafted and note its name.
+    NoteNextName,
+    /// Reveal it as drafted, then guess the name of the next card drafted from its booster pack.
+    GuessNextPick,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

@@ -467,12 +467,27 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
+    // A permanent kept from entering takes the facts of its entry (`Entered`) out with its move.
+    let mut kept_out = Vec::new();
     events
         .into_iter()
         .filter(|event| {
-            !doings(state, event)
+            if let Event::Entered { object, .. } = event {
+                return !kept_out.contains(object);
+            }
+            let banned = doings(state, event)
                 .into_iter()
-                .any(|doing| forbidden(state, doing))
+                .any(|doing| forbidden(state, doing));
+            if banned
+                && let Event::ZoneChanged {
+                    object,
+                    to: Zone::Battlefield,
+                    ..
+                } = event
+            {
+                kept_out.push(*object);
+            }
+            !banned
         })
         .collect()
 }
@@ -657,6 +672,37 @@ mod tests {
             vec![other.clone(), other]
         } else {
             vec![other.clone(), wanted, other]
+        };
+        assert_eq!(kept, expected);
+    }
+
+    #[rstest]
+    #[case::the_bear_is_kept_out(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"action":"EnterBattlefield"}}"#, true)]
+    #[case::only_my_creatures_are_kept_out(r#"{"Cant":{"who":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"action":"EnterBattlefield"}}"#, false)]
+    fn a_permanent_kept_from_entering_loses_its_entry_and_no_other(
+        #[case] rule: &str,
+        #[case] kept_out: bool,
+    ) {
+        let game = game(rule);
+        let (bear, wolf) = (id(&game, "Bear"), id(&game, "Wolf"));
+        let entered = |object, controller| Event::Entered {
+            object,
+            tapped: true,
+            controller,
+            chosen: None,
+        };
+        let moved = Event::ZoneChanged {
+            object: bear,
+            from: Zone::Graveyard(FOE),
+            to: Zone::Battlefield,
+            cause: ZoneCause::Moved,
+        };
+        let batch = vec![moved, entered(bear, FOE), entered(wolf, ME)];
+        let kept = filter(&game, batch.clone());
+        let expected = if kept_out {
+            vec![entered(wolf, ME)]
+        } else {
+            batch
         };
         assert_eq!(kept, expected);
     }

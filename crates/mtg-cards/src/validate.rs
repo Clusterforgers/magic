@@ -805,8 +805,15 @@ impl<'a> Walker<'a> {
                 self.scope.tests -= 1;
             }
             Pred::CastFrom(zone) => {
-                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
-                    self.problem("`CastFrom` names a hand or a graveyard");
+                if !matches!(
+                    zone,
+                    ZoneKind::Hand
+                        | ZoneKind::Graveyard
+                        | ZoneKind::Exile
+                        | ZoneKind::Library
+                        | ZoneKind::Command
+                ) {
+                    self.problem("`CastFrom` names a hand, a graveyard, exile, a library or the command zone");
                 }
             }
             Pred::DidThisTurn { by, to, .. } => {
@@ -1155,6 +1162,7 @@ impl<'a> Walker<'a> {
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            Amount::LostPlayers => self.uses("Amount", "LostPlayers"),
             Amount::When {
                 condition,
                 then,
@@ -2289,6 +2297,8 @@ impl<'a> Walker<'a> {
             let defines = matches!(
                 modification,
                 Modification::SetPT { .. }
+                    | Modification::SetPower(_)
+                    | Modification::SetToughness(_)
                     | Modification::SetColors(_)
                     | Modification::AddColors(_)
                     | Modification::AddType(_)
