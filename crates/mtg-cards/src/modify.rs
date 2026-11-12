@@ -426,6 +426,8 @@ pub enum CombatQuirk {
     AssignsAsUnblocked,
     /// They assign combat damage equal to their toughness rather than their power (CR 510.1a).
     AssignsByToughness,
+    /// While their power is negative, they assign combat damage as though it were positive (its absolute value).
+    AssignsAsThoughPositive,
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
@@ -865,6 +867,15 @@ pub enum GameRule {
     /// Lethal damage dealt to each creature the players control is determined by its power rather than its toughness
     /// (CR 704.5g, 120.6): damage marked at least equal to its power destroys it.
     LethalByPower(Ref),
+    /// While it applies, all damage dealt to the players is dealt as though its source had infect (CR 702.90b).
+    DamageAsInfect(Ref),
+    /// The players can't venture into the dungeon more than this many times each turn (CR 701.49).
+    VentureLimit {
+        /// Who is limited.
+        who: Ref,
+        /// The ventures each turn.
+        per_turn: u32,
+    },
     /// The players' devotion to each color and each combination of colors is greater by this much (CR 700.5).
     DevotionIncreased {
         /// Whose devotion.

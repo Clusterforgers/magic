@@ -175,5 +175,50 @@
    }
   },
   "Target player draws 2ˣ cards."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": "This",
+      "quirk": "AssignsAsThoughPositive"
+     }
+    }
+   }
+  },
+  "If ~'s power is negative, he assigns combat damage as though his power were positive."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "DamageAsInfect": "You"
+    },
+    "condition": {
+     "Compare": {
+      "left": {
+       "Life": "You"
+      },
+      "op": "Le",
+      "right": 0
+     }
+    }
+   }
+  },
+  "As long as you have 0 or less life, all damage is dealt to you as though its source had infect."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "VentureLimit": {
+      "who": "Opponents",
+      "per_turn": 1
+     }
+    }
+   }
+  },
+  "Each opponent can't venture into the dungeon more than once each turn."
  ]
 ]

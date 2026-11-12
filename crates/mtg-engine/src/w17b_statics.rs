@@ -29,6 +29,10 @@ pub(crate) struct W17bRules {
     lethal_power: BTreeSet<PlayerId>,
     /// How much greater each player's devotion is.
     devotion: BTreeMap<PlayerId, u32>,
+    /// The players dealt damage as though its source had infect.
+    infect: BTreeSet<PlayerId>,
+    /// The fewest ventures each limited player may make each turn.
+    ventures: BTreeMap<PlayerId, u32>,
 }
 
 /// None of these rules in force.
@@ -41,6 +45,8 @@ pub(crate) const W17B_NONE: W17bRules = W17bRules {
     toughness: BTreeSet::new(),
     lethal_power: BTreeSet::new(),
     devotion: BTreeMap::new(),
+    infect: BTreeSet::new(),
+    ventures: BTreeMap::new(),
 };
 
 impl W17bRules {
@@ -66,6 +72,13 @@ impl W17bRules {
             }
             Rule::ToughnessAssignsDamage(players) => self.toughness.extend(players),
             Rule::LethalByPower(players) => self.lethal_power.extend(players),
+            Rule::DamageAsInfect(players) => self.infect.extend(players),
+            Rule::VentureLimit { who, per_turn } => {
+                for player in who {
+                    let most = self.ventures.entry(*player).or_insert(*per_turn);
+                    *most = (*most).min(*per_turn);
+                }
+            }
             Rule::DevotionIncreased { who, by } => {
                 for player in who {
                     *self.devotion.entry(*player).or_default() += by;
@@ -108,6 +121,11 @@ pub(crate) fn w17b_lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::ToughnessAssignsDamage(who) => Rule::ToughnessAssignsDamage(scope.players(who)?),
         GameRule::LethalByPower(who) => Rule::LethalByPower(scope.players(who)?),
+        GameRule::DamageAsInfect(who) => Rule::DamageAsInfect(scope.players(who)?),
+        GameRule::VentureLimit { who, per_turn } => Rule::VentureLimit {
+            who: scope.players(who)?,
+            per_turn: *per_turn,
+        },
         GameRule::DevotionIncreased { who, by } => Rule::DevotionIncreased {
             who: scope.players(who)?,
             by: *by,
@@ -123,7 +141,9 @@ pub(crate) fn w17b_names_nothing(rule: &Rule) -> bool {
         Rule::CantCastSpells { who, .. }
         | Rule::ToughnessAssignsDamage(who)
         | Rule::LethalByPower(who)
-        | Rule::DevotionIncreased { who, .. } => who.is_empty(),
+        | Rule::DevotionIncreased { who, .. }
+        | Rule::DamageAsInfect(who)
+        | Rule::VentureLimit { who, .. } => who.is_empty(),
         _ => false,
     }
 }
@@ -172,6 +192,21 @@ pub(crate) fn w17b_cant_cast_by(state: &GameState, player: PlayerId) -> Option<O
         .iter()
         .find(|(who, turn, _)| *who == player && turn.is_none_or(|turn| turn == active))
         .map(|(_, _, source)| *source)
+}
+
+/// Whether all damage dealt to `player` is dealt as though its source had infect.
+pub(crate) fn r377_damage_as_infect(state: &GameState, player: PlayerId) -> bool {
+    state.rules().w17b.infect.contains(&player)
+}
+
+/// Whether `player` has ventured into the dungeon as many times this turn as a rule allows.
+pub(crate) fn r377_ventured_enough(state: &GameState, player: PlayerId) -> bool {
+    state
+        .rules()
+        .w17b
+        .ventures
+        .get(&player)
+        .is_some_and(|most| state.tallied(player, crate::state::Tally::R377Ventured) >= *most)
 }
 
 /// How much greater `player`'s devotion to each color and combination of colors is (CR 700.5).

@@ -74,7 +74,13 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
     } else {
         chars.power
     };
-    Some(u32::try_from(power.unwrap_or(0).max(0)).unwrap_or(0))
+    let power = power.unwrap_or(0);
+    let power = if crate::combat_quirks::r377_assigns_as_positive(state, id) {
+        power.saturating_abs()
+    } else {
+        power
+    };
+    Some(u32::try_from(power.max(0)).unwrap_or(0))
 }
 
 /// Damage that is lethal to `id` from a source that does or does not have deathtouch (CR 120.6, 702.2c).
@@ -448,6 +454,11 @@ fn deal(
         return Vec::new();
     }
     let mut form = dealer.keywords.form();
+    if let DamageTarget::Player(player) = target
+        && crate::w17b_statics::r377_damage_as_infect(state, player)
+    {
+        form = DamageForm::Infect;
+    }
     if let DamageTarget::Player(player) = target
         && form != DamageForm::Infect
         && damage_causes_no_life_loss(state, player)

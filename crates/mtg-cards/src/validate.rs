@@ -4988,6 +4988,8 @@ impl Walker<'_> {
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::LethalByPower(_)
             | GameRule::DevotionIncreased { .. }
+            | GameRule::DamageAsInfect(_)
+            | GameRule::VentureLimit { .. }
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
@@ -5137,7 +5139,9 @@ impl Walker<'_> {
         | GameRule::CantCastSpells { who, .. }
         | GameRule::ToughnessAssignsDamage(who)
         | GameRule::LethalByPower(who)
-        | GameRule::DevotionIncreased { who, .. } = rule
+        | GameRule::DevotionIncreased { who, .. }
+        | GameRule::DamageAsInfect(who)
+        | GameRule::VentureLimit { who, .. } = rule
         {
             self.at(tag, |w| w.reference(who, Kind::Player));
         }

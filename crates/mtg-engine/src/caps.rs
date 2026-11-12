@@ -445,6 +445,8 @@ const RUNS: &[&str] = &[
     "Rule.ToughnessAssignsDamage",
     "Rule.LethalByPower",
     "Rule.DevotionIncreased",
+    "Rule.DamageAsInfect",
+    "Rule.VentureLimit",
     "Rule.CountersRemain",
     "Rule.Cant",
     "Rule.Cant.Activate",
@@ -1422,6 +1424,8 @@ mod tests {
     #[case::w17b_toughness_damage("Rule.ToughnessAssignsDamage", true)]
     #[case::r377_lethal_by_power("Rule.LethalByPower", true)]
     #[case::r377_devotion_increased("Rule.DevotionIncreased", true)]
+    #[case::r377_damage_as_infect("Rule.DamageAsInfect", true)]
+    #[case::r377_venture_limit("Rule.VentureLimit", true)]
     #[case::w17b_counters_remain("Rule.CountersRemain", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]

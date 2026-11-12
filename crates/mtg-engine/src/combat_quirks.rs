@@ -234,6 +234,14 @@ pub(crate) fn assigns_by_toughness(state: &GameState, id: ObjectId) -> bool {
         .has(id, |q| matches!(q, CombatQuirk::AssignsByToughness))
 }
 
+/// Whether the creature assigns combat damage as though its negative power were positive.
+pub(crate) fn r377_assigns_as_positive(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AssignsAsThoughPositive))
+}
+
 /// Whether the creature can't attack unless another creature attacks too.
 pub(crate) fn cant_attack_alone(state: &GameState, id: ObjectId) -> bool {
     state

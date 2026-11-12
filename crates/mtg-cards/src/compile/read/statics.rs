@@ -1840,6 +1840,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::LethalByPower(_)
             | GameRule::DevotionIncreased { .. }
+            | GameRule::DamageAsInfect(_)
+            | GameRule::VentureLimit { .. }
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),

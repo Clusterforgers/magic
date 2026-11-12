@@ -109,6 +109,7 @@ mod r285_pieces;
 mod r2a_doubling;
 mod r2d;
 mod r303_forms;
+mod r377_rules;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;

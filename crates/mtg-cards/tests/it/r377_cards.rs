@@ -100,6 +100,9 @@ fn written() {
 #[case("Tromokratis")]
 #[case("Mathemagics")]
 #[case("Altar of the Pantheon")]
+#[case("Loot, the Anomaly")]
+#[case("Phyrexian Unlife")]
+#[case("Keen-Eared Sentry")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -156,6 +159,24 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::you_draw("Mathemagics", r#""who":{"Target":0}"#, r#""who":"You""#)]
 #[case::by_two("Altar of the Pantheon", r#""by":1"#, r#""by":2"#)]
 #[case::opponents_devotion("Altar of the Pantheon", r#""who":"You""#, r#""who":"Opponents""#)]
+#[case::by_toughness(
+    "Loot, the Anomaly",
+    r#""AssignsAsThoughPositive""#,
+    r#""AssignsByToughness""#
+)]
+#[case::always(
+    "Phyrexian Unlife",
+    r#""condition":{"Compare":{"left":{"Life":"You"},"op":"Le","right":0}},"#,
+    ""
+)]
+#[case::at_ten("Phyrexian Unlife", r#""right":0"#, r#""right":10"#)]
+#[case::opponents_infected(
+    "Phyrexian Unlife",
+    r#"{"DamageAsInfect":"You"}"#,
+    r#"{"DamageAsInfect":"Opponents"}"#
+)]
+#[case::twice("Keen-Eared Sentry", r#""per_turn":1"#, r#""per_turn":2"#)]
+#[case::you_too("Keen-Eared Sentry", r#""who":"Opponents""#, r#""who":"EachPlayer""#)]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");

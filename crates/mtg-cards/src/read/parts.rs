@@ -683,6 +683,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::AssignsAsUnblocked => {
             format!("you may have {who} assign combat damage as though they weren't blocked")
         }
+        CombatQuirk::AssignsAsThoughPositive => {
+            format!("{who} assign combat damage as though their power were positive")
+        }
         CombatQuirk::AssignsByToughness => {
             format!("{who} assign combat damage equal to their toughness rather than their power")
         }

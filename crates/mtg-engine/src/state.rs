@@ -104,6 +104,8 @@ pub(crate) enum Tally {
     L31aInvestigated,
     /// A card drawn.
     Drawn,
+    /// A venture into the dungeon (counted for the player).
+    R377Ventured,
     /// A card drawn (counted for the card as it lies in the hand it was drawn into).
     Dk26Drawn,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
