@@ -5,42 +5,13 @@
   "faces": [
     {
       "name": "Coalition Flag",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "4c7836783740c12b1922a3568e53a7b7",
       "abilities": [
-        {
-          "Keyword": {
-            "Enchant": [
-              {
-                "Type": "Creature"
-              },
-              {
-                "ControlledBy": "You"
-              }
-            ]
-          }
-        },
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [
-              {
-                "AddSubtype": "Flagbearer"
-              }
-            ]
-          }
-        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddSubtype": "Flagbearer" }] } },
         {
           "Rule": {
-            "rule": {
-              "MustTarget": {
-                "who": "Opponents",
-                "what": [
-                  {
-                    "Subtype": "Flagbearer"
-                  }
-                ]
-              }
-            }
+            "rule": { "MustTarget": { "who": "Opponents", "what": [{ "Subtype": "Flagbearer" }] } }
           }
         }
       ]

@@ -5,17 +5,13 @@
   "faces": [
     {
       "name": "Eater of Virtue",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "318dd77b5dea932f1609720e3bfcf2c6",
       "abilities": [
         {
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [
-                  {
-                    "Is": "Attached"
-                  }
-                ],
+                "what": [{ "Is": "Attached" }],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
@@ -23,16 +19,7 @@
             "effects": [
               {
                 "Exile": {
-                  "what": {
-                    "Each": [
-                      {
-                        "In": "Graveyard"
-                      },
-                      {
-                        "SameCard": "Triggering"
-                      }
-                    ]
-                  }
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
                 }
               }
             ]
@@ -41,14 +28,7 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [
-              {
-                "ModifyPT": {
-                  "power": 2,
-                  "toughness": 0
-                }
-              }
-            ]
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
           }
         },
         {
@@ -57,16 +37,7 @@
             "mods": [
               {
                 "KeywordsOf": {
-                  "from": {
-                    "Each": [
-                      {
-                        "In": "Exile"
-                      },
-                      {
-                        "ExiledWith": "This"
-                      }
-                    ]
-                  },
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
                   "names": [
                     "Flying",
                     "First strike",
@@ -87,11 +58,7 @@
             ]
           }
         },
-        {
-          "Keyword": {
-            "Equip": "{1}"
-          }
-        }
+        { "Keyword": { "Equip": "{1}" } }
       ]
     }
   ]

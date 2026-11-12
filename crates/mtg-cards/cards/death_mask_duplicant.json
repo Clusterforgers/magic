@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Death-Mask Duplicant",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "410c46111fa122d8c2a1c302af55ce00",
       "abilities": [
         {
           "Activated": {
@@ -13,29 +13,11 @@
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],
-            "effects": [
-              {
-                "Exile": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
           }
         },
         {
@@ -44,16 +26,7 @@
             "mods": [
               {
                 "KeywordsOf": {
-                  "from": {
-                    "Each": [
-                      {
-                        "In": "Exile"
-                      },
-                      {
-                        "ExiledWith": "This"
-                      }
-                    ]
-                  },
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
                   "names": [
                     "Flying",
                     "Fear",

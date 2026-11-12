@@ -37,7 +37,7 @@
                       { "In": "Library" },
                       { "Is": { "Bound": "top" } },
                       { "Type": "Battle" },
-                      { "Not": { "Is": { "Union": [{ "Bound": "kind0" }] } } }
+                      { "Not": { "Is": { "Bound": "kind0" } } }
                     ]
                   },
                   "count": { "min": 0, "max": 1 },

@@ -5,9 +5,13 @@
   "faces": [
     {
       "name": "Standard Bearer",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "85b73ed45358c3ffefe3253b6ba15861",
       "abilities": [
-        { "Rule": { "rule": { "MustTarget": { "who": "Opponents", "what": [{ "Subtype": "Flagbearer" }] } } } }
+        {
+          "Rule": {
+            "rule": { "MustTarget": { "who": "Opponents", "what": [{ "Subtype": "Flagbearer" }] } }
+          }
+        }
       ]
     }
   ]

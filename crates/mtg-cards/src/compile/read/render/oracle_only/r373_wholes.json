@@ -66,11 +66,7 @@
          {
           "Not": {
            "Is": {
-            "Union": [
-             {
-              "Bound": "kind0"
-             }
-            ]
+            "Bound": "kind0"
            }
           }
          }
@@ -549,11 +545,7 @@
          {
           "Not": {
            "Is": {
-            "Union": [
-             {
-              "Bound": "pair0"
-             }
-            ]
+            "Bound": "pair0"
            }
           }
          }
@@ -1104,11 +1096,7 @@
          {
           "Not": {
            "Is": {
-            "Union": [
-             {
-              "Bound": "kind0"
-             }
-            ]
+            "Bound": "kind0"
            }
           }
          }

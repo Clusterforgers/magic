@@ -318,6 +318,7 @@ Cloudform
 Cloudskate
 Clutch of Currents
 Clutch of the Undercity
+Coalition Honor Guard
 Coastal Breach
 Coastal Discovery
 Coffin Puppets
@@ -503,6 +504,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Drain Life
 Dramatist's Puppet
 Dread Fugue
 Dreadship Reef
@@ -1721,6 +1723,7 @@ Sram, Senior Edificer
 Staggering Insight
 Staggershock
 Stalwart Pathlighter
+Standard Bearer
 Star Whale
 Starforged Sword
 Starlit Sanctum

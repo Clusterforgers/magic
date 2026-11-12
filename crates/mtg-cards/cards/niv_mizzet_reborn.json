@@ -37,7 +37,7 @@
                       { "Color": "White" },
                       { "Color": "Black" },
                       { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
-                      { "Not": { "Is": { "Union": [{ "Bound": "pair0" }] } } }
+                      { "Not": { "Is": { "Bound": "pair0" } } }
                     ]
                   },
                   "as": "pair1"
