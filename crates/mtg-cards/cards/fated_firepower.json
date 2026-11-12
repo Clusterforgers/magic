@@ -1,7 +1,7 @@
 {
   "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
   "name": "Fated Firepower",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fated Firepower",
@@ -15,9 +15,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 58, "end": 268 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Union": ["Opponents", { "Each": [{ "ControlledBy": "Opponents" }] }] },
+                "source": [{ "ControlledBy": "You" }]
+              }
+            },
+            "by": { "AddAmount": { "Counters": { "on": "This", "counter": { "Other": "fire" } } } }
           }
         }
       ]
