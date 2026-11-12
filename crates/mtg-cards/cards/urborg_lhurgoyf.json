@@ -1,7 +1,7 @@
 {
   "oracle_id": "f84d8217-51a4-49ba-9df6-d080ed38f37d",
   "name": "Urborg Lhurgoyf",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urborg Lhurgoyf",
@@ -10,9 +10,9 @@
         { "Keyword": { "Kicker": "{U}" } },
         { "Keyword": { "Kicker": "{B}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 89, "end": 159 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Mill": { "Times": { "by": 3, "of": "Kicks" } } }
           }
         },
         {

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4feca1da-dcc8-440c-8933-bab91782b015",
+  "name": "Begin the Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Begin the Invasion",
+      "oracle_fingerprint": "6d862b155c053c50716b903265e5cbc4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Battle" }],
+                  "count": { "min": 0, "max": "X" },
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

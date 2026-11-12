@@ -558,6 +558,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r303_forms::r303_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);

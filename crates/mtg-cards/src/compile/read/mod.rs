@@ -180,6 +180,7 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r303_forms;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -325,6 +326,7 @@ pub use group_phrases::{all_groups, subject_group};
 pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
+pub use r303_forms::form_text;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
