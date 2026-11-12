@@ -1,0 +1,53 @@
+{
+  "oracle_id": "52cebfb0-0302-40d9-9a3f-f875dbf43659",
+  "name": "Planeswalker's Scorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planeswalker's Scorn",
+      "oracle_fingerprint": "42d396679810b15a5297198d441c0a17",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{B}",
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

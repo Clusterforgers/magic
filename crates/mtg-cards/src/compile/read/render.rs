@@ -85,6 +85,7 @@ mod w9b_clash;
 pub(super) use r7d::WHILE_TAPPED;
 
 mod dk1d_gift_target;
+mod r280_steps;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -1408,6 +1409,7 @@ fn written(
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.rmt0_hand_pick(&effects[start..]))
+            .or_else(|| writer.r280_random_reveal(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -3053,6 +3055,7 @@ impl Writer<'_> {
             .or_else(|| rmt3_enters::rmt3_shield_text(effect))
             .or_else(|| rmt3_enters::rmt3_spell_enters_text(effect))
             .or_else(|| self.rmt3_skip(effect))
+            .or_else(|| Self::r280_skip_turn(effect))
             .or_else(|| rmt3_enters::rmt3_flash_text(effect))
     }
 

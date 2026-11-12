@@ -1,7 +1,7 @@
 {
   "oracle_id": "a17e414c-8de0-47fd-bcbc-540c7fec7642",
   "name": "Codie, Ravenous Codex",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Codie, Ravenous Codex",
@@ -14,9 +14,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 86, "end": 209 }
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{B}{R}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Prepare": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
           }
         }
       ]

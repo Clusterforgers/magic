@@ -20,12 +20,7 @@
             "span": { "start": 120, "end": 171 }
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 172, "end": 205 }
-          }
-        }
+        { "Activated": { "cost": "{3}{R}", "effects": [{ "Destroy": { "what": "This" } }] } }
       ]
     }
   ]

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f62d4437-bac6-49c8-9aeb-07de78551df7",
+  "name": "Pack Mastiff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pack Mastiff",
+      "oracle_fingerprint": "2856f339e67297ed48bdde9e022259b5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Named": "Pack Mastiff" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

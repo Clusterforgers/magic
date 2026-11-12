@@ -35,6 +35,8 @@ mod proposal_blocks;
 mod proposal_merge;
 mod proposal_names;
 mod proposal_repair;
+mod r280_cards;
+mod r280_writers;
 mod r6e;
 mod read_sheet;
 mod read_tier;

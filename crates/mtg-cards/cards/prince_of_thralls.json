@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e7f3b4bb-ebf5-4e59-8f0b-aa26f78e9edc",
+  "name": "Prince of Thralls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prince of Thralls",
+      "oracle_fingerprint": "22b2bd8f716dcd59a5f240227bcc33b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": [{ "PayLife": 3 }],
+                  "unpaid": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "under": "You" } } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5b04a337-3152-481e-973f-a11dbd615f93",
   "name": "Nullhide Ferox",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nullhide Ferox",
@@ -9,15 +9,28 @@
       "abilities": [
         { "Keyword": "Hexproof" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 9, "end": 43 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "You",
+                "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 44, "end": 139 }
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

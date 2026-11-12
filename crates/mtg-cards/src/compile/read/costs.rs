@@ -501,6 +501,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),
+        CostItem::CollectEvidence(total) => format!("Collect evidence {total}"),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }

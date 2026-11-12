@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1d05e441-84d4-482f-95a8-7842e776cad2",
+  "name": "Hellkite Overlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Overlord",
+      "oracle_fingerprint": "b28e2fa2d8aa99519b5ac8da6dda8023",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{B}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

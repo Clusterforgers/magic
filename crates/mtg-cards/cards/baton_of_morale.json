@@ -1,0 +1,28 @@
+{
+  "oracle_id": "879011c6-550e-4e33-a664-fffb655321d9",
+  "name": "Baton of Morale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baton of Morale",
+      "oracle_fingerprint": "d56de08f6ee870df67cede033f242a08",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

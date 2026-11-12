@@ -1,0 +1,40 @@
+{
+  "oracle_id": "514752ea-d453-41d4-97cf-b1dcdb4b4a08",
+  "name": "Cursed Scroll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Scroll",
+      "oracle_fingerprint": "d71d3bb29d922fe7db070d013ab3029b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "revealed" },
+                      "selector": [{ "ChosenAs": "name" }]
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
