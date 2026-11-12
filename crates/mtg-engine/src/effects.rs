@@ -348,8 +348,6 @@ impl Modification {
                     .fold(chars.colors, mtg_core::color::ColorSet::with);
             }
             Modification::LoseAbilities => chars.abilities.clear(),
-            // The plain mana abilities in `abilities` are all mana abilities, so they stay.
-            Modification::LoseAbilitiesExceptMana => {}
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
@@ -387,7 +385,9 @@ impl Modification {
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
             | Modification::BlocksAdditional(_)
-            | Modification::Goaded { .. } => {}
+            | Modification::Goaded { .. }
+            // The plain mana abilities in `abilities` are all mana abilities, so they stay.
+            | Modification::LoseAbilitiesExceptMana => {}
         }
     }
 }

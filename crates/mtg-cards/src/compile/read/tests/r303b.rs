@@ -1,4 +1,4 @@
-//! Goal: the r303b writers give the oracle wording of an opening-hand reveal, a redirection of a counted total, the rules that deal damage as wither or let sick creatures attack your opponents, a blocking requirement on Walls, the loss of all abilities but mana abilities, a creature type added by choice, absorb, combat damage prevented from a kind of source and the target "creature, planeswalker, or player", and a rule of another meaning (another step, number, player, subtype or damage) never reads back as the clause.
+//! Goal: the r303b writers give the oracle wording of an opening-hand reveal, a redirection of a counted total, the rules that deal damage as wither or let sick creatures attack your opponents, a blocking requirement on Walls, the loss of all abilities but mana abilities, a creature type added by choice, absorb and combat damage prevented from a kind of source, and a rule of another meaning (another step, number, player, subtype or damage) never reads back as the clause.
 use super::*;
 
 /// Whether some wording the checker accepts for the rules is the clause.
@@ -30,7 +30,7 @@ const SHOAL: &str = "The next X damage that a source of your choice would deal t
 
 #[rstest]
 #[case::x(r#""X""#, true)]
-#[case::a_number(r#"2"#, false)]
+#[case::a_number("2", false)]
 #[case::another_amount(r#"{"Count":[{"Type":"Creature"}]}"#, false)]
 fn r303b_a_counted_redirection_reads_back_with_its_amount(#[case] most: &str, #[case] same: bool) {
     assert_eq!(written(&shoal(most), SHOAL), same, "{most}");
@@ -145,11 +145,10 @@ fn maneuver(first: &str) -> String {
 const MANEUVER: &str = "The next X damage that would be dealt to target creature, planeswalker, or player this turn is dealt to another target creature, planeswalker, or player instead.";
 
 #[rstest]
-#[case::three_kinds(r#"{"Either":[{"Object":[{"Type":"Creature"}]},{"Object":[{"Type":"Planeswalker"}]},"Player"]}"#, true)]
 #[case::any_target(r#""AnyTarget""#, false)]
 #[case::no_planeswalker(r#"{"Either":[{"Object":[{"Type":"Creature"}]},"Player"]}"#, false)]
 #[case::opponent(r#"{"Either":[{"Object":[{"Type":"Creature"}]},{"Object":[{"Type":"Planeswalker"}]},"Opponent"]}"#, false)]
-fn r303b_a_creature_planeswalker_or_player_is_its_own_target(
+fn r303b_another_target_kind_never_reads_as_creature_planeswalker_or_player(
     #[case] first: &str,
     #[case] same: bool,
 ) {

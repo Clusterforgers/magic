@@ -1604,7 +1604,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
-        | Rule::NoMaxHandSize(players) => players.is_empty(),
+        | Rule::NoMaxHandSize(players)
+        | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::HandSizeChange(changes) => changes.is_empty(),
@@ -1629,14 +1630,14 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
-        | Rule::AbilitiesAsThoughHaste(_) => false,
+        | Rule::AbilitiesAsThoughHaste(_)
+        | Rule::DamageAsWither
+        | Rule::ManaBurn => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::DiesInstead { objects, .. } => objects.is_empty(),
-        Rule::DamageAsWither | Rule::ManaBurn => false,
-        Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::GraveyardCardsUntargetable
         | Rule::CantLoseGame { .. }
         | Rule::CantCastSpells { .. }
