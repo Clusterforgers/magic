@@ -5,7 +5,12 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const R283_WHOLES: [(&str, &str); 56] = [
+const R283_WHOLES: [(&str, &str); 59] = [
+    // ad_nauseam#0.0
+    (
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":{"Compare":{"left":{"Count":[{"In":"Library"},{"OwnedBy":"You"}]},"op":"Ge","right":1}},"effects":[{"Bind":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"},"TopOfLibrary"]},"as":"card"}},{"Reveal":{"what":{"Bound":"card"}}},{"Let":{"as":"mv","amount":{"Stat":{"of":{"Bound":"card"},"stat":"ManaValue"}}}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"LoseLife":{"amount":{"Bound":"mv"}}}],"most":1000,"at_least_once":true,"ask":"You"}}]}}"#,
+        r"Reveal the top card of your library and put that card into your hand. You lose life equal to its mana value. You may repeat this process any number of times.",
+    ),
     // avacyn_s_judgment#0.1
     (
         r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}},"divide":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
@@ -222,6 +227,11 @@ Draw a card.",
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}},{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"Move":{"what":{"Target":1},"to":"Hand"}}]}}"#,
         r"Return target creature card from a graveyard and target creature on the battlefield to their owners' hands.",
     ),
+    // rise_fall#1.0
+    (
+        r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"ChooseAtRandom":{"from":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]},"count":2,"as":"revealed"}},{"Reveal":{"what":{"Bound":"revealed"}}},{"Discard":{"who":{"Target":0},"count":{"Count":[{"In":"Hand"},{"Is":{"Bound":"revealed"}},{"Not":{"Type":"Land"}}]},"filter":[{"In":"Hand"},{"Is":{"Bound":"revealed"}},{"Not":{"Type":"Land"}}]}}]}}"#,
+        r"Target player reveals two cards at random from their hand, then discards each nonland card revealed this way.",
+    ),
     // rise_from_the_wreck#0.0
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":1}},{"what":{"Object":[{"Subtype":"Mount"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":1}},{"what":{"Object":[{"Subtype":"Vehicle"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":1}},{"what":{"Object":[{"Type":"Creature"},{"Not":{"HasAbility":"Any"}},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Move":{"what":{"Target":0},"to":"Hand"}},{"Move":{"what":{"Target":1},"to":"Hand"}},{"Move":{"what":{"Target":2},"to":"Hand"}},{"Move":{"what":{"Target":3},"to":"Hand"}}]}}"#,
@@ -272,6 +282,11 @@ Each creature with a +1/+1 counter on it gains trample until end of turn.",
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":{"Target":0},"stat":"Power"}},"op":"Le","right":{"Stat":{"of":"Paid","stat":"Power"}}}},"then":[{"Exile":{"what":{"Target":0}}}]}}]}}"#,
         r"Exile target creature if its power is less than or equal to the revealed card's power.",
+    ),
+    // unforge#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Subtype":"Equipment"}]}}],"effects":[{"Bind":{"what":{"Each":[{"Type":"Creature"},{"HasAttached":[{"Is":{"Target":0}}]}]},"as":"host"}},{"Destroy":{"what":{"Target":0}}},{"DealDamage":{"to":{"Bound":"host"},"amount":2}}]}}"#,
+        r"Destroy target Equipment. If that Equipment was attached to a creature, ~ deals 2 damage to that creature.",
     ),
     // vraska_regal_gorgon#0.0
     (

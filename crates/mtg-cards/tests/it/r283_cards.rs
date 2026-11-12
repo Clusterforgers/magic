@@ -18,6 +18,7 @@ use rstest::rstest;
 
 /// The cards of the pack.
 const CARDS: &[&str] = &[
+    "Ad Nauseam",
     "Amass the Components",
     "Angrath's Fury",
     "Avacyn's Judgment",
@@ -82,6 +83,7 @@ const CARDS: &[&str] = &[
     "The Crowd Goes Wild",
     "The Last Ronin's Technique",
     "Titan's Presence",
+    "Unforge",
     "Venomous Vines",
     "Vraska's Stoneglare",
     "Vraska, Regal Gorgon",

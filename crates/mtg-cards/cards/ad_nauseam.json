@@ -1,0 +1,52 @@
+{
+  "oracle_id": "981b0e21-e5e6-4a1e-bfde-679d56623f7f",
+  "name": "Ad Nauseam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ad Nauseam",
+      "oracle_fingerprint": "a27a9461bbe259b31ebf744acc515185",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Bind": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "card" } } },
+                    {
+                      "Let": {
+                        "as": "mv",
+                        "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "LoseLife": { "amount": { "Bound": "mv" } } }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true,
+                  "ask": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
