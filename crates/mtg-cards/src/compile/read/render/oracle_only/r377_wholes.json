@@ -1,0 +1,179 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Together": {
+        "what": {
+         "Object": [
+          {
+           "Type": "Creature"
+          }
+         ]
+        },
+        "rule": "SameToughness"
+       }
+      },
+      "bounds": {
+       "min": 0,
+       "max": null
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Destroy": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Choose any number of target creatures with equal toughness. Destroy the chosen creatures."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 7
+    },
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     },
+     {
+      "FlipCoin": {
+       "win": [
+        {
+         "Rule": {
+          "rule": {
+           "Cant": {
+            "who": {
+             "Target": 0
+            },
+            "action": "SkipTurn"
+           }
+          },
+          "duration": "UntilTurnSkipped"
+         }
+        }
+       ],
+       "heads": true
+      }
+     }
+    ]
+   }
+  },
+  "−7: Flip five coins. Target opponent skips their next X turns, where X is the number of coins that came up heads."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": "Player"
+     }
+    ],
+    "effects": [
+     {
+      "Draw": {
+       "who": {
+        "Target": 0
+       },
+       "count": {
+        "TwoToThe": "X"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Target player draws 2ˣ cards."
+ ]
+]

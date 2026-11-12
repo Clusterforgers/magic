@@ -552,6 +552,8 @@ pub enum TargetSet {
     DifferentNames,
     /// No two have one mana value.
     DifferentManaValues,
+    /// They all have one toughness ("with equal toughness").
+    SameToughness,
     /// Their mana values add up to at most this ("with total mana value 3 or less").
     TotalManaValueAtMost(Amount),
     /// Their powers add up to at most this ("with total power 10 or less").

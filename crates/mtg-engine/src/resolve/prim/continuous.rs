@@ -387,6 +387,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         },
         Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
         Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
+        Wanted::BlockedByAll => Modification::BlockedByAll,
         Wanted::BlocksAdditional(count) => Modification::BlocksAdditional(*count),
         Wanted::BlocksAdditionalPer(per) => Modification::BlocksAdditional(blocks_per(scope, per)?),
     })

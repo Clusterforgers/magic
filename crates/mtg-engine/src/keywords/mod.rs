@@ -689,6 +689,7 @@ pub(crate) fn min_blockers(state: &GameState, id: ObjectId) -> usize {
         .max()
         .unwrap_or(1)
         .max(crate::characteristics::blocker_limits(state, id).0)
+        .max(crate::characteristics::r377_blocked_by_all(state, id))
 }
 
 /// Whether a keyword keeps `id` from being destroyed by lethal damage, deathtouch or an effect that says destroy.

@@ -180,6 +180,7 @@ impl Delayed {
             | Duration::UntilTurnSkipped
             | Duration::UntilSkipped
             | Duration::UntilSkippedThisTurn
+            | Duration::TheirNextTurn
             | Duration::UntilCastFromExile => true,
         }
     }

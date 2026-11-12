@@ -524,6 +524,14 @@ fn rmt1_power(state: &GameState, id: ObjectId) -> u32 {
         .map_or(0, |power| u32::try_from(power).unwrap_or(0))
 }
 
+/// The toughness of a creature as a key, negative values kept apart from positive ones.
+fn r377_toughness_key(state: &GameState, id: ObjectId) -> u64 {
+    let toughness = crate::characteristics::characteristics(state, id)
+        .and_then(|chars| chars.toughness)
+        .unwrap_or(0);
+    u64::from_ne_bytes(i64::from(toughness).to_ne_bytes())
+}
+
 /// Without what reads the targets of earlier specifications, for a check made before they are chosen: a predicate
 /// about an earlier target, and "another" around a kind.
 fn without_earlier_reads(what: &Targetable) -> Targetable {
@@ -724,6 +732,7 @@ fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
             u64::from(object.mana_value())
         }
         TargetSet::TotalPowerAtMost(_) => u64::from(rmt1_power(state, object.id())),
+        TargetSet::SameToughness => r377_toughness_key(state, object.id()),
     }
 }
 
@@ -745,7 +754,7 @@ fn group_together(
     ) {
         return (legal, None, available);
     }
-    let alike = matches!(rule, TargetSet::SameController);
+    let alike = matches!(rule, TargetSet::SameController | TargetSet::SameToughness);
     let keyed: Vec<(Target, u64)> = legal
         .iter()
         .map(|target| (*target, together_key(state, rule, target)))

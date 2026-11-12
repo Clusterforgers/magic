@@ -132,7 +132,9 @@ impl Gives {
             Modification::CanBlockOnly { .. } => GivenRule::CanBlockOnly,
             Modification::CantBeBlocked => GivenRule::CantBeBlocked,
             Modification::CantBeBlockedBy { .. } => GivenRule::CantBeBlockedBy,
-            Modification::MinBlockers(_) | Modification::MaxBlockers(_) => GivenRule::BlockerLimit,
+            Modification::MinBlockers(_)
+            | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll => GivenRule::BlockerLimit,
             Modification::BlocksAdditional(_) => GivenRule::BlocksAdditional,
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,

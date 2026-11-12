@@ -88,6 +88,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CanBlockOnly { .. }
         | Modification::MinBlockers(_)
         | Modification::MaxBlockers(_)
+        | Modification::BlockedByAll
         | Modification::BlocksAdditional(_) => Traits::NONE,
         Modification::Goaded { .. } => Traits::GOADED,
     }
@@ -140,6 +141,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
@@ -198,6 +200,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
+        | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::Goaded => Traits::NONE,
     }
@@ -442,7 +445,9 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
-        Amount::Times { of, .. } | Amount::Half { of, .. } => reads_of_amount(of),
+        Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::TwoToThe(of) => {
+            reads_of_amount(of)
+        }
         Amount::Quotient { of, by, .. } | Amount::Difference(of, by) => {
             reads_of_amount(of).or(reads_of_amount(by))
         }

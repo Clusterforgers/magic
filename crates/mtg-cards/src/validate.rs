@@ -1015,7 +1015,7 @@ impl<'a> Walker<'a> {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
-            Amount::Times { of, .. } | Amount::Half { of, .. } => {
+            Amount::Times { of, .. } | Amount::Half { of, .. } | Amount::TwoToThe(of) => {
                 self.amounting = Amounting::of(sharing);
                 self.at("of", |w| w.amount(of));
             }
@@ -1197,6 +1197,7 @@ impl<'a> Walker<'a> {
             | Amount::Quotient { .. }
             | Amount::Difference(..)
             | Amount::Times { .. }
+            | Amount::TwoToThe(_)
             | Amount::Half { .. }
             | Amount::Divided
             | Amount::EvenShare(_)
@@ -2212,6 +2213,7 @@ impl<'a> Walker<'a> {
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
+            | Modification::BlockedByAll
             | Modification::Goaded => {}
         }
     }
@@ -4098,7 +4100,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn) {
                     w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
@@ -4129,7 +4131,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn)
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn)
                     && !matches!(
                         rule,
                         GameRule::Cant {
@@ -4196,7 +4198,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
-                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn | Duration::TheirNextTurn) {
                     w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
@@ -4984,6 +4986,8 @@ impl Walker<'_> {
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
+            | GameRule::LethalByPower(_)
+            | GameRule::DevotionIncreased { .. }
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));
@@ -5131,7 +5135,9 @@ impl Walker<'_> {
         }
         if let GameRule::CantLoseGame { who, .. }
         | GameRule::CantCastSpells { who, .. }
-        | GameRule::ToughnessAssignsDamage(who) = rule
+        | GameRule::ToughnessAssignsDamage(who)
+        | GameRule::LethalByPower(who)
+        | GameRule::DevotionIncreased { who, .. } = rule
         {
             self.at(tag, |w| w.reference(who, Kind::Player));
         }

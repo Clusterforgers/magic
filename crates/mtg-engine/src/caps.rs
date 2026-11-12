@@ -443,6 +443,8 @@ const RUNS: &[&str] = &[
     "Rule.CantLoseGame",
     "Rule.CantCastSpells",
     "Rule.ToughnessAssignsDamage",
+    "Rule.LethalByPower",
+    "Rule.DevotionIncreased",
     "Rule.CountersRemain",
     "Rule.Cant",
     "Rule.Cant.Activate",
@@ -513,6 +515,7 @@ const RUNS: &[&str] = &[
     "Mod.CanBlockOnly",
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
+    "Mod.BlockedByAll",
     "Mod.BlocksAdditional",
     "Mod.BlocksAdditionalPer",
     "Mod.Goaded",
@@ -1405,6 +1408,7 @@ mod tests {
     #[case::creatures_that_can_block_only_some("Mod.CanBlockOnly", true)]
     #[case::creatures_that_need_several_blockers("Mod.MinBlockers", true)]
     #[case::creatures_that_are_blocked_by_few("Mod.MaxBlockers", true)]
+    #[case::r377_blocked_by_all("Mod.BlockedByAll", true)]
     #[case::goaded_creatures("Mod.Goaded", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", true)]
     #[case::looking_at_face_down_cards_in_exile("Rule.LookAtExiled", true)]
@@ -1416,6 +1420,8 @@ mod tests {
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
     #[case::w17b_toughness_damage("Rule.ToughnessAssignsDamage", true)]
+    #[case::r377_lethal_by_power("Rule.LethalByPower", true)]
+    #[case::r377_devotion_increased("Rule.DevotionIncreased", true)]
     #[case::w17b_counters_remain("Rule.CountersRemain", true)]
     #[case::partner("Keyword.Partner", true)]
     #[case::partner_with("Keyword.PartnerWith", true)]

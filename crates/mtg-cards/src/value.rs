@@ -477,6 +477,8 @@ pub enum Amount {
         /// The amount multiplied.
         of: Box<Amount>,
     },
+    /// Two to the power of the amount ("draws 2ˣ cards"); a negative power is 0.
+    TwoToThe(Box<Amount>),
     /// Half of the amount, rounded up or down, never below zero ("half their life, rounded up").
     Half {
         /// The amount halved.
@@ -789,6 +791,7 @@ enum Tagged {
         by: i32,
         of: Box<Amount>,
     },
+    TwoToThe(Box<Amount>),
     Half {
         of: Box<Amount>,
         up: bool,
@@ -935,6 +938,7 @@ enum TaggedRef<'a> {
         by: i32,
         of: &'a Amount,
     },
+    TwoToThe(&'a Amount),
     Half {
         of: &'a Amount,
         up: bool,
@@ -1072,6 +1076,7 @@ impl From<Tagged> for Amount {
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
             Tagged::Times { by, of } => Amount::Times { by, of },
+            Tagged::TwoToThe(of) => Amount::TwoToThe(of),
             Tagged::Half { of, up } => Amount::Half { of, up },
             Tagged::Divided => Amount::Divided,
             Tagged::EvenShare(total) => Amount::EvenShare(total),
@@ -1163,6 +1168,7 @@ impl Serialize for Amount {
             Amount::AnyCounters(on) => TaggedRef::AnyCounters(on).serialize(serializer),
             Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
             Amount::Times { by, of } => TaggedRef::Times { by: *by, of }.serialize(serializer),
+            Amount::TwoToThe(of) => TaggedRef::TwoToThe(of).serialize(serializer),
             Amount::Half { of, up } => TaggedRef::Half { of, up: *up }.serialize(serializer),
             Amount::Divided => TaggedRef::Divided.serialize(serializer),
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),

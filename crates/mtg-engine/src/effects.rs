@@ -218,6 +218,9 @@ pub enum Modification {
     /// The object can't be blocked by more than this many creatures together: a restriction with no layer that the
     /// block rules read.
     MaxBlockers(u32),
+    /// The object can't be blocked unless every creature the defending player controls blocks it: a restriction with no
+    /// layer that the block rules read beside menace.
+    BlockedByAll,
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
@@ -278,6 +281,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => return None,
         })
@@ -381,6 +385,7 @@ impl Modification {
             | Modification::CanBlockOnly { .. }
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
+            | Modification::BlockedByAll
             | Modification::BlocksAdditional(_)
             | Modification::Goaded { .. } => {}
         }
@@ -446,6 +451,9 @@ pub(crate) fn lasts(
         | Duration::UntilSkipped
         | Duration::UntilSkippedThisTurn => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
+        // It ends with the first later turn of the player it names (`r377_skips`), and applies only from a later turn on
+        // (`r377_waits`).
+        Duration::TheirNextTurn => true,
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
             state.is_alive(controller)
