@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1c09f2d1-413b-4a92-aa39-99c1a2106814",
+  "name": "Mana Cache",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Cache",
+      "oracle_fingerprint": "bd5790e4f2d242c8ce8ff716879870c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "charge",
+                  "count": {
+                    "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "ActivePlayer" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "charge" } }],
+            "condition": {
+              "All": ["YourTurn", { "Not": { "Step": "End" } }, { "Not": { "Step": "Cleanup" } }]
+            },
+            "by": "Anyone",
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

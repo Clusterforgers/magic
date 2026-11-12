@@ -1,0 +1,61 @@
+{
+  "oracle_id": "b3488947-7142-4e6c-9c92-2728469b3ad9",
+  "name": "Elkin Lair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elkin Lair",
+      "oracle_fingerprint": "bc9ff387fba79e228f6ce53492c49a19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": "Triggering",
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Exile",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }]
+                            },
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Graveyard" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

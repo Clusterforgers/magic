@@ -1,0 +1,63 @@
+{
+  "oracle_id": "4318c704-888f-4d85-b5f7-6d9abb14e60c",
+  "name": "Norritt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norritt",
+      "oracle_fingerprint": "b202afcb08a0d2509937709807722207",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "Blue" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "BeforeAttackers",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Wall" } },
+                    { "ControlledBy": "ActivePlayer" },
+                    { "Not": "EnteredThisTurn" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Not": {
+                            "Matches": {
+                              "subject": { "Target": 0 },
+                              "selector": ["AttackedThisTurn"]
+                            }
+                          }
+                        },
+                        "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

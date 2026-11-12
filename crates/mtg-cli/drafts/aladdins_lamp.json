@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2aa2f96b-5784-4767-b9ea-b8d9222cb1de",
+  "name": "Aladdin's Lamp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aladdin's Lamp",
+      "oracle_fingerprint": "1d4f0d6126d23f9806c8549b08bbb5f0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", { "XAtLeast": 1 }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      { "LookAtTop": { "count": "X", "as": "seen" } },
+                      { "Choose": { "from": { "Bound": "seen" }, "as": "kept", "rest_as": "rest" } },
+                      {
+                        "Move": {
+                          "what": { "Bound": "rest" },
+                          "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                        }
+                      },
+                      { "Draw": {} }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

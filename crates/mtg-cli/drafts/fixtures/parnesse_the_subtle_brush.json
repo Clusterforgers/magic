@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "36458554-b8b8-4768-a138-eba615b480af",
+  "oracle_id": "c6040e8d-dac3-4bed-8d1d-d7d44aa10c86",
+  "multiverse_ids": [
+    559710
+  ],
+  "tcgplayer_id": 269230,
+  "cardmarket_id": 652457,
+  "name": "Parnesse, the Subtle Brush",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/36458554-b8b8-4768-a138-eba615b480af",
+  "scryfall_uri": "https://scryfall.com/card/ncc/8/parnesse-the-subtle-brush?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:16:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379",
+    "normal": "https://cards.scryfall.io/normal/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379",
+    "large": "https://cards.scryfall.io/large/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379",
+    "png": "https://cards.scryfall.io/png/front/3/6/36458554-b8b8-4768-a138-eba615b480af.png?1783923379",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/6/36458554-b8b8-4768-a138-eba615b480af.webp?1783923379",
+    "grid": "https://cards.scryfall.io/grid/front/3/6/36458554-b8b8-4768-a138-eba615b480af.webp?1783923379",
+    "display": "https://cards.scryfall.io/display/front/3/6/36458554-b8b8-4768-a138-eba615b480af.webp?1783923379",
+    "art": "https://cards.scryfall.io/art/front/3/6/36458554-b8b8-4768-a138-eba615b480af.webp?1783923379",
+    "crop": "https://cards.scryfall.io/crop/front/3/6/36458554-b8b8-4768-a138-eba615b480af.webp?1783923379",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/6/36458554-b8b8-4768-a138-eba615b480af.jpg?1783923379"
+  },
+  "mana_cost": "{2}{U}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Vampire Wizard",
+  "oracle_text": "Whenever you or a permanent you control becomes the target of a spell or ability an opponent controls, counter that spell or ability unless that player pays 4 life.\nWhenever you copy a spell, up to one target opponent may also copy that spell. They may choose new targets for that copy.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/36458554-b8b8-4768-a138-eba615b480af/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac6040e8d-dac3-4bed-8d1d-d7d44aa10c86&unique=prints",
+  "collector_number": "8",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "maestros",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Svetlin Velinov",
+  "artist_ids": [
+    "ffd063ae-c097-4f26-b2e6-b1e2137708bc"
+  ],
+  "illustration_id": "0a2a4be3-d71c-4cb0-9dc6-d3cd78c2e1e3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16970,
+  "preview": {
+    "source": "Wargamer",
+    "source_uri": "https://www.wargamer.com/magic-the-gathering/streets-of-new-capenna-commander-deck-maestros-massacre-reveal",
+    "previewed_at": "2022-04-18"
+  },
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.25",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559710&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DParnesse%252C%2Bthe%2BSubtle%2BBrush",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DParnesse%252C%2Bthe%2BSubtle%2BBrush",
+    "edhrec": "https://edhrec.com/route/?cc=Parnesse%2C+the+Subtle+Brush"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269230%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652457&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Parnesse%2C+the+Subtle+Brush&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

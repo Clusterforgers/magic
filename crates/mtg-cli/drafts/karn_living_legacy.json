@@ -1,0 +1,66 @@
+{
+  "oracle_id": "09ab1278-811f-4b97-bd34-7493d6e081e9",
+  "name": "Karn, Living Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn, Living Legacy",
+      "oracle_fingerprint": "7f60c02c0d95bd57404cb7ef10b0aa1d",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, 99] }, "as": "amount" } },
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "ChosenAs": "amount" },
+                  "paid": [
+                    { "LookAtTop": { "count": { "ChosenAs": "amount" }, "as": "top" } },
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+                    { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Activated": {
+                        "cost": [{ "TapPermanents": { "filter": [{ "Type": "Artifact" }] } }],
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 1 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

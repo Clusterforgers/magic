@@ -1,21 +1,38 @@
 {
   "oracle_id": "ed1d21ba-ddfe-4f82-9e37-93f9e2c7ba33",
   "name": "Satoru Umezawa",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Satoru Umezawa",
       "oracle_fingerprint": "aea57fd6e388e272f4b38496c96e4589",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 217 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "In": "Hand" }, { "HasKeywordNamed": "Ninjutsu" }]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
           }
         },
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Hand" }] },
+            "affected": { "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
             "mods": [{ "AddKeyword": { "Ninjutsu": "{2}{U}{B}" } }]
           }
         }

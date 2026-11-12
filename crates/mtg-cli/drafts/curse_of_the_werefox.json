@@ -1,0 +1,63 @@
+{
+  "oracle_id": "64b41b54-ca22-41df-8bd3-dc4f7832fbb7",
+  "name": "Curse of the Werefox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of the Werefox",
+      "oracle_fingerprint": "9136f412e03053a2b28aad76719f06b7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "creature" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Monster Role",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Trample" }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "role"
+                }
+              },
+              { "Attach": { "what": { "Bound": "role" }, "to": { "Bound": "creature" } } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                      },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [
+                    { "Fight": { "what": { "Bound": "creature" }, "with": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

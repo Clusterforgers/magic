@@ -1,0 +1,71 @@
+{
+  "oracle_id": "fc638800-6aec-4a48-ad2c-c9a5ce93c236",
+  "name": "Tainted Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Specter",
+      "oracle_fingerprint": "9644da18b65fb1974e988481092f1375",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [
+                      {
+                        "If": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": {
+                                "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }]
+                              },
+                              "selector": [],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": [
+                            { "Discard": { "who": { "Target": 0 } } },
+                            {
+                              "DealDamage": {
+                                "to": { "Each": [{ "Type": "Creature" }] },
+                                "amount": 1
+                              }
+                            },
+                            { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+                          ]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Choose": {
+                          "who": { "Target": 0 },
+                          "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                          "as": "put"
+                        }
+                      },
+                      {
+                        "Move": {
+                          "what": { "Bound": "put" },
+                          "to": { "Library": { "place": "Top" } }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

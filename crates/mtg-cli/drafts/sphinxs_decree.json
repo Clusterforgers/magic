@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7d615b37-8dc6-4142-bf9a-9815dd99025a",
+  "name": "Sphinx's Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx's Decree",
+      "oracle_fingerprint": "88605f0ff46305beec914086f5565e39",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": {
+                        "PlayersWhere": { "who": "Opponents", "test": { "Among": "ActivePlayer" } }
+                      },
+                      "action": {
+                        "Cast": {
+                          "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

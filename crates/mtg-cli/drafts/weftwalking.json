@@ -1,0 +1,55 @@
+{
+  "oracle_id": "08af6751-5848-47fb-95f5-57215e899460",
+  "name": "Weftwalking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weftwalking",
+      "oracle_fingerprint": "188a31e4201e2b78fc32b64eccf5ec7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": {} }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": 7 } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "free": true,
+                "when": {
+                  "All": [
+                    "YourTurn",
+                    {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

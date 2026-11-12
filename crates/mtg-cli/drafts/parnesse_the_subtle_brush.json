@@ -1,0 +1,59 @@
+{
+  "oracle_id": "c6040e8d-dac3-4bed-8d1d-d7d44aa10c86",
+  "name": "Parnesse, the Subtle Brush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parnesse, the Subtle Brush",
+      "oracle_fingerprint": "e65164b6ccf589eab16783fc4b7163f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "PlayerBecomesTarget": { "who": "You", "by": [{ "ControlledBy": "Opponents" }] } },
+                {
+                  "BecomesTarget": {
+                    "what": [{ "ControlledBy": "You" }],
+                    "by": [{ "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "PayLife": 4 }],
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCopied": { "by": "You" } },
+            "targets": [{ "what": "Opponent", "bounds": { "min": 0, "max": 1 } }],
+            "effects": [
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "who": { "Target": 0 },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

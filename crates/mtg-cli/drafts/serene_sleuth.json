@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b0d639cb-71d4-454f-9dd6-89cd7a59b702",
+  "name": "Serene Sleuth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serene Sleuth",
+      "oracle_fingerprint": "904fe99d4e3430a22ca1a505ea055a9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "goaded",
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Goaded"]
+                  }
+                }
+              },
+              { "CreateToken": { "token": { "Named": "clue" }, "count": { "Bound": "goaded" } } },
+              { "Performed": { "action": "Investigated", "times": { "Bound": "goaded" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

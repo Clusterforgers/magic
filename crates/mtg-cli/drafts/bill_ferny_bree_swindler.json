@@ -1,0 +1,58 @@
+{
+  "oracle_id": "ebbe5d82-a7a4-4f4b-b038-095021d9a6a8",
+  "name": "Bill Ferny, Bree Swindler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bill Ferny, Bree Swindler",
+      "oracle_fingerprint": "91fcf272bc4f0f09fd1e9e954e772725",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] },
+                    {
+                      "targets": [
+                        { "what": "Opponent" },
+                        {
+                          "what": { "Object": [{ "Subtype": "Horse" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 1 },
+                            "mods": [{ "SetController": { "Target": 0 } }],
+                            "duration": "Forever"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": {
+                                "subject": { "Target": 1 },
+                                "selector": [{ "ControlledBy": { "Target": 0 } }]
+                              }
+                            },
+                            "then": [
+                              { "RemoveFromCombat": { "what": "This" } },
+                              { "CreateToken": { "token": { "Named": "treasure" }, "count": 3 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

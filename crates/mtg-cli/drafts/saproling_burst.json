@@ -1,7 +1,7 @@
 {
   "oracle_id": "7b31ecf8-5266-4376-ace0-8b873706c4ea",
   "name": "Saproling Burst",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Saproling Burst",
@@ -9,9 +9,42 @@
       "abilities": [
         { "Keyword": { "Fading": 7 } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 159, "end": 352 }
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Counters": { "on": "This", "counter": { "Other": "fade" } } },
+                        "toughness": {
+                          "Counters": { "on": "This", "counter": { "Other": "fade" } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "Remember": { "what": { "Bound": "token" }, "slot": "tokens" } }
+            ]
           }
         },
         {
@@ -20,11 +53,10 @@
             "effects": [
               {
                 "Destroy": {
-                  "what": { "Remembered": { "on": "This", "slot": "imprinted" } },
+                  "what": { "Remembered": { "on": "This", "slot": "tokens" } },
                   "regenerate": false
                 }
-              },
-              { "Forget": { "slot": "imprinted" } }
+              }
             ]
           }
         }

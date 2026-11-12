@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c15c13d2-8db9-4801-a1f0-f087f2551c92",
+  "name": "Scroll of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scroll of Fate",
+      "oracle_fingerprint": "260e9f0522737bf1c7b62e1e2be6ce72",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "BattlefieldFaceDown": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

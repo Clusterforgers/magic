@@ -1,0 +1,76 @@
+{
+  "oracle_id": "1a85ba2b-ae10-4917-954a-7709b75a9740",
+  "name": "Tainted Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Pact",
+      "oracle_fingerprint": "31a224b741478faf7581e65e562ea975",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "In": "Hand" }, { "SameCard": { "Bound": "card" } }]
+                          },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      },
+                      {
+                        "CountOf": {
+                          "subject": { "Bound": "exiled" },
+                          "selector": [{ "SharesName": { "Bound": "card" } }],
+                          "op": "Le",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    { "ExileTop": { "as": "card" } },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "exiled", "adds": true } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "SharesName": { "Bound": "card" } }],
+                            "op": "Le",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "May": {
+                              "effects": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
