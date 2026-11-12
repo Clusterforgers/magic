@@ -1,8 +1,9 @@
-//! Goal: the r30-7c writers word exactly the shapes they stand for (an attack on a player that isn't blocked, a defending
-//! player's life total set to a number, no combat damage for the combat, the dealers of a batch of damage named together as
-//! "each of those creatures", a spell cast from exile and a permanent entering from exile) and nothing near them: the
-//! controller's life total, a rule for the turn, a single damage event, a spell cast from a graveyard, a permanent of any
-//! player and a move to a hand keep their own words.
+//! Goal: the r30-7c writers word exactly the shapes they stand for (an attack on a player that isn't blocked, a
+//! defending player's life total set to a number, no combat damage for the combat, the dealers of a batch of damage
+//! named together as "each of those creatures", a spell cast from exile and a permanent entering from exile, the number
+//! of opponents being attacked, the card types among the cards of the event) and nothing near them: every opponent or
+//! every player attacked, the card types of other cards, the controller's life total, a rule for the turn, a single
+//! damage event, a spell cast from a graveyard, a permanent of any player and a move to a hand keep their own words.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
@@ -27,6 +28,15 @@ const ZUKO_TEXT: &str = "Whenever you cast a spell from exile and whenever a per
 
 const SINGLE: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":[{"Subtype":"Ninja"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Dealer","counter":"+1/+1"}},{"Draw":{}}]}}"#;
 
+const STRANDCATCHER: &str = r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"effects":[{"Surveil":{"count":{"Players":{"PlayersWhere":{"who":"Opponents","test":{"AttackedThisCombat":"You"}}}}}}]}}"#;
+
+const STRANDCATCHER_TEXT: &str =
+    "Whenever you attack, surveil X, where X is the number of opponents being attacked.";
+
+const CISTERN: &str = r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Library","to":"Graveyard"}}},"effects":[{"LoseLife":{"who":"Opponents","amount":{"CardTypes":[{"In":"Graveyard"},{"Is":"Triggering"}]}}}]}}"#;
+
+const CISTERN_TEXT: &str = "Whenever one or more cards are put into your graveyard from your library, each opponent loses 1 life for each card type among those cards.";
+
 const HEROES: &str = r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[{"Subtype":"Ninja"},{"ControlledBy":"You"}],"to":"EachPlayer","combat":true}}},"effects":[{"PutCounters":{"on":"Dealer","counter":"+1/+1"}},{"Draw":{}}]}}"#;
 
 #[rstest]
@@ -43,6 +53,8 @@ const HEROES: &str = r#"{"Triggered":{"when":{"Batch":{"DealsDamage":{"source":[
     "Whenever a Ninja you control deals combat damage to a player, put a +1/+1 counter on that creature, then draw a card."
 )]
 #[case::from_exile(ZUKO, ZUKO_TEXT)]
+#[case::opponents_attacked(STRANDCATCHER, STRANDCATCHER_TEXT)]
+#[case::types_among_those(CISTERN, CISTERN_TEXT)]
 fn r307c_shapes_read_as_the_card(#[case] json: &str, #[case] text: &str) {
     assert!(
         says(json, text),
@@ -71,6 +83,10 @@ fn r307c_shapes_read_as_the_card(#[case] json: &str, #[case] text: &str) {
 #[case::from_a_graveyard(&ZUKO.replace(r#"{"CastFrom":"Exile"}"#, r#"{"CastFrom":"Graveyard"}"#), ZUKO_TEXT)]
 #[case::any_permanent(&ZUKO.replace(r#""what":[{"ControlledBy":"You"}]"#, r#""what":[]"#), ZUKO_TEXT)]
 #[case::to_a_hand(&ZUKO.replace(r#""to":"Battlefield""#, r#""to":"Hand""#), ZUKO_TEXT)]
+#[case::every_opponent(&STRANDCATCHER.replace(r#"{"PlayersWhere":{"who":"Opponents","test":{"AttackedThisCombat":"You"}}}"#, r#""Opponents""#), STRANDCATCHER_TEXT)]
+#[case::players_attacked(&STRANDCATCHER.replace(r#""who":"Opponents""#, r#""who":"EachPlayer""#), STRANDCATCHER_TEXT)]
+#[case::types_on_the_battlefield(&CISTERN.replace(r#"{"In":"Graveyard"},"#, ""), CISTERN_TEXT)]
+#[case::types_in_any_graveyard(&CISTERN.replace(r#",{"Is":"Triggering"}"#, ""), CISTERN_TEXT)]
 fn r307c_near_misses_keep_their_words(#[case] json: &str, #[case] text: &str) {
     assert!(!says(json, text), "{json} says {text}");
 }

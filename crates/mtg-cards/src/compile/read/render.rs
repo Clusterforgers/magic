@@ -3645,6 +3645,9 @@ impl Writer<'_> {
 
     /// "3 life", "X life", "life equal to its power": what is gained or lost.
     fn life(&self, amount: &Amount) -> Option<String> {
+        if let Some(life) = r307c_words::r307c_life(amount) {
+            return Some(life);
+        }
         Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)

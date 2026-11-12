@@ -1,8 +1,8 @@
 //! Goal: the r30-7c combat cards play as printed at tables of two, three and four seats: Heroes in a Half Shell triggers
 //! once for each player its Mutants, Ninjas and Turtles hurt, puts a +1/+1 counter on each creature of that batch (never on
 //! another kind or a creature that hurt another player) and draws a card each time; Master of Cruelties makes an
-//! unblocked attack set the player's life total to 1 with no damage after it, while a blocked one does nothing; and the log
-//! replays to the state it was played to.
+//! unblocked attack set the player's life total to 1 with no damage after it, while a blocked one does nothing; Dimir
+//! Strandcatcher surveils one card for each opponent being attacked; and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -173,6 +173,55 @@ fn r307c_master_sets_life_to_one_when_unblocked(
     for seat in 2..seats {
         assert_eq!(r307c_life(&driver, seat), before);
     }
+    r307c_replays(&driver);
+    Ok(())
+}
+
+/// The cards Dimir Strandcatcher's controller surveiled, in all.
+fn r307c_surveiled(driver: &Driver) -> usize {
+    driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            mtg_engine::Event::Surveilled(surveilled) => {
+                Some(surveilled.top.len() + surveilled.graveyard.len())
+            }
+            _ => None,
+        })
+        .sum()
+}
+
+/// Dimir Strandcatcher surveils once for each opponent being attacked, however many creatures attack each.
+#[rstest]
+#[case::one_opponent(2, 1, 1, 1)]
+#[case::one_opponent_of_three(3, 1, 1, 1)]
+#[case::two_opponents(3, 1, 2, 2)]
+#[case::two_of_four(4, 2, 3, 2)]
+fn r307c_strandcatcher_surveils_per_opponent_attacked(
+    #[case] seats: usize,
+    #[case] bear_at: usize,
+    #[case] ninja_at: usize,
+    #[case] surveiled: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            [
+                ready(card("Dimir Strandcatcher").unwrap()),
+                ready(bear()),
+                ready(r307c_kind("Ninja")),
+            ],
+        )
+        .library_named(0, ["Forest"; 6]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    r307c_fight(
+        &mut driver,
+        &[("Grizzly Bears", bear_at), ("Plain Ninja", ninja_at)],
+        &[],
+    )?;
+    assert_eq!(r307c_surveiled(&driver), surveiled);
     r307c_replays(&driver);
     Ok(())
 }

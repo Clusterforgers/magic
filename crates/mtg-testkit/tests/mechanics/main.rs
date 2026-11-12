@@ -105,6 +105,7 @@ mod r1g_taken_names;
 mod r285_pieces;
 mod r2a_doubling;
 mod r2d;
+mod r307c_rooms;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;
