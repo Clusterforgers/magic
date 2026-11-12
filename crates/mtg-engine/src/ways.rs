@@ -123,6 +123,9 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if way == CastWay::Harmonize {
         return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
     }
+    if let Some(x) = r301c_alt_cast_x(state, id, way) {
+        return x;
+    }
     if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
         return 0;
     }
@@ -150,13 +153,40 @@ pub(crate) const R283_X_WAYS: [CastWay; 4] = [
     CastWay::Freerunning,
 ];
 
-/// The most `{X}` any keyword cost of the card holds that its mana cost may lack (`R283_X_WAYS`).
+/// The most `{X}` any keyword cost of the card holds that its mana cost may lack (`R283_X_WAYS`), or the cost of a way
+/// its `AltCast` rules print ("Warp {X}{G}").
 pub(crate) fn r283_keyword_x(state: &GameState, id: ObjectId) -> u32 {
+    let printed = state.object(id).map_or(0, |card| {
+        ability_reader::printed_rules(card.card())
+            .filter_map(|rule| match &**rule {
+                Ability::AltCast {
+                    cost: Some(cost), ..
+                } => cast_cost_x(cost, false).map(|(_, _, x)| x),
+                _ => None,
+            })
+            .max()
+            .unwrap_or(0)
+    });
     R283_X_WAYS
         .iter()
         .map(|way| alternative_x(state, id, *way))
         .max()
         .unwrap_or(0)
+        .max(printed)
+}
+
+/// How many `{X}` the cost of the way `way` that an `AltCast` rule of the card prints holds; `None` when no such rule
+/// gives the way.
+fn r301c_alt_cast_x(state: &GameState, id: ObjectId, way: CastWay) -> Option<u32> {
+    let card = state.object(id)?;
+    ability_reader::printed_rules(card.card()).find_map(|rule| match &**rule {
+        Ability::AltCast {
+            way: given,
+            cost: Some(cost),
+            ..
+        } if *given == way => Some(cast_cost_x(cost, false).map_or(0, |(_, _, x)| x)),
+        _ => None,
+    })
 }
 
 /// [`cast_cost`] that also allows `{X}` in the mana: the mana without the X, the parts, and how many `{X}` the cost holds.
@@ -439,16 +469,23 @@ fn alt_cast_ways(
             continue;
         }
         let instant = instant || *flash;
-        let (mana, parts) = match cost {
-            None => (ManaCost::default(), Vec::new()),
-            Some(cost) => match cast_cost(cost) {
+        let (mana, parts, x) = match cost {
+            None => (ManaCost::default(), Vec::new(), 0),
+            Some(cost) => match cast_cost_x(cost, false) {
                 Some(paid) => paid,
                 None => continue,
             },
         };
+        // The `{X}` of the cost is announced with the spell (`alternative_x`) and named in its label.
+        let x = "{X}".repeat(usize::try_from(x).unwrap_or(0));
+        let words = cost_words(&mana, &parts);
+        let words = match words.strip_prefix("{0}") {
+            Some(rest) if !x.is_empty() => format!("{x}{rest}"),
+            _ => format!("{x}{words}"),
+        };
         found.push(Way {
             alternative: Some(*way),
-            label: format!("{} {}", way_label(*way), cost_words(&mana, &parts)),
+            label: format!("{} {words}", way_label(*way)),
             mana: Some(mana),
             instant,
             variant: 0,

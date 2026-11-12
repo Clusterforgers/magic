@@ -517,6 +517,16 @@ fn backup(count: u32) -> Keyword {
 
 /// A keyword of the macro table: its number, or nothing after the name for one that prints none.
 fn macro_keyword(name: &str, rest: &str) -> Option<Keyword> {
+    // "Bloodthirst X": X is the damage dealt to your opponents this turn (CR 702.54c).
+    if name == "bloodthirst" && rest == "X" {
+        return Some(Keyword::MacroX {
+            name: name.to_owned(),
+            x: Amount::Tallied {
+                who: crate::refs::Ref::Opponents,
+                what: crate::value::TurnTally::DamageDealtTo,
+            },
+        });
+    }
     let amount = if crate::macros::takes_number(name) {
         positive(rest)?
     } else {
@@ -633,10 +643,35 @@ fn companion(rest: &str) -> Option<Keyword> {
         == "your starting deck contains at least twenty cards more than the minimum deck size"
     {
         DeckCondition::ExtraCards(20)
+    } else if let Some(condition) = r301c_companion(&lower) {
+        condition
     } else {
         creature_types(text)?
     };
     Some(Keyword::companion(condition))
+}
+
+/// The companion conditions on the parity of mana values and on a shared card type, from the lowercase text.
+fn r301c_companion(lower: &str) -> Option<DeckCondition> {
+    let nonland = || Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]);
+    Some(match lower {
+        "your starting deck contains only cards with even mana values" => {
+            DeckCondition::ManaValueParity {
+                odd: false,
+                besides: Selector::default(),
+            }
+        }
+        "your starting deck contains only cards with odd mana values and land cards" => {
+            DeckCondition::ManaValueParity {
+                odd: true,
+                besides: Selector(vec![Pred::Type(CardType::Land)]),
+            }
+        }
+        "each nonland card in your starting deck shares a card type" => {
+            DeckCondition::SharedCardType { of: nonland() }
+        }
+        _ => return None,
+    })
 }
 
 /// `Each creature card in your starting deck is a Cat, Elemental, or Beast card`: every creature has one of the types.
@@ -1272,6 +1307,8 @@ mod tests {
     #[case::soulshift_without("Soulshift")]
     #[case::a_number_on_flanking("Flanking 1")]
     #[case::wf25_a_number_on_increment("Increment 1")]
+    #[case::r301c_an_x_on_bushido("Bushido X")]
+    #[case::r301c_a_y_on_bloodthirst("Bloodthirst Y")]
     fn a_macro_keyword_without_a_number_reads_as_no_keyword(#[case] item: &str) {
         assert_eq!(read(item), None);
     }
@@ -1440,6 +1477,10 @@ mod tests {
     #[case::affinity_for_artifact_creatures(
         "Affinity for artifact creatures",
         Keyword::Affinity(Selector(vec![Pred::Type(CardType::Artifact), Pred::Type(CardType::Creature)]))
+    )]
+    #[case::affinity_for_snow_lands(
+        "Affinity for snow lands",
+        Keyword::Affinity(Selector(vec![Pred::Supertype(Supertype::Snow), Pred::Type(CardType::Land)]))
     )]
     #[case::affinity_for_historic_permanents(
         "Affinity for historic permanents",
@@ -1722,6 +1763,25 @@ mod tests {
         "Companion \u{2014} Your starting deck contains at least twenty cards more than the minimum deck size.",
         Keyword::companion(DeckCondition::ExtraCards(20))
     )]
+    #[case::bloodthirst_x(
+        "Bloodthirst X",
+        Keyword::MacroX {
+            name: "bloodthirst".into(),
+            x: Amount::Tallied { who: crate::refs::Ref::Opponents, what: crate::value::TurnTally::DamageDealtTo },
+        }
+    )]
+    #[case::companion_even_values(
+        "Companion \u{2014} Your starting deck contains only cards with even mana values.",
+        Keyword::companion(DeckCondition::ManaValueParity { odd: false, besides: Selector::default() })
+    )]
+    #[case::companion_odd_values_and_lands(
+        "Companion \u{2014} Your starting deck contains only cards with odd mana values and land cards.",
+        Keyword::companion(DeckCondition::ManaValueParity { odd: true, besides: Selector(vec![Pred::Type(CardType::Land)]) })
+    )]
+    #[case::companion_shared_card_type(
+        "Companion \u{2014} Each nonland card in your starting deck shares a card type.",
+        Keyword::companion(DeckCondition::SharedCardType { of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]) })
+    )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
         Keyword::PartnerWith("Pir, Imaginative Rascal".into())
@@ -1779,8 +1839,11 @@ mod tests {
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
-    #[case::companion_with_even_values(
-        "Companion \u{2014} Your starting deck contains only cards with even mana values."
+    #[case::companion_with_even_values_and_lands(
+        "Companion \u{2014} Your starting deck contains only cards with even mana values and land cards."
+    )]
+    #[case::companion_where_some_nonland_cards_share_a_type(
+        "Companion \u{2014} Some nonland cards in your starting deck share a card type."
     )]
     #[case::companion_with_activated_abilities(
         "Companion \u{2014} Each permanent card in your starting deck has an activated ability."

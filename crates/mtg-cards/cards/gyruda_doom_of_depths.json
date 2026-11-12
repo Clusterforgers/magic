@@ -1,0 +1,20 @@
+{
+  "oracle_id": "25eaa977-ca85-4f8d-8be5-9297a3edb14f",
+  "name": "Gyruda, Doom of Depths",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gyruda, Doom of Depths",
+      "oracle_fingerprint": "a2176573446b7621d82939c51734072b",
+      "abilities": [
+        { "Keyword": { "Companion": { "ManaValueParity": {} } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 189, "end": 351 }
+          }
+        }
+      ]
+    }
+  ]
+}

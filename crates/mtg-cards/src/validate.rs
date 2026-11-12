@@ -1618,7 +1618,29 @@ impl<'a> Walker<'a> {
         else {
             return;
         };
-        self.w14c_free_cast(condition.as_ref(), cost.as_ref());
+        // An `{X}` of the mana of the cost is announced as the spell is cast that way ("Warp {X}{G}", "Surge {X}{R}").
+        self.scope = Scope::new(&[], false);
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        if let Some(cost) = cost {
+            let x_mana = has_x_mana(cost);
+            let parts = Cost(
+                cost.0
+                    .iter()
+                    .filter(|item| !matches!(item, CostItem::Mana(mana) if mana.has_x()))
+                    .cloned()
+                    .collect(),
+            );
+            if x_mana && parts.has_x() {
+                self.problem("an alternative cost counts X in its mana alone");
+            }
+            if x_mana {
+                self.at("cost", |w| w.cost(cost));
+            } else {
+                self.w14c_alternative_cost(cost);
+            }
+        }
         if matches!(from, ZoneKind::Battlefield | ZoneKind::Stack) {
             self.problem(
                 "a card is cast from a hand, a library, a graveyard, exile or the command zone",
@@ -5539,14 +5561,15 @@ fn r283_counts_payers_own(count: &Amount, who: &Ref) -> bool {
         if preds.contains(&Pred::OwnedBy(who.clone())) && !matches!(who, Ref::You))
 }
 
-/// Whether the face has a madness, foretell or freerunning cost with an `{X}` ("Madness {X}{B}{B}").
+/// Whether the face has a madness, foretell, freerunning or other alternative cost with an `{X}` ("Madness {X}{B}{B}",
+/// "Warp {X}{G}").
 fn r283_keyword_x(face: &Face) -> bool {
     face.abilities.iter().any(|ability| {
         matches!(
             ability,
             Ability::Keyword(Keyword::Madness(cost) | Keyword::Foretell(cost) | Keyword::Freerunning(cost))
                 if has_x_mana(cost)
-        )
+        ) || matches!(ability, Ability::AltCast { cost: Some(cost), .. } if has_x_mana(cost))
     })
 }
 

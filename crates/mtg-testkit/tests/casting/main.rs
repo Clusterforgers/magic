@@ -149,6 +149,7 @@ mod r287_tallies;
 mod r288_delayed_targets;
 mod r288_final_chapter;
 mod r2e_cost_parts;
+mod r301c_alt_cast_x;
 mod r301c_commander_flashback;
 mod r301c_way_costs;
 mod r3f_mana;

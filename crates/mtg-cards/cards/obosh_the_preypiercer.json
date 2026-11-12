@@ -1,0 +1,24 @@
+{
+  "oracle_id": "6985c8a9-9299-461b-8bef-bd2b2c739c11",
+  "name": "Obosh, the Preypiercer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Obosh, the Preypiercer",
+      "oracle_fingerprint": "6a6a673a09b41b18db406a455b8ee598",
+      "abilities": [
+        {
+          "Keyword": {
+            "Companion": { "ManaValueParity": { "odd": true, "besides": [{ "Type": "Land" }] } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this replacement by hand",
+            "span": { "start": 203, "end": 358 }
+          }
+        }
+      ]
+    }
+  ]
+}

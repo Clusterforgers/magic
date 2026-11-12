@@ -8,9 +8,11 @@
       "oracle_fingerprint": "02a2ac9e36e8ba654cdc2651000f9598",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 122 }
+          "Keyword": {
+            "MacroX": {
+              "name": "bloodthirst",
+              "x": { "Tallied": { "who": "Opponents", "what": "DamageDealtTo" } }
+            }
           }
         },
         { "Keyword": "Menace" },
