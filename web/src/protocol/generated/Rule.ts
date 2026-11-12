@@ -293,7 +293,7 @@ when: unknown,
 /**
  * What happens instead.
  */
-by: unknown, } } | "GraveyardCardsUntargetable" | { "CantLoseGame": { 
+by: unknown, } } | "GraveyardCardsUntargetable" | "DamageAsWither" | "ManaBurn" | { "AttackAsThoughHasteAt": Array<PlayerId> } | { "CantLoseGame": { 
 /**
  * The players who can't lose.
  */
