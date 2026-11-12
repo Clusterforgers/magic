@@ -415,7 +415,7 @@ impl Corpus {
         match Library::from_sources(&sources) {
             Ok(library) => problems.extend(
                 library
-                    .check_printed(&printed)
+                    .check_printed_naming(&printed, &super::draft_names())
                     .iter()
                     .map(ToString::to_string),
             ),

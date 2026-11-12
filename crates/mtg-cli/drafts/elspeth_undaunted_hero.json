@@ -1,7 +1,7 @@
 {
   "oracle_id": "3f9a797b-85e7-474e-aefe-7e2ec08fc5b7",
   "name": "Elspeth, Undaunted Hero",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Elspeth, Undaunted Hero",
@@ -17,9 +17,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 214 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Sunlit Hoplite" }],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
           }
         },
         {
@@ -30,13 +45,13 @@
                 "Continuous": {
                   "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
                   "mods": [
-                    { "AddKeyword": "Flying" },
                     {
                       "ModifyPT": {
                         "power": { "Devotion": ["White"] },
                         "toughness": { "Devotion": ["White"] }
                       }
-                    }
+                    },
+                    { "AddKeyword": "Flying" }
                   ],
                   "duration": "UntilEndOfTurn"
                 }

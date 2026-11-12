@@ -220,3 +220,20 @@ fn manual_cards_are_not_held_to_a_fingerprint_or_keywords() {
         Vec::new()
     );
 }
+
+const SEARCH_CHANDRA: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Named":"Chandra, Flame's Catalyst"}],"as":"found"}}]}}"#;
+
+/// A search by name may name a known card without a file here (a draft); a name no card has is still refused.
+#[rstest]
+#[case::a_draft_only_card(&["chandra, flame's catalyst"], &[])]
+#[case::an_unknown_name(&["gideon, martial paragon"], &["faces[0].abilities[0].Spell.effects[0].Search.filter[0]: no imported card is named `Chandra, Flame's Catalyst`"])]
+fn l31c_a_named_search_names_any_known_card(#[case] others: &[&str], #[case] expected: &[&str]) {
+    let shown = printed("Sorcery", "{R}", "Search.", &[]);
+    let others = others.iter().map(|n| (*n).to_owned()).collect();
+    let found: Vec<String> = library("Full", SEARCH_CHANDRA, &oracle_fingerprint("Search."))
+        .check_printed_naming(std::slice::from_ref(&shown), &others)
+        .iter()
+        .map(|e| format!("{}: {}", e.path, e.message))
+        .collect();
+    assert_eq!(found, expected);
+}
