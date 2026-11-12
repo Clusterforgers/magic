@@ -72,6 +72,8 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
     matches!(
         by,
         ReplaceBy::PreventUpTo(_)
+            | ReplaceBy::PreventAmount(_)
+            | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
@@ -5306,9 +5308,12 @@ impl Walker<'_> {
             self.problem("only the counters or the damage of an event are halved");
         }
         match by {
-            ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) if !damage => {
-                self.problem("only damage is lessened or capped");
+            ReplaceBy::Subtract(_)
+                if !damage && !matches!(when, ReplaceWhen::CountersPut { .. }) =>
+            {
+                self.problem("only damage or counters are lessened");
             }
+            ReplaceBy::Cap(_) if !damage => self.problem("only damage is lessened or capped"),
             ReplaceBy::Subtract(0) => self.problem("subtracting nothing changes nothing"),
             ReplaceBy::Cap(0) => self.problem("capping damage at 0 is `Prevent`"),
             _ => {}
@@ -5426,9 +5431,13 @@ impl Walker<'_> {
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
-            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) if zone_move => {
+            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::AddAmount(_) if zone_move => {
                 self.problem("a zone change has no number to change");
             }
+            ReplaceBy::AddAmount(amount) | ReplaceBy::PreventAmount(amount) => {
+                self.at("amount", |w| w.amount(amount));
+            }
+            ReplaceBy::PreventAtMost(0) => self.problem("preventing no damage changes nothing"),
             ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
             ReplaceBy::Prevent if zone_move => {
                 self.problem("a zone change or an entering is not prevented");
@@ -6745,7 +6754,7 @@ mod tests {
     )]
     #[case::ep27_tokens_lessened(
         r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
-        "only damage is lessened or capped"
+        "only damage or counters are lessened"
     )]
     #[case::ep27_damage_capped_at_nothing(
         r#"{"Replacement":{"when":{"Damage":{}},"by":{"Cap":0}}}"#,
