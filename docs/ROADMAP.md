@@ -7,7 +7,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, deployment.
+- Done: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, deployment.
 - In progress: M3 card system and M6 coverage. A card the compiler does not read whole is played through by-hand clauses. The owner's Moxfield deck is fully Verified. Run `mtg-cli compile` and `coverage` for the current numbers before quoting any.
 - Open: spectators, handicaps, an off-queen copy of the backups (M7), sounds, replays and solo play (M8).
 
@@ -145,7 +145,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M7 Product
 
-- [~] (tm1, claude/team-commander-tm29-o048ar) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
+- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan, teammates who see each other's hands, priority by team and each player declaring their own attackers
+- [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
 - [ ] (tm2) Tournaments: an organiser sets up 1v1 or 2v2 Commander rounds (Swiss or single elimination), pairings, results and standings, each match a normal game
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)

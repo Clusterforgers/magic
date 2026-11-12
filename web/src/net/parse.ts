@@ -37,6 +37,7 @@ import type {
   YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
+import { isTeams, readHouseRules } from './houseRules'
 
 /** Frames longer than this many characters are dropped unread; the biggest real message is a snapshot of about 50 KB. */
 export const MAX_FRAME_CHARS = 1_048_576
@@ -208,9 +209,11 @@ function isAttacker(value: unknown): value is AttackerView {
   )
 }
 
-/** True for a game result: `"Draw"` or `{ Winner: seat }`. */
+/** True for a game result: `"Draw"`, `{ Winner: seat }` or `{ Team: team }`. */
 export function isGameResult(value: unknown): value is GameResult {
-  return value === 'Draw' || (isRecord(value) && isOneKey(value) && isCount(value.Winner))
+  return (
+    value === 'Draw' || (isRecord(value) && isOneKey(value) && (isCount(value.Winner) || isCount(value.Team)))
+  )
 }
 
 // A one-key object such as `{ Player: 1 }`: the key is one of `tags` and the value an id or seat.
@@ -290,7 +293,8 @@ function isTableView(value: unknown): value is TableView {
     isFlag(value.combat.attackers_declared) &&
     isIdList(value.combat.blockers_declared) &&
     (value.combat_forecast === null || isCombatForecast(value.combat_forecast)) &&
-    (value.result === null || isGameResult(value.result))
+    (value.result === null || isGameResult(value.result)) &&
+    (value.house_rules === undefined || readHouseRules(value.house_rules) !== null)
   )
 }
 
@@ -498,7 +502,16 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       // The lobby is drawn by seat number, so a roster that skips or repeats one is not one to draw.
       if (v.seats.some((seat, index) => seat.seat !== index)) return '"seats" must be listed in seat order'
       if (!isCount(v.needed)) return '"needed" must be a whole number'
-      return { type, seats: v.seats.map(lobbySeat), needed: v.needed }
+      // Absent means every player plays alone; the server never sends null.
+      if (v.teams !== undefined && !(isTeams(v.teams) && v.teams.seats.length === v.seats.length)) {
+        return '"teams" must name a mode and the team of every seat'
+      }
+      return {
+        type,
+        seats: v.seats.map(lobbySeat),
+        needed: v.needed,
+        ...(v.teams === undefined ? {} : { teams: v.teams }),
+      }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'
@@ -562,7 +575,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isText(v.message)) return '"message" must be text'
       return { type, code: v.code, message: v.message }
     case 'GameOver':
-      if (!isGameResult(v.result)) return '"result" must be Draw or a Winner'
+      if (!isGameResult(v.result)) return '"result" must be Draw, a Winner or a Team'
       return { type, result: v.result }
     case 'Yielding':
       if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'

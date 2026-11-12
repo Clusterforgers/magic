@@ -282,7 +282,13 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
-        setState({ lobby: { seats: message.seats, needed: message.needed } })
+        setState({
+          lobby: {
+            seats: message.seats,
+            needed: message.needed,
+            ...(message.teams === undefined ? {} : { teams: message.teams }),
+          },
+        })
         return
       case 'Snapshot':
         onSnapshot(message)

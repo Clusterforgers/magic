@@ -60,7 +60,12 @@ export function lessonFacts(state: PlayState): LessonFacts {
     theirLife: null,
     byHand: 0,
     over: state.result !== null,
-    won: seat !== null && state.result !== null && state.result !== 'Draw' && state.result.Winner === seat,
+    won:
+      seat !== null &&
+      state.result !== null &&
+      state.result !== 'Draw' &&
+      'Winner' in state.result &&
+      state.result.Winner === seat,
   }
   if (view === null || seat === null) return empty
   const table = view

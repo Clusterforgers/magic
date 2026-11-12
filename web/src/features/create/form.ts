@@ -2,6 +2,8 @@
 import { requestRules, rulesFromTexts } from '@/lib/houseRules'
 import type { GameFormat, RuleTexts } from '@/lib/houseRules'
 import { COMMANDER_POD, MAX_FORM_SEATS, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
+import { defaultTeams, GIANT_SEATS, MIN_TEAM_SEATS, seatsProblem } from '@/lib/teams'
+import type { GameMode } from '@/lib/teams'
 import type { CreateGameRequest, DeckInfo } from '@/net/api'
 import type { Visibility } from '@/protocol/generated'
 
@@ -24,6 +26,8 @@ export interface Draft {
   format: GameFormat
   /** The house rules being edited, as field text by rule id; an empty text keeps the format's value. */
   rules: RuleTexts
+  /** Free-for-all, or one of the team modes with the engine's default teams. */
+  mode: GameMode
 }
 
 /** What is wrong with one seat, in words for the person filling in the form; null for fine. */
@@ -78,7 +82,15 @@ export function defaultDraft(
   host?: string,
   format: GameFormat = 'commander',
 ): Draft {
-  let draft: Draft = { seats: [], nextId: 0, visibility: 'public', links: false, format, rules: {} }
+  let draft: Draft = {
+    seats: [],
+    nextId: 0,
+    visibility: 'public',
+    links: false,
+    format,
+    rules: {},
+    mode: 'free_for_all',
+  }
   for (let i = 0; i < startSeats(format); i += 1) draft = withSeat(draft, decks)
   const first = draft.seats[0]
   return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
@@ -130,10 +142,28 @@ export function chooseVisibility(draft: Draft, visibility: Visibility): Draft {
  */
 export function chooseFormat(draft: Draft, decks: readonly DeckInfo[], format: GameFormat): Draft {
   if (format === draft.format) return draft
-  const wanted = draft.seats.length === startSeats(draft.format) ? startSeats(format) : draft.seats.length
+  // A team mode keeps its seats: they were chosen for the teams.
+  const kept = draft.mode !== 'free_for_all' || draft.seats.length !== startSeats(draft.format)
+  const wanted = kept ? draft.seats.length : startSeats(format)
   const next: Draft = { ...draft, format, links: format === 'commander' ? false : draft.links }
   return resizeSeats(next, decks, wanted)
 }
+
+/**
+ * The form in another mode. Two-Headed Giant takes 4 seats; Teams takes an even count of 4 or more, so an odd count
+ * gains a seat and a smaller one grows to 4. Free-for-all keeps the seats.
+ */
+export function chooseMode(draft: Draft, decks: readonly DeckInfo[], mode: GameMode): Draft {
+  if (mode === draft.mode) return draft
+  const next: Draft = { ...draft, mode }
+  const count = draft.seats.length
+  if (mode === 'two_headed_giant') return resizeSeats(next, decks, GIANT_SEATS)
+  if (mode === 'teams') return resizeSeats(next, decks, Math.max(MIN_TEAM_SEATS, count + (count % 2)))
+  return next
+}
+
+/** Why the seats do not fit the mode, in words; null when they do. */
+export const modeProblem = (draft: Draft): string | null => seatsProblem(draft.mode, draft.seats.length)
 
 /** The form with the text of one house rule changed. */
 export function editRule(draft: Draft, id: string, text: string): Draft {
@@ -184,14 +214,17 @@ export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
 }
 
 /**
- * The body for `POST /api/games`: the format, names trimmed and the house rules that differ from the format's. A link
+ * The body for `POST /api/games`: the format, names trimmed and the house rules that differ from the format's, with
+ * the default teams of a team mode. A link
  * per seat holds every seat, each with the deck the form gave it, and is invite only. Otherwise only the creator's seat
  * is held, with its deck in a Normal game and none in Commander (the lobby's chooser judges decks against the table),
  * and the others, which the server never reads a name for, go out as `Player N` with no deck: whoever takes a seat
  * chooses its deck in the lobby.
  */
 export function toRequest(draft: Draft): CreateGameRequest {
-  const house = requestRules(draft.rules, draft.format)
+  const typed = requestRules(draft.rules, draft.format)
+  const house =
+    draft.mode === 'free_for_all' ? typed : { ...typed, teams: defaultTeams(draft.mode, draft.seats.length) }
   const rules = house === undefined ? {} : { house_rules: house }
   if (draft.links) {
     return {

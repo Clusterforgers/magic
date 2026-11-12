@@ -3,9 +3,9 @@
  * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
  * fields are dropped.
  */
-import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility } from '@/protocol/generated'
+import type { GameInfo, GameSeat, Joined, LobbyGame, TeamsBody, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
-import { readHouseRules } from './houseRules'
+import { isTeams, readHouseRules } from './houseRules'
 import { isGameResult, readSeatDeck } from './parse'
 
 const VISIBILITIES: Record<Visibility, true> = { public: true, invite: true }
@@ -77,6 +77,13 @@ export { readSeatDeck }
 /** The visibility `PATCH /api/games/{id}` answers with. */
 export function readVisibility(body: unknown): Visibility | null {
   return isRecord(body) && isVisibility(body.visibility) ? body.visibility : null
+}
+
+/** The teams `PUT /api/games/{id}/teams` answers with: the ones now in force, or null for none. */
+export function readTeamsBody(body: unknown): TeamsBody | null {
+  if (!isRecord(body)) return null
+  if (body.teams === null) return { teams: null }
+  return isTeams(body.teams) ? { teams: body.teams } : null
 }
 
 function readGameSeat(item: unknown): GameSeat | null {
