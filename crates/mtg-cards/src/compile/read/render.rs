@@ -209,8 +209,16 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
-#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    let mut texts = plain_variants(ability);
+    super::r371_copy_except::r371_not_legendary_too(&mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
+    texts
+}
+
+/// [`variants`] before the wordings every copy exception has twice.
+#[allow(clippy::too_many_lines)]
+fn plain_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r372_suspend::r372_variants(ability, variants) {
         return texts;
     }
@@ -519,6 +527,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = joined::wordings(&texts);
     texts.extend(more);
+    let more = super::r371_owner::r371_and_draw_wordings(&texts);
+    texts.extend(more);
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
@@ -594,6 +604,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r301b_writers::r301b_wordings(ability, written_variants, &mut texts);
     super::r301b_writers::r301b_flip_wordings(&mut texts);
     super::us38_quotes::us38_nested_wordings(&mut texts);
+    super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -2645,6 +2656,8 @@ impl Writer<'_> {
             Ref::This => "~".to_owned(),
             Ref::Attached => "enchanted creature".to_owned(),
             Ref::Paid => "the sacrificed creature".to_owned(),
+            // The creature that died, as it last existed: "create a token that's a copy of that creature".
+            Ref::Triggering => "that creature".to_owned(),
             Ref::Target(0) if self.is_a_permanent(of) => {
                 if self.named {
                     "it".to_owned()

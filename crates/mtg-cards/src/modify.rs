@@ -59,6 +59,8 @@ pub enum Modification {
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.
     ThisAbility,
+    /// Sets the starting loyalty of a copy: "except its starting loyalty is 1". Only the exceptions of a copy have it.
+    SetLoyalty(Amount),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
@@ -137,6 +139,11 @@ pub enum Modification {
     /// The object can't attack the controller of the effect or ability ("you"), the planeswalkers they control or both
     /// (a restriction, no layer).
     CantAttackYou(Attacked),
+    /// The object can't attack its owner, the planeswalkers its owner controls or both (a restriction, no layer).
+    CantAttackOwner(Attacked),
+    /// The object can't be blocked unless it is attacking its owner or a permanent its owner controls (a restriction, no
+    /// layer).
+    CantBeBlockedUnlessAttackingOwner,
     /// The object can't block (a restriction, no layer).
     CantBlock,
     /// The object does not untap during its controller's untap step (a restriction, no layer).
@@ -183,7 +190,8 @@ impl Modification {
         match self {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
-            | Modification::ThisAbility => Some("1"),
+            | Modification::ThisAbility
+            | Modification::SetLoyalty(_) => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::ChangeTextChosen { .. } => Some("3"),
             Modification::AddType(_)
@@ -221,6 +229,8 @@ impl Modification {
             Modification::SwitchPT => Some("7d"),
             Modification::CantAttack
             | Modification::CantAttackYou(_)
+            | Modification::CantAttackOwner(_)
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp

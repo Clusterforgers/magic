@@ -206,17 +206,25 @@ pub(crate) fn cant_attack_defender(
     defender: PlayerId,
     walker: bool,
 ) -> bool {
+    let owner = state.object(id).map(GameObject::owner);
     restricted(state, id, |modification| match modification {
         Modification::CantAttackYou { you, attacked } => {
-            *you == defender
-                && match attacked {
-                    Attacked::Both => true,
-                    Attacked::Player => !walker,
-                    Attacked::Planeswalkers => walker,
-                }
+            *you == defender && protects(*attacked, walker)
+        }
+        Modification::CantAttackOwner { attacked } => {
+            owner == Some(defender) && protects(*attacked, walker)
         }
         _ => false,
     })
+}
+
+/// Whether a restriction on `attacked` covers the attack: at a planeswalker (`walker`) or at the player.
+const fn protects(attacked: Attacked, walker: bool) -> bool {
+    match attacked {
+        Attacked::Both => true,
+        Attacked::Player => !walker,
+        Attacked::Planeswalkers => walker,
+    }
 }
 
 /// The players that goad the creature `id` (CR 701.15), by an effect that applies to it or by a static ability, in the
@@ -290,7 +298,25 @@ pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker:
 /// blocks ("can't be blocked by", "can block only"), so each pair of an attacker and a blocker reads neither again.
 pub(crate) struct BlockSide<'a> {
     reference: Option<ObjectRef>,
+    /// Whether it attacks its owner or a permanent its owner controls.
+    at_owner: bool,
     limits: Vec<&'a Modification>,
+}
+
+/// Whether the creature attacks its owner or a permanent its owner controls (a planeswalker or a battle they protect).
+fn attacks_owner(state: &GameState, object: &GameObject) -> bool {
+    let owner = object.owner();
+    state
+        .combat()
+        .attackers()
+        .iter()
+        .find(|attacker| attacker.object == object.id())
+        .is_some_and(|attacker| match attacker.target {
+            crate::combat::AttackTarget::Player(player) => player == owner,
+            crate::combat::AttackTarget::Planeswalker(permanent) => {
+                controller_of(state, permanent) == Some(owner)
+            }
+        })
 }
 
 impl<'a> BlockSide<'a> {
@@ -308,6 +334,7 @@ impl<'a> BlockSide<'a> {
                         matches!(
                             modification,
                             Modification::CantBeBlocked
+                                | Modification::CantBeBlockedUnlessAttackingOwner
                                 | Modification::CantBeBlockedBy { .. }
                                 | Modification::CanBlockOnly { .. }
                         )
@@ -317,6 +344,7 @@ impl<'a> BlockSide<'a> {
             .unwrap_or_default();
         BlockSide {
             reference: object.map(GameObject::reference),
+            at_owner: object.is_some_and(|object| attacks_owner(state, object)),
             limits,
         }
     }
@@ -338,6 +366,7 @@ pub(crate) fn cant_be_blocked_between(
         .iter()
         .any(|modification| match modification {
             Modification::CantBeBlocked => true,
+            Modification::CantBeBlockedUnlessAttackingOwner => !attacker.at_owner,
             Modification::CantBeBlockedBy {
                 by,
                 controller,

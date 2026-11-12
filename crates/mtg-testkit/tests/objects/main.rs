@@ -76,6 +76,7 @@ mod planeswalkers;
 mod proliferate;
 mod r305c_copy_counters;
 mod r306c_attractions;
+mod r371_copy_except;
 mod r3f_exiled;
 mod r4b_dig;
 mod r4i_can_enchant;

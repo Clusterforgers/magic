@@ -142,6 +142,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBlock: "can't block",
       DoesntUntap: `${group ? "don't" : "doesn't"} untap during their controller's untap step`,
       CantBeBlocked: "can't be blocked",
+      CantBeBlockedUnlessAttackingOwner:
+        "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
       AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
@@ -212,6 +214,14 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       Planeswalkers: `planeswalkers ${seat} controls`,
       Both: `${seat} or planeswalkers ${seat} controls`,
     }[attacked]
+    return `can't attack ${whom}`
+  }
+  if ('CantAttackOwner' in modification) {
+    const whom = {
+      Player: 'its owner',
+      Planeswalkers: 'planeswalkers its owner controls',
+      Both: 'its owner or planeswalkers its owner controls',
+    }[modification.CantAttackOwner.attacked]
     return `can't attack ${whom}`
   }
   if ('ChangeText' in modification) {

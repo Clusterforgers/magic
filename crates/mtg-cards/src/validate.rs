@@ -2336,6 +2336,7 @@ impl<'a> Walker<'a> {
             | Modification::AddSupertype(_)
             | Modification::SetName(_)
             | Modification::ThisAbility
+            | Modification::SetLoyalty(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -2356,6 +2357,8 @@ impl<'a> Walker<'a> {
             | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
+            | Modification::CantAttackOwner(_)
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -2471,7 +2474,7 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::SetName(_) | Modification::ThisAbility
+                    Modification::SetName(_) | Modification::ThisAbility | Modification::SetLoyalty(_)
                 ) || matches!(
                     modification,
                     Modification::AddSupertype(_) | Modification::RemoveSupertype(_)

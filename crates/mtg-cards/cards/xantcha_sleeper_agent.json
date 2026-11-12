@@ -1,7 +1,7 @@
 {
   "oracle_id": "0f0f3712-8d13-41a5-b332-2ab34e48d79d",
   "name": "Xantcha, Sleeper Agent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Xantcha, Sleeper Agent",
@@ -10,12 +10,8 @@
         {
           "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
         },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 64, "end": 163 }
-          }
-        },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        { "Static": { "affected": "This", "mods": [{ "CantAttackOwner": "Both" }] } },
         {
           "Activated": {
             "cost": "{3}",

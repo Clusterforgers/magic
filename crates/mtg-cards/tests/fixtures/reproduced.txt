@@ -1040,6 +1040,7 @@ Koth, Fire of Resistance
 Kozilek's Translator
 Krark's Thumb
 Krav, the Unredeemed
+Kraum, Violent Cacophony
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
 Krosan Cloudscraper
@@ -1463,6 +1464,7 @@ Rampant Growth
 Ramses Overdark
 Rancor
 Ransom Note
+Ratadrabik of Urborg
 Ravenous Leucrocota
 Ravenous Slime
 Ray Fillet, Wave Warrior
@@ -1621,6 +1623,7 @@ Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
 Servant of the Conduit
+Setessan Champion
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -1817,6 +1820,7 @@ Sunhome Stalwart
 Sunken Ruins
 Sunrise Cavalier
 Sunscorch Regent
+Sunstar Lightsmith
 Suntouched Myr
 Super Combo
 Supernatural Rescue
@@ -1893,6 +1897,7 @@ The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
 The Gaffer
+The Great Henge
 The Locust God
 The Mechanist, Aerial Artisan
 The Modern Age // Vector Glider

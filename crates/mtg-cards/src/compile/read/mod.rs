@@ -212,6 +212,8 @@ mod r375_phase;
 mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
+mod r371_copy_except;
+mod r371_owner;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -491,6 +493,12 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         }
         found
     };
+    if let [first, second, third] = found.as_slice() {
+        return r371_owner::r371_three_texts(first, second, third)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(found);
+    }
     let [first, second] = found.as_slice() else {
         return None;
     };

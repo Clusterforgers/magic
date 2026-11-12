@@ -1,19 +1,16 @@
 {
   "oracle_id": "81c6c4f0-81ad-463c-a42b-60a73e6d70f3",
   "name": "Alexios, Deimos of Kosmos",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Alexios, Deimos of Kosmos",
       "oracle_fingerprint": "e0e6df7b4f58b116c729923e5a94f169",
       "abilities": [
         { "Keyword": "Trample" },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 8, "end": 93 }
-          }
-        },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        { "Rule": { "rule": { "Cant": { "who": "This", "action": "Sacrifice" } } } },
+        { "Static": { "affected": "This", "mods": [{ "CantAttackOwner": "Player" }] } },
         {
           "Triggered": {
             "when": { "StepBegins": { "step": "Upkeep" } },

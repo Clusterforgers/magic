@@ -458,6 +458,8 @@ impl Held {
             | Modification::SwitchPowerToughness
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
+            | Modification::CantAttackOwner { .. }
+            | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
             | Modification::CantBeTurnedFaceUp
@@ -756,6 +758,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
+        | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
@@ -788,6 +791,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SwitchPT => Layer::PtSwitch,
         Wanted::CantAttack
         | Wanted::CantAttackYou(_)
+        | Wanted::CantAttackOwner(_)
+        | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
         | Wanted::DoesntUntap
         | Wanted::CantBeTurnedFaceUp

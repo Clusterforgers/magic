@@ -1794,6 +1794,12 @@ fn matching_event(
                 // "Defending" is the player the damage dealer attacks, whatever the ability's own source is (an Aura).
                 if matches!(to, Ref::Defending) {
                     scope.defending_of(dealer.id).map(Target::Player) == Some(recipient)
+                } else if matches!(to, Ref::OwnerOf(of) if **of == Ref::Dealer) {
+                    // "its owner": the owner of the creature that deals the damage.
+                    state
+                        .object(dealer.id)
+                        .map(|object| Target::Player(object.owner()))
+                        == Some(recipient)
                 } else {
                     scope.refs(to).is_ok_and(|named| named.contains(&recipient))
                 }

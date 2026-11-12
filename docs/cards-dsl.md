@@ -231,7 +231,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Copies
 
-A copy effect gives an object the copiable values of another (`CreateToken` with `CopyOf`, `Replacement` `AsCopy`, `BecomeCopy`, `CopySpell`, `CopyAbility`). A copy is a new object; a spell copy has the original's modes, X, optional costs, targets and current face. Storm and Demonstrate are keyword triggers that copy; the engine side is in [engine.md](engine.md) (copies).
+A copy effect gives an object the copiable values of another (`CreateToken` with `CopyOf`, `Replacement` `AsCopy`, `BecomeCopy`, `CopySpell`, `CopyAbility`). An exception may add colors and creature types to the copy's (`AddColors`, `AddSubtype`) and set its starting loyalty (`SetLoyalty`); a token planeswalker enters with loyalty counters equal to its loyalty (CR 306.5b). A copy is a new object; a spell copy has the original's modes, X, optional costs, targets and current face. Storm and Demonstrate are keyword triggers that copy; the engine side is in [engine.md](engine.md) (copies).
 
 ## Keywords
 

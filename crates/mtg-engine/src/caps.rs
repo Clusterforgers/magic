@@ -515,6 +515,7 @@ const RUNS: &[&str] = &[
     "Mod.AddSupertype",
     "Mod.SetName",
     "Mod.ThisAbility",
+    "Mod.SetLoyalty",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
@@ -540,6 +541,8 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
+    "Mod.CantAttackOwner",
+    "Mod.CantBeBlockedUnlessAttackingOwner",
     "Mod.CantBlock",
     "Mod.DoesntUntap",
     "Mod.CantBeTurnedFaceUp",
@@ -1146,6 +1149,7 @@ mod tests {
     #[case::copy_names("Mod.SetName", true)]
     #[case::copy_keeps_this_ability("Copy.Except.ThisAbility", true)]
     #[case::the_ability_kept_as_a_modification("Mod.ThisAbility", true)]
+    #[case::r371_a_copy_with_a_starting_loyalty("Mod.SetLoyalty", true)]
     #[case::subtypes("Mod.AddSubtype", true)]
     #[case::colours("Mod.SetColors", true)]
     #[case::chosen_colours("Mod.SetColorsChosen", true)]
@@ -1159,6 +1163,8 @@ mod tests {
     #[case::changes_of_control("Mod.SetController", true)]
     #[case::attack_restrictions("Mod.CantAttack", true)]
     #[case::attack_restrictions_on_you("Mod.CantAttackYou", true)]
+    #[case::r371_attacks_on_the_owner("Mod.CantAttackOwner", true)]
+    #[case::r371_blocks_unless_at_the_owner("Mod.CantBeBlockedUnlessAttackingOwner", true)]
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::no_turning_face_up("Mod.CantBeTurnedFaceUp", true)]
     #[case::static_abilities("Ability.Static", true)]
