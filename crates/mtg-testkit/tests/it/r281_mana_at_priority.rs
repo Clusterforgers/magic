@@ -91,7 +91,7 @@ fn no_player_receives_priority_while_the_mana_ability_resolves(
     // The only card is discarded without a question, so the activation and the resolution are one answer.
     assert_eq!(added_by(&log, skirge), [ManaType::Black], "{log:?}");
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     Ok(())
 }
 
@@ -103,7 +103,7 @@ fn a_mana_ability_with_nothing_to_pay_its_cost_is_not_offered(
 ) -> Result<(), ScriptError> {
     let driver =
         Driver::from_scenario(Scenario::new(seats).battlefield_named(0, ["Skirge Familiar"]))?;
-    assert!(driver.offered_abilities("Skirge Familiar")?.is_empty());
+    assert_eq!(driver.offered_abilities("Skirge Familiar")?.len(), 0);
     Ok(())
 }
 
@@ -122,7 +122,7 @@ fn pili_pala_untaps_for_two_and_adds_a_mana_of_the_chosen_color(
         Scenario::new(seats).battlefield(0, [pala(false), forest(), forest()]),
     )?;
     // Untapped, Pili-Pala cannot pay {Q}.
-    assert!(untapped.offered_abilities("Pili-Pala")?.is_empty());
+    assert_eq!(untapped.offered_abilities("Pili-Pala")?.len(), 0);
     let mut driver = Driver::from_scenario(
         Scenario::new(seats).battlefield(0, [pala(true), forest(), forest()]),
     )?;
@@ -144,7 +144,7 @@ fn pili_pala_untaps_for_two_and_adds_a_mana_of_the_chosen_color(
         spent < begun,
         "the cost is paid before the ability resolves: {log:?}"
     );
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     assert_eq!(driver.decision()?.player, PlayerId(0));
     Ok(())
 }
@@ -168,6 +168,6 @@ fn jack_o_lantern_exiles_itself_from_the_graveyard_for_a_mana(
         Event::ZoneChanged { object, to: Zone::Exile, .. } if *object == jack
     )));
     assert_eq!(added_by(&log, jack).len(), 1, "{log:?}");
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     Ok(())
 }

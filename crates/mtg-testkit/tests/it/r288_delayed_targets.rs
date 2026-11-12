@@ -139,7 +139,7 @@ fn the_trigger_ends_with_the_turn(#[values(2, 3, 4)] seats: usize) -> Result<(),
     while driver.state().turn().number() == 1 {
         driver.answer_passively()?;
     }
-    assert!(driver.state().delayed().is_empty());
+    assert_eq!(driver.state().delayed().len(), 0);
     assert_eq!(counters(&driver, "Bear"), 0);
     Ok(())
 }

@@ -162,7 +162,7 @@ fn rubble_rousers_mana_deals_one_damage_to_each_opponent(
             .graveyard_named(0, ["Forest"]),
     )?;
     activate(&mut driver, "Rubble Rouser", &|_| 0)?;
-    assert!(driver.state().zone(Zone::Graveyard(PlayerId(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Graveyard(PlayerId(0))).len(), 0);
     // The reflexive trigger resolves once everyone passes.
     while !driver.state().stack().is_empty() {
         driver.pass()?;

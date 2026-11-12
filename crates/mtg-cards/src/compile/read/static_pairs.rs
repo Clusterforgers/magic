@@ -37,6 +37,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 
 /// Every wording of two statics that read as one sentence, with a capital and a period; empty for any other two
 /// abilities.
+#[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     let r285 = super::r285_writers::r285_pair_texts(first, second);
     if !r285.is_empty() {
