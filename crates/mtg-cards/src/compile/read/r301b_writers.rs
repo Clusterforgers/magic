@@ -1,6 +1,6 @@
 //! Writers of the r30-1b pack: an ability that reveals any number of cards of a kind from its controller's hand and adds
 //! mana for each card revealed ("{T}: Reveal any number of artifact cards in your hand. Add {C}{C} for each card revealed
-//! this way."). Only the checker needs the wording; no template reads it.
+//! this way."), and a flip joined to a larger sentence. Only the checker needs the wordings; no template reads them.
 
 use super::selectors::{Form, phrase_text};
 use crate::ability::Ability;
@@ -111,4 +111,24 @@ fn revealed_for_mana(ability: &Ability) -> Option<(Vec<String>, Ability)> {
         *effects = vec![added];
     }
     Some((kinds, plain))
+}
+
+/// A card that exiles itself and returns as a step of a larger sentence joins the two with a comma, as the sentence alone
+/// does, the card named by "it" once the sentence has named it ("If ~ has dealt 3 or more damage this turn, exile her,
+/// then return her to the battlefield transformed ...").
+pub(super) fn r301b_flip_wordings(texts: &mut Vec<String>) {
+    const SPLIT: &str = "exile ~. Then return it to the battlefield";
+    let joined: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(SPLIT))
+        .flat_map(|text| {
+            ["exile ~, then", "exile it, then"]
+                .map(|head| text.replace(SPLIT, &format!("{head} return it to the battlefield")))
+        })
+        .collect();
+    for text in joined {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
 }

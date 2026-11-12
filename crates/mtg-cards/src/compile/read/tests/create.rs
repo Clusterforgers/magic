@@ -16,7 +16,7 @@ fn trigger(text: &str) -> Option<Ability> {
 )]
 #[case::landfall_investigate(
     "Whenever a land you control enters, investigate.",
-    r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"clue"}}}]}}"#
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Land"},{"ControlledBy":"You"}],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"clue"}}},{"Performed":{"action":"Investigated"}}]}}"#
 )]
 #[case::a_treasure(
     "When ~ dies, create a Treasure token.",
@@ -152,15 +152,26 @@ fn near_misses_stay_unread(#[case] text: &str) {
 }
 
 #[test]
-fn investigate_and_a_clue_token_are_the_same_text() {
+fn investigate_is_a_clue_token_and_its_log() {
+    let Some(Ability::Spell { effects: clue, .. }) = spell("Create a Clue token.") else {
+        panic!("a Clue token reads");
+    };
+    let Some(Ability::Spell { effects, .. }) = spell("Investigate.") else {
+        panic!("investigate reads");
+    };
     assert_eq!(
-        spell("Investigate."),
-        spell("Create a Clue token."),
-        "the keyword action is its reminder text"
+        effects.len(),
+        2,
+        "the keyword action is its reminder text, then its log"
     );
-    assert!(spell("Investigate.").is_some());
-    assert_eq!(
+    assert_eq!(effects[0], clue[0]);
+    assert!(matches!(
+        effects[1],
+        crate::effect::Effect::Performed { .. }
+    ));
+    assert_ne!(
         trigger("When ~ dies, investigate."),
-        trigger("When ~ dies, create a Clue token.")
+        trigger("When ~ dies, create a Clue token."),
+        "a plain Clue token is no investigation"
     );
 }

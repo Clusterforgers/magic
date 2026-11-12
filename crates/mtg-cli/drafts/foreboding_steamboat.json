@@ -37,7 +37,10 @@
               {
                 "Pay": {
                   "cost": [{ "ExiledToGraveyard": { "filter": [{ "ExiledWith": "This" }] } }],
-                  "paid": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                  "paid": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
                 }
               }
             ]

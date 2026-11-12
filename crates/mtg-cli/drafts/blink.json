@@ -18,7 +18,8 @@
                   "who": { "OwnerOf": { "Target": 0 } },
                   "token": { "Named": "clue" }
                 }
-              }
+              },
+              { "Performed": { "action": "Investigated", "who": { "OwnerOf": { "Target": 0 } } } }
             ]
           }
         },
@@ -73,7 +74,8 @@
                   "who": { "OwnerOf": { "Target": 0 } },
                   "token": { "Named": "clue" }
                 }
-              }
+              },
+              { "Performed": { "action": "Investigated", "who": { "OwnerOf": { "Target": 0 } } } }
             ]
           }
         },

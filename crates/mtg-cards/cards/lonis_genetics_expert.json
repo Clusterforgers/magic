@@ -11,7 +11,10 @@
         {
           "Triggered": {
             "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } },
+              { "Performed": { "action": "Investigated", "times": "Triggering" } }
+            ]
           }
         },
         {

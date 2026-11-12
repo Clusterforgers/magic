@@ -58,6 +58,13 @@
                   "what": { "Bound": "exiled" },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Discovered",
+                  "card": { "Bound": "found" },
+                  "value": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                }
               }
             ]
           }

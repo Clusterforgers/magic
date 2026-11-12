@@ -36,7 +36,8 @@
             },
             "effects": [
               { "PutCounters": { "on": "This", "counter": "+1/+1" } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         }

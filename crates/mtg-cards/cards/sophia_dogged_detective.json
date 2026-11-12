@@ -57,7 +57,8 @@
             },
             "effects": [
               { "CreateToken": { "token": { "Named": "food" } } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         }

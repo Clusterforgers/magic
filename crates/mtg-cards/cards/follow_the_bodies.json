@@ -8,7 +8,14 @@
       "oracle_fingerprint": "0d7c9b93461cf6fcce413b66c87762a3",
       "abilities": [
         { "Keyword": "Gravestorm" },
-        { "Spell": { "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }] } }
+        {
+          "Spell": {
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        }
       ]
     }
   ]

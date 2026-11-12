@@ -100,10 +100,10 @@ fn ep33_face_down_near_misses_differ(
 
 const PIPES: &str = "When ~ enters, manifest dread twice.";
 
-/// The four steps of manifest dread by `who`, their names numbered `n`.
+/// The steps of manifest dread by `who` and its log, their names numbered `n`.
 fn dread(n: u32, who: &str) -> String {
     format!(
-        r#"{{"LookAtTop":{{"who":{who},"count":2,"as":"looked{n}"}}}},{{"Choose":{{"who":{who},"from":{{"Bound":"looked{n}"}},"as":"kept{n}","rest_as":"rest{n}"}}}},{{"Move":{{"what":{{"Bound":"rest{n}"}},"to":"Graveyard"}}}},{{"Manifest":{{"who":{who}}}}}"#
+        r#"{{"LookAtTop":{{"who":{who},"count":2,"as":"looked{n}"}}}},{{"Choose":{{"who":{who},"from":{{"Bound":"looked{n}"}},"as":"kept{n}","rest_as":"rest{n}"}}}},{{"Move":{{"what":{{"Bound":"rest{n}"}},"to":"Graveyard"}}}},{{"Manifest":{{"who":{who}}}}},{{"Performed":{{"action":"ManifestedDread","who":{who},"card":{{"Bound":"rest{n}"}}}}}}"#
     )
 }
 

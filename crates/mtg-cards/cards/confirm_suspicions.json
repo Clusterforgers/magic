@@ -12,7 +12,8 @@
             "targets": [{ "what": { "Object": ["Spell"] } }],
             "effects": [
               { "Counter": { "what": { "Target": 0 } } },
-              { "CreateToken": { "token": { "Named": "clue" }, "count": 3 } }
+              { "CreateToken": { "token": { "Named": "clue" }, "count": 3 } },
+              { "Performed": { "action": "Investigated", "times": 3 } }
             ]
           }
         }
