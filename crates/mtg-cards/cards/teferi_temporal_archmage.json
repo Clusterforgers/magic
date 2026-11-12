@@ -1,7 +1,7 @@
 {
   "oracle_id": "07d0b06b-80cb-4518-92c9-84ea87a7e08a",
   "name": "Teferi, Temporal Archmage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Teferi, Temporal Archmage",
@@ -31,9 +31,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 163, "end": 313 }
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [{ "Rule": { "rule": { "LoyaltyAsInstant": "You" } } }]
+                }
+              }
+            ]
           }
         },
         { "Rule": { "rule": "CanBeCommander" } }

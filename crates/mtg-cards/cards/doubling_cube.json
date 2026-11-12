@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9afd8f12-0796-4500-aaa3-10b4a46ef6ec",
+  "name": "Doubling Cube",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doubling Cube",
+      "oracle_fingerprint": "b11a81b36e2f1ce7de94d716b9783e6b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": "Unspent" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

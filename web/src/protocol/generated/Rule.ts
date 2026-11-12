@@ -149,7 +149,7 @@ what: unknown,
 /**
  * The most of them that untap.
  */
-count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "LoyaltyOnceMore": Array<PlayerId> } | { "LoyaltyAsInstant": Array<PlayerId> } | { "LoyaltyCostMore": [Array<PlayerId>, number] } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */

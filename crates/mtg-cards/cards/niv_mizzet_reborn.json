@@ -1,7 +1,7 @@
 {
   "oracle_id": "10764b35-5c6c-4161-8579-1124d5963a0e",
   "name": "Niv-Mizzet Reborn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Niv-Mizzet Reborn",
@@ -9,9 +9,277 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 250 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "White" },
+                      { "Color": "Blue" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                    ]
+                  },
+                  "as": "pair0"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "White" },
+                      { "Color": "Black" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      { "Not": { "Is": { "Union": [{ "Bound": "pair0" }] } } }
+                    ]
+                  },
+                  "as": "pair1"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Blue" },
+                      { "Color": "Black" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      { "Not": { "Is": { "Union": [{ "Bound": "pair0" }, { "Bound": "pair1" }] } } }
+                    ]
+                  },
+                  "as": "pair2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Blue" },
+                      { "Color": "Red" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Black" },
+                      { "Color": "Red" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Black" },
+                      { "Color": "Green" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" },
+                              { "Bound": "pair4" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair5"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Red" },
+                      { "Color": "Green" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" },
+                              { "Bound": "pair4" },
+                              { "Bound": "pair5" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair6"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Red" },
+                      { "Color": "White" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" },
+                              { "Bound": "pair4" },
+                              { "Bound": "pair5" },
+                              { "Bound": "pair6" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair7"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Green" },
+                      { "Color": "White" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" },
+                              { "Bound": "pair4" },
+                              { "Bound": "pair5" },
+                              { "Bound": "pair6" },
+                              { "Bound": "pair7" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair8"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Color": "Green" },
+                      { "Color": "Blue" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "pair0" },
+                              { "Bound": "pair1" },
+                              { "Bound": "pair2" },
+                              { "Bound": "pair3" },
+                              { "Bound": "pair4" },
+                              { "Bound": "pair5" },
+                              { "Bound": "pair6" },
+                              { "Bound": "pair7" },
+                              { "Bound": "pair8" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "pair9"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Union": [
+                      { "Bound": "pair0" },
+                      { "Bound": "pair1" },
+                      { "Bound": "pair2" },
+                      { "Bound": "pair3" },
+                      { "Bound": "pair4" },
+                      { "Bound": "pair5" },
+                      { "Bound": "pair6" },
+                      { "Bound": "pair7" },
+                      { "Bound": "pair8" },
+                      { "Bound": "pair9" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

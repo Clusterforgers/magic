@@ -660,6 +660,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if let Some(rule) = r.attempt(super::c4_rules::read) {
         return Some(rule);
     }
+    if let Some(rule) = r.attempt(super::r373_loyalty::r373_rule) {
+        return Some(rule);
+    }
     if let Some(rule) = r.attempt(|r| {
         r.need("while voting")?;
         r.punct(',').then_some(())?;
@@ -1828,6 +1831,13 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
+        (
+            GameRule::LoyaltyTwice(_)
+            | GameRule::LoyaltyAsInstant(_)
+            | GameRule::LoyaltyCostMore { .. }
+            | GameRule::MustTarget { .. },
+            ZoneKind::Battlefield,
+        ) => super::r373_loyalty::r373_rule_texts(rule),
         (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {
             vec![super::ep33_spend::ep33_vote_text(rule)]
         }

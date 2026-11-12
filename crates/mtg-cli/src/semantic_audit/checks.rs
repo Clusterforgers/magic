@@ -194,7 +194,7 @@ const FILTERED: [&str; 15] = [
 ];
 
 /// Amount and effect forms that count (anything but a fixed number).
-const COUNTED: [&str; 45] = [
+const COUNTED: [&str; 46] = [
     "Count",
     "Stat",
     "Life",
@@ -214,6 +214,7 @@ const COUNTED: [&str; 45] = [
     "Players",
     "LifeLostThisWay",
     "DamageDealtThisWay",
+    "DealtUpToHealth",
     "Destroyed",
     "Exiled",
     "Kicks",

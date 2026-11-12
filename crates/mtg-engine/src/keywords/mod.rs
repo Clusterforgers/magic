@@ -443,6 +443,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Ward(_) => &ward::Ward,
         Keyword::Equip(_) => &equip::Equip,
         Keyword::Reconfigure(_) => &reconfigure::Reconfigure,
+        Keyword::Fortify(_) => &equip::Fortify,
         Keyword::LivingWeapon => &living_weapon::LivingWeapon,
         Keyword::Enchant(_) => &enchant::Enchant,
         Keyword::EnchantPlayer { .. } => &enchant::EnchantPlayer,
@@ -895,6 +896,7 @@ mod tests {
             Keyword::Ward(cost()),
             Keyword::Equip(cost()),
             Keyword::Reconfigure(cost()),
+            Keyword::Fortify(cost()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
             Keyword::EnchantPlayer { opponent: false },
@@ -1105,6 +1107,7 @@ mod tests {
         "Keyword.EnchantPlayer",
         "Keyword.Equip",
         "Keyword.Reconfigure",
+        "Keyword.Fortify",
         "Keyword.LivingWeapon",
         "Keyword.Kicker",
         "Keyword.Multikicker",
@@ -1352,6 +1355,7 @@ mod tests {
     #[case::enchant_player(Keyword::EnchantPlayer { opponent: true }, Hooks::none())]
     #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::fortify(Keyword::Fortify(Cost::mana("{3}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::crew(Keyword::Crew(3), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::saddle(Keyword::Saddle(2), Hooks { abilities: 1, ..Hooks::none() })]

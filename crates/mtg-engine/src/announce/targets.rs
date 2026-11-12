@@ -131,6 +131,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         without_earlier(&specs[index], &work.choices.targets, &mut options.legal);
         e14c_other_players(ctx, &work.choices.targets[..index], &mut options.legal);
         payable_targets(ctx, work.choices, specs.len(), &mut options.legal);
+        if chooser(ctx, &specs[index]) == ctx.player {
+            r373_flagbearers(ctx, work.choices, (&specs, index), &mut options);
+        }
         let left = u32::try_from(options.legal.len()).unwrap_or(u32::MAX);
         if left < options.min {
             return Some(Next::Drop);
@@ -157,6 +160,51 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return Some(ctx.ask(DecisionKind::ChooseTargets(options)));
     }
     None
+}
+
+/// "That player must choose at least one Flagbearer on the battlefield if able" for a spell or ability its controller casts
+/// or activates: when no earlier target is such a permanent and no later specification could take one, this
+/// specification takes only such permanents, and at least one of them.
+fn r373_flagbearers(
+    ctx: &Ctx<'_>,
+    choices: &crate::choose::Choices,
+    (specs, index): (&[TargetSpec], usize),
+    options: &mut crate::choose::TargetOptions,
+) {
+    if ctx.triggered.is_some() || !crate::rules::must_target_applies(ctx.state, ctx.player) {
+        return;
+    }
+    let flagged = |target: &crate::choose::Target| match target {
+        crate::choose::Target::Object(object) => {
+            crate::rules::must_target(ctx.state, ctx.player, *object)
+        }
+        crate::choose::Target::Player(_) => false,
+    };
+    if choices.targets[..index].iter().flatten().any(flagged) || !options.legal.iter().any(flagged)
+    {
+        return;
+    }
+    let later = specs.iter().enumerate().skip(index + 1).any(|(at, spec)| {
+        options_for(
+            ctx.state,
+            ctx.source,
+            ctx.player,
+            at,
+            spec,
+            ctx.can_cancel(),
+            ctx.cause(),
+            choices.x,
+            &choices.optional_costs,
+            choices.way,
+            None,
+        )
+        .is_some_and(|later| later.legal.iter().any(flagged))
+    });
+    if later {
+        return;
+    }
+    options.legal.retain(flagged);
+    options.min = options.min.max(1);
 }
 
 /// "Chosen at random": the game draws `count` of the `legal` targets with the next substream of its random source, after

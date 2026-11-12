@@ -226,6 +226,14 @@ fn types_of(
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(colors_among(&scope, among));
             }
+            ManaProduced::Unspent => {
+                found.extend(
+                    state
+                        .player(controller)
+                        .map(|seat| seat.mana().every_mana())
+                        .unwrap_or_default(),
+                );
+            }
             ManaProduced::Devotion => {
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(

@@ -243,6 +243,20 @@ pub enum Rule {
     },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
+    /// The players may activate the loyalty abilities of each planeswalker they control twice each turn (CR 606.3).
+    LoyaltyTwice(Vec<PlayerId>),
+    /// The players may activate one more loyalty ability of each planeswalker they control this turn.
+    LoyaltyOnceMore(Vec<PlayerId>),
+    /// The players may activate loyalty abilities any time they could cast an instant (CR 606.3).
+    LoyaltyAsInstant(Vec<PlayerId>),
+    /// The loyalty abilities the players activate cost this many more loyalty counters (CR 606.4).
+    LoyaltyCostMore(Vec<PlayerId>, u32),
+    /// As the players choose the targets of a spell or ability they cast or activate, one must be a permanent the selector
+    /// picks if able (Flagbearer).
+    MustTarget(
+        Vec<PlayerId>,
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector,
+    ),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
@@ -660,6 +674,16 @@ pub(crate) struct RulesInForce {
     exile_found: Vec<(PlayerId, PlayerId, Option<ObjectRef>)>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
+    /// The players whose planeswalkers may activate loyalty abilities twice each turn.
+    loyalty_twice: BTreeSet<PlayerId>,
+    /// The more loyalty activations each player's planeswalkers have this turn, one for each rule.
+    loyalty_more: BTreeMap<PlayerId, u32>,
+    /// The players who may activate loyalty abilities at instant speed.
+    loyalty_instant: BTreeSet<PlayerId>,
+    /// The counters added to the loyalty costs each player pays.
+    loyalty_cost: BTreeMap<PlayerId, u32>,
+    /// The players who must choose one of some permanents as a target if able, with the rule each comes from.
+    must_target: Vec<(PlayerId, NoLegendFor)>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
@@ -1070,6 +1094,33 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
+            Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::LoyaltyAsInstant(players) => self.loyalty_instant.extend(players),
+            Rule::LoyaltyOnceMore(players) => {
+                for player in players {
+                    *self.loyalty_more.entry(*player).or_default() += 1;
+                }
+            }
+            Rule::MustTarget(players, what) => {
+                if let Some(source) = source {
+                    self.must_target.extend(players.iter().map(|player| {
+                        (
+                            *player,
+                            NoLegendFor {
+                                controller,
+                                source,
+                                what: what.clone(),
+                            },
+                        )
+                    }));
+                }
+            }
+            Rule::LoyaltyCostMore(players, plus) => {
+                for player in players {
+                    let more = self.loyalty_cost.entry(*player).or_default();
+                    *more = more.saturating_add(*plus);
+                }
+            }
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1459,6 +1510,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
+        GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::LoyaltyOnceMore(who) => Rule::LoyaltyOnceMore(scope.players(who)?),
+        GameRule::LoyaltyAsInstant(who) => Rule::LoyaltyAsInstant(scope.players(who)?),
+        GameRule::LoyaltyCostMore { who, plus } => {
+            Rule::LoyaltyCostMore(scope.players(who)?, *plus)
+        }
+        GameRule::MustTarget { who, what } => Rule::MustTarget(scope.players(who)?, what.clone()),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
             Rule::AdditionalLandPlays(
@@ -1582,6 +1640,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
+        | Rule::LoyaltyTwice(players)
+        | Rule::LoyaltyOnceMore(players)
+        | Rule::LoyaltyAsInstant(players)
+        | Rule::LoyaltyCostMore(players, _)
+        | Rule::MustTarget(players, _)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
@@ -1753,6 +1816,11 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
+    loyalty_twice: BTreeSet::new(),
+    loyalty_more: BTreeMap::new(),
+    loyalty_instant: BTreeSet::new(),
+    loyalty_cost: BTreeMap::new(),
+    must_target: Vec::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
@@ -2114,6 +2182,48 @@ pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.
 pub(crate) fn skips_draw_step(state: &GameState, player: PlayerId) -> bool {
     state.rules().skip_draw.contains(&player)
+}
+
+/// How many loyalty abilities of each planeswalker `player` controls they may activate this turn (CR 606.3): once, twice
+/// under a rule that says so, and one more for each rule that adds one.
+pub(crate) fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
+    let rules = state.rules();
+    let base = if rules.loyalty_twice.contains(&player) { 2 } else { 1 };
+    base + rules.loyalty_more.get(&player).copied().unwrap_or(0)
+}
+
+/// Whether a rule makes `player` choose one of some permanents as a target of a spell or ability they cast or activate if
+/// able (Flagbearer).
+pub(crate) fn must_target_applies(state: &GameState, player: PlayerId) -> bool {
+    state.rules().must_target.iter().any(|(who, _)| *who == player)
+}
+
+/// Whether `target` is a permanent a rule makes `player` choose as a target if able (Flagbearer).
+pub(crate) fn must_target(state: &GameState, player: PlayerId, target: ObjectRef) -> bool {
+    let on_battlefield = state.object(target.id).is_some_and(|object| {
+        object.zone() == crate::zones::Zone::Battlefield && object.counter() == target.counter
+    });
+    on_battlefield
+        && state
+            .rules()
+            .must_target
+            .iter()
+            .filter(|(who, _)| *who == player)
+            .any(|(_, rule)| {
+                Scope::announcing(state, rule.controller, rule.source)
+                    .selects(&rule.what, target)
+                    .unwrap_or(false)
+            })
+}
+
+/// Whether `player` may activate loyalty abilities any time they could cast an instant.
+pub(crate) fn loyalty_as_instant(state: &GameState, player: PlayerId) -> bool {
+    state.rules().loyalty_instant.contains(&player)
+}
+
+/// The loyalty counters added to each loyalty cost `player` pays (CR 606.4).
+pub(crate) fn loyalty_cost_more(state: &GameState, player: PlayerId) -> u32 {
+    state.rules().loyalty_cost.get(&player).copied().unwrap_or(0)
 }
 
 /// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.

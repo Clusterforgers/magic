@@ -23,6 +23,27 @@ impl KeywordRules for Equip {
     }
 }
 
+/// The rules of fortify (CR 702.67): "[Cost]: Attach this Fortification to target land you control. Activate only as a
+/// sorcery."
+#[derive(Debug)]
+pub(super) struct Fortify;
+
+impl KeywordRules for Fortify {
+    fn adds_abilities(&self, keyword: &Keyword) -> Vec<Ability> {
+        let Keyword::Fortify(cost) = keyword else {
+            return Vec::new();
+        };
+        let mut ability = attach_to_a_creature_you_control(cost, false, None);
+        if let Ability::Activated { targets, .. } = &mut ability
+            && let Some(Targetable::Object(Selector(host))) =
+                targets.first_mut().map(|spec| &mut spec.what)
+        {
+            host[0] = Pred::Type(CardType::Land);
+        }
+        vec![ability]
+    }
+}
+
 /// The rules of equip with a restriction ("Equip legendary creature {1}").
 #[derive(Debug)]
 pub(super) struct EquipTo;

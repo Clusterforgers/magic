@@ -1,7 +1,7 @@
 {
   "oracle_id": "abbcb153-0763-44c6-964f-b4ff0eb64257",
   "name": "Atraxa, Grand Unifier",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Atraxa, Grand Unifier",
@@ -12,9 +12,236 @@
         { "Keyword": "Deathtouch" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 40, "end": 361 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind0"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Union": [{ "Bound": "kind0" }] } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind1"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Union": [{ "Bound": "kind0" }, { "Bound": "kind1" }] } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Enchantment" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Instant" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Kindred" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind5"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Land" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind6"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Planeswalker" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" },
+                              { "Bound": "kind6" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind7"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Sorcery" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" },
+                              { "Bound": "kind6" },
+                              { "Bound": "kind7" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind8"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Union": [
+                      { "Bound": "kind0" },
+                      { "Bound": "kind1" },
+                      { "Bound": "kind2" },
+                      { "Bound": "kind3" },
+                      { "Bound": "kind4" },
+                      { "Bound": "kind5" },
+                      { "Bound": "kind6" },
+                      { "Bound": "kind7" },
+                      { "Bound": "kind8" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

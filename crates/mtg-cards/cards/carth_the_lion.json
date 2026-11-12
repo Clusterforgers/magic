@@ -1,7 +1,7 @@
 {
   "oracle_id": "e0709843-0a91-4a21-9512-d7481707f3c9",
   "name": "Carth the Lion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Carth the Lion",
@@ -47,12 +47,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 243, "end": 325 }
-          }
-        }
+        { "Rule": { "rule": { "LoyaltyCostMore": { "who": "You", "plus": 1 } } } }
       ]
     }
   ]

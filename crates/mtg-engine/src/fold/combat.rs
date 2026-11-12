@@ -350,6 +350,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     permanent.designations.dealt[1] |= combat;
                 }
             }
+            let health = r373_health(state, target);
             let hit = match target {
                 DamageTarget::Player(id) => {
                     damage_player(state, *source, *id, (*amount, *form, *toxic))?;
@@ -368,6 +369,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             };
             if let Some(resolving) = state.resolving.as_mut() {
                 resolving.g10c_dealt = resolving.g10c_dealt.saturating_add(*amount);
+                resolving.r373_up_to_health = resolving
+                    .r373_up_to_health
+                    .saturating_add((*amount).min(health));
             }
             let dealer = crate::characteristics::controller_of(state, *source);
             state.record(TallyEvent::Damaged, dealer, (*source, Some(hit)), *amount);
@@ -414,4 +418,32 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         other => return Err(invalid(format!("not a combat event: {other:?}"))),
     }
     Ok(())
+}
+
+/// What the recipient of damage has before it is dealt, as "not more life than the player's life total before the damage
+/// was dealt, the planeswalker's loyalty before the damage was dealt, or the creature's toughness" caps it: a player's
+/// life, the greater of a permanent's loyalty and toughness; none below zero.
+fn r373_health(state: &GameState, target: &DamageTarget) -> u32 {
+    match target {
+        DamageTarget::Player(id) => state
+            .player(*id)
+            .map_or(0, |player| u32::try_from(player.life()).unwrap_or(0)),
+        DamageTarget::Object(id) => {
+            let Some(object) = state.object(*id) else {
+                return 0;
+            };
+            let characteristics = characteristics(state, *id);
+            let toughness = characteristics
+                .as_ref()
+                .filter(|now| now.is_creature())
+                .and_then(|now| now.toughness)
+                .and_then(|toughness| u32::try_from(toughness).ok())
+                .unwrap_or(0);
+            let loyalty = characteristics
+                .filter(|now| now.types.contains(CardType::Planeswalker))
+                .and(object.permanent())
+                .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
+            toughness.max(loyalty)
+        }
+    }
 }

@@ -413,6 +413,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ward" => spell_cost(rest).map(Keyword::Ward),
         "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
+        "fortify" => cost(rest).map(Keyword::Fortify),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => spell_cost(rest).map(Keyword::Kicker),
         "multikicker" => cost(rest).map(Keyword::Multikicker),
@@ -1499,6 +1500,7 @@ mod tests {
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
     #[case::reconfigure("Reconfigure {2}", Keyword::Reconfigure(mana("{2}")))]
+    #[case::fortify("Fortify {3}", Keyword::Fortify(mana("{3}")))]
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]

@@ -360,6 +360,14 @@ fn rule_mana(
                 }
             }
             ManaProduced::Devotion => devotion_lists(counting),
+            // "Double the amount of each type of unspent mana you have": one way, a copy of the pool.
+            ManaProduced::Unspent => {
+                let held = state
+                    .player(player)
+                    .map(|seat| seat.mana().every_mana())
+                    .unwrap_or_default();
+                if held.is_empty() { Vec::new() } else { vec![held] }
+            }
             ManaProduced::CommanderIdentity(count) => identity_types(state, player)
                 .into_iter()
                 .map(|t| vec![t; count as usize])

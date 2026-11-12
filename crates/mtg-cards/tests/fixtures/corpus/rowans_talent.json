@@ -110,7 +110,7 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 10513,
+  "edhrec_rank": 10512,
   "preview": {
     "source": "Wizards of the Coast",
     "source_uri": "https://www.twitch.tv/videos/1784560985",
@@ -118,9 +118,9 @@
   },
   "prices": {
     "usd": "0.36",
-    "usd_foil": "0.37",
+    "usd_foil": "0.38",
     "usd_etched": null,
-    "eur": "0.26",
+    "eur": "0.27",
     "eur_foil": "0.23",
     "tix": "0.10"
   },

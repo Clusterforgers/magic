@@ -137,8 +137,9 @@ pub(crate) fn activation_events(
         // The loyalty counters of the cost are paid first (CR 606.4); the source stays, and the ability remembers it as it
         // stands once they are paid.
         Ability::Loyalty { cost, .. } => {
-            let delta = loyalty::paid_change(*cost, choices.x)?;
-            if let Some(paid) = loyalty::payment(source, *cost, choices.x) {
+            let plus = crate::rules::loyalty_cost_more(state, player);
+            let delta = loyalty::paid_change(*cost, choices.x, plus)?;
+            if let Some(paid) = loyalty::payment(source, *cost, choices.x, plus) {
                 events.push(paid);
                 loyalty::after_payment(&mut before.counters, delta);
             }

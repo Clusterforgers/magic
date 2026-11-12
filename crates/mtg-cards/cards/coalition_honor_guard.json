@@ -1,0 +1,14 @@
+{
+  "oracle_id": "c95cebf7-c28c-4453-b5e4-e895d621f290",
+  "name": "Coalition Honor Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coalition Honor Guard",
+      "oracle_fingerprint": "",
+      "abilities": [
+        { "Rule": { "rule": { "MustTarget": { "who": "Opponents", "what": [{ "Subtype": "Flagbearer" }] } } } }
+      ]
+    }
+  ]
+}

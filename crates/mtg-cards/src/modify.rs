@@ -116,6 +116,15 @@ pub enum Modification {
     /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
     /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
     GainAbilitiesOf(Ref),
+    /// The object has each keyword of `names` that one of the objects `from` names has, with its parameter (layer 6): "As
+    /// long as a card exiled with this creature has flying, this creature has flying. The same is true for ...". A name is
+    /// a keyword's name ("Flying", "First strike"); "Landwalk" and "Protection" take every landwalk and protection.
+    KeywordsOf {
+        /// The objects whose keywords are read.
+        from: Ref,
+        /// The keywords given, by name, in the order printed.
+        names: Vec<String>,
+    },
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
     /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
@@ -203,6 +212,7 @@ impl Modification {
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
+            | Modification::KeywordsOf { .. }
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities => Some("6"),
@@ -944,6 +954,34 @@ pub enum GameRule {
         who: Ref,
         /// The type the mana becomes.
         into: ManaType,
+    },
+    /// The players may activate the loyalty abilities of each planeswalker they control twice each turn rather than once
+    /// (CR 606.3): "You may activate the loyalty abilities of planeswalkers you control twice each turn rather than only
+    /// once." Two such rules still allow two.
+    LoyaltyTwice(Ref),
+    /// The players may activate one more loyalty ability of each planeswalker they control this turn, as though none had
+    /// been activated (The Chain Veil); each such rule allows one more.
+    LoyaltyOnceMore(Ref),
+    /// The players may activate loyalty abilities of planeswalkers they control on any player's turn, any time they could
+    /// cast an instant (CR 606.3).
+    LoyaltyAsInstant(Ref),
+    /// The loyalty abilities the players activate cost an additional `[+plus]` (CR 606.4, Carth the Lion); the total
+    /// cost is one change of counters, and such rules add up.
+    LoyaltyCostMore {
+        /// The players who activate.
+        who: Ref,
+        /// The loyalty counters added to the cost.
+        plus: u32,
+    },
+    /// While a player in `who` chooses targets as part of casting a spell or activating an ability they control, they must
+    /// choose at least one permanent `what` selects if able (Flagbearer): "While an opponent is choosing targets as part
+    /// of casting a spell they control or activating an ability they control, that player must choose at least one
+    /// Flagbearer on the battlefield if able." Several such rules ask for one such target in all.
+    MustTarget {
+        /// The players choosing.
+        who: Ref,
+        /// The permanents one of which must be a target.
+        what: Selector,
     },
 }
 

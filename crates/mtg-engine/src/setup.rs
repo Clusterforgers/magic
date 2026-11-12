@@ -547,6 +547,7 @@ impl GameState {
             limits_spent: BTreeSet::new(),
             game_limits_spent: BTreeSet::new(),
             loyalty_used: BTreeSet::new(),
+            loyalty_again: std::collections::BTreeMap::new(),
             modes_ever: BTreeSet::new(),
             tallies: Tallies::default(),
             triggers_possible: false,

@@ -1,7 +1,7 @@
 {
   "oracle_id": "fb88fb3d-6a85-4bb1-b316-7f759b45a0fa",
   "name": "The Chain Veil",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Chain Veil",
@@ -23,9 +23,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 122, "end": 298 }
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              { "Rule": { "rule": { "LoyaltyOnceMore": "You" }, "duration": "UntilEndOfTurn" } }
+            ]
           }
         }
       ]

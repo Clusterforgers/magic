@@ -107,6 +107,7 @@ mod r1fix;
 mod r1g_taken_names;
 mod r285_pieces;
 mod r2a_doubling;
+mod r373_pieces;
 mod r2d;
 mod r303_forms;
 mod r3e;

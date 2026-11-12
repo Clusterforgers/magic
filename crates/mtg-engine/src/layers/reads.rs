@@ -60,6 +60,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         }
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
+        | Modification::AddKeywords(_)
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
@@ -126,6 +127,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
+        Wanted::KeywordsOf { .. } => Traits::KEYWORDS,
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::SetName(_)
@@ -156,7 +158,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::SetPower(value)
         | Wanted::SetToughness(value)
         | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
-        Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
+        Wanted::SetController(who)
+        | Wanted::GainAbilitiesOf(who)
+        | Wanted::KeywordsOf { from: who, .. } => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
@@ -403,6 +407,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::DamageDealtThisWay
+        | Amount::DealtUpToHealth
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
         | Amount::PhasedOut(_)

@@ -261,6 +261,31 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
     Ok(found)
 }
 
+/// The keywords among `names` that the objects `from` names have, each once in the order found: a keyword's name, or
+/// "Landwalk", "Protection" and "Hexproof" for any variant of that kind.
+fn keywords_of(
+    scope: &Scope<'_>,
+    from: &mtg_cards::refs::Ref,
+    names: &[String],
+) -> Result<Vec<mtg_cards::keyword::Keyword>, ResolveError> {
+    let mut found: Vec<mtg_cards::keyword::Keyword> = Vec::new();
+    for donor in scope.objects(from)? {
+        for keyword in crate::keywords::keywords_of(scope.state, donor.id) {
+            let named = names.iter().any(|name| {
+                *name == keyword.name()
+                    || (name == "Protection"
+                        && mtg_cards::rmt7_kinds::KeywordKind::Protection.covers(keyword))
+                    || (name == "Hexproof"
+                        && matches!(keyword, mtg_cards::keyword::Keyword::HexproofFrom(_)))
+            });
+            if named && !found.contains(keyword) {
+                found.push(keyword.clone());
+            }
+        }
+    }
+    Ok(found)
+}
+
 /// The land or creature type a permanent becomes, as chosen under the name `wanted` gives.
 fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     match wanted {
@@ -352,6 +377,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
+        Wanted::KeywordsOf { from, names } => Modification::AddKeywords(keywords_of(scope, from, names)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {

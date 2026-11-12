@@ -133,6 +133,7 @@ fn at_zero(keyword: &Keyword) -> Option<Keyword> {
     let zero = Cost::mana(ManaCostX::default());
     Some(match keyword {
         Keyword::Equip(_) => Keyword::Equip(zero),
+        Keyword::Fortify(_) => Keyword::Fortify(zero),
         Keyword::EquipTo { to, .. } => Keyword::EquipTo {
             to: to.clone(),
             cost: zero,

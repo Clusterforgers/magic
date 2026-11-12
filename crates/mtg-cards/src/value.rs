@@ -544,6 +544,11 @@ pub enum Amount {
     /// The damage the resolving spell or ability has dealt so far, after prevention, to every player and object together
     /// ("you gain life equal to the damage dealt this way"); zero outside a resolution.
     DamageDealtThisWay,
+    /// The damage the resolving spell or ability has dealt so far, each dealing counted up to what its recipient had
+    /// before it: a player's life total, a planeswalker's loyalty, a creature's toughness ("you gain life equal to the
+    /// damage dealt, but not more life than the player's life total before the damage was dealt, ..."); zero outside a
+    /// resolution.
+    DealtUpToHealth,
     /// How many permanents the resolving spell or ability has destroyed so far that matched the selector as they last
     /// existed ("for each creature destroyed this way", "creatures you controlled that were destroyed this way"); tokens
     /// count, and a permanent regenerated or indestructible was not destroyed.
@@ -820,6 +825,7 @@ enum Tagged {
     LowestHand(Ref),
     LifeLostThisWay,
     DamageDealtThisWay,
+    DealtUpToHealth,
     Destroyed(Selector),
     Exiled(Selector),
     PhasedOut(Selector),
@@ -966,6 +972,7 @@ enum TaggedRef<'a> {
     LowestHand(&'a Ref),
     LifeLostThisWay,
     DamageDealtThisWay,
+    DealtUpToHealth,
     Destroyed(&'a Selector),
     Exiled(&'a Selector),
     PhasedOut(&'a Selector),
@@ -1087,6 +1094,7 @@ impl From<Tagged> for Amount {
             Tagged::LowestHand(who) => Amount::LowestHand(who),
             Tagged::LifeLostThisWay => Amount::LifeLostThisWay,
             Tagged::DamageDealtThisWay => Amount::DamageDealtThisWay,
+            Tagged::DealtUpToHealth => Amount::DealtUpToHealth,
             Tagged::Distinct { of, stat } => Amount::Distinct { of, stat },
             Tagged::Destroyed(of) => Amount::Destroyed(of),
             Tagged::Exiled(of) => Amount::Exiled(of),
@@ -1184,6 +1192,7 @@ impl Serialize for Amount {
             Amount::LowestHand(who) => TaggedRef::LowestHand(who).serialize(serializer),
             Amount::LifeLostThisWay => TaggedRef::LifeLostThisWay.serialize(serializer),
             Amount::DamageDealtThisWay => TaggedRef::DamageDealtThisWay.serialize(serializer),
+            Amount::DealtUpToHealth => TaggedRef::DealtUpToHealth.serialize(serializer),
             Amount::Distinct { of, stat } => {
                 TaggedRef::Distinct { of, stat: *stat }.serialize(serializer)
             }
@@ -1558,6 +1567,7 @@ mod tests {
     #[case::lowest_hand(Amount::LowestHand(Ref::EachPlayer), r#"{"LowestHand":"EachPlayer"}"#)]
     #[case::life_lost_this_way(Amount::LifeLostThisWay, r#""LifeLostThisWay""#)]
     #[case::damage_dealt_this_way(Amount::DamageDealtThisWay, r#""DamageDealtThisWay""#)]
+    #[case::dealt_up_to_health(Amount::DealtUpToHealth, r#""DealtUpToHealth""#)]
     #[case::destroyed_this_way(Amount::Destroyed(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Destroyed":[{"Type":"Creature"}]}"#)]
     #[case::exiled_this_way(Amount::Exiled(Selector(vec![Pred::Type(CardType::Creature)])), r#"{"Exiled":[{"Type":"Creature"}]}"#)]
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]

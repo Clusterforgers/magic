@@ -1,13 +1,21 @@
 {
   "oracle_id": "0af6f3ce-59e8-4797-aa1b-dbdb5288fe3d",
   "name": "Rowan's Talent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rowan's Talent",
-      "oracle_fingerprint": "af71e17f6cb4630f9307cc5ebcd44a1b",
+      "oracle_fingerprint": "",
       "abilities": [
-        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Keyword": {
+            "Enchant": [
+              {
+                "Type": "Planeswalker"
+              }
+            ]
+          }
+        },
         {
           "Static": {
             "affected": "Attached",
@@ -15,21 +23,43 @@
               {
                 "GrantAbility": {
                   "Loyalty": {
-                    "cost": { "Plus": 1 },
+                    "cost": {
+                      "Plus": 1
+                    },
                     "targets": [
                       {
-                        "what": { "Object": [{ "Type": "Creature" }] },
-                        "bounds": { "min": 0, "max": 1 }
+                        "what": {
+                          "Object": [
+                            {
+                              "Type": "Creature"
+                            }
+                          ]
+                        },
+                        "bounds": {
+                          "min": 0,
+                          "max": 1
+                        }
                       }
                     ],
                     "effects": [
                       {
                         "Continuous": {
-                          "affected": { "Target": 0 },
+                          "affected": {
+                            "Target": 0
+                          },
                           "mods": [
-                            { "ModifyPT": { "power": 2, "toughness": 0 } },
-                            { "AddKeyword": "FirstStrike" },
-                            { "AddKeyword": "Trample" }
+                            {
+                              "ModifyPT": {
+                                "power": 2,
+                                "toughness": 0
+                              }
+                            },
+                            {
+                              "AddKeyword": "FirstStrike"
+                            },
+                            {
+                              "AddKeyword": "Trample"
+                            }
                           ],
                           "duration": "UntilEndOfTurn"
                         }
@@ -42,9 +72,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 147, "end": 273 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "ActivatedLoyalty",
+                "who": "You",
+                "what": [
+                  {
+                    "Is": "Attached"
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CopyAbility": {
+                  "what": "Dealer",
+                  "new_targets": true
+                }
+              }
+            ]
           }
         }
       ]

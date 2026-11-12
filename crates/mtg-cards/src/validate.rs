@@ -657,11 +657,15 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
                 self.selector(selector);
             }
-            // Only a damage recipient reads it: a player and objects together.
+            // A damage recipient reads it (a player and objects together), and anything that reads objects reads a union of
+            // bound sets of objects ("the chosen cards").
             Ref::Union(parts) => {
-                if want != Kind::Either || parts.len() < 2 {
+                let bound_objects =
+                    want == Kind::Object && parts.iter().all(|part| matches!(part, Ref::Bound(_)));
+                if (want != Kind::Either && !bound_objects) || parts.len() < 2 {
                     self.problem(
-                        "a union of references is read only as a damage recipient".to_owned(),
+                        "a union of references is read only as a damage recipient or of bound objects"
+                            .to_owned(),
                     );
                 }
                 for (i, part) in parts.iter().enumerate() {
@@ -960,6 +964,7 @@ impl<'a> Walker<'a> {
             Amount::LowestHand(who) => self.player_amount("LowestHand", who),
             Amount::DieResult(_) => self.uses("Amount", "DieResult"),
             Amount::DamageDealtThisWay => self.uses("Amount", "DamageDealtThisWay"),
+            Amount::DealtUpToHealth => self.uses("Amount", "DealtUpToHealth"),
             _ => self.uses("Amount", "LifeLostThisWay"),
         }
     }
@@ -1075,6 +1080,7 @@ impl<'a> Walker<'a> {
             Amount::LowestHand(_)
             | Amount::LifeLostThisWay
             | Amount::DamageDealtThisWay
+            | Amount::DealtUpToHealth
             | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
@@ -1212,6 +1218,7 @@ impl<'a> Walker<'a> {
             | Amount::LowestHand(_)
             | Amount::LifeLostThisWay
             | Amount::DamageDealtThisWay
+            | Amount::DealtUpToHealth
             | Amount::Destroyed(_)
             | Amount::Exiled(_)
             | Amount::PhasedOut(_)
@@ -2026,6 +2033,7 @@ impl<'a> Walker<'a> {
             // The cost of these is paid as the cost of an activated ability the keyword adds.
             Keyword::Equip(cost)
             | Keyword::Reconfigure(cost)
+            | Keyword::Fortify(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
@@ -2163,6 +2171,12 @@ impl<'a> Walker<'a> {
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
             Modification::GainAbilitiesOf(from) => self.reference(from, Kind::Object),
+            Modification::KeywordsOf { from, names } => {
+                self.reference(from, Kind::Object);
+                if names.is_empty() {
+                    self.problem("the keywords of other objects name at least one keyword");
+                }
+            }
             Modification::GrantAbility(granted) => self.granted(granted),
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
@@ -3231,7 +3245,9 @@ impl Walker<'_> {
             | Produce::OrChosenColor(_)
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
+            | Produce::Unspent
             | Produce::OfTapped => {}
+            Produce::ManaCostOf(of) => self.at("ManaCostOf", |w| w.reference(of, Kind::Object)),
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
         match mana {
@@ -4995,6 +5011,11 @@ impl Walker<'_> {
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
+            | GameRule::LoyaltyTwice(_)
+            | GameRule::LoyaltyOnceMore(_)
+            | GameRule::LoyaltyAsInstant(_)
+            | GameRule::LoyaltyCostMore { .. }
+            | GameRule::MustTarget { .. }
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
@@ -5027,7 +5048,15 @@ impl Walker<'_> {
             }
             GameRule::NoLegendRule(who)
             | GameRule::ControlSearches(who)
-            | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::ExileFound(who)
+            | GameRule::LoyaltyTwice(who)
+            | GameRule::LoyaltyOnceMore(who)
+            | GameRule::LoyaltyAsInstant(who)
+            | GameRule::LoyaltyCostMore { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::MustTarget { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+            }),
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
@@ -5720,6 +5749,8 @@ fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
         Produce::EachColorAmong(_) => Some("EachColorAmong"),
         Produce::AnyColorAmong(_) => Some("AnyColorAmong"),
         Produce::Devotion => Some("Devotion"),
+        Produce::Unspent => Some("Unspent"),
+        Produce::ManaCostOf(_) => Some("ManaCostOf"),
         Produce::Instead { base, instead, .. } => {
             fix19_per_player(base).or_else(|| fix19_per_player(instead))
         }
@@ -7363,7 +7394,11 @@ mod tests {
     )]
     #[case::ep30_a_union_of_players_to_draw(
         r#"{"Spell":{"effects":[{"Draw":{"who":{"Union":["You","Opponents"]}}}]}}"#,
-        "a union of references is read only as a damage recipient"
+        "a union of references is read only as a damage recipient or of bound objects"
+    )]
+    #[case::r373_a_union_of_a_bound_set_and_targets(
+        r#"{"Spell":{"targets":[{"what":{"Object":[]}}],"effects":[{"LookAtTop":{"count":2,"as":"top"}},{"Move":{"what":{"Union":[{"Bound":"top"},{"Target":0}]},"to":"Hand"}}]}}"#,
+        "a union of references is read only as a damage recipient or of bound objects"
     )]
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,

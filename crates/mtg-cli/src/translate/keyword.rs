@@ -101,7 +101,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
 }
 
 /// Keywords with one cost: the Forge word and the DSL variant.
-const COSTED: [(&str, &str); 45] = [
+const COSTED: [(&str, &str); 46] = [
     ("Mayhem", "Mayhem"),
     ("Disturb", "Disturb"),
     ("Harmonize", "Harmonize"),
@@ -110,6 +110,7 @@ const COSTED: [(&str, &str); 45] = [
     ("Equip", "Equip"),
     ("Ward", "Ward"),
     ("Reconfigure", "Reconfigure"),
+    ("Fortify", "Fortify"),
     ("Cycling", "Cycling"),
     ("Kicker", "Kicker"),
     ("Multikicker", "Multikicker"),

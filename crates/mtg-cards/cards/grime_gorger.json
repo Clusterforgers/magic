@@ -1,7 +1,7 @@
 {
   "oracle_id": "7271c442-2bd1-4d78-a049-b28bd5ee6876",
   "name": "Grime Gorger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grime Gorger",
@@ -9,9 +9,228 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 180 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind0"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Union": [{ "Bound": "kind0" }] } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind1"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Union": [{ "Bound": "kind0" }, { "Bound": "kind1" }] } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Enchantment" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Instant" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Kindred" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind5"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Land" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind6"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Planeswalker" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" },
+                              { "Bound": "kind6" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind7"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Sorcery" },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Union": [
+                              { "Bound": "kind0" },
+                              { "Bound": "kind1" },
+                              { "Bound": "kind2" },
+                              { "Bound": "kind3" },
+                              { "Bound": "kind4" },
+                              { "Bound": "kind5" },
+                              { "Bound": "kind6" },
+                              { "Bound": "kind7" }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kind8"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Union": [
+                      { "Bound": "kind0" },
+                      { "Bound": "kind1" },
+                      { "Bound": "kind2" },
+                      { "Bound": "kind3" },
+                      { "Bound": "kind4" },
+                      { "Bound": "kind5" },
+                      { "Bound": "kind6" },
+                      { "Bound": "kind7" },
+                      { "Bound": "kind8" }
+                    ]
+                  }
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": { "Exiled": [] } } }
+            ]
           }
         }
       ]

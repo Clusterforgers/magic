@@ -309,6 +309,8 @@ pub struct GameState {
     pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
+    /// The loyalty abilities each planeswalker had activated this turn beyond its first, under rules that allow more.
+    pub(crate) loyalty_again: BTreeMap<ObjectRef, u32>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
     /// from, its index, the mode); a source that changed zones is a new object with none.
     pub(crate) modes_ever: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
@@ -634,6 +636,7 @@ impl GameState {
     pub(crate) fn clear_turn_uses(&mut self) {
         self.limits_spent.clear();
         self.loyalty_used.clear();
+        self.loyalty_again.clear();
         self.tallies = Tallies::default();
         self.tallies.monarch_began = self.monarch;
     }
@@ -774,8 +777,15 @@ impl GameState {
     }
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
+    #[cfg(test)]
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
         self.loyalty_used.contains(&permanent)
+    }
+
+    /// How many loyalty abilities of the planeswalker `permanent` have been activated this turn (CR 606.3).
+    pub(crate) fn loyalty_activated(&self, permanent: ObjectRef) -> u32 {
+        u32::from(self.loyalty_used.contains(&permanent))
+            + self.loyalty_again.get(&permanent).copied().unwrap_or(0)
     }
 
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).
@@ -897,6 +907,9 @@ impl Hash for GameState {
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
             self.loyalty_used.hash(state);
+        }
+        if !self.loyalty_again.is_empty() {
+            self.loyalty_again.hash(state);
         }
         if !self.modes_ever.is_empty() {
             self.modes_ever.hash(state);

@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 33] = [
+const MODIFICATIONS: [&str; 34] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -192,6 +192,7 @@ const MODIFICATIONS: [&str; 33] = [
     r#"{"SetLandTypes":["Mountain"]}"#,
     r#"{"LockKeyword":"Flying"}"#,
     r#"{"GainAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
+    r#"{"KeywordsOf":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"names":["Flying"]}}"#,
     r#"{"AddColors":["Blue"]}"#,
     r#"{"SetPower":5}"#,
     r#"{"SetToughness":1}"#,
@@ -287,6 +288,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            | mtg_cards::modify::Modification::KeywordsOf { .. }
             // Only the resolution of an activated ability knows which ability it is, so it is not a row of the table.
             | mtg_cards::modify::Modification::LoseThisAbility
             // Like `LoseThisAbility`, it finds its ability only as a resolution begins.

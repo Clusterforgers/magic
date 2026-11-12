@@ -86,6 +86,17 @@ impl ManaPool {
         self.counts[mana.index()]
     }
 
+    /// Every mana in the pool, restricted mana included, by type in the order of [`ManaType::ALL`].
+    pub fn every_mana(&self) -> Vec<ManaType> {
+        ManaType::ALL
+            .into_iter()
+            .flat_map(|mana| {
+                let restricted = self.restricted().iter().filter(|unit| unit.mana == mana).count();
+                std::iter::repeat_n(mana, self.get(mana) as usize + restricted)
+            })
+            .collect()
+    }
+
     /// Total mana in the pool, restricted mana included.
     pub fn total(&self) -> u32 {
         self.counts

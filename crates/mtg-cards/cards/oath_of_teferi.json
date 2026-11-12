@@ -1,7 +1,7 @@
 {
   "oracle_id": "ee00a42d-6ee4-4e46-92d6-62e8e5910880",
   "name": "Oath of Teferi",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oath of Teferi",
@@ -24,12 +24,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 166, "end": 272 }
-          }
-        }
+        { "Rule": { "rule": { "LoyaltyTwice": "You" } } }
       ]
     }
   ]

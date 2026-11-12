@@ -278,13 +278,16 @@ pub(crate) fn activation(
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
         let counters = object
             .permanent()
-            .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
+            .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty))
+            .saturating_add(crate::rules::loyalty_cost_more(state, player));
         if !loyalty::can_activate(state, player, object, *cost) {
             return if object.zone() != Zone::Battlefield {
                 Never
-            } else if !sorcery_timing(state, player) {
+            } else if !loyalty::timing(state, player) {
                 Hindered(Unplayable::Timing, Some(Why::SorcerySpeed))
-            } else if state.loyalty_spent(object.reference()) {
+            } else if state.loyalty_activated(object.reference())
+                >= crate::rules::loyalty_activations(state, player)
+            {
                 Hindered(Unplayable::Restricted, Some(Why::LimitSpent))
             } else {
                 Hindered(Unplayable::Cost, Some(Why::OtherCost))

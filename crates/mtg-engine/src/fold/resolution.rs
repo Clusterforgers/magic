@@ -19,10 +19,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     match event {
         Event::AbilityPutOnStack(put) => put_on_stack(state, put),
         Event::AbilityActivated {
+            player,
             source,
             ability,
             origin,
-            ..
         } => {
             let Some(object) = state.source_object(source.id) else {
                 return Err(invalid(format!(
@@ -50,11 +50,19 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     "ability {ability} of {source:?} was already used"
                 )));
             }
-            // A planeswalker has one loyalty ability activated each turn, whichever it is (CR 606.3).
-            if matches!(&*rules, Ability::Loyalty { .. }) && !state.loyalty_used.insert(*source) {
-                return Err(invalid(format!(
-                    "a loyalty ability of {source:?} was already activated this turn"
-                )));
+            // A planeswalker has one loyalty ability activated each turn, whichever it is, unless a rule allows more (CR
+            // 606.3).
+            if matches!(&*rules, Ability::Loyalty { .. }) {
+                if state.loyalty_activated(*source)
+                    >= crate::rules::loyalty_activations(state, *player)
+                {
+                    return Err(invalid(format!(
+                        "a loyalty ability of {source:?} was already activated this turn"
+                    )));
+                }
+                if !state.loyalty_used.insert(*source) {
+                    *state.loyalty_again.entry(*source).or_default() += 1;
+                }
             }
             Ok(())
         }

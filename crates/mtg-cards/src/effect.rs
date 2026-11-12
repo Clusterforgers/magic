@@ -190,6 +190,13 @@ pub enum Produce {
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
+    /// Of each type, as much mana as the player holds unspent as it is added, its restrictions not copied: "Double the
+    /// amount of each type of unspent mana you have."
+    Unspent,
+    /// Mana equal to the mana cost of the object the reference names ("add mana equal to enchanted permanent's mana
+    /// cost"): generic mana as colorless, {X} as none, a colored or Phyrexian symbol as its color, and a hybrid symbol as
+    /// one of its halves chosen as the mana is added.
+    ManaCostOf(Ref),
     /// The first mana, or the second when the condition holds as the mana is added ("Add {G}. If you control four or more
     /// creatures, add {G}{G} instead."); neither is itself a replacement.
     Instead {

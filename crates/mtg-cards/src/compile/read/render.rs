@@ -566,6 +566,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
+    super::r373_exiled::r373_exiled_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
@@ -1867,6 +1868,10 @@ fn e14g_counted_mana(mana: &Produce) -> Option<String> {
             "choose a color. Add an amount of mana of that color equal to your devotion to that color"
                 .to_owned(),
         ),
+        Produce::Unspent => Some("double the amount of each type of unspent mana you have".to_owned()),
+        Produce::ManaCostOf(Ref::Attached) => {
+            Some("add mana equal to enchanted permanent's mana cost".to_owned())
+        }
         _ => None,
     }
 }
@@ -3622,6 +3627,7 @@ impl Writer<'_> {
         prevention::effect_text(effect)
             .or_else(|| Self::w22_move(effect))
             .or_else(|| lands::effect_text(effect))
+            .or_else(|| super::r373_loyalty::r373_once_more_text(effect))
             .or_else(|| super::attack_tax::effect_text(effect))
             .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
@@ -3674,6 +3680,10 @@ impl Writer<'_> {
             }
             Amount::LifeLostThisWay => "life equal to the life lost this way".to_owned(),
             Amount::DamageDealtThisWay => "life equal to the damage dealt this way".to_owned(),
+            Amount::DealtUpToHealth => format!(
+                "life equal to {}",
+                super::r373_loyalty::UP_TO_HEALTH
+            ),
             Amount::Tallied {
                 who: Ref::Target(0),
                 what: crate::value::TurnTally::DamageTaken,

@@ -190,6 +190,7 @@ pub(super) fn templates() -> impl Iterator<Item = Template> {
         .into_iter()
         .chain(TEMPLATES)
         .chain(super::lands::TEMPLATES)
+        .chain([super::r373_loyalty::r373_once_more as Template])
 }
 
 /// The effects of the first sentence shape that reads and after which `close` ends the sentence.
@@ -639,6 +640,9 @@ pub(super) fn life(r: &mut Reader<'_>) -> Option<Amount> {
         }
         if r.words("the damage dealt this way") {
             return Some(Amount::DamageDealtThisWay);
+        }
+        if super::r373_loyalty::text(r, super::r373_loyalty::UP_TO_HEALTH).is_some() {
+            return Some(Amount::DealtUpToHealth);
         }
         let one_player = r.targets.len() == 1
             && matches!(r.targets[0].what, Targetable::Player | Targetable::Opponent);

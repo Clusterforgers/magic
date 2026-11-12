@@ -1,17 +1,21 @@
 {
   "oracle_id": "b6f8cc3b-b8f1-4b1a-8768-eddcb0631d80",
   "name": "Eater of Virtue",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Eater of Virtue",
-      "oracle_fingerprint": "318dd77b5dea932f1609720e3bfcf2c6",
+      "oracle_fingerprint": "",
       "abilities": [
         {
           "Triggered": {
             "when": {
               "ZoneChange": {
-                "what": [{ "Is": "Attached" }],
+                "what": [
+                  {
+                    "Is": "Attached"
+                  }
+                ],
                 "from": "Battlefield",
                 "to": "Graveyard"
               }
@@ -19,7 +23,16 @@
             "effects": [
               {
                 "Exile": {
-                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
+                  "what": {
+                    "Each": [
+                      {
+                        "In": "Graveyard"
+                      },
+                      {
+                        "SameCard": "Triggering"
+                      }
+                    ]
+                  }
                 }
               }
             ]
@@ -28,16 +41,57 @@
         {
           "Static": {
             "affected": "Attached",
-            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": 2,
+                  "toughness": 0
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 73, "end": 316 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "KeywordsOf": {
+                  "from": {
+                    "Each": [
+                      {
+                        "In": "Exile"
+                      },
+                      {
+                        "ExiledWith": "This"
+                      }
+                    ]
+                  },
+                  "names": [
+                    "Flying",
+                    "First strike",
+                    "Double strike",
+                    "Deathtouch",
+                    "Haste",
+                    "Hexproof",
+                    "Indestructible",
+                    "Lifelink",
+                    "Menace",
+                    "Protection",
+                    "Reach",
+                    "Trample",
+                    "Vigilance"
+                  ]
+                }
+              }
+            ]
           }
         },
-        { "Keyword": { "Equip": "{1}" } }
+        {
+          "Keyword": {
+            "Equip": "{1}"
+          }
+        }
       ]
     }
   ]

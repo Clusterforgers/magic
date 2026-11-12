@@ -145,6 +145,9 @@ pub enum Modification {
     /// were worked out, each with its ability and its place among the rules of its card; `ability_reader` lists each under an
     /// address of its own.
     GainAbilities(Vec<Borrowed>),
+    /// Adds the keyword abilities of other objects (layer 6), as the static ability found them when the layers were worked
+    /// out; each counts as `AddKeyword`.
+    AddKeywords(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Vec<Keyword>),
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
@@ -255,6 +258,7 @@ impl Modification {
             | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
@@ -364,6 +368,7 @@ impl Modification {
             // The controller is walked with the characteristics (`characteristics::walk`).
             Modification::SetController(_)
             | Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)

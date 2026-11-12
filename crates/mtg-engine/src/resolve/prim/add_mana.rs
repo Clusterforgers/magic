@@ -193,6 +193,50 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
             return Ok(Run::events(events));
         }
+        Produce::Unspent => {
+            let [player] = players.as_slice() else {
+                return unsupported("Effect.AddMana.Unspent.Players");
+            };
+            let held = state
+                .player(*player)
+                .map(|seat| seat.mana().every_mana())
+                .unwrap_or_default();
+            for _ in 0..times {
+                events.extend(held.iter().map(|&mana| Event::ManaAdded {
+                    player: *player,
+                    mana,
+                    source,
+                    only: only.clone(),
+                    lasts: *lasts,
+                }));
+            }
+            return Ok(Run::events(events));
+        }
+        Produce::ManaCostOf(of) => {
+            let lists = r373_cost_lists(cx, of)?;
+            if let [list] = lists.as_slice() {
+                for player in &players {
+                    for _ in 0..times {
+                        events.extend(list.iter().map(|&mana| Event::ManaAdded {
+                            player: *player,
+                            mana,
+                            source,
+                            only: only.clone(),
+                            lasts: *lasts,
+                        }));
+                    }
+                }
+                return Ok(Run::events(events));
+            }
+            let added = Added {
+                players: &players,
+                times,
+                source,
+                only,
+                lasts: *lasts,
+            };
+            return choose_list(cx, &added, &lists);
+        }
         Produce::Devotion => {
             let [player] = players.as_slice() else {
                 return unsupported("Effect.AddMana.Devotion.Players");
@@ -304,6 +348,53 @@ struct Added<'a> {
 
 /// Each addition asks its player to pick one of `lists` ("Add {W}{W}, {W}{U}, or {U}{U}") and adds all the mana of the
 /// list picked; one list is not asked.
+/// The ways to add mana equal to the mana cost of the object `of` names, each sorted and none twice: one list of
+/// colorless mana for the generic part and the color of each colored or Phyrexian symbol, times one half of each hybrid
+/// symbol; nothing for {X} and no object.
+fn r373_cost_lists(cx: &Cx<'_>, of: &mtg_cards::refs::Ref) -> Result<Vec<Vec<ManaType>>, ResolveError> {
+    use mtg_core::mana::ManaSymbol;
+    let mut lists: Vec<Vec<ManaType>> = vec![Vec::new()];
+    let Some(cost) = cx
+        .scope
+        .objects(of)?
+        .first()
+        .and_then(|named| cx.state().object(named.id))
+        .and_then(|object| object.card().mana_cost.clone())
+    else {
+        return Ok(lists);
+    };
+    for symbol in cost.symbols() {
+        let halves: Vec<Vec<ManaType>> = match *symbol {
+            ManaSymbol::Generic(count) => vec![vec![ManaType::Colorless; count as usize]],
+            ManaSymbol::Colored(color) | ManaSymbol::Phyrexian(color) => vec![vec![mana_of(color)]],
+            ManaSymbol::Colorless | ManaSymbol::ColorlessPhyrexian => vec![vec![ManaType::Colorless]],
+            ManaSymbol::Hybrid(first, second) | ManaSymbol::HybridPhyrexian(first, second) => {
+                vec![vec![mana_of(first)], vec![mana_of(second)]]
+            }
+            ManaSymbol::MonoHybrid(color) => {
+                vec![vec![ManaType::Colorless; 2], vec![mana_of(color)]]
+            }
+            ManaSymbol::ColorlessHybrid(color) => {
+                vec![vec![ManaType::Colorless], vec![mana_of(color)]]
+            }
+            ManaSymbol::Snow => return unsupported("Effect.AddMana.ManaCostOf.Snow"),
+        };
+        let mut next = Vec::new();
+        for list in &lists {
+            for half in &halves {
+                let mut joined = list.clone();
+                joined.extend(half);
+                joined.sort();
+                if !next.contains(&joined) {
+                    next.push(joined);
+                }
+            }
+        }
+        lists = next;
+    }
+    Ok(lists)
+}
+
 fn choose_list(
     cx: &Cx<'_>,
     added: &Added<'_>,

@@ -357,6 +357,11 @@ impl Held {
         modification.apply(&mut self.chars);
         match modification {
             Modification::SetController(player) => self.controller = *player,
+            Modification::AddKeywords(keywords) => {
+                for keyword in keywords {
+                    self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
+                }
+            }
             Modification::AddKeyword(keyword) => {
                 let own = self.own_cost.clone().unwrap_or_default();
                 let read = keyword.clone().with_own_mana_cost(&own);
@@ -744,6 +749,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
+        | Wanted::KeywordsOf { .. }
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) => Layer::PtSet,

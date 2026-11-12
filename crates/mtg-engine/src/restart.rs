@@ -102,6 +102,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     state.limits_spent.clear();
     state.game_limits_spent.clear();
     state.loyalty_used.clear();
+    state.loyalty_again.clear();
     state.modes_ever.clear();
     state.tallies = Tallies::default();
     state.day_night = None;

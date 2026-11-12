@@ -2076,6 +2076,12 @@ impl<'a> Scope<'a> {
             Amount::LowestHand(who) => self.lowest_hand(who)?,
             Amount::LifeLostThisWay => self.life_lost_this_way(),
             Amount::DamageDealtThisWay => self.g10c_dealt_this_way(),
+            Amount::DealtUpToHealth => i64::from(
+                self.state
+                    .resolving
+                    .as_ref()
+                    .map_or(0, |resolving| resolving.r373_up_to_health),
+            ),
             Amount::Destroyed(of) => self.w2c_destroyed(of)?,
             Amount::Exiled(of) => self.w14b_exiled(of)?,
             Amount::PhasedOut(of) => self.w11b_phased(of)?,

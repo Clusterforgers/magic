@@ -93,6 +93,8 @@ pub struct Resolving {
     pub(crate) lost: u32,
     /// The damage the resolution has dealt so far, after prevention, which "the damage dealt this way" reads.
     pub(crate) g10c_dealt: u32,
+    /// The damage dealt so far, each dealing counted up to its recipient's life, loyalty or toughness before it.
+    pub(crate) r373_up_to_health: u32,
     /// The dice rolled so far in the resolution, in the order logged, which "the result" reads.
     pub(crate) rolled: Vec<u32>,
     /// The permanents the resolution has destroyed so far, as the objects they were, which "destroyed this way" reads.
@@ -122,6 +124,7 @@ impl Resolving {
             shown: Vec::new(),
             lost: 0,
             g10c_dealt: 0,
+            r373_up_to_health: 0,
             rolled: Vec::new(),
             destroyed: Vec::new(),
             w14b_exiled: Vec::new(),

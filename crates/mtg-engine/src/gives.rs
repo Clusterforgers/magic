@@ -126,6 +126,14 @@ impl Gives {
                 }
                 return;
             }
+            Modification::AddKeywords(keywords) => {
+                for keyword in keywords {
+                    if !self.keywords.contains(keyword) {
+                        self.keywords.push(keyword.clone());
+                    }
+                }
+                return;
+            }
             Modification::CantAttack => GivenRule::CantAttack,
             Modification::CantAttackYou { .. } => GivenRule::CantAttackYou,
             Modification::CantBlock => GivenRule::CantBlock,

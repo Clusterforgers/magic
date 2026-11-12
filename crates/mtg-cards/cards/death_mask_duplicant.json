@@ -1,11 +1,11 @@
 {
   "oracle_id": "8bdaa661-861b-4f91-83ea-467e34e11cc3",
   "name": "Death-Mask Duplicant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Death-Mask Duplicant",
-      "oracle_fingerprint": "410c46111fa122d8c2a1c302af55ce00",
+      "oracle_fingerprint": "",
       "abilities": [
         {
           "Activated": {
@@ -13,17 +13,60 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "In": "Graveyard"
+                    },
+                    {
+                      "OwnedBy": "You"
+                    }
+                  ]
                 }
               }
             ],
-            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 63, "end": 242 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "KeywordsOf": {
+                  "from": {
+                    "Each": [
+                      {
+                        "In": "Exile"
+                      },
+                      {
+                        "ExiledWith": "This"
+                      }
+                    ]
+                  },
+                  "names": [
+                    "Flying",
+                    "Fear",
+                    "First strike",
+                    "Double strike",
+                    "Haste",
+                    "Landwalk",
+                    "Protection",
+                    "Trample"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
