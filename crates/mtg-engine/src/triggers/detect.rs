@@ -17,6 +17,7 @@ use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 mod did;
+mod l293_discards;
 mod r288_final_chapter;
 
 use super::{DelayedId, Triggered, x_read};
@@ -198,6 +199,8 @@ enum Happened {
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
+    /// A player investigated (CR 701.16a), the `nth` time this turn.
+    Investigated { player: PlayerId, nth: u32 },
     /// The Ring tempted a player, who chose `bearer`.
     RingTempted {
         player: PlayerId,
@@ -372,6 +375,14 @@ impl Happened {
             {
                 Some(*nth_any)
             }
+            (
+                Happened::Did {
+                    action: Action::Investigated,
+                    amount,
+                    ..
+                },
+                TriggerPattern::Did { .. },
+            ) => Some(*amount),
             _ => self.nth(),
         }
     }
@@ -754,6 +765,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
         | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
+        | (Tally::L31aInvestigated, Event::Investigated { player: who })
         | (
             Tally::Tokens,
             Event::TokenCreated(TokenCreated {
@@ -1181,6 +1193,10 @@ fn about_players_and_permanents(
             player: surveilled.player,
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
         }),
+        Event::Investigated { player } => found.push(Happened::Investigated {
+            player: *player,
+            nth: ordinal(look.post, look.later, *player, Tally::L31aInvestigated),
+        }),
         Event::RingTempted { player, bearer, .. } => found.push(Happened::RingTempted {
             player: *player,
             bearer: *bearer,
@@ -1565,6 +1581,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 target, by: caster, ..
             },
         ) => becomes_target((what, by), (target, *caster), scope),
+        (
+            TriggerPattern::PlayerBecomesTarget { who, by },
+            Happened::Targeted {
+                target: Target::Player(targeted),
+                by: caster,
+                ..
+            },
+        ) => player_targeted((who, by), (*targeted, *caster), scope),
         _ => matching_event(pattern, happened, scope),
     }
 }
@@ -1590,6 +1614,28 @@ fn becomes_target(
         source: Some(targeting),
         ..cause(state, subjects)
     })
+}
+
+/// A player (`targeted`) chosen as a target of the spell or ability `caster`, judged against the players the pattern
+/// names (`who`) and what it says targets them (`by`). The subjects of the cause are what targets the player and its
+/// controller, so "that spell or ability" and "its controller" name them.
+fn player_targeted(
+    (who, by): (&Ref, &Selector),
+    (targeted, caster): (PlayerId, ObjectId),
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let targeting = state.object(caster).map(GameObject::reference)?;
+    let subjects = vec![
+        Target::Object(targeting),
+        Target::Player(controller_of(state, caster)?),
+    ];
+    (scope.players(who).ok()?.contains(&targeted) && scope.selects(by, targeting).ok()?).then(
+        || Cause {
+            source: Some(targeting),
+            ..cause(state, subjects)
+        },
+    )
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
@@ -2272,14 +2318,21 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
             batch_causes(inner, firsts, scope)
         }
         // "Whenever you discard one or more cards for the first time each turn": the batch that holds the player's first
-        // discards of the turn, any card.
+        // discards of the turn, any card; of a kind ("nonland cards"), the first discards of that kind.
         (TriggerPattern::Nth { event, nth: 1 }, Happened::Batch(members))
             if matches!(&**event, TriggerPattern::Batch(inner)
-                if matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())) =>
+                if matches!(&**inner, TriggerPattern::Discarded { .. })) =>
         {
             let TriggerPattern::Batch(inner) = &**event else {
                 return Vec::new();
             };
+            let TriggerPattern::Discarded { what, .. } = &**inner else {
+                return Vec::new();
+            };
+            if !what.is_empty() {
+                let firsts = l293_discards::l293_first_discards_of(scope, members, what);
+                return batch_causes(inner, firsts.into_iter(), scope);
+            }
             let firsts = members
                 .iter()
                 .filter(|member| e16a_first_discards(scope.state, members, member));
@@ -2438,7 +2491,7 @@ fn object_triggers(
                 when,
                 TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if *what == Selector::this()
             );
-        if *from != zone && !from_anywhere {
+        if *from != zone && !from_anywhere && !crate::l292_haunt::works_here_too(&rules, zone) {
             continue;
         }
         let scope = Scope::announcing(state, controller, source).with_caused(used.caused);

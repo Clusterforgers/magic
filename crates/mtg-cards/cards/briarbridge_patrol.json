@@ -14,7 +14,10 @@
                 "DealsDamage": { "source": ["This"], "to": { "Each": [{ "Type": "Creature" }] } }
               }
             },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

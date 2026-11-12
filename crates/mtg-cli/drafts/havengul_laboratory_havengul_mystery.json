@@ -16,7 +16,10 @@
         {
           "Activated": {
             "cost": [{ "Mana": "{4}" }, "Tap"],
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

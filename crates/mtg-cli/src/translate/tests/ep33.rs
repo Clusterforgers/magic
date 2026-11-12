@@ -76,15 +76,19 @@ fn pipes(amount: &str) -> String {
 }
 
 #[rstest]
-#[case::once("", 4)]
-#[case::twice(" | Amount$ 2", 8)]
+#[case::once("", 5)]
+#[case::twice(" | Amount$ 2", 10)]
 fn ep33_manifest_dread_repeats_the_whole_action(#[case] amount: &str, #[case] steps: usize) {
     let script = pipes(amount);
     assert_eq!(gaps(&script), Vec::<String>::new());
     let effects = &abilities(&script)[0]["Triggered"]["effects"];
     let effects = effects.as_array().unwrap();
     assert_eq!(effects.len(), steps);
-    assert_eq!(effects[steps - 1], json!({"Manifest": {}}));
+    assert_eq!(effects[steps - 2], json!({"Manifest": {}}));
+    assert_eq!(
+        effects[steps - 1]["Performed"]["action"],
+        json!("ManifestedDread")
+    );
 }
 
 #[rstest]

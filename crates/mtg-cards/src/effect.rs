@@ -92,6 +92,17 @@ pub enum Order {
     Random,
 }
 
+/// What the controller chooses for each kind of counter a `PutCountersOf` reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum PerKind {
+    /// Put the counter or remove one of that kind instead ("put another counter of that kind on it or remove one from
+    /// it").
+    PutOrRemove,
+    /// Put a counter of that kind, a +1/+1 counter instead, or nothing ("you may put your choice of a +1/+1 counter or a
+    /// counter of that kind on ~").
+    MayPlusOneInstead,
+}
+
 /// Where a moved object goes.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -665,6 +676,10 @@ pub enum Effect {
         value: Amount,
         /// The name of the memory.
         slot: String,
+        /// The player the number is kept for, each apart ("the amount of mana they paid this way"); `Amount::Remembered`
+        /// with the same `per` reads it. None keeps one number for everyone.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per: Option<Ref>,
     },
     /// The player sacrifices permanents they control that match, of their choice.
     Sacrifice {
@@ -842,6 +857,9 @@ pub enum Effect {
         /// permanent. Put an additional counter of that kind on that permanent").
         #[serde(default, skip_serializing_if = "is_false")]
         one_kind: bool,
+        /// What the controller chooses for each kind in turn instead of putting it as read.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per_kind: Option<PerKind>,
     },
     /// Taps permanents.
     Tap {
@@ -1290,6 +1308,27 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
+    /// Logs a keyword action the steps before it performed, so "whenever you investigate" and the like trigger; it changes
+    /// nothing else (investigate CR 701.16a, discover 701.57, manifest dread 701.62, gift 702.174).
+    Performed {
+        /// What was done: `Investigated`, `Discovered`, `ManifestedDread` or `GaveGift`.
+        action: crate::did::Action,
+        /// Who did it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many times (an investigation for each Clue token made).
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        times: Amount,
+        /// The card it concerns: the card discovered, or the card manifest dread put into the graveyard.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        card: Option<Ref>,
+        /// The discover value.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        value: Option<Amount>,
+        /// The player given the gift.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.
@@ -1447,6 +1486,10 @@ pub enum Effect {
         /// Flips again after each won flip, `win` done after each, until a flip is lost ("flip a coin until you lose a flip").
         #[serde(default, skip_serializing_if = "is_false")]
         until: bool,
+        /// The name the number of flips won is kept under, as a `Let` keeps a number (`Amount::Bound`): "for each flip
+        /// you won".
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        won_as: Option<String>,
     },
     /// The player clashes with an opponent they choose (CR 701.23): each reveals the top card of their library and puts it
     /// on the top or the bottom; `win` is done when the player's card had the greater mana value, `lose` otherwise. Both
@@ -1938,9 +1981,18 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
 }
 
 /// The steps of discover N (CR 701.57a): the first nonland card of mana value `count` or less is cast free or put into the
-/// hand, and the cards exiled with it go to the bottom of the library.
+/// hand, and the cards exiled with it go to the bottom of the library; then the discover is logged
+/// with the card found and its value.
 pub fn discover(count: Amount) -> Vec<Effect> {
-    exile_cast_bottom(
+    let log = Effect::Performed {
+        action: crate::did::Action::Discovered,
+        who: Ref::You,
+        times: Amount::one(),
+        card: Some(Ref::Bound(FOUND.to_owned())),
+        value: Some(count.clone()),
+        to: None,
+    };
+    let mut steps = exile_cast_bottom(
         Selector(vec![
             Pred::Not(Box::new(Pred::Type(CardType::Land))),
             Pred::Compare {
@@ -1954,7 +2006,9 @@ pub fn discover(count: Amount) -> Vec<Effect> {
             to: Destination::Hand,
             bind: None,
         }],
-    )
+    );
+    steps.push(log);
+    steps
 }
 
 /// The steps of cascade (CR 702.85a): the first nonland card of lesser mana value than the source, the spell that cascades,
@@ -2141,11 +2195,11 @@ mod tests {
         r#"{"RollDice":{"sides":20,"plus":2,"results":[{"from":1,"to":9,"effects":[{"Shuffle":{}}]},{"from":10,"effects":[{"Shuffle":{}}]}]}}"#
     )]
     #[case::flip_a_coin(
-        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false },
+        Effect::FlipCoin { who: Ref::You, win: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], lose: Vec::new(), lose_first: false, until: false, won_as: None },
         r#"{"FlipCoin":{"win":[{"Draw":{}}]}}"#
     )]
     #[case::flip_until_a_loss(
-        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true },
+        Effect::FlipCoin { who: Ref::You, win: Vec::new(), lose: Vec::new(), lose_first: false, until: true, won_as: None },
         r#"{"FlipCoin":{"until":true}}"#
     )]
     #[case::clash_and_repeat(

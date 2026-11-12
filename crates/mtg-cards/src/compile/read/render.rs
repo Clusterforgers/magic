@@ -207,6 +207,10 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    // An investigation is worded as the Clue tokens it makes.
+    if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
+        return variants(&unlogged);
+    }
     if let Some(texts) = super::dk27_animate::dk27_animate_variants(ability) {
         return texts;
     }
@@ -542,6 +546,10 @@ fn produced_wordings(texts: &mut Vec<String>) {
 /// and the wordings of the oracle text that no template reads ("you" after another player's event, "Then" opening a
 /// sentence, "deals damage equal to its power").
 pub fn written_variants(ability: &Ability) -> Vec<String> {
+    // An investigation is worded as the Clue tokens it makes.
+    if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
+        return written_variants(&unlogged);
+    }
     // A keyword given twice ("Cascade, cascade.") is not worded as one list.
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
@@ -550,6 +558,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
+    super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
+    super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
+    super::l31a_events::l31a_wordings(ability, &mut texts);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
@@ -582,6 +594,8 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // A target with a morph ability and a skip of each opponent read as a twin's words; no twin has the shape left.
+    super::l292_twins::l292_twin_wordings(ability, written_variants, &mut texts);
     // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
     if let Some(joined) = super::r7c_when::r7c_instead(ability) {
         for text in written_variants(&joined) {
@@ -659,6 +673,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         }
     }
     super::wf27_writers::wf25_to_wf27_wordings(ability, written_variants, &mut texts);
+    super::l293_events::l293_won_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -778,6 +793,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::e16c_attacks::add(ability, &mut texts);
     super::e17b_exile_until::add(ability, &mut texts);
     super::rmt4_wordings::add(ability, &mut texts);
+    super::l293_events::l293_wordings(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }
@@ -1413,6 +1429,7 @@ fn written(
             .or_else(|| writer.copy_group(&effects[start..], wording.chosen))
             .or_else(|| writer.exile_kind(&effects[start..]))
             .or_else(|| writer.w2d_villainous(&effects[start..]))
+            .or_else(|| writer.l292_hand(&effects[start..]))
             .or_else(|| writer.chance(&effects[start..]))
             .or_else(|| writer.clashes(&effects[start..]))
             .or_else(|| writer.g10d_colors(&effects[start..]))
@@ -2438,7 +2455,8 @@ impl Writer<'_> {
                 of,
                 each,
                 one_kind,
-            } => self.g12b_counters_of(on, of, each.as_ref(), *one_kind)?,
+                per_kind,
+            } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
             Effect::MoveCounters {
                 from,
                 to,
@@ -3685,6 +3703,35 @@ impl Writer<'_> {
     /// A player's hand revealed and the card you choose from it for them to discard, which name the target player.
     fn rmt0_hand_pick(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         let (text, used) = super::rmt0_hand_pick::rmt0_sequence(effects, self.targets)?;
+        self.named = true;
+        Some((vec![text], used))
+    }
+
+    /// The counters of another put on a holder, plain (`g12b_counters_of`) or chosen kind by kind (`per_kind`).
+    fn l292_counters_of(
+        &mut self,
+        on: &Ref,
+        of: &Ref,
+        each: Option<&Amount>,
+        one_kind: bool,
+        per_kind: Option<crate::effect::PerKind>,
+    ) -> Option<String> {
+        let Some(per_kind) = per_kind else {
+            return self.g12b_counters_of(on, of, each, one_kind);
+        };
+        (each == Some(&Amount::Fixed(1)) && !one_kind).then_some(())?;
+        let target = if *on == Ref::Target(0) && self.single(on) {
+            Some(self.name_target()?)
+        } else {
+            None
+        };
+        super::l292_hand_reads::l292_per_kind_text(on, of, per_kind, target.as_deref())
+    }
+
+    /// A target player's hand revealed and the card you exile from it, or a card of it revealed at random and its mana
+    /// value lost as life.
+    fn l292_hand(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        let (text, used) = super::l292_hand_reads::l292_hand_text(effects, self.targets)?;
         self.named = true;
         Some((vec![text], used))
     }

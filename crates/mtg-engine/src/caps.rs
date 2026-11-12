@@ -43,6 +43,7 @@ const RUNS: &[&str] = &[
     "Trigger.Milled",
     "Trigger.StepBegins",
     "Trigger.BecomesTarget",
+    "Trigger.PlayerBecomesTarget",
     "Trigger.AnyOf",
     "Trigger.DealsDamage",
     "Trigger.LifeGained",
@@ -310,6 +311,7 @@ const RUNS: &[&str] = &[
     "Effect.Bolster",
     "Effect.Fabricate",
     "Effect.Learn",
+    "Effect.Performed",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
     "Effect.ControlPlayer",
@@ -520,6 +522,7 @@ const RUNS: &[&str] = &[
     "Effect.Pay.Counted",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
+    "Effect.Pay.X.Life",
     "Effect.Pay.SacrificeSelf",
     "Effect.Pay.ExileSelf",
     "Effect.Choose",
@@ -889,6 +892,7 @@ const RUNS: &[&str] = &[
     "Pred.TopOfGraveyard",
     "Pred.TopCreatureOfGraveyard",
     "Pred.BlockedBy",
+    "Pred.BandedWith",
     "Pred.Blocks",
     "Pred.TargetedBy",
     "Pred.SingleTarget",
@@ -1254,6 +1258,7 @@ mod tests {
     #[case::bolstering("Effect.Bolster", true)]
     #[case::fabricating("Effect.Fabricate", true)]
     #[case::learning("Effect.Learn", true)]
+    #[case::performing("Effect.Performed", true)]
     #[case::crewing("Effect.Crewed", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]

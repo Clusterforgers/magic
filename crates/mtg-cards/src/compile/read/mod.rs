@@ -144,8 +144,16 @@ mod instead_pairs;
 mod joined;
 mod keyword_actions;
 mod kicked_copies;
+mod l290_writers;
 mod l291_dice;
 mod l291_nth_counter;
+mod l292_hand_reads;
+mod l292_haunt;
+mod l292_twins;
+mod l293_events;
+mod l31a_events;
+pub(crate) mod l31a_performed;
+mod l31b_any_amount;
 mod land_types;
 mod lands;
 mod leave_combat;
@@ -492,6 +500,15 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Triggered
         && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) =
+            l293_events::l293_won_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
     {
         return Some(found);
     }

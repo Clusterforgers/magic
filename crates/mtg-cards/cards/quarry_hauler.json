@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a55bdb73-e17a-414d-b27f-dc53af2f345c",
+  "name": "Quarry Hauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quarry Hauler",
+      "oracle_fingerprint": "8ef31c7d92f5b94dbd2c14ee57130eca",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": { "Target": 0 },
+                  "each": 1,
+                  "per_kind": "PutOrRemove"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

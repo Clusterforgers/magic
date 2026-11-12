@@ -1,7 +1,7 @@
 {
   "oracle_id": "20fa17d4-9c3e-470b-9993-a4a2799e33d1",
   "name": "Wall of Caltrops",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wall of Caltrops",
@@ -9,9 +9,48 @@
       "abilities": [
         { "Keyword": "Defender" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 39, "end": 424 }
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Wall" },
+                        { "Type": "Creature" },
+                        "Other",
+                        { "Blocks": "Triggering" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        { "Not": { "Subtype": "Wall" } },
+                        { "Blocks": "Triggering" }
+                      ]
+                    },
+                    "op": "Lt",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

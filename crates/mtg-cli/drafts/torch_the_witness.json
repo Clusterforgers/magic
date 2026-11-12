@@ -23,7 +23,10 @@
                   "condition": {
                     "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
                   },
-                  "then": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                  "then": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
                 }
               }
             ]

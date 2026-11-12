@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a731f5bc-892c-4857-9590-4fa31c1caf00",
+  "name": "Blind Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blind Hunter",
+      "oracle_fingerprint": "026c87d1112f1585c4c720fa9b25de9d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haunt" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "HauntedBy": "This" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

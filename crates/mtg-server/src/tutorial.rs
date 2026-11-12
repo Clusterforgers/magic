@@ -1,18 +1,17 @@
 //! The tutorial table: a fixed Commander game against a scripted bot, made by one request, never recorded.
 //!
 //! The setup skips the opening: the human (seat 0) starts in their first main phase with a known hand and library, the
-//! bot (seat 1) with a Mountain and a Goblin Piker to cast. The bot plays the first land and the first spell it is
-//! offered, attacks with everything it can and never blocks, so the lesson in `web/src/features/learn` runs the same
-//! way every time. No clock hurries either seat.
+//! bot (seat 1) with a Swamp and a Dregscape Zombie to cast. Every card is a real card of the corpus. The player holds
+//! the stops of [`PLAYER_STOPS`]; the bot plays the first land and the first spell it is offered, attacks with
+//! everything it can and never blocks, so the lesson in `web/src/features/learn` meets the same decisions every time.
+//! No clock hurries either seat.
 
 use std::sync::{Arc, OnceLock};
 
 use axum::Json;
 use axum::extract::{Request, State};
 use axum::http::StatusCode;
-use mtg_cards::vanilla::basic_land;
 use mtg_cards::{CardDefinition, builtin};
-use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{PayChoice, PriorityAction};
@@ -20,7 +19,7 @@ use mtg_engine::setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_import::scryfall::{CardRecord, cards};
-use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_protocol::{ClientMessage, ServerMessage, StopSide};
 use serde::Serialize;
 use tokio::task::JoinHandle;
 
@@ -29,7 +28,7 @@ use crate::handle::GameHandle;
 use crate::recipe::FormatKind;
 use crate::server::AppState;
 
-/// Scryfall objects (trimmed) of the tutorial's cards.
+/// Scryfall objects (trimmed) of the tutorial's cards, each a printing of a Verified corpus card.
 const SCRYFALL: &str = include_str!("tutorial/scryfall.json");
 
 /// The seat the player sits in.
@@ -42,6 +41,9 @@ pub const BOT_NAME: &str = "Practice bot";
 pub const BOT_LIFE: i32 = 6;
 /// The player's starting life.
 pub const PLAYER_LIFE: i32 = 20;
+/// The steps of the player's own turns where the player is given priority whether they can act or not: the web's
+/// default stops, held from the start so the lesson's decisions never depend on saved preferences.
+pub const PLAYER_STOPS: [Step; 2] = [Step::DeclareAttackers, Step::Main2];
 /// The seed; the setup skips every shuffle, so it only fixes what a card's own randomness does.
 const SEED: u64 = 1;
 
@@ -65,7 +67,11 @@ fn card(name: &'static str) -> Result<Arc<CardDefinition>, TutorialError> {
             .map(|record: CardRecord| {
                 let printed = crate::demo::printed_card(&record);
                 let assembled = rules.assemble(&printed, &caps);
-                (record.name, Arc::new(assembled.definition))
+                let printing = record.printing_id.to_string();
+                let identified =
+                    crate::cards::identified(assembled.definition, &record.oracle_id.to_string());
+                let definition = crate::cards::reprinted(&identified, Some(&printing));
+                (record.name, Arc::new(definition))
             })
             .collect()
     });
@@ -75,22 +81,20 @@ fn card(name: &'static str) -> Result<Arc<CardDefinition>, TutorialError> {
         .ok_or(TutorialError::MissingCard(name))
 }
 
-/// The lesson's game: the player's G/W deck with Isamaru in the command zone, the bot's red one.
+/// The lesson's game: the player's G/W deck with Giada, Font of Hope in the command zone, the bot's black one.
 ///
-/// The player holds Forest, Plains, Grizzly Bears and Hero in Training over two Forests in play; their library (top
-/// first) is Plains, Giant Growth (drawn by Hero in Training), Forest, then Forests. The bot holds Mountains and a
-/// Goblin Piker over one Mountain in play.
+/// The player holds Forest, Grizzly Bears and Hero in Training over two Forests in play, so nothing white can be cast
+/// before the Plains comes; their library (top first) is Plains, Giant Growth (drawn by Hero in Training), Forest,
+/// then Forests. The bot holds Swamps and a Dregscape Zombie over one Swamp in play.
 pub fn setup() -> Result<GameSetup, TutorialError> {
-    let forest = basic_land(Color::Green);
-    let plains = basic_land(Color::White);
-    let mountain = basic_land(Color::Red);
-    let mut player_library = vec![plains.clone(), card("Giant Growth")?, forest.clone()];
+    let forest = card("Forest")?;
+    let swamp = card("Swamp")?;
+    let mut player_library = vec![card("Plains")?, card("Giant Growth")?, forest.clone()];
     player_library.extend(std::iter::repeat_n(forest.clone(), 12));
     let player = PlayerSetup {
         library: player_library,
         hand: vec![
             forest.clone(),
-            plains,
             card("Grizzly Bears")?,
             card("Hero in Training")?,
         ],
@@ -100,18 +104,18 @@ pub fn setup() -> Result<GameSetup, TutorialError> {
             PresetPermanent::new(forest),
         ],
         life: Some(PLAYER_LIFE),
-        commanders: vec![card("Isamaru, Hound of Konda")?],
+        commanders: vec![card("Giada, Font of Hope")?],
         ..PlayerSetup::default()
     };
     let bot = PlayerSetup {
-        library: std::iter::repeat_n(mountain.clone(), 15).collect(),
+        library: std::iter::repeat_n(swamp.clone(), 15).collect(),
         hand: vec![
-            mountain.clone(),
-            card("Goblin Piker")?,
-            mountain.clone(),
-            mountain.clone(),
+            swamp.clone(),
+            card("Dregscape Zombie")?,
+            swamp.clone(),
+            swamp.clone(),
         ],
-        battlefield: vec![PresetPermanent::new(mountain)],
+        battlefield: vec![PresetPermanent::new(swamp)],
         life: Some(BOT_LIFE),
         ..PlayerSetup::default()
     };
@@ -217,6 +221,18 @@ pub(crate) async fn start(
         .registry()
         .register_tutorial(setup, vec![name, BOT_NAME.to_owned()])
         .await?;
+    for step in PLAYER_STOPS {
+        let stop = ClientMessage::SetStop {
+            side: StopSide::Own,
+            step,
+            on: true,
+            keep: true,
+        };
+        handle
+            .send(PLAYER_SEAT, stop)
+            .await
+            .map_err(|_| ApiError::internal())?;
+    }
     spawn_bot(handle);
     let Some((seat, token)) = created.seats.into_iter().next() else {
         return Err(ApiError::internal());

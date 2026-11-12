@@ -1,0 +1,19 @@
+{
+  "oracle_id": "8cbe71d3-b77b-49a7-9c51-ed308011b8b0",
+  "name": "Paranormal Analyst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Paranormal Analyst",
+      "oracle_fingerprint": "a9ed4ad2926a078b40bc328f3e1cc0da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "ManifestedDread", "who": "You" } },
+            "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
