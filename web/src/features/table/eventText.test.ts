@@ -287,6 +287,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
   DamageRemoved: [{ DamageRemoved: { object: 1 } }, 'Grizzly Bears has all its damage removed'],
   ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
+  DamagePrevented: [
+    { DamagePrevented: { source: 4, target: { Player: 1 }, amount: 3 } },
+    '3 damage Lightning Bolt would deal to Bo is prevented',
+  ],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
     'Grizzly Bears dies from lethal damage',

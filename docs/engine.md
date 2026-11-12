@@ -213,6 +213,8 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - A mill is one event (`ReplaceWhen::Mill`): a batch's run of `ZoneCause::Milled` moves of one player's cards. `Multiply` and `Add` take more cards (`replace/e19_mill.rs`); each card's move is still replaced on its own.
 - Shields are `RuleEffect`s (`Rule::PreventDamage`, `Rule::Regenerate`, `Rule::DiesInstead`) made by `Effect::Shield` and `Effect::Regenerate`; `ShieldShape` (mtg-cards) names those the engine plays and the validator makes any other a gap. `DiesInstead` with `leaves` covers any move off the battlefield.
 - A shield over every draw of a targeted player (`Rule::Replaces` with `players`, "until end of turn, if target player would draw a card, instead ...") fixes the players as it begins; the draw it puts in place is not replaced again.
+- Every damage prevention is recorded after the damage as `Event::DamagePrevented` (source, recipient, amount), which nothing replaces and which `TriggerPattern::DamagePrevented` reads ("whenever damage that would be dealt to you is prevented").
+- A damage shield with effects (`ReplaceBy::PreventCountedAnd`) fixes the targets of the ability that made it as it begins (`DamageShield::bound`) and runs its effects with them, so "~ deals that much damage to any target" reaches the target chosen on casting.
 - The testkit's state-based checks skip a decision of the step: its events are not applied yet.
 
 ## Triggered abilities
@@ -288,7 +290,8 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 A copy effect (CR 707) gives a permanent the copiable values of another object (`copies.rs`); the rules of the data are in [cards-dsl.md](cards-dsl.md) (Copies).
 
 - Copiable values are a one-face `CardDefinition`. `PermanentState::copy` holds a `CopyEffect` (object, values, timestamp), begun by `Event::BecameCopy`; exceptions (CR 707.9b) apply when it is made (`CardDefinition::except`). A copy that left the battlefield takes its abilities from last known information (`Snapshot::copy`).
-- Token copies are `TokenRef::CopyOf`; copies for a duration end with `CopyEnded` (`until_end_of_turn`, `until_next_turn_of`).
+- Token copies are `TokenRef::CopyOf`; copies for a duration end with `CopyEnded` (`until_end_of_turn`, `until_next_turn_of`, `attached_by`). A copy for as long as an Equipment stays attached (`Duration::WhileSourceAttached`) begins only on the permanent its source is attached to and ends in housekeeping once it no longer is (`copies::r370_unattached_copies`).
+- `ReplaceBy::AsCopy` with `must` copies without a question when one object qualifies ("creatures you control enter as a copy of this creature").
 - Spell copies (CR 707.10) are `SpellCopied` tokens above the resolving object; the controller is asked once per copy about new targets. Ability copies clone the `AbilityObject` (`AbilityCopied`).
 
 ## Rules of the game

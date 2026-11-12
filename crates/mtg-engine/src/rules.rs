@@ -518,6 +518,11 @@ pub struct DamageShield {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub redirect: Option<Target>,
+    /// The targets of the ability that made it, by the names its effects read them under, fixed when it was made
+    /// ("if damage is prevented this way, ~ deals that much damage to any target").
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub bound: Vec<(String, Vec<Target>)>,
 }
 
 impl DamageShield {

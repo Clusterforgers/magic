@@ -328,6 +328,16 @@ pub enum VoteFor {
     AnotherPlayer,
 }
 
+/// What each player keeps the fewest of in an `Effect::Balance`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum Balanced {
+    /// The permanents they control that match; the rest are sacrificed.
+    Permanents(Selector),
+    /// The cards in their hand; the rest are discarded.
+    Hand,
+}
+
 /// What an `Effect::ChooseValue` asks a player for.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ValueKind {
@@ -343,6 +353,8 @@ pub enum ValueKind {
     LandType,
     /// A basic land type: Plains, Island, Swamp, Mountain or Forest (CR 205.3i).
     BasicLandType,
+    /// A land type other than the basic ones (CR 205.3i): "choose a nonbasic land type".
+    NonbasicLandType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.
@@ -710,6 +722,13 @@ pub enum Effect {
         /// The name the objects are bound to, as the objects they become, for the steps after it.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// Each player in the game chooses as many of what `what` names as the player with the fewest has, in turn order,
+    /// then sacrifices or discards the rest, all together: "each player chooses a number of lands they control equal to
+    /// the number of lands controlled by the player who controls the fewest, then sacrifices the rest".
+    Balance {
+        /// The permanents, or the hand, kept.
+        what: Balanced,
     },
     /// Counters spells or abilities (CR 701.6).
     Counter {

@@ -136,6 +136,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExchangeLife { .. }
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
+        | Effect::Balance { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,

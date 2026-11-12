@@ -392,6 +392,8 @@ pub enum Pred {
     ControlledBy(Ref),
     /// Is owned by the player.
     OwnedBy(Ref),
+    /// Is a battle one of the players protects (CR 310.5): "if an opponent protects it".
+    ProtectedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
     /// Is a spell cast from the zone, a hand, a graveyard or exile (the spell being cast included).

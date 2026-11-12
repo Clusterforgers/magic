@@ -91,6 +91,19 @@ impl CopyEffect {
         })
     }
 
+    /// The objects whose staying attached keeps this effect or one it is over going.
+    pub(crate) fn r370_attached_ends(&self) -> Vec<ObjectRef> {
+        let mut found: Vec<ObjectRef> = self
+            .under
+            .as_ref()
+            .map(|under| under.r370_attached_ends())
+            .unwrap_or_default();
+        if let Some(C10XpCopyEnds::Unattached(by)) = self.ends {
+            found.push(by);
+        }
+        found
+    }
+
     /// What the permanent is a copy of once the temporary effects that end at `ends` are gone; the others stay in their
     /// order (CR 613.7).
     fn without(mut self, ends: C10XpCopyEnds) -> Option<CopyEffect> {
@@ -148,8 +161,10 @@ impl Hash for CopyEffect {
         if let Some(ends) = self.ends {
             true.hash(state);
             self.under.hash(state);
-            if let C10XpCopyEnds::NextTurnOf(player) = ends {
-                player.hash(state);
+            match ends {
+                C10XpCopyEnds::NextTurnOf(player) => player.hash(state),
+                C10XpCopyEnds::Unattached(by) => by.hash(state),
+                C10XpCopyEnds::Cleanup => {}
             }
         }
     }
@@ -162,6 +177,8 @@ pub enum C10XpCopyEnds {
     Cleanup,
     /// As this player's next turn begins ("until your next turn", CR 611.2b), or the next turn after the player left.
     NextTurnOf(PlayerId),
+    /// Once this object is no longer attached to the copy ("for as long as this Equipment remains attached to it").
+    Unattached(ObjectRef),
 }
 
 /// A permanent became a copy of another object (CR 707.2): its copiable values are now those of the copy effect, with a
@@ -185,6 +202,11 @@ pub struct BecameCopy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub until_next_turn_of: Option<PlayerId>,
+    /// The copy ends once this object is no longer attached to the permanent ("for as long as this Equipment remains
+    /// attached to it").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub attached_by: Option<ObjectRef>,
 }
 
 /// A spell was copied (CR 707.10): the copy is a spell on the stack above the original, controlled by the player who
@@ -273,10 +295,15 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
         .ok_or_else(|| invalid(format!("{:?} is not a permanent", event.object)))?;
     let began = CopyEffect::new(event.of, Arc::clone(&event.definition), timestamp);
     // A lasting copy replaces the temporary ones under it too; a temporary one keeps what it is over (CR 613.7).
-    let ends = match (event.until_end_of_turn, event.until_next_turn_of) {
-        (_, Some(player)) => Some(C10XpCopyEnds::NextTurnOf(player)),
-        (true, None) => Some(C10XpCopyEnds::Cleanup),
-        (false, None) => None,
+    let ends = match (
+        event.until_end_of_turn,
+        event.until_next_turn_of,
+        event.attached_by,
+    ) {
+        (_, _, Some(by)) => Some(C10XpCopyEnds::Unattached(by)),
+        (_, Some(player), None) => Some(C10XpCopyEnds::NextTurnOf(player)),
+        (true, None, None) => Some(C10XpCopyEnds::Cleanup),
+        (false, None, None) => None,
     };
     permanent.copy = Some(match ends {
         Some(ends) => began.temporary(ends, permanent.copy.take()),
@@ -434,11 +461,16 @@ pub(crate) fn fold_ended(state: &mut GameState, ended: &Event) -> Result<(), Eng
     let &Event::CopyEnded {
         object,
         next_turn_of,
+        attached_by,
     } = ended
     else {
         return Err(invalid("not the end of a copy"));
     };
-    let ends = next_turn_of.map_or(C10XpCopyEnds::Cleanup, C10XpCopyEnds::NextTurnOf);
+    let ends = match (attached_by, next_turn_of) {
+        (Some(by), _) => C10XpCopyEnds::Unattached(by),
+        (None, Some(player)) => C10XpCopyEnds::NextTurnOf(player),
+        (None, None) => C10XpCopyEnds::Cleanup,
+    };
     let permanent = state
         .objects
         .get_mut(&object)
@@ -456,6 +488,31 @@ pub(crate) fn fold_ended(state: &mut GameState, ended: &Event) -> Result<(), Eng
             )))
         }
     }
+}
+
+/// The `CopyEnded` events of the copy effects that lasted while an object stayed attached to the copy, once it no longer
+/// is: it moved to another permanent, was unattached or left the battlefield (CR 611.2b).
+pub(crate) fn r370_unattached_copies(state: &GameState) -> Vec<Event> {
+    let mut events = Vec::new();
+    for object in state.objects() {
+        let Some(copy) = object.copy_effect() else {
+            continue;
+        };
+        for by in copy.r370_attached_ends() {
+            let held = state
+                .object(by.id)
+                .is_some_and(|source| source.counter() == by.counter)
+                && state.host_of(by.id) == Some(object.id());
+            if !held {
+                events.push(Event::CopyEnded {
+                    object: object.id(),
+                    next_turn_of: None,
+                    attached_by: Some(by),
+                });
+            }
+        }
+    }
+    events
 }
 
 /// Notes what a definition that enters the game in play can bring that no card of the game had: a triggered, static or
@@ -621,6 +678,7 @@ mod tests {
             definition: Arc::new(definition),
             until_end_of_turn: false,
             until_next_turn_of: None,
+            attached_by: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -777,6 +835,7 @@ mod tests {
             definition: Arc::new(creature("Wolf", 4, 4).copiable()),
             until_end_of_turn: false,
             until_next_turn_of: None,
+            attached_by: None,
         });
         assert!(apply_event(&mut game, &late).is_err());
     }
@@ -810,6 +869,7 @@ mod tests {
             definition: Arc::new(definition),
             until_end_of_turn: true,
             until_next_turn_of: None,
+            attached_by: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -823,6 +883,7 @@ mod tests {
             definition: Arc::new(definition),
             until_end_of_turn: false,
             until_next_turn_of: Some(PlayerId(0)),
+            attached_by: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -840,6 +901,7 @@ mod tests {
         let end = |next_turn_of| Event::CopyEnded {
             object: start("Copy A").id,
             next_turn_of,
+            attached_by: None,
         };
         let (first, second) = if cleanup_first {
             (None, Some(PlayerId(0)))
@@ -889,6 +951,7 @@ mod tests {
         let ended = Event::CopyEnded {
             object: start("Copy A").id,
             next_turn_of: None,
+            attached_by: None,
         };
         if !ends {
             // A lasting copy made over the temporary ones replaced them: there is nothing to end.
@@ -965,6 +1028,7 @@ mod tests {
             definition: Arc::new(copiable_values(&game, moth, None).unwrap()),
             until_end_of_turn: false,
             until_next_turn_of: None,
+            attached_by: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Butterfly");
@@ -1013,6 +1077,7 @@ mod tests {
             definition: Arc::new(values),
             until_end_of_turn: false,
             until_next_turn_of: None,
+            attached_by: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Nightrat");

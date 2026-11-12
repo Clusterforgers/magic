@@ -1914,6 +1914,11 @@ impl<'a> Scope<'a> {
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
+            Pred::ProtectedBy(who) => {
+                let players = self.players(who)?;
+                crate::battle::protector(state, reference.id)
+                    .is_some_and(|protector| players.contains(&protector))
+            }
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
             Pred::CastFrom(kind) => self.cast_from(seen, *kind),
             // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).

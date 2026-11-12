@@ -1743,6 +1743,18 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
+        // "Whenever damage that would be dealt to you is prevented": the damage prevented is the amount of the event.
+        TriggerPattern::DamagePrevented { who } => {
+            let whom = match who {
+                Ref::You => "you",
+                Ref::Opponents => "an opponent",
+                Ref::EachPlayer => "a player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever damage that would be dealt to {whom} is prevented"
+            ))
+        }
         TriggerPattern::LifeLost { who } => {
             Some(format!("Whenever {} life", player_verb(who, "lose")?))
         }

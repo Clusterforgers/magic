@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ed450f48-e69d-48d7-82cc-79cf89b2a1fb",
+  "name": "Magus of the Balance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Balance",
+      "oracle_fingerprint": "4ceefdf264503f848f3d9634ef5589cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Balance": { "what": { "Permanents": [{ "Type": "Land" }] } } },
+              { "Balance": { "what": "Hand" } },
+              { "Balance": { "what": { "Permanents": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

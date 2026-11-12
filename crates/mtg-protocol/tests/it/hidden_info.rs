@@ -33,6 +33,8 @@ const SCALAR_KEYS: &[&str] = &[
     "PayLife",
     // The number of a keyword a card shows ("Toxic 1").
     "Toxic",
+    // The time counters of a Suspend keyword a card shows ("Suspend 6").
+    "time",
     "counts",
     "combat_end",
     "turn_end",

@@ -215,6 +215,7 @@ mod r305c_you_and;
 mod r306c_wholes;
 mod r307_wholes;
 mod r377_wholes;
+mod r370_wholes;
 mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
@@ -783,6 +784,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r302b_wholes::r302b_add_wholes(ability, texts);
     r303_wholes::r303_add_wholes(ability, texts);
     r377_wholes::r377_add_wholes(ability, texts);
+    r370_wholes::r370_add_wholes(ability, texts);
     r307_wholes::r307_add_wholes(ability, texts);
     r301_wholes::r301_add_wholes(ability, texts);
     r302_wholes::r302_add_wholes(ability, texts);

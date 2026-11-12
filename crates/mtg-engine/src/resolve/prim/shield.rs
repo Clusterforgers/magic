@@ -195,6 +195,11 @@ pub(super) fn damage_shield(
             .collect(),
     );
     let (from, source) = c9_fight_fixed_sources(cx, &chosen)?;
+    let bound = if then.is_empty() {
+        Vec::new()
+    } else {
+        super::r370_bound::r370_shield_targets(cx)?
+    };
     Ok(Some(DamageShield {
         to,
         each,
@@ -206,6 +211,7 @@ pub(super) fn damage_shield(
         once,
         instead,
         redirect,
+        bound,
     }))
 }
 

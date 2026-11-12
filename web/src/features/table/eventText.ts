@@ -272,6 +272,8 @@ function durationWords(
     UntilEndOfCombatOnYourNextTurn: " until end of combat on their controller's next turn",
     WhileSourceOnBattlefield:
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
+    WhileSourceAttached:
+      source === null ? ' while its source stays attached' : ` while ${n.card(source.id)} stays attached`,
     WhileYouControlSource:
       source === null
         ? ' while its controller controls its source'
@@ -1280,6 +1282,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.card(event.DamageRemoved.object)} has all its damage removed`)
   }
   if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
+  if ('DamagePrevented' in event) {
+    const { source, target, amount } = event.DamagePrevented
+    return line(`${amount} damage ${n.card(source)} would deal to ${damageTarget(target, n)} is prevented`)
+  }
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
       LethalDamage: 'from lethal damage',

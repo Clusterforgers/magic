@@ -180,6 +180,7 @@ fn step_text(ctx: &Ctx, step: TurnStep, whose: &Ref) -> String {
 }
 
 /// The event a triggered ability waits for.
+#[allow(clippy::too_many_lines)]
 pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
     match when {
         TriggerPattern::ZoneChange { what, from, to } => {
@@ -233,6 +234,10 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
                 .map_or_else(String::new, |to| format!(" to {}", phrase::who(ctx, to)))
         ),
         TriggerPattern::LifeGained { who } => phrase::verb(ctx, who, "gain", "life"),
+        TriggerPattern::DamagePrevented { who } => format!(
+            "damage that would be dealt to {} is prevented",
+            phrase::who(ctx, who)
+        ),
         TriggerPattern::LifeLost { who } => phrase::verb(ctx, who, "lose", "life"),
         TriggerPattern::Drew {
             who,

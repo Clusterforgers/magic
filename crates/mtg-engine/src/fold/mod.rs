@@ -163,9 +163,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
-        Event::AbilityLeftToTable(_) | Event::ManaAbilityActivated { .. } | Event::ByHandDue(_) => {
-            Ok(())
-        }
+        // A prevention changes nothing of its own; triggers read it.
+        Event::AbilityLeftToTable(_)
+        | Event::ManaAbilityActivated { .. }
+        | Event::ByHandDue(_)
+        | Event::DamagePrevented { .. } => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)

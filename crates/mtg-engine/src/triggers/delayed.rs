@@ -180,6 +180,7 @@ impl Delayed {
             | Duration::DuringItsControllersNextTurn
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
+            | Duration::WhileSourceAttached
             | Duration::WhileYouControlSourceTapped
             | Duration::WhileHasCounter(_)
             | Duration::NextUntapStep

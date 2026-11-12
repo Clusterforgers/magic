@@ -646,6 +646,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} gain{s} life"), false)
         }
+        TriggerPattern::DamagePrevented { who: by } => {
+            let (name, _) = who(by);
+            (
+                format!("damage that would be dealt to {name} is prevented"),
+                false,
+            )
+        }
         TriggerPattern::LifeLost { who: by } => {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
@@ -1134,6 +1141,14 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     }
     let (head, tail) = phrase(filter);
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
+}
+
+/// "Choose 2 lands to keep; you sacrifice the rest.": the question of a balance of permanents.
+pub(crate) fn r370_keep(filter: &Selector, count: usize) -> String {
+    format!(
+        "Choose {} to keep; you sacrifice the rest.",
+        counted(filter, count, "you control")
+    )
 }
 
 /// "Sacrifice up to 3 lands.": the question of a sacrifice that may stop short.

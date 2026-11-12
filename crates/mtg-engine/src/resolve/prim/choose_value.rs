@@ -242,6 +242,13 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
         ValueKind::BasicLandType => values::basic_land_types(),
+        ValueKind::NonbasicLandType => {
+            let basics = values::basic_land_types();
+            values::land_types()
+                .into_iter()
+                .filter(|option| !basics.contains(option))
+                .collect()
+        }
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
         ValueKind::CardTypeOf(kinds) => values::CARD_TYPES
             .iter()
@@ -317,6 +324,7 @@ fn question(kind: &ValueKind) -> String {
         ),
         ValueKind::LandType => "Choose a land type.".to_owned(),
         ValueKind::BasicLandType => "Choose a basic land type.".to_owned(),
+        ValueKind::NonbasicLandType => "Choose a nonbasic land type.".to_owned(),
         ValueKind::ColorOrBasicLandType => {
             "Choose a color word or a basic land type to replace.".to_owned()
         }
@@ -344,7 +352,10 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
             Some(Chosen::Color(*color))
         }
         (
-            ValueKind::LandType | ValueKind::BasicLandType | ValueKind::ColorOrBasicLandType,
+            ValueKind::LandType
+            | ValueKind::BasicLandType
+            | ValueKind::NonbasicLandType
+            | ValueKind::ColorOrBasicLandType,
             ChoiceOption::Label(name),
         ) => Some(Chosen::LandType(Subtype(name.clone()))),
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),

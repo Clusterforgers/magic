@@ -2437,6 +2437,21 @@ impl Pass<'_> {
         }
         let now = amount - taken;
         self.follow_lifelink(at, source, amount, now);
+        // The prevention is an event of its own after the damage, which nothing replaces (CR 615).
+        if taken > 0 {
+            self.slots.insert(
+                at + 1,
+                Slot {
+                    item: Item::One(Event::DamagePrevented {
+                        source,
+                        target,
+                        amount: taken,
+                    }),
+                    applied: Vec::new(),
+                    frozen: true,
+                },
+            );
+        }
         if now == 0 {
             self.slots.remove(at);
         } else {
@@ -2961,12 +2976,14 @@ impl Pass<'_> {
                 except,
                 tapped: enters_tapped,
                 until_end_of_turn,
+                must,
                 counters,
             } => {
-                let copy = match self.copies(candidate.object, controller, object, of, except)? {
-                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
-                    Asked::Got(copy) => copy,
-                };
+                let copy =
+                    match self.copies(candidate.object, controller, object, (of, *must), except)? {
+                        Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                        Asked::Got(copy) => copy,
+                    };
                 if let Some(mut copy) = copy {
                     copy.until_end_of_turn = *until_end_of_turn;
                     // "Enter tapped as a copy": only the copy is tapped.
@@ -3147,7 +3164,7 @@ impl Pass<'_> {
         source: ObjectRef,
         controller: PlayerId,
         entering: ObjectId,
-        of: &Selector,
+        (of, must): (&Selector, bool),
         except: &[Modification],
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
         let scope = Scope::announcing(self.state, controller, source);
@@ -3162,7 +3179,13 @@ impl Pass<'_> {
         if options.is_empty() {
             return Ok(Asked::Got(None));
         }
-        let chosen = match self.answer() {
+        // A copy that must be made of the one object there is asks nothing.
+        let only = match options.as_slice() {
+            [one] if must => Some(*one),
+            _ => None,
+        };
+        let chosen = match only.map_or_else(|| self.answer(), |_| None) {
+            None if only.is_some() => only,
             None => {
                 return Ok(Asked::Ask(Decision {
                     player: controller,
@@ -3170,7 +3193,7 @@ impl Pass<'_> {
                         one_per_name: false,
                         source: source.id,
                         from: options,
-                        min: 0,
+                        min: u32::from(must),
                         max: 1,
                         text: "Choose a permanent to copy.".into(),
                         can_cancel: false,
@@ -3180,6 +3203,7 @@ impl Pass<'_> {
             Some((who, Choice::Cards(cards)))
                 if *who == controller
                     && cards.len() <= 1
+                    && (!must || cards.len() == 1)
                     && cards.iter().all(|card| options.contains(card)) =>
             {
                 cards.first().copied()
@@ -3209,6 +3233,7 @@ impl Pass<'_> {
             definition: Arc::new(values),
             until_end_of_turn: false,
             until_next_turn_of: None,
+            attached_by: None,
         })))
     }
 
