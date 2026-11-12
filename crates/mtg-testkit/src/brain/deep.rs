@@ -1,37 +1,50 @@
-//! Information-set Monte Carlo search over a seat's candidate answers: each world is one possible deal of the hidden
-//! cards ([`Engine::redeal`]: drawn from what the seat knows, never from what they are), every candidate still in the
-//! running is played on in it to a horizon with every seat answering by the quick heuristics Normal is built from,
-//! and the position reached is scored. Sequential halving keeps the better half of the candidates each round.
+//! Information-set Monte Carlo tree search (single observer) over the seat's own decisions: each iteration deals one
+//! possible world ([`Engine::redeal`]: the hidden cards drawn from what the seat knows, never from what they are),
+//! walks the tree of the seat's casts, attacks, blocks and targets in that world by UCB1 over the answers available
+//! there, adds one node, plays on to the horizon with every seat answering by the quick heuristics Normal is built
+//! from, and scores where it stops. The root answer tried most often wins, the first candidate (the heuristic answer)
+//! on a tie.
 
 use std::time::{Duration, Instant};
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::Engine;
-use mtg_engine::decision::Answer;
+use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
+use mtg_engine::{Decision, Engine};
 
 use super::eval::{DECIDED, Weights, evaluate_with};
 use super::seen::Seen;
-use super::sim::{Horizon, Search, Settings};
+use super::sim::{Horizon, SIM_STEPS, Search, Settings, Start, minimal, reached};
+use super::{combat, priority, targets};
+use crate::bot::apply_answer;
 
 /// How a deep search spends its budget on one decision.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Deep {
-    /// Iterations (one world, one candidate, one rollout each) per decision.
+    /// Iterations (one world, one walk of the tree, one rollout each) per decision.
     pub iterations: u32,
     /// Turns each rollout plays past the current one, through that turn's combat.
     pub turns: u32,
     /// The evaluation gain that counts as most of a won game: rewards are a logistic of the gain over this.
     pub scale: f64,
+    /// The UCB1 exploration constant on rewards between 0 and 1.
+    pub explore: f64,
+    /// Combat forecasts for building block candidates inside the tree.
+    pub forecasts: u32,
+    /// Targets tried for one target question inside the tree.
+    pub targets: usize,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
 }
 
 impl Deep {
-    /// A full budget: up to 1200 iterations through the end of the turn after next, about 2.5 s at most.
+    /// A full budget: up to 600 iterations through the next turn's combat, about 2.5 s at most.
     pub const FULL: Deep = Deep {
-        iterations: 1200,
-        turns: 2,
+        iterations: 600,
+        turns: 1,
         scale: 25.0,
+        explore: 0.4,
+        forecasts: 40,
+        targets: 4,
         time: Some(Duration::from_millis(2500)),
     };
 
@@ -41,6 +54,68 @@ impl Deep {
         self.time = None;
         self
     }
+}
+
+/// The answers worth searching for `decision`, the seat's, pending in `engine`, the likeliest first; none when the
+/// decision is not one that matters (a priority window where acting does not pay, a main phase with a land to play,
+/// a question of another kind) or has a single answer. `held` lists plays the seat will not repeat this turn.
+pub fn candidates(
+    engine: &Engine,
+    seat: PlayerId,
+    decision: &Decision,
+    held: &[PriorityAction],
+    forecasts: u32,
+    most_targets: usize,
+) -> Vec<Answer> {
+    let seen = Seen::new(engine.state(), seat);
+    let answers: Vec<Answer> = match &decision.kind {
+        DecisionKind::Priority(options) => {
+            let window = priority::window(&seen);
+            if window == priority::Window::Idle
+                || (window == priority::Window::Main && !options.playable_lands.is_empty())
+            {
+                return Vec::new();
+            }
+            let mut plays: Vec<PriorityAction> = priority::plays(&seen, options)
+                .into_iter()
+                .filter(|play| !held.contains(play))
+                .collect();
+            if plays.is_empty() {
+                return Vec::new();
+            }
+            // Developing comes first in the main phase, keeping the card otherwise.
+            if window == priority::Window::Main {
+                plays.push(PriorityAction::Pass);
+            } else {
+                plays.insert(0, PriorityAction::Pass);
+            }
+            plays.into_iter().map(Answer::Priority).collect()
+        }
+        DecisionKind::DeclareAttackers(options) if !options.attackers.is_empty() => {
+            combat::attack_candidates(&seen, options)
+                .into_iter()
+                .map(Answer::DeclareAttackers)
+                .collect()
+        }
+        DecisionKind::DeclareBlockers(options) if !options.blockers.is_empty() => {
+            combat::block_candidates(engine, seat, options, forecasts)
+                .into_iter()
+                .map(Answer::DeclareBlockers)
+                .collect()
+        }
+        DecisionKind::ChooseTargets(options) if options.min.max(1) == 1 => {
+            targets::rank_targets(&seen, options)
+                .into_iter()
+                .take(most_targets.max(2))
+                .map(|target| targets::target_answer(options, vec![target]))
+                .collect()
+        }
+        _ => Vec::new(),
+    };
+    if answers.len() < 2 {
+        return Vec::new();
+    }
+    answers
 }
 
 /// The reward of a rollout that scored `score` from a position scored `base`: 1 for a won game, 0 for a lost one, else
@@ -74,91 +149,172 @@ fn rollout_settings(weights: Weights) -> Settings {
     }
 }
 
-/// The rollouts one sequential-halving round gives each of `alive` candidates out of `iterations` over `rounds`
-/// rounds: at least one.
-fn per_round(iterations: u32, alive: usize, rounds: u32) -> u32 {
-    let alive = u32::try_from(alive).unwrap_or(u32::MAX).max(1);
-    (iterations / (alive * rounds.max(1))).max(1)
+/// One answer at a node of the tree and its tally.
+#[derive(Debug, Clone)]
+struct Child {
+    answer: Answer,
+    visits: u32,
+    reward: f64,
+    /// The iterations in which it was available.
+    available: u32,
+    /// The node of the seat's next decision after it, once expanded.
+    next: Option<usize>,
 }
 
-/// The rounds sequential halving takes to bring `candidates` down to one.
-fn rounds_for(candidates: usize) -> u32 {
-    usize::BITS - candidates.saturating_sub(1).leading_zeros()
+impl Child {
+    fn new(answer: Answer) -> Child {
+        Child {
+            answer,
+            visits: 0,
+            reward: 0.0,
+            available: 0,
+            next: None,
+        }
+    }
+
+    fn mean(&self) -> f64 {
+        if self.visits == 0 {
+            0.0
+        } else {
+            self.reward / f64::from(self.visits)
+        }
+    }
 }
 
-/// The candidate of `candidates` for the decision `seat` faces in `engine` with the best mean reward, found by
-/// sequential halving: each round plays every surviving candidate on the same freshly dealt worlds (so they are
-/// compared on equal luck) and keeps the better half. `budget` scales the iterations and the clock (a busy server
-/// thinks less). `None` when no world could be played.
-pub fn deep_choice(
+/// The child of `children` to walk among `open` (indices of the available ones): the first untried one, else the best
+/// UCB1 bound over its availability; the earlier on a tie.
+fn select(children: &[Child], open: &[usize], explore: f64) -> Option<usize> {
+    if let Some(untried) = open.iter().copied().find(|at| children[*at].visits == 0) {
+        return Some(untried);
+    }
+    let bound = |at: usize| {
+        let child = &children[at];
+        let log = f64::from(child.available.max(1)).ln();
+        child.mean() + explore * (log / f64::from(child.visits)).sqrt()
+    };
+    open.iter()
+        .copied()
+        .reduce(|best, at| if bound(at) > bound(best) { at } else { best })
+}
+
+/// The answer to the decision `seat` faces in `engine` among `root` (the heuristic answer first) that the most
+/// iterations of the tree search chose, the earlier on a tie; `budget` scales the iterations and the clock (a busy
+/// server thinks less). `None` when no iteration ran.
+pub fn ismcts(
     engine: &Engine,
     seat: PlayerId,
-    candidates: &[Answer],
+    root: &[Answer],
     deep: Deep,
     weights: Weights,
     seed: u64,
     budget: f64,
 ) -> Option<Answer> {
-    if candidates.len() < 2 {
-        return candidates.first().cloned();
+    if root.len() < 2 {
+        return root.first().cloned();
     }
     let share = budget.clamp(0.0, 1.0);
     let deadline = deep.time.map(|time| Instant::now() + time.mul_f64(share));
-    let late = || deadline.is_some_and(|deadline| Instant::now() >= deadline);
     // In range: at most deep.iterations.
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     let iterations = (f64::from(deep.iterations) * share).round() as u32;
     let base = evaluate_with(&Seen::new(engine.state(), seat), weights);
     let settings = rollout_settings(weights);
-    let rounds = rounds_for(candidates.len());
-    let mut alive: Vec<usize> = (0..candidates.len()).collect();
-    let mut worlds = 0u64;
-    let mut best: Option<usize> = None;
-    'rounds: for _ in 0..rounds {
-        let mut totals = vec![0.0; candidates.len()];
-        let mut played = vec![0u32; candidates.len()];
-        let mut complete = 0;
-        for _ in 0..per_round(iterations, alive.len(), rounds) {
-            if late() {
-                break;
-            }
-            worlds += 1;
-            let key = seed ^ worlds.wrapping_mul(0x9E37_79B9_7F4A_7C15);
-            let mut world = engine.clone();
-            world.redeal(seat, key);
-            for at in &alive {
-                let mut rollout = Search::new(seat, settings, key);
-                if let Some((outcome, _)) = rollout.play_out(
-                    world.clone(),
-                    candidates[*at].clone(),
-                    Horizon::Turns(deep.turns),
-                ) {
-                    totals[*at] += reward(outcome.score, base, deep.scale);
-                    played[*at] += 1;
-                }
-            }
-            complete += 1;
-        }
-        if complete == 0 {
-            break 'rounds;
-        }
-        alive.retain(|at| played[*at] > 0);
-        alive.sort_by(|a, b| {
-            let mean = |at: usize| totals[at] / f64::from(played[at]);
-            mean(*b).total_cmp(&mean(*a)).then(a.cmp(b))
-        });
-        best = alive.first().copied();
-        if alive.len() <= 1 || late() {
+    let mut tree: Vec<Vec<Child>> = vec![root.iter().cloned().map(Child::new).collect()];
+    for iteration in 0..iterations {
+        if deadline.is_some_and(|deadline| Instant::now() >= deadline) {
             break;
         }
-        alive.truncate(alive.len().div_ceil(2));
+        let key = seed ^ u64::from(iteration + 1).wrapping_mul(0x9E37_79B9_7F4A_7C15);
+        let mut world = engine.clone();
+        world.redeal(seat, key);
+        let mut rollout = Search::new(seat, settings, key);
+        rollout.prime(&world);
+        let start = Start {
+            turn: world.state().turn().number(),
+            stack: world.state().stack().len(),
+        };
+        let mut path: Vec<(usize, usize)> = Vec::new();
+        let mut node = Some(0);
+        for step in 0..SIM_STEPS {
+            let Some(decision) = world.decision().cloned() else {
+                break;
+            };
+            if world.result().is_some()
+                || reached(&world, &decision, start, Horizon::Turns(deep.turns), step)
+            {
+                break;
+            }
+            let mut answer = None;
+            if let Some(at) = node
+                && decision.player == seat
+            {
+                let available = if step == 0 {
+                    root.to_vec()
+                } else {
+                    candidates(&world, seat, &decision, &[], deep.forecasts, deep.targets)
+                };
+                if !available.is_empty() {
+                    let mut open = Vec::with_capacity(available.len());
+                    for offered in available {
+                        let index = match tree[at].iter().position(|c| c.answer == offered) {
+                            Some(index) => index,
+                            None => {
+                                tree[at].push(Child::new(offered));
+                                tree[at].len() - 1
+                            }
+                        };
+                        tree[at][index].available += 1;
+                        open.push(index);
+                    }
+                    if let Some(pick) = select(&tree[at], &open, deep.explore) {
+                        path.push((at, pick));
+                        let child = &tree[at][pick];
+                        answer = Some(child.answer.clone());
+                        node = if child.visits == 0 {
+                            // Expanded: the rest of this iteration is a rollout.
+                            None
+                        } else if let Some(next) = child.next {
+                            Some(next)
+                        } else {
+                            tree.push(Vec::new());
+                            let next = tree.len() - 1;
+                            tree[at][pick].next = Some(next);
+                            Some(next)
+                        };
+                    }
+                }
+            }
+            let answer = answer.unwrap_or_else(|| rollout.quick(&world, &decision));
+            if apply_answer(&mut world, &decision, answer).is_err() {
+                let Some(fallback) = minimal(&decision) else {
+                    break;
+                };
+                if apply_answer(&mut world, &decision, fallback).is_err() {
+                    break;
+                }
+            }
+        }
+        let score = evaluate_with(&Seen::new(world.state(), seat), weights);
+        let gained = reward(score, base, deep.scale);
+        for (at, pick) in path {
+            let child = &mut tree[at][pick];
+            child.visits += 1;
+            child.reward += gained;
+        }
     }
-    best.map(|at| candidates[at].clone())
+    let mut best: Option<&Child> = None;
+    for child in &tree[0] {
+        if child.visits > 0 && best.is_none_or(|held| child.visits > held.visits) {
+            best = Some(child);
+        }
+    }
+    best.map(|child| child.answer.clone())
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: rewards order gains and decided games, and sequential halving splits its budget into enough rounds.
+    //! Goal: rewards order gains and decided games, and UCB1 over the available answers tries each before it favours the
+    //! best.
     use rstest::rstest;
 
     use super::*;
@@ -173,18 +329,23 @@ mod tests {
         assert!(reward(-DECIDED, 0.0, 25.0) < reward(worse, 0.0, 25.0));
     }
 
-    #[rstest]
-    #[case(2, 1)]
-    #[case(3, 2)]
-    #[case(4, 2)]
-    #[case(5, 3)]
-    #[case(16, 4)]
-    fn halving_takes_enough_rounds(#[case] candidates: usize, #[case] rounds: u32) {
-        assert_eq!(rounds_for(candidates), rounds);
-        assert!(per_round(0, candidates, rounds) >= 1);
-        assert!(
-            per_round(1200, candidates, rounds) * u32::try_from(candidates).unwrap() * rounds
-                <= 1200
-        );
+    fn child(visits: u32, reward: f64, available: u32) -> Child {
+        Child {
+            visits,
+            reward,
+            available,
+            ..Child::new(Answer::Priority(PriorityAction::Pass))
+        }
+    }
+
+    #[test]
+    fn untried_answers_come_first_then_the_best_bound() {
+        let children = vec![child(3, 2.0, 6), child(0, 0.0, 6), child(3, 2.0, 6)];
+        assert_eq!(select(&children, &[0, 1, 2], 0.4), Some(1));
+        let poor = child(10, 1.0, 20);
+        let good = child(10, 9.0, 20);
+        assert_eq!(select(&[poor.clone(), good.clone()], &[0, 1], 0.4), Some(1));
+        assert_eq!(select(&[poor, good], &[0], 0.4), Some(0));
+        assert_eq!(select(&[], &[], 0.4), None);
     }
 }

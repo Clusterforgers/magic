@@ -23,7 +23,7 @@ use super::targets::{rank_targets, target_answer};
 use crate::bot::{RandomBot, apply_answer};
 
 /// The most answers one simulation gives before it is scored where it stands.
-const SIM_STEPS: usize = 400;
+pub(crate) const SIM_STEPS: usize = 400;
 
 /// Combat forecasts for each block declaration inside a simulation: fixed, so every candidate meets the same blocks.
 const QUICK_FORECASTS: u32 = 30;
@@ -109,16 +109,11 @@ impl Settings {
         time: Some(Duration::from_millis(1000)),
     };
 
-    /// Very Hard: Hard's search with a bigger budget in each of nine worlds whose hidden cards are redealt from what
-    /// the seat has seen, every seat playing its hand there; the answer most worlds give wins. About 250 ms a world at
-    /// most.
+    /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
+    /// a tree search over that answer and its alternatives in worlds redealt from what the seat has seen
+    /// ([`Deep::FULL`]), about 2.5 s at most.
     pub const VERY_HARD: Settings = Settings {
-        sims: 300,
-        forecasts: 1000,
-        targets: 8,
-        votes: 9,
-        fair: true,
-        time: Some(Duration::from_millis(250)),
+        deep: Some(Deep::FULL),
         ..Settings::HARD
     };
 
@@ -148,9 +143,11 @@ pub enum Horizon {
 
 /// Where a simulation started.
 #[derive(Debug, Clone, Copy)]
-struct Start {
-    turn: u32,
-    stack: usize,
+pub(crate) struct Start {
+    /// The turn number.
+    pub(crate) turn: u32,
+    /// The objects on the stack.
+    pub(crate) stack: usize,
 }
 
 /// One simulated outcome: its score and a fingerprint of what lasts beyond the turn.
@@ -263,8 +260,14 @@ impl Search {
             stack: sim.state().stack().len(),
         };
         apply_answer(&mut sim, &decision, answer).ok()?;
-        self.plays_turn = start.turn;
-        self.plays_left = sim
+        self.prime(&sim);
+        self.settle(sim, start, horizon, 0)
+    }
+
+    /// Starts a simulation of `engine`: every seat that plays by itself may make its [`ROLLOUT_PLAYS`] again.
+    pub fn prime(&mut self, engine: &Engine) {
+        self.plays_turn = engine.state().turn().number();
+        self.plays_left = engine
             .state()
             .players()
             .iter()
@@ -277,7 +280,6 @@ impl Search {
                 }
             })
             .collect();
-        self.settle(sim, start, horizon, 0)
     }
 
     /// The outcome of `answer` as [`Search::outcome`] gives it.
@@ -495,7 +497,7 @@ fn rollout_play(
 }
 
 /// Whether a simulation that started at `start` and has given `steps` answers has reached `horizon` at `decision`.
-fn reached(
+pub(crate) fn reached(
     engine: &Engine,
     decision: &Decision,
     start: Start,
@@ -527,7 +529,7 @@ fn reached_turn(state: &mtg_engine::state::GameState, end: u32, stack: usize) ->
 
 /// The answer that decides least, when a quick answer was refused: a pass, the fewest targets, a keep; `None` for a
 /// question with no such answer.
-fn minimal(decision: &Decision) -> Option<Answer> {
+pub(crate) fn minimal(decision: &Decision) -> Option<Answer> {
     Some(match &decision.kind {
         DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
         DecisionKind::Mulligan(_) => Answer::Mulligan(MulliganChoice::Keep),

@@ -174,6 +174,7 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                 deep.iterations = iterations.parse().unwrap();
                 deep.turns = number("EXP_TURNS", deep.turns);
                 deep.scale = number("EXP_SCALE", deep.scale);
+                deep.explore = number("EXP_EXPLORE", deep.explore);
                 settings.deep = Some(deep);
             }
             settings.votes = number("EXP_VOTES", base.votes);

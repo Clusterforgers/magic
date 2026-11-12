@@ -166,6 +166,23 @@ impl HeuristicBot {
         if pending && matters && self.settings.votes > 1 {
             return self.voted(decision, engine);
         }
+        if pending
+            && matters
+            && let Some(deep) = self.settings.deep
+        {
+            return self.deep_answer(decision, engine, deep, key);
+        }
+        self.heuristic(decision, engine, key, pending)
+    }
+
+    /// The heuristics' answer to `decision`, searched as the settings allow.
+    fn heuristic(
+        &mut self,
+        decision: &Decision,
+        engine: &Engine,
+        key: u64,
+        pending: bool,
+    ) -> Answer {
         let mut search = Search::new(self.seat, self.settings, key);
         let world;
         let engine = if self.settings.fair && pending {
@@ -176,17 +193,6 @@ impl HeuristicBot {
         } else {
             engine
         };
-        if pending
-            && let Some(deep) = self.settings.deep
-            && let Some(answer) = self.deep_answer(decision, engine, deep, key)
-        {
-            if let Answer::Priority(play) = &answer
-                && *play != PriorityAction::Pass
-            {
-                self.played.push(play.clone());
-            }
-            return answer;
-        }
         match &decision.kind {
             DecisionKind::Priority(options) if pending => {
                 if self.played.len() >= TURN_PLAYS {
@@ -302,69 +308,52 @@ impl HeuristicBot {
         answer
     }
 
-    /// The deep search's answer to a decision that matters ([`Deep`]): a cast or ability in a window where acting pays,
-    /// an attack, a block or a target; `None` for any other decision, which the heuristics answer.
+    /// The tree search's answer to a decision that matters ([`Deep`]): the heuristic answer first among the
+    /// candidates ([`deep::candidates`]), then [`deep::ismcts`]; the heuristic answer alone when there is nothing to
+    /// choose between.
     fn deep_answer(
         &mut self,
         decision: &Decision,
         engine: &Engine,
         deep: Deep,
         key: u64,
-    ) -> Option<Answer> {
-        let seen = Seen::new(engine.state(), self.seat);
-        let candidates: Vec<Answer> = match &decision.kind {
-            DecisionKind::Priority(options) => {
-                let window = priority::window(&seen);
-                if self.played.len() >= TURN_PLAYS || window == priority::Window::Idle {
-                    return None;
-                }
-                if window == priority::Window::Main && !options.playable_lands.is_empty() {
-                    return None;
-                }
-                let held = self.held();
-                let mut plays: Vec<PriorityAction> = priority::plays(&seen, options)
-                    .into_iter()
-                    .filter(|play| !held.contains(play))
-                    .collect();
-                // A tie goes to the first candidate: developing in the main phase, keeping the card otherwise.
-                if window == priority::Window::Main {
-                    plays.push(PriorityAction::Pass);
-                } else {
-                    plays.insert(0, PriorityAction::Pass);
-                }
-                plays.into_iter().map(Answer::Priority).collect()
-            }
-            DecisionKind::DeclareAttackers(options) => combat::attack_candidates(&seen, options)
-                .into_iter()
-                .map(Answer::DeclareAttackers)
-                .collect(),
-            DecisionKind::DeclareBlockers(options) => {
-                combat::block_candidates(engine, self.seat, options, self.settings.forecasts)
-                    .into_iter()
-                    .map(Answer::DeclareBlockers)
-                    .collect()
-            }
-            DecisionKind::ChooseTargets(options) if options.min.max(1) == 1 => {
-                targets::rank_targets(&seen, options)
-                    .into_iter()
-                    .take(self.settings.targets.max(2))
-                    .map(|target| targets::target_answer(options, vec![target]))
-                    .collect()
-            }
-            _ => return None,
-        };
-        if candidates.len() < 2 {
-            return None;
+    ) -> Answer {
+        let before = self.played.clone();
+        let held = self.held();
+        let prior = self.heuristic(decision, engine, key, true);
+        if before.len() >= TURN_PLAYS {
+            return prior;
         }
-        deep::deep_choice(
+        let mut answers = deep::candidates(
             engine,
             self.seat,
-            &candidates,
+            decision,
+            &held,
+            self.settings.forecasts,
+            self.settings.targets,
+        );
+        if answers.is_empty() {
+            return prior;
+        }
+        answers.retain(|answer| *answer != prior);
+        answers.insert(0, prior.clone());
+        let chosen = deep::ismcts(
+            engine,
+            self.seat,
+            &answers,
             deep,
             self.settings.weights,
             key,
             self.budget,
         )
+        .unwrap_or(prior);
+        self.played = before;
+        if let Answer::Priority(play) = &chosen
+            && *play != PriorityAction::Pass
+        {
+            self.played.push(play.clone());
+        }
+        chosen
     }
 }
 
