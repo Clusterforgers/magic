@@ -34,6 +34,7 @@ use crate::parts::Part;
 use crate::permit_costs::{self, Added};
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
+use crate::r301c_offering::r301c_offering_way;
 use crate::resolve::{Scope, spell_ability, zone_kind};
 use crate::rules::{Cast, cast_permissions};
 use crate::spend::Spend;
@@ -272,6 +273,8 @@ fn spend_as_any(permissions: &[&Cast], ways: &mut [Way], printed: Option<&ManaCo
 }
 
 /// The ways of [`of`] before the required additional costs.
+// One step for each source of a way.
+#[allow(clippy::too_many_lines)]
 fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
@@ -367,9 +370,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         ways.extend(crate::c9_emerge_ways::c9_emerge_ways(
             state, id, keyword, instant,
         ));
-        ways.extend(crate::r301c_offering::r301c_offering_way(
-            state, id, keyword,
-        ));
+        ways.extend(r301c_offering_way(state, id, keyword));
         if let Some(way) = keyword_way(state, player, id, keyword, instant)
             && !ways.iter().any(|w| w.alternative == way.alternative)
         {

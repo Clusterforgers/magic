@@ -1035,7 +1035,6 @@ mod tests {
             Keyword::Horsemanship,
             Keyword::Phasing,
             Keyword::Spectacle(cost()),
-            Keyword::Offering(Selector::default()),
             Keyword::Freerunning(cost()),
             Keyword::UmbraArmor,
             Keyword::Cipher,
@@ -1047,6 +1046,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Soulbond,
             Keyword::Emerge(cost()),
+            Keyword::Offering(Selector::default()),
             Keyword::Harmonize(cost()),
             Keyword::ReadAhead,
             Keyword::Exert {
@@ -1235,6 +1235,7 @@ mod tests {
         "Keyword.Horsemanship",
         "Keyword.Phasing",
         "Keyword.Spectacle",
+        "Keyword.Offering",
         "Keyword.Freerunning",
         "Keyword.UmbraArmor",
         "Keyword.Cipher",

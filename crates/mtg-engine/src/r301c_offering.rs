@@ -50,18 +50,14 @@ pub(crate) fn r301c_offering_difference(cost: &ManaCost, less: &ManaCost) -> Man
     let mut symbols: Vec<ManaSymbol> = cost.symbols().to_vec();
     let mut generic_off = 0u32;
     for symbol in less.symbols() {
-        match symbol {
-            ManaSymbol::Generic(amount) => generic_off = generic_off.saturating_add(*amount),
-            other => match symbols.iter().position(|held| held == other) {
-                Some(at) => {
-                    symbols.remove(at);
-                }
-                // A symbol the card lacks takes off as much generic mana as it is worth ({2/W} two).
-                None => {
-                    let worth = ManaCost::from_symbols([*other]).mana_value();
-                    generic_off = generic_off.saturating_add(worth);
-                }
-            },
+        if let ManaSymbol::Generic(amount) = symbol {
+            generic_off = generic_off.saturating_add(*amount);
+        } else if let Some(at) = symbols.iter().position(|held| held == symbol) {
+            symbols.remove(at);
+        } else {
+            // A symbol the card lacks takes off as much generic mana as it is worth ({2/W} two).
+            let worth = ManaCost::from_symbols([*symbol]).mana_value();
+            generic_off = generic_off.saturating_add(worth);
         }
     }
     let generic: u32 = symbols
@@ -89,14 +85,13 @@ pub(crate) fn r301c_offering_candidates(
     let Some(Part::Pick(pick)) = parts.first() else {
         return Vec::new();
     };
-    let payer = Payer {
+    pick.candidates(&Payer {
         state,
         player,
         source: id,
         barred: &[],
         granter: None,
-    };
-    pick.candidates(&payer)
+    })
 }
 
 #[cfg(test)]
