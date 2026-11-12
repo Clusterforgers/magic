@@ -8,6 +8,7 @@ import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
+import type { PreconsApi } from '@/net/precons'
 import { CreateForm } from './CreateForm'
 import { useDecks } from './useDecks'
 
@@ -34,7 +35,7 @@ function FormSkeleton() {
 }
 
 /** `/new`: loads the decks, then shows the form for a new game. */
-export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
+export function CreateGamePage({ api = sharedApi, precons }: { api?: Api; precons?: PreconsApi }) {
   usePageTitle('Create a game')
   const { state, reload } = useDecks(api)
   // The form names the creator's own seat after the account, so it waits until the server has said who that is.
@@ -79,7 +80,7 @@ export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
         </div>
       ) : null}
       {state.status === 'ready' && state.decks.length > 0 && !unknownAccount ? (
-        <CreateForm api={api} decks={state.decks} />
+        <CreateForm api={api} decks={state.decks} precons={precons} />
       ) : null}
     </PageShell>
   )

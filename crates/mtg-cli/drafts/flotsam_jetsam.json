@@ -11,7 +11,8 @@
           "Spell": {
             "effects": [
               { "Mill": { "count": 3 } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         }

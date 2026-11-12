@@ -65,6 +65,13 @@ const RULE_MARKS: Record<GivenRule, RuleMark> = {
   SetColors: ['New color', 'Color', 'changes its color', 'plain'],
   Goaded: ['Goaded', 'Goaded', 'is goaded', 'restrict'],
   UmbraArmor: ['Umbra', 'Umbra', 'umbra armor, so it is not destroyed', 'raise'],
+  CantCastSpells: ["Can't cast", 'No spells', "can't cast spells", 'restrict'],
+  CastLimit: ['Cast limit', 'Limit', 'can cast only so many spells each turn', 'restrict'],
+  CantActivate: ["Can't activate", 'No abil.', "can't activate abilities", 'restrict'],
+  PlayerCant: ['Restricted', 'Restr.', 'is restricted by a rule', 'restrict'],
+  SkipsDrawStep: ['Skips draw', 'No draw', 'skips their draw step', 'restrict'],
+  CantDraw: ["Can't draw", 'No draw', "can't draw cards", 'restrict'],
+  CantGainLife: ["Can't gain life", 'No life', "can't gain life", 'restrict'],
 }
 
 describe('itemsOf', () => {

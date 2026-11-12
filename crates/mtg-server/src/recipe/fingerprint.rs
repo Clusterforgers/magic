@@ -283,6 +283,23 @@ mod tests {
     }
 
     #[test]
+    fn the_event_read_from_a_by_hand_line_changes_no_fingerprint() {
+        let text = "Whenever you cast a spell, juggle.";
+        let plain = full_card().with_manual(text, "by hand");
+        let mut read = plain.clone();
+        read.manual = read
+            .manual
+            .into_iter()
+            .map(|clause| clause.reading_when(&["Ember Elf".to_owned()]))
+            .collect();
+        assert!(read.manual.iter().all(|clause| clause.when.is_some()));
+        assert_eq!(
+            fingerprint(&[Arc::new(read)]),
+            fingerprint(&[Arc::new(plain)])
+        );
+    }
+
+    #[test]
     fn a_card_that_uses_the_later_fields_has_them_in_its_text_and_the_others_do_not() {
         let hydra = CardDefinition::new("Hydra")
             .with_type(CardType::Creature)

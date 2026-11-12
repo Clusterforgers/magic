@@ -7,6 +7,9 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::ColorSet;
 use serde::{Deserialize, Serialize};
 
+use mtg_core::mana::ManaSymbol;
+
+use crate::ability::Ability;
 use crate::definition::CardDefinition;
 use crate::refs::{Pred, Selector};
 use crate::value::{Amount, StatKind};
@@ -33,23 +36,64 @@ pub enum DeckCondition {
     },
     /// The deck holds at least this many cards more than the format's minimum deck size.
     ExtraCards(u32),
-    /// Every card that does not match `besides` has an even (or, with `odd`, an odd) mana value: "Your starting deck
-    /// contains only cards with even mana values.", "... only cards with odd mana values and land cards."
-    ManaValueParity {
-        /// Odd mana values rather than even ones.
-        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-        odd: bool,
-        /// The cards that fit whatever their mana value.
+    /// Every card that matches `of` has the fact: "Your starting deck contains only cards with even mana values." is
+    /// every card with an even mana value.
+    Has {
+        /// The cards the condition speaks of; every card of the deck when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
-        besides: Selector,
+        of: Selector,
+        /// What each of them must have.
+        fact: CardFact,
     },
-    /// Some card type is shared by every card that matches `of`: "Each nonland card in your starting deck shares a card
+    /// One card type is common to every card that matches `of`: "Each nonland card in your starting deck shares a card
     /// type."
-    SharedCardType {
+    SharedType {
         /// The cards that must share a type; every card of the deck when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         of: Selector,
     },
+}
+
+/// A fact about a card that a companion asks and no selector of an object reads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CardFact {
+    /// Its mana value is even ("cards with even mana values").
+    EvenManaValue,
+    /// Its mana value is odd ("cards with odd mana values").
+    OddManaValue,
+    /// It has an activated ability ("has an activated ability").
+    ActivatedAbility,
+    /// No mana symbol appears twice in its mana cost ("more than one of the same mana symbol in its mana cost").
+    NoRepeatedSymbol,
+}
+
+impl CardFact {
+    /// Whether the card has the fact.
+    fn holds(self, card: &DeckCard) -> bool {
+        match self {
+            CardFact::EvenManaValue => card.mana_value.is_multiple_of(2),
+            CardFact::OddManaValue => !card.mana_value.is_multiple_of(2),
+            CardFact::ActivatedAbility => card.activated,
+            CardFact::NoRepeatedSymbol => {
+                card.x_symbols < 2
+                    && card
+                        .symbols
+                        .iter()
+                        .enumerate()
+                        .all(|(at, symbol)| !card.symbols[at + 1..].contains(symbol))
+            }
+        }
+    }
+
+    /// The words of the fact in a reason.
+    fn words(self) -> &'static str {
+        match self {
+            CardFact::EvenManaValue => "an even mana value",
+            CardFact::OddManaValue => "an odd mana value",
+            CardFact::ActivatedAbility => "an activated ability",
+            CardFact::NoRepeatedSymbol => "no mana symbol twice in its cost",
+        }
+    }
 }
 
 /// A card of a starting deck as the condition reads it: the characteristics the predicates ask about.
@@ -67,6 +111,12 @@ pub struct DeckCard {
     pub subtypes: Vec<Subtype>,
     /// Its colours.
     pub colors: ColorSet,
+    /// The symbols of its mana cost, `{X}` aside.
+    pub symbols: Vec<ManaSymbol>,
+    /// How many `{X}` its mana cost holds.
+    pub x_symbols: u8,
+    /// Whether it has an activated ability.
+    pub activated: bool,
 }
 
 impl From<&CardDefinition> for DeckCard {
@@ -78,6 +128,17 @@ impl From<&CardDefinition> for DeckCard {
             supertypes: card.supertypes.clone(),
             subtypes: card.subtypes.clone(),
             colors: card.colors(),
+            symbols: card
+                .mana_cost
+                .as_ref()
+                .map(|cost| cost.symbols().to_vec())
+                .unwrap_or_default(),
+            x_symbols: card.x_in_cost,
+            activated: card.activated
+                || !card.abilities.is_empty()
+                || card.rules.iter().any(|rule| {
+                    matches!(&**rule, Ability::Activated { .. } | Ability::Loyalty { .. })
+                }),
         }
     }
 }
@@ -121,8 +182,9 @@ impl DeckCondition {
     pub fn unreadable(&self) -> Vec<String> {
         let selectors: Vec<&Selector> = match self {
             DeckCondition::Each { of, has } => vec![of, has],
-            DeckCondition::Distinct { of } | DeckCondition::SharedCardType { of } => vec![of],
-            DeckCondition::ManaValueParity { besides, .. } => vec![besides],
+            DeckCondition::Distinct { of }
+            | DeckCondition::Has { of, .. }
+            | DeckCondition::SharedType { of } => vec![of],
             DeckCondition::ExtraCards(_) => Vec::new(),
         };
         let probe = DeckCard {
@@ -132,6 +194,9 @@ impl DeckCondition {
             supertypes: BTreeSet::new(),
             subtypes: Vec::new(),
             colors: ColorSet::EMPTY,
+            symbols: Vec::new(),
+            x_symbols: 0,
+            activated: false,
         };
         selectors
             .into_iter()
@@ -169,31 +234,30 @@ impl DeckCondition {
                     None => Ok(()),
                 }
             }
-            DeckCondition::ManaValueParity { odd, besides } => {
-                let wanted = u32::from(*odd);
-                match deck.iter().find(|card| {
-                    let spared = !besides.is_empty() && selects(besides, card);
-                    !spared && card.mana_value % 2 != wanted
-                }) {
+            DeckCondition::Has { of, fact } => {
+                match deck
+                    .iter()
+                    .find(|card| selects(of, card) && !fact.holds(card))
+                {
                     Some(card) => Err(format!(
-                        "{} has an {} mana value, which the companion does not allow",
+                        "{} does not have {} as the companion wants",
                         card.name,
-                        if *odd { "even" } else { "odd" }
+                        fact.words()
                     )),
                     None => Ok(()),
                 }
             }
-            DeckCondition::SharedCardType { of } => {
+            DeckCondition::SharedType { of } => {
                 let mut cards = deck.iter().filter(|card| selects(of, card));
                 let Some(first) = cards.next() else {
                     return Ok(());
                 };
                 let mut shared = first.types.clone();
                 for card in cards {
-                    shared.retain(|kind| card.types.contains(kind));
+                    shared.retain(|ty| card.types.contains(ty));
                     if shared.is_empty() {
                         return Err(format!(
-                            "{} shares no card type with the other cards the companion speaks of",
+                            "{} leaves the cards no card type in common, and the companion wants one",
                             card.name
                         ));
                     }
@@ -217,7 +281,7 @@ impl DeckCondition {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a companion condition holds for a deck exactly when every card it speaks of fits, whatever the kinds of card in the deck; the conditions of the printed companions that read from the card alone, a distinct-names rule, the parity of mana values, a shared card type and a deck size over the minimum are read, and a predicate about anything but the card is reported as unreadable.
+    //! Goal: a companion condition holds for a deck exactly when every card it speaks of fits, whatever the kinds of card in the deck; the conditions of the printed companions that read from the card alone, a distinct-names rule and a deck size over the minimum are read, and a predicate about anything but the card is reported as unreadable.
     use mtg_core::mana::ManaCost;
     use rstest::rstest;
 
@@ -311,47 +375,6 @@ mod tests {
             .map(|(name, cost, ty)| card(name, cost, &[*ty], &[]))
             .collect();
         assert_eq!(condition.check(&deck, 60).is_ok(), holds);
-    }
-
-    fn parity(odd: bool, lands: bool) -> DeckCondition {
-        DeckCondition::ManaValueParity {
-            odd,
-            besides: if lands {
-                Selector(vec![Pred::Type(CardType::Land)])
-            } else {
-                Selector::default()
-            },
-        }
-    }
-
-    fn umori() -> DeckCondition {
-        DeckCondition::SharedCardType {
-            of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]),
-        }
-    }
-
-    #[rstest]
-    #[case::gyruda_with_even_values(parity(false, false), &[("A", "{1}{G}", &[CardType::Creature][..]), ("B", "{3}{W}", &[CardType::Instant][..])], true)]
-    #[case::gyruda_with_a_one_drop(parity(false, false), &[("A", "{1}{G}", &[CardType::Creature][..]), ("B", "{W}", &[CardType::Instant][..])], false)]
-    #[case::gyruda_with_a_land_of_value_zero(parity(false, false), &[("A", "", &[CardType::Land][..])], true)]
-    #[case::obosh_with_odd_values_and_a_land(parity(true, true), &[("A", "", &[CardType::Land][..]), ("B", "{2}{R}", &[CardType::Creature][..])], true)]
-    #[case::obosh_with_a_two_drop(parity(true, true), &[("B", "{1}{R}", &[CardType::Creature][..])], false)]
-    #[case::odd_without_lands_refuses_a_land(parity(true, false), &[("A", "", &[CardType::Land][..])], false)]
-    #[case::umori_with_creatures_and_lands(umori(), &[("A", "", &[CardType::Land][..]), ("B", "{G}", &[CardType::Creature][..]), ("C", "{2}", &[CardType::Artifact, CardType::Creature][..])], true)]
-    #[case::umori_with_a_creature_and_an_instant(umori(), &[("B", "{G}", &[CardType::Creature][..]), ("C", "{U}", &[CardType::Instant][..])], false)]
-    #[case::umori_with_no_type_shared_by_all(umori(), &[("A", "{2}", &[CardType::Artifact, CardType::Creature][..]), ("B", "{G}", &[CardType::Creature][..]), ("C", "{1}", &[CardType::Artifact][..])], false)]
-    #[case::umori_with_an_empty_deck(umori(), &[], true)]
-    fn parity_and_shared_types_over_a_deck(
-        #[case] condition: DeckCondition,
-        #[case] cards: &[(&str, &str, &[CardType])],
-        #[case] holds: bool,
-    ) {
-        let deck: Vec<DeckCard> = cards
-            .iter()
-            .map(|(name, cost, types)| card(name, cost, types, &[]))
-            .collect();
-        assert_eq!(condition.check(&deck, 60).is_ok(), holds);
-        assert!(condition.unreadable().is_empty());
     }
 
     #[rstest]

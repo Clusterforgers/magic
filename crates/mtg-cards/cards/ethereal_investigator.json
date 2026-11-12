@@ -14,7 +14,8 @@
             "effects": [
               {
                 "CreateToken": { "token": { "Named": "clue" }, "count": { "Players": "Opponents" } }
-              }
+              },
+              { "Performed": { "action": "Investigated", "times": { "Players": "Opponents" } } }
             ]
           }
         },

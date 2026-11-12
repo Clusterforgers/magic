@@ -83,6 +83,7 @@ fn report() -> DeckReport {
             draft: None,
             differs: Vec::new(),
             reasons: vec![],
+            whole_text: None,
             by_hand: false,
         }],
         summary: summary(),
@@ -445,6 +446,7 @@ fn index(code: DeckErrorCode) -> usize {
         DeckErrorCode::Internal => 13,
         DeckErrorCode::RateLimited => 14,
         DeckErrorCode::StaleRead => 15,
+        DeckErrorCode::FixMarkLimit => 16,
     }
 }
 

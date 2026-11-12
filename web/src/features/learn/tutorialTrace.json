@@ -1,0 +1,1419 @@
+[
+  {
+    "act": "Land",
+    "cards": ["Forest"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 6,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Grizzly Bears"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 6,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "PayMana",
+      "hand": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 6,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "theirCreatures": [],
+      "theirLife": 6,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "Land",
+    "cards": ["Plains"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Attack",
+    "cards": ["Grizzly Bears"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "DeclareAttackers",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 1,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Hero in Training"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "PayMana",
+      "hand": [
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [
+        {
+          "id": 17,
+          "mine": true,
+          "name": "Hero in Training"
+        }
+      ],
+      "step": "Main2",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [
+        {
+          "id": 41,
+          "mine": true,
+          "name": "Hero in Training"
+        }
+      ],
+      "step": "Main2",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 4,
+      "won": false
+    }
+  },
+  {
+    "act": "Block",
+    "cards": ["Hero in Training", "Dregscape Zombie"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "DeclareBlockers",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 4,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Giant Growth"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 4,
+      "won": false
+    }
+  },
+  {
+    "act": "Target",
+    "cards": ["Hero in Training"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "ChooseTargets",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 4,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "PayMana",
+      "hand": [
+        {
+          "id": 13,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "theirCreatures": [
+        {
+          "id": 37,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 4,
+      "turn": 4,
+      "won": false
+    }
+  },
+  {
+    "act": "Land",
+    "cards": ["Forest"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [
+        {
+          "id": 12,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 4,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Giada, Font of Hope"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [],
+      "lands": [
+        {
+          "id": 12,
+          "name": "Forest"
+        },
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 4,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        }
+      ],
+      "decision": "PayMana",
+      "hand": [],
+      "lands": [
+        {
+          "id": 12,
+          "name": "Forest"
+        },
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "theirCreatures": [],
+      "theirLife": 4,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Attack",
+    "cards": ["Grizzly Bears", "Hero in Training"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "decision": "DeclareAttackers",
+      "hand": [],
+      "lands": [
+        {
+          "id": 12,
+          "name": "Forest"
+        },
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "theirCreatures": [],
+      "theirLife": 4,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 2,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "decision": "Priority",
+      "hand": [],
+      "lands": [
+        {
+          "id": 12,
+          "name": "Forest"
+        },
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "theirCreatures": [],
+      "theirLife": 4,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "byHand": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 16,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 17,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 20,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "decision": null,
+      "hand": [],
+      "lands": [
+        {
+          "id": 12,
+          "name": "Forest"
+        },
+        {
+          "id": 14,
+          "name": "Plains"
+        },
+        {
+          "id": 15,
+          "name": "Forest"
+        },
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "mine": true,
+      "over": true,
+      "stack": [],
+      "step": "CombatDamage",
+      "theirCreatures": [],
+      "theirLife": 0,
+      "turn": 5,
+      "won": true
+    }
+  }
+]

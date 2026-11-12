@@ -12,6 +12,8 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
+use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
 
@@ -492,6 +494,10 @@ pub(crate) struct SeatDecks {
     /// What each seat plays until its holder chooses, and again once the seat is given back.
     defaults: Vec<Option<ChosenDeck>>,
     current: Vec<Option<ChosenDeck>>,
+    /// The seats bots play, which every recipe it writes keeps.
+    bots: Vec<PlayerId>,
+    /// Whether the host set the teams again since the game was made.
+    teams_set: bool,
 }
 
 impl SeatDecks {
@@ -504,7 +510,16 @@ impl SeatDecks {
             seed,
             current: defaults.clone(),
             defaults,
+            bots: Vec::new(),
+            teams_set: false,
         }
+    }
+
+    /// The lobby of a game whose `bots` seats are played by bots, which every recipe it writes keeps.
+    #[must_use]
+    pub(crate) fn with_bots(mut self, bots: Vec<PlayerId>) -> Self {
+        self.bots = bots;
+        self
     }
 
     /// The lobby of a game played under `house_rules`, which every recipe it writes keeps.
@@ -527,6 +542,7 @@ impl SeatDecks {
             .collect();
         SeatDecks::new(recipe.format, recipe.seed, defaults)
             .with_house_rules(recipe.house_rules.clone())
+            .with_bots(recipe.bots.clone())
     }
 
     /// What the table is told of `seat`'s deck.
@@ -575,8 +591,17 @@ impl SeatDecks {
             .collect())
     }
 
-    /// Whether any seat plays something else than the deck the game was made with.
+    /// Sets the teams every recipe it writes keeps.
+    pub(crate) fn set_teams(&mut self, teams: Option<Teams>) {
+        self.house_rules.teams = teams;
+        self.teams_set = true;
+    }
+
+    /// Whether any seat plays something else than the deck the game was made with, or the teams were set again.
     pub(crate) fn changed(&self) -> bool {
+        if self.teams_set {
+            return true;
+        }
         let named = |deck: &Option<ChosenDeck>| {
             deck.as_ref()
                 .map(|deck| (deck.deck.clone(), deck.fingerprint, deck.reads.clone()))
@@ -610,6 +635,7 @@ impl SeatDecks {
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),
             reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
             conjured: crate::recipe::fingerprints_of(&self.conjured()).ok()?,
+            bots: self.bots.clone(),
         })
     }
 }
@@ -653,7 +679,7 @@ mod tests {
     #[case::no_rules(HouseRules::default(), &[IssueCode::Copies, IssueCode::DeckSize])]
     #[case::one_lifted(deck_rules(|d| d.singleton = Some(false)), &[IssueCode::DeckSize])]
     #[case::both_lifted(deck_rules(|d| { d.singleton = Some(false); d.deck_size = Some(60); }), &[])]
-    #[case::another_rule(deck_rules(|d| d.colour_identity = Some(false)), &[IssueCode::Copies, IssueCode::DeckSize])]
+    #[case::another_rule(deck_rules(|d| d.color_identity = Some(false)), &[IssueCode::Copies, IssueCode::DeckSize])]
     fn a_commander_table_lifts_the_issues_of_the_rules_it_relaxed(
         #[case] house: HouseRules,
         #[case] left: &[IssueCode],

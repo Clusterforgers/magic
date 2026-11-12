@@ -132,6 +132,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::Bank { .. } => "bank",
             ServerMessage::Presence { .. } => "presence",
             ServerMessage::Deciding { .. } => "deciding",
+            ServerMessage::Spectators { .. } => "spectators",
         };
         if now != "events" || out.last().is_none_or(|last| *last != "events") {
             out.push(now);

@@ -1,4 +1,4 @@
-//! Goal: the priority offer names, for each card of the holder's hand and command zone it leaves out, the first reason in the order of `Unplayable` (timing, land played, mana after cost changes, targets, other costs, restrictions), honours extra land plays, flash and "as though it had flash", and in whole bot games the reasons and the offered plays are disjoint and together cover the hand and the command zone.
+//! Goal: the priority offer names, for each card of the holder's hand and command zone it leaves out, the first reason in the order of `Unplayable` (timing, land played, mana after cost changes, targets, other costs, restrictions), honours extra land plays, flash and "as though it had flash", and in whole bot games the reasons and the offered plays are disjoint and together cover the hand and the command zone, and no ability is both offered and explained.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -214,6 +214,15 @@ fn check_game(setup: GameSetup, seed: u64, players: usize) -> Result<(), String>
                 .into_iter()
                 .filter(|id| !offered.contains(id))
                 .collect();
+            if options
+                .inactive
+                .iter()
+                .any(|entry| options.abilities.contains(&entry.ability))
+            {
+                return Err(format!(
+                    "seed {seed} step {step}: an ability offered and explained"
+                ));
+            }
             if explained.iter().any(|id| offered.contains(id)) {
                 return Err(format!("seed {seed} step {step}: offered and explained"));
             }

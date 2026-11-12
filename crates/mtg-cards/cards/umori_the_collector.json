@@ -7,11 +7,7 @@
       "name": "Umori, the Collector",
       "oracle_fingerprint": "d722a8181901d2cc958b5870a3f6d4e0",
       "abilities": [
-        {
-          "Keyword": {
-            "Companion": { "SharedCardType": { "of": [{ "Not": { "Type": "Land" } }] } }
-          }
-        },
+        { "Keyword": { "Companion": { "SharedType": { "of": [{ "Not": { "Type": "Land" } }] } } } },
         {
           "Replacement": {
             "when": { "Enters": { "what": ["This"] } },

@@ -14,7 +14,10 @@
               "ZoneChange": { "what": ["Other", { "ControlledBy": "You" }], "from": "Battlefield" }
             },
             "if": { "Compare": { "left": { "AnyCounters": "Triggering" }, "op": "Ge", "right": 1 } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         }
       ]

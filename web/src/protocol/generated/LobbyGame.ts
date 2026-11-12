@@ -41,4 +41,9 @@ created_at: string,
 /**
  * Whole seconds since the game was created, at the moment of the answer.
  */
-age_secs: number, };
+age_secs: number, 
+/**
+ * Whether the game runs: a signed-in visitor watches it (`GET /ws/{game}/watch`) instead of joining. Left out
+ * while false.
+ */
+running?: boolean, };

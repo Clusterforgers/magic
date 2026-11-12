@@ -6,7 +6,7 @@ use std::str::FromStr;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
-use crate::companion::DeckCondition;
+use crate::companion::{CardFact, DeckCondition};
 use crate::cost::{Cost, CostItem};
 use crate::keyword::{GiftKind, Keyword, SpliceOnto};
 use crate::mana::ManaCostX;
@@ -643,7 +643,7 @@ fn companion(rest: &str) -> Option<Keyword> {
         == "your starting deck contains at least twenty cards more than the minimum deck size"
     {
         DeckCondition::ExtraCards(20)
-    } else if let Some(condition) = r301c_companion(&lower) {
+    } else if let Some(condition) = companion_fact(&lower) {
         condition
     } else {
         creature_types(text)?
@@ -651,24 +651,40 @@ fn companion(rest: &str) -> Option<Keyword> {
     Some(Keyword::companion(condition))
 }
 
-/// The companion conditions on the parity of mana values and on a shared card type, from the lowercase text.
-fn r301c_companion(lower: &str) -> Option<DeckCondition> {
+/// The companion conditions that ask more than a selector of the card: a mana value parity, an activated ability, a
+/// shared card type and a mana symbol at most once.
+fn companion_fact(lower: &str) -> Option<DeckCondition> {
     let nonland = || Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]);
+    let permanent = || {
+        Selector(vec![Pred::AnyOf(
+            PERMANENT_CARDS.iter().map(|ty| Pred::Type(*ty)).collect(),
+        )])
+    };
     Some(match lower {
-        "your starting deck contains only cards with even mana values" => {
-            DeckCondition::ManaValueParity {
-                odd: false,
-                besides: Selector::default(),
+        "your starting deck contains only cards with even mana values" => DeckCondition::Has {
+            of: Selector::default(),
+            fact: CardFact::EvenManaValue,
+        },
+        "your starting deck contains only cards with odd mana values and land cards" => {
+            DeckCondition::Has {
+                of: nonland(),
+                fact: CardFact::OddManaValue,
             }
         }
-        "your starting deck contains only cards with odd mana values and land cards" => {
-            DeckCondition::ManaValueParity {
-                odd: true,
-                besides: Selector(vec![Pred::Type(CardType::Land)]),
+        "each permanent card in your starting deck has an activated ability" => {
+            DeckCondition::Has {
+                of: permanent(),
+                fact: CardFact::ActivatedAbility,
+            }
+        }
+        "no card in your starting deck has more than one of the same mana symbol in its mana cost" => {
+            DeckCondition::Has {
+                of: Selector::default(),
+                fact: CardFact::NoRepeatedSymbol,
             }
         }
         "each nonland card in your starting deck shares a card type" => {
-            DeckCondition::SharedCardType { of: nonland() }
+            DeckCondition::SharedType { of: nonland() }
         }
         _ => return None,
     })
@@ -1770,18 +1786,6 @@ mod tests {
             x: Amount::Tallied { who: crate::refs::Ref::Opponents, what: crate::value::TurnTally::DamageDealtTo },
         }
     )]
-    #[case::companion_even_values(
-        "Companion \u{2014} Your starting deck contains only cards with even mana values.",
-        Keyword::companion(DeckCondition::ManaValueParity { odd: false, besides: Selector::default() })
-    )]
-    #[case::companion_odd_values_and_lands(
-        "Companion \u{2014} Your starting deck contains only cards with odd mana values and land cards.",
-        Keyword::companion(DeckCondition::ManaValueParity { odd: true, besides: Selector(vec![Pred::Type(CardType::Land)]) })
-    )]
-    #[case::companion_shared_card_type(
-        "Companion \u{2014} Each nonland card in your starting deck shares a card type.",
-        Keyword::companion(DeckCondition::SharedCardType { of: Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]) })
-    )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
         Keyword::PartnerWith("Pir, Imaginative Rascal".into())
@@ -1839,14 +1843,11 @@ mod tests {
     #[case::enchant_nothing("Enchant")]
     #[case::partner_without_a_text("Partner\u{2014}")]
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
-    #[case::companion_with_even_values_and_lands(
-        "Companion \u{2014} Your starting deck contains only cards with even mana values and land cards."
+    #[case::companion_with_prime_values(
+        "Companion \u{2014} Your starting deck contains only cards with prime mana values."
     )]
-    #[case::companion_where_some_nonland_cards_share_a_type(
-        "Companion \u{2014} Some nonland cards in your starting deck share a card type."
-    )]
-    #[case::companion_with_activated_abilities(
-        "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
+    #[case::companion_with_triggered_abilities(
+        "Companion \u{2014} Each permanent card in your starting deck has a triggered ability."
     )]
     #[case::companion_without_a_condition("Companion")]
     #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]

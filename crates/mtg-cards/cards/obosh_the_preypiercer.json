@@ -9,12 +9,14 @@
       "abilities": [
         {
           "Keyword": {
-            "Companion": { "ManaValueParity": { "odd": true, "besides": [{ "Type": "Land" }] } }
+            "Companion": {
+              "Has": { "of": [{ "Not": { "Type": "Land" } }], "fact": "OddManaValue" }
+            }
           }
         },
         {
           "Manual": {
-            "reason": "you apply this replacement by hand",
+            "reason": "you apply this static ability by hand",
             "span": { "start": 203, "end": 358 }
           }
         }

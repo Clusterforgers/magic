@@ -32,7 +32,7 @@ pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
 pub use read::subtypes::creature_types;
 pub use read::{
-    BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts,
+    BlockPlan, all_groups, block_plan, by_hand_event, champion_line, die_row, die_row_texts,
     either_way_pair_texts, ep23_three_texts, equip_line, escalate_cost, escalate_reads,
     forecast_lines, keyword_cost_texts, keyword_grant, reinforce_line, render_ability, render_cost,
     render_mode, render_variants, same_text, same_written_text, static_pair_texts, subject_group,
@@ -370,6 +370,11 @@ fn read_clause(
         }
         _ => (None, Vec::new()),
     }
+}
+
+/// The chapter numbers a Saga line opens with ("II, III — ..." is 2 and 3), or none for another line.
+pub fn chapter_numbers(line: &str) -> Option<Vec<u32>> {
+    classify::chapter(line).map(|(numbers, _)| numbers)
 }
 
 /// Whether the clause is a Saga chapter line ("I — ...", "II, III — ...").

@@ -1,4 +1,4 @@
-//! Goal: a turn on a crowded table (1,500 tokens attack 1,500 blockers, then a sweep clears every permanent) costs time in proportion to the table, not to its square or worse: the whole turn stays far inside a bound a quadratic scan per permanent would exceed by minutes, and the log of the turn replays to the same state hash.
+//! Goal: a turn on a crowded table (1,500 tokens attack 1,500 blockers, then a sweep clears every permanent) costs time in proportion to the table, not to its square or worse: the whole turn stays far inside a bound a quadratic scan per permanent would exceed by minutes, the declaration of the attack (which lists every blocker's 1,500 attackers) stays inside a bound that reading each pair's keywords and effects anew would break, and the log of the turn replays to the same state hash.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -20,6 +20,10 @@ const CROWD: usize = 1_500;
 /// What the whole turn may take in a debug build: twenty times the 1.2 s it takes on an idle machine, and far less than the
 /// minutes the square of the table costs.
 const BOUND: Duration = Duration::from_secs(30);
+
+/// What the answer that declares the attack and offers the blocks may take in a debug build: about ten times the 0.15 s
+/// it takes on an idle machine; reading the keywords and effects of each of the 2,250,000 pairs again took 0.4 s more.
+const ATTACK_BOUND: Duration = Duration::from_millis(1_500);
 
 /// Seat 0 holds the lands and the sweep for the end of the turn; seat 1 holds `CROWD` blockers that deal no damage.
 fn table() -> GameSetup {
@@ -87,7 +91,11 @@ fn combat(engine: &mut Engine) {
             }
             _ => Driver::passive_answer(&decision),
         };
+        let attack = matches!(decision.kind, DecisionKind::DeclareAttackers(_));
+        let started = Instant::now();
         answer(engine, next);
+        let took = started.elapsed();
+        assert!(!attack || took < ATTACK_BOUND, "the attack took {took:?}");
     }
 }
 

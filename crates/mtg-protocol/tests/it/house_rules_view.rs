@@ -63,11 +63,11 @@ fn rules(set: impl FnOnce(&mut HouseRules)) -> HouseRules {
 )]
 #[case::the_deck_check(
     rules(|r| {
-        r.deck = DeckRules { singleton: Some(false), colour_identity: Some(false), deck_size: Some(60), max_copies: Some(4) };
+        r.deck = DeckRules { singleton: Some(false), color_identity: Some(false), deck_size: Some(60), max_copies: Some(4) };
         r.commanders_per_seat = Some(2);
     }),
     Some(json!({
-        "deck": { "singleton": false, "colour_identity": false, "deck_size": 60, "max_copies": 4 },
+        "deck": { "singleton": false, "color_identity": false, "deck_size": 60, "max_copies": 4 },
         "commanders_per_seat": 2,
     }))
 )]
@@ -114,6 +114,7 @@ fn row(house_rules: Option<HouseRules>) -> LobbyGame {
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),
         age_secs: 5,
+        running: false,
     }
 }
 

@@ -8,7 +8,7 @@ interface ClauseListProps {
   lines: readonly ClauseLine[]
   support: Support
   /** The card's text is still being read, so a quote may yet come. */
-  pending: boolean
+  pending?: boolean
   /** Keeps the quote above the reason at every width, for a narrow column. */
   stacked?: boolean
 }
@@ -17,7 +17,7 @@ interface ClauseListProps {
  * The clauses of a card the game leaves to the table: the quoted words of the card beside the plain reason (stacked
  * under `sm`). A clause whose words are not known shows the reason alone, or a placeholder while they are read.
  */
-export function ClauseList({ lines, support, pending, stacked = false }: ClauseListProps) {
+export function ClauseList({ lines, support, pending = false, stacked = false }: ClauseListProps) {
   return (
     <ul className="grid gap-2" data-slot="clauses">
       {lines.map((line) => {

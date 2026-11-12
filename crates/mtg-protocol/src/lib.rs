@@ -33,7 +33,7 @@ pub use project::{spectator_viewer, zone_is_visible, zone_is_visible_in};
 pub use rest::{
     AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CardDetail, CardHit,
     CardSearchPage, CreatedAccount, Credentials, DeckBody, DeckErrorCode, DeckList, DeckView,
-    MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange, PasswordReset, UserView,
+    MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange, PasswordReset, Replay, UserView,
 };
 pub use view::{
     ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,

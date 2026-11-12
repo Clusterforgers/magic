@@ -329,7 +329,7 @@ async fn a_lobby_with_claims_comes_back_after_a_restart(pool: PgPool) {
     // The lobby tells a returning seat who sits where.
     let access = again.authenticate(game, bo_token.expose()).unwrap();
     let mut client = Client::join(&access.handle, 1).await;
-    let ServerMessage::Lobby { seats, needed } = client
+    let ServerMessage::Lobby { seats, needed, .. } = client
         .until(|m| matches!(m, ServerMessage::Lobby { .. }).then(|| m.clone()))
         .await
     else {

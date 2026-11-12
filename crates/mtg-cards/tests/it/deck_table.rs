@@ -38,8 +38,8 @@ fn deck(set: impl FnOnce(&mut DeckRules)) -> HouseRules {
 #[case::singleton_off(deck(|d| d.singleton = Some(false)), &[IssueCode::Copies])]
 #[case::a_copy_limit(deck(|d| { d.singleton = Some(false); d.max_copies = Some(3); }), &[IssueCode::Copies])]
 #[case::singleton_kept(deck(|d| d.singleton = Some(true)), &[])]
-#[case::colour_identity_off(deck(|d| d.colour_identity = Some(false)), &[IssueCode::ColorIdentity])]
-#[case::colour_identity_kept(deck(|d| d.colour_identity = Some(true)), &[])]
+#[case::color_identity_off(deck(|d| d.color_identity = Some(false)), &[IssueCode::ColorIdentity])]
+#[case::color_identity_kept(deck(|d| d.color_identity = Some(true)), &[])]
 #[case::two_commanders(HouseRules { commanders_per_seat: Some(2), ..HouseRules::default() }, &[IssueCode::CommanderPair])]
 #[case::one_commander(HouseRules { commanders_per_seat: Some(1), ..HouseRules::default() }, &[])]
 #[case::other_rules_lift_nothing(

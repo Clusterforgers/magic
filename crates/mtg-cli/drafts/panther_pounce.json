@@ -12,6 +12,7 @@
             "targets": [{ "what": "Player" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
               { "CreateToken": { "who": { "Target": 0 }, "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated", "who": { "Target": 0 } } },
               {
                 "Continuous": {
                   "affected": { "Target": 1 },

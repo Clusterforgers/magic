@@ -9,7 +9,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::controller_of_object;
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
 use crate::rules::Rule;
 use crate::state::GameState;
@@ -22,7 +22,8 @@ pub(crate) struct W17bRules {
     cant_lose: BTreeSet<PlayerId>,
     life_spared: BTreeSet<PlayerId>,
     winless: BTreeSet<PlayerId>,
-    cant_cast: Vec<(PlayerId, Option<PlayerId>)>,
+    /// Who can't cast spells, during whose turn (every turn when `None`), and the object whose rule it is.
+    cant_cast: Vec<(PlayerId, Option<PlayerId>, Option<ObjectRef>)>,
     toughness: BTreeSet<PlayerId>,
 }
 
@@ -37,8 +38,8 @@ pub(crate) const W17B_NONE: W17bRules = W17bRules {
 };
 
 impl W17bRules {
-    /// Puts one of these rules in force.
-    pub(crate) fn w17b_put(&mut self, rule: &Rule) {
+    /// Puts one of these rules of `source` in force.
+    pub(crate) fn w17b_put(&mut self, rule: &Rule, source: Option<ObjectRef>) {
         match rule {
             Rule::GraveyardCardsUntargetable => self.graveyards = true,
             Rule::CantLoseGame {
@@ -55,7 +56,7 @@ impl W17bRules {
             }
             Rule::CantCastSpells { who, turn } => {
                 self.cant_cast
-                    .extend(who.iter().map(|player| (*player, *turn)));
+                    .extend(who.iter().map(|player| (*player, *turn, source)));
             }
             Rule::ToughnessAssignsDamage(players) => self.toughness.extend(players),
             _ => {}
@@ -137,13 +138,20 @@ pub fn w17b_cant_win(state: &GameState, player: PlayerId) -> bool {
 
 /// Whether `player` can't cast spells now: a rule forbids it on every turn or during the active player's turn.
 pub fn w17b_cant_cast(state: &GameState, player: PlayerId) -> bool {
+    w17b_cant_cast_by(state, player).is_some()
+}
+
+/// The first "can't cast spells" rule that holds for `player` now: `Some` with the object whose rule it is, if any.
+#[allow(clippy::option_option)]
+pub(crate) fn w17b_cant_cast_by(state: &GameState, player: PlayerId) -> Option<Option<ObjectRef>> {
     let active = state.turn().active();
     state
         .rules()
         .w17b
         .cant_cast
         .iter()
-        .any(|(who, turn)| *who == player && turn.is_none_or(|turn| turn == active))
+        .find(|(who, turn, _)| *who == player && turn.is_none_or(|turn| turn == active))
+        .map(|(_, _, source)| *source)
 }
 
 /// Whether the creature `id` assigns combat damage equal to its toughness rather than its power.

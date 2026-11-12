@@ -39,8 +39,10 @@ export interface FlaggedCard {
   oracleId: string
   name: string
   support: Unvalidated
-  /** The clauses left to the table; none for a card with no rules file, whose whole text is left. */
+  /** The clauses left to the table, each quoting its words; none for a card left whole to the table. */
   reasons: readonly Reason[]
+  /** The card's text when it is left whole to the table (no clause of its own); absent otherwise. */
+  wholeText?: string
   /** The read state of the draft that decides the card, once it has one. */
   draft?: ReadState
   /** The clauses its draft words differently from the card, each beside the engine's words; none for most drafts. */
@@ -83,6 +85,7 @@ function flaggedIn(deck: CheckedDeck): FlaggedCard[] {
       name: card.name,
       support: card.support,
       reasons: card.reasons,
+      ...(card.whole_text === undefined ? {} : { wholeText: card.whole_text }),
       draft: card.draft,
       differs: card.differs ?? [],
       decks: [{ id: deck.id, name: deck.name }],
@@ -157,10 +160,13 @@ const flat = (text: string): string =>
     .join(' / ')
 
 /**
- * The words of `reason` in the text of its face: spans count Unicode scalar values, like the text is indexed by here.
- * Lines of the card join with " / ". Null when the text is not known or the span holds nothing.
+ * The words of `reason`: the quote the check gives, else its span in `faces`, the text of each face (spans count
+ * Unicode scalar values, like the text is indexed by here). Lines of the card join with " / ". Null when neither is
+ * known or the span holds nothing.
  */
-export function quoteOf(reason: Reason, faces: readonly string[] | undefined): string | null {
+export function quoteOf(reason: Reason, faces?: readonly string[]): string | null {
+  const own = flat(reason.quote)
+  if (own !== '') return own
   const text = faces?.[reason.face]
   if (text === undefined) return null
   const quote = flat(Array.from(text).slice(reason.span.start, reason.span.end).join(''))
@@ -178,9 +184,9 @@ export interface ClauseLine {
  * The clauses of a card to show or copy. A card with none is left whole to the table, so its text is the quote and
  * the state's words the reason.
  */
-export function clauseLines(card: FlaggedCard, faces: readonly string[] | undefined): ClauseLine[] {
+export function clauseLines(card: FlaggedCard, faces?: readonly string[]): ClauseLine[] {
   if (card.reasons.length === 0) {
-    const whole = flat((faces ?? []).join('\n'))
+    const whole = flat(card.wholeText ?? (faces ?? []).join('\n'))
     const words = NO_CLAUSE[card.support]
     return [
       {
@@ -198,20 +204,17 @@ export function clauseLines(card: FlaggedCard, faces: readonly string[] | undefi
   }))
 }
 
-/** The oracle texts read so far, by oracle id: one string per face. */
-export type FaceTexts = ReadonlyMap<string, readonly string[]>
-
 /**
  * The cards as plain text, one block each, blocks apart by an empty line:
  * `Card Name (Manual) - decks: A, B`, then one `  - "<span>": <reason>` line per clause (`  - <reason>` while the words
  * are not known). A card with no deck has no `- decks:` part.
  */
-export function copyText(cards: readonly FlaggedCard[], texts: FaceTexts): string {
+export function copyText(cards: readonly FlaggedCard[]): string {
   return cards
     .map((card) => {
       const decks =
         card.decks.length === 0 ? '' : ` - decks: ${card.decks.map((deck) => deck.name).join(', ')}`
-      const lines = clauseLines(card, texts.get(card.oracleId)).map((line) =>
+      const lines = clauseLines(card).map((line) =>
         line.quote === null ? `  - ${line.text}` : `  - "${line.quote}": ${line.text}`,
       )
       return [`${card.name} (${SUPPORT_LABEL[card.support]})${decks}`, ...lines].join('\n')

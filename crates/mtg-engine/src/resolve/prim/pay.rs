@@ -309,11 +309,11 @@ pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Sacrificed | Leaves::Exiled | Leaves::Stays => {}
     }
-    // Energy is the one part whose X is announced with a payment an effect asks for.
+    // Energy and life are the parts whose X is announced with a payment an effect asks for ("pay any amount of life").
     if price
         .parts
         .iter()
-        .any(|part| part.is_counted() && !part.is_counted_energy())
+        .any(|part| part.is_counted() && !part.is_counted_energy() && !part.is_counted_life())
     {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
@@ -894,6 +894,50 @@ mod tests {
         );
     }
 
+    /// [`guided`] with a Cadaverous Bloom (exile a card from your hand: add {B}{B} or {G}{G}) in play beside no land.
+    fn bloomed(guides: usize, others: usize) -> GameState {
+        let guide: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"from":"Hand","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+        )
+        .unwrap();
+        let bloom: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[]}}],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Black","Black"],["Green","Green"]]}}}]}}"#,
+        )
+        .unwrap();
+        let guide = Arc::new(CardDefinition::new("Guide").with_rules(guide));
+        let bloom = Arc::new(CardDefinition::new("Bloom").with_rules(bloom));
+        let mut hand = vec![guide; guides];
+        hand.extend((0..others).map(|_| forest()));
+        state(
+            vec![hand, Vec::new()],
+            vec![vec![bloom, creature("Source", 1, 1)], Vec::new()],
+        )
+    }
+
+    #[rstest]
+    #[case::the_guide_exiled_for_black(1, 0, r#""{B}{B}""#, false)]
+    #[case::the_guide_cannot_also_add_red(1, 0, r#""{B}{B}{R}""#, true)]
+    #[case::another_card_to_exile(1, 1, r#""{B}{B}{R}""#, false)]
+    #[case::a_second_guide_to_exile(2, 0, r#""{B}{B}{R}""#, false)]
+    #[case::two_uses_and_a_guide_need_three_cards(1, 1, r#""{B}{B}{B}{B}{R}""#, true)]
+    #[case::two_guides_cannot_pay_two_uses_and_red(2, 0, r#""{B}{B}{B}{B}{R}""#, true)]
+    fn a_hand_card_is_a_guide_or_the_card_a_bloom_exiles_never_both(
+        #[case] guides: usize,
+        #[case] others: usize,
+        #[case] cost: &str,
+        #[case] only_no: bool,
+    ) {
+        let game = bloomed(guides, others);
+        let Ok(Run::Ask(Decision {
+            kind: DecisionKind::YesNo(options),
+            ..
+        })) = run_with(&game, &[], &pay(r#""You""#, cost))
+        else {
+            panic!("the player is asked");
+        };
+        assert_eq!(options.only_no, only_no);
+    }
+
     #[test]
     fn a_no_from_a_player_who_cannot_pay_leads_to_the_unpaid_effects() {
         let game = game(&[0, 0]);
@@ -1038,10 +1082,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::counted_life(
-        r#"[{"PayLife":"X"}]"#,
-        ResolveError::Unsupported("Effect.Pay.X.Parts")
-    )]
     #[case::counted_mill(r#"[{"Mill":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X.Parts"))]
     #[case::discarding_the_source(
         r#"["DiscardSelf"]"#,
@@ -1205,6 +1245,37 @@ mod tests {
             })
             .sum();
         assert_eq!(paid, -i32::try_from(x).unwrap());
+    }
+
+    #[rstest]
+    #[case::none(0)]
+    #[case::some(7)]
+    #[case::all(20)]
+    fn l31b_pay_x_life_takes_the_amount_announced_and_binds_it(#[case] x: u32) {
+        let game = energy_game(0);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(x))];
+        let Run::Done { events, bound, .. } =
+            run_journal(&game, journal, &pay(r#""You""#, r#"[{"PayLife":"X"}]"#)).unwrap()
+        else {
+            panic!("the payment was expected to be done");
+        };
+        assert_eq!(bound, vec![(format!("~x:{x}"), Vec::new())]);
+        let paid: u32 = events
+            .iter()
+            .map(|event| match event {
+                Event::LifePaid { amount, .. } => *amount,
+                other => panic!("unexpected event {other:?}"),
+            })
+            .sum();
+        assert_eq!(paid, x);
+    }
+
+    #[test]
+    fn l31b_pay_x_life_beyond_the_life_total_is_refused() {
+        let game = energy_game(0);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(21))];
+        let run = run_journal(&game, journal, &pay(r#""You""#, r#"[{"PayLife":"X"}]"#));
+        assert!(matches!(run, Err(ResolveError::Invalid(_))), "{run:?}");
     }
 
     #[test]

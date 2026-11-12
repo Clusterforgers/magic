@@ -53,7 +53,7 @@ async fn forecast_of(client: &mut WsClient) -> (DecisionId, Option<CombatForecas
     loop {
         match client.message().await {
             ServerMessage::Forecast { decision, forecast } => return (decision, forecast),
-            ServerMessage::Error { code, message } => {
+            ServerMessage::Error { code, message, .. } => {
                 panic!("a preview must never be an error: {code:?} {message}")
             }
             _ => {}
@@ -620,7 +620,7 @@ async fn a_real_answer_sent_right_after_a_flood_of_previews_goes_through() {
     let batch = loop {
         match duel.b.message().await {
             ServerMessage::Forecast { .. } => forecasts += 1,
-            ServerMessage::Error { code, message } => panic!("{code:?}: {message}"),
+            ServerMessage::Error { code, message, .. } => panic!("{code:?}: {message}"),
             ServerMessage::Events(batch)
                 if batch.events.iter().any(|event| {
                     matches!(event, EventView::Public(Event::BlockersDeclared { .. }))

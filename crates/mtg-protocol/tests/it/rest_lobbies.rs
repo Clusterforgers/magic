@@ -48,6 +48,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),
         age_secs: 125,
+        running: false,
     }
 }
 
@@ -496,4 +497,20 @@ fn the_game_lookup_names_house_rules_only_when_some_are_set() {
     let value = serde_json::to_value(&info).unwrap();
     assert_eq!(value["house_rules"], json!({ "starting_life": 30 }));
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), info);
+}
+
+#[test]
+fn a_running_row_says_so_and_a_lobby_row_leaves_it_out() {
+    let lobby = serde_json::to_value(game("Ann", 1)).unwrap();
+    assert!(lobby.get("running").is_none());
+    let running = LobbyGame {
+        running: true,
+        ..game("Ann", 4)
+    };
+    let value = serde_json::to_value(&running).unwrap();
+    assert_eq!(value["running"], json!(true));
+    assert_eq!(serde_json::from_value::<LobbyGame>(value).unwrap(), running);
+    let older: LobbyGame = serde_json::from_value(lobby).unwrap();
+    assert!(!older.running, "a row without the flag is a lobby");
+    assert!(generated()["LobbyGame.ts"].contains("running?: boolean"));
 }

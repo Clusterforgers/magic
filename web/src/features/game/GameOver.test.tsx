@@ -1,4 +1,4 @@
-// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates a winner for every seat (the burst for the winner, a banner naming them for the others) as decoration that keeps still under reduced motion, gives each seat's time on its own turns, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
+// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates a winner or a winning team for every seat (the burst for each winner, a banner naming them for the others), names a winning team and its players as decoration that keeps still under reduced motion, gives each seat's time on its own turns, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { screen, waitFor, within } from '@testing-library/react'
@@ -8,7 +8,8 @@ import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore } from '@/features/auth/store'
 import { createSession } from '@/play/session'
 import { initialPlayState } from '@/play/store'
-import type { GameResult, LossReason } from '@/protocol/generated'
+import { winningSeats } from '@/lib/teams'
+import type { GameResult, LossReason, Teams } from '@/protocol/generated'
 import { startAccounts } from '@/test-utils/accountsServer'
 import { clone } from '@/test-utils/batches'
 import { renderInRouter } from '@/test-utils/router'
@@ -27,10 +28,12 @@ interface Ending {
   me?: number
   /** False for a page that never got a view of the board. */
   board?: boolean
+  /** The teams of the table, carried in the view's house rules. */
+  teams?: Teams
 }
 
 /** A game context at the end of a game: a session whose store holds the result and, unless told not to, the board. */
-function endedGame({ result, lost = {}, seats = 2, me = 0, board = true }: Ending): GameContextValue {
+function endedGame({ result, lost = {}, seats = 2, me = 0, board = true, teams }: Ending): GameContextValue {
   const session = createSession({ game: 'over', name: 'test' })
   const final = clone(lateJoin.expected)
   const first = final.players[0]
@@ -42,6 +45,7 @@ function endedGame({ result, lost = {}, seats = 2, me = 0, board = true }: Endin
     life: lost[seat] === undefined ? 14 : 0,
     turn_time_ms: 725_000 + seat * 3_000_000,
   }))
+  if (teams !== undefined) final.house_rules = { teams }
   session.store.setState({
     ...initialPlayState(),
     status: 'open',
@@ -52,6 +56,9 @@ function endedGame({ result, lost = {}, seats = 2, me = 0, board = true }: Endin
   })
   return { game: 'over', session, lookup: { game: null, missing: false, failed: false } }
 }
+
+const GIANT: Teams = { mode: 'two_headed_giant', seats: [0, 0, 1, 1] }
+const ALTERNATE: Teams = { mode: 'teams', seats: [0, 1, 0, 1] }
 
 const ENDINGS: [string, Ending, string, string, string][] = [
   ['a win on the board', { result: { Winner: 0 }, lost: { 1: 'ZeroLife' } }, 'You won', 'Game over', 'won'],
@@ -84,11 +91,34 @@ const ENDINGS: [string, Ending, string, string, string][] = [
     'Game over',
     'lost',
   ],
+  [
+    "a Two-Headed Giant win for this seat's team",
+    { result: { Team: 0 }, seats: 4, me: 1, teams: GIANT, lost: { 2: 'ZeroLife', 3: 'ZeroLife' } },
+    'Your team won',
+    'Game over',
+    'won',
+  ],
+  [
+    "a team loss for this seat's team",
+    { result: { Team: 1 }, seats: 4, teams: ALTERNATE, lost: { 0: 'ZeroLife', 2: 'ZeroLife' } },
+    'You lost',
+    'Game over',
+    'lost',
+  ],
 ]
 
 const winCss = readFileSync(join(import.meta.dirname, 'winBurst.css'), 'utf8')
 
-const winnerOf = (ending: Ending): number | null => (ending.result === 'Draw' ? null : ending.result.Winner)
+const winnersOf = (ending: Ending): number[] => winningSeats(ending.result, ending.teams)
+
+/** The words of the banner every seat but the winners sees, for the stand-in names of a page without a lookup. */
+function bannerOf(ending: Ending): string | null {
+  const { result } = ending
+  if (result === 'Draw') return null
+  if ('Winner' in result) return `Seat ${result.Winner + 1} won`
+  const members = winnersOf(ending).map((seat) => `Seat ${seat + 1}`)
+  return `Team ${result.Team + 1} (${members.join(' & ')}) won`
+}
 
 const ICON = {
   won: 'lucide-trophy',
@@ -115,7 +145,7 @@ describe('the result', () => {
       const icon = section.querySelector('header svg')
       expect(icon).toHaveAttribute('aria-hidden', 'true')
       // The winner's picture is the trophy, also when the last opponent conceded.
-      const mine = winnerOf(ending) === (ending.me ?? 0)
+      const mine = winnersOf(ending).includes(ending.me ?? 0)
       expect(icon).toHaveClass(mine ? ICON.won : ICON[kind as keyof typeof ICON])
     },
   )
@@ -126,14 +156,14 @@ describe('the result', () => {
       const [, ending, headline] = args
       await renderInRouter(shown(endedGame(ending)))
       const section = screen.getByRole('region', { name: headline })
-      const winner = winnerOf(ending)
-      const mine = winner === (ending.me ?? 0)
+      const mine = winnersOf(ending).includes(ending.me ?? 0)
+      const words = bannerOf(ending)
       const pieces = section.querySelectorAll('[data-slot="win-piece"]')
       expect(pieces).toHaveLength(mine ? WIN_PIECES : 0)
       expect(section.querySelector('[data-slot="win-badge"]') !== null).toBe(mine)
       const banner = section.querySelector('[data-slot="win-banner"]')
-      if (winner === null || mine) expect(banner).toBeNull()
-      else expect(banner).toHaveTextContent(`Seat ${winner + 1} won`)
+      if (words === null || mine) expect(banner).toBeNull()
+      else expect(banner).toHaveTextContent(words)
       // The celebration is decoration: nothing in it is read out and nothing in it takes a click.
       for (const piece of pieces) expect(piece.closest('[aria-hidden="true"]')).not.toBeNull()
       if (banner !== null) {
@@ -165,6 +195,26 @@ describe('the result', () => {
     expect(rows[1]).toHaveTextContent('Lost: conceded')
   })
 
+  it('names the winning team and its players, and marks every seat with its team', async () => {
+    const ending: Ending = {
+      result: { Team: 1 },
+      seats: 4,
+      me: 0,
+      teams: GIANT,
+      lost: { 0: 'ZeroLife', 1: 'ZeroLife' },
+    }
+    await renderInRouter(shown(endedGame(ending)))
+    expect(screen.getByText(/^Team 2 wins — Seat 3 & Seat 4\./)).toBeInTheDocument()
+    const rows = within(screen.getByRole('list', { name: 'How each seat finished' })).getAllByRole('listitem')
+    expect(rows.map((row) => row.querySelector('[data-slot="team-badge"]')?.textContent)).toEqual([
+      'Team 1',
+      'Team 1',
+      'Team 2',
+      'Team 2',
+    ])
+    expect(rows.map((row) => row.textContent.includes('Winner'))).toEqual([false, false, true, true])
+  })
+
   it('gives every seat its time on its own turns, in figures and in words', async () => {
     await renderInRouter(shown(endedGame({ result: { Winner: 0 }, lost: { 1: 'ZeroLife' } })))
     const rows = within(screen.getByRole('list', { name: 'How each seat finished' })).getAllByRole('listitem')
@@ -188,13 +238,14 @@ describe('the result', () => {
 })
 
 describe('the ways on', () => {
-  it('offers a new game and the Play page to a guest, and nothing about My games', async () => {
+  it('offers a new game, the replay and the Play page to a guest, and nothing about My games', async () => {
     await renderInRouter(shown(endedGame({ result: { Winner: 0 }, lost: { 1: 'ZeroLife' } })))
     const links = screen
       .getAllByRole('link')
       .filter((link) => link.closest('main, [data-slot="page"]') !== null)
     expect(links.map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
       ['Create another game', '/new'],
+      ['Watch the replay', '/replay/over'],
       ['Back to Play', '/'],
     ])
   })
@@ -214,7 +265,7 @@ describe('the ways on', () => {
       within(page)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Create another game', 'Back to Play', 'My games'])
+    ).toEqual(['Create another game', 'Watch the replay', 'Back to Play', 'My games'])
   })
 
   it('makes the new game the one primary button and the others outlined', async () => {

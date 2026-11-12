@@ -11,8 +11,6 @@ import { GuestJoinDialog } from '@/features/browser/GuestJoinDialog'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
-import { cardsApi } from '@/net/cards'
-import type { CardsApi } from '@/net/cards'
 import { useAuth } from '@/features/auth/context'
 import { favouritesApi } from '@/net/favourites'
 import type { FavouritesApi } from '@/net/favourites'
@@ -35,8 +33,6 @@ import { usePrecons } from './usePrecons'
 export interface PreconsPageProps {
   /** The precon calls; the shared client by default. */
   api?: Pick<PreconsApi, 'list' | 'get'>
-  /** The card endpoint the clauses of a precon's cards are quoted from. */
-  cards?: Pick<CardsApi, 'get'>
   /** The call that makes a game; the shared client by default. */
   games?: Pick<Api, 'createGame'>
   /** The account's favourite precons; defaults to the server's. */
@@ -71,7 +67,6 @@ function RowsSkeleton() {
 export function PreconsPage({
   api = preconsApi,
   games = sharedApi,
-  cards = cardsApi,
   favouritesApi: favouritesSource = favouritesApi,
 }: PreconsPageProps) {
   usePageTitle('Precons')
@@ -239,7 +234,6 @@ export function PreconsPage({
           precon={details.precon}
           open={details.open}
           detail={detail.state}
-          cards={cards}
           onRetry={detail.reload}
           onCancel={() => setDetails((was) => (was === null ? null : { ...was, open: false }))}
           onClosed={() => setDetails(null)}

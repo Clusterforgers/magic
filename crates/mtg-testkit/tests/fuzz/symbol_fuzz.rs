@@ -35,7 +35,7 @@ fn bot_games_with_hybrid_and_phyrexian_costs_finish_and_keep_every_invariant(
         let outcome = play_game_with(symbol_fuzz_setup(players, seed), seed, options)
             .unwrap_or_else(|failure| panic!("{failure}"));
         match outcome.result {
-            GameResult::Winner(_) => winners.fetch_add(1, Ordering::Relaxed),
+            GameResult::Winner(_) | GameResult::Team(_) => winners.fetch_add(1, Ordering::Relaxed),
             GameResult::Draw => draws.fetch_add(1, Ordering::Relaxed),
         };
     });
