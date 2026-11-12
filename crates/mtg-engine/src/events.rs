@@ -699,6 +699,14 @@ pub enum Event {
         /// What it attacks.
         target: AttackTarget,
     },
+    /// An attacking creature now attacks this player, planeswalker or battle instead (an effect reselected it); it is
+    /// still the creature that attacked as declared.
+    AttackRedirected {
+        /// The creature.
+        object: ObjectId,
+        /// What it attacks now.
+        target: AttackTarget,
+    },
     /// A permanent stopped being attached to what it was attached to.
     Unattached {
         /// The permanent.
@@ -1437,6 +1445,7 @@ impl Event {
             | Event::Entered { object, .. }
             | Event::Unattached { object }
             | Event::JoinedAttack { object, .. }
+            | Event::AttackRedirected { object, .. }
             | Event::AttachedToPlayer { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

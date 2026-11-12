@@ -682,6 +682,14 @@ object: ObjectId,
 /**
  * What it attacks.
  */
+target: AttackTarget, } } | { "AttackRedirected": { 
+/**
+ * The creature.
+ */
+object: ObjectId, 
+/**
+ * What it attacks now.
+ */
 target: AttackTarget, } } | { "Unattached": { 
 /**
  * The permanent.

@@ -159,7 +159,7 @@ pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveErr
 /// The cost paid `times` times at once: the mana repeated so that it adds up, and the number of life, energy, counters
 /// and objects every other part takes multiplied, so that the whole of it is asked, checked and paid as one part (two
 /// parts of 1 life would each look payable with 1 life).
-fn repeated(cost: &Cost, times: usize) -> Cost {
+pub(super) fn repeated(cost: &Cost, times: usize) -> Cost {
     let factor = i32::try_from(times).unwrap_or(i32::MAX);
     let times_over = |amount: &Amount| match amount {
         Amount::Fixed(number) => Amount::Fixed(number.saturating_mul(factor)),

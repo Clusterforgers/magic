@@ -373,6 +373,16 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         }
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
+        Event::AttackRedirected { object, target } => {
+            let attacker = state
+                .combat
+                .attackers
+                .iter_mut()
+                .find(|a| a.object == *object)
+                .ok_or_else(|| invalid(format!("{object:?} is not attacking")))?;
+            attacker.target = *target;
+            attacker.target_left = false;
+        }
         Event::RemovedFromCombat { object } => state.combat.remove_object(*object),
         Event::AttackersBlocked { attackers } => {
             for attacker in attackers {

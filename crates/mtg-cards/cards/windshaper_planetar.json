@@ -1,7 +1,7 @@
 {
   "oracle_id": "c47050c2-9b46-427e-85d6-058fd6a61e67",
   "name": "Windshaper Planetar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Windshaper Planetar",
@@ -10,9 +10,12 @@
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 227 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "AtTrigger": { "Step": "DeclareAttackers" } },
+            "effects": [
+              { "Reattack": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } }
+            ]
           }
         }
       ]

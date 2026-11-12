@@ -29,6 +29,7 @@ mod l290_writers;
 mod l293_cards;
 mod l31a_logs;
 mod l31b_writers;
+mod l32a_cards;
 mod linked_exile;
 mod partial;
 mod partial_draft;

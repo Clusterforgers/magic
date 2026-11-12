@@ -156,6 +156,8 @@ enum Quantity {
     Number(u32),
     X,
     ThatMany,
+    /// "twice that many": twice the amount of the triggering event.
+    TwiceThatMany,
     NumberOf,
 }
 
@@ -353,6 +355,8 @@ fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     let legend = r.attempt(legendary);
     let quantity = if legend.is_some() {
         Quantity::Number(1)
+    } else if r.ability && r.triggered && r.words("twice that many") {
+        Quantity::TwiceThatMany
     } else if r.ability && r.triggered && r.words("that many") {
         Quantity::ThatMany
     } else if r.words("a number of") {
@@ -393,6 +397,10 @@ fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         // "... token for each Elf you control": the count of the Elves, times the number when it is not one.
         Quantity::Number(number) => counted(r, Amount::Fixed(i32::try_from(number).ok()?))?,
         Quantity::ThatMany => Amount::Triggering,
+        Quantity::TwiceThatMany => Amount::Times {
+            by: 2,
+            of: Box::new(Amount::Triggering),
+        },
         Quantity::NumberOf => where_x::equal_to(r)?,
         // The where clause of the sentence gives X its amount.
         Quantity::X if r.where_x => Amount::X,
@@ -652,6 +660,9 @@ fn quantity_text(count: &Amount, what: &str, per: bool) -> Option<(String, bool,
             ("twice X".to_owned(), false, String::new())
         }
         Amount::Triggering => ("that many".to_owned(), false, String::new()),
+        Amount::Times { by: 2, of } if **of == Amount::Triggering => {
+            ("twice that many".to_owned(), false, String::new())
+        }
         // "a number of 1/1 Rabbit creature tokens equal to ~'s power"
         Amount::Stat { of, stat } if matches!(of, Ref::This | Ref::Triggering) => {
             let owner = if *of == Ref::This {
