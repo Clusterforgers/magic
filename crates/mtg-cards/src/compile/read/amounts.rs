@@ -150,6 +150,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(tally) = super::vote::w2d_tally(r, false) {
             return Some(tally);
         }
+        if r.words("opponent you attacked") {
+            return Some(Amount::Players(Ref::Attacked));
+        }
         if r.word("opponent") {
             // "Equipped creature gets +1/+0 for each opponent you have."
             r.words("you have");
@@ -294,6 +297,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             super::t17b_attached::of_its_colors_text(counted)?
         }
         Amount::Players(Ref::Opponents) => "opponent".to_owned(),
+        Amount::Players(Ref::Attacked) => "opponent you attacked".to_owned(),
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_each_text(counted)?,
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),

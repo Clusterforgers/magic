@@ -1386,7 +1386,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life of a counted amount ("pay that much life") and a counted draw the controller
+    /// The cost of an `Effect::Pay`: life or damage of a counted amount ("pay that much life", "have ~ deal that much
+    /// damage to them") and a counted draw the controller
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
@@ -1398,7 +1399,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
+                CostItem::PayLife(amount) | CostItem::DamageToYou(amount) if !is_fixed(item) => {
+                    Some((i, amount))
+                }
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
                     if !is_fixed(item)
@@ -1424,6 +1427,7 @@ impl<'a> Walker<'a> {
             match &mut fixed.0[*i] {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
+                | CostItem::DamageToYou(count)
                 | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
@@ -6437,6 +6441,7 @@ mod tests {
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::r306c_counted_damage_an_opponent_takes(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":{"Counters":{"on":"This","counter":"+1/+1"}}}],"unpaid":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}"#, &["Ability.Triggered", "Cost.DamageToYou", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.Counted", "Trigger.Attacks"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]

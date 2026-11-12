@@ -1,0 +1,66 @@
+{
+  "oracle_id": "327b89dd-2ec5-4498-9ddb-c097851e69a3",
+  "name": "Hall of Mirrors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of Mirrors",
+      "oracle_fingerprint": "36940360b01cf659ac89dd52a9c1556b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Visit": {}
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "ControlledBy": "You"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "Type": "Creature"
+                      },
+                      {
+                        "ControlledBy": "You"
+                      },
+                      {
+                        "Not": {
+                          "Is": {
+                            "Target": 0
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "of": {
+                    "Target": 0
+                  },
+                  "except": [
+                    {
+                      "RemoveSupertype": "Legendary"
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

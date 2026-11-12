@@ -19,7 +19,7 @@ rule: Rule,
 /**
  * How long it lasts.
  */
-duration: "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilYourNextEndStep" | "UntilEndOfYourNextTurn" | "WhileSourceOnBattlefield" | "Forever", 
+duration: "UntilEndOfTurn" | "UntilEndOfCombat" | "UntilYourNextTurn" | "UntilYourNextEndStep" | "UntilEndOfYourNextTurn" | "UntilEndOfCombatOnYourNextTurn" | "WhileSourceOnBattlefield" | "Forever", 
 /**
  * The object whose spell or ability made it, as it was then; `WhileSourceOnBattlefield` follows this object.
  */

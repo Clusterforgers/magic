@@ -1034,7 +1034,8 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
         Ability::Triggered {
             when,
             intervening_if,
-            limit: limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone)),
+            limit:
+                limit @ (None | Some(Limit::OncePerTurn | Limit::OncePerTurnDone | Limit::OncePerGame)),
             from,
             targets,
             effects,
@@ -1597,6 +1598,7 @@ fn triggered_tail(sentences: &[String], limit: Option<Limit>) -> Vec<String> {
     let mut tail = closed(sentences, false);
     tail.extend(limit.map(|limit| match limit {
         Limit::OncePerTurnDone => "Do this only once each turn.".to_owned(),
+        Limit::OncePerGame => "This ability triggers only once.".to_owned(),
         _ => "This ability triggers only once each turn.".to_owned(),
     }));
     tail
