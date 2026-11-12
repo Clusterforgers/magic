@@ -1,16 +1,49 @@
 {
   "oracle_id": "ccad9b56-3c31-445f-8b78-b5bbdb3d077a",
   "name": "Rebbec, Architect of Ascension",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rebbec, Architect of Ascension",
       "oracle_fingerprint": "b8462d10d1d26e6aa4f8941ec82469cd",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 87 } }
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "Type": "Artifact"
+                },
+                {
+                  "ControlledBy": "You"
+                }
+              ]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Protection": [
+                    {
+                      "SharesManaValue": {
+                        "Each": [
+                          {
+                            "Type": "Artifact"
+                          },
+                          {
+                            "ControlledBy": "You"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
         },
-        { "Keyword": "Partner" }
+        {
+          "Keyword": "Partner"
+        }
       ]
     }
   ]

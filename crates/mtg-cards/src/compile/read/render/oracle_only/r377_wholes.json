@@ -233,5 +233,42 @@
    }
   },
   "This creature can't be the target of spells that can target only Walls or of abilities that can target only Walls."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Artifact"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ]
+    },
+    "mods": [
+     {
+      "AddKeyword": {
+       "Protection": [
+        {
+         "SharesManaValue": {
+          "Each": [
+           {
+            "Type": "Artifact"
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Artifacts you control have protection from each mana value among artifacts you control."
  ]
 ]

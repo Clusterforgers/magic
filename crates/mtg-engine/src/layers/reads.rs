@@ -358,6 +358,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::SourceOf(who) => reads_of_ref(who),
         Pred::SharesType(who) => Traits::TYPES.or(reads_of_ref(who)),
         Pred::SharesColor(who) => Traits::COLORS.or(reads_of_ref(who)),
+        Pred::SharesManaValue(who) => reads_of_ref(who),
         Pred::Type(_) => Traits::TYPES,
         Pred::Subtype(_) => Traits::SUBTYPES,
         Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),

@@ -166,6 +166,7 @@ mod r306b_spend_any;
 mod r307c_exile;
 mod r377_counts;
 mod r377_equal_toughness;
+mod r377_mana_value_protection;
 mod r377_walls_only;
 mod r3f_mana;
 mod r4f_stack_move;
