@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2b6cbd55-5adc-4a34-ac45-8531705a7ee1",
+  "name": "Teferi, Mage of Zhalfir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi, Mage of Zhalfir",
+      "oracle_fingerprint": "596b63685177defe9292c5a14d65cf04",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }], "flash": true }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "Opponents", "action": { "Cast": { "unless": "SorceryTiming" } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

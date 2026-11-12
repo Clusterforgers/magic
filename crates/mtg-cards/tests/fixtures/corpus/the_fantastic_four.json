@@ -1,0 +1,163 @@
+{
+  "object": "card",
+  "id": "d78cb67a-ed8a-4e76-8506-04c274318b56",
+  "oracle_id": "a2281c99-3f45-441b-8e78-7f1f29bf1dcd",
+  "multiverse_ids": [],
+  "resource_id": "3A9C8AACEA697776FEBF17DAAA06D5B692594750C6D28607312298808C9B0229",
+  "mtgo_id": 151931,
+  "arena_id": 105751,
+  "tcgplayer_id": 696401,
+  "cardmarket_id": 891229,
+  "name": "The Fantastic Four",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/d78cb67a-ed8a-4e76-8506-04c274318b56",
+  "scryfall_uri": "https://scryfall.com/card/msc/741/the-fantastic-four?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-18T00:15:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544",
+    "normal": "https://cards.scryfall.io/normal/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544",
+    "large": "https://cards.scryfall.io/large/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544",
+    "png": "https://cards.scryfall.io/png/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.png?1792282544",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.webp?1792282544",
+    "grid": "https://cards.scryfall.io/grid/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.webp?1792282544",
+    "display": "https://cards.scryfall.io/display/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.webp?1792282544",
+    "art": "https://cards.scryfall.io/art/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.webp?1792282544",
+    "crop": "https://cards.scryfall.io/crop/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.webp?1792282544",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/7/d78cb67a-ed8a-4e76-8506-04c274318b56.jpg?1792282544"
+  },
+  "mana_cost": "{R}{G}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Hero",
+  "oracle_text": "When The Fantastic Four enter and whenever you cast a spell with power, toughness, or mana value 4, choose one that hasn't been chosen this turn.\n• Create a 0/4 colorless Wall creature token with defender.\n• The Fantastic Four deal 3 damage to each opponent.\n• Put two +1/+1 counters on target creature.\n• Draw a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "82d35a61-3c87-405d-b857-cf43067cb1c4",
+      "component": "token",
+      "name": "Wall",
+      "type_line": "Token Creature — Wall",
+      "uri": "https://api.scryfall.com/cards/82d35a61-3c87-405d-b857-cf43067cb1c4"
+    },
+    {
+      "object": "related_card",
+      "id": "d78cb67a-ed8a-4e76-8506-04c274318b56",
+      "component": "combo_piece",
+      "name": "The Fantastic Four",
+      "type_line": "Legendary Creature — Human Hero",
+      "uri": "https://api.scryfall.com/cards/d78cb67a-ed8a-4e76-8506-04c274318b56"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d78cb67a-ed8a-4e76-8506-04c274318b56/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa2281c99-3f45-441b-8e78-7f1f29bf1dcd&unique=prints",
+  "collector_number": "741",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yasmine Putri",
+  "artist_ids": [
+    "97c984a8-faff-4a15-891a-a917badfd1ef"
+  ],
+  "illustration_id": "55fedf21-f2f5-4d8c-8df8-69188f42ab3c",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 18338,
+  "prices": {
+    "usd": "6.02",
+    "usd_foil": "14.69",
+    "usd_etched": null,
+    "eur": "8.93",
+    "eur_foil": "12.37",
+    "tix": "2.19"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BFantastic%2BFour",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BFantastic%2BFour",
+    "edhrec": "https://edhrec.com/route/?cc=The+Fantastic+Four"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F696401%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891229&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151931?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -405,8 +405,13 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     let natural = next_step(state, step);
     // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
     let ends_phase = natural.phase() != step.phase();
-    let (next, through) = match state.turn().phases_ahead().first() {
-        Some(added) if ends_phase => (*added, ManaLasts::Combat),
+    let (next, through) = match (
+        state.turn().steps_ahead().first(),
+        state.turn().phases_ahead().first(),
+    ) {
+        // A step added after this one comes first; its phase goes on (an additional upkeep step).
+        (Some(step_added), _) => (*step_added, ManaLasts::Step),
+        (None, Some(added)) if ends_phase => (*added, ManaLasts::Combat),
         _ if ends_phase => (natural, ManaLasts::Combat),
         _ => (natural, ManaLasts::Step),
     };
@@ -602,7 +607,7 @@ fn next_turn(state: &GameState) -> NextTurn {
             player: turn.player,
         });
         if crate::prohibit::skips_turn(state, turn.player) {
-            spent.extend(used_skips(state, turn.player));
+            use_skips(&mut spent, state, turn.player);
         }
     }
     let regular = state.turn().regular();
@@ -613,18 +618,21 @@ fn next_turn(state: &GameState) -> NextTurn {
         if !crate::prohibit::skips_turn(state, next) {
             return (passed, spent, next, None);
         }
-        spent.extend(used_skips(state, next));
+        use_skips(&mut spent, state, next);
         next = state.next_turn_seat(next).unwrap_or(next);
     }
     (passed, spent, first, None)
 }
 
-/// The events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows has
-/// begun.
-fn used_skips(state: &GameState, player: PlayerId) -> impl Iterator<Item = Event> {
-    crate::prohibit::skipped_turn_rules(state, player)
-        .into_iter()
-        .map(|id| Event::RuleExpired { id })
+/// Adds the events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows
+/// has begun. A player passed over twice in one search (the seats of players who left are counted) ends it once.
+fn use_skips(spent: &mut Vec<Event>, state: &GameState, player: PlayerId) {
+    for id in crate::prohibit::skipped_turn_rules(state, player) {
+        let event = Event::RuleExpired { id };
+        if !spent.contains(&event) {
+            spent.push(event);
+        }
+    }
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.

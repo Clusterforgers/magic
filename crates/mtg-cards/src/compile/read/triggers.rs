@@ -10,7 +10,7 @@ use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::keyword::Keyword;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::trigger::{Step, TriggerPattern};
+use crate::trigger::{Step, TriggerPattern, untapped_words};
 use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 use mtg_core::card::CardType;
 
@@ -78,7 +78,7 @@ pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
         | TriggerPattern::Exerted { what }
         | TriggerPattern::Tapped { what }
         | TriggerPattern::TappedNotAttacking { what }
-        | TriggerPattern::Untapped { what }
+        | TriggerPattern::Untapped { what, .. }
         | TriggerPattern::PhasedOut { what }
         | TriggerPattern::PhasedIn { what }
         | TriggerPattern::ZoneChange {
@@ -232,6 +232,12 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
 fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if r.words("at the beginning of") {
         return step(r);
+    }
+    if r.words("at end of combat on your turn") {
+        return Some(TriggerPattern::StepBegins {
+            step: Step::EndCombat,
+            whose: Ref::You,
+        });
     }
     if !(r.word("when") || r.word("whenever")) {
         return None;
@@ -740,6 +746,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             who: by,
             highest,
             results: Vec::new(),
+            natural: false,
         })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
@@ -751,6 +758,8 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "commits" } else { "commit" } {
         r.need("a crime")?;
         Some(TriggerPattern::W11cCrime { who: by })
+    } else if verb == if third { "activates" } else { "activate" } {
+        super::l294_activations::event(r, by)
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
@@ -925,7 +934,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("phases in") || r.words("phase in") {
         return Some(TriggerPattern::PhasedIn { what: what.clone() });
     } else if r.words("becomes untapped") {
-        return Some(TriggerPattern::Untapped { what: what.clone() });
+        let untap_step = r.words("during your untap step");
+        return Some(TriggerPattern::Untapped {
+            what: what.clone(),
+            untap_step,
+        });
     } else if r.word("explores") {
         return Some(TriggerPattern::Explored { what: what.clone() });
     } else if r.words("becomes crewed") {
@@ -1464,7 +1477,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Unblocked { what } => said(what, "attacks and isn't blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::TappedNotAttacking { what } => said(what, NOT_ATTACKING),
-        TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::Untapped { what, untap_step } => {
+            said(what, &untapped_words("", *untap_step))
+        }
         TriggerPattern::PhasedOut { what } => said(what, "phases out"),
         TriggerPattern::PhasedIn { what } => said(what, "phases in"),
         TriggerPattern::Explored { what } => said(what, "explores"),
@@ -1655,6 +1670,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::BecomesBlocked {
             by, once: false, ..
         } if !by.0.is_empty() => super::g9a_blocks::g9a_pair_text(pattern),
+        TriggerPattern::StepBegins {
+            step: Step::EndCombat,
+            whose: Ref::You,
+        } => Some("At end of combat on your turn".to_owned()),
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }
@@ -1700,15 +1719,17 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             who,
             highest: false,
             results,
+            natural,
         } if !results.is_empty() => Some(format!(
             "Whenever {} {}",
             player_verb(who, "roll")?,
-            super::l291_dice::results_text(results)?
+            super::l291_dice::results_text(results, *natural)?
         )),
         TriggerPattern::DiceRolled {
             who,
             highest,
             results,
+            natural: false,
         } if results.is_empty() => c11e_rolled_text(who, *highest),
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }

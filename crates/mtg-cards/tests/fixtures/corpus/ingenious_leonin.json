@@ -1,40 +1,38 @@
 {
   "object": "card",
-  "id": "ea566679-4202-4076-9314-142241485f6e",
+  "id": "5e6759eb-7bb5-4482-8b27-0b8c836c5605",
   "oracle_id": "99853d2e-2223-4c05-bbd7-0a746f8f810d",
   "multiverse_ids": [
-    677934
+    684914
   ],
-  "resource_id": "5486C0A27F032E0FE92B5FBDB7E620A20D20C34A160332A8ECF35BB2C81EE7BA",
-  "mtgo_id": 134762,
-  "arena_id": 93644,
-  "tcgplayer_id": 563871,
-  "cardmarket_id": 797828,
+  "arena_id": 93500,
+  "tcgplayer_id": 590369,
+  "cardmarket_id": 796281,
   "name": "Ingenious Leonin",
   "lang": "en",
   "released_at": "2024-11-15",
-  "uri": "https://api.scryfall.com/cards/ea566679-4202-4076-9314-142241485f6e",
-  "scryfall_uri": "https://scryfall.com/card/fdn/495/ingenious-leonin?utm_source=api",
+  "uri": "https://api.scryfall.com/cards/5e6759eb-7bb5-4482-8b27-0b8c836c5605",
+  "scryfall_uri": "https://scryfall.com/card/j25/211/ingenious-leonin?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T02:16:07Z",
+  "image_updated_at": "2026-07-13T02:13:23Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967",
-    "normal": "https://cards.scryfall.io/normal/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967",
-    "large": "https://cards.scryfall.io/large/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967",
-    "png": "https://cards.scryfall.io/png/front/e/a/ea566679-4202-4076-9314-142241485f6e.png?1783908967",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967",
-    "thumb": "https://cards.scryfall.io/thumb/front/e/a/ea566679-4202-4076-9314-142241485f6e.webp?1783908967",
-    "grid": "https://cards.scryfall.io/grid/front/e/a/ea566679-4202-4076-9314-142241485f6e.webp?1783908967",
-    "display": "https://cards.scryfall.io/display/front/e/a/ea566679-4202-4076-9314-142241485f6e.webp?1783908967",
-    "art": "https://cards.scryfall.io/art/front/e/a/ea566679-4202-4076-9314-142241485f6e.webp?1783908967",
-    "crop": "https://cards.scryfall.io/crop/front/e/a/ea566679-4202-4076-9314-142241485f6e.webp?1783908967",
-    "jpeg": "https://cards.scryfall.io/normal/front/e/a/ea566679-4202-4076-9314-142241485f6e.jpg?1783908967"
+    "small": "https://cards.scryfall.io/small/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803",
+    "large": "https://cards.scryfall.io/large/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803",
+    "png": "https://cards.scryfall.io/png/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.png?1783908803",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.webp?1783908803",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.webp?1783908803",
+    "display": "https://cards.scryfall.io/display/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.webp?1783908803",
+    "art": "https://cards.scryfall.io/art/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.webp?1783908803",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.webp?1783908803",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5e6759eb-7bb5-4482-8b27-0b8c836c5605.jpg?1783908803"
   },
   "mana_cost": "{4}{W}",
-  "cmc": 5.0,
+  "cmc": 5,
   "type_line": "Creature — Cat Soldier",
   "oracle_text": "{3}{W}: Put a +1/+1 counter on another target attacking creature you control. If that creature is a Cat, it gains first strike until end of turn. (It deals combat damage before creatures without first strike.)",
   "power": "4",
@@ -73,8 +71,7 @@
   },
   "games": [
     "paper",
-    "arena",
-    "mtgo"
+    "arena"
   ],
   "reserved": false,
   "game_changer": false,
@@ -87,16 +84,16 @@
   "promo": false,
   "reprint": true,
   "variation": false,
-  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
-  "set": "fdn",
-  "set_name": "Foundations",
-  "set_type": "core",
-  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/ea566679-4202-4076-9314-142241485f6e/rulings",
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5e6759eb-7bb5-4482-8b27-0b8c836c5605/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A99853d2e-2223-4c05-bbd7-0a746f8f810d&unique=prints",
-  "collector_number": "495",
+  "collector_number": "211",
   "digital": false,
   "rarity": "uncommon",
   "flavor_text": "Leonin claws were already deadly weapons of natural evolution before he improved upon them.",
@@ -112,32 +109,24 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "promo_types": [
-    "beginnerbox"
-  ],
-  "edhrec_rank": 23063,
-  "preview": {
-    "source": "4gamer",
-    "source_uri": "https://www.4gamer.net/games/136/G013687/20240812001/",
-    "previewed_at": "2024-08-15"
-  },
+  "edhrec_rank": 23227,
   "prices": {
-    "usd": "0.16",
+    "usd": "0.29",
     "usd_foil": null,
     "usd_etched": null,
-    "eur": "0.08",
+    "eur": "0.19",
     "eur_foil": null,
-    "tix": "0.02"
+    "tix": null
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=677934&printed=false",
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=684914&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIngenious%2BLeonin",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIngenious%2BLeonin",
     "edhrec": "https://edhrec.com/route/?cc=Ingenious+Leonin"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F563871%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=797828&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/134762?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590369%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=796281&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Ingenious+Leonin&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

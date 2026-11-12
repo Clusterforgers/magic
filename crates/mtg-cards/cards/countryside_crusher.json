@@ -1,16 +1,60 @@
 {
   "oracle_id": "1636c4d2-f699-4af7-8508-dbce2f0b7b52",
   "name": "Countryside Crusher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Countryside Crusher",
       "oracle_fingerprint": "804baa82b6c361e934cb19c258ac62f5",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 142 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": { "Bound": "graved" } }, { "In": "Graveyard" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Bind": {
+                        "what": {
+                          "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                        },
+                        "as": "top"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "Type": "Land" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": "Graveyard",
+                              "as": "graved"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
           }
         },
         {

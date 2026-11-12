@@ -1,7 +1,7 @@
 {
   "oracle_id": "7267ab16-2157-4b86-93ea-ca2c0fee064a",
   "name": "Vexing Puzzlebox",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vexing Puzzlebox",
@@ -31,9 +31,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 150, "end": 293 }
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge", "count": 100 } }],
+            "effects": [
+              { "Search": { "filter": [{ "Type": "Artifact" }], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
           }
         }
       ]

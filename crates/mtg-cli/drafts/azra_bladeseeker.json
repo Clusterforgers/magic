@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ac4d065e-7eb6-4224-8a7c-e57f2c1a2733",
+  "name": "Azra Bladeseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azra Bladeseeker",
+      "oracle_fingerprint": "4fcea3f7136d41228f717a17a9adf711",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "You",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [{ "Discard": { "who": { "Bound": "player" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [{ "Draw": { "who": { "Bound": "player" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

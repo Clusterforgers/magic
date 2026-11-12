@@ -225,6 +225,10 @@ fn damage(
                 ));
             }
         }
+        ReplaceBy::Instead(steps) | ReplaceBy::PreventAnd(steps) => {
+            let heads: Vec<&String> = std::iter::once(&head).chain(passive.iter()).collect();
+            found.extend(super::r304_damage::r304_damage_texts(&heads, by, steps));
+        }
         ReplaceBy::PreventHalf => {
             found.push(format!("{head}, prevent half that damage, rounded up"));
             found.extend(

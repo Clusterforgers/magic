@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7b175a33-a05c-49fa-802a-36f7013c892a",
+  "name": "Nullstone Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nullstone Gargoyle",
+      "oracle_fingerprint": "1b4fb61dcaecced3b5c13a9575b3bce1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "Not": { "Type": "Creature" } }]
+                    }
+                  },
+                  "op": "Eq",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "Counter": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

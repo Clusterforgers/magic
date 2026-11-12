@@ -1,16 +1,23 @@
 {
   "oracle_id": "138201c0-556d-4c76-b383-90fc9dad0fe0",
   "name": "Jasmine Boreal of the Seven",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jasmine Boreal of the Seven",
       "oracle_fingerprint": "bc03cb9602bf028f869c5807af885a57",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 0, "end": 80 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green", "White"] },
+                  "only": [{ "Spell": { "types": ["Creature"], "facts": ["NoAbilities"] } }]
+                }
+              }
+            ]
           }
         },
         {

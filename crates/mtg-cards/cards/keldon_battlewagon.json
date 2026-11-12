@@ -1,7 +1,7 @@
 {
   "oracle_id": "4a2df44b-5d36-4c4e-b982-836d9d7e0505",
   "name": "Keldon Battlewagon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Keldon Battlewagon",
@@ -23,9 +23,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 94, "end": 229 }
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Paid", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

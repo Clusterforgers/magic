@@ -1,38 +1,37 @@
 {
   "object": "card",
-  "id": "82dfdb91-aa69-45a1-adcc-9fcd85f84ccf",
+  "id": "8ac75fbd-ca71-470a-98c2-4b21cc920b7b",
   "oracle_id": "7777fab1-df3f-467f-b9e2-46dd2bd2166e",
-  "multiverse_ids": [
-    625355
-  ],
-  "mtgo_id": 114241,
-  "tcgplayer_id": 506646,
-  "cardmarket_id": 723147,
+  "multiverse_ids": [],
+  "resource_id": "770ED32C4496315A0B694A9E8E66248BAAB31FD4004DBE7EDA3063487AAF0719",
+  "mtgo_id": 157200,
+  "tcgplayer_id": 726037,
+  "cardmarket_id": 919604,
   "name": "Forsaken Monument",
   "lang": "en",
-  "released_at": "2023-08-04",
-  "uri": "https://api.scryfall.com/cards/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf",
-  "scryfall_uri": "https://scryfall.com/card/cmm/950/forsaken-monument?utm_source=api",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/8ac75fbd-ca71-470a-98c2-4b21cc920b7b",
+  "scryfall_uri": "https://scryfall.com/card/trc/491/forsaken-monument?utm_source=api",
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-07-13T04:03:27Z",
+  "image_updated_at": "2026-10-26T13:25:57Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407",
-    "normal": "https://cards.scryfall.io/normal/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407",
-    "large": "https://cards.scryfall.io/large/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407",
-    "png": "https://cards.scryfall.io/png/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.png?1783915407",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407",
-    "thumb": "https://cards.scryfall.io/thumb/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.webp?1783915407",
-    "grid": "https://cards.scryfall.io/grid/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.webp?1783915407",
-    "display": "https://cards.scryfall.io/display/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.webp?1783915407",
-    "art": "https://cards.scryfall.io/art/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.webp?1783915407",
-    "crop": "https://cards.scryfall.io/crop/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.webp?1783915407",
-    "jpeg": "https://cards.scryfall.io/normal/front/8/2/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf.jpg?1783915407"
+    "small": "https://cards.scryfall.io/small/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157",
+    "normal": "https://cards.scryfall.io/normal/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157",
+    "large": "https://cards.scryfall.io/large/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157",
+    "png": "https://cards.scryfall.io/png/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.png?1793021157",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.webp?1793021157",
+    "grid": "https://cards.scryfall.io/grid/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.webp?1793021157",
+    "display": "https://cards.scryfall.io/display/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.webp?1793021157",
+    "art": "https://cards.scryfall.io/art/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.webp?1793021157",
+    "crop": "https://cards.scryfall.io/crop/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.webp?1793021157",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/a/8ac75fbd-ca71-470a-98c2-4b21cc920b7b.jpg?1793021157"
   },
   "mana_cost": "{5}",
-  "cmc": 5.0,
+  "cmc": 5,
   "type_line": "Legendary Artifact",
   "oracle_text": "Colorless creatures you control get +2/+2.\nWhenever you tap a permanent for {C}, add an additional {C}.\nWhenever you cast a colorless spell, you gain 2 life.",
   "colors": [],
@@ -72,34 +71,35 @@
   ],
   "reserved": false,
   "game_changer": false,
-  "foil": false,
+  "foil": true,
   "nonfoil": true,
   "finishes": [
-    "nonfoil"
+    "nonfoil",
+    "foil"
   ],
   "oversized": false,
   "promo": false,
   "reprint": true,
   "variation": false,
-  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
-  "set": "cmm",
-  "set_name": "Commander Masters",
-  "set_type": "masters",
-  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
-  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
-  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
-  "rulings_uri": "https://api.scryfall.com/cards/82dfdb91-aa69-45a1-adcc-9fcd85f84ccf/rulings",
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8ac75fbd-ca71-470a-98c2-4b21cc920b7b/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7777fab1-df3f-467f-b9e2-46dd2bd2166e&unique=prints",
-  "collector_number": "950",
+  "collector_number": "491",
   "digital": false,
   "rarity": "mythic",
-  "flavor_text": "\"We shall forever roam.\"\n—Ayli, high priest of the Eternal Pilgrims",
+  "flavor_text": "Only the most structurally sound elements of El-Aurian culture remained after the invasion.",
   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
-  "artist": "Piotr Dura",
+  "artist": "Florent Lebrun",
   "artist_ids": [
-    "aff176e8-1d15-432e-ad1d-207a474decba"
+    "a3c50fa1-215f-4a57-8528-f1572369d532"
   ],
-  "illustration_id": "6fb93d53-5faf-4fe3-9cf5-37a071bc3cb8",
+  "illustration_id": "0f0e2cc0-da78-47e5-8582-ef67f27b08bd",
   "border_color": "black",
   "frame": "2015",
   "frame_effects": [
@@ -110,29 +110,32 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 881,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 865,
   "preview": {
-    "source": "LoadingReadyRun",
-    "source_uri": "https://www.youtube.com/watch?v=MHeLpN0k7WQ",
-    "previewed_at": "2023-07-20"
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=2VJq4uR-r4s",
+    "previewed_at": "2026-10-26"
   },
   "prices": {
-    "usd": "6.75",
+    "usd": "2.65",
     "usd_foil": null,
     "usd_etched": null,
-    "eur": "4.51",
+    "eur": "2.74",
     "eur_foil": null,
-    "tix": "0.18"
+    "tix": "0.14"
   },
   "related_uris": {
-    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625355&printed=false",
     "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DForsaken%2BMonument",
     "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DForsaken%2BMonument",
     "edhrec": "https://edhrec.com/route/?cc=Forsaken+Monument"
   },
   "purchase_uris": {
-    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F506646%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723147&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-    "cardhoarder": "https://www.cardhoarder.com/cards/114241?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726037%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919604&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/157200?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

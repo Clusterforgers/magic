@@ -147,12 +147,17 @@ pub enum CastWay {
     Harmonize,
     /// An alternative cost the card prints in a static line, chosen per card (CR 118.9): cast from where `AltCast` names for the cost it gives.
     Alternative,
+    /// Offering (CR 702.48).
+    Offering,
 }
 
 impl CastWay {
     /// Whether the way pays another cost in place of the mana cost (CR 118.9); jump-start and retrace add a cost to it.
     pub const fn replaces_cost(self) -> bool {
-        !matches!(self, CastWay::JumpStart | CastWay::Retrace)
+        !matches!(
+            self,
+            CastWay::JumpStart | CastWay::Retrace | CastWay::Offering
+        )
     }
 
     /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start, harmonize, disturb).
@@ -683,6 +688,15 @@ pub enum Amount {
         /// Only the numbers kept for these players (`Effect::RememberValue` with `per`).
         per: Option<Ref>,
     },
+    /// The damage the objects `by` names dealt this turn, after prevention, to the players and objects `to` names, each
+    /// dealer as the object it is now (one that left and came back is another): "if it has dealt 10 or more damage to that
+    /// player this turn".
+    DamageDealtByTo {
+        /// The objects that dealt the damage.
+        by: Ref,
+        /// The players and objects it was dealt to.
+        to: Ref,
+    },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
     /// How many targets the spell or ability that triggered this one has.
@@ -905,6 +919,10 @@ enum Tagged {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         per: Option<Ref>,
     },
+    DamageDealtByTo {
+        by: Ref,
+        to: Ref,
+    },
     CommanderColors(Ref),
     TurnNumber,
     TriggeringTargets,
@@ -1059,6 +1077,10 @@ enum TaggedRef<'a> {
         #[serde(skip_serializing_if = "Option::is_none")]
         per: Option<&'a Ref>,
     },
+    DamageDealtByTo {
+        by: &'a Ref,
+        to: &'a Ref,
+    },
     CommanderColors(&'a Ref),
     TurnNumber,
     TriggeringTargets,
@@ -1162,6 +1184,7 @@ impl From<Tagged> for Amount {
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
+            Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
@@ -1292,6 +1315,9 @@ impl Serialize for Amount {
                 per: per.as_ref(),
             }
             .serialize(serializer),
+            Amount::DamageDealtByTo { by, to } => {
+                TaggedRef::DamageDealtByTo { by, to }.serialize(serializer)
+            }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
@@ -1506,6 +1532,9 @@ pub enum Condition {
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
     FirstCombat,
+    /// The current step is the first of its kind this turn, before any added one: "if it's the first end step of the
+    /// turn", "at the beginning of enchanted player's first upkeep each turn" (CR 500.8).
+    FirstStep,
     /// A player the reference names was attacked in the combat phase in progress, directly or through a planeswalker
     /// they control or a battle they protect (CR 506.2); an attacker that left combat still counts: "if you've been
     /// attacked this step" in the declare attackers step.
@@ -1570,6 +1599,7 @@ mod tests {
     #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
+    #[case::r301_offering_adds_to_the_cost(CastWay::Offering, false)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
     #[case::warp(CastWay::Warp, true)]
@@ -1623,6 +1653,7 @@ mod tests {
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
     #[case::tally(Amount::Tally { event: TallyEvent::TokenCreated, who: Ref::You, filter: Selector(vec![Pred::Type(CardType::Creature)]) }, r#"{"Tally":{"event":"TokenCreated","who":"You","filter":[{"Type":"Creature"}]}}"#)]
     #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned(), per: None }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
+    #[case::damage_dealt_by_to(Amount::DamageDealtByTo { by: Ref::This, to: Ref::TriggeringPlayer }, r#"{"DamageDealtByTo":{"by":"This","to":"TriggeringPlayer"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]

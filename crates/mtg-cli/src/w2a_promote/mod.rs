@@ -33,7 +33,7 @@ pub const W2A_DEFAULT_OUT: &str = "crates/mtg-cards";
 pub enum W2aSkip {
     /// No stored card has the file's name as the slug of its name.
     NoCard,
-    /// The card already has a corpus rules file or fixture.
+    /// The card already has a corpus rules file or fixture that a draft of the proposal does not outrank.
     CorpusFile,
     /// The compiler already makes the card `Verified`.
     Compiled,
@@ -161,6 +161,47 @@ impl W2aBasis<'_> {
             || self.out.join(W2A_FIXTURES).join(&file).is_file()
     }
 
+    /// Whether the card has a rules file that gives way to a whole draft (`Partial`, `Manual` or `Stale`).
+    fn yields_to_whole_draft(&self, printed: &PrintedCard) -> bool {
+        self.library.card(&printed.oracle_id).is_some()
+            && !drafts::corpus_outranks(self.library, printed, self.caps, true)
+    }
+
+    /// A whole draft of a card whose rules file gives way to it: an `Unchecked` proposal (or a matched Forge
+    /// `Mismatch`) with no gap, never a corpus card, a partial or a merged draft.
+    fn whole_draft_over_corpus(
+        &self,
+        printed: &PrintedCard,
+        slug: String,
+        text: &str,
+        meta: &DraftMeta,
+    ) -> Result<W2aPromotion, W2aSkip> {
+        if !meta.gaps.is_empty() {
+            return Err(W2aSkip::Gapped);
+        }
+        let source = meta.source_or(self.source);
+        let trusted = source == SOURCE_FORGE && meta.oracle_matches;
+        let report = if source == SOURCE_FORGE {
+            check_exact(text, printed, self.library, self.names, self.caps)
+        } else {
+            check(text, printed, self.library, self.names, self.caps)
+        };
+        match report.verdict() {
+            Verdict::Unchecked => {}
+            Verdict::Mismatch if trusted => {}
+            Verdict::Accepted => return Err(W2aSkip::CorpusFile),
+            verdict => return Err(W2aSkip::Rejected(verdict)),
+        }
+        draft::decide(
+            printed,
+            slug,
+            report,
+            source,
+            meta.oracle_matches,
+            trusted && self.differs,
+        )
+    }
+
     /// The proposal merged with the compiler's reading, when the compiler reads a clause the proposal lacks.
     fn merged(&self, report: &Report, printed: &PrintedCard) -> Option<Report> {
         merge(report, printed, self.library, self.names, self.caps)
@@ -175,6 +216,9 @@ impl W2aBasis<'_> {
     ) -> Result<W2aPromotion, W2aSkip> {
         let slug = slug(&printed.name);
         if self.has_corpus_file(printed, &slug) {
+            if self.draft && self.yields_to_whole_draft(printed) {
+                return self.whole_draft_over_corpus(printed, slug, text, meta);
+            }
             return Err(W2aSkip::CorpusFile);
         }
         let compiled = compile(printed).card;

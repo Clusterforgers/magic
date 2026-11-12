@@ -370,7 +370,9 @@ async fn stored_decks_make_a_commander_game_at_every_table_size(pool: PgPool) {
         host_socket.close().await;
 
         lobby::start(&server.registry, &game, seats).await;
-        let listing = lobby::lobbies(server.addr, &[]).await.json();
+        let listing = lobby::lobbies(server.addr, &[("Cookie", host.cookie.as_str())])
+            .await
+            .json();
         assert_eq!(
             row(&listing, &game).map(|row| row["running"].clone()),
             Some(serde_json::json!(true)),

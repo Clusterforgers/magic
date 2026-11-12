@@ -270,6 +270,12 @@ pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
         })
 }
 
+/// Whether effects keep `id` from attacking at all and from blocking at all (Pacifism): what a bot reads to value a
+/// creature that only stands on the battlefield.
+pub fn sidelined(state: &GameState, id: ObjectId) -> (bool, bool) {
+    (cant_attack(state, id), cant_block(state, id))
+}
+
 /// [`cant_be_blocked_between`] for two creatures by id.
 #[cfg(test)]
 pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
@@ -665,6 +671,26 @@ mod tests {
         let (chars, who) = on_a_bear(modification);
         let base = characteristics(&game(), named(&game(), "Bear").id).unwrap();
         assert_eq!((chars, who), (base, PlayerId(0)));
+    }
+
+    #[rstest]
+    #[case::cant_attack(Modification::CantAttack, (true, false))]
+    #[case::cant_block(Modification::CantBlock, (false, true))]
+    #[case::neither(Modification::AddKeyword(mtg_cards::keyword::Keyword::Flying), (false, false))]
+    fn a_sidelined_creature_reads_as_its_restrictions(
+        #[case] modification: Modification,
+        #[case] expected: (bool, bool),
+    ) {
+        let mut game = game();
+        let bear = named(&game, "Bear");
+        game.effects.push(ContinuousEffect::new(
+            EffectId(0),
+            Selector::Objects(vec![bear]),
+            modification,
+            Duration::UntilEndOfTurn,
+            0,
+        ));
+        assert_eq!(sidelined(&game, bear.id), expected);
     }
 
     #[test]

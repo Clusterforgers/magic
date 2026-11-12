@@ -8,15 +8,39 @@
       "oracle_fingerprint": "017834441c061ec69898905cf19625f1",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 105 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Lt",
+                "right": 7
+              }
+            },
+            "from": "Stack",
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      7,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         { "Keyword": "Menace" },
         {
           "Manual": {
-            "reason": "you apply this activated ability by hand",
+            "reason": "you apply this clause by hand",
             "span": { "start": 113, "end": 186 }
           }
         }

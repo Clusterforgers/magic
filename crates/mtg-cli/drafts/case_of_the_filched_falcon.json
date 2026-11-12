@@ -1,7 +1,7 @@
 {
   "oracle_id": "33b31fb0-71ce-408a-a256-2a5a3b085cb6",
   "name": "Case of the Filched Falcon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Case of the Filched Falcon",
@@ -21,18 +21,12 @@
             "when": { "StepBegins": { "step": "End", "whose": "You" } },
             "if": {
               "All": [
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
                 {
                   "Compare": {
                     "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
                     "op": "Ge",
                     "right": 3
-                  }
-                },
-                {
-                  "Compare": {
-                    "left": { "Count": ["This", { "Not": "Solved" }] },
-                    "op": "Ge",
-                    "right": 1
                   }
                 }
               ]
@@ -41,9 +35,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 227, "end": 395 }
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "SacrificeSelf"],
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } },
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Creature" } }, { "Type": "Artifact" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Bird" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

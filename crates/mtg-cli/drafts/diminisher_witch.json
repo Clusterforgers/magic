@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c2283655-f6b8-4399-ba1f-68a7107f9485",
+  "name": "Diminisher Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diminisher Witch",
+      "oracle_fingerprint": "9fa7fa44791fad261fa358a26a6b046b",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cursed Role",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "role"
+                }
+              },
+              { "Attach": { "what": { "Bound": "role" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

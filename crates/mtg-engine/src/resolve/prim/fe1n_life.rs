@@ -10,13 +10,13 @@ use crate::resolve::{Cx, ResolveError, Run};
 use crate::rules::{cant_gain_life, life_total_cant_change};
 
 /// Whether a change from `from` to `to` is barred: the total can't change, or the change is a gain that can't happen.
-fn blocked(cx: &Cx<'_>, player: PlayerId, from: i64, to: i64) -> bool {
+pub(super) fn blocked(cx: &Cx<'_>, player: PlayerId, from: i64, to: i64) -> bool {
     let state = cx.state();
     life_total_cant_change(state, player) || (to > from && cant_gain_life(state, player))
 }
 
 /// The life event that takes `player` from `from` to `to`, none when they are equal or the change is barred.
-fn move_to(cx: &Cx<'_>, player: PlayerId, from: i64, to: i64) -> Option<Event> {
+pub(super) fn move_to(cx: &Cx<'_>, player: PlayerId, from: i64, to: i64) -> Option<Event> {
     let amount = u32::try_from(from.abs_diff(to)).unwrap_or(u32::MAX);
     if amount == 0 || blocked(cx, player, from, to) {
         return None;

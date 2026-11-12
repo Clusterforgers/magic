@@ -12,6 +12,7 @@ use mtg_engine::{Decision, Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
 use crate::bot::{RandomBot, apply_answer};
+use crate::brain::SeatBrain;
 use crate::invariants::{InvariantChecker, Violation};
 use crate::manual_script::ManualScript;
 use crate::watchdog::Watchdog;
@@ -269,6 +270,63 @@ pub fn play_game_with_bots(
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
+}
+
+/// Plays `setup` to the end with one [`SeatBrain`] per seat in table order, each handed the engine as its table, while
+/// checking every invariant as [`play_game_with`] does. Every seat is asked at every window (Full Control `Held`); a
+/// table too crowded to grow ([`CROWDED_TABLE`]) only passes priority.
+pub fn play_brains(
+    setup: GameSetup,
+    seed: u64,
+    options: PlayOptions,
+    brains: &mut [Box<dyn SeatBrain>],
+) -> Result<GameOutcome, GameFailure> {
+    let fail = |kind: FailureKind, events: &[Event]| GameFailure {
+        seed,
+        kind,
+        events: events.to_vec(),
+    };
+    setup
+        .validate()
+        .map_err(|e| fail(EngineError::from(e).into(), &[]))?;
+    let mut checker = if options.check_invariants {
+        Some(
+            InvariantChecker::new(&setup)
+                .map_err(|v| fail(v.into(), &[]))?
+                .with_full_check_every(FULL_CHECK_EVERY),
+        )
+    } else {
+        None
+    };
+    let mut watchdog = Watchdog::for_game(seed, &setup).with_time_limit(options.time_limit);
+    let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
+    observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
+    let pass = Answer::Priority(PriorityAction::Pass);
+    let mut answers = 0;
+    while let Some(decision) = engine.decision().cloned() {
+        if answers >= options.max_answers {
+            return Err(fail(FailureKind::StepLimit(answers), engine.events()));
+        }
+        let Some(brain) = brains.get_mut(decision.player.index()) else {
+            let message = format!("decision for unknown {:?}", decision.player);
+            return Err(fail(FailureKind::BadEnding(message), engine.events()));
+        };
+        let answer = if crowded(engine.state(), &decision) {
+            pass.clone()
+        } else {
+            brain.choose(&decision, Some(&engine))
+        };
+        let given = answer.clone();
+        apply_answer(&mut engine, &decision, answer)
+            .map_err(|e| fail(e.into(), engine.events()))?;
+        answers += 1;
+        let state = engine.state();
+        if let Some(report) = watchdog.tally(state, decision.player, decision.kind.name(), &given) {
+            return Err(fail(runaway(options, report), engine.events()));
+        }
+        observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
+    }
+    finish(&engine, checker.as_mut(), answers, 0).map_err(|kind| fail(kind, engine.events()))
 }
 
 /// What a passed cap of the watchdog ends the game with: a failure when the options ask for one, else a panic with the

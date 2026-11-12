@@ -1,0 +1,90 @@
+{
+  "oracle_id": "905610cd-1461-4f5a-b9c8-19b193b9d513",
+  "name": "Missy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Missy",
+      "oracle_fingerprint": "f44ec2e42aa25224b7695786e4ebbadc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Type": "Creature" }, { "Not": { "Type": "Artifact" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "BattlefieldFaceDown": { "under": "You" } },
+                  "as": "returned"
+                }
+              },
+              { "Tap": { "what": { "Bound": "returned" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "returned" },
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddSubtype": "Cyberman" },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "opponent" },
+                        "first": [
+                          {
+                            "RepeatEach": {
+                              "over": {
+                                "Each": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              "as": "artifact",
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "source": { "Bound": "artifact" },
+                                    "to": { "Bound": "opponent" },
+                                    "amount": 1
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "second": [{ "Draw": {} }, { "Planechase": { "act": "ChaosEnsues" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

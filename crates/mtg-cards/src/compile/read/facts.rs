@@ -8,7 +8,7 @@ use super::amounts::{count_word, number_word};
 use super::selectors::{Form, phrase_text};
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::{Amount, Cmp, Condition, StatKind, TurnTally};
+use crate::value::{Amount, Cmp, Condition, StatKind, TallyEvent, TurnTally};
 
 /// A number written as digits or as a word.
 pub(super) fn quantity(r: &mut Reader<'_>) -> Option<u32> {
@@ -124,6 +124,35 @@ fn every_hand() -> Selector {
     Selector(vec![Pred::In(ZoneKind::Hand)])
 }
 
+/// The damage the card itself has dealt this turn, whoever controlled it.
+fn r301b_dealt_amount() -> Amount {
+    Amount::Tally {
+        event: TallyEvent::Damaged,
+        who: Ref::EachPlayer,
+        filter: Selector(vec![Pred::This]),
+    }
+}
+
+/// The words of "~ has dealt 3 or more damage this turn"; none for another condition.
+fn r301b_dealt_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
+    if *left != r301b_dealt_amount() || op != Cmp::Ge {
+        return Vec::new();
+    }
+    quantity_texts(number)
+        .iter()
+        .map(|n| format!("~ has dealt {n} or more damage this turn"))
+        .collect()
+}
+
+/// "~ has dealt 3 or more damage this turn".
+fn r301b_dealt(r: &mut Reader<'_>) -> Option<Condition> {
+    r.source().then_some(())?;
+    r.need("has dealt")?;
+    let number = quantity(r)?;
+    r.need("or more damage this turn")?;
+    at_least(r301b_dealt_amount(), number)
+}
+
 fn at_least(left: Amount, number: u32) -> Option<Condition> {
     Some(Condition::Compare {
         left,
@@ -188,6 +217,9 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
             },
             number,
         );
+    }
+    if let Some(condition) = r.attempt(r301b_dealt) {
+        return Some(condition);
     }
     r.need("an opponent was dealt")?;
     let number = quantity(r)?;
@@ -310,7 +342,8 @@ fn turn_texts(condition: &Condition) -> Vec<String> {
     {
         return vec![text];
     }
-    let r6d = super::r6d_facts::texts(left, *op, number);
+    let mut r6d = super::r6d_facts::texts(left, *op, number);
+    r6d.extend(r301b_dealt_texts(left, *op, number));
     if !r6d.is_empty() {
         return r6d;
     }

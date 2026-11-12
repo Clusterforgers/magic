@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5ea0c608-2c56-4889-a5d3-d435df515950",
+  "name": "Naya Soulbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naya Soulbeast",
+      "oracle_fingerprint": "2aa187b366dcb59d4bfddaf534582a3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "LookAtTop": { "who": { "Bound": "player" }, "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    { "Bind": { "what": { "Bound": "top" }, "as": "revealed", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "SpellEntersWith": {
+                  "spell": "This",
+                  "count": {
+                    "Total": {
+                      "of": [{ "Is": { "Bound": "revealed" } }, { "In": "Library" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

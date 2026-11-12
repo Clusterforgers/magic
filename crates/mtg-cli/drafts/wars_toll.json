@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ba4e4afb-24bb-47de-aba8-89d21b11d45c",
+  "name": "War's Toll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War's Toll",
+      "oracle_fingerprint": "7efc8b87d17dcb4b2b5dd07c0c27b4ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "TriggeringPlayer" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "quirk": "AttackWithAll"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

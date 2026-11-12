@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "74ebd099-ce57-4053-8f25-d18b3d47fac4",
+  "oracle_id": "d57adf99-972a-43fe-9ba2-2b01e673252f",
+  "multiverse_ids": [
+    634831
+  ],
+  "tcgplayer_id": 519559,
+  "cardmarket_id": 738741,
+  "name": "Jenny Flint",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/74ebd099-ce57-4053-8f25-d18b3d47fac4",
+  "scryfall_uri": "https://scryfall.com/card/who/136/jenny-flint?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632",
+    "normal": "https://cards.scryfall.io/normal/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632",
+    "large": "https://cards.scryfall.io/large/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632",
+    "png": "https://cards.scryfall.io/png/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.png?1783914632",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.webp?1783914632",
+    "grid": "https://cards.scryfall.io/grid/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.webp?1783914632",
+    "display": "https://cards.scryfall.io/display/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.webp?1783914632",
+    "art": "https://cards.scryfall.io/art/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.webp?1783914632",
+    "crop": "https://cards.scryfall.io/crop/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.webp?1783914632",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/4/74ebd099-ce57-4053-8f25-d18b3d47fac4.jpg?1783914632"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Detective",
+  "oracle_text": "Partner with Madame Vastra\nFirst strike\nTraining (Whenever this creature attacks with another creature with greater power, put a +1/+1 counter on this creature.)\nWhenever you sacrifice a Clue or Food, put a +1/+1 counter on another target creature you control.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Partner with",
+    "Training",
+    "First strike",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f8a73bf1-cf14-4a36-97ff-868212e0bfb8",
+      "component": "combo_piece",
+      "name": "Madame Vastra",
+      "type_line": "Legendary Creature — Lizard Detective",
+      "uri": "https://api.scryfall.com/cards/f8a73bf1-cf14-4a36-97ff-868212e0bfb8"
+    },
+    {
+      "object": "related_card",
+      "id": "eb7bc3ef-7a2e-4d5f-8c6a-a1a4409b1ea2",
+      "component": "combo_piece",
+      "name": "Jenny Flint",
+      "type_line": "Legendary Creature — Human Detective",
+      "uri": "https://api.scryfall.com/cards/eb7bc3ef-7a2e-4d5f-8c6a-a1a4409b1ea2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/74ebd099-ce57-4053-8f25-d18b3d47fac4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad57adf99-972a-43fe-9ba2-2b01e673252f&unique=prints",
+  "collector_number": "136",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Syd Mills",
+  "artist_ids": [
+    "1386ca17-2704-4b3d-ba17-050daf3f89e6"
+  ],
+  "illustration_id": "aac0ad6f-aa99-402b-8de1-56105460621b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 16139,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.42",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.38",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634831&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJenny%2BFlint",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJenny%2BFlint",
+    "edhrec": "https://edhrec.com/route/?cc=Jenny+Flint"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519559%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738741&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jenny+Flint&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

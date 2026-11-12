@@ -23,7 +23,6 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_core::attraction::Lights;
 use mtg_core::house::HouseRules;
-use mtg_core::ids::PlayerId;
 use mtg_engine::GameSetup;
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{Commander, FormatRules, Normal};
@@ -360,9 +359,10 @@ pub struct GameRecipe {
     /// created; a replay builds exactly these and refuses a game whose card changed. Left out while empty.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub conjured: BTreeMap<String, DeckFingerprint>,
-    /// The seats a server-side bot plays (`bots.rs`), which a resumed game hands to a bot again. Left out while empty.
+    /// The seats a server-side bot plays and how well (`bots.rs`), which a resumed game hands to a bot again. Left out
+    /// while empty.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub bots: Vec<PlayerId>,
+    pub bots: Vec<crate::bots::BotSeat>,
 }
 
 /// The fingerprint of each conjurable card, by name.
@@ -763,6 +763,8 @@ mod tests {
     use serde_json::json;
 
     use super::*;
+    use crate::bots::{BotLevel, BotSeat};
+    use mtg_core::ids::PlayerId;
 
     fn demo_decks(ids: &[&str]) -> Vec<DeckRef> {
         ids.iter()
@@ -827,13 +829,30 @@ mod tests {
     fn bot_seats_are_stored_and_read_back() {
         let mut recipe =
             GameRecipe::normal(5, demo_decks(&["mono-green", "mono-red", "mono-white"]));
-        recipe.bots = vec![PlayerId(1), PlayerId(2)];
-        let stored = serde_json::to_value(&recipe).unwrap();
-        assert_eq!(stored["bots"], json!([1, 2]));
+        recipe.bots = vec![
+            BotSeat {
+                seat: PlayerId(1),
+                level: BotLevel::Hard,
+            },
+            BotSeat {
+                seat: PlayerId(2),
+                level: BotLevel::Easy,
+            },
+        ];
+        let mut stored = serde_json::to_value(&recipe).unwrap();
         assert_eq!(
-            serde_json::from_value::<GameRecipe>(stored).unwrap(),
+            stored["bots"],
+            json!([{"seat": 1, "level": "hard"}, {"seat": 2, "level": "easy"}])
+        );
+        assert_eq!(
+            serde_json::from_value::<GameRecipe>(stored.clone()).unwrap(),
             recipe
         );
+        // A recipe stored before levels names bare seats, whose bots played at random: Easy.
+        stored["bots"] = json!([1, 2]);
+        let older = serde_json::from_value::<GameRecipe>(stored).unwrap();
+        assert!(older.bots.iter().all(|bot| bot.level == BotLevel::Easy));
+        assert_eq!(older.bots[0].seat, PlayerId(1));
     }
 
     #[test]

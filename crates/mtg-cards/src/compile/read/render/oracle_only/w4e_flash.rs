@@ -29,6 +29,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
+        any_cast: false,
     } = permission
     else {
         return Vec::new();

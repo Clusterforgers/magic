@@ -1,7 +1,7 @@
 {
   "oracle_id": "158d0272-a850-4399-8afa-d0caa143c3cb",
   "name": "Avenger of the Fallen",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Avenger of the Fallen",
@@ -9,9 +9,13 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 232 }
+          "Keyword": {
+            "MacroX": {
+              "name": "mobilize",
+              "x": {
+                "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+              }
+            }
           }
         }
       ]
