@@ -4,10 +4,12 @@
 
 use super::super::variants;
 use crate::ability::Ability;
+use crate::cost::CostItem;
 use crate::effect::{Effect, NewTargets, Produce};
-use crate::refs::Ref;
+use crate::refs::{Pred, Ref};
 use crate::spend::{SpecialAction, SpendFact, SpendFilter, SpendOn};
 use mtg_core::card::CardType;
+use mtg_core::card::Supertype;
 
 /// Adds the wordings of an ability of one of the shapes above.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
@@ -26,6 +28,19 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         })
         .collect();
     texts.extend(among);
+    let owner_shuffles: Vec<String> = texts
+        .iter()
+        .filter(|text| text.ends_with(": Shuffle enchanted creature into its owner's library."))
+        .map(|text| {
+            text.replacen(
+                ": Shuffle enchanted creature into its owner's library.",
+                ": Enchanted creature's owner shuffles it into their library.",
+                1,
+            )
+        })
+        .collect();
+    texts.extend(owner_shuffles);
+    costs_said(ability, texts);
     let Ability::Activated { effects, .. } = ability else {
         return;
     };
@@ -80,7 +95,105 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 what: Ref::Target(0),
             },
         ] => lock_or_unlock(ability, texts),
+        [
+            Effect::TimeTravel { who: Ref::You },
+            Effect::TimeTravel { who: Ref::You },
+            Effect::TimeTravel { who: Ref::You },
+        ] => with_sentence(ability, "Time travel three times.", texts),
         _ => {}
+    }
+}
+
+/// The words of a part of a cost no other writer says: "Collect evidence 3", "Return three snow lands you control to
+/// their owner's hand".
+fn cost_words(item: &CostItem) -> Option<String> {
+    match item {
+        CostItem::CollectEvidence(total) => Some(format!("Collect evidence {total}")),
+        CostItem::ReturnToHand {
+            filter,
+            count: crate::value::Amount::Fixed(3),
+        } if filter.0 == [Pred::Supertype(Supertype::Snow), Pred::Type(CardType::Land)] => {
+            Some("Return three snow lands you control to their owner's hand".to_owned())
+        }
+        _ => None,
+    }
+}
+
+/// An activated ability with one such part: its wordings with a stand-in part (`{Q}`, or `{T}` when the cost has no tap)
+/// whose symbol is then replaced by the words of the part.
+fn costs_said(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Activated { cost, .. } = ability else {
+        return;
+    };
+    let Some((at, words)) = cost
+        .0
+        .iter()
+        .enumerate()
+        .find_map(|(at, item)| cost_words(item).map(|words| (at, words)))
+    else {
+        return;
+    };
+    let (stand, symbol) = if cost.0.contains(&CostItem::Tap) {
+        (CostItem::Untap, "{Q}")
+    } else {
+        (CostItem::Tap, "{T}")
+    };
+    let mut plain = ability.clone();
+    let Ability::Activated { cost, .. } = &mut plain else {
+        return;
+    };
+    if let Some(item) = cost.0.get_mut(at) {
+        *item = stand;
+    }
+    let mut said = Vec::new();
+    for text in variants(&plain) {
+        if let Some((head, rest)) = text.split_once(": ")
+            && head.contains(symbol)
+        {
+            said.push(format!("{}: {rest}", head.replacen(symbol, &words, 1)));
+        }
+    }
+    // A mana ability followed by a counter on its source is worded by `add_mana_shapes`.
+    let mut shaped = Vec::new();
+    add_mana_shapes(&plain, &mut shaped);
+    let more: Vec<String> = shaped
+        .iter()
+        .filter_map(|text| {
+            let (head, rest) = text.split_once(": ")?;
+            head.contains(symbol)
+                .then(|| format!("{}: {rest}", head.replacen(symbol, &words, 1)))
+        })
+        .collect();
+    texts.extend(said);
+    texts.extend(more);
+}
+
+/// The wordings this file gives a mana ability with more than its mana: a counter put on the source after the mana.
+fn add_mana_shapes(ability: &Ability, texts: &mut Vec<String>) {
+    let Ability::Activated { effects, .. } = ability else {
+        return;
+    };
+    if let [
+        Effect::AddMana { who: Ref::You, .. },
+        then @ Effect::PutCounters { .. },
+    ] = effects.as_slice()
+    {
+        let then = then.clone();
+        let mut plain = ability.clone();
+        let Ability::Activated { effects, .. } = &mut plain else {
+            return;
+        };
+        effects.pop();
+        let step = Ability::Spell {
+            targets: Vec::new(),
+            effects: vec![then],
+        };
+        let steps: Vec<String> = super::super::super::render::written_variants(&step);
+        for text in variants(&plain) {
+            for step in &steps {
+                texts.push(format!("{text} {step}"));
+            }
+        }
     }
 }
 
@@ -88,9 +201,17 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 fn lock_or_unlock(ability: &Ability, texts: &mut Vec<String>) {
     let room =
         serde_json::json!([{"what": {"Object": [{"Subtype": "Room"}, {"ControlledBy": "You"}]}}]);
-    if serde_json::to_value(ability.targets()).ok().as_ref() != Some(&room) {
-        return;
+    if serde_json::to_value(ability.targets()).ok().as_ref() == Some(&room) {
+        with_sentence(
+            ability,
+            "Lock or unlock a door of target Room you control.",
+            texts,
+        );
     }
+}
+
+/// The wordings of the ability, its targets and effects left out, with `sentence` in place of what it does.
+fn with_sentence(ability: &Ability, sentence: &str, texts: &mut Vec<String>) {
     let mut plain = ability.clone();
     let Ability::Activated {
         targets, effects, ..
@@ -106,11 +227,7 @@ fn lock_or_unlock(ability: &Ability, texts: &mut Vec<String>) {
     }];
     for text in variants(&plain) {
         if text.contains(": Draw a card.") {
-            texts.push(text.replacen(
-                ": Draw a card.",
-                ": Lock or unlock a door of target Room you control.",
-                1,
-            ));
+            texts.push(text.replacen(": Draw a card.", &format!(": {sentence}"), 1));
         }
     }
 }
@@ -238,6 +355,13 @@ mod tests {
     const MARINA: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"LookAtTop":{"count":7,"as":"top"}},{"Reveal":{"what":{"Bound":"top"}}},{"Move":{"what":{"Each":[{"In":"Library"},{"Is":{"Bound":"top"}},{"Type":"Enchantment"}]},"to":"Hand"}},{"Move":{"what":{"Bound":"top"},"to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#;
     const KEYS: &str = r#"{"Activated":{"cost":[{"Mana":"{3}"},"Tap","SacrificeSelf"],"timing":"Sorcery","targets":[{"what":{"Object":[{"Subtype":"Room"},{"ControlledBy":"You"}]}}],"effects":[{"LockOrUnlockDoor":{"what":{"Target":0}}}]}}"#;
     const KEYS_ANY_ROOM: &str = r#"{"Activated":{"cost":[{"Mana":"{3}"},"Tap","SacrificeSelf"],"timing":"Sorcery","targets":[{"what":{"Object":[{"Subtype":"Room"}]}}],"effects":[{"LockOrUnlockDoor":{"what":{"Target":0}}}]}}"#;
+    const CRYPTEX: &str = r#"{"Activated":{"cost":["Tap",{"CollectEvidence":3}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}},{"PutCounters":{"on":"This","counter":{"Other":"unlock"}}}]}}"#;
+    const KRAKEN: &str = r#"{"Activated":{"cost":[{"ReturnToHand":{"filter":[{"Supertype":"Snow"},{"Type":"Land"}],"count":3}}],"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#;
+    const KRAKEN_TWO: &str = r#"{"Activated":{"cost":[{"ReturnToHand":{"filter":[{"Supertype":"Snow"},{"Type":"Land"}],"count":2}}],"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#;
+    const GRASP: &str = r#"{"Activated":{"cost":[{"Waterbend":5}],"effects":[{"Move":{"what":"Attached","to":{"Library":{"place":"Shuffled"}}}}]}}"#;
+    const GRASP_TOP: &str = r#"{"Activated":{"cost":[{"Waterbend":5}],"effects":[{"Move":{"what":"Attached","to":{"Library":{"place":"Top"}}}}]}}"#;
+    const DOCTOR: &str = r#"{"Activated":{"cost":[{"Mana":"{7}"}],"timing":"Sorcery","effects":[{"TimeTravel":{}},{"TimeTravel":{}},{"TimeTravel":{}}]}}"#;
+    const DOCTOR_TWICE: &str = r#"{"Activated":{"cost":[{"Mana":"{7}"}],"timing":"Sorcery","effects":[{"TimeTravel":{}},{"TimeTravel":{}}]}}"#;
     const FLECTO: &str = r#"{"Activated":{"cost":["SacrificeSelf"],"targets":[{"what":{"Object":["Spell",{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]}}],"effects":[{"ChangeTargets":{"what":{"Target":0},"to":"Choose"}}]}}"#;
 
     #[rstest]
@@ -284,6 +408,46 @@ mod tests {
     #[case::marina_other_type(
         MARINA,
         "When ~ enters, reveal the top seven cards of your library. Put all artifact cards from among them into your hand and the rest on the bottom of your library in a random order.",
+        false
+    )]
+    #[case::cryptex(
+        CRYPTEX,
+        "{T}, Collect evidence 3: Add one mana of any color. Put an unlock counter on ~.",
+        true
+    )]
+    #[case::cryptex_other_total(
+        CRYPTEX,
+        "{T}, Collect evidence 4: Add one mana of any color. Put an unlock counter on ~.",
+        false
+    )]
+    #[case::kraken(
+        KRAKEN,
+        "Return three snow lands you control to their owner's hand: Return ~ to its owner's hand.",
+        true
+    )]
+    #[case::kraken_two(
+        KRAKEN_TWO,
+        "Return three snow lands you control to their owner's hand: Return ~ to its owner's hand.",
+        false
+    )]
+    #[case::grasp(
+        GRASP,
+        "Waterbend {5}: Enchanted creature's owner shuffles it into their library.",
+        true
+    )]
+    #[case::grasp_on_top(
+        GRASP_TOP,
+        "Waterbend {5}: Enchanted creature's owner shuffles it into their library.",
+        false
+    )]
+    #[case::doctor(
+        DOCTOR,
+        "{7}: Time travel three times. Activate only as a sorcery.",
+        true
+    )]
+    #[case::doctor_twice(
+        DOCTOR_TWICE,
+        "{7}: Time travel three times. Activate only as a sorcery.",
         false
     )]
     #[case::keys(

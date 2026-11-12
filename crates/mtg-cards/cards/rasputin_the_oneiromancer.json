@@ -1,0 +1,70 @@
+{
+  "oracle_id": "c16fd2b9-9147-43bc-aa08-6d1bddf1d3e8",
+  "name": "Rasputin, the Oneiromancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rasputin, the Oneiromancer",
+      "oracle_fingerprint": "2fd468d1dcba247d27b3ba45e558114d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "dream" },
+                  "count": { "Players": "Opponents" }
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": "Opponents",
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 131, "end": 203 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "dream" } } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Protection": [{ "Color": "Red" }] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
