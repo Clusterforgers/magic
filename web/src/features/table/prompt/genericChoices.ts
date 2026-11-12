@@ -26,7 +26,7 @@ export interface GenericWords {
   object(id: ObjectId): string
   seat(seat: PlayerId): string
   viewer: PlayerId | null
-  /** "Undo the spell" or "Undo the ability", by what asks (`undoWords`). */
+  /** "Cancel the spell" or "Cancel the ability", by what asks (`undoWords`). */
   cancel: string
 }
 
