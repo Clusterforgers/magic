@@ -50,6 +50,7 @@ fn spend_for(has: Has) -> Spend {
             card.manual.push(ManualClause {
                 text: "Do something by hand.".to_owned(),
                 reason: "by hand".to_owned(),
+                when: None,
             });
             card
         }
