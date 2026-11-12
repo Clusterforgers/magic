@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2adbb56a-45e9-4fbe-b586-3488ef8014a3",
+  "name": "Enter the Infinite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enter the Infinite",
+      "oracle_fingerprint": "1082a0651b1d16e7c8d731e581137559",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "back"
+                }
+              },
+              { "Move": { "what": { "Bound": "back" }, "to": { "Library": { "place": "Top" } } } },
+              { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "UntilYourNextTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

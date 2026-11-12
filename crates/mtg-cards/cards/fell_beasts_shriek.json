@@ -1,0 +1,42 @@
+{
+  "oracle_id": "d660f6a0-3642-4445-b877-fda2a2950680",
+  "name": "Fell Beast's Shriek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell Beast's Shriek",
+      "oracle_fingerprint": "acf5e83bfb755e5db91d0503736e09c6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opponent" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "opponent" } }
+                          ]
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Tap": { "what": { "Bound": "chosen" } } },
+                    { "Goad": { "what": { "Bound": "chosen" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "InstantOrSorcery", "cost": "{2}{U}{R}" } } }
+      ]
+    }
+  ]
+}

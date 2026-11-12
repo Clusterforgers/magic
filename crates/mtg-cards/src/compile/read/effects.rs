@@ -433,14 +433,20 @@ fn after_mill(r: &mut Reader<'_>, before: &[Effect]) -> Option<Vec<Effect>> {
     .then_some(step)
 }
 
-/// "Put two cards from your hand on top of your library in any order.": the player chooses cards
-/// of their hand, bound as `back`, and puts them on their library. One card has no order to choose.
+/// "Put two cards from your hand on top of your library in any order.", "put a card from your hand on the bottom of
+/// your library": the player chooses cards of their hand, bound as `back`, and puts them on their library. One card has no order to choose.
 fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
     let number = number_word(r.take_word()?)?;
     r.word(if number == 1 { "card" } else { "cards" })
         .then_some(())?;
-    r.need("from your hand on top of your library")?;
+    r.need("from your hand on")?;
+    let place = if r.words("the bottom of your library") {
+        Place::Bottom
+    } else {
+        r.need("top of your library")?;
+        Place::Top
+    };
     let order = if number == 1 {
         None
     } else {
@@ -459,10 +465,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         },
         Effect::Move {
             what: Ref::Bound(BACK.to_owned()),
-            to: Destination::Library {
-                place: Place::Top,
-                order,
-            },
+            to: Destination::Library { place, order },
             bind: None,
         },
     ])

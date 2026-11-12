@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4bb3edc5-2616-4d0d-b9dc-32ed79f38f67",
+  "name": "Calamity of the Titans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calamity of the Titans",
+      "oracle_fingerprint": "753f8fd0b306248f1c0e03723ee8e093",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }, "Colorless"] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

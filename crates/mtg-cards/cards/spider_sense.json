@@ -1,7 +1,7 @@
 {
   "oracle_id": "c4485bf9-e7ff-48b5-a983-02900939ee9d",
   "name": "Spider-Sense",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spider-Sense",
@@ -21,9 +21,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 121, "end": 187 }
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Triggered" }] },
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Ability": "Triggered" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
           }
         }
       ]

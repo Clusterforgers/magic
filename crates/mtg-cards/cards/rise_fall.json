@@ -1,0 +1,63 @@
+{
+  "oracle_id": "814f06aa-b48e-4c7f-b4cd-595d89176d0e",
+  "name": "Rise // Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise",
+      "oracle_fingerprint": "73fe65e43dfabd4f7c416896eaa533f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fall",
+      "oracle_fingerprint": "7a3b6bc95b840ac79f9e33a22a18e56e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "count": 2,
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "Is": { "Bound": "revealed" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "filter": [
+                    { "In": "Hand" },
+                    { "Is": { "Bound": "revealed" } },
+                    { "Not": { "Type": "Land" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

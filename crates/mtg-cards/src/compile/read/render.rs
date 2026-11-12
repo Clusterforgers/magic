@@ -1482,11 +1482,7 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
         },
         Effect::Move {
             what: Ref::Bound(name),
-            to:
-                Destination::Library {
-                    place: Place::Top,
-                    order,
-                },
+            to: Destination::Library { place, order },
             ..
         },
     ) = (choose, moved)
@@ -1512,8 +1508,13 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
     } else {
         format!("{} cards", count_word(number)?)
     };
+    let place = match place {
+        Place::Top => "top of",
+        Place::Bottom => "the bottom of",
+        _ => return None,
+    };
     Some(format!(
-        "put {cards} from your hand on top of your library{tail}"
+        "put {cards} from your hand on {place} your library{tail}"
     ))
 }
 

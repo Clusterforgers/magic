@@ -1,0 +1,62 @@
+{
+  "oracle_id": "13bfc51f-d079-40ef-a4ba-47d06d3150a3",
+  "name": "Command the Stage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command the Stage",
+      "oracle_fingerprint": "2cfdd4db459b04eb09dba82a19b8f265",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cadet",
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Subtype": "Wizard" },
+                      { "Not": { "Is": { "Bound": "token" } } },
+                      "Token",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "TalliedLastTurn": { "who": "Opponents", "what": "NoncombatDamageTaken" }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

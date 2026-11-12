@@ -38,6 +38,7 @@ mod proposal_repair;
 mod r280_cards;
 mod r280_writers;
 mod r282_cards;
+mod r283_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

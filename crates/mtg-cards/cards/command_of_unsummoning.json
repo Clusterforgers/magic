@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fd57dfa5-f29d-4b79-8748-c34a73efb7f0",
+  "name": "Command of Unsummoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command of Unsummoning",
+      "oracle_fingerprint": "fc4c87c30d2180a4b526fa89c2cbb705",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 1, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

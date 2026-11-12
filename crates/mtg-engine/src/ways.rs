@@ -123,18 +123,39 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if way == CastWay::Harmonize {
         return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
     }
-    if !matches!(way, CastWay::Miracle | CastWay::Cleave) {
+    if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
         return 0;
     }
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
             (CastWay::Miracle, Keyword::Miracle(cost))
-            | (CastWay::Cleave, Keyword::Cleave { cost, .. }) => {
+            | (CastWay::Cleave, Keyword::Cleave { cost, .. })
+            | (CastWay::Madness, Keyword::Madness(cost))
+            | (CastWay::Foretold, Keyword::Foretell(cost))
+            | (CastWay::Freerunning, Keyword::Freerunning(cost)) => {
                 cast_cost_x(cost, false).map(|(_, _, x)| x)
             }
             _ => None,
         })
+        .unwrap_or(0)
+}
+
+/// The ways whose keyword cost may hold an `{X}` the mana cost lacks ("Madness {X}{B}{B}", "Foretell {X}{X}{W}",
+/// "Freerunning {X}{R}"), announced as the spell is cast that way and 0 otherwise (CR 107.3b), as a cleave cost's is.
+pub(crate) const R283_X_WAYS: [CastWay; 4] = [
+    CastWay::Cleave,
+    CastWay::Madness,
+    CastWay::Foretold,
+    CastWay::Freerunning,
+];
+
+/// The most `{X}` any keyword cost of the card holds that its mana cost may lack (`R283_X_WAYS`).
+pub(crate) fn r283_keyword_x(state: &GameState, id: ObjectId) -> u32 {
+    R283_X_WAYS
+        .iter()
+        .map(|way| alternative_x(state, id, *way))
+        .max()
         .unwrap_or(0)
 }
 
@@ -664,14 +685,16 @@ fn keyword_way(
             | CastWay::Blitz
             | CastWay::Prowl
             | CastWay::Spectacle
-            | CastWay::Freerunning
             | CastWay::Mayhem
             | CastWay::Mutate
             | CastWay::Prototype
     ) {
         cast_cost(cost)?
-    } else if way == CastWay::Cleave {
-        // A cleave cost may hold `{X}`, announced as the spell is cast (`alternative_x`).
+    } else if matches!(
+        way,
+        CastWay::Cleave | CastWay::Freerunning | CastWay::Foretold
+    ) {
+        // A cleave, freerunning or foretell cost may hold `{X}`, announced as the spell is cast (`alternative_x`).
         let (mana, parts, _) = cast_cost_with_x(cost).filter(|(_, parts, _)| parts.is_empty())?;
         (mana, parts)
     } else {
@@ -858,7 +881,12 @@ fn granted_before_required(
         return keyword_cost(state, id, named)
             .map(|(mana, parts)| Way {
                 alternative: Some(named),
-                label: format!("{} {}", way_name(named), cost_words(&mana, &parts)),
+                label: format!(
+                    "{} {}{}",
+                    way_name(named),
+                    "{X}".repeat(usize::try_from(alternative_x(state, id, named)).unwrap_or(0)),
+                    cost_words(&mana, &parts)
+                ),
                 mana: Some(mana),
                 instant: true,
                 variant: 0,
@@ -1125,8 +1153,8 @@ fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCo
     keywords_of(state, id)
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
-            (CastWay::Madness, Keyword::Madness(cost)) => cast_cost(cost),
-            (CastWay::Miracle, Keyword::Miracle(cost)) => {
+            (CastWay::Madness, Keyword::Madness(cost))
+            | (CastWay::Miracle, Keyword::Miracle(cost)) => {
                 cast_cost_x(cost, false).map(|(mana, parts, _)| (mana, parts))
             }
             _ => None,

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5da5d8a3-009e-4d8a-977e-6ebc73ba2682",
+  "name": "Not of This World",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Not of This World",
+      "oracle_fingerprint": "a680966976e7c8829fc966bc82a37367",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "Targeting": [{ "ControlledBy": "You" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  {
+                    "Targeting": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{7}"
+          }
+        }
+      ]
+    }
+  ]
+}

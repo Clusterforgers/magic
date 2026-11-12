@@ -1775,6 +1775,7 @@ impl<'a> Scope<'a> {
                 .is_some_and(|permanent| {
                     permanent.designations.dealt[usize::from(*pred == Pred::DealtCombatDamageYet)]
                 }),
+            Pred::NthCastThisTurn(nth) => state.r283_nth_cast_is(*nth, reference),
             Pred::DidThisTurn {
                 event,
                 by,
@@ -2773,6 +2774,7 @@ impl<'a> Scope<'a> {
             Condition::SorceryTiming => {
                 crate::priority::sorcery_timing(self.state, self.controller)
             }
+            Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

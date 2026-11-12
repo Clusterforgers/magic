@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3f01f627-9fbd-470b-8001-974784ccf421",
+  "name": "Deep Wood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Wood",
+      "oracle_fingerprint": "90acbd228682a86c3b9cb0f77ba5e27c",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": [{ "Type": "Creature" }, "Attacking"] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

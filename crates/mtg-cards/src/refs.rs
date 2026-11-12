@@ -417,6 +417,9 @@ pub enum Pred {
     DealtDamageYet,
     /// Has dealt combat damage since it entered the battlefield, as this object.
     DealtCombatDamageYet,
+    /// Is the spell that was the nth spell cast this turn, by any player ("spell that's the second spell cast this
+    /// turn"); a copy is not cast.
+    NthCastThisTurn(u32),
     /// Was dealt damage this turn by one of the objects the reference names (the object as it is now: one that left and came back is another).
     DamagedBy(Ref),
     /// Was the object that did the event this turn ("creature that blocked this turn", "creature that dealt damage to you

@@ -1402,6 +1402,8 @@ pub enum Condition {
     /// The player could cast a sorcery now (CR 307.1): their own turn, a main phase and an empty stack ("can cast
     /// spells only any time they could cast a sorcery").
     SorceryTiming,
+    /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
+    AfterCombat,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.

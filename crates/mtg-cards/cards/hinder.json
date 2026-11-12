@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c9db6b94-a7b1-4b93-b454-4dead8f85e34",
+  "name": "Hinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hinder",
+      "oracle_fingerprint": "0b9501331352405273d458049317adec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "ChooseValue": { "kind": { "Options": ["Top", "Bottom"] }, "as": "way" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                        "by": { "IntoLibrary": { "place": "Bottom" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Shield": {
+                        "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                        "by": { "IntoLibrary": { "place": "Top" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

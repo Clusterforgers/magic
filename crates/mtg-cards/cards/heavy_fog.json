@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a2006755-8812-4aad-8567-e8df6e8923da",
+  "name": "Heavy Fog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heavy Fog",
+      "oracle_fingerprint": "90acbd228682a86c3b9cb0f77ba5e27c",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": [{ "Type": "Creature" }, "Attacking"] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fa360a9d-3cff-4833-9ce2-b2f53d26127f",
+  "name": "Unforge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unforge",
+      "oracle_fingerprint": "da765f7c89a09487849213dd1d95e4c0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Equipment" }] } }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "HasAttached": [{ "Is": { "Target": 0 } }] }]
+                  },
+                  "as": "host"
+                }
+              },
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Bound": "host" }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

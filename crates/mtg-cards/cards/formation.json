@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ad5d27ea-cead-4c95-8561-283855ce952e",
+  "name": "Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Formation",
+      "oracle_fingerprint": "58e589ce30a156d045cf1d031485f801",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Banding" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -286,6 +286,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackedLastTurn
         | Pred::DealtDamageYet
         | Pred::DealtCombatDamageYet
+        | Pred::NthCastThisTurn(_)
         | Pred::Attacking
         | Pred::AttackingAlone
         | Pred::AttackingBattle
@@ -502,6 +503,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::InCombat
         | Condition::FirstCombat
         | Condition::SorceryTiming
+        | Condition::AfterCombat
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)

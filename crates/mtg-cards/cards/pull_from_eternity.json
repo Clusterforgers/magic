@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2903bd66-6948-445b-a18a-12e2ce1a86c3",
+  "name": "Pull from Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pull from Eternity",
+      "oracle_fingerprint": "1a07bdce0acf767e93fd97769953d7e9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Exile" }, { "Not": "FaceDown" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Graveyard" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

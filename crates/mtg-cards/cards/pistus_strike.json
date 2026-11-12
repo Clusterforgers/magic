@@ -1,0 +1,24 @@
+{
+  "oracle_id": "138f9daa-19d4-4290-94a7-09e00dbcebb0",
+  "name": "Pistus Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pistus Strike",
+      "oracle_fingerprint": "dcb26ce7e81fe93dabcd1c76b27b61b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "ControllerOf": { "Target": 0 } }, "counter": "poison" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
