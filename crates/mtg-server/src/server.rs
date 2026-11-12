@@ -289,6 +289,34 @@ fn account_routes() -> Router<AppState> {
 }
 
 /// All routes of the server.
+/// The routes of games: making one, its lobby and seats, its spectators and the game browser.
+fn game_routes() -> Router<AppState> {
+    Router::new()
+        .route("/api/games", post(api::create_game))
+        .route(
+            "/api/games/{id}",
+            get(api::game)
+                .patch(lobbies::set_visibility)
+                .delete(lobbies::close),
+        )
+        .route("/api/games/{id}/join", post(lobbies::join_game))
+        .route("/api/games/{id}/leave", post(lobbies::leave))
+        .route(
+            "/api/games/{id}/spectators",
+            post(lobbies::watch_link).put(lobbies::set_spectators),
+        )
+        .route(
+            "/api/games/{id}/seats/{seat}/release",
+            post(lobbies::release),
+        )
+        .route(
+            "/api/games/{id}/seats/{seat}/deck",
+            put(lobbies::choose_deck),
+        )
+        .route("/api/join", post(lobbies::join_by_code))
+        .route("/api/lobbies", get(lobbies::list))
+}
+
 pub(crate) fn router(state: AppState) -> Router {
     let origins = state
         .config()
@@ -348,30 +376,8 @@ pub(crate) fn router(state: AppState) -> Router {
         .merge(read_routes())
         .route("/api/precons", get(precon_api::list))
         .route("/api/precons/{code}", get(precon_api::get_one))
-        .route("/api/games", post(api::create_game))
         .route("/api/tutorial", post(tutorial::start))
-        .route(
-            "/api/games/{id}",
-            get(api::game)
-                .patch(lobbies::set_visibility)
-                .delete(lobbies::close),
-        )
-        .route("/api/games/{id}/join", post(lobbies::join_game))
-        .route("/api/games/{id}/leave", post(lobbies::leave))
-        .route(
-            "/api/games/{id}/spectators",
-            post(lobbies::watch_link).put(lobbies::set_spectators),
-        )
-        .route(
-            "/api/games/{id}/seats/{seat}/release",
-            post(lobbies::release),
-        )
-        .route(
-            "/api/games/{id}/seats/{seat}/deck",
-            put(lobbies::choose_deck),
-        )
-        .route("/api/join", post(lobbies::join_by_code))
-        .route("/api/lobbies", get(lobbies::list))
+        .merge(game_routes())
         .merge(account_routes())
         .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))
