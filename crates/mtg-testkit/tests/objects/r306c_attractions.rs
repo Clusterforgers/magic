@@ -141,11 +141,11 @@ fn rolled(driver: &Driver) -> u32 {
         .engine()
         .events()
         .iter()
-        .filter_map(|event| match event {
+        .rev()
+        .find_map(|event| match event {
             Event::DieRolled { result, .. } => Some(*result),
             _ => None,
         })
-        .last()
         .unwrap()
 }
 
