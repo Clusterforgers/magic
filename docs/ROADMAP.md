@@ -32,7 +32,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log (`docs/protocol.md`, `docs/server.md`).
-- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
+- Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, payment checks that count a hand card once (a Spirit Guide, a Cadaverous Bloom, a cost that exiles it), auto choices (trigger order, damage), smart stops, per-ability yields, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Unfinity: Attractions (open, roll to visit, visit and prize abilities, the junkyard, the deck warning), tickets and stickers (three random sheets, name, ability and power/toughness stickers), the sheet and sticker chips at the table (`docs/engine.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
@@ -47,8 +47,6 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Live game
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
-
-- [ ] (pf23b) An affordability check can count one hand card twice, as a Spirit Guide and as the card a Cadaverous Bloom-style cost exiles (the payment itself is right)
 
 - [ ] (d1c) A copy of the nightly database dumps off queen (a Longhorn backup target or a scheduled copy to another machine), so losing queen does not lose the accounts and decks (`docs/deploy.md`)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
