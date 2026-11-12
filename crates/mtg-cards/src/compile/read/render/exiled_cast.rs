@@ -42,6 +42,7 @@ impl Writer<'_> {
             additional: None,
             spend_as: crate::modify::SpendAs::Normal,
             when: None,
+            any_cast: false,
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))

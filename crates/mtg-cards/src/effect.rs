@@ -2022,6 +2022,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,
+                any_cast: false,
             }),
             duration,
         },

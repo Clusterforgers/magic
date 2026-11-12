@@ -327,6 +327,10 @@ pub struct CastPermission {
     /// token, you may play that card"); always when absent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Condition>,
+    /// It opens no zone: its free cast or `rather` cost is offered for every cast the player may make anyway, from a hand,
+    /// a command zone or a zone another permission opens ("You may cast Dragon spells without paying their mana costs").
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub any_cast: bool,
 }
 
 /// Which mana may pay for a cast through a permission.

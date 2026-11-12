@@ -939,6 +939,20 @@ pub enum EntersChoice {
     },
 }
 
+/// Counters a permanent entering as a copy enters with (`ReplaceBy::AsCopy`), when the object it copies matches `of`.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CopyCounters {
+    /// The kind of counter.
+    pub counter: CounterKind,
+    /// How many.
+    #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+    pub count: Amount,
+    /// What the copied object must be, judged as it is copied; any object when empty.
+    #[serde(default, skip_serializing_if = "Selector::is_empty")]
+    pub of: Selector,
+}
+
 /// What happens instead.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -1106,6 +1120,10 @@ pub enum ReplaceBy {
         /// It is a copy until the end of the turn only ("becomes a copy ... until end of turn").
         #[serde(default, skip_serializing_if = "is_false")]
         until_end_of_turn: bool,
+        /// Counters it enters with when it is a copy, each only when the copied object matches its selector ("except it
+        /// enters with an additional +1/+1 counter on it if it's a creature").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        counters: Vec<CopyCounters>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

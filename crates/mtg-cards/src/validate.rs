@@ -5496,12 +5496,23 @@ impl Walker<'_> {
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
             }
-            ReplaceBy::AsCopy { of, except, .. } => {
+            ReplaceBy::AsCopy {
+                of,
+                except,
+                counters,
+                ..
+            } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
                 }
                 self.at("of", |w| w.selector(of));
                 self.copy_exceptions(except);
+                for (index, entry) in counters.iter().enumerate() {
+                    self.at(&format!("counters[{index}]"), |w| {
+                        w.amount(&entry.count);
+                        w.selector(&entry.of);
+                    });
+                }
             }
             _ => {}
         }
