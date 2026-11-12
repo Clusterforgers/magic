@@ -453,6 +453,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CoinFlipped { .. }
         // A roll by hand is told to every seat, as a spell's roll is.
         | Event::ManualRolled { .. }
+        // A by-hand line comes due only on a permanent, which every seat sees.
+        | Event::ByHandDue(_)
         | Event::Clashed { .. }
         | Event::Proliferated { .. }
         | Event::Explored { .. }

@@ -16,6 +16,7 @@ use crate::compile::{ClauseKind, classify_clause};
 use crate::effect::is_false;
 use crate::keyword::Keyword;
 use crate::modify::Modification;
+use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
 /// `{T}: Add one mana of a fixed type`; shaped so costs and choices can extend it.
@@ -48,9 +49,30 @@ pub struct ManualClause {
     pub text: String,
     /// Why the engine leaves it to the table, in plain words.
     pub reason: String,
+    /// The event a triggered clause waits for, when its words read: the engine logs the clause as due when it happens.
+    /// Read again from the text at every assembly, so it is never serialised and no fingerprint changes with it.
+    #[serde(skip)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub when: Option<TriggerPattern>,
 }
 
 impl ManualClause {
+    /// A clause with `text` and `reason` and no event read.
+    pub fn new(text: impl Into<String>, reason: impl Into<String>) -> ManualClause {
+        ManualClause {
+            text: text.into(),
+            reason: reason.into(),
+            when: None,
+        }
+    }
+
+    /// The clause with its event read from its text ([`crate::compile::by_hand_event`]); `names` are its face's names.
+    #[must_use]
+    pub fn reading_when(mut self, names: &[String]) -> ManualClause {
+        self.when = crate::compile::by_hand_event(&self.text, names);
+        self
+    }
+
     /// Whether its controller owes it when a spell or ability of its card resolves, so that the table asks them to
     /// apply it then: false when every line of the clause is an activated or loyalty ability, which a player uses when
     /// it matters and which a resolution does not call for. A clause that reads as anything else is owed.
@@ -364,10 +386,7 @@ impl CardDefinition {
     /// Adds a clause of the rules text the engine does not run.
     #[must_use]
     pub fn with_manual(mut self, text: impl Into<String>, reason: impl Into<String>) -> Self {
-        self.manual.push(ManualClause {
-            text: text.into(),
-            reason: reason.into(),
-        });
+        self.manual.push(ManualClause::new(text, reason));
         self
     }
 
@@ -704,10 +723,7 @@ mod tests {
         #[case] text: &str,
         #[case] owed: bool,
     ) {
-        let clause = ManualClause {
-            text: text.to_owned(),
-            reason: "you apply this by hand".to_owned(),
-        };
+        let clause = ManualClause::new(text, "you apply this by hand");
         assert_eq!(clause.owed_at_resolution(), owed, "{text}");
     }
 

@@ -408,12 +408,13 @@ fn grants_replacement(effect: &mtg_cards::effect::Effect) -> bool {
 }
 
 /// Whether anything a card with this definition does can make something trigger (`GameState::watches`): it prints a
-/// triggered ability, sets up a delayed one or grants one.
+/// triggered ability, sets up a delayed one, grants one or has a by-hand line that comes due on an event.
 pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
     definition
         .rules
         .iter()
         .any(|rules| triggers_something(rules))
+        || definition.manual.iter().any(|clause| clause.when.is_some())
 }
 
 /// Whether an effect in the rules of this definition gives its object one of the subtypes `names` ("it becomes an Aura

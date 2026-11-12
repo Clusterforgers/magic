@@ -16,7 +16,10 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{CounterKind, DayNight};
 use mtg_core::ids::{ObjectId, PlayerId};
 
+mod by_hand;
 mod did;
+
+pub use by_hand::{ByHandDue, due};
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};

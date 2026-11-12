@@ -156,6 +156,11 @@ fn manual_clauses(
         .get(index)
         .map_or("", |face| face.oracle_text.as_str());
     let named = || record.clauses.iter().filter(|clause| clause.face == index);
+    let names = printed
+        .faces
+        .get(index)
+        .map(crate::compile::own_names)
+        .unwrap_or_default();
     if record.support.runs_whole() {
         return Vec::new();
     }
@@ -165,18 +170,14 @@ fn manual_clauses(
             |clause| clause.reason.clone(),
         );
         return crate::support::has_rules_text(text)
-            .then(|| ManualClause {
-                text: text.to_owned(),
-                reason,
-            })
+            .then(|| ManualClause::new(text, reason).reading_when(&names))
             .into_iter()
             .collect();
     }
     named()
         .filter_map(|clause| {
-            clause.span.slice(text).map(|clause_text| ManualClause {
-                text: clause_text.to_owned(),
-                reason: clause.reason.clone(),
+            clause.span.slice(text).map(|clause_text| {
+                ManualClause::new(clause_text, clause.reason.clone()).reading_when(&names)
             })
         })
         .collect()
@@ -2265,10 +2266,7 @@ mod tests {
         );
         assert_eq!(
             assembled.definition.manual,
-            [ManualClause {
-                text: text.into(),
-                reason: reason.into()
-            }]
+            [ManualClause::new(text, reason)]
         );
         let ran = usize::from(status == ImplStatus::Partial);
         assert_eq!(assembled.definition.abilities.len(), ran);

@@ -46,7 +46,8 @@ function resolved(event: Event): ObjectId | null {
  * owed at resolution (`ObjectView.manual_owed`) until it passes priority, and never tells it. The object is read from the
  * view before the batch (it was on the stack) or, for a card that kept its id, after it; an ability put on the stack and
  * resolved inside the batch is in neither, and takes the flag of its source's view. An ability of the seat's that the
- * game left to the table (`AbilityLeftToTable`) holds it too, for its source card. A later resolution names the card.
+ * game left to the table (`AbilityLeftToTable`) and a by-hand line of its own that came due (`ByHandDue`) hold it too,
+ * for their source card. A later resolution names the card.
  */
 export function owesByHand(
   owes: string | null,
@@ -66,6 +67,11 @@ export function owesByHand(
     }
     if (!('Public' in view) || typeof view.Public === 'string') continue
     const event = view.Public
+    if ('ByHandDue' in event) {
+      const { source, controller } = event.ByHandDue
+      if (controller === seat) held = (before[source.id] ?? after[source.id])?.name ?? UNSEEN_SOURCE
+      continue
+    }
     if ('PriorityPassed' in event) {
       if (event.PriorityPassed.player === seat) held = null
       continue

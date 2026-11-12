@@ -81,6 +81,10 @@ Stickers (CR 123, `un34_stickers.rs`) are implemented once in the engine; a shee
 
 - A card in state `Read`, `Forge` or `Unverified` runs rules no checker proved ([cards-dsl.md](cards-dsl.md)), so its errors must not stop a game. When a step of a spell or ability whose source definition has `read` returns a `ResolveError`, the engine keeps the steps already folded, drops the rest, logs `AbilityLeftToTable {source, controller, text}` (a note: no state change) and goes on as after a resolution, so the table resolves the ability by hand. The same error from any other card stays an `EngineError`, which the tests must catch, except `Unsupported`: it is left to the table for every card, so no game stops on a primitive the engine lacks.
 
+### By-hand lines
+
+- A clause the table plays by hand that is one triggered line whose event reads carries that event (`ManualClause.when`, read at assembly by `compile::by_hand_event`, never serialised, so no recipe fingerprint changes). When the event happens to a permanent with such a line, the engine logs `ByHandDue {source, controller, text}` (a note: no state change) once for each time, judged as a trigger is (`triggers::due`, before the abilities that trigger on the same events); a card off the battlefield has no due lines.
+
 ## Mana costs
 
 - `ManaCost` (`mtg-core`) is a canonical list of `ManaSymbol`. Canonical means sorted, generic symbols merged, `{0}` dropped and a colour pair stored the way cards print it. Equal costs are equal values, `Display` then `parse` is the identity, and the list is also the wire form (deserializing normalizes).

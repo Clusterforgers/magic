@@ -32,7 +32,7 @@ pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
 pub use read::subtypes::creature_types;
 pub use read::{
-    BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts,
+    BlockPlan, all_groups, block_plan, by_hand_event, champion_line, die_row, die_row_texts,
     either_way_pair_texts, ep23_three_texts, equip_line, escalate_cost, escalate_reads,
     forecast_lines, keyword_grant, reinforce_line, render_ability, render_cost, render_mode,
     render_variants, same_text, same_written_text, static_pair_texts, subject_group,

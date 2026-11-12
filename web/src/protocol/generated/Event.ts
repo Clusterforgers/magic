@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { ByHandDue } from "./ByHandDue";
 import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
@@ -570,7 +571,7 @@ object: ObjectId,
 /**
  * How it ended.
  */
-outcome: ResolutionOutcome, } } | { "AbilityLeftToTable": LeftToTable } | { "ZoneChanged": { 
+outcome: ResolutionOutcome, } } | { "AbilityLeftToTable": LeftToTable } | { "ByHandDue": ByHandDue } | { "ZoneChanged": { 
 /**
  * The object.
  */
