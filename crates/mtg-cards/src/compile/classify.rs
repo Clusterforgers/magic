@@ -320,7 +320,7 @@ mod tests {
     #[case::r302_uncounterable_and_more(
         "If X is 5 or more, this spell can't be countered and the damage can't be prevented.",
         true,
-        Spell
+        Static
     )]
     #[case::r302_a_condition_on_an_effect("If X is 5 or more, draw a card.", true, Spell)]
     #[case::next_cast_on_a_spell(
