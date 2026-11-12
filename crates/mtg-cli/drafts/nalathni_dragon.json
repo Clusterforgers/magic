@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0887dc95-3e75-4f72-bf05-4067d3785376",
+  "name": "Nalathni Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nalathni Dragon",
+      "oracle_fingerprint": "e6d6e0f06115e3d4a576aed975108ec4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Banding" },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Ge", "right": 4 } },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

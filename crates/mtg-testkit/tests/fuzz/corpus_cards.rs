@@ -31,9 +31,7 @@ use Support::{Partial, Verified};
 /// carries none (the table resolves it).
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
-    ("Kaervek's Spite", Partial, 1),
     ("Soulblast", Partial, 1),
-    ("Vexing Puzzlebox", Partial, 2),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

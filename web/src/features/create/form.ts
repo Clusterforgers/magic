@@ -4,7 +4,7 @@ import type { GameFormat, RuleTexts } from '@/lib/houseRules'
 import { COMMANDER_POD, MAX_FORM_SEATS, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
 import { defaultTeams, GIANT_SEATS, MIN_TEAM_SEATS, seatsProblem } from '@/lib/teams'
 import type { GameMode } from '@/lib/teams'
-import type { CreateGameRequest, DeckInfo } from '@/net/api'
+import type { BotLevel, CreateGameRequest, DeckInfo } from '@/net/api'
 import type { PreconListItem, Visibility } from '@/protocol/generated'
 
 /** One seat in the form; `id` is a stable key that is never reused, so edits stay with their seat when another goes. */
@@ -28,6 +28,8 @@ export interface Draft {
   rules: RuleTexts
   /** How many seats after the creator's a bot plays; never more than the other seats (`botsOf`). */
   bots: number
+  /** How well the bots play. */
+  botLevel: BotLevel
   /** Free-for-all, or one of the team modes with the engine's default teams. */
   mode: GameMode
 }
@@ -92,6 +94,7 @@ export function defaultDraft(
     format,
     rules: {},
     bots: 0,
+    botLevel: 'normal',
     mode: 'free_for_all',
   }
   for (let i = 0; i < startSeats(format); i += 1) draft = withSeat(draft, decks)
@@ -182,6 +185,11 @@ export function chooseBots(draft: Draft, count: number): Draft {
   return Number.isInteger(count) && count >= 0 ? { ...draft, bots: count } : draft
 }
 
+/** The form with its bots playing at `level`. */
+export function chooseBotLevel(draft: Draft, level: BotLevel): Draft {
+  return { ...draft, botLevel: level }
+}
+
 /**
  * The precons `count` Commander bots play, as deck ids (`precon:<code>`): Commander precons a game takes, the Verified
  * ones first, each group shuffled by `random`, and used again from the start when there are fewer than bots.
@@ -255,7 +263,7 @@ export function ruleProblems(draft: Draft): Readonly<Record<string, string>> {
  * is held, with its deck in a Normal game and none in Commander (the lobby's chooser judges decks against the table),
  * and the others, which the server never reads a name for, go out as `Player N` with no deck: whoever takes a seat
  * chooses its deck in the lobby. The seats right after the creator's are the bots (`botsOf`), held, each with a deck:
- * `botDecks` in order (the precons of a Commander game), else the deck the form gave the seat.
+ * `botDecks` in order (the precons of a Commander game), else the deck the form gave the seat, all at the form's level.
  */
 export function toRequest(draft: Draft, botDecks: readonly string[] = []): CreateGameRequest {
   const typed = requestRules(draft.rules, draft.format, draft.seats.length)
@@ -275,7 +283,7 @@ export function toRequest(draft: Draft, botDecks: readonly string[] = []): Creat
     format: draft.format,
     seats: draft.seats.map((seat, index) => {
       if (index !== 0 && index <= bots)
-        return { name: 'Bot', deck: botDecks[index - 1] ?? seat.deck, bot: true }
+        return { name: 'Bot', deck: botDecks[index - 1] ?? seat.deck, bot: true, level: draft.botLevel }
       if (index !== 0) return { name: `Player ${index + 1}` }
       return draft.format === 'normal'
         ? { name: seat.name.trim(), deck: seat.deck }

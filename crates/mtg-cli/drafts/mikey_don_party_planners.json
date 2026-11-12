@@ -1,0 +1,35 @@
+{
+  "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
+  "name": "Mikey & Don, Party Planners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mikey & Don, Party Planners",
+      "oracle_fingerprint": "23e7378493d2edc479ceda1db839bea1",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Land" },
+                      { "Subtype": "Mutant" },
+                      { "Subtype": "Ninja" },
+                      { "Subtype": "Turtle" }
+                    ]
+                  }
+                ],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "76d6d4cc-607f-4a33-a964-a38b5dbfe710",
+  "name": "Words of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of War",
+      "oracle_fingerprint": "216fced7411d4809e4da137a0dfcc333",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "Reflexive": {
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [
+                            {
+                              "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

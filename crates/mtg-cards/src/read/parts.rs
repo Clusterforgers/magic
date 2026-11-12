@@ -258,8 +258,8 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
                 phrase::selector(ctx, what)
             )
         }
-        TriggerPattern::Untapped { what } => {
-            format!("{} becomes untapped", phrase::selector(ctx, what))
+        TriggerPattern::Untapped { what, untap_step } => {
+            crate::trigger::untapped_words(&phrase::selector(ctx, what), *untap_step)
         }
         TriggerPattern::Chapter { number } => format!("chapter {number}"),
         TriggerPattern::StepBegins { step, whose } => {
@@ -627,6 +627,26 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
         )),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
+            effects::list(ctx, list, depth + 1, out);
+        }
+        ReplaceBy::AsEntersWith {
+            effects: list,
+            counter,
+            count,
+        } => {
+            out.push(Step::new(depth, "as it enters, first:"));
+            effects::list(ctx, list, depth + 1, out);
+            out.push(Step::new(
+                depth,
+                format!(
+                    "then it enters with {} {} counters",
+                    generic::node(ctx, count),
+                    generic::node(ctx, counter)
+                ),
+            ));
+        }
+        ReplaceBy::AsEnters(list) => {
+            out.push(Step::new(depth, "as it enters, first:"));
             effects::list(ctx, list, depth + 1, out);
         }
         ReplaceBy::Plus(list) => {

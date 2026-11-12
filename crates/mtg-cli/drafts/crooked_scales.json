@@ -1,0 +1,54 @@
+{
+  "oracle_id": "49c47768-fcc7-4091-b06d-d8a2bd7d1cc9",
+  "name": "Crooked Scales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crooked Scales",
+      "oracle_fingerprint": "3ad16022cbe5f8797039f869f84bc2cc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "done" }, "op": "Eq", "right": 0 }
+                  },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          { "Destroy": { "what": { "Target": 0 } } },
+                          { "Let": { "as": "done", "amount": 1 } }
+                        ],
+                        "lose": [
+                          {
+                            "Pay": {
+                              "cost": "{3}",
+                              "unpaid": [
+                                { "Destroy": { "what": { "Target": 1 } } },
+                                { "Let": { "as": "done", "amount": 1 } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -455,6 +455,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Sum(parts) | Amount::Product(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
+        Amount::DamageDealtByTo { by, to } => reads_of_ref(by).or(reads_of_ref(to)),
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),
@@ -525,6 +526,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AfterBlockers
         | Condition::InCombat
         | Condition::FirstCombat
+        | Condition::FirstStep
         | Condition::SorceryTiming
         | Condition::AfterCombat
         | Condition::NeitherDayNorNight

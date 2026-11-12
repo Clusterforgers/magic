@@ -1,0 +1,20 @@
+{
+  "oracle_id": "80ea63fd-691a-45ba-a4bf-862e5ec2922d",
+  "name": "Aether Searcher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aether Searcher",
+      "oracle_fingerprint": "5180ab1d2664db9d3d3588f0bed6c902",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "NoteNextName" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 84, "end": 315 }
+          }
+        }
+      ]
+    }
+  ]
+}

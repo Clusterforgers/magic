@@ -1,0 +1,43 @@
+{
+  "oracle_id": "86e13e19-45df-4d73-8600-51b7caa3e6ab",
+  "name": "Sovereigns of Lost Alara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sovereigns of Lost Alara",
+      "oracle_fingerprint": "bf5267ebbd299f331f5e72db6ba25141",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Enchantment" }, { "Subtype": "Aura" }],
+                        "count": { "min": 0, "max": 1 },
+                        "as": "aura"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "aura" },
+                        "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

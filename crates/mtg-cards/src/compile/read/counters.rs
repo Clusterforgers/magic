@@ -477,6 +477,8 @@ pub fn text(counter: &CounterKind, count: &Amount) -> Option<String> {
     Some(match u32::try_from(*number).ok()? {
         0 => return None,
         1 => format!("{} {kind} counter", article(kind)),
+        // Cards print a count past twenty in digits ("Remove 100 charge counters").
+        many if many > 20 => format!("{many} {kind} counters"),
         many => format!("{} {kind} counters", count_word(many)?),
     })
 }

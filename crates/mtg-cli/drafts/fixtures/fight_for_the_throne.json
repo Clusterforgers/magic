@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "6da747ef-4d8f-49a2-8682-52ab87e6ad6e",
+  "oracle_id": "53129de9-4809-4c8c-9d11-37369899e70a",
+  "multiverse_ids": [],
+  "resource_id": "0EBB745CAFCBBA7628A16EC40756754C259D2B1EDABBCF47005A0CC99432A7E9",
+  "mtgo_id": 150569,
+  "tcgplayer_id": 698186,
+  "cardmarket_id": 892693,
+  "name": "Fight for the Throne",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/6da747ef-4d8f-49a2-8682-52ab87e6ad6e",
+  "scryfall_uri": "https://scryfall.com/card/msc/65/fight-for-the-throne?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281",
+    "normal": "https://cards.scryfall.io/normal/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281",
+    "large": "https://cards.scryfall.io/large/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281",
+    "png": "https://cards.scryfall.io/png/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.png?1783903281",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.webp?1783903281",
+    "grid": "https://cards.scryfall.io/grid/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.webp?1783903281",
+    "display": "https://cards.scryfall.io/display/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.webp?1783903281",
+    "art": "https://cards.scryfall.io/art/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.webp?1783903281",
+    "crop": "https://cards.scryfall.io/crop/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.webp?1783903281",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/d/6da747ef-4d8f-49a2-8682-52ab87e6ad6e.jpg?1783903281"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Put a +1/+1 counter on target creature you control. Then it fights target creature an opponent controls. When the creature an opponent controls dies this turn, if you control your commander, you become the monarch.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Fight"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6da747ef-4d8f-49a2-8682-52ab87e6ad6e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A53129de9-4809-4c8c-9d11-37369899e70a&unique=prints",
+  "collector_number": "65",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Let it end where it began, at Warrior Falls.\"\n—T'Challa, the Black Panther",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Le Vuong",
+  "artist_ids": [
+    "c8b3ccf1-5c15-44f2-a7c5-1628c1a3f325"
+  ],
+  "illustration_id": "3fb60056-226e-4aa6-999d-fb314acceb2a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13975,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": "1.60"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFight%2Bfor%2Bthe%2BThrone",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFight%2Bfor%2Bthe%2BThrone",
+    "edhrec": "https://edhrec.com/route/?cc=Fight+for+the+Throne"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F698186%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892693&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150569?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

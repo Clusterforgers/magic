@@ -1,0 +1,54 @@
+{
+  "oracle_id": "87957d09-7e22-40fe-8770-ff66d1934a38",
+  "name": "Etrata, Deadly Fugitive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etrata, Deadly Fugitive",
+      "oracle_fingerprint": "5deb1feffc62954d46ebfa70204da5e6",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{2}{U}{B}",
+                    "effects": [
+                      { "TurnFaceUp": { "what": "This" } },
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": { "subject": "This", "selector": ["FaceDown"] }
+                          },
+                          "then": [
+                            { "Exile": { "what": "This", "as": "card" } },
+                            { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }],
+                "to": "Opponents",
+                "combat": true
+              }
+            },
+            "effects": [{ "Cloak": { "library": "TriggeringPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

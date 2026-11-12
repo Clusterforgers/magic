@@ -58,17 +58,15 @@ fn price_of<'a>(ctx: &'a Ctx<'_>, choices: &Choices) -> Option<Cow<'a, Price>> {
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let price = price_of(ctx, work.choices)?;
-    // A part whose filter compares to X is judged once X is announced, at the values the offer of X leaves.
     if work.choices.cost_picks().is_empty()
-        && !price.parts.iter().any(Part::r379_filter_reads_x)
         && price.claimed(ctx.state, ctx.player, ctx.source).is_none()
     {
         return Some(Next::Drop);
     }
     let mut settled = 0;
     for part in &price.parts {
-        // A counted part, or one whose filter compares to X, needs X first, which is asked when the parts come to it (CR 601.2b).
-        if part.reads_x()
+        // A counted part needs X first, which is asked when the parts come to it (CR 601.2b).
+        if part.is_counted()
             && let Some(next) = x::run(ctx, work)
         {
             return Some(next);
@@ -131,6 +129,45 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
         .min()
 }
 
+/// The values of X from `min` to `max` that leave a part picking by X ("a red card with mana value X") too little to
+/// take, so they are not offered.
+pub(super) fn r301_x_without_picks(
+    ctx: &Ctx<'_>,
+    choices: &Choices,
+    min: u32,
+    max: u32,
+) -> Vec<u32> {
+    let Some(price) = price_of(ctx, choices) else {
+        return Vec::new();
+    };
+    let reading: Vec<&Part> = price
+        .parts
+        .iter()
+        .filter(|part| part.r301_picks_by_x())
+        .collect();
+    if reading.is_empty() {
+        return Vec::new();
+    }
+    (min..=max)
+        .filter(|x| {
+            reading.iter().any(|part| {
+                let Part::Pick(pick) = part.at(*x) else {
+                    return false;
+                };
+                let barred = price.barred(part, ctx.source, choices.cost_picks());
+                let candidates = pick.candidates(&Payer {
+                    state: ctx.state,
+                    player: ctx.player,
+                    source: ctx.source,
+                    barred: &barred,
+                    granter: price.granter,
+                });
+                pick.short(ctx.state, &candidates)
+            })
+        })
+        .collect()
+}
+
 /// The power the next pick of the cost needs and the power of `cards`, when the part takes tapped creatures for their
 /// total power and `cards` fall short of it.
 pub(super) fn weak(
@@ -153,14 +190,4 @@ pub(super) fn weak(
         })
         .nth(choices.cost_picks().len())?
         .weak(state, cards)
-}
-
-/// Whether some part of the cost picks by a filter that compares to X, so only the values of X it can be paid at are offered.
-pub(super) fn r379_filter_reads_x(ctx: &Ctx<'_>, choices: &Choices) -> bool {
-    price_of(ctx, choices).is_some_and(|price| price.parts.iter().any(Part::r379_filter_reads_x))
-}
-
-/// Whether some part of the cost takes the X announced: counted, or picked by a filter that compares to X.
-pub(super) fn r379_reads_x(ctx: &Ctx<'_>, choices: &Choices) -> bool {
-    price_of(ctx, choices).is_some_and(|price| price.parts.iter().any(Part::reads_x))
 }

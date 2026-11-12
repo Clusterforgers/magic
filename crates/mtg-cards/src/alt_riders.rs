@@ -111,6 +111,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,
+                any_cast: false,
             }),
             duration: Duration::Forever,
         },

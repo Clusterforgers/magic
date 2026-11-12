@@ -1,0 +1,66 @@
+{
+  "oracle_id": "924ef69f-9977-439c-ace9-353b429e4be6",
+  "name": "Gauntlets of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gauntlets of Chaos",
+      "oracle_fingerprint": "6ca1dd0091eda24f9439176534b1780d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "ControlledBy": "Opponents" },
+                    { "SharesType": { "Target": 0 } },
+                    {
+                      "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "Type": "Land" }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": [{ "Target": 0 }, { "Target": 1 }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Subtype": "Aura" },
+                            { "AttachedTo": { "Union": [{ "Target": 0 }, { "Target": 1 }] } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

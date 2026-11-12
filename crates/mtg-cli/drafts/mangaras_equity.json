@@ -1,0 +1,68 @@
+{
+  "oracle_id": "c7986014-30e0-4999-ab95-b86620471419",
+  "name": "Mangara's Equity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mangara's Equity",
+      "oracle_fingerprint": "7eb86db4a9c7dd650424ed31d7c4f6bf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["black", "red"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{1}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                ],
+                "to": {
+                  "Union": [
+                    "You",
+                    {
+                      "Each": [
+                        { "Type": "Creature" },
+                        { "Color": "White" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            "if": {
+              "Any": [
+                {
+                  "All": [
+                    { "EnteredAs": "black" },
+                    { "Matches": { "subject": "Dealer", "selector": [{ "Color": "Black" }] } }
+                  ]
+                },
+                {
+                  "All": [
+                    { "EnteredAs": "red" },
+                    { "Matches": { "subject": "Dealer", "selector": [{ "Color": "Red" }] } }
+                  ]
+                }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

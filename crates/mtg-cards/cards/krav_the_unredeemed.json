@@ -1,0 +1,28 @@
+{
+  "oracle_id": "316d49a0-620b-4942-a5e8-04cff15e6c01",
+  "name": "Krav, the Unredeemed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krav, the Unredeemed",
+      "oracle_fingerprint": "2575c6f97ec4a0c4bade4d0a457b42f9",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Regna, the Redeemer" } },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }
+            ],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": "X" } },
+              { "GainLife": { "who": { "Target": 0 }, "amount": "X" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

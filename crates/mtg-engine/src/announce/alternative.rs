@@ -6,7 +6,6 @@
 //! with one there is nothing to ask. The way chosen is kept in `Choices.way`, its cost replaces the mana cost in the total
 //! cost, and the spell and the permanent it becomes remember it.
 
-use crate::parts::Part;
 use mtg_core::mana::ManaCost;
 
 use super::{Ctx, Granted, Next, What, Work, total};
@@ -78,20 +77,8 @@ fn usable(ctx: &Ctx<'_>, choices: &Choices) -> Vec<usize> {
             let mut trial = choices.clone();
             trial.way = way.alternative;
             trial.choose_cost(way.variant);
-            let fits = |trial: &Choices| {
-                total::of(ctx, trial).is_some_and(|total| total::affordable(ctx, &total))
-            };
-            // A part whose filter compares to X is paid at the X announced later: some X must fit.
-            let some_x = || {
-                way.parts.iter().any(Part::r379_filter_reads_x)
-                    && (0..=super::x::MOST_X).any(|x| {
-                        let mut at = trial.clone();
-                        at.x = Some(x);
-                        fits(&at)
-                    })
-            };
             ways::announceable_in(ctx.state, ctx.player, ctx.source, way.alternative)
-                && (fits(&trial) || some_x())
+                && total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
         })
         .map(|(index, _)| index)
         .collect()

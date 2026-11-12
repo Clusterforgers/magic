@@ -14,9 +14,36 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 46, "end": 241 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": { "event": "Damaged", "who": "EachPlayer", "filter": ["This"] }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

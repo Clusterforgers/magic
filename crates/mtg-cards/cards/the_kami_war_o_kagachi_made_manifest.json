@@ -1,0 +1,76 @@
+{
+  "oracle_id": "4d23b22b-31a5-4eec-b894-2dd5a7138c5a",
+  "name": "The Kami War // O-Kagachi Made Manifest",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Kami War",
+      "oracle_fingerprint": "b83b3addee7a5afadd718622d5aa3f1e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Discard": { "who": "Opponents" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "O-Kagachi Made Manifest",
+      "oracle_fingerprint": "51a1a32ac790c3932f86c7b2647e6035",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+            "defining": true
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 55, "end": 260 }
+          }
+        }
+      ]
+    }
+  ]
+}

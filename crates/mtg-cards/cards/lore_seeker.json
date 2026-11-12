@@ -1,0 +1,12 @@
+{
+  "oracle_id": "19a3c505-b180-47cc-bef3-9e807a8a4a3d",
+  "name": "Lore Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lore Seeker",
+      "oracle_fingerprint": "c2b41c9c979bf6fea65501feae23a770",
+      "abilities": [{ "Rule": { "rule": { "Draft": "AddBoosterPack" } } }]
+    }
+  ]
+}

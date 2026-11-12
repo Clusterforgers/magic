@@ -123,6 +123,10 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if way == CastWay::Harmonize {
         return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
     }
+    // A keyword's alternative cost printed as an `AltCast` ("Surge {X}{R}", "Warp {X}{G}") holds its own `{X}`.
+    if let Some(x) = r301_alt_cast_x(state, id, way) {
+        return x;
+    }
     if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
         return 0;
     }
@@ -139,6 +143,18 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
             _ => None,
         })
         .unwrap_or(0)
+}
+
+/// The `{X}` symbols of the cost of the card's `AltCast` for `way`; `None` when the card has none for it.
+fn r301_alt_cast_x(state: &GameState, id: ObjectId, way: CastWay) -> Option<u32> {
+    ability_reader::printed_rules(state.object(id)?.card()).find_map(|rules| match &**rules {
+        Ability::AltCast {
+            way: own,
+            cost: Some(cost),
+            ..
+        } if *own == way => cast_cost_x(cost, false).map(|(_, _, x)| x),
+        _ => None,
+    })
 }
 
 /// The ways whose keyword cost may hold an `{X}` the mana cost lacks ("Madness {X}{B}{B}", "Foretell {X}{X}{W}",
@@ -175,17 +191,12 @@ pub(crate) fn cost_words(mana: &ManaCost, parts: &[Part]) -> String {
 }
 
 /// Whether `player` can give what the parts of a way take besides mana for the card `id`.
-/// A part whose filter compares to X ("a red card with mana value X") is payable when some X lets it be paid.
 fn parts_payable(state: &GameState, player: PlayerId, id: ObjectId, parts: &[Part]) -> bool {
-    let price = Price::casting(parts.to_vec());
-    if parts.iter().any(Part::r379_filter_reads_x) {
-        return (0..=R379_MOST_X).any(|x| price.at(x).claimed(state, player, id).is_some());
-    }
-    parts.is_empty() || price.claimed(state, player, id).is_some()
+    parts.is_empty()
+        || Price::casting(parts.to_vec())
+            .claimed(state, player, id)
+            .is_some()
 }
-
-/// The largest X tried for a part whose filter compares to X, as the announcement of X allows.
-const R379_MOST_X: u32 = 1_000;
 
 /// The help `base` offers when the spell `id` is cast with `parts` as costs besides its mana: what the parts take is not
 /// there to help pay. Before the picks are made the player is assumed to give what leaves the most help.
@@ -444,16 +455,18 @@ fn alt_cast_ways(
             continue;
         }
         let instant = instant || *flash;
-        let (mana, parts) = match cost {
-            None => (ManaCost::default(), Vec::new()),
-            Some(cost) => match cast_cost(cost) {
+        // An `{X}` of the cost ("Warp {X}{G}") is announced with the cast (`alternative_x`).
+        let (mana, parts, x) = match cost {
+            None => (ManaCost::default(), Vec::new(), 0),
+            Some(cost) => match cast_cost_with_x(cost) {
                 Some(paid) => paid,
                 None => continue,
             },
         };
+        let symbols = "{X}".repeat(usize::try_from(x).unwrap_or(0));
         found.push(Way {
             alternative: Some(*way),
-            label: format!("{} {}", way_label(*way), cost_words(&mana, &parts)),
+            label: format!("{} {symbols}{}", way_label(*way), cost_words(&mana, &parts)),
             mana: Some(mana),
             instant,
             variant: 0,
@@ -573,7 +586,11 @@ fn w14c_printed_alternative(
     if open.contains(&None) {
         return Some(free_way(instant));
     }
-    let (mana, parts) = open.into_iter().flatten().find_map(cast_cost)?;
+    // A pick by the X the spell announces ("a red card with mana value X") is paid once X is.
+    let (mana, parts) = open
+        .into_iter()
+        .flatten()
+        .find_map(|cost| cast_cost_counting(cost, true))?;
     Some(Way {
         alternative: Some(CastWay::Free),
         label: format!("Cast for {}", cost_words(&mana, &parts)),
@@ -681,10 +698,12 @@ fn keyword_way(
         return None;
     }
     // Overload and foretell are paid with mana alone.
-    let (mana, parts) = if matches!(
+    let (mana, parts) = if way == CastWay::Flashback {
+        // A flashback part may count the X the spell announces ("Discard X cards"): it takes the spell's X.
+        cast_cost_counting(cost, true)?
+    } else if matches!(
         way,
-        CastWay::Flashback
-            | CastWay::Evoke
+        CastWay::Evoke
             | CastWay::Escape
             | CastWay::Dash
             | CastWay::Bestow

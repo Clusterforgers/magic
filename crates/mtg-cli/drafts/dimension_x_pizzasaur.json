@@ -1,0 +1,53 @@
+{
+  "oracle_id": "29a9aff7-184c-459d-8002-e0287d978764",
+  "name": "Dimension X Pizzasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimension X Pizzasaur",
+      "oracle_fingerprint": "a7705bb5f849a133d70585c0ce6103ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Type": "Creature" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "AnyCounters": { "Each": [{ "ControlledBy": "You" }] } }
+                            }
+                          }
+                        ]
+                      },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "GainLife": { "amount": 3 } },
+              { "LoseLife": { "who": "Opponents", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

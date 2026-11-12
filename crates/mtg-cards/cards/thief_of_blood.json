@@ -1,7 +1,7 @@
 {
   "oracle_id": "97d61346-bd53-4eb8-a920-6ae0382eb20d",
   "name": "Thief of Blood",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thief of Blood",
@@ -9,9 +9,18 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 155 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEntersWith": {
+                "effects": [
+                  { "Let": { "as": "removed", "amount": { "AnyCounters": { "Each": [] } } } },
+                  { "RemoveAllCounters": { "from": { "Each": [] } } }
+                ],
+                "counter": "+1/+1",
+                "count": { "Bound": "removed" }
+              }
+            }
           }
         }
       ]

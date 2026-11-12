@@ -7,12 +7,7 @@
       "name": "Spire Phantasm",
       "oracle_fingerprint": "3c86107fbaa4f76e235af3e8f91adf4a",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 161 }
-          }
-        },
+        { "Rule": { "rule": { "Draft": "GuessNextPick" } } },
         { "Keyword": "Flying" },
         {
           "Manual": {

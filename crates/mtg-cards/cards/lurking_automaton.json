@@ -1,0 +1,20 @@
+{
+  "oracle_id": "412fbf73-a471-42ad-83fe-14f19e4e9595",
+  "name": "Lurking Automaton",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lurking Automaton",
+      "oracle_fingerprint": "7043191e5ccea0481e4da61f2c7c11e0",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "NoteDraftedCount" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 235 }
+          }
+        }
+      ]
+    }
+  ]
+}

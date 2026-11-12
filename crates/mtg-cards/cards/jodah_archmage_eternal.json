@@ -1,19 +1,14 @@
 {
   "oracle_id": "8be4745e-36d8-430f-945e-c8a7fde9b4f6",
   "name": "Jodah, Archmage Eternal",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jodah, Archmage Eternal",
       "oracle_fingerprint": "b5e878cc1480cc1a4b48ac8677ec46a2",
       "abilities": [
         { "Keyword": "Flying" },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 85 }
-          }
-        }
+        { "Rule": { "rule": { "MayCast": { "rather": "{W}{U}{B}{R}{G}", "any_cast": true } } } }
       ]
     }
   ]

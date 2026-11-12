@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a3468804-26ad-4919-b030-a1906a7029e8",
+  "name": "Evidence Examiner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evidence Examiner",
+      "oracle_fingerprint": "7404b955dbbefc99d48be745bc838cbe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": [{ "CollectEvidence": 4 }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "CollectedEvidence", "who": "You" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

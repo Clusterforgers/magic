@@ -1,7 +1,7 @@
 {
   "oracle_id": "7404c078-228b-4296-bf1f-62f57bf832d9",
   "name": "Relentless Dead",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Relentless Dead",
@@ -17,9 +17,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 157, "end": 310 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Zombie" },
+                    { "Type": "Creature" },
+                    "Other",
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
           }
         }
       ]

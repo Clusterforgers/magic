@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1c248187-0be3-4a03-a817-14f68f638ae7",
+  "name": "Mavinda, Students' Advocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mavinda, Students' Advocate",
+      "oracle_fingerprint": "610e5ebe7aee48c1a4cc1be4a9048eca",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "limit": "OncePerTurn",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "what": [{ "Is": { "Target": 0 } }], "from": "Graveyard" }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "SameCard": { "Target": 0 } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

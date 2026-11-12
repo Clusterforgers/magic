@@ -1,18 +1,13 @@
 {
   "oracle_id": "e75356a8-6268-4355-a0bd-114a5243d527",
   "name": "Patron of the Kitsune",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Patron of the Kitsune",
       "oracle_fingerprint": "23656fe3acd6a7f9ac681b4427fccab4",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 197 }
-          }
-        },
+        { "Keyword": { "Offering": [{ "Subtype": "Fox" }] } },
         {
           "Triggered": {
             "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "06c47664-2b4b-468e-a38d-04b62e6edd67",
+  "name": "Suppressor Skyguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suppressor Skyguard",
+      "oracle_fingerprint": "5906539293e2f3a362f453311a3a56a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "AttackedThisCombat": "You" } }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

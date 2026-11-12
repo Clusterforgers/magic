@@ -22,9 +22,11 @@ mod exiled;
 pub(crate) mod forage;
 mod life;
 pub(crate) mod mill;
-mod r379_x_filter;
+mod r300_random_shots;
+mod r303c_sacrifice_all;
 mod random;
 mod rmt5_top_shots;
+pub(crate) use r300_random_shots::r300_random_shots;
 pub(crate) use rmt5_top_shots::rmt5_top_shots;
 mod reveal;
 mod sacrifice;
@@ -100,6 +102,8 @@ pub(crate) struct Pick {
     pub(crate) filter: Selector,
     /// How many; the least total power for a pick of [`Kind::TapPower`].
     pub(crate) count: usize,
+    /// The filter reads the X announced ("a red card with mana value X"): the part waits for X, then picks by it.
+    pub(crate) reads_x: bool,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -122,6 +126,9 @@ pub(crate) enum Part {
     Unattach,
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
     DiscardHand,
+    /// The payer sacrifices every permanent they control that matches ("sacrifice all permanents you control"): nothing
+    /// to choose, none pays it.
+    SacrificeAll(Selector),
     /// Cards exiled from the top of the payer's library.
     ExileTop(u32),
     /// Counters put on the source.
@@ -219,13 +226,15 @@ fn pick(
 ) -> Result<(Part, bool), &'static str> {
     let (count, x) = amount(count, item)?;
     let count = usize::try_from(count).unwrap_or(usize::MAX);
+    let reads_x = !x && filter.r301_reads_x();
     Ok((
         Part::Pick(Pick {
             kind,
             filter: filter.clone(),
             count,
+            reads_x,
         }),
-        x,
+        x || reads_x,
     ))
 }
 
@@ -261,6 +270,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -274,6 +284,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -290,6 +301,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count: 1,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -330,6 +342,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count: 1,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -342,8 +355,8 @@ impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
-        if discards_the_hand(item) {
-            return Ok(Some(Part::DiscardHand));
+        if let Some(whole) = whole_part(item) {
+            return Ok(Some(whole));
         }
         let (part, x) = match item {
             CostItem::PayLife(count) => {
@@ -459,6 +472,7 @@ impl Part {
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::DiscardHand => Part::DiscardHand,
+                Part::SacrificeAll(filter) => Part::SacrificeAll(filter.clone()),
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
                     count: x,
@@ -475,13 +489,14 @@ impl Part {
                     count: x,
                 },
                 Part::Exert => Part::Exert,
+                Part::Pick(pick) if pick.reads_x => Part::Pick(pick.r301_at(x)),
                 Part::Pick(pick) => Part::Pick(Pick {
                     count: usize::try_from(x).unwrap_or(usize::MAX),
                     ..pick.clone()
                 }),
                 Part::X(_) => self.clone(),
             },
-            other => other.clone().r379_fix_filter(x),
+            other => other.clone(),
         }
     }
 
@@ -493,6 +508,11 @@ impl Part {
     /// Whether the part is life of the X announced.
     pub(crate) fn is_counted_life(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Life(_)))
+    }
+
+    /// Whether the part picks by the X announced ("a red card with mana value X").
+    pub(crate) fn r301_picks_by_x(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
     }
 
     /// Whether the part is energy of the X announced.
@@ -515,11 +535,13 @@ impl Part {
             Part::Among {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
+            Part::Pick(pick) if pick.reads_x => pick.r301_most(payer),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
             Part::Exert
             | Part::Unattach
             | Part::DiscardHand
+            | Part::SacrificeAll(_)
             | Part::OthersGainLife(_)
             | Part::X(_) => return None,
         };
@@ -538,6 +560,7 @@ impl Part {
             Part::OthersGainLife(_) => "Cost.OthersGainLife",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
+            Part::SacrificeAll(_) => "Cost.Sacrifice",
             Part::ExileTop(_) => "Cost.ExileTop",
             Part::Counters { .. } => "Cost.RemoveCounters",
             Part::PutCounters { .. } => "Cost.PutCounters",
@@ -581,6 +604,7 @@ impl Part {
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
+            Part::SacrificeAll(_) => "Sacrifice all of them you control".to_owned(),
             Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
             Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
             Part::Mill(1) => "Mill a card".to_owned(),
@@ -635,6 +659,7 @@ impl Part {
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
             Part::DiscardHand | Part::OthersGainLife(_) => Some(Vec::new()),
+            Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
                 let found = pick.candidates(payer);
@@ -671,6 +696,10 @@ impl Part {
                 Part::Pick(pick) if pick.kind == Kind::Craft => Part::Pick(pick.clone())
                     .payable(payer, spare)
                     .map(|_| Vec::new()),
+                // Some X must leave the pick enough to take before X is announced.
+                Part::Pick(pick) if pick.reads_x => (0..=R301_MOST_X)
+                    .any(|x| Part::Pick(pick.r301_at(x)).payable(payer, spare).is_some())
+                    .then(Vec::new),
                 _ => Some(Vec::new()),
             },
         }
@@ -704,6 +733,10 @@ impl Part {
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::OthersGainLife(amount) => r286_others_gain(state, player, *amount),
             Part::Unattach => vec![unattach::event(source)],
+            Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(
+                &r303c_sacrifice_all::r303c_payer(state, player, source),
+                filter,
+            ),
             Part::DiscardHand => state
                 .zone(crate::zones::Zone::Hand(player))
                 .iter()
@@ -726,6 +759,10 @@ impl Part {
                 // The exile is the evidence collected (CR 701.59a); "whenever you collect evidence" waits for it.
                 if pick.kind == Kind::Evidence {
                     events.push(Event::EvidenceCollected { player });
+                }
+                // The Food sacrificed or the cards exiled are the forage (CR 701.61a); "whenever you forage" waits for it.
+                if pick.kind == Kind::Forage {
+                    events.push(Event::Foraged { player });
                 }
                 events
             }
@@ -831,7 +868,32 @@ impl Payer<'_> {
     }
 }
 
+/// The largest X a pick whose filter reads X is tried with: more than any mana value or count a game has.
+const R301_MOST_X: u32 = 64;
+
 impl Pick {
+    /// The pick once X is announced as `x`: its filter reads `x` in the place of X.
+    fn r301_at(&self, x: u32) -> Pick {
+        Pick {
+            filter: self
+                .filter
+                .r301_with_x(i32::try_from(x).unwrap_or(i32::MAX)),
+            reads_x: false,
+            ..self.clone()
+        }
+    }
+
+    /// The largest X that leaves the pick enough to take; 0 when none does.
+    fn r301_most(&self, payer: &Payer<'_>) -> u32 {
+        (0..=R301_MOST_X)
+            .rev()
+            .find(|x| {
+                let at = self.r301_at(*x);
+                !at.short(payer.state, &at.candidates(payer))
+            })
+            .unwrap_or(0)
+    }
+
     /// Whether the part removes a counter of any kind, whose kind the player picks for each permanent.
     pub(crate) fn w2f_any_kind(&self) -> bool {
         self.kind == Kind::Counter && c11c_counter_picks::c11c_kind(&self.filter).is_none()
@@ -1020,6 +1082,15 @@ impl Pick {
 
 #[cfg(test)]
 mod tests;
+
+/// A part that takes all of a kind the payer has, with nothing to choose: "discard your hand", "sacrifice all
+/// permanents you control".
+fn whole_part(item: &CostItem) -> Option<Part> {
+    if discards_the_hand(item) {
+        return Some(Part::DiscardHand);
+    }
+    r303c_sacrifice_all::r303c_reads(item).map(Part::SacrificeAll)
+}
 
 /// "Discard your hand": a discard counted as every card of the payer's hand, with no filter.
 fn discards_the_hand(item: &CostItem) -> bool {

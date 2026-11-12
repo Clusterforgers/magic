@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4fd061f2-7269-4eea-bc7c-95a123893efa",
+  "name": "Curse of Surveillance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Surveillance",
+      "oracle_fingerprint": "2ab1ba331956a456e36e35f2cfcb0209",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": "AttachedPlayer" } }
+                    }
+                  }
+                },
+                "bounds": { "min": 0, "max": { "Players": "EachPlayer" } }
+              }
+            ],
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "Subtype": "Curse" }, { "AttachedTo": "AttachedPlayer" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

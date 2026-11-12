@@ -1,0 +1,82 @@
+{
+  "oracle_id": "6874be51-623d-4eaf-a67a-2fcbb9a8ceca",
+  "name": "Tempt with Bunnies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Bunnies",
+      "oracle_fingerprint": "4633730f0119f7e260fcc5f27507db36",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          { "Draw": { "who": { "Bound": "p" } } },
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "p" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Rabbit",
+                                  "colors": ["White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Rabbit"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          },
+                          { "Bind": { "what": { "Bound": "p" }, "as": "accepted", "adds": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": { "count": { "Players": { "Bound": "accepted" } } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rabbit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rabbit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Players": { "Bound": "accepted" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

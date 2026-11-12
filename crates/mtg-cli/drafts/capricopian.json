@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3a5a6732-bdfa-4b64-b897-6817983dbb0e",
+  "name": "Capricopian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Capricopian",
+      "oracle_fingerprint": "6968df277ab236580d66190ba5b5258c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "condition": {
+              "All": [
+                { "Step": "DeclareAttackers" },
+                { "Matches": { "subject": "This", "selector": [{ "AttackingPlayer": "You" }] } }
+              ]
+            },
+            "by": "Anyone",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Reattack": { "what": "This", "players": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

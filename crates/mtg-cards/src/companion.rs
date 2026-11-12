@@ -377,6 +377,31 @@ mod tests {
         assert_eq!(condition.check(&deck, 60).is_ok(), holds);
     }
 
+    fn nonland() -> Selector {
+        Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
+    }
+
+    #[rstest]
+    #[case::r301_umori_all_creatures(DeckCondition::SharedType { of: nonland() }, &[("A", "{G}", CardType::Creature), ("B", "{2}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_umori_a_creature_and_an_instant(DeckCondition::SharedType { of: nonland() }, &[("A", "{G}", CardType::Creature), ("B", "{U}", CardType::Instant)], false)]
+    #[case::r301_gyruda_even(DeckCondition::Has { of: Selector::default(), fact: CardFact::EvenManaValue }, &[("A", "{1}{G}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_gyruda_an_odd_card(DeckCondition::Has { of: Selector::default(), fact: CardFact::EvenManaValue }, &[("A", "{G}", CardType::Creature)], false)]
+    #[case::r301_obosh_odd_and_lands(DeckCondition::Has { of: nonland(), fact: CardFact::OddManaValue }, &[("A", "{2}{R}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_obosh_an_even_spell(DeckCondition::Has { of: nonland(), fact: CardFact::OddManaValue }, &[("A", "{1}{R}", CardType::Instant)], false)]
+    #[case::r301_jegantha_distinct_symbols(DeckCondition::Has { of: Selector::default(), fact: CardFact::NoRepeatedSymbol }, &[("A", "{2}{R}{G}", CardType::Creature)], true)]
+    #[case::r301_jegantha_two_greens(DeckCondition::Has { of: Selector::default(), fact: CardFact::NoRepeatedSymbol }, &[("A", "{1}{G}{G}", CardType::Creature)], false)]
+    fn r301_conditions_over_a_deck(
+        #[case] condition: DeckCondition,
+        #[case] cards: &[(&str, &str, CardType)],
+        #[case] holds: bool,
+    ) {
+        let deck: Vec<DeckCard> = cards
+            .iter()
+            .map(|(name, cost, ty)| card(name, cost, &[*ty], &[]))
+            .collect();
+        assert_eq!(condition.check(&deck, 60).is_ok(), holds);
+    }
+
     #[rstest]
     #[case::a_cat(&["Cat"], true)]
     #[case::a_beast_and_an_elemental(&["Beast", "Elemental"], true)]

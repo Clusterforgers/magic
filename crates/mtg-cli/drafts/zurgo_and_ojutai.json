@@ -1,0 +1,54 @@
+{
+  "oracle_id": "941c9acd-2773-456a-88d5-0537735f93c6",
+  "name": "Zurgo and Ojutai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zurgo and Ojutai",
+      "oracle_fingerprint": "e8bd614f053d5d7959269b3baf18502f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                  "to": { "Union": ["EachPlayer", { "Each": [{ "Type": "Battle" }] }] },
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": "Triggering", "as": "dragon" } },
+                    { "Move": { "what": { "Bound": "dragon" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

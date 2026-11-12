@@ -56,6 +56,7 @@ mod lifelink_combat;
 mod ninjutsu;
 mod poisoned_defender;
 mod r2g_combat;
+mod r306c_cards;
 mod r307c_cards;
 mod r379_blocked;
 mod r379_vengeance;
