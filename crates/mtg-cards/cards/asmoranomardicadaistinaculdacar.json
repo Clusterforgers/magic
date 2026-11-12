@@ -11,12 +11,7 @@
           "FreeCast": {
             "condition": {
               "Compare": {
-                "left": {
-                  "Tallied": {
-                    "who": "You",
-                    "what": "Discarded"
-                  }
-                },
+                "left": { "Tallied": { "who": "You", "what": "Discarded" } },
                 "op": "Ge",
                 "right": 1
               }
@@ -26,40 +21,20 @@
         },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               {
                 "May": {
                   "effects": [
                     {
                       "Search": {
-                        "filter": [
-                          {
-                            "Named": "The Underworld Cookbook"
-                          }
-                        ],
+                        "filter": [{ "Named": "The Underworld Cookbook" }],
                         "reveal": true,
                         "as": "found"
                       }
                     },
-                    {
-                      "Move": {
-                        "what": {
-                          "Bound": "found"
-                        },
-                        "to": "Hand"
-                      }
-                    },
-                    {
-                      "Shuffle": {}
-                    }
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
                   ]
                 }
               }
@@ -68,41 +43,10 @@
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Sacrifice": {
-                  "filter": [
-                    {
-                      "Subtype": "Food"
-                    }
-                  ],
-                  "count": 2
-                }
-              }
-            ],
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    }
-                  ]
-                }
-              }
-            ],
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }], "count": 2 } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
             "effects": [
-              {
-                "DealDamage": {
-                  "source": {
-                    "Target": 0
-                  },
-                  "to": {
-                    "Target": 0
-                  },
-                  "amount": 6
-                }
-              }
+              { "DealDamage": { "source": { "Target": 0 }, "to": { "Target": 0 }, "amount": 6 } }
             ]
           }
         }

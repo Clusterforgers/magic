@@ -9,30 +9,13 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              {
-                "ExileTop": {
-                  "as": "impulse"
-                }
-              },
+              { "ExileTop": { "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": {
-                      "from": "Exile",
-                      "only": {
-                        "Bound": "impulse"
-                      },
-                      "play": true
-                    }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "WhileYouControlSource"
                 }
@@ -44,13 +27,7 @@
           "Activated": {
             "cost": "{2}{W}{U}{R}",
             "timing": "Sorcery",
-            "effects": [
-              {
-                "Transform": {
-                  "what": "This"
-                }
-              }
-            ]
+            "effects": [{ "Transform": { "what": "This" } }]
           }
         }
       ]
@@ -59,15 +36,9 @@
       "name": "Ghost-Spider",
       "oracle_fingerprint": "29941cfe91e39130f290b03cc3efd5e9",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": "Vigilance"
-        },
-        {
-          "Keyword": "Haste"
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
         {
           "Triggered": {
             "when": {
@@ -76,67 +47,27 @@
                   "Did": {
                     "action": "PlayedLand",
                     "what": [
-                      {
-                        "Type": "Land"
-                      },
-                      {
-                        "ControlledBy": "You"
-                      },
-                      {
-                        "ArrivedFrom": "Exile"
-                      }
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "ArrivedFrom": "Exile" }
                     ]
                   }
                 },
-                {
-                  "SpellCast": {
-                    "what": [
-                      {
-                        "WasCast": {
-                          "from": "Exile"
-                        }
-                      }
-                    ],
-                    "by": "You"
-                  }
-                }
+                { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } }
               ]
             },
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": "+1/+1"
-                }
-              }
-            ]
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "RemoveCounters": {
-                  "count": 2
-                }
-              }
-            ],
+            "cost": [{ "RemoveCounters": { "count": 2 } }],
             "effects": [
-              {
-                "ExileTop": {
-                  "as": "impulse"
-                }
-              },
+              { "ExileTop": { "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": {
-                      "from": "Exile",
-                      "only": {
-                        "Bound": "impulse"
-                      },
-                      "play": true
-                    }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfTurn"
                 }

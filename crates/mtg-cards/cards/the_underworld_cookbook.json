@@ -9,59 +9,21 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              "Tap",
-              {
-                "Discard": {}
-              }
-            ],
-            "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "food"
-                  }
-                }
-              }
-            ]
+            "cost": ["Tap", { "Discard": {} }],
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
           }
         },
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{4}"
-              },
-              "Tap",
-              "SacrificeSelf"
-            ],
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "In": "Graveyard"
-                    },
-                    {
-                      "OwnedBy": "You"
-                    }
-                  ]
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
                 }
               }
             ],
-            "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": "Hand"
-                }
-              }
-            ]
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         }
       ]

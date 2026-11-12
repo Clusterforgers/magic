@@ -7,67 +7,29 @@
       "name": "Linvala, Shield of Sea Gate",
       "oracle_fingerprint": "d67823a529fb9691a7dc29d1f1e4d747",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "BeginCombat",
-                "whose": "You"
-              }
-            },
-            "if": {
-              "Compare": {
-                "left": {
-                  "Party": "You"
-                },
-                "op": "Ge",
-                "right": 4
-              }
-            },
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": { "Compare": { "left": { "Party": "You" }, "op": "Ge", "right": 4 } },
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "Not": {
-                        "Type": "Land"
-                      }
-                    },
-                    {
-                      "ControlledBy": "Opponents"
-                    }
-                  ]
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
                 }
               }
             ],
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Target": 0
-                  },
-                  "mods": [
-                    "CantAttack",
-                    "CantBlock"
-                  ],
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
                   "duration": "UntilYourNextTurn"
                 }
               },
               {
                 "Rule": {
-                  "rule": {
-                    "Cant": {
-                      "who": {
-                        "Target": 0
-                      },
-                      "action": {
-                        "Activate": []
-                      }
-                    }
-                  },
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Activate": [] } } },
                   "duration": "UntilYourNextTurn"
                 }
               }
@@ -76,30 +38,15 @@
         },
         {
           "Activated": {
-            "cost": [
-              "SacrificeSelf"
-            ],
+            "cost": ["SacrificeSelf"],
             "effects": [
               {
                 "Either": {
                   "first": [
                     {
                       "Continuous": {
-                        "affected": {
-                          "Each": [
-                            {
-                              "Type": "Creature"
-                            },
-                            {
-                              "ControlledBy": "You"
-                            }
-                          ]
-                        },
-                        "mods": [
-                          {
-                            "AddKeyword": "Hexproof"
-                          }
-                        ],
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Hexproof" }],
                         "duration": "UntilEndOfTurn"
                       }
                     }
@@ -107,21 +54,8 @@
                   "second": [
                     {
                       "Continuous": {
-                        "affected": {
-                          "Each": [
-                            {
-                              "Type": "Creature"
-                            },
-                            {
-                              "ControlledBy": "You"
-                            }
-                          ]
-                        },
-                        "mods": [
-                          {
-                            "AddKeyword": "Indestructible"
-                          }
-                        ],
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
                         "duration": "UntilEndOfTurn"
                       }
                     }
