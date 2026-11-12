@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b187aeeb-5cf5-4b73-a3ef-f39188d2ba33",
+  "name": "Swans of Bryn Argoll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swans of Bryn Argoll",
+      "oracle_fingerprint": "72473d3b142526141dfcb2ddb5b08ef9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "Draw": { "who": { "ControllerOf": "Dealer" }, "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

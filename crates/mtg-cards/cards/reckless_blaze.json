@@ -1,0 +1,40 @@
+{
+  "oracle_id": "75137acb-dc8e-439b-8d84-c5cf682ff6bc",
+  "name": "Reckless Blaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Blaze",
+      "oracle_fingerprint": "9d64cafb6ff080e90859e3c2ef07bf06",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 5 } },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "DamagedBy": "This" }] },
+                  "as": "dealt"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "dealt" } }, { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

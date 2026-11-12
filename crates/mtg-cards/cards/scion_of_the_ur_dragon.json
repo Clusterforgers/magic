@@ -1,0 +1,62 @@
+{
+  "oracle_id": "b4031540-584b-4c8a-9e4e-d68ae5cdec5b",
+  "name": "Scion of the Ur-Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of the Ur-Dragon",
+      "oracle_fingerprint": "53ca89ca0889a5c9c0042d8836a187b5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Subtype": "Dragon" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "In": "Graveyard" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Bound": "found" },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -94,9 +94,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = spells_taken(cx, &named, mods)?;
     // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
     // order of its list (CR 613.1f).
-    let (lost, kept): (Vec<_>, Vec<_>) = mods
-        .iter()
-        .partition(|wanted| matches!(wanted, Wanted::LoseAbilities));
+    let (lost, kept): (Vec<_>, Vec<_>) = mods.iter().partition(|wanted| {
+        matches!(
+            wanted,
+            Wanted::LoseAbilities | Wanted::LoseAbilitiesExceptMana
+        )
+    });
     for (made, wanted) in (0u64..).zip(lost.into_iter().chain(kept)) {
         let modification = match wanted {
             Wanted::AddProtectionFromChosenColor => {
@@ -299,6 +302,10 @@ fn chosen_types(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, Reso
             }
             _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
         },
+        Wanted::AddCreatureTypeChosen(name) => match scope.chosen_value(name) {
+            Some(Chosen::CreatureType(kind)) => Ok(Modification::AddSubtype(kind.clone())),
+            _ => Err(ResolveError::Invalid("no creature type was chosen".into())),
+        },
         _ => Err(ResolveError::Invalid("no chosen type".into())),
     }
 }
@@ -359,9 +366,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             }
             _ => return Err(ResolveError::Invalid("no color was chosen".into())),
         },
-        Wanted::SetLandTypesChosen(_) | Wanted::SetCreatureTypesChosen(_) => {
-            chosen_types(scope, wanted)?
-        }
+        Wanted::SetLandTypesChosen(_)
+        | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::AddCreatureTypeChosen(_) => chosen_types(scope, wanted)?,
         Wanted::ChangeTextChosen { from, to } => Modification::ChangeText {
             from: chosen_word(scope, from)?,
             to: chosen_word(scope, to)?,
@@ -375,6 +382,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
+        Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         Wanted::KeywordsOf { from, names } => {

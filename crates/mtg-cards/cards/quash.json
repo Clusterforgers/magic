@@ -1,0 +1,50 @@
+{
+  "oracle_id": "255131a2-616c-4c8d-a36a-14e5b5ab345e",
+  "name": "Quash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quash",
+      "oracle_fingerprint": "5c237cdc8df749277c4b56c761f87c71",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } },
+                      { "SharesName": { "Target": 0 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Search": {
+                  "of": { "ControllerOf": { "Target": 0 } },
+                  "zone": "Hand",
+                  "also": ["Library"],
+                  "filter": [{ "SharesName": { "Target": 0 } }],
+                  "count": { "min": 0, "max": null },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

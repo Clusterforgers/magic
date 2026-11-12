@@ -1,16 +1,24 @@
 {
   "oracle_id": "649e7237-b38b-43e9-83f4-763751fb1bea",
   "name": "Polukranos, Unchained",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Polukranos, Unchained",
       "oracle_fingerprint": "47227517b4362b6b930e50e2c55f893d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 101 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 6 } },
+            "condition": { "Not": { "CastWith": "Escape" } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 12 } },
+            "condition": { "CastWith": "Escape" }
           }
         },
         {

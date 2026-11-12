@@ -1,7 +1,7 @@
 {
   "oracle_id": "de41ad94-b9d7-4c2b-bfa6-394d18737228",
   "name": "Ketramose, the New Dawn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ketramose, the New Dawn",
@@ -20,9 +20,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 112, "end": 247 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "AnyOf": [
+                  { "ZoneChange": { "what": [], "from": "Graveyard", "to": "Exile" } },
+                  {
+                    "ZoneChange": {
+                      "what": [{ "Not": "Token" }],
+                      "from": "Battlefield",
+                      "to": "Exile"
+                    }
+                  }
+                ]
+              }
+            },
+            "if": "YourTurn",
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         }
       ]

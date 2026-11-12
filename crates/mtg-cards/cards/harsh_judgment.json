@@ -1,7 +1,7 @@
 {
   "oracle_id": "1fa272bf-8759-4750-b40b-8e2f6972d570",
   "name": "Harsh Judgment",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Harsh Judgment",
@@ -11,9 +11,28 @@
           "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 44, "end": 168 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "You",
+                "source": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "ChosenColor"
+                ]
+              }
+            },
+            "by": {
+              "Instead": [
+                {
+                  "DealDamage": {
+                    "source": "Dealer",
+                    "to": { "ControllerOf": "Dealer" },
+                    "amount": "Triggering"
+                  }
+                }
+              ]
+            }
           }
         }
       ]

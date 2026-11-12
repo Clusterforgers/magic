@@ -1,0 +1,63 @@
+{
+  "oracle_id": "15d5b198-edbe-40f3-87e2-d72f7f0c58ab",
+  "name": "Dance of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance of the Dead",
+      "oracle_fingerprint": "294df67766c124477575cb1dabb47c82",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "In": "Graveyard" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "In": "Battlefield" }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Attached",
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                  "as": "returned"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "returned" } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "returned" } },
+                        "filter": [{ "Is": { "Bound": "returned" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, "DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{1}{B}",
+                  "paid": [{ "Untap": { "what": "Attached" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

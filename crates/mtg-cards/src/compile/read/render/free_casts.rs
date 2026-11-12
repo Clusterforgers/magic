@@ -29,6 +29,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<(String, usize)> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: crate::modify::SpendAs::Normal,
             who: Ref::You,
             what: Ref::Bound(cast),
             free: true,
