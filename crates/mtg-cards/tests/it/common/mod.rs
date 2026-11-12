@@ -102,3 +102,29 @@ pub fn printed_of_download(file: &Path) -> Vec<PrintedCard> {
         .map(|record| printed_of(&record))
         .collect()
 }
+
+/// The lowercase card and face names of the drafts (`crates/mtg-cli/drafts`): known cards a corpus rule may name.
+pub fn draft_names() -> std::collections::BTreeSet<String> {
+    #[derive(serde::Deserialize)]
+    struct Named {
+        name: String,
+        #[serde(default)]
+        faces: Vec<Face>,
+    }
+    #[derive(serde::Deserialize)]
+    struct Face {
+        name: String,
+    }
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../mtg-cli/drafts");
+    let mut names = std::collections::BTreeSet::new();
+    for entry in std::fs::read_dir(&dir).expect("the drafts directory") {
+        let path = entry.unwrap().path();
+        if path.extension().is_some_and(|e| e == "json") {
+            let card: Named = serde_json::from_str(&std::fs::read_to_string(&path).unwrap())
+                .unwrap_or_else(|e| panic!("{}: {e}", path.display()));
+            names.insert(card.name.to_lowercase());
+            names.extend(card.faces.into_iter().map(|f| f.name.to_lowercase()));
+        }
+    }
+    names
+}

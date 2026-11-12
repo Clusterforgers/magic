@@ -1,7 +1,7 @@
 {
   "oracle_id": "7c885698-69f2-44b5-abfe-9a2833822794",
   "name": "Loot Dispute",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Loot Dispute",
@@ -17,9 +17,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 83, "end": 162 }
+          "Triggered": {
+            "when": {
+              "PlayerAttacks": {
+                "by": "You",
+                "at": { "PlayersWhere": { "who": "EachPlayer", "test": { "Initiative": "You" } } }
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
           }
         },
         {

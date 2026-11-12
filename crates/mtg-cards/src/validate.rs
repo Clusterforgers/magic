@@ -705,6 +705,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "BlockedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::BandedWith(who) => {
+                self.uses("Pred", "BandedWith");
+                self.reference(who, Kind::Object);
+            }
             Pred::Blocks(who) => {
                 self.uses("Pred", "Blocks");
                 self.reference(who, Kind::Object);
@@ -835,6 +839,7 @@ impl<'a> Walker<'a> {
             | Pred::TopOfGraveyard
             | Pred::TopCreatureOfGraveyard
             | Pred::BlockedBy(_)
+            | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
@@ -2390,6 +2395,10 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.selector(by));
             }
+            TriggerPattern::PlayerBecomesTarget { who, by } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("by", |w| w.selector(by));
+            }
             TriggerPattern::SpellCast { what, by }
             | TriggerPattern::SpellCopied { what, by }
             | TriggerPattern::Sacrificed { what, by }
@@ -2597,6 +2606,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
+                | TriggerPattern::PlayerBecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
                 | TriggerPattern::GroupAttacksAt { .. }
                 | TriggerPattern::Chapter { .. }
@@ -2664,8 +2674,8 @@ impl Walker<'_> {
                     to: Some(to),
                     combat: None,
                 } if source.is_empty() && !matches!(to, Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::Defending))
-                    // A player's first discards of the turn, of any card.
-                    || matches!(&**inner, TriggerPattern::Discarded { what, .. } if what.is_empty())
+                    // A player's first discards of the turn, of any card or of a kind.
+                    || matches!(&**inner, TriggerPattern::Discarded { .. })
             }
             _ => false,
         };
@@ -3847,7 +3857,19 @@ impl Walker<'_> {
                 plus,
                 results,
             } => w.roll_dice(who, *sides, (*dice, *choose), plus, results),
-            Effect::FlipCoin { who, win, lose, .. } => w.flip_coin(who, win, lose),
+            Effect::FlipCoin {
+                who,
+                win,
+                lose,
+                won_as,
+                ..
+            } => {
+                w.flip_coin(who, win, lose);
+                if let Some(bind) = won_as {
+                    w.at("won_as", |w| w.bind(bind, Kind::Either));
+                    w.scope.numbers.insert(bind.clone());
+                }
+            }
             Effect::Clash {
                 who,
                 win,

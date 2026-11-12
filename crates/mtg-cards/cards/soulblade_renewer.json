@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7ccc2740-e659-452d-95e8-5dee958322fa",
+  "name": "Soulblade Renewer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulblade Renewer",
+      "oracle_fingerprint": "4c33061914d848e9eb55dcebfdb2a74c",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Soulblade Corrupter" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

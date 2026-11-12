@@ -1,7 +1,7 @@
 {
   "oracle_id": "6a871d70-a46d-4357-8c7d-876f7a004eb7",
   "name": "Mirror-Style Master",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mirror-Style Master",
@@ -9,9 +9,39 @@
       "abilities": [
         { "Keyword": { "Backup": { "count": 1 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 156, "end": 406 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      "Modified",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "c" } } },
+                        "tapped": true,
+                        "attacking": true,
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
