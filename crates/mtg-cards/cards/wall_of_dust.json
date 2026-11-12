@@ -1,7 +1,7 @@
 {
   "oracle_id": "14895574-9c87-4e80-9bc9-cc3dd22a42b8",
   "name": "Wall of Dust",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wall of Dust",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": "Defender" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 39, "end": 142 }
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [], "by": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["CantAttack"],
+                  "duration": "DuringItsControllersNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

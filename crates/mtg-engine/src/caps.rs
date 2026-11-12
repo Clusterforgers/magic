@@ -305,6 +305,7 @@ const RUNS: &[&str] = &[
     "Effect.Monstrosity",
     "Effect.Renown",
     "Effect.Exploit",
+    "Effect.Enlist",
     "Effect.BecomeLevel",
     "Effect.Adapt",
     "Effect.Bolster",
@@ -363,6 +364,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
+    "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
     "Duration.UntilCastFromExile",
@@ -673,6 +675,7 @@ const RUNS: &[&str] = &[
     "Amount.Tally",
     "Amount.CommanderColors",
     "Amount.Remembered",
+    "Amount.DamageDealtByTo",
     "Amount.TurnNumber",
     "Amount.TriggeringTargets",
     "Amount.When",
@@ -1149,6 +1152,7 @@ mod tests {
     #[case::a_logged_tally("Amount.Tally", true)]
     #[case::commander_colors("Amount.CommanderColors", true)]
     #[case::turn_number("Amount.TurnNumber", true)]
+    #[case::damage_dealt_by_to("Amount.DamageDealtByTo", true)]
     #[case::triggering_targets("Amount.TriggeringTargets", true)]
     #[case::starting_player("Condition.StartingPlayer", true)]
     #[case::among_players("Condition.Among", true)]

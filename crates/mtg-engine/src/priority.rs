@@ -713,7 +713,7 @@ pub(crate) fn answer(
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
             if !option.is_costly() {
-                return Ok(Outcome::Events(mana_ability::activation(
+                return Ok(Outcome::Events(mana_ability::logged_activation(
                     state,
                     player,
                     option,
@@ -722,7 +722,7 @@ pub(crate) fn answer(
             }
             let all = mana_options(state, player);
             let mut events = crate::costly_mana::cost_events(state, player, option, &all)?;
-            events.extend(mana_ability::activation(state, player, option, &[])?);
+            events.extend(mana_ability::logged_activation(state, player, option, &[])?);
             mana_ability::r5g_distinct(state, &mut events);
             Ok(Outcome::Events(events))
         }

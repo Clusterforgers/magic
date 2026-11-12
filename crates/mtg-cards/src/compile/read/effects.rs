@@ -801,6 +801,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "lose" | "loses" if r.lookahead(|r| r.word("all").then_some(())).is_some() => {
             super::w13b_mill_rad::w13b_loses_all(r, who)?
         }
+        "lose" | "loses" if r.words("the game") => Effect::LoseGame { who },
         "lose" | "loses" => Effect::LoseLife {
             amount: match half_life(r, &who) {
                 Some(half) => half,

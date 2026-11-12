@@ -654,6 +654,15 @@ pub enum Amount {
         /// The name of the memory.
         slot: String,
     },
+    /// The damage the objects `by` names dealt this turn, after prevention, to the players and objects `to` names, each
+    /// dealer as the object it is now (one that left and came back is another): "if it has dealt 10 or more damage to that
+    /// player this turn".
+    DamageDealtByTo {
+        /// The objects that dealt the damage.
+        by: Ref,
+        /// The players and objects it was dealt to.
+        to: Ref,
+    },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
     /// How many targets the spell or ability that triggered this one has.
@@ -863,6 +872,10 @@ enum Tagged {
         on: Ref,
         slot: String,
     },
+    DamageDealtByTo {
+        by: Ref,
+        to: Ref,
+    },
     CommanderColors(Ref),
     TurnNumber,
     TriggeringTargets,
@@ -1007,6 +1020,10 @@ enum TaggedRef<'a> {
         on: &'a Ref,
         slot: &'a str,
     },
+    DamageDealtByTo {
+        by: &'a Ref,
+        to: &'a Ref,
+    },
     CommanderColors(&'a Ref),
     TurnNumber,
     TriggeringTargets,
@@ -1105,6 +1122,7 @@ impl From<Tagged> for Amount {
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
             Tagged::Remembered { on, slot } => Amount::Remembered { on, slot },
+            Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
@@ -1222,6 +1240,9 @@ impl Serialize for Amount {
             .serialize(serializer),
             Amount::Remembered { on, slot } => {
                 TaggedRef::Remembered { on, slot }.serialize(serializer)
+            }
+            Amount::DamageDealtByTo { by, to } => {
+                TaggedRef::DamageDealtByTo { by, to }.serialize(serializer)
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
@@ -1549,6 +1570,7 @@ mod tests {
     #[case::distinct(Amount::Distinct { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Power }, r#"{"Distinct":{"of":[{"Type":"Creature"}],"stat":"Power"}}"#)]
     #[case::tally(Amount::Tally { event: TallyEvent::TokenCreated, who: Ref::You, filter: Selector(vec![Pred::Type(CardType::Creature)]) }, r#"{"Tally":{"event":"TokenCreated","who":"You","filter":[{"Type":"Creature"}]}}"#)]
     #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned() }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
+    #[case::damage_dealt_by_to(Amount::DamageDealtByTo { by: Ref::This, to: Ref::TriggeringPlayer }, r#"{"DamageDealtByTo":{"by":"This","to":"TriggeringPlayer"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]

@@ -36,6 +36,7 @@ mod group_becomes;
 mod hand_returns;
 mod has_counter;
 mod instead;
+mod l294_turn_window;
 mod library_steps;
 mod loyalty;
 mod may_flicker;
@@ -3035,6 +3036,9 @@ impl Writer<'_> {
         {
             return self.r5c_held_down(affected);
         }
+        if let Some(text) = self.l294_turn_window(effect) {
+            return Some(text);
+        }
         self.graveyard_exile(effect)
             .or_else(|| self.r5b_x_payment(effect))
             .or_else(|| self.library_exile(effect))
@@ -3238,6 +3242,10 @@ impl Writer<'_> {
                 self.player(who)?,
                 if *who == Ref::You { "win" } else { "wins" }
             ),
+            // "you lose the game" is left to the writers of its own sentences (a pact's upkeep payment).
+            Effect::LoseGame { who } if *who != Ref::You => {
+                format!("{} loses the game", self.player(who)?)
+            }
             Effect::Surveil {
                 who: Ref::You,
                 count,

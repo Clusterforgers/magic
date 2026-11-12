@@ -400,6 +400,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::GameEnded { .. }
         // The ability on the stack is public, and so is what was announced for it.
         | Event::AbilityActivated { .. }
+        | Event::ManaAbilityActivated { .. }
+        | Event::Enlisted { .. }
         | Event::TriggersOrdered { .. }
         | Event::DelayedTriggerExpired { .. }
         | Event::ResolutionBegan { .. }

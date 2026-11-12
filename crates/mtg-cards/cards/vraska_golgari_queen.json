@@ -53,7 +53,7 @@
                             "combat": true
                           }
                         },
-                        "effects": [{ "LoseGame": { "who": "TriggeringPlayer" } }]
+                        "effects": [{ "LoseGame": { "who": "Triggering" } }]
                       }
                     }
                   ]

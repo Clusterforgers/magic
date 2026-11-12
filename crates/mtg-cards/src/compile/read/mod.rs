@@ -146,6 +146,8 @@ mod keyword_actions;
 mod kicked_copies;
 mod l291_dice;
 mod l291_nth_counter;
+mod l294_activations;
+mod l294_damage_facts;
 mod land_types;
 mod lands;
 mod leave_combat;

@@ -505,7 +505,15 @@ ability: number,
 /**
  * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
-origin?: AbilitySource, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+origin?: AbilitySource, } } | { "ManaAbilityActivated": { 
+/**
+ * Who activated it.
+ */
+player: PlayerId, 
+/**
+ * The object it comes from.
+ */
+source: ObjectRef, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */
@@ -942,6 +950,18 @@ x?: number, } } | { "Renowned": {
 object: ObjectId, 
 /**
  * Its controller.
+ */
+player: PlayerId, } } | { "Enlisted": { 
+/**
+ * The creature that enlisted.
+ */
+object: ObjectId, 
+/**
+ * The creature tapped for it.
+ */
+enlisted: ObjectId, 
+/**
+ * The controller of the enlisting creature.
  */
 player: PlayerId, } } | { "Exploited": { 
 /**

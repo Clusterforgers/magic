@@ -445,7 +445,10 @@ pub(crate) fn lasts(
         // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
         | Duration::UntilSkipped
         | Duration::UntilSkippedThisTurn => true,
-        Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
+        // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
+        Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
+            state.is_alive(controller)
+        }
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
             state.is_alive(controller)
@@ -523,7 +526,9 @@ pub(crate) fn ends_with_turn(
     let turn = state.turn();
     match duration {
         Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
-        Duration::UntilEndOfYourNextTurn => turn.number() > began && turn.active() == controller,
+        Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
+            turn.number() > began && turn.active() == controller
+        }
         _ => false,
     }
 }
@@ -551,7 +556,8 @@ pub struct ContinuousEffect {
     pub timestamp: u64,
     /// The object whose spell or ability created it, as it was then; `WhileSourceOnBattlefield` follows this object.
     pub source: Option<ObjectRef>,
-    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for.
+    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for; for
+    /// `DuringItsControllersNextTurn`, the controller of the objects as it began, whose next turn it applies in.
     pub controller: PlayerId,
     /// The number of the turn it began in, which `UntilEndOfCombat` and `UntilYourNextTurn` measure from.
     pub turn: u32,
@@ -598,9 +604,22 @@ impl ContinuousEffect {
     /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
     /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        self.lasts_by(state, &self.duration)
+        !self.ended(state) && self.in_its_turn(state)
+    }
+
+    /// Whether the effect has ended for good, so housekeeping removes it: its duration has run out or an object it names
+    /// is gone. An effect that waits for its turn has not ended.
+    pub fn ended(&self, state: &GameState) -> bool {
+        !(self.lasts_by(state, &self.duration)
             && !self.spent(state)
-            && !self.gives_control_to_a_player_who_left(state)
+            && !self.gives_control_to_a_player_who_left(state))
+    }
+
+    /// Whether it is the turn the effect applies in: for `DuringItsControllersNextTurn`, the next turn of the player it
+    /// was begun for; any turn for the other durations.
+    fn in_its_turn(&self, state: &GameState) -> bool {
+        self.duration != Duration::DuringItsControllersNextTurn
+            || (state.turn().active() == self.controller && state.turn().number() > self.turn)
     }
 
     /// [`is_active`](Self::is_active) without asking who controls the source of a "for as long as you control ~" effect:
@@ -613,6 +632,7 @@ impl ContinuousEffect {
         self.lasts_by(state, duration)
             && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state)
+            && self.in_its_turn(state)
     }
 
     /// Whether `duration` has not run out for this effect: the one rule for every duration, and for a counter the
