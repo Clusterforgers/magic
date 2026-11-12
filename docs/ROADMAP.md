@@ -65,7 +65,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 The table and its prompts are live; the items below polish them.
 
 - [ ] (hd1) On a 390x844 phone the commanders in the hand dock leave the hand line about 53 px, narrower than one card; the hand keeps at least one whole card in view (`features/table/HandDock.tsx`)
-- [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
