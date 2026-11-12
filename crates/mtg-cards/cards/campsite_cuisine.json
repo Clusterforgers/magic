@@ -5,56 +5,32 @@
   "faces": [
     {
       "name": "Campsite Cuisine",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "f7d4febb8f985b5c0af86f59782de312",
       "abilities": [
         {
           "Triggered": {
             "when": {
               "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
                 {
                   "ZoneChange": {
                     "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "Supertype": "Legendary"
-                      },
-                      {
-                        "ControlledBy": "You"
-                      }
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
                     ],
                     "to": "Battlefield"
                   }
                 }
               ]
             },
-            "effects": [
-              {
-                "CreateToken": {
-                  "token": {
-                    "Named": "food"
-                  }
-                }
-              }
-            ]
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
           }
         },
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": {
-              "start": 91,
-              "end": 256
-            }
+            "span": { "start": 91, "end": 256 }
           }
         }
       ]

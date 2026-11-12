@@ -5,80 +5,27 @@
   "faces": [
     {
       "name": "Absolving Lammasu",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "7820e28efafe15827b650a5a1bd2b578",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              {
-                "Unsuspect": {
-                  "what": {
-                    "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      "Suspected"
-                    ]
-                  }
-                }
-              }
+              { "Unsuspect": { "what": { "Each": [{ "Type": "Creature" }, "Suspected"] } } }
             ]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield",
-                "to": "Graveyard"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "targets": [
               {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "ControlledBy": "Opponents"
-                    }
-                  ]
-                },
-                "bounds": {
-                  "min": 0,
-                  "max": 1
-                }
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
-            "effects": [
-              {
-                "GainLife": {
-                  "amount": 3
-                }
-              },
-              {
-                "Suspect": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "effects": [{ "GainLife": { "amount": 3 } }, { "Suspect": { "what": { "Target": 0 } } }]
           }
         }
       ]

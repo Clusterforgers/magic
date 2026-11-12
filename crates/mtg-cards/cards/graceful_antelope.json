@@ -7,53 +7,19 @@
       "name": "Graceful Antelope",
       "oracle_fingerprint": "f39d7e6922c33462063ee04cbf9a2959",
       "abilities": [
-        {
-          "Keyword": {
-            "Landwalk": [
-              {
-                "Subtype": "Plains"
-              }
-            ]
-          }
-        },
+        { "Keyword": { "Landwalk": [{ "Subtype": "Plains" }] } },
         {
           "Triggered": {
-            "when": {
-              "DealsDamage": {
-                "source": [
-                  "This"
-                ],
-                "to": "EachPlayer",
-                "combat": true
-              }
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Land"
-                    }
-                  ]
-                }
-              }
-            ],
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
             "effects": [
               {
                 "May": {
                   "effects": [
                     {
                       "Continuous": {
-                        "affected": {
-                          "Target": 0
-                        },
-                        "mods": [
-                          {
-                            "SetLandTypes": [
-                              "Plains"
-                            ]
-                          }
-                        ],
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetLandTypes": ["Plains"] }],
                         "duration": "WhileSourceOnBattlefield"
                       }
                     }

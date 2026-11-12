@@ -7,52 +7,21 @@
       "name": "Overlord of the Hauntwoods",
       "oracle_fingerprint": "d40b077237fac5fd13c8dbed12e8237d",
       "abilities": [
-        {
-          "AltCast": {
-            "way": "Impending",
-            "cost": "{1}{G}{G}"
-          }
-        },
+        { "AltCast": { "way": "Impending", "cost": "{1}{G}{G}" } },
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "WithCounters": {
-                "counter": {
-                  "Other": "time"
-                },
-                "count": 4
-              }
-            },
-            "condition": {
-              "CastWith": "Impending"
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "time" }, "count": 4 } },
+            "condition": { "CastWith": "Impending" }
           }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "RemoveType": "Creature"
-              }
-            ],
+            "mods": [{ "RemoveType": "Creature" }],
             "condition": {
               "Compare": {
-                "left": {
-                  "Counters": {
-                    "on": "This",
-                    "counter": {
-                      "Other": "time"
-                    }
-                  }
-                },
+                "left": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
                 "op": "Gt",
                 "right": 0
               }
@@ -63,21 +32,8 @@
           "Triggered": {
             "when": {
               "AnyOf": [
-                {
-                  "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "to": "Battlefield"
-                  }
-                },
-                {
-                  "Attacks": {
-                    "what": [
-                      "This"
-                    ]
-                  }
-                }
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
               ]
             },
             "effects": [
@@ -86,16 +42,8 @@
                   "token": {
                     "Custom": {
                       "name": "Everywhere",
-                      "types": [
-                        "Land"
-                      ],
-                      "subtypes": [
-                        "Plains",
-                        "Island",
-                        "Swamp",
-                        "Mountain",
-                        "Forest"
-                      ]
+                      "types": ["Land"],
+                      "subtypes": ["Plains", "Island", "Swamp", "Mountain", "Forest"]
                     }
                   },
                   "tapped": true

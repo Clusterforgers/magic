@@ -168,7 +168,7 @@ fn compact(name: &str) -> String {
     r#"{"Drew":{"who":"Opponents"}}"#
 )]
 #[case::kitnap_stun("Kitnap", r#""count":3"#, r#""count":2"#)]
-#[case::motion_tapped("Motion Sickness", r#","Tapped"]"#, r#"]"#)]
+#[case::motion_tapped("Motion Sickness", r#","Tapped"]"#, r"]")]
 #[case::antelope_plains("Graceful Antelope", r#""Plains""#, r#""Island""#)]
 #[case::amalia_twenty("Amalia Benavides Aguirre", r#""right":20"#, r#""right":10"#)]
 #[case::veil_morph(

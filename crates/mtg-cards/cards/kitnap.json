@@ -7,52 +7,21 @@
       "name": "Kitnap",
       "oracle_fingerprint": "061e8ed39db75fc45292459f01fa034a",
       "abilities": [
-        {
-          "Keyword": {
-            "Gift": "Card"
-          }
-        },
-        {
-          "Keyword": {
-            "Enchant": [
-              {
-                "Type": "Creature"
-              }
-            ]
-          }
-        },
+        { "Keyword": { "Gift": "Card" } },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              {
-                "Tap": {
-                  "what": "Attached"
-                }
-              },
+              { "Tap": { "what": "Attached" } },
               {
                 "If": {
-                  "condition": {
-                    "Compare": {
-                      "left": "Promised",
-                      "op": "Eq",
-                      "right": 0
-                    }
-                  },
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 0 } },
                   "then": [
                     {
                       "PutCounters": {
                         "on": "Attached",
-                        "counter": {
-                          "Other": "stun"
-                        },
+                        "counter": { "Other": "stun" },
                         "count": 3
                       }
                     }
@@ -62,16 +31,7 @@
             ]
           }
         },
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [
-              {
-                "SetController": "You"
-              }
-            ]
-          }
-        }
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
       ]
     }
   ]

@@ -5,59 +5,28 @@
   "faces": [
     {
       "name": "Surveillance Monitor",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "4048e8c10b07596eff674b3f41b5be1b",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "Pay": {
-                  "cost": [
-                    {
-                      "CollectEvidence": 4
-                    }
-                  ]
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Pay": { "cost": [{ "CollectEvidence": 4 }] } }]
           }
         },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "CollectedEvidence",
-                "who": "You"
-              }
-            },
+            "when": { "Did": { "action": "CollectedEvidence", "who": "You" } },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
                     "Custom": {
                       "name": "Thopter",
-                      "types": [
-                        "Artifact",
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Thopter"
-                      ],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
                       "power": 1,
                       "toughness": 1,
-                      "abilities": [
-                        {
-                          "Keyword": "Flying"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Flying" }]
                     }
                   }
                 }

@@ -7,49 +7,14 @@
       "name": "Master of the Veil",
       "oracle_fingerprint": "b30cb2351bb89962d2aa2f8801839ccc",
       "abilities": [
-        {
-          "Keyword": {
-            "Morph": "{2}{U}"
-          }
-        },
+        { "Keyword": { "Morph": "{2}{U}" } },
         {
           "Triggered": {
-            "when": {
-              "TurnedFaceUp": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
             "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "HasKeywordNamed": "Morph"
-                    }
-                  ]
-                }
-              }
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeywordNamed": "Morph" }] } }
             ],
-            "effects": [
-              {
-                "May": {
-                  "effects": [
-                    {
-                      "TurnFaceDown": {
-                        "what": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "effects": [{ "May": { "effects": [{ "TurnFaceDown": { "what": { "Target": 0 } } }] } }]
           }
         }
       ]

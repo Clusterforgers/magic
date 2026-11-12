@@ -7,41 +7,22 @@
       "name": "Preacher of the Schism",
       "oracle_fingerprint": "b15eea783b7e015dfbe467380276f372",
       "abilities": [
-        {
-          "Keyword": "Deathtouch"
-        },
+        { "Keyword": "Deathtouch" },
         {
           "Triggered": {
-            "when": {
-              "AttacksPlayer": {
-                "what": [
-                  "This"
-                ],
-                "at": "MostLife"
-              }
-            },
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "MostLife" } },
             "effects": [
               {
                 "CreateToken": {
                   "token": {
                     "Custom": {
                       "name": "Vampire",
-                      "colors": [
-                        "White"
-                      ],
-                      "types": [
-                        "Creature"
-                      ],
-                      "subtypes": [
-                        "Vampire"
-                      ],
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
                       "power": 1,
                       "toughness": 1,
-                      "abilities": [
-                        {
-                          "Keyword": "Lifelink"
-                        }
-                      ]
+                      "abilities": [{ "Keyword": "Lifelink" }]
                     }
                   }
                 }
@@ -51,34 +32,15 @@
         },
         {
           "Triggered": {
-            "when": {
-              "Attacks": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Attacks": { "what": ["This"] } },
             "if": {
               "Compare": {
-                "left": {
-                  "Life": "You"
-                },
+                "left": { "Life": "You" },
                 "op": "Ge",
-                "right": {
-                  "HighestLife": "EachPlayer"
-                }
+                "right": { "HighestLife": "EachPlayer" }
               }
             },
-            "effects": [
-              {
-                "Draw": {}
-              },
-              {
-                "LoseLife": {
-                  "amount": 1
-                }
-              }
-            ]
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         }
       ]

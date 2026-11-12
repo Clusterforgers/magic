@@ -7,55 +7,16 @@
       "name": "Underworld Cerberus",
       "oracle_fingerprint": "ea907d05eab2307e8ad884cb79c88c68",
       "abilities": [
-        {
-          "Static": {
-            "affected": "This",
-            "mods": [
-              {
-                "MinBlockers": 3
-              }
-            ]
-          }
-        },
-        {
-          "Rule": {
-            "rule": "GraveyardCardsUntargetable"
-          }
-        },
+        { "Static": { "affected": "This", "mods": [{ "MinBlockers": 3 }] } },
+        { "Rule": { "rule": "GraveyardCardsUntargetable" } },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "from": "Battlefield",
-                "to": "Graveyard"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "effects": [
-              {
-                "Exile": {
-                  "what": {
-                    "Arrived": {
-                      "of": "This",
-                      "zone": "Graveyard"
-                    }
-                  }
-                }
-              },
+              { "Exile": { "what": { "Arrived": { "of": "This", "zone": "Graveyard" } } } },
               {
                 "Move": {
-                  "what": {
-                    "Each": [
-                      {
-                        "Type": "Creature"
-                      },
-                      {
-                        "In": "Graveyard"
-                      }
-                    ]
-                  },
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
                   "to": "Hand"
                 }
               }

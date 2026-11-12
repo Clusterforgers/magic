@@ -7,76 +7,20 @@
       "name": "Motion Sickness",
       "oracle_fingerprint": "47e95489b621b6d5c22c8a31079de5d6",
       "abilities": [
-        {
-          "Keyword": {
-            "Enchant": [
-              {
-                "Type": "Creature"
-              }
-            ]
-          }
-        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This"
-                ],
-                "to": "Battlefield"
-              }
-            },
-            "effects": [
-              {
-                "Tap": {
-                  "what": "Attached"
-                }
-              }
-            ]
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
           }
         },
-        {
-          "Static": {
-            "affected": "Attached",
-            "mods": [
-              "DoesntUntap"
-            ]
-          }
-        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
         {
           "Triggered": {
-            "when": {
-              "VisitedAttraction": {
-                "who": "You"
-              }
-            },
-            "targets": [
-              {
-                "what": {
-                  "Object": [
-                    {
-                      "Type": "Creature"
-                    },
-                    "Tapped"
-                  ]
-                }
-              }
-            ],
+            "when": { "VisitedAttraction": { "who": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
             "effects": [
-              {
-                "May": {
-                  "effects": [
-                    {
-                      "Attach": {
-                        "what": "This",
-                        "to": {
-                          "Target": 0
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }] } }
             ]
           }
         }
