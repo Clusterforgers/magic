@@ -924,6 +924,10 @@ describe('events with more than one shape', () => {
       'Hill Giant loses all landwalk abilities until end of turn',
     ],
     [
+      effect(objects(2), { RemoveKeywordKind: 'BandsWithOther' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all "bands with other" abilities until end of turn',
+    ],
+    [
       effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
       'Grizzly Bears and Hill Giant lose ward until end of turn',
     ],
@@ -1209,6 +1213,26 @@ describe('events with more than one shape', () => {
         'UntilEndOfYourNextTurn',
       ),
       "Ana may cast Grizzly Bears and Hill Giant until the end of their controller's next turn",
+    ],
+    [
+      ruleEffect(
+        {
+          MayCast: {
+            who: [0],
+            what: [],
+            from: 'Exile',
+            free: false,
+            flash: false,
+            only: [
+              { id: 1, counter: 1 },
+              { id: 2, counter: 1 },
+            ],
+            play: false,
+          },
+        },
+        'UntilEndOfCombatOnYourNextTurn',
+      ),
+      "Ana may cast Grizzly Bears and Hill Giant until end of combat on their controller's next turn",
     ],
     [
       ruleEffect({ TriggerAgain: { cause: null, source: null } }, 'Forever'),

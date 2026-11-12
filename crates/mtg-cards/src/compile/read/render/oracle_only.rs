@@ -208,6 +208,11 @@ mod r304_sacrifice_all;
 mod r304_skip_draw;
 mod r304c_wordings;
 mod r305_wordings;
+mod r305c_any_cast;
+mod r305c_random_keyword;
+mod r305c_rules;
+mod r305c_you_and;
+mod r306c_wholes;
 mod r307_wholes;
 mod regen_this_way;
 mod repeat_modes;
@@ -383,6 +388,7 @@ mod r7c_searches;
 // rmt5
 mod r283_wholes;
 mod r287_wholes;
+mod r301b_wholes;
 mod r306_wholes;
 mod r306b_wholes;
 mod rmt5_wholes;
@@ -542,6 +548,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r306_wholes::add(ability, texts);
     // r28-9
     r289_wholes::r289_add_wholes(ability, texts);
+    r301b_wholes::r301b_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of
@@ -777,6 +784,11 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r307_wholes::r307_add_wholes(ability, texts);
     r301_wholes::r301_add_wholes(ability, texts);
     r302_wholes::r302_add_wholes(ability, texts);
+    r305c_any_cast::r305c_add_any_cast(ability, texts);
+    r305c_you_and::r305c_add_you_and(ability, texts);
+    r305c_rules::r305c_add_rules(ability, texts);
+    r305c_random_keyword::r305c_add_random_keyword(ability, texts);
+    r306c_wholes::r306c_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.

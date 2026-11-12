@@ -1,0 +1,71 @@
+{
+  "oracle_id": "0b1f6e77-55db-4638-9030-3f4e4d37eb1b",
+  "name": "Swooping Pteranodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swooping Pteranodon",
+      "oracle_fingerprint": "e44f83368b86b3e6a4348d01948d474b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "Other",
+                      { "Subtype": "Dinosaur" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Flying" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Bind": { "what": { "Target": 0 }, "as": "stolen" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Bound": "stolen" },
+                        "amount": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

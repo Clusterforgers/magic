@@ -47,7 +47,7 @@ struct Unpacked {
     /// The decks of the seats if the game turns out to be in its lobby.
     decks: SeatDecks,
     /// The seats bots play, with the seed their choices come from.
-    bots: (Vec<mtg_core::ids::PlayerId>, u64),
+    bots: (Vec<crate::bots::BotSeat>, u64),
 }
 
 /// Why a stored game cannot be loaded: the `detail` for the log and the record's `failure`, the

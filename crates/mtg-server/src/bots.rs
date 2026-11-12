@@ -4,9 +4,11 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::Decision;
+use mtg_engine::Engine;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
-use mtg_testkit::RandomBot;
+use mtg_testkit::brain::{self, Level, SeatBrain};
+use serde::{Deserialize, Serialize};
 use tokio::sync::watch;
 use tokio::task::JoinHandle;
 use tokio::time::{Instant, sleep, sleep_until};
@@ -23,23 +25,95 @@ pub const TURN_ANSWERS: u32 = 120;
 /// How long a bot waits before it joins its seat again after its connection was dropped.
 const REJOIN_AFTER: Duration = Duration::from_secs(1);
 
-/// What the bot of one seat decides with: random legal answers, a land whenever it can play one, and a pass once it has
-/// answered [`TURN_ANSWERS`] times in a turn.
-#[derive(Debug, Clone)]
+/// How well a server bot plays: the `level` of a bot seat on the create form.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum BotLevel {
+    /// Random legal answers, a land whenever it can play one.
+    Easy,
+    /// Heuristics with a shallow search of engine copies (`mtg_testkit::brain`).
+    #[default]
+    Normal,
+    /// Heuristics with a deeper search that looks through the next turn's combat.
+    Hard,
+}
+
+impl BotLevel {
+    /// The brain level that plays it.
+    const fn brain(self) -> Level {
+        match self {
+            BotLevel::Easy => Level::Easy,
+            BotLevel::Normal => Level::Normal,
+            BotLevel::Hard => Level::Hard,
+        }
+    }
+}
+
+/// A seat a server bot plays, and how well. Stored in the recipe as `{seat, level}`; a bare seat number, as older
+/// recipes hold, reads as an Easy bot (how bots played then).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct BotSeat {
+    /// The seat.
+    pub seat: PlayerId,
+    /// How well its bot plays.
+    pub level: BotLevel,
+}
+
+/// A bot seat as stored: a bare seat number or a seat with its level.
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum StoredBot {
+    Seat(PlayerId),
+    Leveled { seat: PlayerId, level: BotLevel },
+}
+
+impl<'de> Deserialize<'de> for BotSeat {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        Ok(match StoredBot::deserialize(deserializer)? {
+            StoredBot::Seat(seat) => BotSeat {
+                seat,
+                level: BotLevel::Easy,
+            },
+            StoredBot::Leveled { seat, level } => BotSeat { seat, level },
+        })
+    }
+}
+
+/// What the bot of one seat decides with: the [`SeatBrain`] of its level, and a pass once it has answered
+/// [`TURN_ANSWERS`] times in a turn.
 pub struct BotBrain {
-    random: RandomBot,
+    /// The brain; out of its place only while it thinks on a blocking thread.
+    brain: Option<Box<dyn SeatBrain>>,
+    level: BotLevel,
     turn: Option<u32>,
     answers: u32,
 }
 
+impl std::fmt::Debug for BotBrain {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("BotBrain")
+            .field("level", &self.level)
+            .field("turn", &self.turn)
+            .field("answers", &self.answers)
+            .finish_non_exhaustive()
+    }
+}
+
 impl BotBrain {
-    /// The brain of `seat` in a game shuffled with `seed`: its random choices replay with the seed.
-    pub fn new(seed: u64, seat: PlayerId) -> BotBrain {
+    /// The brain of `seat` at `level` in a game shuffled with `seed`: an Easy bot's random choices replay with the seed;
+    /// a searching bot is also capped by its clock.
+    pub fn new(seed: u64, seat: PlayerId, level: BotLevel) -> BotBrain {
         BotBrain {
-            random: RandomBot::new(seed, 0xB07 + seat.index() as u64),
+            brain: Some(brain::brain(level.brain(), seed, seat, true)),
+            level,
             turn: None,
             answers: 0,
         }
+    }
+
+    /// Whether the brain searches the table, so the bot fetches a copy of the engine before it answers.
+    pub fn reads_table(&self) -> bool {
+        self.level != BotLevel::Easy
     }
 
     /// Notes the turn the table is in, which starts a new count of answers when it changes.
@@ -50,18 +124,37 @@ impl BotBrain {
         }
     }
 
-    /// The answer to `decision`.
-    pub fn answer(&mut self, decision: &Decision) -> Answer {
+    /// The answer to `decision`, pending in `table` when the bot has it; a pass at priority once the turn has had its
+    /// answers.
+    pub fn answer(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
         self.answers += 1;
-        if let DecisionKind::Priority(options) = &decision.kind {
-            if self.answers > TURN_ANSWERS {
-                return Answer::Priority(PriorityAction::Pass);
-            }
-            if let Some(land) = options.playable_lands.first() {
-                return Answer::Priority(PriorityAction::PlayLand(*land));
-            }
+        if matches!(decision.kind, DecisionKind::Priority(_)) && self.answers > TURN_ANSWERS {
+            return Answer::Priority(PriorityAction::Pass);
         }
-        self.random.choose(decision)
+        match self.brain.as_mut() {
+            Some(brain) => brain.choose(decision, table),
+            None => fallback(decision).unwrap_or(Answer::Priority(PriorityAction::Pass)),
+        }
+    }
+
+    /// [`BotBrain::answer`] on a blocking thread, so a search never holds up the runtime; `None` if that thread failed.
+    async fn think(&mut self, decision: Decision, table: Option<Box<Engine>>) -> Option<Answer> {
+        let brain = self.brain.take()?;
+        let mut alone = BotBrain {
+            brain: Some(brain),
+            level: self.level,
+            turn: self.turn,
+            answers: self.answers,
+        };
+        let (alone, answer) = tokio::task::spawn_blocking(move || {
+            let answer = alone.answer(&decision, table.as_deref());
+            (alone, answer)
+        })
+        .await
+        .ok()?;
+        self.brain = alone.brain;
+        self.answers = alone.answers;
+        Some(answer)
     }
 }
 
@@ -79,20 +172,21 @@ struct Waiting {
     refused: bool,
 }
 
-/// Plays `seat` of `handle` until the game ends or leaves the registry (`removed` changes or closes): joins the seat
-/// (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is not), and answers each decision after `delay` with
-/// [`BotBrain`]. A refused answer is followed by the table's fallback answer, and when that is refused too, or there is
+/// Plays the seat of `bot` in `handle` at its level until the game ends or leaves the registry (`removed` changes or
+/// closes): joins the seat (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is
+/// not), and answers each decision after
+/// `delay` with [`BotBrain`]. A refused answer is followed by the table's fallback answer, and when that is refused too, or there is
 /// none, the bot concedes, so a bot never stalls a game, and never keeps alive a game the registry let go.
 pub fn spawn_bot_seat(
     handle: GameHandle,
-    seat: PlayerId,
+    bot: BotSeat,
     seed: u64,
     delay: Duration,
     mut removed: watch::Receiver<Removal>,
 ) -> JoinHandle<()> {
     tokio::spawn(async move {
         tokio::select! {
-            () = run_seat(handle, seat, seed, delay) => {}
+            () = run_seat(handle, bot, seed, delay) => {}
             // A change or a dropped sender both mean the game left the registry.
             _ = removed.changed() => {}
         }
@@ -100,9 +194,10 @@ pub fn spawn_bot_seat(
 }
 
 /// The body of [`spawn_bot_seat`]: joins and plays until the game ends or closes.
-async fn run_seat(handle: GameHandle, seat: PlayerId, seed: u64, delay: Duration) {
+async fn run_seat(handle: GameHandle, bot: BotSeat, seed: u64, delay: Duration) {
+    let seat = bot.seat;
     {
-        let mut brain = BotBrain::new(seed, seat);
+        let mut brain = BotBrain::new(seed, seat, bot.level);
         loop {
             let Ok(mut inbox) = handle.join(seat).await else {
                 return;
@@ -122,13 +217,13 @@ async fn run_seat(handle: GameHandle, seat: PlayerId, seed: u64, delay: Duration
 /// [`spawn_bot_seat`] for each of `seats`.
 pub(crate) fn spawn_bot_seats(
     handle: &GameHandle,
-    seats: &[PlayerId],
+    seats: &[BotSeat],
     seed: u64,
     delay: Duration,
     removed: &watch::Receiver<Removal>,
 ) {
-    for seat in seats {
-        spawn_bot_seat(handle.clone(), *seat, seed, delay, removed.clone());
+    for bot in seats {
+        spawn_bot_seat(handle.clone(), *bot, seed, delay, removed.clone());
     }
 }
 
@@ -157,7 +252,14 @@ async fn play(
                     message = inbox.recv() => message,
                     () = sleep_until(held.due) => {
                         let Some(held) = waiting.take() else { continue };
-                        let answer = brain.answer(&held.decision);
+                        let table = if brain.reads_table() {
+                            handle.table().await.ok().flatten()
+                        } else {
+                            None
+                        };
+                        let Some(answer) = brain.think(held.decision.clone(), table).await else {
+                            return Ended::Over;
+                        };
                         if send_answer(handle, seat, held.id, answer).await.is_err() {
                             return Ended::Over;
                         }
@@ -240,7 +342,7 @@ fn far_future() -> Instant {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a bot plays a land whenever it can, answers every kind of decision with a legal-looking answer, and after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table.
+    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, and a stored bot seat reads back with its level (a bare seat as Easy).
     #![allow(clippy::unwrap_used)]
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::PriorityOptions;
@@ -278,8 +380,8 @@ mod tests {
     #[case::a_land_alone(vec![ObjectId(4)], vec![])]
     #[case::a_land_and_a_spell(vec![ObjectId(4), ObjectId(5)], vec![ObjectId(6)])]
     fn a_land_comes_first(#[case] lands: Vec<ObjectId>, #[case] castable: Vec<ObjectId>) {
-        let mut brain = BotBrain::new(7, SEAT);
-        let answer = brain.answer(&priority(lands, castable));
+        let mut brain = BotBrain::new(7, SEAT, BotLevel::Easy);
+        let answer = brain.answer(&priority(lands, castable), None);
         assert_eq!(
             answer,
             Answer::Priority(PriorityAction::PlayLand(ObjectId(4)))
@@ -288,19 +390,47 @@ mod tests {
 
     #[rstest]
     fn it_only_passes_once_a_turn_has_had_its_answers(#[values(1, 2, 3)] seed: u64) {
-        let mut brain = BotBrain::new(seed, SEAT);
+        let mut brain = BotBrain::new(seed, SEAT, BotLevel::Easy);
         brain.turn_is(3);
         let busy = priority(vec![ObjectId(4)], vec![ObjectId(6)]);
         for _ in 0..TURN_ANSWERS {
-            brain.answer(&busy);
+            brain.answer(&busy, None);
         }
-        assert_eq!(brain.answer(&busy), Answer::Priority(PriorityAction::Pass));
+        assert_eq!(
+            brain.answer(&busy, None),
+            Answer::Priority(PriorityAction::Pass)
+        );
         brain.turn_is(3);
-        assert_eq!(brain.answer(&busy), Answer::Priority(PriorityAction::Pass));
+        assert_eq!(
+            brain.answer(&busy, None),
+            Answer::Priority(PriorityAction::Pass)
+        );
         brain.turn_is(4);
         assert_eq!(
-            brain.answer(&busy),
+            brain.answer(&busy, None),
             Answer::Priority(PriorityAction::PlayLand(ObjectId(4)))
+        );
+    }
+
+    #[rstest]
+    #[case::easy(BotLevel::Easy, false)]
+    #[case::normal(BotLevel::Normal, true)]
+    #[case::hard(BotLevel::Hard, true)]
+    fn only_a_searching_bot_reads_the_table(#[case] level: BotLevel, #[case] reads: bool) {
+        assert_eq!(BotBrain::new(1, SEAT, level).reads_table(), reads);
+    }
+
+    #[rstest]
+    #[case::bare_seat(serde_json::json!(2), BotLevel::Easy)]
+    #[case::leveled(serde_json::json!({"seat": 2, "level": "hard"}), BotLevel::Hard)]
+    fn a_stored_bot_seat_reads_back(#[case] stored: serde_json::Value, #[case] level: BotLevel) {
+        let bot: BotSeat = serde_json::from_value(stored).unwrap();
+        assert_eq!(
+            bot,
+            BotSeat {
+                seat: PlayerId(2),
+                level
+            }
         );
     }
 }

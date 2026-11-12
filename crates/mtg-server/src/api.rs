@@ -240,6 +240,9 @@ struct NewSeat {
     /// A bot plays the seat (`bots.rs`): a held seat other than the creator's, with a deck; the server names it.
     #[serde(default)]
     bot: bool,
+    /// How well the seat's bot plays (`easy`, `normal` or `hard`); Normal when left out. Only for a bot seat.
+    #[serde(default)]
+    level: Option<crate::bots::BotLevel>,
 }
 
 #[derive(Debug, Serialize)]
@@ -510,13 +513,24 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         )));
     }
     let mut bots = Vec::new();
-    for (index, seat) in body.seats.iter().enumerate().filter(|(_, seat)| seat.bot) {
+    for (index, seat) in body.seats.iter().enumerate() {
+        if !seat.bot {
+            if seat.level.is_some() {
+                return Err(ApiError::invalid(format!(
+                    "seat {index}: a level is for a bot seat"
+                )));
+            }
+            continue;
+        }
         if index == 0 || index >= held || seat.deck.is_none() {
             return Err(ApiError::invalid(format!(
                 "seat {index}: a bot plays a held seat other than seat 0, with a deck"
             )));
         }
-        bots.push(PlayerId::from_index(index));
+        bots.push(crate::bots::BotSeat {
+            seat: PlayerId::from_index(index),
+            level: seat.level.unwrap_or_default(),
+        });
     }
     let seats = body
         .seats
@@ -556,8 +570,8 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
 }
 
 /// The name of the bot at seat `index`: "Bot", numbered when the table has more than one.
-fn bot_name(bots: &[PlayerId], index: usize) -> String {
-    match bots.iter().position(|seat| seat.index() == index) {
+fn bot_name(bots: &[crate::bots::BotSeat], index: usize) -> String {
+    match bots.iter().position(|bot| bot.seat.index() == index) {
         Some(at) if bots.len() > 1 => format!("Bot {}", at + 1),
         _ => "Bot".to_owned(),
     }

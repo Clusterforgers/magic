@@ -2585,8 +2585,8 @@ fn object_triggers(
             {
                 continue;
             }
-            if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(Limit::OncePerTurn, source, address.source, address.ability)
+            if let Some(once @ (Limit::OncePerTurn | Limit::OncePerGame)) = *limit
+                && (state.limit_spent(once, source, address.source, address.ability)
                     || !used
                         .limits
                         .insert((source, address.source, address.ability)))

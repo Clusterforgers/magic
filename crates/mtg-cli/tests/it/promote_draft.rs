@@ -1,7 +1,8 @@
 //! Goal: `promote --draft` turns a proposal the checker marks `Unchecked` into a draft (`drafts/<slug>.json` in canonical
 //! form and the card's record from the cache) once the smoke gate passes, promotes an accepted one to the corpus as without
-//! the switch and removes the draft of that card, keeps the first of several drafts of a card, writes nothing in a dry run
-//! and without the switch an `Unchecked` proposal stays rejected.
+//! the switch and removes the draft of that card, keeps the first of several drafts of a card, writes nothing in a dry run,
+//! without the switch an `Unchecked` proposal stays rejected, and a whole draft outranks a `Partial` or `Manual` rules
+//! file but never a `Verified` one.
 
 #![allow(clippy::unwrap_used)]
 
@@ -10,8 +11,9 @@ use crate::common;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use mtg_cards::card::Card;
-use mtg_cards::load::{Library, canonical};
+use mtg_cards::ability::Ability;
+use mtg_cards::card::{Card, ImplStatus, Span};
+use mtg_cards::load::{Library, Source, canonical};
 use mtg_cards::proposal::Verdict;
 use mtg_cli::args::PromoteArgs;
 use mtg_cli::cache::Cache;
@@ -502,4 +504,76 @@ async fn a_forge_translation_with_a_gap_is_drafted_only_through_the_proof_and_re
         promoted.render()
     );
     assert_eq!(promoted.written.len(), 0);
+}
+
+/// The library of a run whose rules file of the pyre is `drafted` changed by `shape`.
+fn pyre_file(drafted: &Card, shape: &str) -> Library {
+    let mut card = drafted.clone();
+    match shape {
+        "verified" => {}
+        "partial" => {
+            let record: serde_json::Value = serde_json::from_str(&record(PYRE)).unwrap();
+            let text = record["oracle_text"].as_str().unwrap();
+            let at = text.find("• Discard").unwrap();
+            card.impl_status = ImplStatus::Partial;
+            card.faces[0].abilities.push(Ability::Manual {
+                reason: "left to the table".into(),
+                span: Span {
+                    start: u32::try_from(text[..at].chars().count()).unwrap(),
+                    end: u32::try_from(text.chars().count()).unwrap(),
+                },
+            });
+        }
+        _ => {
+            card.impl_status = ImplStatus::Manual;
+            card.faces[0].abilities.clear();
+        }
+    }
+    let source = Source {
+        path: format!("cards/{PYRE}.json"),
+        text: canonical(&card),
+    };
+    Library::from_sources(&[source]).unwrap()
+}
+
+#[sqlx::test]
+async fn a_whole_draft_outranks_a_partial_or_manual_rules_file_and_never_a_verified_one(
+    pool: PgPool,
+) {
+    let dir = tempfile::tempdir().unwrap();
+    let stored = loaded(pool, dir.path()).await;
+    let places = dirs(dir.path());
+    let file = proposal(dir.path(), "a", PYRE, &stored_proposal(PYRE));
+    promote(&stored, &places, drafting(vec![file.clone()])).await;
+    let drafted: Card =
+        serde_json::from_str(&fs::read_to_string(places.1.join("cathartic_pyre.json")).unwrap())
+            .unwrap();
+    fs::remove_dir_all(&places.1).unwrap();
+
+    for (shape, expected) in [
+        ("verified", Some(W2aSkip::CorpusFile)),
+        ("partial", None),
+        ("manual", None),
+    ] {
+        let args = PromoteArgs {
+            dry_run: true,
+            partial: false,
+            out: Some(places.0.clone()),
+            draft: true,
+            no_smoke: false,
+            drafts: Some(places.1.clone()),
+            source: None,
+            differs: false,
+            files: vec![file.clone()],
+        };
+        let library = pyre_file(&drafted, shape);
+        let promoted = w2a_promote_against(&stored.0, &stored.1, &args, &library)
+            .await
+            .unwrap();
+        assert_eq!(
+            outcomes(&promoted),
+            [("Cathartic Pyre".to_owned(), expected)],
+            "{shape}"
+        );
+    }
 }

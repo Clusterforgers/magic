@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f064fc04-28fb-423f-a4f3-bb567c71168f",
+  "name": "Venom, Deadly Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venom, Deadly Devourer",
+      "oracle_fingerprint": "27e8cfd925100d7068565bdd0473ecd5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Subtype": "Symbiote" }] } }],
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Target": 0 },
+                              "counter": "+1/+1",
+                              "count": {
+                                "Stat": { "of": { "Bound": "exiled" }, "stat": "Toughness" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

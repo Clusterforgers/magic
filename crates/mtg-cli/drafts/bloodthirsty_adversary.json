@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3b943c3e-1f18-4997-b6d0-28ef75aed88e",
+  "name": "Bloodthirsty Adversary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodthirsty Adversary",
+      "oracle_fingerprint": "fc21df5beed1681c2fa5ff5cc3dcce83",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PayAnyTimes": { "cost": "{2}{R}" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      "bounds": { "min": 0, "max": "Triggering" }
+                    }
+                  ],
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } },
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "card",
+                        "effects": [
+                          { "CopyCard": { "what": { "Bound": "card" }, "as": "copy" } },
+                          { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

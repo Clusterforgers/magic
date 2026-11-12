@@ -1,0 +1,21 @@
+{
+  "oracle_id": "58ee8c10-7be8-4889-944d-13cae0a4166d",
+  "name": "Frodo, Adventurous Hobbit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Frodo, Adventurous Hobbit",
+      "oracle_fingerprint": "b21faa0a622bb97f43152214ec7edec2",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Sam, Loyal Attendant" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

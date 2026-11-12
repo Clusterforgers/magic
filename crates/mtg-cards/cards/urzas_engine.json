@@ -1,7 +1,7 @@
 {
   "oracle_id": "bf6ea878-044b-40a8-a21b-0191a948a69a",
   "name": "Urza's Engine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urza's Engine",
@@ -23,9 +23,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 379, "end": 461 }
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "BandedWith": "This" }]
+                  },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

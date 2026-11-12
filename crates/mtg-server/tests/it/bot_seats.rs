@@ -7,6 +7,7 @@ use crate::common::{self, Client, roomy};
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_server::bots::{BotLevel, BotSeat};
 use mtg_server::config::ServerConfig;
 use mtg_server::demo;
 use mtg_server::registry::{GameOptions, HOST, Registry, SeatRequest};
@@ -30,13 +31,27 @@ fn registry() -> Registry {
     })
 }
 
+/// Bots at `level` for seats 1 to `seats - 1`.
+fn bots(seats: usize, level: BotLevel) -> Vec<BotSeat> {
+    (1..seats)
+        .map(|seat| BotSeat {
+            seat: PlayerId::from_index(seat),
+            level,
+        })
+        .collect()
+}
+
 #[rstest]
+#[case::easy_duel(2, BotLevel::Easy)]
+#[case::easy_three(3, BotLevel::Easy)]
+#[case::easy_four(4, BotLevel::Easy)]
+#[case::normal_duel(2, BotLevel::Normal)]
+#[case::hard_three(3, BotLevel::Hard)]
 #[tokio::test(start_paused = true)]
-async fn a_table_of_bots_plays_to_the_end(#[values(2, 3, 4)] seats: usize) {
+async fn a_table_of_bots_plays_to_the_end(#[case] seats: usize, #[case] level: BotLevel) {
     let registry = registry();
-    let bots: Vec<PlayerId> = (1..seats).map(PlayerId::from_index).collect();
     let options = GameOptions {
-        bots: bots.clone(),
+        bots: bots(seats, level),
         ..GameOptions::default()
     };
     let created = registry
@@ -77,7 +92,7 @@ async fn a_table_of_bots_plays_to_the_end(#[values(2, 3, 4)] seats: usize) {
 async fn the_bots_are_ready_and_the_game_waits_for_the_creator_alone() {
     let registry = registry();
     let options = GameOptions {
-        bots: vec![PlayerId::from_index(1), PlayerId::from_index(2)],
+        bots: bots(3, BotLevel::Normal),
         ..GameOptions::default()
     };
     let created = registry
@@ -111,7 +126,7 @@ async fn the_bots_are_ready_and_the_game_waits_for_the_creator_alone() {
 async fn a_change_of_teams_leaves_the_bots_ready(#[case] mode: TeamMode) {
     let registry = registry();
     let options = GameOptions {
-        bots: (1..4).map(PlayerId::from_index).collect(),
+        bots: bots(4, BotLevel::Easy),
         ..GameOptions::default()
     };
     let created = registry

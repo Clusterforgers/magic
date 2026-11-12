@@ -315,7 +315,7 @@ fn judge_draft(
     match fit {
         None => {}
         Some(Misfit::Outranked) => problems.push(format!(
-            "{slug}: the card is Verified without the draft: delete the draft and its record"
+            "{slug}: the card runs without the draft (Verified, or a rules file it does not outrank): delete the draft and its record"
         )),
         Some(other) => problems.push(format!("{slug}: {}", other.reason())),
     }

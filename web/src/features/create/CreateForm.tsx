@@ -16,6 +16,7 @@ import { describeApiError } from './apiErrors'
 import {
   addSeat,
   botsOf,
+  chooseBotLevel,
   chooseBots,
   chooseFormat,
   chooseLinks,
@@ -250,7 +251,9 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
             <BotsField
               value={botsOf(draft)}
               most={draft.seats.length - 1}
+              level={draft.botLevel}
               onChange={(count) => setDraft((current) => chooseBots(current, count))}
+              onLevel={(level) => setDraft((current) => chooseBotLevel(current, level))}
             />
           )}
         </div>

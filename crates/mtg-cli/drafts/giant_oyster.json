@@ -1,0 +1,50 @@
+{
+  "oracle_id": "062b4d84-5ba3-417b-b8e1-65afce7b05e3",
+  "name": "Giant Oyster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Oyster",
+      "oracle_fingerprint": "437e80e996e52e30228f629264b3ca52",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+                  "once": false,
+                  "until": "WhileSourceTapped",
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                      { "Untapped": { "what": ["This"] } }
+                    ]
+                  },
+                  "effects": [
+                    { "RemoveAllCounters": { "from": { "Target": 0 }, "counter": "-1/-1" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

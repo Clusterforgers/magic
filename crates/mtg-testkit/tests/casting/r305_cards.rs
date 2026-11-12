@@ -86,6 +86,7 @@ fn bolt_from(
             rather: None,
             spend_as: SpendAs::Normal,
             when: None,
+            any_cast: false,
         },
         Duration::UntilEndOfTurn,
     )?;

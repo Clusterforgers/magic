@@ -29,11 +29,15 @@
                 "what": ["This"],
                 "from": "Graveyard",
                 "additional": [
-                  { "RemoveCountersAmong": { "count": 6, "from": [{ "Type": "Creature" }] } }
+                  {
+                    "RemoveCountersAmong": {
+                      "count": 6,
+                      "from": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  }
                 ]
               }
-            },
-            "from": "Graveyard"
+            }
           }
         }
       ]

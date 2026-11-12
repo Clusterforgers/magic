@@ -233,6 +233,12 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if r.words("at the beginning of") {
         return step(r);
     }
+    if r.words("at end of combat on your turn") {
+        return Some(TriggerPattern::StepBegins {
+            step: Step::EndCombat,
+            whose: Ref::You,
+        });
+    }
     if !(r.word("when") || r.word("whenever")) {
         return None;
     }
@@ -1664,6 +1670,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::BecomesBlocked {
             by, once: false, ..
         } if !by.0.is_empty() => super::g9a_blocks::g9a_pair_text(pattern),
+        TriggerPattern::StepBegins {
+            step: Step::EndCombat,
+            whose: Ref::You,
+        } => Some("At end of combat on your turn".to_owned()),
         TriggerPattern::StepBegins { step, whose } => {
             Some(format!("At the beginning of {}", step_text(*step, whose)?))
         }

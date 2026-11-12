@@ -257,6 +257,9 @@ pub enum Duration {
     /// attack during its controller's next turn"): it changes nothing before that turn and ends with it. Only a continuous
     /// effect lasts this way.
     DuringItsControllersNextTurn,
+    /// Until the end of combat on the controller's next turn: it ends as that turn's postcombat main phase begins
+    /// ("Until end of combat on your next turn, you may play that card").
+    UntilEndOfCombatOnYourNextTurn,
     /// For as long as the source stays on the battlefield.
     WhileSourceOnBattlefield,
     /// For as long as the controller of the effect controls the source ("gain control of target creature for as long as you control ~"): it ends when the source leaves the battlefield or another player controls it (CR 611.2b).
@@ -342,6 +345,10 @@ pub struct CastPermission {
     /// token, you may play that card"); always when absent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Condition>,
+    /// It opens no zone: its free cast or `rather` cost is offered for every cast the player may make anyway, from a hand,
+    /// a command zone or a zone another permission opens ("You may cast Dragon spells without paying their mana costs").
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub any_cast: bool,
 }
 
 /// Which mana may pay for a cast through a permission.
@@ -1300,6 +1307,10 @@ mod tests {
     #[case(Duration::UntilEndOfTurn, r#""UntilEndOfTurn""#)]
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
     #[case(Duration::WhileSourceTapped, r#""WhileSourceTapped""#)]
+    #[case(
+        Duration::WhileYouControlSourceTapped,
+        r#""WhileYouControlSourceTapped""#
+    )]
     #[case(
         Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#

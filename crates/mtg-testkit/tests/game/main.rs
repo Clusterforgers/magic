@@ -1,6 +1,8 @@
 //! Goal: game flow through the testkit: turns, priority, players, Commander, house rules and manual play; one binary of the `mtg-testkit` families (`docs/testing.md`).
 
 mod bot_block_tax;
+mod brain_heuristics;
+mod brain_matches;
 mod c10_vp_planar_votes;
 mod c4_attacked_untap;
 mod c4_party;
@@ -79,6 +81,7 @@ mod priority_can_act;
 mod priority_stack;
 mod r2a_adventure;
 mod r301_control_tapped;
+mod r301b_control_tapped;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

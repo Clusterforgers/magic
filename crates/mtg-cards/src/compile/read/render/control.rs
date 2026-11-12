@@ -62,9 +62,9 @@ impl Writer<'_> {
             duration:
                 duration @ (Duration::Forever
                 | Duration::WhileYouControlSource
-                | Duration::WhileSourceOnBattlefield
+                | Duration::WhileYouControlSourceTapped
                 | Duration::WhileSourceTapped
-                | Duration::WhileYouControlSourceTapped),
+                | Duration::WhileSourceOnBattlefield),
         } = effect
         else {
             return None;

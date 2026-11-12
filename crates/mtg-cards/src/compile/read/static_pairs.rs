@@ -55,6 +55,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !pairs305.is_empty() {
         return pairs305;
     }
+    let r303c = super::r303c_writers::r303c_pair_texts(first, second, super::written_variants);
+    if !r303c.is_empty() {
+        return r303c;
+    }
     let alone = super::wf25_writers::wf25_pair_texts(first, second);
     if !alone.is_empty() {
         return alone;

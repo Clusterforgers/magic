@@ -590,6 +590,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     additional: None,
                     spend_as: mtg_cards::modify::SpendAs::Normal,
                     when: None,
+                    any_cast: false,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {
@@ -1423,6 +1424,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             except,
                             tapped,
                             until_end_of_turn,
+                            counters: Vec::new(),
                         }
                     }),
             ],

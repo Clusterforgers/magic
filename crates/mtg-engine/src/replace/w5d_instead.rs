@@ -14,6 +14,8 @@ use crate::counters::CountersChanged;
 use crate::decision::Decision;
 use crate::events::Event;
 use crate::resolve::{Inline, w5d_run_instead};
+use crate::state::GameState;
+use crate::zones::Zone;
 
 /// What running the effects of a replacement came to for the pass.
 pub(super) enum Ran {
@@ -76,7 +78,8 @@ impl Pass<'_> {
         unit: &Unit,
     ) -> Ran {
         let cause = self.w5d_cause(at, unit);
-        let state = self.state;
+        let taken = self.r37_taken_from_libraries(at);
+        let state = taken.as_ref().unwrap_or(self.state);
         let answers = &mut self.answers;
         match w5d_run_instead(
             state,
@@ -90,6 +93,35 @@ impl Pass<'_> {
             Ok(Inline::Ask(decision)) => Ran::Ask(decision),
             Ok(Inline::Declined) | Err(_) => Ran::Kept,
         }
+    }
+
+    /// The state with the cards the batch's other events take from a library already gone, when there are such cards:
+    /// effects run in place of two events of one batch (two combat damage events that each become "exile that many cards
+    /// from the top of their library") take different cards.
+    fn r37_taken_from_libraries(&self, at: usize) -> Option<GameState> {
+        let taken: Vec<&Event> = self
+            .slots
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| *index != at)
+            .filter_map(|(_, slot)| match &slot.item {
+                Item::One(
+                    event @ Event::ZoneChanged {
+                        from: Zone::Library(_),
+                        ..
+                    },
+                ) => Some(event),
+                _ => None,
+            })
+            .collect();
+        if taken.is_empty() {
+            return None;
+        }
+        let mut state = self.state.clone();
+        for event in taken {
+            crate::fold::apply_event(&mut state, event).ok()?;
+        }
+        Some(state)
     }
 
     /// The effects run in place of the event at `at`: their events take its place and carry the effects already applied
@@ -345,5 +377,49 @@ mod tests {
             ),
             (other, _) => panic!("{other:?}"),
         }
+    }
+
+    const SANCTUARY: &str = r#"{"Replacement":{"when":{"Damage":{"to":"EachPlayer"}},"by":{"Instead":[{"ExileTop":{"who":"Triggering","count":"Triggering","as":"exiled"}}]}}}"#;
+
+    /// Two damage events of one batch that each become "exile that many cards from the top of their library" exile
+    /// different cards, as many as the damage of both (Crumbling Sanctuary under two attackers).
+    #[rstest]
+    #[case::one_and_two(1, 2)]
+    #[case::two_and_two(2, 2)]
+    #[case::two_and_three(2, 3)]
+    fn two_damage_events_turned_into_exiles_take_different_cards(
+        #[case] first: u32,
+        #[case] second: u32,
+    ) {
+        let game = game(SANCTUARY);
+        let bear = at(&game, 2);
+        let dealt = |amount| Event::DamageDealt {
+            source: bear,
+            target: DamageTarget::Player(PlayerId(0)),
+            amount,
+            deathtouch: false,
+            form: crate::combat::DamageForm::default(),
+            toxic: 0,
+            unpreventable: false,
+        };
+        let exiled: Vec<ObjectId> = events(&game, vec![dealt(first), dealt(second)])
+            .iter()
+            .filter_map(|event| match event {
+                Event::ZoneChanged {
+                    object,
+                    from: Zone::Library(_),
+                    to: Zone::Exile,
+                    ..
+                } => Some(*object),
+                _ => None,
+            })
+            .collect();
+        let distinct: std::collections::BTreeSet<_> = exiled.iter().collect();
+        assert_eq!(
+            exiled.len(),
+            usize::try_from(first + second).unwrap(),
+            "{exiled:?}"
+        );
+        assert_eq!(distinct.len(), exiled.len(), "{exiled:?}");
     }
 }

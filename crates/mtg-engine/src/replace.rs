@@ -2954,6 +2954,7 @@ impl Pass<'_> {
                 except,
                 tapped: enters_tapped,
                 until_end_of_turn,
+                counters,
             } => {
                 let copy = match self.copies(candidate.object, controller, object, of, except)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -2965,7 +2966,9 @@ impl Pass<'_> {
                     if *enters_tapped {
                         tapped(self, at);
                     }
+                    let copied = copy.of;
                     self.begin_copy(at, copy, &applied);
+                    self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
                 }
             }
             _ => {}
@@ -3309,6 +3312,27 @@ impl Pass<'_> {
                 frozen: false,
             };
             self.slots.insert(at + 1, follow);
+        }
+        Ok(())
+    }
+
+    /// The counters a permanent entering as a copy of `copied` enters with: each entry whose selector the copied
+    /// permanent matches as it is copied.
+    fn r305c_copy_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        copied: ObjectRef,
+        counters: &[mtg_cards::trigger::CopyCounters],
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        for entry in counters {
+            let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
+            if !entry.of.is_empty() && !scope.selects(&entry.of, copied)? {
+                continue;
+            }
+            self.enter_with_counters(at, candidate, object, &entry.counter, &entry.count, applied)?;
         }
         Ok(())
     }

@@ -169,6 +169,8 @@ mod r302b_named_searches;
 mod r302b_stack_answers;
 mod r302c_cards;
 mod r305_cards;
+mod r305c_any_cast;
+mod r305c_combat_ban;
 mod r306b_spend_any;
 mod r307c_exile;
 mod r3f_mana;

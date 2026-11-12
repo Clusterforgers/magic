@@ -89,6 +89,8 @@ describe('spendFilterWords', () => {
     ['{X} in the cost', { facts: ['XInCost'] }, 'a spell with {X} in its cost'],
     ['a graveyard', { facts: ['FromGraveyard'] }, 'a spell cast from a graveyard'],
     ['a kicker', { facts: ['Kicked'] }, 'a spell that is kicked'],
+    ['freerunning', { facts: ['Freerunning'] }, 'a spell with freerunning'],
+    ['no abilities', { facts: ['NoAbilities'] }, 'a spell with no abilities'],
   ])('words %s', (_case, filter, expected) => {
     expect(spendFilterWords(filter)).toBe(expected)
   })

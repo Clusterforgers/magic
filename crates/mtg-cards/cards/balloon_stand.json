@@ -36,12 +36,15 @@
                     {
                       "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
                       "effects": [
-                        { "Sacrifice": { "filter": [{ "Subtype": "Balloon" }], "as": "popped" } },
+                        {
+                          "Sacrifice": { "filter": [{ "Subtype": "Balloon" }], "as": "sacrificed" }
+                        },
                         {
                           "If": {
                             "condition": {
-                              "Compare": {
-                                "left": { "CountOf": { "of": { "Bound": "popped" }, "filter": [] } },
+                              "CountOf": {
+                                "subject": { "Bound": "sacrificed" },
+                                "selector": [],
                                 "op": "Ge",
                                 "right": 1
                               }
