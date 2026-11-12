@@ -29,6 +29,8 @@ const SIM_STEPS: usize = 400;
 const QUICK_FORECASTS: u32 = 30;
 
 /// How much a brain may search for one decision, and how far ahead.
+// Independent switches of one search.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Settings {
     /// Simulations per decision.
@@ -53,6 +55,9 @@ pub struct Settings {
     pub weights: Weights,
     /// The information-set Monte Carlo search the decisions that matter go to, if any ([`Deep`]).
     pub deep: Option<Deep>,
+    /// Worlds each decision that matters is searched in, one redeal of the hidden cards each, the answer most of them
+    /// give winning; 1 searches the table as it is.
+    pub votes: u32,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
 }
@@ -71,11 +76,12 @@ impl Settings {
         fair: false,
         weights: Weights::NORMAL,
         deep: None,
+        votes: 1,
         time: Some(Duration::from_millis(300)),
     };
 
-    /// Hard: simulated attacks and blocks, more candidates, searched targets inside simulations and play on through the
-    /// next combat, about 1 s at most.
+    /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
+    /// cards are redealt, more candidates and searched targets inside simulations, about 1 s at most.
     pub const HARD: Settings = Settings {
         sims: 160,
         forecasts: 500,
@@ -84,15 +90,23 @@ impl Settings {
         combat_search: true,
         lookahead: true,
         sequences: true,
-        fair: false,
+        fair: true,
         weights: Weights::NORMAL,
         deep: None,
+        votes: 1,
         time: Some(Duration::from_millis(1000)),
     };
 
-    /// Very Hard: Hard for the small questions, [`Deep::VERY_HARD`] for casts, attacks, blocks and targets.
+    /// Very Hard: Hard's search with a bigger budget in each of nine worlds whose hidden cards are redealt from what
+    /// the seat has seen, every seat playing its hand there; the answer most worlds give wins. About 250 ms a world at
+    /// most.
     pub const VERY_HARD: Settings = Settings {
-        deep: Some(Deep::VERY_HARD),
+        sims: 300,
+        forecasts: 1000,
+        targets: 8,
+        votes: 9,
+        fair: true,
+        time: Some(Duration::from_millis(250)),
         ..Settings::HARD
     };
 

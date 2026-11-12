@@ -1,7 +1,12 @@
 //! Seeded tournaments between bot levels on the duel decks: `cargo run --release -p mtg-testkit --example
 //! bot_tournament -- <strong> <weak> [games] [mode] [first seed] [threads]`, a level being `easy`, `normal`, `hard` or
 //! `veryhard`, a mode `1v1`, `2v2`, `3ffa` or `4ffa`. Games are untimed, so each result replays with its seed.
-#![allow(clippy::unwrap_used, clippy::expect_used, clippy::print_stdout)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::print_stdout,
+    clippy::pedantic
+)]
 
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -154,18 +159,23 @@ fn make(level: Option<Level>, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn
             settings.depth = number("EXP_DEPTH", base.depth);
             settings.forecasts = number("EXP_FORECASTS", base.forecasts);
             if let Ok(iterations) = std::env::var("EXP_DEEP") {
-                let mut deep = mtg_testkit::brain::Deep::VERY_HARD;
+                let mut deep = mtg_testkit::brain::Deep::FULL;
                 deep.time = None;
                 deep.iterations = iterations.parse().unwrap();
                 deep.turns = number("EXP_TURNS", deep.turns);
                 deep.scale = number("EXP_SCALE", deep.scale);
                 settings.deep = Some(deep);
             }
+            settings.votes = number("EXP_VOTES", base.votes);
             settings.fair = flag("EXP_FAIR", base.fair);
             settings.lookahead = flag("EXP_LOOKAHEAD", base.lookahead);
             settings.combat_search = flag("EXP_COMBAT", base.combat_search);
             settings.weights.defend = number("EXP_DEFEND", base.weights.defend);
             settings.weights.press = number("EXP_PRESS", base.weights.press);
+            settings.weights.card = number("EXP_CARD", base.weights.card);
+            settings.weights.life = number("EXP_LIFE", base.weights.life);
+            settings.weights.board = number("EXP_BOARD", base.weights.board);
+            settings.weights.held_spell = number("EXP_HELD", base.weights.held_spell);
             Box::new(HeuristicBot::new(seed, seat, settings))
         }
     }

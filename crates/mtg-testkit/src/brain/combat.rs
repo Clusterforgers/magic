@@ -426,8 +426,8 @@ pub fn block_candidates(
 }
 
 /// The seat's blocks: [`greedy_blocks`] within the search's forecast budget. A search that looks ahead also blocks with
-/// two creatures together and then simulates each of [`block_candidates`] through the end of combat, so what survives
-/// to attack or block next turn counts too.
+/// two creatures together and then simulates each of [`block_candidates`] through the next turn's combat, so what
+/// survives to attack or block next turn counts too.
 pub fn plan_blocks(search: &mut Search, engine: &Engine, options: &BlockOptions) -> Blocks {
     let mut budget = 0;
     while search.take_forecast() {
@@ -443,7 +443,7 @@ pub fn plan_blocks(search: &mut Search, engine: &Engine, options: &BlockOptions)
         .into_iter()
         .map(Answer::DeclareBlockers)
         .collect();
-    match search.best(engine, answers, Horizon::EndOfCombat) {
+    match search.best(engine, answers, Horizon::NextTurn) {
         Some((Answer::DeclareBlockers(blocks), _)) => blocks,
         _ => fallback,
     }

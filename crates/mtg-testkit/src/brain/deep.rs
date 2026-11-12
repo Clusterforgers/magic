@@ -27,13 +27,20 @@ pub struct Deep {
 }
 
 impl Deep {
-    /// Very Hard: up to 1200 iterations through the end of the turn after next, about 2.5 s at most.
-    pub const VERY_HARD: Deep = Deep {
+    /// A full budget: up to 1200 iterations through the end of the turn after next, about 2.5 s at most.
+    pub const FULL: Deep = Deep {
         iterations: 1200,
         turns: 2,
         scale: 25.0,
         time: Some(Duration::from_millis(2500)),
     };
+
+    /// This budget without a clock: the answers depend on the seed alone.
+    #[must_use]
+    pub const fn untimed(mut self) -> Deep {
+        self.time = None;
+        self
+    }
 }
 
 /// The reward of a rollout that scored `score` from a position scored `base`: 1 for a won game, 0 for a lost one, else
@@ -61,6 +68,7 @@ fn rollout_settings(weights: Weights) -> Settings {
         fair: true,
         weights,
         deep: None,
+        votes: 1,
         time: None,
     }
 }
@@ -116,28 +124,14 @@ pub fn deep_choice(
             worlds += 1;
             let key = seed ^ worlds.wrapping_mul(0x9E37_79B9_7F4A_7C15);
             let mut world = engine.clone();
-            if std::env::var("EXP_NOREDEAL").is_err() {
-                world.redeal(seat, key);
-            }
+            world.redeal(seat, key);
             for at in &alive {
                 let mut rollout = Search::new(seat, settings, key);
-                if let Some((outcome, _end)) = rollout.play_out(
+                if let Some((outcome, _)) = rollout.play_out(
                     world.clone(),
                     candidates[*at].clone(),
                     Horizon::Turns(deep.turns),
                 ) {
-                    if std::env::var("DEEP_TRACE").is_ok() && outcome.score <= -DECIDED {
-                        let w = &_end;
-                        let lives: Vec<i32> =
-                            w.state().players().iter().map(|p| p.life()).collect();
-                        eprintln!(
-                            "LOSS at turn {} {:?} lives {lives:?} result {:?} from turn {}",
-                            w.state().turn().number(),
-                            w.state().turn().step(),
-                            w.result(),
-                            engine.state().turn().number()
-                        );
-                    }
                     totals[*at] += reward(outcome.score, base, deep.scale);
                     played[*at] += 1;
                 }
@@ -153,44 +147,10 @@ pub fn deep_choice(
             mean(*b).total_cmp(&mean(*a)).then(a.cmp(b))
         });
         best = alive.first().copied();
-        if std::env::var("DEEP_TRACE").is_ok() {
-            let names: Vec<String> = alive
-                .iter()
-                .map(|at| {
-                    format!(
-                        "{:?}={:.3}",
-                        candidates[*at],
-                        totals[*at] / f64::from(played[*at])
-                    )
-                })
-                .collect();
-            eprintln!(
-                "TRACE turn {} {:?} worlds {complete}: {}",
-                engine.state().turn().number(),
-                engine.state().turn().step(),
-                names.join(" | ")
-            );
-        }
         if alive.len() <= 1 || late() {
             break;
         }
         alive.truncate(alive.len().div_ceil(2));
-    }
-    if std::env::var("DEEP_PICKS").is_ok() {
-        let kind = match &candidates[0] {
-            Answer::Priority(_) => "priority",
-            Answer::DeclareAttackers(_) => "attack",
-            Answer::DeclareBlockers(_) => "block",
-            _ => "other",
-        };
-        eprintln!(
-            "PICK {kind} {}",
-            if best == Some(0) {
-                "default"
-            } else {
-                "changed"
-            }
-        );
     }
     best.map(|at| candidates[at].clone())
 }

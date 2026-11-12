@@ -1,6 +1,6 @@
 //! Goal: seeded mirror games between bot brains on the duel decks: Normal and Hard beat Easy clearly at tables of 2 to
-//! 4 seats, Hard holds its own against Normal, a team never aims harm at itself in 2v2 or Two-Headed Giant, and every
-//! game ends without a stall or a broken invariant.
+//! 4 seats, Hard and Very Hard beat the level below, a team never aims harm at itself in 2v2 or Two-Headed Giant, and
+//! every level plays games of 2 to 6 seats, teams included, to the end without a stall or a broken invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::house::HouseRules;
@@ -11,7 +11,7 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::{Decision, Engine, GameResult};
 use mtg_testkit::bot::apply_answer;
-use mtg_testkit::brain::{Level, SeatBrain, brain};
+use mtg_testkit::brain::{Deep, HeuristicBot, Level, SeatBrain, Settings, brain};
 use mtg_testkit::brain_decks::{Duel, duel_setup};
 use mtg_testkit::harness::{PlayOptions, play_brains};
 use rstest::rstest;
@@ -68,7 +68,8 @@ fn win_rate(strong: Level, weak: Level, seats: usize, games: u64) -> f64 {
 #[case::three_seats(Level::Normal, Level::Easy, 3, 12, 0.6)]
 #[case::four_seats(Level::Normal, Level::Easy, 4, 12, 0.6)]
 #[case::hard_head_to_head(Level::Hard, Level::Easy, 2, 10, 0.8)]
-#[case::hard_against_normal(Level::Hard, Level::Normal, 2, 40, 0.45)]
+#[case::hard_against_normal(Level::Hard, Level::Normal, 2, 40, 0.5)]
+#[case::very_hard_head_to_head(Level::VeryHard, Level::Easy, 2, 6, 0.8)]
 fn the_stronger_level_wins_its_share(
     #[case] strong: Level,
     #[case] weak: Level,
@@ -174,4 +175,56 @@ fn a_team_never_harms_itself_and_normal_teams_win(#[case] mode: TeamMode) {
     }
     eprintln!("Normal team against Easy team in {mode:?}: {wins}/{games}");
     assert!(wins >= 8);
+}
+
+/// The brain of `seat` for the long games: Easy, Normal, Hard, then Very Hard and the deep search with small budgets
+/// (so the games stay quick in tests), round the table.
+fn every_brain(seed: u64, seat: usize) -> Box<dyn SeatBrain> {
+    let player = PlayerId::from_index(seat);
+    match seat % 5 {
+        0 => brain(Level::Easy, seed, player, false),
+        1 => brain(Level::Normal, seed, player, false),
+        2 => brain(Level::Hard, seed, player, false),
+        3 => {
+            let mut settings = Settings::VERY_HARD.untimed();
+            settings.votes = 3;
+            Box::new(HeuristicBot::new(seed, player, settings))
+        }
+        _ => {
+            let mut settings = Settings::HARD.untimed();
+            settings.deep = Some(Deep {
+                iterations: 24,
+                ..Deep::FULL.untimed()
+            });
+            Box::new(HeuristicBot::new(seed, player, settings))
+        }
+    }
+}
+
+#[rstest]
+#[case::duel(2, None)]
+#[case::three(3, None)]
+#[case::four(4, None)]
+#[case::six(6, None)]
+#[case::two_against_two(4, Some(TeamMode::Teams))]
+#[case::three_against_three(6, Some(TeamMode::Teams))]
+#[case::two_headed_giant(4, Some(TeamMode::TwoHeadedGiant))]
+fn every_level_plays_long_games_to_the_end(#[case] seats: usize, #[case] mode: Option<TeamMode>) {
+    let seed = 3_000 + seats as u64;
+    let teams = mode.map(|mode| Teams::even(mode, 2, u32::try_from(seats / 2).unwrap()));
+    let house = HouseRules {
+        teams: teams.clone(),
+        ..HouseRules::default()
+    };
+    let setup = duel_setup(&decks(seats, seed), seed, house).unwrap();
+    let mut brains: Vec<Box<dyn SeatBrain>> =
+        (0..seats).map(|seat| every_brain(seed, seat)).collect();
+    let options = PlayOptions {
+        max_answers: 40_000,
+        ..PlayOptions::default()
+    };
+    let outcome = play_brains(setup, seed, options, &mut brains).unwrap();
+    if teams.is_some() {
+        assert!(!matches!(outcome.result, GameResult::Winner(_)));
+    }
 }

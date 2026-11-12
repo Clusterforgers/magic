@@ -153,6 +153,8 @@ pub fn plan_priority(
     let combat = window == Window::Combat;
     let horizon = if combat {
         Horizon::EndOfCombat
+    } else if window == Window::Main && search.settings().lookahead {
+        Horizon::NextTurn
     } else {
         Horizon::Settle
     };

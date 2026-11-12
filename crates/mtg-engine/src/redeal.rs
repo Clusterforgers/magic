@@ -19,7 +19,11 @@ impl Engine {
     pub fn redeal(&mut self, viewer: PlayerId, seed: u64) {
         let mut rng = GameRng::substream(seed, 0x0005_EA1E);
         let state = self.state_mut();
-        let players: Vec<PlayerId> = state.players().iter().map(|p| p.id()).collect();
+        let players: Vec<PlayerId> = state
+            .players()
+            .iter()
+            .map(crate::player::Player::id)
+            .collect();
         for player in players {
             let hand = Zone::Hand(player);
             let library = Zone::Library(player);
@@ -103,7 +107,12 @@ mod tests {
             cards(&engine, Zone::Hand(viewer)),
             cards(&world, Zone::Hand(viewer))
         );
-        for player in engine.state().players().iter().map(|p| p.id()) {
+        for player in engine
+            .state()
+            .players()
+            .iter()
+            .map(crate::player::Player::id)
+        {
             let before: BTreeSet<ObjectId> = cards(&engine, Zone::Hand(player))
                 .into_iter()
                 .chain(cards(&engine, Zone::Library(player)))
@@ -116,7 +125,13 @@ mod tests {
             for zone in [Zone::Hand(player), Zone::Library(player)] {
                 assert_eq!(cards(&engine, zone).len(), cards(&world, zone).len());
                 for id in cards(&world, zone) {
-                    assert_eq!(world.state().object(id).map(|o| o.zone()), Some(zone));
+                    assert_eq!(
+                        world
+                            .state()
+                            .object(id)
+                            .map(crate::object::GameObject::zone),
+                        Some(zone)
+                    );
                 }
             }
         }
