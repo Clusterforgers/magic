@@ -6,6 +6,7 @@ use std::time::Duration;
 use crate::common::{self, Client, roomy};
 use mtg_core::ids::PlayerId;
 use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_server::bots::{BotLevel, BotSeat};
 use mtg_server::registry::{GameOptions, SeatRequest};
 use mtg_server::{Registry, ServerConfig, demo, migrate};
 use sqlx::PgPool;
@@ -64,7 +65,16 @@ async fn bot_seats_are_played_again_after_a_restart(pool: PgPool) {
     let config = config();
     let registry = Registry::with_database(&config, pool.clone());
     let options = GameOptions {
-        bots: vec![PlayerId::from_index(1), PlayerId::from_index(2)],
+        bots: vec![
+            BotSeat {
+                seat: PlayerId::from_index(1),
+                level: BotLevel::Normal,
+            },
+            BotSeat {
+                seat: PlayerId::from_index(2),
+                level: BotLevel::Easy,
+            },
+        ],
         ..GameOptions::default()
     };
     let created = registry
@@ -76,7 +86,10 @@ async fn bot_seats_are_played_again_after_a_restart(pool: PgPool) {
         .fetch_one(&pool)
         .await
         .unwrap();
-    assert_eq!(recipe["bots"], serde_json::json!([1, 2]));
+    assert_eq!(
+        recipe["bots"],
+        serde_json::json!([{"seat": 1, "level": "normal"}, {"seat": 2, "level": "easy"}])
+    );
     let handle = registry.handle(created.id).unwrap();
     let mut me = Client::join(&handle, 0).await;
     me.say(&handle, ClientMessage::Ready).await;
