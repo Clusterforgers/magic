@@ -32,6 +32,7 @@
                                 "token": { "Named": "clue" }
                               }
                             },
+                            { "Performed": { "action": "Investigated", "who": { "Bound": "opp" } } },
                             {
                               "Bind": {
                                 "what": { "Bound": "opp" },
@@ -51,6 +52,12 @@
                 "CreateToken": {
                   "token": { "Named": "clue" },
                   "count": { "Sum": [1, { "Players": { "Bound": "investigated" } }] }
+                }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": { "Sum": [1, { "Players": { "Bound": "investigated" } }] }
                 }
               }
             ]

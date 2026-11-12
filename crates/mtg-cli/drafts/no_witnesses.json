@@ -29,6 +29,25 @@
                   "token": { "Named": "clue" }
                 }
               },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": {
+                            "Largest": { "who": "EachPlayer", "of": [{ "Type": "Creature" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
               { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
             ]
           }

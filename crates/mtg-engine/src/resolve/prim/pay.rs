@@ -309,11 +309,11 @@ pub(super) fn price_of(cost: &Cost) -> Result<Price, ResolveError> {
         Leaves::Discarded => return Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Leaves::Sacrificed | Leaves::Exiled | Leaves::Stays => {}
     }
-    // Energy is the one part whose X is announced with a payment an effect asks for.
+    // Energy and life are the parts whose X is announced with a payment an effect asks for ("pay any amount of life").
     if price
         .parts
         .iter()
-        .any(|part| part.is_counted() && !part.is_counted_energy())
+        .any(|part| part.is_counted() && !part.is_counted_energy() && !part.is_counted_life())
     {
         return Err(ResolveError::Unsupported("Effect.Pay.X.Parts"));
     }
@@ -1038,10 +1038,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::counted_life(
-        r#"[{"PayLife":"X"}]"#,
-        ResolveError::Unsupported("Effect.Pay.X.Parts")
-    )]
     #[case::counted_mill(r#"[{"Mill":"X"}]"#, ResolveError::Unsupported("Effect.Pay.X.Parts"))]
     #[case::discarding_the_source(
         r#"["DiscardSelf"]"#,
@@ -1205,6 +1201,37 @@ mod tests {
             })
             .sum();
         assert_eq!(paid, -i32::try_from(x).unwrap());
+    }
+
+    #[rstest]
+    #[case::none(0)]
+    #[case::some(7)]
+    #[case::all(20)]
+    fn l31b_pay_x_life_takes_the_amount_announced_and_binds_it(#[case] x: u32) {
+        let game = energy_game(0);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(x))];
+        let Run::Done { events, bound, .. } =
+            run_journal(&game, journal, &pay(r#""You""#, r#"[{"PayLife":"X"}]"#)).unwrap()
+        else {
+            panic!("the payment was expected to be done");
+        };
+        assert_eq!(bound, vec![(format!("~x:{x}"), Vec::new())]);
+        let paid: u32 = events
+            .iter()
+            .map(|event| match event {
+                Event::LifePaid { amount, .. } => *amount,
+                other => panic!("unexpected event {other:?}"),
+            })
+            .sum();
+        assert_eq!(paid, x);
+    }
+
+    #[test]
+    fn l31b_pay_x_life_beyond_the_life_total_is_refused() {
+        let game = energy_game(0);
+        let journal = vec![(ME, Choice::YesNo(true)), (ME, Choice::Number(21))];
+        let run = run_journal(&game, journal, &pay(r#""You""#, r#"[{"PayLife":"X"}]"#));
+        assert!(matches!(run, Err(ResolveError::Invalid(_))), "{run:?}");
     }
 
     #[test]
