@@ -458,6 +458,7 @@ fn pair_is_written(
 }
 
 /// How many abilities of the hand-written card the renderer writes, and each one not written as a clause of the card.
+#[allow(clippy::too_many_lines)]
 fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usize, Vec<String>) {
     let mut rendered = 0;
     let mut missing = Vec::new();
