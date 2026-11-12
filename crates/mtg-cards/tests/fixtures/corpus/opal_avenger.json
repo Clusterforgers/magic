@@ -1,0 +1,23 @@
+{
+  "id": "f9337bbe-e092-469d-8122-77f92e233306",
+  "oracle_id": "13a85c9f-f653-4d90-bea6-94022ee82527",
+  "name": "Opal Avenger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ulg",
+  "collector_number": "15",
+  "rarity": "rare",
+  "released_at": "1999-02-15",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When you have 10 or less life, if this permanent is an enchantment, it becomes a 3/5 Soldier creature.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

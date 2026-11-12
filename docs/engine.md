@@ -307,6 +307,7 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `Duration::WhileSourceTapped` ends an effect when its source untaps or leaves (CR 611.2b).
 - `Duration::WhileYouControlSourceTapped` also ends it when another player gains control of the source; the layers judge that control after the control layer, as for `WhileYouControlSource`.
 - `Effect::ExchangeLifeWithToughness` (CR 701.12c) moves the life total to the creature's toughness through `LifeGained` or `LifeLost` and sets its toughness to the former total in layer 7b for good; a creature gone or a barred life change exchanges nothing.
+- `Prohibited::PhaseOut` keeps a permanent and what is attached to it from phasing out (`prohibit.rs`).
 - `AttackOptions::required_attack` and `BlockOptions::required_blocks` declare only what the rules require, for the bots, the server's clock and the testkit's passive seats.
 - A library top played revealed (`GameState::revealed_top`) is shown to every seat; `Rule::LookAtTop` to its owner alone.
 - `GameRule::LifeTotalCantChange` (CR 119.7) stops gain, loss, lifelink and mana burn.

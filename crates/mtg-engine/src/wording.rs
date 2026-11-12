@@ -750,11 +750,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             who: by,
             highest,
             results,
+            natural,
         } => {
             let (name, s) = who(by);
             let what = if !results.is_empty() {
                 let numbers: Vec<String> = results.iter().map(u32::to_string).collect();
-                format!("a {}", numbers.join(" or "))
+                let natural = if *natural { "natural " } else { "" };
+                format!("a {natural}{}", numbers.join(" or "))
             } else if *highest {
                 "a die's highest natural result".to_owned()
             } else {
@@ -859,8 +861,16 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} phases in", subject(what)),
             what.0 == [Pred::This],
         ),
-        TriggerPattern::Untapped { what } => (
-            format!("{} becomes untapped", subject(what)),
+        TriggerPattern::Untapped { what, untap_step } => (
+            format!(
+                "{} becomes untapped{}",
+                subject(what),
+                if *untap_step {
+                    " during your untap step"
+                } else {
+                    ""
+                }
+            ),
             what.0 == [Pred::This],
         ),
         TriggerPattern::Explored { what } => (

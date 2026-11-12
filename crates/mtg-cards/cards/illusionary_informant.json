@@ -1,21 +1,14 @@
 {
   "oracle_id": "5e8c6894-c9ad-4a50-af13-c2d95395c71e",
   "name": "Illusionary Informant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Illusionary Informant",
       "oracle_fingerprint": "3bb2dffc064bb585448ce02bf2bdadc3",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 24 } }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 25, "end": 145 }
-          }
-        },
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "LookAtNextDrafted" } } },
         { "Keyword": "Flying" }
       ]
     }

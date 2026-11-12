@@ -1,0 +1,28 @@
+{
+  "id": "74239d78-1608-4b27-b2fd-8c7453f6b86b",
+  "oracle_id": "524b00ea-0372-40f9-a6a1-76a8497a1ea6",
+  "name": "Nicol Bolas, the Deceiver",
+  "lang": "en",
+  "layout": "normal",
+  "set": "hou",
+  "collector_number": "205",
+  "rarity": "mythic",
+  "released_at": "2017-07-14",
+  "digital": false,
+  "mana_cost": "{5}{U}{B}{R}",
+  "cmc": 8.0,
+  "type_line": "Legendary Planeswalker — Bolas",
+  "oracle_text": "+3: Each opponent loses 3 life unless that player sacrifices a nonland permanent of their choice or discards a card.\n−3: Destroy target creature. Draw a card.\n−11: Nicol Bolas deals 7 damage to each opponent. You draw seven cards.",
+  "loyalty": "5",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": []
+}

@@ -77,6 +77,17 @@ fn priority_mana(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     mana_ability::options(state, player)
 }
 
+/// Whether `player` may now activate the ability `rules` at `address`, which is activated only as a sorcery: they could
+/// cast a sorcery, or a permanent of theirs lets them activate its kind at instant speed (Leonin Shikari).
+pub fn sorcery_activation_open(
+    state: &GameState,
+    player: PlayerId,
+    address: crate::abilities::AbilityRef,
+    rules: &mtg_cards::ability::Ability,
+) -> bool {
+    crate::free_activation::timing_open(state, player, (address, rules))
+}
+
 /// Whether `player` could cast a sorcery now: their own turn, a main step and an empty stack (CR 307.1).
 pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.is_active(player) && state.turn().step().is_main() && state.stack().is_empty()
@@ -863,7 +874,7 @@ pub(crate) fn answer(
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
             if !option.is_costly() {
-                return Ok(Outcome::Events(mana_ability::activation(
+                return Ok(Outcome::Events(mana_ability::logged_activation(
                     state,
                     player,
                     option,
@@ -872,7 +883,7 @@ pub(crate) fn answer(
             }
             let all = mana_options(state, player);
             let mut events = crate::costly_mana::cost_events(state, player, option, &all)?;
-            events.extend(mana_ability::activation(state, player, option, &[])?);
+            events.extend(mana_ability::logged_activation(state, player, option, &[])?);
             mana_ability::r5g_distinct(state, &mut events);
             Ok(Outcome::Events(events))
         }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ba85f0b0-b08c-4e62-a56e-b3ab7d699175",
   "name": "Visions of Duplicity",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Visions of Duplicity",
@@ -18,10 +18,23 @@
             "effects": [{ "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }]
           }
         },
+        { "Keyword": { "Flashback": "{8}{U}{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 60, "end": 309 }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [
+                  "Commander",
+                  { "OwnedBy": "You" },
+                  { "AnyOf": [{ "In": "Battlefield" }, { "In": "Command" }] }
+                ],
+                "stat": "ManaValue"
+              }
+            },
+            "condition": { "CastWith": "Flashback" }
           }
         }
       ]

@@ -1,16 +1,36 @@
 {
   "oracle_id": "ba5a7ac0-b625-42e9-af05-2680a01a95ed",
   "name": "Fblthp, the Lost",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fblthp, the Lost",
       "oracle_fingerprint": "8946c6431c41040801c210ca94b26552",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 119 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "ArrivedFrom": "Library" },
+                            { "WasCast": { "from": "Library" } }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
           }
         },
         {

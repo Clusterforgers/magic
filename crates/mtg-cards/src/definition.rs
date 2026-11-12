@@ -611,7 +611,7 @@ impl CardDefinition {
     }
 
     /// Applies one exception of a copy effect to these copiable values (CR 707.9b): types, subtypes and creature types, a supertype taken away, a
-    /// keyword or an ability, colours, a fixed power and toughness. False, with nothing changed, for any other
+    /// keyword or an ability, colours set or added, a fixed power and toughness. False, with nothing changed, for any other
     /// modification.
     pub fn except(&mut self, modification: &Modification) -> bool {
         match modification {
@@ -816,6 +816,24 @@ mod tests {
     }
 
     #[rstest]
+    #[case::to_a_colorless_card("{3}", &[Color::Red], &[Color::Red])]
+    #[case::to_its_cost_colors("{G}{U}", &[Color::Red], &[Color::Blue, Color::Red, Color::Green])]
+    #[case::a_color_it_has("{R}", &[Color::Red], &[Color::Red])]
+    #[case::nothing_added("{W}", &[], &[Color::White])]
+    fn r300_an_exception_adds_colors_to_those_of_the_cost(
+        #[case] cost: &str,
+        #[case] added: &[Color],
+        #[case] colors: &[Color],
+    ) {
+        let mut values = legendary_elf().with_mana_cost(ManaCost::parse(cost).unwrap());
+        assert!(values.except(&Modification::AddColors(added.to_vec())));
+        let wanted = colors
+            .iter()
+            .fold(ColorSet::EMPTY, |set, color| set.with(*color));
+        assert_eq!(values.colors(), wanted);
+    }
+
+    #[rstest]
     #[case(Some(Color::White), "Plains", ManaType::White)]
     #[case(Some(Color::Blue), "Island", ManaType::Blue)]
     #[case(Some(Color::Black), "Swamp", ManaType::Black)]
@@ -890,6 +908,25 @@ mod tests {
         if let Some(indicator) = indicator {
             card = card.with_color_indicator(letters(indicator));
         }
+        assert_eq!(card.colors(), letters(expected));
+    }
+
+    #[rstest]
+    #[case::adds_to_the_cost_colors("{1}{R}", &[Color::Black], "RB")]
+    #[case::adds_to_a_colorless_card("{3}", &[Color::Black], "B")]
+    #[case::keeps_a_color_it_had("{B}", &[Color::Black], "B")]
+    #[case::adds_nothing("{G}", &[], "G")]
+    fn r301_a_copy_in_addition_to_its_colors_keeps_its_own(
+        #[case] cost: &str,
+        #[case] added: &[Color],
+        #[case] expected: &str,
+    ) {
+        let letters =
+            |text: &str| -> ColorSet { text.chars().filter_map(Color::from_symbol).collect() };
+        let mut card = CardDefinition::new("X")
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse(cost).unwrap());
+        assert!(card.except(&Modification::AddColors(added.to_vec())));
         assert_eq!(card.colors(), letters(expected));
     }
 

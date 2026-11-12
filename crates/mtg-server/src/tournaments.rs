@@ -23,6 +23,7 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::api::{ApiError, read_json};
+use crate::game_id::GameId;
 use crate::join_code::JoinCode;
 use crate::recipe::FormatKind;
 use crate::records::{RecordError, RecordStatus, Visibility};
@@ -56,6 +57,11 @@ impl Tournaments {
             store: TournamentStore::new(pool),
             turn: Arc::new(tokio::sync::Mutex::new(())),
         }
+    }
+
+    /// Whether `game` is the game of a tournament match, which has no player host: the organiser runs it.
+    pub(crate) async fn is_match_game(&self, game: GameId) -> Result<bool, RecordError> {
+        self.store.is_match_game(game).await
     }
 }
 
@@ -186,7 +192,8 @@ fn seated(tournament: &Tournament, played: &MatchRow) -> Option<Vec<(String, Use
     )
 }
 
-/// Fills the results of matches whose games have ended from the game records.
+/// Fills the results of matches whose games have ended from the game records, and forgets a game that was dropped
+/// without a result (expired, closed, failed or gone), so the organiser's retry makes the match a new one.
 async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(), ApiError> {
     let tournaments = service(app)?;
     for played in &mut tournament.matches {
@@ -198,8 +205,20 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
             .record_result(game)
             .await
             .map_err(|e| unavailable(&e))?;
-        let Some((RecordStatus::Finished, Some(result))) = record else {
-            continue;
+        let result = match record {
+            Some((RecordStatus::Finished, Some(result))) => result,
+            Some((RecordStatus::Lobby | RecordStatus::Running, _)) => continue,
+            // Still in the registry: the record is behind the table, which may yet end.
+            _ if app.registry().handle(game).is_some() => continue,
+            _ => {
+                tournaments
+                    .store
+                    .clear_game(tournament.id, played.round, played.table, game)
+                    .await
+                    .map_err(|e| unavailable(&e))?;
+                played.game = None;
+                continue;
+            }
         };
         let outcome = outcome_of(result);
         tournaments
@@ -824,7 +843,8 @@ pub(crate) async fn next(
     Ok(Json(view(&tournament, user.id)))
 }
 
-/// `POST /api/tournaments/{id}/games`: makes the games of the round that could not be made before.
+/// `POST /api/tournaments/{id}/games`: makes the games of the round that could not be made before, or were dropped
+/// without a result.
 pub(crate) async fn retry_games(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,
@@ -841,6 +861,7 @@ pub(crate) async fn retry_games(
             "the tournament is not running",
         ));
     }
+    sync_results(&app, &mut tournament).await?;
     make_games(&app, &mut tournament).await?;
     Ok(Json(view(&tournament, user.id)))
 }

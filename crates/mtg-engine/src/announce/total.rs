@@ -54,6 +54,28 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     }
 }
 
+/// `mana` of a spell cast by offering, reduced by the mana cost of the permanent sacrificed for it (CR 702.48b).
+fn r301_offering_reduce(
+    ctx: &Ctx<'_>,
+    choices: &Choices,
+    mana: Option<ManaCost>,
+) -> Option<ManaCost> {
+    let (What::Spell(spell), Some(mtg_cards::value::CastWay::Offering)) = (ctx.what, choices.way)
+    else {
+        return mana;
+    };
+    mana.map(|cost| {
+        crate::r301_offering::r301_offering_cost(
+            ctx.state,
+            ctx.player,
+            *spell,
+            &ctx.needs.cost_parts(choices),
+            choices.cost_picks().first().map(Vec::as_slice),
+            &cost,
+        )
+    })
+}
+
 /// The total cost of the spell or ability with `choices` announced, or `None` when it cannot be worked out: the object
 /// is gone or its cost has a part the engine does not pay.
 pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
@@ -65,6 +87,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
+    let mana = r301_offering_reduce(ctx, choices, mana);
     let spell = match ctx.what {
         What::Spell(spell) => Some(*spell),
         _ => None,
@@ -149,7 +172,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
             // mana, and what they sacrifice, tap, return or exile is not there to tap for mana or to help pay (convoke,
             // improvise, delve). Before the picks are made the player is assumed to give what leaves the most mana.
-            let price = Price::casting(ctx.needs.cost_parts(choices)).at(choices.x.unwrap_or(0));
+            let price = Price::casting(ctx.needs.cost_parts(choices))
+                .r301_at_keeping_x_picks(choices.x.unwrap_or(0));
             if price.parts.is_empty() {
                 return Some(Printed::new(cost, sources, 0));
             }

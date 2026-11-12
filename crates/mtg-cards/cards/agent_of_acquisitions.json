@@ -1,0 +1,15 @@
+{
+  "oracle_id": "19047c4b-0106-455d-ab71-68cabfae7404",
+  "name": "Agent of Acquisitions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent of Acquisitions",
+      "oracle_fingerprint": "48407d46dea6a0e49ff1c1ffad4a2a0f",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "FaceUp" } } },
+        { "Rule": { "rule": { "Draft": "DraftWholePack" } } }
+      ]
+    }
+  ]
+}

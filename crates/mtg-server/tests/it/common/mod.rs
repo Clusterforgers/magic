@@ -358,7 +358,15 @@ pub fn passive(decision: &mtg_engine::Decision) -> mtg_engine::Answer {
                 .collect(),
         ),
         DecisionKind::Discard(o) => Answer::Discard(o.hand.iter().copied().take(o.count).collect()),
-        // These games are vanilla, so no spell or ability ever asks about its effects.
+        // A bot's spell may ask a seat to choose cards ("each player sacrifices a creature"): the fewest it allows.
+        DecisionKind::ChooseCards(o) => Answer::ChooseCards(mtg_engine::choose::CardsChoice(
+            o.from
+                .iter()
+                .copied()
+                .take(usize::try_from(o.min).unwrap_or(usize::MAX))
+                .collect(),
+        )),
+        // Other decisions are not asked of a seat that only passes.
         other => panic!("no passive answer to a {} decision", other.name()),
     }
 }

@@ -357,6 +357,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::GameRestarted { .. }
         | Event::SpellControlGained { .. }
         | Event::PhasesAdded { .. }
+        | Event::StepAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
@@ -401,6 +402,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::GameEnded { .. }
         // The ability on the stack is public, and so is what was announced for it.
         | Event::AbilityActivated { .. }
+        | Event::ManaAbilityActivated { .. }
+        | Event::Enlisted { .. }
         | Event::TriggersOrdered { .. }
         | Event::DelayedTriggerExpired { .. }
         | Event::ResolutionBegan { .. }
@@ -451,6 +454,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }
+        | Event::Foraged { .. }
         | Event::DieRolled { .. }
         | Event::RolledToVisit { .. }
         | Event::PrizeClaimed { .. }

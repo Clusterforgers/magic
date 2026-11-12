@@ -1,7 +1,7 @@
 {
   "oracle_id": "17c2a962-994a-49f1-8c4e-ebcc43c3c92a",
   "name": "Wrathful Red Dragon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wrathful Red Dragon",
@@ -9,9 +9,43 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 114 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [],
+                "to": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        },
+                        { "Not": { "Subtype": "Dragon" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": { "Target": 0 },
+                  "amount": "Triggering"
+                }
+              }
+            ]
           }
         }
       ]

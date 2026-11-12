@@ -271,7 +271,9 @@ fn a_construct_without_a_writer_cannot_be_read_back_and_is_named(
 fn no_hand_written_file_is_invalid_or_mismatches_and_the_state_is_the_librarys() {
     let library = builtin::library().unwrap();
     let cards = printed();
-    let all = names(&cards);
+    let mut all = names(&cards);
+    // A search by name may name a card a draft holds (`Library::check_printed_naming`).
+    all.extend(common::draft_names());
     let tokens = Library::from_sources(&token_sources()).unwrap();
     let caps = Caps::everything();
     let mut accepted = 0;

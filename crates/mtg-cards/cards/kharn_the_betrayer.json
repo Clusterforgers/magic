@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3246eff5-8739-469f-a401-e5de927dd6bb",
+  "name": "Khârn the Betrayer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Khârn the Betrayer",
+      "oracle_fingerprint": "7feaf4904b25c9b818f5c8e3bac021d3",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        { "Rule": { "rule": { "MustBlock": "This" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 152 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

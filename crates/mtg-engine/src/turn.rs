@@ -124,6 +124,11 @@ pub struct ExtraTurn {
     pub skip_untap: bool,
 }
 
+/// The bit of a kind of step in the masks of the steps begun this turn.
+const fn step_bit(step: Step) -> u16 {
+    1 << (step as u16)
+}
+
 /// Where the game is within the turn sequence.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TurnState {
@@ -143,6 +148,12 @@ pub struct TurnState {
     /// begins with, the added ones first and the phase of the regular sequence they hold up last; empty while the
     /// turn runs its regular sequence.
     pub(crate) ahead: Vec<Step>,
+    /// The steps added right after the current step (an additional upkeep step), the next first; empty while none is.
+    pub(crate) r306_steps: Vec<Step>,
+    /// The kinds of step begun this turn, one bit each in turn order.
+    pub(crate) r306_seen: u16,
+    /// The kinds of step begun this turn more than once (an added upkeep step), one bit each.
+    pub(crate) r306_again: u16,
     /// Whether the turn was ended by an effect (CR 723): the cleanup step began while a spell or ability resolved, and no
     /// player gets priority when it finishes.
     pub(crate) ending: bool,
@@ -165,6 +176,12 @@ impl Hash for TurnState {
         }
         if !self.ahead.is_empty() {
             self.ahead.hash(state);
+        }
+        if !self.r306_steps.is_empty() {
+            self.r306_steps.hash(state);
+        }
+        if self.r306_again != 0 {
+            self.r306_again.hash(state);
         }
         if self.ending {
             self.ending.hash(state);
@@ -211,6 +228,25 @@ impl TurnState {
     /// The phases that begin after the current one before the regular sequence goes on, each as its first step (CR 500.8).
     pub fn phases_ahead(&self) -> &[Step] {
         &self.ahead
+    }
+
+    /// Whether a step of the current step's kind began earlier this turn (`Condition::FirstStep` is its negation).
+    pub fn step_began_again(&self) -> bool {
+        self.r306_again & step_bit(self.step) != 0
+    }
+
+    /// Notes that `step` begins: a kind begun before this turn is begun again.
+    pub(crate) fn r306_note_step(&mut self, step: Step) {
+        let bit = step_bit(step);
+        if self.r306_seen & bit != 0 {
+            self.r306_again |= bit;
+        }
+        self.r306_seen |= bit;
+    }
+
+    /// The steps added right after the current one, the next first (`Effect::AddStep`).
+    pub fn steps_ahead(&self) -> &[Step] {
+        &self.r306_steps
     }
 
     /// The round of the turn, from 1: a round is one turn of each seat in play, from the first player's seat round to

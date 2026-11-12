@@ -1,7 +1,7 @@
 {
   "oracle_id": "daff0e7b-08f2-435f-97b9-9b000e94ffa8",
   "name": "Paradox Haze",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Paradox Haze",
@@ -9,9 +9,10 @@
       "abilities": [
         { "Keyword": { "EnchantPlayer": {} } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 15, "end": 137 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "if": "FirstStep",
+            "effects": [{ "AddStep": { "step": "Upkeep" } }]
           }
         }
       ]

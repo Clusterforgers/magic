@@ -281,6 +281,9 @@ pub enum TriggerPattern {
     Untapped {
         /// The permanent.
         what: Selector,
+        /// Only in the untap step of the turn of the ability's controller ("becomes untapped during your untap step").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        untap_step: bool,
     },
     /// A permanent matching the selector phases out (CR 702.26); judged as it was before it phased out.
     PhasedOut {
@@ -581,6 +584,9 @@ pub enum TriggerPattern {
         /// Only a die whose result is one of these.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         results: Vec<u32>,
+        /// The results are worded as natural results ("a natural 20"); no effect modifies a roll, so it only words them.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        natural: bool,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {
@@ -1176,6 +1182,20 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller mills this many cards (CR 701.17): "As this creature enters, mill three
     /// cards for each time it was kicked."
     Mill(Amount),
+    /// As the permanent enters, these effects happen first, then it enters (CR 614.1c, 614.12): "As ~ enters, discard
+    /// your hand"; a question they ask goes to the permanent's controller.
+    AsEnters(Vec<Effect>),
+    /// As `AsEnters`, and then the permanent enters with `count` counters of the kind on it, the count worked out after the
+    /// effects in the names they bound ("As ~ enters, remove all counters from all permanents. ~ enters with a +1/+1
+    /// counter on it for each counter removed this way").
+    AsEntersWith {
+        /// What happens first.
+        effects: Vec<Effect>,
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many, read after the effects.
+        count: Amount,
+    },
     /// The number in the event is increased by an amount worked out as the event happens ("it deals that much damage
     /// plus X instead, where X is ~'s power"; `r304c_amounts`).
     AddAmount(Amount),
@@ -1206,6 +1226,22 @@ pub enum ShieldShape {
     /// ("the next time you would draw a card this turn, ... instead", "the next time you would lose the game this turn,
     /// instead ..."; CR 614.1a).
     Next,
+}
+
+/// "<subject> becomes untapped", with " during your untap step" for an untap in the controller's untap step; an empty
+/// subject gives the verb alone.
+#[must_use]
+pub fn untapped_words(subject: &str, untap_step: bool) -> String {
+    let during = if untap_step {
+        " during your untap step"
+    } else {
+        ""
+    };
+    if subject.is_empty() {
+        format!("becomes untapped{during}")
+    } else {
+        format!("{subject} becomes untapped{during}")
+    }
 }
 
 impl ShieldShape {
