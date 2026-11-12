@@ -274,6 +274,7 @@ mod turns;
 mod un33_attractions;
 mod un34_stickers;
 mod untap_rules;
+mod us38_quotes;
 mod vote;
 mod vp20_atoms;
 mod w11a_joins;

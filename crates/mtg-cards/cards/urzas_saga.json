@@ -102,10 +102,10 @@
                     { "Type": "Artifact" },
                     { "AnyOf": [{ "GenericCost": 0 }, { "GenericCost": 1 }] }
                   ],
-                  "as": "found"
+                  "as": "card"
                 }
               },
-              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
               { "Shuffle": {} }
             ]
           }

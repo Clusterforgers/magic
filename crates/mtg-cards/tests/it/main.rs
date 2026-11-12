@@ -85,4 +85,5 @@ mod rmt7_writers;
 mod rmt8_wordings;
 mod roundtrip;
 mod transform_cards;
+mod us38_mana_cost;
 mod vocabulary;
