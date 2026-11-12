@@ -35,6 +35,9 @@ pub enum StatKind {
     BaseToughness,
     /// The mana spent to cast it, while it is a spell or when it was cast.
     ManaSpent,
+    /// The colored mana spent to cast it, while it is a spell or when it was cast ("if no colored mana was spent to cast
+    /// it").
+    ColoredManaSpent,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
     Name,
     /// Its creature types: no number, so only `Amount::MostCommon` reads it (the most creatures sharing one type).
@@ -458,6 +461,8 @@ pub enum Amount {
     CommanderCasts(Ref),
     /// A player's speed (CR 702.179): 0 until start your engines! gives them one, at most 4.
     Speed(Ref),
+    /// How many times the Ring has tempted the player this game, counted up to four: their Ring level (CR 701.54c).
+    RingTempted(Ref),
     /// How many counters of a kind are on the object or player.
     Counters {
         /// The object or player.
@@ -779,6 +784,7 @@ enum Tagged {
     Life(Ref),
     CommanderCasts(Ref),
     Speed(Ref),
+    RingTempted(Ref),
     Counters {
         on: Ref,
         counter: CounterKind,
@@ -925,6 +931,7 @@ enum TaggedRef<'a> {
     Life(&'a Ref),
     CommanderCasts(&'a Ref),
     Speed(&'a Ref),
+    RingTempted(&'a Ref),
     Counters {
         on: &'a Ref,
         counter: &'a CounterKind,
@@ -1068,6 +1075,7 @@ impl From<Tagged> for Amount {
             Tagged::Life(who) => Amount::Life(who),
             Tagged::CommanderCasts(who) => Amount::CommanderCasts(who),
             Tagged::Speed(who) => Amount::Speed(who),
+            Tagged::RingTempted(who) => Amount::RingTempted(who),
             Tagged::Counters { on, counter } => Amount::Counters { on, counter },
             Tagged::AnyCounters(on) => Amount::AnyCounters(on),
             Tagged::Sum(parts) => Amount::Sum(parts),
@@ -1157,6 +1165,7 @@ impl Serialize for Amount {
             Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
             Amount::CommanderCasts(who) => TaggedRef::CommanderCasts(who).serialize(serializer),
             Amount::Speed(who) => TaggedRef::Speed(who).serialize(serializer),
+            Amount::RingTempted(who) => TaggedRef::RingTempted(who).serialize(serializer),
             Amount::Counters { on, counter } => {
                 TaggedRef::Counters { on, counter }.serialize(serializer)
             }

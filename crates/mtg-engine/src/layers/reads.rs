@@ -379,6 +379,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         StatKind::ManaValue
         | StatKind::Loyalty
         | StatKind::ManaSpent
+        | StatKind::ColoredManaSpent
         | StatKind::Name
         | StatKind::CounterKinds => Traits::NONE,
     }
@@ -421,6 +422,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::CommanderCasts(who)
         | Amount::Speed(who)
+        | Amount::RingTempted(who)
         | Amount::Counters { on: who, .. }
         | Amount::AnyCounters(who)
         | Amount::Mutations(who)

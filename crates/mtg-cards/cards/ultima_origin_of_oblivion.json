@@ -1,7 +1,7 @@
 {
   "oracle_id": "baa337ce-edc6-4ee5-a898-68e9dbb4ab93",
   "name": "Ultima, Origin of Oblivion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ultima, Origin of Oblivion",
@@ -9,9 +9,30 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 183 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "blight" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetLandTypes": [] },
+                    "LoseAbilities",
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": { "WhileHasCounter": { "Other": "blight" } }
+                }
+              }
+            ]
           }
         },
         {

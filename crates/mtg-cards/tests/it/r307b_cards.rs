@@ -89,20 +89,24 @@ fn wordings() {
 }
 
 /// The cards of the pack that play whole.
-const WHOLE: [&str; 14] = [
+const WHOLE: [&str; 18] = [
     "Archfiend of Spite",
     "Archnemesis",
     "Combustion Man",
     "Crag Saurian",
     "Deathmist Raptor",
     "Elbrus, the Binding Blade // Withengar Unbound",
+    "Frodo, Adventurous Hobbit",
     "Heartwood Storyteller",
     "Perrie, the Pulverizer",
     "Raphael, Tag Team Tough",
     "Rufus Shinra",
+    "Sam, Loyal Attendant",
     "Silver Surfer, Galactus's Herald",
     "Typhoid Mary, Fractured",
+    "Ultima, Origin of Oblivion",
     "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
+    "Void Mirror",
     "Yuna, Grand Summoner",
 ];
 
@@ -133,6 +137,10 @@ const YUNA: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["Other",{"Cont
 const SPITE: &str = r#"{"Triggered":{"when":{"DealsDamage":{"source":[{"ControlledBy":"Opponents"}],"to":"This"}},"effects":[{"Pay":{"who":{"ControllerOf":"Dealer"},"cost":[{"Sacrifice":{"filter":[],"count":"Triggering"}}],"unpaid":[{"LoseLife":{"who":{"ControllerOf":"Dealer"},"amount":"Triggering"}}]}}]}}"#;
 const RAPHAEL: &str = r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"nth":1}},"effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"},"Attacking"]}}},{"AddPhase":{"phases":["Combat"]}}]}}"#;
 const MARY: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"Modal":{"at_random":true,"chosen_if":{"Compare":{"left":{"Tallied":{"who":"You","what":"Discarded"}},"op":"Ge","right":1}},"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":2}}]}]}}]}}"#;
+const MIRROR: &str = r#"{"Triggered":{"when":{"SpellCast":{}},"if":{"Compare":{"left":{"Stat":{"of":"Triggering","stat":"ColoredManaSpent"}},"op":"Lt","right":1}},"effects":[{"Counter":{"what":"Triggering"}}]}}"#;
+const FRODO: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"RingTempts":{}},{"If":{"condition":{"All":[{"Matches":{"subject":"This","selector":["RingBearer"]}},{"Compare":{"left":{"RingTempted":"You"},"op":"Ge","right":2}}]},"then":[{"Draw":{}}]}}]}}"#;
+const FOODS: &str = r#"{"CostModifier":{"applies_to":[{"Subtype":"Food"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","activating":"Every"}}"#;
+const BLIGHT: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"blight"}}},{"Continuous":{"affected":{"Target":0},"mods":[{"SetLandTypes":[]},"LoseAbilities",{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}}],"duration":{"WhileHasCounter":{"Other":"blight"}}}}]}}"#;
 const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"CounterKinds"}}"#;
 
 /// Each wording appears for its exact shape and disappears when one part changes.
@@ -287,6 +295,17 @@ const KINDS: &str = r#"{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"Counte
     "instead",
     false
 )]
+#[case::no_colored_mana(MIRROR.to_owned(), "if no colored mana was spent to cast it, counter that spell", true)]
+#[case::no_mana_at_all(MIRROR.replace("ColoredManaSpent", "ManaSpent"), "no colored mana", false)]
+#[case::some_colored_mana(MIRROR.replace(r#""op":"Lt""#, r#""op":"Ge""#), "no colored mana", false)]
+#[case::ring_tempted_twice(FRODO.to_owned(), "Then if ~ is your Ring-bearer and the Ring has tempted you two or more times this game, draw a card.", true)]
+#[case::ring_tempted_five_times(FRODO.replace(r#""right":2"#, r#""right":5"#), "or more times this game", false)]
+#[case::ring_tempted_without_bearer(FRODO.replace(r#"{"Matches":{"subject":"This","selector":["RingBearer"]}}"#, r#"{"Matches":{"subject":"This","selector":["Tapped"]}}"#), "your Ring-bearer", false)]
+#[case::activated_abilities_of_foods(FOODS.to_owned(), "Activated abilities of Foods you control cost {1} less to activate.", true)]
+#[case::equip_abilities_of_foods(FOODS.replace("Every", "Equip"), "Activated abilities of Foods", false)]
+#[case::blighted_land(BLIGHT.to_owned(), "put a blight counter on target land. For as long as that land has a blight counter on it, it loses all land types and abilities and has", true)]
+#[case::blighted_land_for_good(BLIGHT.replace(r#""duration":{"WhileHasCounter":{"Other":"blight"}}"#, r#""duration":"Forever""#), "For as long as that land has", false)]
+#[case::blighted_land_keeps_abilities(BLIGHT.replace(r#""LoseAbilities","#, ""), "loses all land types and abilities", false)]
 fn a_wording_is_written_for_its_shape_alone(
     #[case] json: String,
     #[case] words: &str,

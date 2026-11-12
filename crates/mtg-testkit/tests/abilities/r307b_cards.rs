@@ -3,7 +3,8 @@
 //! noncreature spell draw, and not the caster; Combustion Man destroys the target unless its controller takes damage
 //! equal to his power; Archfiend of Spite makes the controller of the source that dealt it damage lose that much life
 //! unless they sacrifice that many permanents; Yuna, Grand Summoner puts as many +1/+1 counters as a dying permanent
-//! had of every kind.
+//! had of every kind; Void Mirror counters a spell cast with no colored mana and lets one cast with colored mana be;
+//! Ultima's blight counter takes the land's types; the Ring's temptations are counted up to its levels.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -15,7 +16,7 @@ use mtg_engine::decision::{DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Event};
-use mtg_testkit::cards::{free_creature, instant, pinger};
+use mtg_testkit::cards::{creature, forest, free_creature, instant, pinger, wastes};
 use mtg_testkit::corpus::corpus;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
@@ -134,6 +135,10 @@ fn every_card_of_the_pack_is_verified() {
         "Rufus Shinra",
         "Silver Surfer, Galactus's Herald",
         "Typhoid Mary, Fractured",
+        "Frodo, Adventurous Hobbit",
+        "Sam, Loyal Attendant",
+        "Ultima, Origin of Oblivion",
+        "Void Mirror",
         "Ultra Magnus, Tactician // Ultra Magnus, Armored Carrier",
         "Yuna, Grand Summoner",
     ] {
@@ -203,5 +208,88 @@ fn yuna_puts_as_many_counters_as_the_permanent_had(
         .unwrap()
         .counters_of(&CounterKind::PlusOnePlusOne);
     assert_eq!(counters, 3);
+    Ok(())
+}
+
+#[rstest]
+fn void_mirror_counters_a_spell_cast_without_colored_mana(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(true, false)] colored: bool,
+) -> Result<(), ScriptError> {
+    let mirror = corpus().unwrap().card("Void Mirror").unwrap();
+    let land = if colored { forest() } else { wastes() };
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(1, [ready(mirror)])
+            .battlefield(0, [ready(land)])
+            .hand(0, [creature("Golem", 1, &[], 2, 2)]),
+    )?;
+    let land = if colored { "Forest" } else { "Wastes" };
+    driver.cast_tapping("Golem", &[land])?;
+    settle(&mut driver, "Golem", true)?;
+    assert_eq!(on_battlefield(&driver, "Golem"), colored);
+    Ok(())
+}
+
+#[rstest]
+fn ultima_takes_the_types_of_the_blighted_land(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let ultima = corpus()
+        .unwrap()
+        .card("Ultima, Origin of Oblivion")
+        .unwrap();
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, [ready(ultima)])
+            .battlefield(1, [ready(forest())]),
+    )?;
+    driver.attack(&[("Ultima, Origin of Oblivion", 1)])?;
+    settle(&mut driver, "Forest", true)?;
+    let land = driver.id_of("Forest")?;
+    let blight = driver
+        .state()
+        .object(land)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::Other("blight".to_owned()));
+    assert_eq!(blight, 1);
+    let traits = mtg_engine::characteristics(driver.state(), land).unwrap();
+    assert!(traits.subtypes.is_empty(), "{:?}", traits.subtypes);
+    Ok(())
+}
+
+/// A creature with "{0}: The Ring tempts you. Then if the Ring has tempted you two or more times this game, draw a card."
+fn tempter() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let ability: mtg_cards::ability::Ability = serde_json::from_str(
+        r#"{"Activated":{"cost":"{0}","effects":[{"RingTempts":{}},{"If":{"condition":{"Compare":{"left":{"RingTempted":"You"},"op":"Ge","right":2}},"then":[{"Draw":{}}]}}]}}"#,
+    )
+    .unwrap();
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Tempter")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_rules(ability),
+    )
+}
+
+#[rstest]
+fn the_ring_counts_its_temptations(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, [ready(tempter())]),
+    )?;
+    let hand = |driver: &Driver| driver.state().zone(Zone::Hand(pid(0))).len();
+    let before = hand(&driver);
+    driver.begin_activation("Tempter")?;
+    settle(&mut driver, "Tempter", true)?;
+    assert_eq!(hand(&driver), before, "one temptation draws nothing");
+    driver.begin_activation("Tempter")?;
+    settle(&mut driver, "Tempter", true)?;
+    assert_eq!(hand(&driver), before + 1, "the second one draws");
     Ok(())
 }

@@ -124,7 +124,8 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness
-        | StatKind::ManaSpent => None,
+        | StatKind::ManaSpent
+        | StatKind::ColoredManaSpent => None,
     }
 }
 

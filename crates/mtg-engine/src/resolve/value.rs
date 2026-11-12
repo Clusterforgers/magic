@@ -1938,6 +1938,15 @@ impl<'a> Scope<'a> {
             StatKind::ManaSpent => seen
                 .card
                 .and_then(|c| i64::try_from(c.mana_spent().len()).ok()),
+            StatKind::ColoredManaSpent => seen.card.and_then(|c| {
+                i64::try_from(
+                    c.mana_spent()
+                        .iter()
+                        .filter(|m| m.color().is_some())
+                        .count(),
+                )
+                .ok()
+            }),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
@@ -2016,6 +2025,11 @@ impl<'a> Scope<'a> {
                 .players(who)?
                 .into_iter()
                 .map(|player| i64::from(self.state.speed(player)))
+                .sum(),
+            Amount::RingTempted(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.ring_level(player)))
                 .sum(),
             Amount::Counters { on, counter } => self.counters_on(on, counter)?,
             Amount::AnyCounters(on) => self.c10_any_counters(on)?,

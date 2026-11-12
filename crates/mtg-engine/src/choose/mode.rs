@@ -183,7 +183,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             repeat: *repeat,
             modes,
             at_random: *at_random,
-            chosen_if: chosen_if.as_ref(),
+            chosen_if: chosen_if.as_deref(),
             different_players: *different_players,
             once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),

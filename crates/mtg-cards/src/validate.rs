@@ -1153,6 +1153,7 @@ impl<'a> Walker<'a> {
             }
             Amount::CommanderColors(who) => self.player_amount("CommanderColors", who),
             Amount::Speed(who) => self.player_amount("Speed", who),
+            Amount::RingTempted(who) => self.player_amount("RingTempted", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
             Amount::When {

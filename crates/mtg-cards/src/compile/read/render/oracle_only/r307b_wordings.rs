@@ -6,12 +6,16 @@
 //! attack the damaged player each combat until the end of your next turn, and a card from your hand put onto the
 //! battlefield tapped and attacking with a conversion at end of combat if you do, counters as many as a permanent that
 //! left had, and life lost unless the damage source's controller sacrifices that many permanents, and "after this combat
-//! phase" in a trigger on combat damage, and modes picked at random unless a condition lets the controller choose.
+//! phase" in a trigger on combat damage, and modes picked at random unless a condition lets the controller choose, and a
+//! spell cast with no colored mana countered, and a draw for a Ring-bearer after the Ring tempted you often enough, and
+//! the cost of every activated ability of a group changed ("Activated abilities of Foods you control cost {1} less to
+//! activate."), and a land that loses its types and abilities while it has a counter ("For as long as that land has a
+//! blight counter on it, it loses all land types and abilities and has \"{T}: Add {C}.\"").
 
 use super::super::super::selectors::{Form, phrase_text};
 use super::super::super::triggers::{article, condition_text};
 use super::r288_wordings::r288_heads;
-use crate::ability::Ability;
+use crate::ability::{Ability, ActivationKind, CostChange};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect};
 use crate::modify::{Duration, GameRule, Modification};
@@ -33,6 +37,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .chain(that_number_of_counters(ability))
         .chain(life_unless_sacrifice(ability))
         .chain(chosen_instead(ability))
+        .chain(no_colored_mana(ability))
+        .chain(ring_tempted_times(ability))
+        .chain(activated_abilities_of(ability))
+        .chain(while_counter_loses_all(ability))
     {
         if !texts.contains(&text) {
             texts.push(text);
@@ -638,4 +646,189 @@ fn chosen_instead(ability: &Ability) -> Vec<String> {
         }
     }
     texts
+}
+
+/// "Whenever a player casts a spell, if no colored mana was spent to cast it, counter that spell.".
+fn no_colored_mana(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        when:
+            TriggerPattern::SpellCast {
+                what,
+                by: Ref::EachPlayer,
+            },
+        intervening_if:
+            Some(Condition::Compare {
+                left:
+                    Amount::Stat {
+                        of: Ref::Triggering,
+                        stat: StatKind::ColoredManaSpent,
+                    },
+                op: Cmp::Lt,
+                right: Amount::Fixed(1),
+            }),
+        limit: None,
+        targets,
+        effects,
+        ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let counter = Effect::Counter {
+        what: Ref::Triggering,
+        bind: None,
+    };
+    if !what.is_empty() || !targets.is_empty() || *effects != [counter] {
+        return Vec::new();
+    }
+    vec![
+        "Whenever a player casts a spell, if no colored mana was spent to cast it, counter that spell.".to_owned(),
+    ]
+}
+
+/// "the Ring tempts you. Then if ~ is your Ring-bearer and the Ring has tempted you two or more times this game, draw a
+/// card.": the times are counted up to four, the Ring's levels.
+fn ring_tempted_times(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        targets, effects, ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let [
+        Effect::RingTempts { who: Ref::You },
+        Effect::If {
+            condition: Condition::All(parts),
+            then,
+            otherwise,
+        },
+    ] = effects.as_slice()
+    else {
+        return Vec::new();
+    };
+    let bearer = Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(vec![Pred::RingBearer]),
+    };
+    let [
+        first,
+        Condition::Compare {
+            left: Amount::RingTempted(Ref::You),
+            op: Cmp::Ge,
+            right: Amount::Fixed(times),
+        },
+    ] = parts.as_slice()
+    else {
+        return Vec::new();
+    };
+    let draw = Effect::Draw {
+        who: Ref::You,
+        count: Amount::Fixed(1),
+        bind: None,
+    };
+    let words = match times {
+        2 => "two",
+        3 => "three",
+        4 => "four",
+        _ => return Vec::new(),
+    };
+    if *first != bearer || !targets.is_empty() || !otherwise.is_empty() || *then != [draw] {
+        return Vec::new();
+    }
+    r288_heads(ability)
+        .into_iter()
+        .map(|head| {
+            format!(
+                "{head} the Ring tempts you. Then if ~ is your Ring-bearer and the Ring has tempted you {words} or more times this game, draw a card."
+            )
+        })
+        .collect()
+}
+
+/// "Activated abilities of Foods you control cost {1} less to activate.": every activated ability of the group, mana
+/// abilities included (CR 602.1), changed by a fixed amount once.
+fn activated_abilities_of(ability: &Ability) -> Vec<String> {
+    let Ability::CostModifier {
+        applies_to,
+        change,
+        mana,
+        per,
+        condition: None,
+        activating: Some(ActivationKind::Every),
+        targeting: None,
+        least: 0,
+        life: 0,
+    } = ability
+    else {
+        return Vec::new();
+    };
+    if !per.is_one() || applies_to.is_empty() {
+        return Vec::new();
+    }
+    let Some(group) = phrase_text(applies_to, Form::All) else {
+        return Vec::new();
+    };
+    let more = match change {
+        CostChange::Increase => "more",
+        CostChange::Reduce => "less",
+    };
+    vec![format!(
+        "Activated abilities of {group} cost {mana} {more} to activate."
+    )]
+}
+
+/// "put a blight counter on target land. For as long as that land has a blight counter on it, it loses all land types
+/// and abilities and has \"{T}: Add {C}.\"": the counter goes on the one target land, which keeps only the granted
+/// ability while the counter stays.
+fn while_counter_loses_all(ability: &Ability) -> Vec<String> {
+    let Ability::Triggered {
+        targets, effects, ..
+    } = ability
+    else {
+        return Vec::new();
+    };
+    let land = Selector(vec![Pred::Type(CardType::Land)]);
+    let [spec] = targets.as_slice() else {
+        return Vec::new();
+    };
+    if spec.what != Targetable::Object(land) || !spec.bounds.is_one() || spec.divide.is_some() {
+        return Vec::new();
+    }
+    let [
+        Effect::PutCounters {
+            on: Ref::Target(0),
+            counter: CounterKind::Other(kind),
+            count: Amount::Fixed(1),
+        },
+        Effect::Continuous {
+            affected: Ref::Target(0),
+            mods,
+            duration: Duration::WhileHasCounter(held),
+        },
+    ] = effects.as_slice()
+    else {
+        return Vec::new();
+    };
+    let [
+        Modification::SetLandTypes(types),
+        Modification::LoseAbilities,
+        Modification::GrantAbility(granted),
+    ] = mods.as_slice()
+    else {
+        return Vec::new();
+    };
+    if **held != CounterKind::Other(kind.clone()) || !types.is_empty() {
+        return Vec::new();
+    }
+    let Some(has) = crate::compile::written_variants(granted).into_iter().next() else {
+        return Vec::new();
+    };
+    r288_heads(ability)
+        .into_iter()
+        .map(|head| {
+            format!(
+                "{head} put a {kind} counter on target land. For as long as that land has a {kind} counter on it, it loses all land types and abilities and has \"{has}\""
+            )
+        })
+        .collect()
 }

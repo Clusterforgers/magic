@@ -1841,7 +1841,7 @@ pub enum Effect {
         /// With `at_random`, the controller chooses instead when this holds as the ability is announced ("choose one at
         /// random. If you discarded a card this turn, you choose one instead.").
         #[serde(default, skip_serializing_if = "Option::is_none")]
-        chosen_if: Option<Condition>,
+        chosen_if: Option<Box<Condition>>,
         /// Each mode must target a different player ("Each mode must target a different player."): a player that a
         /// mode chosen earlier targets is not offered to the later ones.
         #[serde(default, skip_serializing_if = "is_false")]
