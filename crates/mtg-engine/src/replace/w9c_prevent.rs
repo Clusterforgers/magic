@@ -11,9 +11,21 @@ use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 
 use super::w5d_instead::Ran;
 use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
+use crate::choose::Target;
 use crate::decision::Decision;
 use crate::events::Event;
 use mtg_core::ids::ObjectId;
+
+/// The reference of the change when it names the object `id`.
+fn change_ref(
+    change: &crate::counters::CountersChanged,
+    id: ObjectId,
+) -> Option<crate::object::ObjectRef> {
+    match change.on {
+        Target::Object(object) if object.id == id => Some(object),
+        _ => None,
+    }
+}
 
 /// Whether the token's card is of the kind: each predicate is a type, subtype, supertype or colour (or the negation of
 /// one), which the validator holds a kind of token to; any other predicate does not match.
@@ -136,6 +148,7 @@ impl Pass<'_> {
             Ran::Kept => Vec::new(),
         };
         let events = self.w9c_fresh_tokens(events);
+        let events = self.r301c_within_held(at, events);
         self.prevent(at, candidate, &ReplaceBy::Prevent, applied.to_vec());
         let slots: Vec<Slot> = slots_of(events)
             .into_iter()
@@ -147,6 +160,61 @@ impl Pass<'_> {
         let at = at.min(self.slots.len());
         self.slots.splice(at..at, slots);
         None
+    }
+
+    /// The counter removals of `events` cut to what the object still holds once the counters the batch changes before
+    /// `at` are counted: several damage events dealt at once, each prevented with "remove that many +1/+1 counters",
+    /// remove what is left and no more.
+    fn r301c_within_held(&self, at: usize, events: Vec<Event>) -> Vec<Event> {
+        let changed =
+            |object: ObjectId, kind: &mtg_cards::value::CounterKind, upto: &[Event]| -> i64 {
+                let before = self.slots[..at.min(self.slots.len())]
+                    .iter()
+                    .filter_map(|slot| match &slot.item {
+                        Item::One(event) => Some(event),
+                        Item::Tokens(_) => None,
+                    });
+                before
+                    .chain(upto)
+                    .filter_map(|event| match event {
+                        Event::CountersChanged(change)
+                            if change.on == Target::Object(change_ref(change, object)?)
+                                && change.counter == *kind =>
+                        {
+                            Some(i64::from(change.delta))
+                        }
+                        _ => None,
+                    })
+                    .sum()
+            };
+        let mut out: Vec<Event> = Vec::with_capacity(events.len());
+        for event in events {
+            let Event::CountersChanged(change) = &event else {
+                out.push(event);
+                continue;
+            };
+            let Target::Object(object) = change.on else {
+                out.push(event);
+                continue;
+            };
+            if change.delta >= 0 {
+                out.push(event);
+                continue;
+            }
+            let held = self
+                .state
+                .object(object.id)
+                .and_then(crate::object::GameObject::permanent)
+                .map_or(0, |permanent| permanent.counters_of(&change.counter));
+            let left = (i64::from(held) + changed(object.id, &change.counter, &out)).max(0);
+            let taken = i64::from(change.delta.unsigned_abs()).min(left);
+            if taken > 0 {
+                let mut cut = change.clone();
+                cut.delta = -i32::try_from(taken).unwrap_or(0);
+                out.push(Event::CountersChanged(cut));
+            }
+        }
+        out
     }
 
     /// Prevents all but `kept` of the damage at `at`; damage of `kept` or less is left as it is.
