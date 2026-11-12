@@ -1765,9 +1765,9 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
-            Pred::Stickered => {
-                matches!(seen.counters, Counted::Live(_))
-                    && !state.stickers_on(reference.id).is_empty()
+            Pred::Stickered => crate::un34_stickers::has_sticker(state, reference, None),
+            Pred::WithSticker(kind) => {
+                crate::un34_stickers::has_sticker(state, reference, Some(*kind))
             }
             Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
             Pred::FoughtSinceYourLastUpkeep {
@@ -2116,6 +2116,29 @@ impl<'a> Scope<'a> {
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::CommanderColors(who) => self.commander_colors(who)?,
             Amount::TurnNumber => i64::from(self.state.turn().number()),
+            Amount::Stickers { on, kind } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    if let Target::Object(object) = named {
+                        total += i64::from(crate::un34_stickers::stickers_of_kind(
+                            self.state, object, *kind,
+                        ));
+                    }
+                }
+                total
+            }
+            // Kept by the resolution that put the sticker on, else carried by the reflexive trigger it set off.
+            Amount::StickerVowels => self
+                .own_run()
+                .and_then(|resolving| {
+                    resolving
+                        .lets
+                        .iter()
+                        .find(|(kept, _)| kept == crate::un34_stickers::VOWELS)
+                        .map(|(_, value)| *value)
+                })
+                .or_else(|| self.cause.map(|cause| i64::from(cause.amount)))
+                .unwrap_or(0),
             Amount::TriggeringTargets => self.triggering_targets()?,
             Amount::When { .. }
             | Amount::ManaSpent { .. }
@@ -2832,6 +2855,9 @@ impl<'a> Scope<'a> {
                 crate::priority::sorcery_timing(self.state, self.controller)
             }
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
+            Condition::TriggeringSticker(kind) => self
+                .cause
+                .is_some_and(|cause| cause.amount == crate::un34_stickers::kind_code(*kind)),
             Condition::Level { of, op, level } => {
                 let named = self.objects(of)?;
                 !named.is_empty()

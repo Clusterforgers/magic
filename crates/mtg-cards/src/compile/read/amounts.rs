@@ -136,6 +136,9 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(counted) = r.attempt(counters::counted) {
             return Some(counted);
         }
+        if let Some(stickers) = r.attempt(super::un34_stickers::un34_stickers_on) {
+            return Some(stickers);
+        }
         if r.words("creature in your party") {
             return Some(Amount::Party(Ref::You));
         }
@@ -311,6 +314,13 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
+        Amount::Stickers {
+            on: Ref::This,
+            kind,
+        } => format!(
+            "{}sticker on it",
+            kind.map_or(String::new(), |kind| format!("{} ", kind.word()))
+        ),
         Amount::RemovedThisWay(kind) => {
             format!("{} counter removed this way", counters::kind_text(kind)?)
         }

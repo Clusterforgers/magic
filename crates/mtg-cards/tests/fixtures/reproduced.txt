@@ -114,6 +114,7 @@ Azorius Herald
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+Baaallerina
 Back in Town
 Baird, Steward of Argive
 Bandit's Haul
@@ -1393,6 +1394,7 @@ Prizefight
 Profane Command
 Professional Face-Breaker
 Professor of Symbology
+Proficient Pyrodancer
 Propaganda
 Propeller Pioneer
 Prosperous Bandit
@@ -1802,6 +1804,7 @@ Swift Kick
 Swiftfoot Boots
 Switcheroo
 Sword of Body and Mind
+Sword-Swallowing Seraph
 Swords to Plowshares
 Sylvok Battle-Chair
 Syndic of Tithes

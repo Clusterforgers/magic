@@ -543,6 +543,7 @@ impl GameState {
     pub(crate) fn layers(&self) -> &Layers {
         let nothing_to_derive = self.effects.is_empty()
             && self.ring.is_empty()
+            && self.un34.on.is_empty()
             && !self.statics_possible
             && !self.possible.counters
             && !self.possible.suspected;
@@ -860,10 +861,12 @@ struct Pass<'a> {
 /// it and never the control as a stale state records it (CR 611.2b, 613.7).
 fn compute(state: &GameState) -> Layers {
     let rings = crate::ring::effects(state);
+    let stickers = crate::un34_stickers::effects(state);
     let mut registered: Vec<&ContinuousEffect> = state
         .effects()
         .iter()
         .chain(&rings)
+        .chain(&stickers)
         .filter(|effect| effect.is_active_before_control(state))
         .collect();
     loop {

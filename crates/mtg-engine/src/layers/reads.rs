@@ -272,6 +272,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Suspected
         | Pred::Solved
         | Pred::Stickered
+        | Pred::WithSticker(_)
         | Pred::Harnessed
         | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
@@ -408,6 +409,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PhasedOut(_)
         | Amount::DieResult(_)
         | Amount::TurnNumber
+        | Amount::Stickers { .. }
+        | Amount::StickerVowels
         | Amount::ManaSpent { .. }
         | Amount::ManaColors(_)
         | Amount::ManaInPool(_)
@@ -509,6 +512,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::FirstCombat
         | Condition::SorceryTiming
         | Condition::AfterCombat
+        | Condition::TriggeringSticker(_)
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)

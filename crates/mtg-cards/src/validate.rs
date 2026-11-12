@@ -875,6 +875,7 @@ impl<'a> Walker<'a> {
             | Pred::Suspected
             | Pred::Solved
             | Pred::Stickered
+            | Pred::WithSticker(_)
             | Pred::Harnessed
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
@@ -1155,6 +1156,11 @@ impl<'a> Walker<'a> {
             Amount::Speed(who) => self.player_amount("Speed", who),
             Amount::TriggeringTargets => self.triggering_targets(),
             Amount::TurnNumber => self.uses("Amount", "TurnNumber"),
+            Amount::Stickers { on, .. } => {
+                self.uses("Amount", "Stickers");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::StickerVowels => self.uses("Amount", "StickerVowels"),
             Amount::When {
                 condition,
                 then,
@@ -1362,6 +1368,7 @@ impl<'a> Walker<'a> {
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
+            Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -3520,9 +3527,12 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::PutSticker { who, on } => {
+            Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("on", |w| w.selector(on));
+                if *up_to == 1 {
+                    w.problem("one sticker is `up_to` 0");
+                }
             }
             Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));

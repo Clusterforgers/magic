@@ -308,8 +308,11 @@ pub enum Pred {
     Suspected,
     /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
     Solved,
-    /// Is stickered (CR 123): a permanent on the battlefield with one or more stickers on it.
+    /// Is stickered (CR 123): has one or more stickers on it, a permanent or a card elsewhere.
     Stickered,
+    /// Has a sticker of the kind on it (CR 123): "with an art sticker on it", on the battlefield or a card elsewhere
+    /// (stickers stay on a card as it changes zones).
+    WithSticker(crate::ability::StickerKind),
     /// Is a harnessed permanent: its ∞ ability works.
     Harnessed,
     /// Attacked, blocked or became blocked (as marked) since your last upkeep.

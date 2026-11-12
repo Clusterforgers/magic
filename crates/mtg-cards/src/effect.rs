@@ -27,6 +27,11 @@ pub(crate) const fn is_false(value: &bool) -> bool {
     !*value
 }
 
+#[allow(clippy::trivially_copy_pass_by_ref)]
+pub(crate) const fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
+}
+
 /// One die, what a roll that names no number rolls.
 const fn c11e_one_die() -> u32 {
     1
@@ -1029,8 +1034,16 @@ pub enum Effect {
         /// Who puts it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
-        /// The objects it may go on.
+        /// The objects it may go on: permanents, or cards in the zone an `In` names.
         on: Selector,
+        /// Only a sticker of this kind ("put a name sticker on it"); any sticker when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        kind: Option<crate::ability::StickerKind>,
+        /// Up to this many stickers, one at a time, each on an object of `on` and each optional ("put up to two name
+        /// stickers on it", "distribute up to two art stickers among one or two nonland permanents you own"); one
+        /// sticker that must be put when 0.
+        #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
+        up_to: u32,
     },
     /// "Claim the prize" of the Attraction that is the source: its prize abilities trigger (`TriggerPattern::Prize`), as
     /// do the abilities that wait for a player to claim a prize (`TriggerPattern::ClaimedPrize`).

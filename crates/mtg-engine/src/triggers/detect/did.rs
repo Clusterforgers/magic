@@ -58,6 +58,15 @@ fn activated_on_stack(
     })
 }
 
+/// Whether the activated ability has no {T} in its activation cost; a loyalty ability never has one.
+fn without_tap(rules: &Ability) -> bool {
+    match rules {
+        Ability::Activated { cost, .. } => !cost.0.contains(&mtg_cards::cost::CostItem::Tap),
+        Ability::Loyalty { .. } => true,
+        _ => false,
+    }
+}
+
 /// The action a move between zones is, from its cause.
 const fn moved_action(cause: ZoneCause) -> Option<Action> {
     Some(match cause {
@@ -114,8 +123,18 @@ pub(super) fn did_happened(
                 source: *origin,
             };
             let rules = ability_reader::ability(pre, address);
+            let on_stack = activated_on_stack(post, source.id, *ability, *origin);
+            // "Without {T} in its activation cost" counts a mana ability too: the engine logs those that do not tap.
+            if rules.as_deref().is_some_and(without_tap) {
+                found.push(Happened::Did {
+                    action: Action::ActivatedWithoutTap,
+                    player: Some(*player),
+                    object: Some(source.id),
+                    ability: on_stack,
+                    amount: 0,
+                });
+            }
             if !rules.as_ref().is_some_and(|rules| rules.is_mana_ability()) {
-                let on_stack = activated_on_stack(post, source.id, *ability, *origin);
                 found.push(Happened::Did {
                     action: Action::Activated,
                     player: Some(*player),
@@ -152,6 +171,30 @@ pub(super) fn did_happened(
             Some(triggered.controller),
             Some(triggered.source.id),
         )),
+        Event::StickerPut {
+            player,
+            object,
+            sheet,
+            sticker,
+        } => {
+            let at = crate::un34_stickers::StickerAt {
+                player: *player,
+                sheet: *sheet,
+                sticker: *sticker,
+            };
+            if let Some(kind) = post.sticker(at).map(mtg_cards::ability::Sticker::kind) {
+                let amount = crate::un34_stickers::kind_code(kind);
+                for action in std::iter::once(Action::PutSticker).chain(Action::sticker_put(kind)) {
+                    found.push(Happened::Did {
+                        action,
+                        player: Some(*player),
+                        object: Some(*object),
+                        ability: None,
+                        amount,
+                    });
+                }
+            }
+        }
         Event::LandPlayed { player, object, .. } => {
             found.push(did(Action::PlayedLand, Some(*player), Some(*object)));
         }

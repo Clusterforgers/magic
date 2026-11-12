@@ -1,7 +1,7 @@
 {
   "oracle_id": "32921952-8846-418d-8689-c42dbc24a7b8",
   "name": "_____-o-saurus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "_____-o-saurus",
@@ -9,9 +9,12 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 172 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "StickerVowels" } }
+            ]
           }
         }
       ]

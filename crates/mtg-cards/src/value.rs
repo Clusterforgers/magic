@@ -663,6 +663,17 @@ pub enum Amount {
     },
     /// The number of the turn, counting from 1 (CR 500).
     TurnNumber,
+    /// The stickers on the objects the reference names (CR 123), only those of the kind when one is given ("for each name
+    /// sticker on it"); a card keeps its stickers in every zone.
+    Stickers {
+        /// The objects.
+        on: Ref,
+        /// Only stickers of this kind.
+        kind: Option<crate::ability::StickerKind>,
+    },
+    /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
+    /// number of unique vowels on that sticker"); 0 when it put none.
+    StickerVowels,
     /// How many targets the spell or ability that triggered this one has.
     TriggeringTargets,
     /// A result of the latest die roll of the resolving spell or ability ("X, where X is the result", "equal to that result").
@@ -874,6 +885,12 @@ enum Tagged {
     },
     CommanderColors(Ref),
     TurnNumber,
+    Stickers {
+        on: Ref,
+        #[serde(default)]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1020,6 +1037,12 @@ enum TaggedRef<'a> {
     },
     CommanderColors(&'a Ref),
     TurnNumber,
+    Stickers {
+        on: &'a Ref,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        kind: Option<crate::ability::StickerKind>,
+    },
+    StickerVowels,
     TriggeringTargets,
     DieResult(DieResult),
     When {
@@ -1118,6 +1141,8 @@ impl From<Tagged> for Amount {
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
             Tagged::TurnNumber => Amount::TurnNumber,
+            Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
+            Tagged::StickerVowels => Amount::StickerVowels,
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::When {
                 condition,
@@ -1239,6 +1264,10 @@ impl Serialize for Amount {
             .serialize(serializer),
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
+            Amount::Stickers { on, kind } => {
+                TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
+            }
+            Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),
             Amount::When {
                 condition,
@@ -1455,6 +1484,9 @@ pub enum Condition {
     SorceryTiming,
     /// The turn is past its combat phase: "Cast this spell only after combat" (the postcombat main phase and the end phase).
     AfterCombat,
+    /// The sticker whose putting on triggered the ability is of this kind ("If it's an art sticker"), read only in a
+    /// trigger on putting a sticker on.
+    TriggeringSticker(crate::ability::StickerKind),
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.
