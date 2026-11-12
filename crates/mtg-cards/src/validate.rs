@@ -1518,6 +1518,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::XColor(_)
                     | CostItem::Forage => {}
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {

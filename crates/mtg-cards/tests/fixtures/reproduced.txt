@@ -341,6 +341,7 @@ Consider
 Consign // Oblivion
 Consign to Dust
 Constable of the Realm
+Consume Spirit
 Consuming Aetherborn
 Consuming Vortex
 Contentious Plan
@@ -362,6 +363,7 @@ Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Crimson Hellkite
 Croakid Amphibonaut
 Crocanura
 Crop Rotation
@@ -370,6 +372,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
 Crystal Barricade

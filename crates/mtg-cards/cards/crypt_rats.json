@@ -9,14 +9,10 @@
       "abilities": [
         {
           "Activated": {
-            "cost": "{X}",
+            "cost": [{ "Mana": "{X}" }, { "XColor": "Black" }],
             "effects": [
-              {
-                "DealDamage": {
-                  "to": { "Union": [{ "Each": [{ "Type": "Creature" }] }, "EachPlayer"] },
-                  "amount": "X"
-                }
-              }
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": "X" } },
+              { "DealDamage": { "to": "EachPlayer", "amount": "X" } }
             ]
           }
         }
