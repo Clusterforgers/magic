@@ -45,6 +45,7 @@ Altar's Reap
 Alter Reality
 Amass the Components
 Ambitious Aetherborn
+Amulet of Safekeeping
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
@@ -485,6 +486,7 @@ Donal, Herald of Wings
 Doom Blade
 Doom Whisperer
 Door of Destinies
+Dormant Gomazoa
 Doublecast
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
@@ -951,6 +953,7 @@ Jirina Kudro
 Jo Grant
 Jodah's Codex
 Join the Maestros
+Jolly Gerbils
 Jolting Merfolk
 Judoon Enforcers
 Jumbo Cactuar
@@ -1945,6 +1948,7 @@ Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unmask
+Unsettled Mariner
 Unstable Molecule Suit
 Up the Beanstalk
 Urabrask the Hidden

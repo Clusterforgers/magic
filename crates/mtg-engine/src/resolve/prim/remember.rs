@@ -37,7 +37,33 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .collect(),
             replace: false,
         },
-        Effect::RememberValue { value, slot } => Remembered {
+        Effect::RememberValue {
+            value,
+            slot,
+            per: Some(per),
+        } => {
+            let number = cx.scope.amount(value)?;
+            let events = cx
+                .scope
+                .players(per)?
+                .into_iter()
+                .map(|player| {
+                    Event::Remembered(Box::new(Remembered {
+                        source,
+                        slot: crate::memory::player_slot(slot, player),
+                        objects: Vec::new(),
+                        values: vec![Held::Number(number)],
+                        replace: false,
+                    }))
+                })
+                .collect();
+            return Ok(Run::events(events));
+        }
+        Effect::RememberValue {
+            value,
+            slot,
+            per: None,
+        } => Remembered {
             source,
             slot: slot.clone(),
             objects: Vec::new(),

@@ -10,7 +10,10 @@
         {
           "Triggered": {
             "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
           }
         },
         {

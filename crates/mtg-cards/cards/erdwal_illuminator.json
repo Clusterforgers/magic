@@ -1,7 +1,7 @@
 {
   "oracle_id": "5ff4ef34-acb9-46c3-8530-f4b093807066",
   "name": "Erdwal Illuminator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Erdwal Illuminator",
@@ -9,7 +9,15 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 93 } }
+          "Triggered": {
+            "when": {
+              "Nth": { "event": { "Did": { "action": "Investigated", "who": "You" } }, "nth": 1 }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
         }
       ]
     }

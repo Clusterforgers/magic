@@ -31,6 +31,25 @@
                     }
                   }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "op": "Gt",
+                            "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Asker" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
             ]
           }
