@@ -1,0 +1,42 @@
+{
+  "oracle_id": "53b17c51-a216-484f-80df-3904284df0ea",
+  "name": "Chandra's Firemaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Firemaw",
+      "oracle_fingerprint": "8108f61f297c55cd7c93a5a7d7ec20cb",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Chandra, Flame's Catalyst" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

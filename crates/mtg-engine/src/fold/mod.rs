@@ -19,6 +19,8 @@ mod g13a_atoms;
 mod g13b_left;
 #[cfg(test)]
 mod g8a_faces;
+#[cfg(test)]
+mod l292_counter_kinds;
 mod opening;
 #[cfg(test)]
 mod p12_amounts;
@@ -235,6 +237,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             Ok(())
         }
         Event::Surveilled(surveilled) => zones::surveil(state, surveilled),
+        Event::Investigated { player } => {
+            state.tally(*player, crate::state::Tally::L31aInvestigated);
+            Ok(())
+        }
         Event::LibraryBottomed {
             player,
             cards,
@@ -471,6 +477,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Bolstered { .. }
         | Event::Learned { .. }
         | Event::EvidenceCollected { .. }
+        | Event::Discovered { .. }
+        | Event::DreadManifested { .. }
+        | Event::GiftGiven { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }

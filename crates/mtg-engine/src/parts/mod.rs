@@ -489,6 +489,11 @@ impl Part {
         matches!(self, Part::X(_))
     }
 
+    /// Whether the part is life of the X announced.
+    pub(crate) fn is_counted_life(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(**inner, Part::Life(_)))
+    }
+
     /// Whether the part is energy of the X announced.
     pub(crate) fn is_counted_energy(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Energy(_)))

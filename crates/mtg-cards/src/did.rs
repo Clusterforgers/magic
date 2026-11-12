@@ -94,9 +94,49 @@ pub enum Action {
     CollectedEvidence,
     /// A card became plotted (CR 702.170a): its owner exiled it face up with plot.
     Plotted,
+    /// An exhaust ability was activated (CR 702.177); `what` is its source.
+    ActivatedExhaust,
+    /// A boast ability was activated (CR 702.142); `what` is its source.
+    ActivatedBoast,
+    /// A player clashed (CR 701.23), won or lost; `Amount::Triggering` is 1 when they won and 0 when they lost.
+    Clashed,
+    /// A player investigated (CR 701.16a), once for each Clue token the investigation made.
+    Investigated,
+    /// A player discovered (CR 701.57); `what` is the card discovered and the amount the discover value.
+    Discovered,
+    /// A player manifested dread (CR 701.62); `what` is the card they put into their graveyard this way.
+    ManifestedDread,
+    /// A player gave a gift (CR 702.174); `what` is nothing, the player given it is the second subject.
+    GaveGift,
 }
 
 impl Action {
+    /// The keyword kinds an activation of the ability also is: exhaust, once each game (CR 702.177), and boast, only
+    /// if the source attacked this turn and only once each turn (CR 702.142).
+    #[must_use]
+    pub fn activation_kinds(ability: &crate::ability::Ability) -> Vec<Action> {
+        use crate::ability::{Ability, Limit};
+        use crate::refs::{Pred, Ref, Selector};
+        use crate::value::Condition;
+        let Ability::Activated {
+            limit, condition, ..
+        } = ability
+        else {
+            return Vec::new();
+        };
+        let attacked = Condition::Matches {
+            subject: Ref::This,
+            selector: Selector(vec![Pred::AttackedThisTurn]),
+        };
+        match (limit, condition) {
+            (Some(Limit::OncePerGame), _) => vec![Action::ActivatedExhaust],
+            (Some(Limit::OncePerTurn), Some(held)) if *held == attacked => {
+                vec![Action::ActivatedBoast]
+            }
+            _ => Vec::new(),
+        }
+    }
+
     /// The verb phrase of the action for the subject "you" (first) and for a third person (second).
     #[must_use]
     pub const fn verbs(self) -> (&'static str, &'static str) {
@@ -153,6 +193,16 @@ impl Action {
             Action::Rolled => ("roll a die", "rolls a die"),
             Action::CollectedEvidence => ("collect evidence", "collects evidence"),
             Action::Plotted => ("plot a card", "plots a card"),
+            Action::ActivatedExhaust => (
+                "activate an exhaust ability",
+                "activates an exhaust ability",
+            ),
+            Action::ActivatedBoast => ("activate a boast ability", "activates a boast ability"),
+            Action::Clashed => ("clash", "clashes"),
+            Action::Investigated => ("investigate", "investigates"),
+            Action::Discovered => ("discover", "discovers"),
+            Action::ManifestedDread => ("manifest dread", "manifests dread"),
+            Action::GaveGift => ("give a gift", "gives a gift"),
         }
     }
 
@@ -163,6 +213,8 @@ impl Action {
             self,
             Action::Activated
                 | Action::ActivatedLoyalty
+                | Action::ActivatedExhaust
+                | Action::ActivatedBoast
                 | Action::Destroyed
                 | Action::Exiled
                 | Action::Sacrificed

@@ -18,13 +18,13 @@ How the game runs on the k3s cluster and how a release reaches it.
 3. tags the commit and pushes the tag;
 4. asks ArgoCD to refresh and waits until both Deployments have rolled out.
 
-It refuses while a game is running, since the restart cuts the sockets of its seats (`--even-if-games` overrides).
+Between steps 1 and 2 it refuses while a game is running, since the restart cuts the sockets of its seats (`--even-if-games` overrides); the pushed images stay in the registry, so once the game ends `--rollback <tag>` rolls them out and the commit is tagged by hand.
 
 Without a tag it takes the next patch after the latest `vX.Y.Z`. `scripts/release.sh --rollback vX.Y.Z` points the cluster at a tag the registry still holds and builds nothing; migrations only move forward, so a rollback across a schema change needs a fix forward instead.
 
 ## Accounts
 
-`MTG_ADMIN_USERNAMES` (comma-separated; chart `server.admins`, a list) names the accounts that make the others (`POST /api/admin/users`, the Accounts page of the client); with `MTG_REGISTRATION=closed` nobody else can register. `MTG_ADMIN_USERNAME` (chart `server.admin`) still works and adds one name. The server marks every named account when it starts and clears the flag of every other account, so an account taken off the list loses admin at the next start. A name that belongs to no account promotes nobody and logs a warning at start (the setting does not create an account).
+`MTG_ADMIN_USERNAMES` (comma-separated; chart `server.admins`, a list) names the accounts that make the others (`POST /api/admin/users`, the Accounts page of the client); with `MTG_REGISTRATION=closed` nobody else can register. `MTG_ADMIN_USERNAME` (chart `server.admin`) adds one more name. The server marks every named account when it starts and clears the flag of every other account, so an account taken off the list loses admin at the next start. A name that belongs to no account promotes nobody and logs a warning at start (the setting does not create an account).
 
 A fresh install therefore goes in this order:
 
@@ -44,7 +44,7 @@ If `server.admins` names no account (a typo) or the owner needs a fresh account,
 2. Register that account through the client.
 3. Set `server.registration` back to `closed`, roll the server out, and sign in: the account menu shows Accounts.
 
-The server marks the accounts named by `server.admins` at each start, so the rollout in step 3 is what makes the new account an admin; an account taken off the list is a plain account from the next rollout on and can be removed from the Accounts page. Accounts and decks of the friends stay as they are. While registration is open anyone who reaches the site could register first and take the name, so do the steps without a pause.
+The rollout in step 3 makes the new account an admin; a name taken off the list is a plain account from the next rollout on. Accounts and decks of the friends stay as they are. Do the steps without a pause, since anyone could register the name while registration is open.
 
 ## Backups
 

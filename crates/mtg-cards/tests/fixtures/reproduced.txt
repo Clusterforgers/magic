@@ -2,6 +2,7 @@ Abbot of Keral Keep
 Aberrant
 Abomination, World Ravager
 Aboroth
+Absolver Thrull
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -44,6 +45,7 @@ Altar's Reap
 Alter Reality
 Amass the Components
 Ambitious Aetherborn
+Amulet of Safekeeping
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Amphitheater
@@ -145,6 +147,7 @@ Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
 Behold the Multiverse
+Belfry Spirit
 Belisarius Cawl
 Bespoke Battlewagon
 Big Mother Mouser
@@ -177,6 +180,7 @@ Blessed Breath
 Blight Mamba
 Blight Pile
 Blightwidow
+Blind Hunter
 Blood Feud
 Blood Moon
 Blood Reckoning
@@ -216,6 +220,7 @@ Brave the Sands
 Breath of Life
 Breezekeeper
 Briarblade Adept
+Bribe Taker
 Bridled Bighorn
 Brightstone Ritual
 Brigid's Command
@@ -354,6 +359,7 @@ Crack in Time
 Cram Session
 Crash
 Crawlspace
+Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
@@ -480,6 +486,7 @@ Donal, Herald of Wings
 Doom Blade
 Doom Whisperer
 Door of Destinies
+Dormant Gomazoa
 Doublecast
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
@@ -491,6 +498,7 @@ Dragonlord Ojutai
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dramatist's Puppet
 Dread Fugue
 Dreadship Reef
 Dream Chisel
@@ -541,6 +549,7 @@ Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
+Eivor, Battle-Ready
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription
@@ -566,6 +575,7 @@ Emrakul, the Promised End
 Encroach
 Enigma Thief
 Enraged Revolutionary
+Entangling Trap
 Enthusiastic Study
 Entity Tracker
 Entomber Exarch
@@ -598,6 +608,7 @@ Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Excise the Imperfect
+Exhumer Thrull
 Exocrine
 Exotic Disease
 Exotic Orchard
@@ -779,6 +790,7 @@ Grasp of Fate
 Graveblade Marauder
 Gravecrawler
 Graven Cairns
+Graven Dominator
 Graveshifter
 Gravitational Shift
 Greater Good
@@ -941,6 +953,7 @@ Jirina Kudro
 Jo Grant
 Jodah's Codex
 Join the Maestros
+Jolly Gerbils
 Jolting Merfolk
 Judoon Enforcers
 Jumbo Cactuar
@@ -1258,6 +1271,7 @@ Origin of the Hulk
 Orochi Hatchery
 Orzhov Enforcer
 Orzhov Locket
+Orzhov Pontiff
 Orzhov Racketeers
 Ostracize
 Otherworldly Gaze
@@ -1373,6 +1387,7 @@ Pygmy Kavu
 Pygmy Troll
 Pyreswipe Hawk
 Quantum Misalignment
+Quarry Hauler
 Quest for the Goblin Lord
 Questing Beast
 Quick Fixer
@@ -1586,6 +1601,7 @@ Silvar, Devourer of the Free
 Silver Shroud Costume
 Silversmote Ghoul
 Silverwing Squadron
+Singe-Mind Ogre
 Sinister Sabotage
 Sinister Starfish
 Sinking Feeling
@@ -1635,6 +1651,7 @@ Soul Shepherd
 Soul of New Phyrexia
 Soul of Zendikar
 Soul's Attendant
+Soulblade Corrupter
 Souldrinker
 Soulless Revival
 Soultether Golem
@@ -1704,6 +1721,7 @@ Stonewood Invocation
 Stonybrook Banneret
 Storm Fleet Swashbuckler
 Storm King's Thunder
+Storm of Forms
 Storm-Kiln Artist
 Stormchaser's Talent
 Stormscape Battlemage
@@ -1832,6 +1850,7 @@ Thornvault Forager
 Thought Erasure
 Thought Monitor
 Thought Reflection
+Thought-Knot Seer
 Thoughtcast
 Thoughtseize
 Thrashing Mossdog
@@ -1929,6 +1948,7 @@ Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unmask
+Unsettled Mariner
 Unstable Molecule Suit
 Up the Beanstalk
 Urabrask the Hidden
@@ -1960,6 +1980,7 @@ Vedalken Engineer
 Vengeful Vampire
 Venomous Vines
 Verdant Confluence
+Veronica, Dissident Scribe
 Vestige of Emrakul
 Vesuva
 Veteran's Powerblade

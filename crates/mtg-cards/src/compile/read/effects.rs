@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 115] = [
+const TEMPLATES: [Template; 118] = [
     super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -64,6 +64,7 @@ const TEMPLATES: [Template; 115] = [
     super::c9_fight_double::c9_fight_double,
     super::c6_blk_aura::c6_blk_aura_manifest,
     modal::modal,
+    super::l292_hand_reads::l292_flips_won,
     super::chance::flip,
     super::w15c_clash::w15c_clash,
     super::w11c_clash::w11c_clash,
@@ -142,6 +143,8 @@ const TEMPLATES: [Template; 115] = [
     among::among,
     super::w20a_look_pick::w20a_look_pick,
     super::rmt0_hand_pick::rmt0_hand_pick,
+    super::l292_hand_reads::l292_hand_reads,
+    super::l292_hand_reads::l292_add_or_remove,
     library::look,
     library::put_on_library,
     super::mass_moves::put_all,
@@ -365,7 +368,8 @@ fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             r.attempt(|r| {
                 let found = template(r)?;
                 // A chain of steps is not one choice: "may" would have to say which steps it covers.
-                (found.len() == 1).then(|| {
+                let one = found.len() == 1 || super::l31a_performed::is_investigation(&found);
+                one.then(|| {
                     vec![Effect::May {
                         who: Ref::You,
                         effects: found,
@@ -728,7 +732,9 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     }
     // The controller of a permanent the sentence before named investigates: "Its controller investigates."
     if matches!(who, Ref::ControllerOf(_)) && r.word("investigates") {
-        return Some(vec![create::clue(who.clone())]);
+        return Some(super::l31a_performed::investigation(create::clue(
+            who.clone(),
+        )));
     }
     predicate(r, who).map(|effect| vec![effect])
 }

@@ -1,64 +1,44 @@
-// Goal: the lesson step machine moves on exactly when the game shows a step done: a read step waits for Next, an action step for its fact, several steps done at once are passed together, and the guided game's facts in the order the tutorial table plays them walk every step to the end.
+// Goal: the lesson step machine moves on exactly when the game shows a step done: a read step waits for Next, an action step for its fact, several steps done at once are passed together; and on the decisions the tutorial table really sends (`tutorialTrace.json`, written by the server's tutorial test), every decision of the player meets a step shown at that kind of decision that names the button or card to press.
 import { describe, expect, it } from 'vitest'
-import { advance, BOT_LIFE, GAME_LESSON, MANUAL_LESSON } from './lesson'
-import type { LessonFacts, LessonStep, Named } from './lesson'
+import { primaryLabel } from '@/features/table/prompt/passWords'
+import { advance, GAME_LESSON, MANUAL_LESSON, PASS, stepText } from './lesson'
+import type { LessonFacts, LessonStep } from './lesson'
+import trace from './tutorialTrace.json'
 
-const none: LessonFacts = {
-  turn: 1,
-  mine: true,
-  step: 'Main1',
-  hand: [],
-  lands: [],
-  creatures: [],
-  theirCreatures: [],
-  command: [],
-  stack: [],
-  attacking: 0,
-  blocking: 0,
-  attacked: false,
-  theirLife: BOT_LIFE,
-  byHand: 0,
-  over: false,
-  won: false,
+/** One moment of the trace: the facts at a decision of the player's, and what the script answers. */
+interface Moment {
+  act: 'Land' | 'Cast' | 'Pass' | 'PayAuto' | 'Attack' | 'Block' | 'Target' | null
+  cards: string[]
+  facts: LessonFacts
 }
 
-let next = 100
-const named = (...names: string[]): Named[] => names.map((name) => ({ name, id: (next += 1) }))
+const MOMENTS = trace as unknown as Moment[]
 
-/** The facts at each moment of the lesson, as the tutorial table plays it. */
-const START: LessonFacts = {
-  ...none,
-  hand: named('Forest', 'Plains', 'Grizzly Bears', 'Hero in Training'),
-  lands: named('Forest', 'Forest'),
-  command: named('Isamaru, Hound of Konda'),
-}
-const LANDED: LessonFacts = { ...START, lands: named('Forest', 'Forest', 'Forest') }
-const BEARS: LessonFacts = { ...LANDED, creatures: named('Grizzly Bears') }
-const BOT_TURN: LessonFacts = { ...BEARS, turn: 2, mine: false }
-const THIRD: LessonFacts = { ...BOT_TURN, turn: 3, mine: true, theirCreatures: named('Goblin Piker') }
-const PLAINS: LessonFacts = { ...THIRD, lands: named('Forest', 'Forest', 'Forest', 'Plains') }
-const ATTACK: LessonFacts = { ...PLAINS, attacking: 1, step: 'DeclareAttackers' }
-const HERO: LessonFacts = {
-  ...ATTACK,
-  attacking: 0,
-  theirLife: BOT_LIFE - 2,
-  step: 'Main2',
-  stack: [{ ...named('Hero in Training')[0]!, mine: true }],
-}
-const DRAWN: LessonFacts = {
-  ...HERO,
-  stack: [],
-  creatures: named('Grizzly Bears', 'Hero in Training'),
-  hand: named('Giant Growth'),
-}
-const FOURTH: LessonFacts = { ...DRAWN, turn: 4, mine: false, attacked: true }
-const BLOCK: LessonFacts = { ...FOURTH, blocking: 1 }
-const GROWTH: LessonFacts = { ...BLOCK, hand: [] }
-const FIFTH: LessonFacts = { ...GROWTH, turn: 5, mine: true, blocking: 0, theirCreatures: [] }
-const ISAMARU: LessonFacts = { ...FIFTH, command: [] }
-const WON: LessonFacts = { ...ISAMARU, over: true, won: true }
+const none: LessonFacts = { ...MOMENTS[0]!.facts, decision: null }
+const LANDED: LessonFacts = { ...none, lands: [...none.lands, { name: 'Forest', id: 1 }] }
+const BEARS: LessonFacts = { ...LANDED, creatures: [{ name: 'Grizzly Bears', id: 2 }] }
 
-const ids = (steps: readonly LessonStep[]): string[] => steps.map((step) => step.id)
+/** The words of the button that does `moment`'s action, and the cards it names. */
+function wordsOf(moment: Moment): string[] {
+  const { facts } = moment
+  switch (moment.act) {
+    case 'Pass': {
+      const top = facts.stack.at(-1)?.name ?? null
+      const label = primaryLabel({ step: facts.step!, yourTurn: facts.mine, top })
+      return [label ?? 'End turn']
+    }
+    case 'PayAuto':
+      return ['Pay automatically']
+    case 'Attack':
+      return ['press Attack', ...moment.cards]
+    case 'Block':
+      return ['press Block', ...moment.cards]
+    case 'Target':
+      return ['Confirm targets', ...moment.cards]
+    default:
+      return moment.cards.map((name) => name.split(',')[0]!)
+  }
+}
 
 describe('advance', () => {
   const read: LessonStep = { id: 'read', title: '', text: '', targets: () => [] }
@@ -79,7 +59,7 @@ describe('advance', () => {
 
   it.each([
     ['a read step waits for Next', [read, land], 0, BEARS, 0],
-    ['an action step waits for its fact', [land, cast], 0, START, 0],
+    ['an action step waits for its fact', [land, cast], 0, none, 0],
     ['a done step moves on', [land, cast], 0, LANDED, 1],
     ['several steps done at once are passed together', [land, cast, read], 0, BEARS, 2],
     ['a read step stops the walk', [land, read, cast], 0, BEARS, 1],
@@ -89,86 +69,81 @@ describe('advance', () => {
   })
 })
 
-describe('the guided game', () => {
-  it('teaches the owner’s list of moments in order', () => {
-    expect(ids(GAME_LESSON.steps)).toEqual([
-      'welcome',
-      'land',
-      'cast',
-      'pass',
-      'their-turn',
-      'second-land',
-      'attack',
-      'hero',
-      'trigger',
-      'end-turn',
-      'block',
-      'instant',
-      'resolve',
-      'commander',
-      'win',
-      'won',
-    ])
-  })
-
-  it.each([
-    ['land', START, LANDED],
-    ['cast', LANDED, BEARS],
-    ['pass', BEARS, BOT_TURN],
-    ['their-turn', BOT_TURN, THIRD],
-    ['second-land', THIRD, PLAINS],
-    ['attack', PLAINS, ATTACK],
-    ['hero', ATTACK, HERO],
-    ['trigger', HERO, DRAWN],
-    ['end-turn', DRAWN, FOURTH],
-    ['block', FOURTH, BLOCK],
-    ['instant', BLOCK, GROWTH],
-    ['resolve', GROWTH, FIFTH],
-    ['commander', FIFTH, ISAMARU],
-    ['win', ISAMARU, WON],
-  ] as const)('the %s step waits before the move and is done after it', (id, before, after) => {
-    const index = GAME_LESSON.steps.findIndex((step) => step.id === id)
-    expect(advance(GAME_LESSON.steps, index, before)).toBe(index)
-    expect(advance(GAME_LESSON.steps, index, after)).toBeGreaterThan(index)
-  })
-
-  it('walks from the first land to the last read step on the table’s facts', () => {
-    let at = advance(GAME_LESSON.steps, 1, START)
-    for (const facts of [
-      LANDED,
-      BEARS,
-      BOT_TURN,
-      THIRD,
-      PLAINS,
-      ATTACK,
-      HERO,
-      DRAWN,
-      FOURTH,
-      BLOCK,
-      GROWTH,
-      FIFTH,
-      ISAMARU,
-      WON,
-    ])
-      at = advance(GAME_LESSON.steps, at, facts)
+describe('the guided game on the table’s decisions', () => {
+  it('shows, at each decision of the player, a step for that decision that names what to press', () => {
+    let at = 1
+    for (const moment of MOMENTS.slice(0, -1)) {
+      at = advance(GAME_LESSON.steps, at, moment.facts)
+      const step = GAME_LESSON.steps[at]
+      const where = `turn ${moment.facts.turn} ${moment.facts.step} ${moment.facts.decision} (${step?.id})`
+      expect(step?.decisions, where).toContain(moment.facts.decision)
+      const text = step === undefined ? '' : stepText(step, moment.facts)
+      for (const words of wordsOf(moment)) expect(text, where).toContain(words)
+    }
+    at = advance(GAME_LESSON.steps, at, MOMENTS.at(-1)!.facts)
     expect(GAME_LESSON.steps[at]?.id).toBe('won')
   })
 
+  it('names the primary button with the words the dock draws', () => {
+    const step = { text: `Press ${PASS}.` }
+    const declared = MOMENTS.find((each) => each.facts.step === 'DeclareAttackers' && each.act === 'Pass')!
+    expect(stepText(step, declared.facts)).toBe('Press Next: Declare blockers.')
+    expect(stepText(step, declared.facts, 'Next: Blockers')).toBe('Press Next: Blockers.')
+    expect(stepText({ text: 'No button.' }, declared.facts)).toBe('No button.')
+  })
+
+  it('uses every step that waits on the player, in order', () => {
+    const shown: string[] = []
+    let at = 1
+    for (const moment of MOMENTS) {
+      at = advance(GAME_LESSON.steps, at, moment.facts)
+      const id = GAME_LESSON.steps[at]?.id
+      if (id !== undefined && shown.at(-1) !== id) shown.push(id)
+    }
+    const waiting = GAME_LESSON.steps
+      .filter((step) => (step.decisions?.length ?? 0) > 0)
+      .map((step) => step.id)
+    expect(shown.filter((id) => waiting.includes(id))).toEqual(waiting)
+  })
+
+  it('names only cards the table deals', () => {
+    const names = new Set(
+      MOMENTS.flatMap(({ facts }) =>
+        [...facts.hand, ...facts.lands, ...facts.creatures, ...facts.theirCreatures, ...facts.command].map(
+          (each) => each.name,
+        ),
+      ),
+    )
+    for (const name of [
+      'Grizzly Bears',
+      'Hero in Training',
+      'Giant Growth',
+      'Dregscape Zombie',
+      'Giada, Font of Hope',
+    ])
+      expect(names).toContain(name)
+    const text = GAME_LESSON.steps.map((step) => step.text).join(' ')
+    expect(text).not.toMatch(/Isamaru|Goblin Piker/)
+  })
+
   it.each([
-    ['block', FOURTH],
-    ['instant', BLOCK],
-    ['resolve', GROWTH],
-    ['commander', FIFTH],
-  ] as const)('lands on the %s step for a player who comes back in the middle of the game', (id, facts) => {
-    expect(GAME_LESSON.steps[advance(GAME_LESSON.steps, 1, facts)]?.id).toBe(id)
+    ['block', 'DeclareBlockers'],
+    ['instant', 'Priority'],
+    ['third-land', 'Priority'],
+  ] as const)('lands on the %s step for a player who comes back at that decision', (id, decision) => {
+    const moment = MOMENTS.find((each) => {
+      const at = advance(GAME_LESSON.steps, 1, each.facts)
+      return GAME_LESSON.steps[at]?.id === id
+    })
+    expect(moment?.facts.decision).toBe(decision)
   })
 
   it('points each action step at the card it names while the card is in view', () => {
     const land = GAME_LESSON.steps.find((step) => step.id === 'land')
-    const forest = START.hand[0]!
-    expect(land?.targets(START)[0]).toBe(`[data-object-id="${forest.id}"]`)
+    const forest = none.hand.find((each) => each.name === 'Forest')!
+    expect(land?.targets(none)[0]).toBe(`[data-object-id="${forest.id}"]`)
     const cast = GAME_LESSON.steps.find((step) => step.id === 'cast')
-    expect(cast?.targets({ ...START, hand: [] })).not.toContain(`[data-object-id="${forest.id}"]`)
+    expect(cast?.targets({ ...none, hand: [] })).not.toContain(`[data-object-id="${forest.id}"]`)
   })
 })
 

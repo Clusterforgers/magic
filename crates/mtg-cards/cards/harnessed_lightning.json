@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d8dd7e7f-0053-44bb-bac0-1a08843d4c49",
+  "name": "Harnessed Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harnessed Lightning",
+      "oracle_fingerprint": "3315f404e09113865641aae1bfe42c05",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": "X" }],
+                  "paid": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

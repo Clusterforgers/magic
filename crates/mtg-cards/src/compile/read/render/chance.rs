@@ -55,6 +55,7 @@ impl Writer<'_> {
                 lose,
                 lose_first,
                 until,
+                ..
             } => {
                 let (opening, subject) = match (who, until) {
                     (Ref::You, false) => ("flip a coin", "you"),
@@ -67,14 +68,13 @@ impl Writer<'_> {
                     return None;
                 }
                 let mut sentences = vec![opening.to_owned()];
-                let neutral = Condition::All(Vec::new());
                 let mut branches = [(win, "win"), (lose, "lose")];
                 if *lose_first {
                     branches.reverse();
                 }
                 for (branch, result) in branches {
                     if !branch.is_empty() {
-                        let steps = self.consequence(&neutral, branch)?;
+                        let steps = self.consequence(&Condition::All(Vec::new()), branch)?;
                         sentences.push(format!("if {subject} {result} the flip, {steps}"));
                     }
                 }

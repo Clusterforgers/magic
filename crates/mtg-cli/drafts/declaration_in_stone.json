@@ -28,6 +28,13 @@
                   "token": { "Named": "clue" },
                   "count": { "Exiled": [{ "Type": "Creature" }, { "Not": "Token" }] }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "times": { "Exiled": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                }
               }
             ]
           }

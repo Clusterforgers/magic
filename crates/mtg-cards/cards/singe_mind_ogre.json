@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a0f26f84-9607-4411-bca5-681ba4e57756",
+  "name": "Singe-Mind Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Singe-Mind Ogre",
+      "oracle_fingerprint": "1a4a072f45ce0e82cba6fcfdd43a855a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picked" } } },
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Stat": { "of": { "Bound": "picked" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
