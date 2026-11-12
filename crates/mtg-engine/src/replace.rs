@@ -397,6 +397,7 @@ fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: mtg_cards::modify::SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound("paradigm".to_owned()),
             free: true,
@@ -717,10 +718,15 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Half => matches!(unit, Unit::Counters { .. } | Unit::Damage { .. }),
-        ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) => matches!(unit, Unit::Damage { .. }),
+        ReplaceBy::Half | ReplaceBy::Subtract(_) => {
+            matches!(unit, Unit::Counters { .. } | Unit::Damage { .. })
+        }
+        ReplaceBy::Cap(_) | ReplaceBy::PreventAmount(_) | ReplaceBy::PreventAtMost(_) => {
+            matches!(unit, Unit::Damage { .. })
+        }
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
+        | ReplaceBy::AddAmount(_)
         | ReplaceBy::Prevent
         | ReplaceBy::PreventNext => matches!(
             unit,
@@ -768,7 +774,9 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
             )
         }
-        ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
+        ReplaceBy::RedirectUpTo { .. }
+        | ReplaceBy::RedirectCounted { .. }
+        | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }
@@ -817,6 +825,8 @@ impl Action {
             Action::Replace(
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
+                    | ReplaceBy::PreventAmount(_)
+                    | ReplaceBy::PreventAtMost(_)
                     | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
                     | ReplaceBy::PreventAnd(_)
@@ -1161,6 +1171,7 @@ impl Pass<'_> {
     }
 
     /// The effects that apply to the item and have not been applied to it, in the order of their addresses.
+    #[allow(clippy::too_many_lines)]
     fn candidates(&self, at: usize) -> Result<Vec<Candidate>, EngineError> {
         let slot = &self.slots[at];
         let unit = self.unit(&slot.item);
@@ -1211,11 +1222,14 @@ impl Pass<'_> {
                     return Ok(());
                 }
             }
+            let Some(by) = step.r304c_fixed(at, by, source)? else {
+                return Ok(());
+            };
             found.push(Candidate {
                 origin,
                 object: source.object,
                 controller: source.controller,
-                action: Action::Replace(by.clone()),
+                action: Action::Replace(by),
                 is_self: is_self(when),
             });
             Ok(())
@@ -2623,6 +2637,7 @@ impl Pass<'_> {
                 until: None,
                 effects: vec![mtg_cards::effect::Effect::CastFromZone {
                     rather: None,
+                    spend_as: mtg_cards::modify::SpendAs::default(),
                     who: Ref::You,
                     what: Ref::This,
                     free: true,
@@ -3614,6 +3629,7 @@ mod w13a_moved;
 mod w5d_instead;
 
 mod r283_prevent;
+mod r304c_amounts;
 mod w9c_prevent;
 
 #[cfg(test)]

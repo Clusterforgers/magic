@@ -38,6 +38,7 @@ impl KeywordRules for Miracle {
             targets: Vec::new(),
             effects: vec![Effect::CastFromZone {
                 rather: None,
+                spend_as: mtg_cards::modify::SpendAs::default(),
                 who: Ref::You,
                 what: Ref::This,
                 free: false,

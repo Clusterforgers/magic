@@ -475,11 +475,11 @@ fn wf26_chosen_wordings(
         }
         let mut wordings = vec![text.replacen(
             STAND_IN,
-            &format!(" becomes the {words} of your choice until end of turn"),
+            &format!(" becomes the {words} until end of turn"),
             1,
         )];
         // "Choose a creature type. Each creature you control becomes that type until end of turn."
-        if words == "creature type"
+        if words == "creature type of your choice"
             && let Some(at) = text.find(STAND_IN)
         {
             let start = [": ", ". "]
@@ -517,12 +517,23 @@ fn chosen_twin(ability: &Ability) -> Option<(Ability, &'static str)> {
         return None;
     }
     let name = choose.get("as")?.clone();
-    let (words, modification) = match choose.get("kind")?.as_str()? {
-        "CreatureType" => ("creature type", "SetCreatureTypesChosen"),
-        "Color" => ("color", "SetColorsChosen"),
+    let kind = choose.get("kind")?.as_str()?;
+    let given = effects.get(at + 1)?.get("Continuous")?;
+    let words = match kind {
+        "CreatureType"
+            if given.get("mods")? == &serde_json::json!([{ "AddCreatureTypeChosen": name }]) =>
+        {
+            "creature type of your choice in addition to its other types"
+        }
+        "CreatureType" => "creature type of your choice",
+        "Color" => "color of your choice",
         _ => return None,
     };
-    let given = effects.get(at + 1)?.get("Continuous")?;
+    let modification = match words {
+        "creature type of your choice" => "SetCreatureTypesChosen",
+        "color of your choice" => "SetColorsChosen",
+        _ => "AddCreatureTypeChosen",
+    };
     let mods = serde_json::json!([{ modification: name }]);
     if given.get("mods")? != &mods
         || given.get("duration")? != "UntilEndOfTurn"

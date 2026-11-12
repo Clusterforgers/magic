@@ -47,6 +47,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
         StatKind::R374ColorSet => "color pairs",
+        StatKind::Subtypes => "subtypes",
     }
 }
 

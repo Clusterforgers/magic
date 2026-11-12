@@ -1,0 +1,19 @@
+{
+  "oracle_id": "fbfa8b3f-58a7-44ca-8c22-6747b56fdcb9",
+  "name": "Obstinate Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obstinate Familiar",
+      "oracle_fingerprint": "cdf8a6fd237bb415488fa2d0309c2286",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "May": { "effects": [] } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "d31fd12f-b4dd-4bc3-ace4-703dabd0f607",
   "name": "Aven Interrupter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aven Interrupter",
@@ -17,9 +17,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 163, "end": 242 }
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "ControlledBy": "Opponents" },
+              { "AnyOf": [{ "CastFrom": "Graveyard" }, { "CastFrom": "Exile" }] }
+            ],
+            "change": "Increase",
+            "mana": "{2}"
           }
         }
       ]

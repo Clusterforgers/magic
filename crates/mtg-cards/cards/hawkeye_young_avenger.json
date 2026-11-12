@@ -1,7 +1,7 @@
 {
   "oracle_id": "c8f8b4ed-8455-45cd-a24c-e2f42cd5e5b1",
   "name": "Hawkeye, Young Avenger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hawkeye, Young Avenger",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": "Reach" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 179 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Union": ["Opponents", { "Each": [{ "ControlledBy": "Opponents" }] }] },
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "AddAmount": { "Stat": { "of": "This", "stat": "Power" } } }
           }
         }
       ]

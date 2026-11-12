@@ -1,0 +1,29 @@
+{
+  "oracle_id": "285c9f49-4aeb-468c-bb41-f5ccb5257e2b",
+  "name": "Yavimaya Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya Kavu",
+      "oracle_fingerprint": "4fb0844386f02736847c159dddc7f714",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPower": { "Count": [{ "Color": "Red" }, { "Type": "Creature" }] } }],
+            "defining": true
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetToughness": { "Count": [{ "Color": "Green" }, { "Type": "Creature" }] } }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

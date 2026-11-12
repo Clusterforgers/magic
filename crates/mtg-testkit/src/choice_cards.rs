@@ -120,6 +120,7 @@ pub fn charm(name: &str, min: u32, max: u32, repeat: bool) -> Arc<CardDefinition
             all_if: None,
             mode_costs: Vec::new(),
             extra_mode_cost: None,
+            pawprints: Vec::new(),
             modes: vec![
                 mode(
                     "Damage",

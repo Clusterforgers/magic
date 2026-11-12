@@ -33,6 +33,10 @@ pub struct ModeOption {
     /// What choosing the mode adds to the cost, when it has a cost of its own (Spree, Tiered).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cost: Option<String>,
+    /// The pawprints ({P}) choosing the mode takes from the most, when the modes are counted so; else it counts one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub weight: Option<u32>,
 }
 
 /// The modes a player may choose and how many.
@@ -88,7 +92,18 @@ pub(crate) fn answer(
             return Err(IllegalAnswer::NotOffered("mode").into());
         }
     }
-    let count = u32::try_from(modes.len()).unwrap_or(u32::MAX);
+    // Modes counted in pawprints take their pawprints from the most; any other mode counts one.
+    let count = modes
+        .iter()
+        .map(|mode| {
+            options
+                .modes
+                .iter()
+                .find(|offered| offered.index == *mode)
+                .and_then(|offered| offered.weight)
+                .unwrap_or(1)
+        })
+        .fold(0u32, u32::saturating_add);
     let wanted = if count < options.min {
         Some(options.min)
     } else if count > options.max {
@@ -129,6 +144,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) mode_costs: &'a [Cost],
     /// The cost added for each mode chosen beyond the first.
     pub(crate) extra_mode_cost: Option<&'a Cost>,
+    /// The pawprints each mode takes from the most, parallel to `modes`; empty for one each.
+    pub(crate) pawprints: &'a [u32],
     /// The modes this ability chose earlier in the turn, or in any turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
 }
@@ -173,6 +190,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
                 all_if,
                 mode_costs,
                 extra_mode_cost,
+                pawprints,
             },
         ] => Some(Modal {
             who,
@@ -185,6 +203,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             all_if: all_if.as_ref(),
             mode_costs,
             extra_mode_cost: extra_mode_cost.as_ref(),
+            pawprints,
             used: Vec::new(),
         }),
         _ => None,
@@ -289,6 +308,7 @@ pub(crate) fn mode_options(
             index,
             label: label_of(mode, card),
             cost: None,
+            weight: modal.pawprints.get(index).copied(),
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
@@ -477,6 +497,7 @@ mod tests {
                     index: *index,
                     label: None,
                     cost: None,
+                    weight: None,
                 })
                 .collect(),
             min,

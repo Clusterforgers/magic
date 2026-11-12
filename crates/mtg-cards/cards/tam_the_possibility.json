@@ -1,7 +1,7 @@
 {
   "oracle_id": "c92c7744-0c92-4a36-9ada-4ffca812009e",
   "name": "Tam, the Possibility",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tam, the Possibility",
@@ -15,9 +15,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 52, "end": 296 }
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{B}{R}{G}" }, "Tap"],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [{ "Proliferate": {} }],
+                  "most": 1000,
+                  "times": {
+                    "Distinct": {
+                      "of": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }],
+                      "stat": "Subtypes"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -1360,6 +1360,22 @@ impl InvariantChecker {
         if !loyalty && !sorcery {
             return Ok(());
         }
+        // A permanent of the player's may open such abilities at instant speed ("You may activate equip abilities any
+        // time you could cast an instant"); the engine judges its kind and condition.
+        let instant = sorcery
+            && self.shadow.zone(Zone::Battlefield).iter().any(|id| {
+                self.shadow.object(*id).is_some_and(|holder| {
+                    holder.controller() == player
+                        && holder
+                            .card()
+                            .rules
+                            .iter()
+                            .any(|rule| matches!(**rule, Ability::InstantActivation { .. }))
+                })
+            });
+        if instant {
+            return Ok(());
+        }
         let turn = self.shadow.turn();
         if !self.shadow.is_active(player)
             || !turn.step().is_main()

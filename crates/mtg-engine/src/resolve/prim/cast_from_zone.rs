@@ -39,6 +39,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         way,
         transformed,
         rather,
+        spend_as,
         ..
     } = effect
     else {
@@ -49,6 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         way: *way,
         transformed: *transformed,
         rather: rather.clone(),
+        spend_as: *spend_as,
     };
     let state = cx.state();
     let Some(player) = cx
@@ -118,6 +120,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 way: *way,
                 transformed: *transformed,
                 rather: rather.clone(),
+                spend_as: *spend_as,
             }))
         }
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))

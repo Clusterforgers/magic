@@ -13,7 +13,7 @@ use crate::value::{Amount, Cmp, Condition, TurnTally};
 use mtg_core::card::CardType;
 
 /// The tallies after "for each": the words and what they count.
-const C11A_EACH: [(&str, Ref, TurnTally); 4] = [
+const C11A_EACH: [(&str, Ref, TurnTally); 5] = [
     (
         "1 life your opponents have lost this turn",
         Ref::Opponents,
@@ -34,10 +34,15 @@ const C11A_EACH: [(&str, Ref, TurnTally); 4] = [
         Ref::EachPlayer,
         TurnTally::CreaturesDied,
     ),
+    (
+        "card your opponents have drawn this turn",
+        Ref::Opponents,
+        TurnTally::CardsDrawnTotal,
+    ),
 ];
 
 /// The tallies after "where X is".
-const C11A_X: [(&str, Ref, TurnTally); 2] = [
+const C11A_X: [(&str, Ref, TurnTally); 3] = [
     (
         "the amount of life you gained this turn",
         Ref::You,
@@ -47,6 +52,11 @@ const C11A_X: [(&str, Ref, TurnTally); 2] = [
         "the amount of life your opponents have lost this turn",
         Ref::Opponents,
         TurnTally::LifeLost,
+    ),
+    (
+        "the total amount of noncombat damage dealt to your opponents this turn",
+        Ref::Opponents,
+        TurnTally::NoncombatDamageTakenTotal,
     ),
 ];
 

@@ -606,6 +606,7 @@ fn create_effect(
         mtg_cards::modify::Duration::WhileSourceOnBattlefield
             | mtg_cards::modify::Duration::WhileYouControlSource
             | mtg_cards::modify::Duration::WhileSourceTapped
+            | mtg_cards::modify::Duration::WhileYouControlSourceTapped
     ) && effect.source.is_none()
     {
         return Err(invalid(

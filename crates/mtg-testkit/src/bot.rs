@@ -1125,6 +1125,19 @@ impl RandomBot {
         } else {
             self.pick(&offered, wanted)
         };
+        // Modes counted in pawprints: the last ones go until the rest fit within the most.
+        let weight = |index: usize| {
+            options
+                .modes
+                .iter()
+                .find(|mode| mode.index == index)
+                .and_then(|mode| mode.weight)
+                .unwrap_or(1)
+        };
+        let mut chosen = chosen;
+        while chosen.iter().map(|index| weight(*index)).sum::<u32>() > options.max {
+            chosen.pop();
+        }
         Answer::ChooseMode(ModeChoice::Modes(chosen))
     }
 

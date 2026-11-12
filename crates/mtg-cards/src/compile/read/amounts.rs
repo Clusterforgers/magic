@@ -127,6 +127,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::R374Toxic
         | StatKind::R374ManaCost
         | StatKind::R374ColorSet
+        | StatKind::Subtypes
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9196c8dc-bca6-4c35-949e-8c14a699a41d",
+  "name": "Flash of Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flash of Insight",
+      "oracle_fingerprint": "835723998224951e0de68fd0b8b7ce95",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": "X", "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              { "Mana": "{1}{U}" },
+              { "ExileFromGraveyard": { "filter": [{ "Color": "Blue" }], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

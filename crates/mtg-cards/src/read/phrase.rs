@@ -78,6 +78,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::OrController(inner) => format!("{} or its controller", who(ctx, inner)),
         Ref::Arrived { of, .. } => format!("the card {} became", who(ctx, of)),
         Ref::Departed(of) => format!("{} as it was", who(ctx, of)),
+        Ref::SourceOf(of) => format!("the source of {}", who(ctx, of)),
         Ref::Each(selector) => format!("each {}", self::selector(ctx, selector)),
         Ref::Union(parts) => parts
             .iter()
@@ -449,6 +450,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R374Toxic => "total toxic value",
         StatKind::R374ManaCost => "mana cost",
         StatKind::R374ColorSet => "color combination",
+        StatKind::Subtypes => "subtypes",
     }
 }
 
@@ -604,6 +606,9 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),
         Duration::WhileSourceTapped => "while this stays tapped".to_owned(),
+        Duration::WhileYouControlSourceTapped => {
+            "while you control this and it stays tapped".to_owned()
+        }
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
