@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7ef5b2b6-86da-4e4a-9456-dcbb878936c4",
+  "name": "Nelly Borca, Impulsive Accuser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nelly Borca, Impulsive Accuser",
+      "oracle_fingerprint": "7d9779b7f7b808514768b661fe3a43ac",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Suspect": { "what": { "Target": 0 } } },
+              { "Goad": { "what": { "Each": [{ "Type": "Creature" }, "Suspected"] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                  "to": "Opponents",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }, { "Draw": { "who": { "ControllerOf": "Dealer" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

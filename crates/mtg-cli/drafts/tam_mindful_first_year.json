@@ -1,0 +1,36 @@
+{
+  "oracle_id": "096a878e-cff0-430a-90b5-031ecb9bfe1b",
+  "name": "Tam, Mindful First-Year",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tam, Mindful First-Year",
+      "oracle_fingerprint": "7e04b744acff5ccd51b24f510bd9a9cf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "AddKeyword": { "HexproofFrom": [{ "SharesColor": "Affected" }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

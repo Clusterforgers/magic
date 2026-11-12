@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0",
+  "oracle_id": "06c47664-2b4b-468e-a38d-04b62e6edd67",
+  "multiverse_ids": [
+    651781
+  ],
+  "mtgo_id": 123400,
+  "tcgplayer_id": 534553,
+  "cardmarket_id": 752630,
+  "name": "Suppressor Skyguard",
+  "lang": "en",
+  "released_at": "2024-02-23",
+  "uri": "https://api.scryfall.com/cards/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0",
+  "scryfall_uri": "https://scryfall.com/card/clu/46/suppressor-skyguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:16:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571",
+    "normal": "https://cards.scryfall.io/normal/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571",
+    "large": "https://cards.scryfall.io/large/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571",
+    "png": "https://cards.scryfall.io/png/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.png?1783912571",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.webp?1783912571",
+    "grid": "https://cards.scryfall.io/grid/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.webp?1783912571",
+    "display": "https://cards.scryfall.io/display/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.webp?1783912571",
+    "art": "https://cards.scryfall.io/art/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.webp?1783912571",
+    "crop": "https://cards.scryfall.io/crop/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.webp?1783912571",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/b/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0.jpg?1783912571"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Flying\nWhenever a player attacks you, if that player has another opponent who isn't being attacked, prevent all combat damage that would be dealt to you this combat.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set": "clu",
+  "set_name": "Ravnica: Clue Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d4bfabcf-a859-43a4-9d8a-665533c8b174",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fbdaca43-a5be-43e3-8dd9-3a5f2cd8f0d0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A06c47664-2b4b-468e-a38d-04b62e6edd67&unique=prints",
+  "collector_number": "46",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "azorius",
+  "flavor_text": "\"Attention, brawlers! You are in violation of Senate statute 2309.76-22. Halt your melee before you incur further charges.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Valera Lutfullina",
+  "artist_ids": [
+    "76bc57c7-47c6-40c5-8797-8ffcce430ac7"
+  ],
+  "illustration_id": "e992e199-ed81-42e5-87a6-1337f8527845",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9413,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-ravnica-clue-edition-spoilers-standalone-board-game",
+    "previewed_at": "2024-01-22"
+  },
+  "prices": {
+    "usd": "11.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "7.53",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=651781&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSuppressor%2BSkyguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSuppressor%2BSkyguard",
+    "edhrec": "https://edhrec.com/route/?cc=Suppressor+Skyguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534553%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752630&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/123400?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

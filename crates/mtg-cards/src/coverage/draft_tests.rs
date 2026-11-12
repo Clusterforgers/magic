@@ -167,21 +167,21 @@ fn a_draft_counts_by_its_read_when_nothing_outranks_it(
     RulesSource::HandWritten
 )]
 #[case::a_pending_draft_outranks_a_manual_file(
-    "Wish for a card.",
+    "Draw a card.",
     ImplStatus::Manual,
     ReadState::Pending,
     Support::Unverified,
     RulesSource::Draft
 )]
 #[case::an_approved_draft_outranks_a_manual_file(
-    "Wish for a card.",
+    "Draw a card.",
     ImplStatus::Manual,
     ReadState::Approved,
     Support::Read,
     RulesSource::Draft
 )]
 #[case::a_wrong_draft_leaves_a_manual_file(
-    "Wish for a card.",
+    "Draw a card.",
     ImplStatus::Manual,
     ReadState::Wrong,
     Support::Manual,
@@ -195,9 +195,13 @@ fn a_rules_file_outranks_a_whole_draft_only_when_verified(
     #[case] rules: RulesSource,
 ) {
     let shown = sorcery(text);
+    let mut filed = filed(&shown, status);
+    if status == ImplStatus::Manual {
+        filed.faces[0].abilities.clear();
+    }
     let file = Library::from_sources(&[Source {
         path: "cards/test_card.json".into(),
-        text: canonical(&filed(&shown, status)),
+        text: canonical(&filed),
     }])
     .unwrap_or_else(|errors| panic!("{errors}"));
     let library = with_draft(&file, draft_of(&shown, read, None));

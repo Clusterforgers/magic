@@ -1,0 +1,67 @@
+{
+  "oracle_id": "4a3fdb8e-4699-4bd9-84e6-3cc7fea0e1ef",
+  "name": "The Ur-Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ur-Sphinx",
+      "oracle_fingerprint": "6085f601bb725e5f4c7f43b4b5538da0",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "SpellCost": {
+                "applies_to": ["Spell", { "Subtype": "Sphinx" }, "Other", { "ControlledBy": "You" }],
+                "change": "Reduce",
+                "mana": "{1}"
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "SpellCost": {
+                "applies_to": ["Spell", { "Subtype": "Sphinx" }, "Other", { "ControlledBy": "You" }],
+                "change": "Reduce",
+                "mana": "{1}"
+              }
+            },
+            "from": "Command"
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Sphinx" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": "Triggering", "as": "milled" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "milled" } },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "13da5255-2fc5-43a4-a44c-13a5d9ff77c3",
+  "name": "Temporal Extortion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Extortion",
+      "oracle_fingerprint": "9201a06492ccbe8791253b192ffae067",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "payer",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "payer" },
+                        "cost": [
+                          {
+                            "PayLife": {
+                              "Half": { "of": { "Life": { "Bound": "payer" } }, "up": true }
+                            }
+                          }
+                        ],
+                        "paid": [{ "Counter": { "what": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Spell": { "effects": [{ "ExtraTurn": {} }] } }
+      ]
+    }
+  ]
+}

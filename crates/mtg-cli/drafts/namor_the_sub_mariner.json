@@ -1,0 +1,64 @@
+{
+  "oracle_id": "dff11626-ad4d-443a-b7db-f508790b5fd2",
+  "name": "Namor the Sub-Mariner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Namor the Sub-Mariner",
+      "oracle_fingerprint": "b74a10bf0b445665c50a28495814ee5c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] },
+                  "toughness": 4
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Not": { "Type": "Creature" } },
+                  {
+                    "Test": {
+                      "left": { "ManaSymbols": { "color": "Blue", "of": "Candidate" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "ManaSymbols": { "color": "Blue", "of": "Triggering" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
