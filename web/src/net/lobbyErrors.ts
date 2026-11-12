@@ -164,7 +164,7 @@ const MESSAGES: Record<LobbyFailureCode, (error: LobbyError) => string> = {
 }
 
 /** What a lobby control was doing when it failed; a few codes read better with that said. */
-export type LobbyAbout = 'visibility' | 'close' | 'remove' | 'leave' | 'deck'
+export type LobbyAbout = 'visibility' | 'close' | 'remove' | 'leave' | 'deck' | 'teams'
 
 const GONE = 'This game is no longer open. The host may have closed it, or it may have started.'
 
@@ -174,6 +174,14 @@ const ABOUT: Record<LobbyAbout, Partial<Record<LobbyFailureCode, string>>> = {
     forbidden: 'Only the host can change who can find the game.',
     not_found: GONE,
     started: 'The game has already started, so who can find it can no longer change.',
+  },
+  teams: {
+    // The one 400 of the call: teams that do not fit the table (`field: "teams"`).
+    invalid_request:
+      'Those teams do not fit this table: every team needs a player, there must be two teams or more, and Two-Headed Giant is two teams of two.',
+    forbidden: 'Only the host can change the teams.',
+    not_found: GONE,
+    started: 'The game has already started, so the teams can no longer change.',
   },
   close: {
     forbidden: 'Only the host can close the game.',

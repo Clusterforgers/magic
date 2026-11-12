@@ -2,7 +2,10 @@ import { Circle, CircleCheck, CircleDashed, TriangleAlertIcon, UserMinus } from 
 import type { LucideIcon } from 'lucide-react'
 import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
+import { TeamBadge } from '@/components/TeamBadge'
 import { Button } from '@/components/ui/button'
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { teamColour, teamLabel } from '@/lib/teams'
 import { tableWarning } from '@/features/decks/legality'
 import { cn } from '@/lib/utils'
 import { deckWords } from './deckWords'
@@ -27,6 +30,17 @@ interface LobbySeatRowProps {
   account: string | null
   /** This seat made the game. */
   host?: boolean
+  /** The seat's team at a table with teams: its number, and for the host the teams it may move to. */
+  team?: {
+    team: number
+    /** The host's choice of teams; absent for everyone else, who sees the team only. */
+    change?: {
+      choices: readonly number[]
+      /** A request is out, so the choice waits. */
+      disabled: boolean
+      onChange(team: number): void
+    }
+  }
   /** The host's way to take this player out: present only on a seat that may be removed. */
   remove?: {
     /** A request is out, so the button waits. */
@@ -41,7 +55,7 @@ interface LobbySeatRowProps {
  * this page's own seat, and in words whether the seat is ready, not ready yet or not here. The words carry
  * everything the dot and the icon show. The host's rows of joined players also have a Remove button.
  */
-export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRowProps) {
+export function LobbySeatRow({ row, account, host = false, team, remove }: LobbySeatRowProps) {
   const state = seatState(row)
   const { label, Icon, tone } = STATES[state]
   return (
@@ -49,7 +63,12 @@ export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRo
       data-seat-row={row.seat}
       data-state={state}
       data-connected={row.connected || undefined}
-      className="flex items-start justify-between gap-3 px-4 py-3 text-sm"
+      data-team={team?.team}
+      className={cn(
+        'flex items-start justify-between gap-3 px-4 py-3 text-sm',
+        // A team's colour on the row's edge groups teammates at a glance; the label says it in words.
+        team !== undefined && cn('border-l-4', teamColour(team.team).edge),
+      )}
     >
       <span className="flex min-w-0 items-start gap-3">
         {/* One line tall, so the dot sits in the middle of the first line however long the name grows. */}
@@ -82,6 +101,11 @@ export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRo
             )}
             {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
           </span>
+          {team === undefined ? null : team.change === undefined ? (
+            <TeamBadge team={team.team} />
+          ) : (
+            <TeamChoice seat={row.seat} name={row.name} team={team.team} change={team.change} />
+          )}
           {/* What the whole table is told of the deck: its name, format and a count, never a card. An open seat has none to tell. */}
           {!row.named || row.deck === undefined ? null : (
             <span
@@ -128,5 +152,42 @@ export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRo
         </Pill>
       </span>
     </li>
+  )
+}
+
+/** The host's choice of a seat's team: a small select labelled with the seat, next to the team's colour. */
+function TeamChoice({
+  seat,
+  name,
+  team,
+  change,
+}: {
+  seat: number
+  name: string
+  team: number
+  change: NonNullable<NonNullable<LobbySeatRowProps['team']>['change']>
+}) {
+  const id = `seat-${seat}-team`
+  return (
+    <span className="flex items-center gap-2">
+      <span aria-hidden="true" className={cn('size-2.5 shrink-0 rounded-full', teamColour(team).dot)} />
+      <label htmlFor={id} className="sr-only">
+        Team of {name}
+      </label>
+      <NativeSelect
+        id={id}
+        size="sm"
+        data-team-select=""
+        value={String(team)}
+        disabled={change.disabled}
+        onChange={(event) => change.onChange(Number(event.target.value))}
+      >
+        {change.choices.map((choice) => (
+          <NativeSelectOption key={choice} value={String(choice)}>
+            {teamLabel(choice)}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
+    </span>
   )
 }

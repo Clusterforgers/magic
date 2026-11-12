@@ -1,0 +1,52 @@
+{
+  "oracle_id": "e9e25800-9ee7-40c9-b22d-611c7281c125",
+  "name": "Coalition Victory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coalition Victory",
+      "oracle_fingerprint": "c2c300d16bfd35af629930a6ec7f2299",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Distinct": {
+                              "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                              "stat": "BasicLandTypes"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 5
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Distinct": {
+                              "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "stat": "Colors"
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 5
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

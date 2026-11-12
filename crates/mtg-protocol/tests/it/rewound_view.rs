@@ -1,9 +1,9 @@
-//! Goal: a cast or activation taken back before the stack (`AnnouncementRewound`) is told whole, card and reason, to the seat that began it, and to every other seat only as that seat having taken back a play, at every table size and for every reason.
+//! Goal: a cast or activation taken back before the stack (`AnnouncementRewound`) is told whole, card, reason and detail, to the seat that began it, and to every other seat only as that seat having taken back a play, at every table size and for every reason.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::Event;
-use mtg_engine::decision::Unplayable;
+use mtg_engine::decision::{TargetZone, Unplayable, Why};
 use mtg_engine::zones::Zone;
 use mtg_protocol::{EventView, HiddenEvent, project_events};
 use mtg_testkit::Scenario;
@@ -14,6 +14,7 @@ use rstest::rstest;
 fn a_rewind_names_the_card_to_its_player_alone(
     #[values(2, 3, 4)] seats: usize,
     #[values(Unplayable::Mana, Unplayable::Targets, Unplayable::Cost)] reason: Unplayable,
+    #[values(false, true)] detailed: bool,
 ) {
     let engine = Scenario::new(seats)
         .hand(0, [free_creature("Secret", 1, 1)])
@@ -25,6 +26,10 @@ fn a_rewind_names_the_card_to_its_player_alone(
         player: PlayerId(0),
         object,
         reason,
+        why: detailed.then(|| Why::Target {
+            needs: "a creature spell you control on the stack".to_owned(),
+            zone: TargetZone::Stack,
+        }),
     };
     let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
     let batches = project_events(state, std::slice::from_ref(&rewound), &viewers, 0).unwrap();
@@ -37,5 +42,11 @@ fn a_rewind_names_the_card_to_its_player_alone(
             })
         };
         assert_eq!(batch.events, [expected], "{viewer:?}");
+        let wire = serde_json::to_string(&batch.events).unwrap();
+        assert_eq!(
+            wire.contains("creature spell"),
+            detailed && viewer.index() == 0,
+            "only the player who began it reads why: {viewer:?}"
+        );
     }
 }

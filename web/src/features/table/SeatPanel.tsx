@@ -35,6 +35,10 @@ import { CompanionChip } from './CompanionChip'
 import { StickerSheetsChip } from './StickerSheetsChip'
 import { ZoneButton } from './ZoneButton'
 import { TurnTimeMark } from './TurnTimeMark'
+import { TeamBadge } from '@/components/TeamBadge'
+import { memberNames } from '@/lib/teams'
+import { useSeatTeam } from './teamLife'
+import type { SeatTeam } from './teamLife'
 
 interface SeatPanelProps {
   seat: PlayerId
@@ -63,13 +67,36 @@ interface LifeProps {
   life: number
   as: 'p' | 'span'
   className: string
+  /** The seat's team in Two-Headed Giant, whose life total its teammates share. */
+  team?: SeatTeam | null
 }
 
-/** The life total, the largest figure of a pod; red at 5 or less. */
-function Life({ seat, life, as, className }: LifeProps) {
+/**
+ * The life total, the largest figure of a pod; red at 5 or less. In Two-Headed Giant the team's first pod shows the
+ * shared total large and the teammate's pod shows it small, marked "shared".
+ */
+function Life({ seat, life, as, className, team }: LifeProps) {
+  const shared = team != null && team.life !== 'own'
+  const small = team?.life === 'teammate'
   return (
-    <LifeFx as={as} seat={seat} className={cn('shrink-0 leading-none', className)}>
-      <span className="sr-only">Life </span>
+    <LifeFx
+      as={as}
+      seat={seat}
+      className={cn(
+        'shrink-0 leading-none',
+        small
+          ? 'flex items-baseline gap-1 text-lg font-semibold text-muted-foreground tabular-nums'
+          : className,
+      )}
+    >
+      <span className="sr-only" data-shared-life={shared ? team.life : undefined}>
+        {shared ? `Team life, shared with ${memberNames(team.mates)}: ` : 'Life '}
+      </span>
+      {small ? (
+        <span aria-hidden="true" className="text-xs font-medium">
+          shared
+        </span>
+      ) : null}
       <span className={cn(life <= 5 && 'text-destructive')}>{life}</span>
     </LifeFx>
   )
@@ -101,6 +128,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
+  const team = useSeatTeam(seat)
   const commanderGame = usePlay((state) => state.view?.format.toLowerCase() === 'commander')
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
   const above = useRef<HTMLDivElement>(null)
@@ -128,6 +156,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-your-turn': flags.cue || undefined,
     'data-eliminated': eliminated || undefined,
     'data-away': away || undefined,
+    'data-team': team?.team,
     'data-state': podState(flags.active, flags.priority),
     'data-defender': defender.state,
     onClick: defender.state === undefined ? undefined : pickOnClick(defender.pick),
@@ -160,6 +189,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     <div className="flex min-w-0 items-center gap-1.5">
       <SeatDot seat={seat} />
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
+      {team === null ? null : <TeamBadge team={team.team} size="chip" />}
       {defender.state === 'chosen' ? (
         <Crosshair aria-hidden="true" className="size-3.5 shrink-0 text-primary" />
       ) : null}
@@ -197,6 +227,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
                 life={player.life}
                 as="span"
                 className="text-2xl font-semibold tabular-nums"
+                team={team}
               />
             </div>
           </div>
@@ -309,6 +340,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               life={player.life}
               as="p"
               className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
+              team={team}
             />
           </div>
           {cramped ? null : (

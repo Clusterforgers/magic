@@ -35,6 +35,8 @@ pub enum GameResult {
     Winner(PlayerId),
     /// Everyone lost at once (or no one is left).
     Draw,
+    /// The players of one team are the only ones left (CR 104.2a, CR 808.6): the team, counted from 0, wins.
+    Team(u32),
 }
 
 /// The coarse phase of the whole game.
@@ -742,7 +744,7 @@ impl GameState {
     pub(crate) fn opponent_lost_life(&self, player: PlayerId) -> bool {
         self.players()
             .iter()
-            .filter(|other| other.id() != player)
+            .filter(|other| self.is_opponent(player, other.id()))
             .any(|other| self.tallied(other.id(), Tally::Lost) > 0)
     }
 
@@ -836,7 +838,7 @@ impl GameState {
     pub(crate) fn ends_round(&self) -> bool {
         let regular = self.turn.regular;
         self.extra_turns.is_empty()
-            && self.opens_round(regular, self.next_alive_after(regular).unwrap_or(regular))
+            && self.opens_round(regular, self.next_turn_seat(regular).unwrap_or(regular))
     }
 
     /// The next living player after `player` in turn order (possibly `player` itself).

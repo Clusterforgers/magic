@@ -5,8 +5,6 @@ import { buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
-import { cardsApi } from '@/net/cards'
-import type { CardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
@@ -18,8 +16,6 @@ interface UnvalidatedPageProps {
   deckId?: string
   /** The deck endpoints; the shared client unless a test brings its own. */
   api?: Pick<DecksApi, 'list' | 'get' | 'check'>
-  /** The card endpoint the clauses are quoted from. */
-  cards?: Pick<CardsApi, 'get'>
   /** The fix-mark endpoints; with them each card gets a flag that marks it important to fix. */
   fixMarks?: FixMarksApi
   /** The endpoints that mark a card "play by hand" in a deck; with them each card offers it for its decks. */
@@ -34,7 +30,6 @@ interface UnvalidatedPageProps {
 export function UnvalidatedPage({
   deckId,
   api = decksApi,
-  cards = cardsApi,
   fixMarks,
   byHand = decksApi,
 }: UnvalidatedPageProps) {
@@ -84,7 +79,6 @@ export function UnvalidatedPage({
       <UnvalidatedView
         key={deckId ?? '*'}
         api={api}
-        cards={cards}
         fixMarks={fixMarks}
         byHand={byHand}
         scope={deckId === undefined ? { kind: 'all' } : { kind: 'deck', id: deckId }}

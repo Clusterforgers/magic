@@ -17,6 +17,7 @@ import type {
   PriorityOptions,
 } from '@/protocol/generated'
 import { costText } from '../cardModel'
+import { whyLine } from '../whyWords'
 import { givesOfOptions } from '../manaMade'
 import { madeWords } from '../ManaMade'
 import type { CardNote, CardNotes } from './marks'
@@ -238,7 +239,9 @@ export function mergeNotes(hand: CardNotes, activation: CardNotes): CardNotes {
         : {
             ...note,
             words: `${note.words}, not castable: ${why.words}`,
-            ...(why.line === undefined ? {} : { line: `Not castable: ${lowerFirst(why.line)}` }),
+            ...(why.line === undefined
+              ? {}
+              : { line: `Not castable: ${why.line.endsWith('.') ? why.line : lowerFirst(why.line)}` }),
           },
     )
   }
@@ -277,4 +280,37 @@ export function playsOf(
       ? [{ key: 'cast', label: `Cast ${name}`, words: `Cast ${name}`, action: { CastSpell: id } }]
       : []
   return [...first, ...(abilities.get(id) ?? []), ...mana.map((option) => manaPlay(option, mana))]
+}
+
+/** An ability of a card that cannot be activated now: its line, as a play's, and why, for a disabled line of the chooser. */
+export interface Blocked {
+  key: string
+  label: string
+  line: string
+}
+
+/** The abilities of `id` the offer leaves out (`PriorityOptions.inactive`), each with its reason in words. */
+export function blockedPlays(
+  id: ObjectId,
+  options: PriorityOptions,
+  objectsById: Readonly<Record<number, ObjectView>>,
+): Blocked[] {
+  const object = objectsById[id]
+  if (object === undefined) return []
+  return (options.inactive ?? [])
+    .filter((entry) => entry.ability.object === id)
+    .map((entry) => {
+      const worded = object.activated?.find(
+        (view) => view.ability !== undefined && sameAbility(view.ability, entry.ability),
+      )
+      return {
+        key: abilityKey(entry.ability),
+        label: wording(entry.ability, worded).label,
+        line: whyLine(
+          { name: object.name, rulesText: object.rules_text, doing: 'activate' },
+          entry.reason,
+          entry.why,
+        ),
+      }
+    })
 }

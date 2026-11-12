@@ -245,7 +245,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
         },
         Relaxed {
             code: RED,
-            rules: json!({"deck": {"colour_identity": false}}),
+            rules: json!({"deck": {"color_identity": false}}),
             issue: "color_identity",
         },
         Relaxed {
@@ -280,7 +280,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
         let plain = open(&server, &ann, "commander", seats, &json!({})).await;
         let normal = open(&server, &ann, "normal", seats, &json!({})).await;
         let everything = json!({
-            "deck": {"singleton": false, "colour_identity": false},
+            "deck": {"singleton": false, "color_identity": false},
             "commanders_per_seat": 2,
         });
         let lenient = open(&server, &ann, "commander", seats, &everything).await;

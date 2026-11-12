@@ -1,4 +1,4 @@
-// Goal: the production build keeps every page's code in its own chunk and each chunk within its gzip budget: the entry every page loads, the table's chunk, and every other chunk, so a heavy import that lands in the wrong place fails here.
+// Goal: the production build keeps every page's code in its own chunk and each chunk within its gzip budget: the entry every page loads, the table's chunk (shared by the game, watch and replay pages), and every other chunk, so a heavy import that lands in the wrong place fails here.
 import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -31,7 +31,8 @@ async function chunks(): Promise<Map<string, number>> {
 /** The gzip budget in kB of a chunk, about a tenth above its size when it was set. */
 function budgetOf(chunk: string): number {
   if (chunk === 'index') return 135
-  if (chunk === 'game._gameId') return 250
+  // The game, watch and replay pages share the table, in the chunk of `GamePage` or a chunk of its own.
+  if (chunk === 'GamePage' || chunk === 'GameTable') return 250
   return 52
 }
 
@@ -42,9 +43,10 @@ afterAll(async () => {
 describe('the production build', () => {
   const built = chunks()
 
-  it('splits the code per page: the decks, builder, play and table pages each have a chunk of their own', async () => {
+  it('splits the code per page: the decks, builder, play, game and watch pages each have a chunk of their own, the table one they share', async () => {
     const names = [...(await built).keys()]
-    for (const page of ['decks', 'decks_._deckId', 'new', 'game._gameId']) expect(names).toContain(page)
+    for (const page of ['decks', 'decks_._deckId', 'new', 'game._gameId', 'watch._gameId', 'GamePage'])
+      expect(names).toContain(page)
   }, 90_000)
 
   it('keeps each chunk within its gzip budget', async () => {

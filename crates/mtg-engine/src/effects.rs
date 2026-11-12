@@ -417,7 +417,7 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
 /// this turn is the one it lasts until.
 pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: PlayerId) -> u32 {
     let turn = state.turn();
-    let before_end = turn.active() == controller && turn.step() < Step::End;
+    let before_end = state.is_active(controller) && turn.step() < Step::End;
     if *duration == Duration::UntilYourNextEndStep && before_end {
         turn.number().saturating_sub(1)
     } else {
@@ -454,18 +454,18 @@ pub(crate) fn lasts(
         Duration::UntilYourNextEndStep => {
             state.is_alive(controller)
                 && !(turn.number() > began
-                    && turn.active() == controller
+                    && state.is_active(controller)
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         Duration::UntilYourNextTurn => {
-            state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
+            state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
         // It lasts through the untap step of that turn and ends as its upkeep begins.
         Duration::UntilYourNextUpkeep => {
             state.is_alive(controller)
                 && !(turn.number() != began
-                    && turn.active() == controller
+                    && state.is_active(controller)
                     && turn.step() >= Step::Upkeep)
         }
         Duration::WhileSourceOnBattlefield => source.is_some_and(|source| {
@@ -542,7 +542,7 @@ pub(crate) fn ends_with_turn(
     let turn = state.turn();
     match duration {
         Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
-        Duration::UntilEndOfYourNextTurn => turn.number() > began && turn.active() == controller,
+        Duration::UntilEndOfYourNextTurn => turn.number() > began && state.is_active(controller),
         _ => false,
     }
 }

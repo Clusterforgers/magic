@@ -153,16 +153,16 @@ impl Delayed {
             }
             // No delayed trigger is made for the end of a later turn; it ends when that turn begins.
             Duration::UntilYourNextTurn | Duration::UntilEndOfYourNextTurn => {
-                turn.number() != self.turn && turn.active() == self.controller
+                turn.number() != self.turn && state.is_active(self.controller)
             }
             Duration::UntilYourNextEndStep => {
                 turn.number() != self.turn
-                    && turn.active() == self.controller
+                    && state.is_active(self.controller)
                     && turn.step() >= Step::End
             }
             Duration::UntilYourNextUpkeep => {
                 turn.number() != self.turn
-                    && turn.active() == self.controller
+                    && state.is_active(self.controller)
                     && turn.step() >= Step::Upkeep
             }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {

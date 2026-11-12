@@ -16,12 +16,14 @@ mod cause;
 mod claims;
 mod departure;
 mod listing;
+mod replays;
 mod resume;
+mod watching;
 
 use std::collections::HashMap;
 use std::net::IpAddr;
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
@@ -45,7 +47,8 @@ use crate::pace::Pace;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError, merged_reads};
 use crate::recorder::Recorder;
 use crate::records::{
-    Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
+    Binding, GameRecords, NewGame, NewSeat, RecordError, RecordStatus, SeatState, UserGame,
+    Visibility,
 };
 use crate::seat_deck::SeatDecks;
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
@@ -59,6 +62,7 @@ pub const MAX_LISTED_GAMES: usize = 100;
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
+pub use replays::ReplayRefusal;
 pub use resume::ResumeReport;
 
 pub(crate) use cause::Cause;
@@ -115,6 +119,11 @@ pub struct GameOptions {
     pub format: FormatKind,
     /// The pace this game plays at in place of the server's; `None` for the server's.
     pub pace: Option<Pace>,
+    /// The held seats a server-side bot plays ([`crate::bots`]); never seat 0, which the creator plays.
+    pub bots: Vec<PlayerId>,
+    /// The account each held seat is bound to, by seat, for a game the server makes for its players
+    /// (a tournament match); empty binds only the creator to seat 0.
+    pub accounts: Vec<Option<UserId>>,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -184,6 +193,8 @@ pub struct SeatAccess {
     pub seat: PlayerId,
     /// Reports an error, or a change, once the registry drops the game; the value says why.
     pub removed: watch::Receiver<Removal>,
+    /// Whether the socket is a spectator's: the seat is then the spectator viewer, which holds no seat.
+    pub spectator: bool,
 }
 
 /// What the registry knows about one seat.
@@ -221,13 +232,13 @@ impl SeatSlot {
 }
 
 /// The slots of a new game with `seats` seats: a seat with a token is issued under its name (a
-/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and `host`
-/// owns seat 0; the others are open.
+/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and bound to its
+/// entry of `users`; the others are open.
 fn seat_slots(
     mut names: Vec<String>,
     tokens: &[SeatToken],
     seats: usize,
-    host: Option<UserId>,
+    users: &[Option<UserId>],
 ) -> Vec<SeatSlot> {
     names.truncate(seats);
     while names.len() < seats {
@@ -243,7 +254,7 @@ fn seat_slots(
                 } else {
                     name
                 };
-                SeatSlot::issued(name, token.digest(), host.filter(|_| seat == 0))
+                SeatSlot::issued(name, token.digest(), users.get(seat).copied().flatten())
             }
             None => SeatSlot::open(),
         })
@@ -283,6 +294,8 @@ struct Entry {
     /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
     /// host says so first.
     alive: watch::Sender<Removal>,
+    /// Never in the game browser, even running: a tutorial, one player against a bot.
+    unlisted: bool,
 }
 
 impl Entry {
@@ -302,6 +315,7 @@ impl Entry {
             finished: None,
             last_connected: Instant::now(),
             alive,
+            unlisted: false,
         }
     }
 
@@ -336,6 +350,8 @@ struct Shared {
     cards: Option<CardSource>,
     /// Join code lookups that missed, per client address.
     throttle: Throttle,
+    /// How long a bot seat waits before each answer.
+    bot_delay: Duration,
 }
 
 /// The games of one server, by id. Cheap to clone.
@@ -380,6 +396,7 @@ impl Registry {
                 records,
                 cards,
                 throttle: Throttle::new(config.auth.limits),
+                bot_delay: config.bot_delay,
             }),
         }
     }
@@ -504,6 +521,7 @@ impl Registry {
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
             reads,
             conjured: crate::recipe::fingerprints_of(&conjured).map_err(RecipeError::from)?,
+            bots: options.bots.clone(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
@@ -524,9 +542,12 @@ impl Registry {
         setup.validate_decks = false;
         // Refused like a recipe that does not build: too few seats, a command zone in a Normal game.
         setup.validate().map_err(RecipeError::from)?;
-        self.admit(setup, names, Some(recipe), host, options, Some(decks))
-            .await
-            .map(|(created, _)| created)
+        let (bots, seed) = (options.bots.clone(), recipe.seed);
+        let (created, handle) = self
+            .admit(setup, names, Some(recipe), host, options, Some(decks))
+            .await?;
+        self.spawn_bots(created.id, &handle, &bots, seed);
+        Ok(created)
     }
 
     /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
@@ -602,7 +623,11 @@ impl Registry {
             pace: Some(pace),
             ..GameOptions::default()
         };
-        self.admit(setup, names, None, None, options, None).await
+        let (created, handle) = self.admit(setup, names, None, None, options, None).await?;
+        if let Some(entry) = self.games().get_mut(&created.id) {
+            entry.unlisted = true;
+        }
+        Ok((created, handle))
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
@@ -633,8 +658,16 @@ impl Registry {
         let (id, code) = self.unused_id_and_code()?;
         // Bound only where it is recorded: a game without a database has no accounts to bind.
         let persistent = self.shared.records.is_some() && recipe.is_some();
-        let host = host.filter(|_| persistent);
-        let slots = seat_slots(names, &tokens, seats, host);
+        let users: Vec<Option<UserId>> = if options.accounts.is_empty() {
+            vec![host]
+        } else {
+            options.accounts.clone()
+        };
+        let users: Vec<Option<UserId>> = users
+            .into_iter()
+            .map(|user| user.filter(|_| persistent))
+            .collect();
+        let slots = seat_slots(names, &tokens, seats, &users);
         let meta = NewGame {
             visibility: options.visibility,
             code_digest: Some(*code.digest().as_bytes()),
@@ -646,7 +679,9 @@ impl Registry {
             .as_ref()
             .map_or(options.format, |recipe| recipe.format);
         let decks = decks.map(|defaults| {
-            SeatDecks::new(format, setup.seed, defaults).with_house_rules(house_rules.clone())
+            SeatDecks::new(format, setup.seed, defaults)
+                .with_house_rules(house_rules.clone())
+                .with_bots(options.bots.clone())
         });
         let handle = self
             .start(
@@ -800,6 +835,14 @@ impl Registry {
         Ok(found)
     }
 
+    /// Hands `seats` of game `id`, which the registry holds, to bots that stop when it lets the game go.
+    fn spawn_bots(&self, id: GameId, handle: &GameHandle, seats: &[PlayerId], seed: u64) {
+        let removed = self.games().get(&id).map(|entry| entry.alive.subscribe());
+        if let Some(removed) = removed {
+            crate::bots::spawn_bot_seats(handle, seats, seed, self.shared.bot_delay, &removed);
+        }
+    }
+
     /// The actor of a game, for tests and admin views.
     pub fn handle(&self, id: GameId) -> Option<GameHandle> {
         self.games().get(&id).map(|entry| entry.handle.clone())
@@ -834,6 +877,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(found?),
             removed: entry.alive.subscribe(),
+            spectator: false,
         })
     }
 
@@ -851,6 +895,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(seat),
             removed: entry.alive.subscribe(),
+            spectator: false,
         })
     }
 
@@ -922,6 +967,21 @@ impl Registry {
         match &self.shared.records {
             Some(records) => records.remove_failed(game, user).await,
             None => Ok(false),
+        }
+    }
+
+    /// The stored status and result of a game; `None` for a game that is not recorded, and for a
+    /// registry without a database.
+    pub(crate) async fn record_result(
+        &self,
+        id: GameId,
+    ) -> Result<Option<(RecordStatus, Option<GameResult>)>, RecordError> {
+        match &self.shared.records {
+            Some(records) => Ok(records
+                .get(id)
+                .await?
+                .map(|record| (record.status, record.result))),
+            None => Ok(None),
         }
     }
 
@@ -1022,7 +1082,7 @@ impl Registry {
             .shared
             .retention
             .sweep_every
-            .max(std::time::Duration::from_millis(1));
+            .max(Duration::from_millis(1));
         tokio::spawn(async move {
             let mut ticker = tokio::time::interval(every);
             ticker.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);

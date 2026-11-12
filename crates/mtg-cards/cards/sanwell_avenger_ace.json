@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4884ad6c-2290-44fc-ab9e-6e6b75b2d69a",
+  "name": "Sanwell, Avenger Ace",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sanwell, Avenger Ace",
+      "oracle_fingerprint": "5d1619609aa6dbca2b38388730a5e4e9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": "Prevent",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    "Attacking"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 109, "end": 316 }
+          }
+        }
+      ]
+    }
+  ]
+}

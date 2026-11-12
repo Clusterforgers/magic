@@ -442,11 +442,17 @@ function reasonsOf(entry: Entry): Reason[] {
   return (entry.clauses ?? []).map((clause) => {
     const face = clause.face ?? 0
     const text = entry.faces?.[face]?.text ?? ''
-    if (clause.says === undefined) return { face, span: { start: 0, end: positions(text) }, text: clause.why }
+    if (clause.says === undefined)
+      return { face, span: { start: 0, end: positions(text) }, text: clause.why, quote: text }
     const at = text.indexOf(clause.says)
     if (at < 0) throw new Error(`the fixture text of ${entry.name} does not say "${clause.says}"`)
     const start = positions(text.slice(0, at))
-    return { face, span: { start, end: start + positions(clause.says) }, text: clause.why }
+    return {
+      face,
+      span: { start, end: start + positions(clause.says) },
+      text: clause.why,
+      quote: clause.says,
+    }
   })
 }
 

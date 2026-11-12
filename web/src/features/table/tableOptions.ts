@@ -23,6 +23,8 @@ export interface TableOptions {
   viewport?: Viewport
   /** Start the table tour by itself in a browser that has not seen it and is not under automation; on everywhere but under vitest when left out. */
   tour?: boolean
+  /** Play the sound cues of `features/sound` unless muted; on everywhere but under vitest when left out. */
+  sounds?: boolean
 }
 
 /** Whether battlefields stack equal permanents when `TableOptions.stacks` is left out. */

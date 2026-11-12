@@ -1,0 +1,57 @@
+{
+  "oracle_id": "08dd393f-12d8-4801-882c-6d76009b4f12",
+  "name": "Psychic Rebuttal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Rebuttal",
+      "oracle_fingerprint": "cc56e5082b42c90a6626fe48299e78c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "TargetsPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 }, "as": "countered" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "CopySpell": { "what": { "Bound": "countered" }, "new_targets": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

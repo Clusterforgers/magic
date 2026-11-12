@@ -40,9 +40,14 @@ draft?: ReadState,
  */
 differs?: Array<ReadDiffers>, 
 /**
- * The clauses left to the table, each with the span of oracle text it covers.
+ * The clauses left to the table, each with the span of oracle text it covers and the words it quotes.
  */
 reasons: Array<Reason>, 
+/**
+ * The card's oracle text, faces joined by a line break, for a card the game leaves to the table whole: one it
+ * does not run whole with no clause of its own. Left out otherwise.
+ */
+whole_text?: string, 
 /**
  * Whether the deck's owner marked the card "play by hand": it is then `manual` whatever its rules, with
  * [`crate::support::OWNER_BY_HAND`] as its reason. Left out while false.

@@ -660,7 +660,10 @@ fn card_drawn(
     if let Some(reference) = state.object(object).map(GameObject::reference) {
         state.tally_object(reference, None, Tally::Dk26Drawn);
     }
-    if state.turn.step == crate::turn::Step::Draw && state.active_player() == Some(player) {
+    if state.turn.step == crate::turn::Step::Draw
+        && state.is_alive(player)
+        && state.is_active(player)
+    {
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }
     Ok(())

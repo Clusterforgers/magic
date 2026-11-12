@@ -133,16 +133,22 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExchangeLife { .. }
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
-        | Effect::Planechase { .. } => Reports::Events,
+        | Effect::Planechase { .. }
+        | Effect::Reattack { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
-        Effect::May { .. } | Effect::CastFromZone { .. } => Reports::Itself,
+        Effect::May { .. } | Effect::CastFromZone { .. } | Effect::PayAnyTimes { .. } => {
+            Reports::Itself
+        }
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
-        | Effect::Either { .. } | Effect::OneOf { .. } | Effect::Performed { .. } => Reports::Nothing,
+        | Effect::Either { .. }
+        | Effect::OneOf { .. }
+        | Effect::Performed { .. }
+        | Effect::StillResolves => Reports::Nothing,
     }
 }
 

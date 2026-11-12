@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1b36eb85-0b1e-41fb-8ecd-dda13c4feffc",
+  "name": "Preyseizer Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preyseizer Dragon",
+      "oracle_fingerprint": "8fac41da755052634bd2ade73e44ced8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Devour": { "counters": 2, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@ mod c10_dice_per_player;
 mod c10_uc;
 mod c6_blk_aura;
 mod c7_untap;
+mod ce29_charm;
 mod chance;
 mod compared_to_chosen;
 mod control;
@@ -207,6 +208,12 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::l31d_x_color::l31d_x_color_variants(ability, variants) {
+        return texts;
+    }
+    if let Some(texts) = super::l31d_any_number::l31d_any_number_variants(ability, variants) {
+        return texts;
+    }
     // An investigation is worded as the Clue tokens it makes.
     if let Some(unlogged) = super::l31a_performed::l31a_unlogged(ability) {
         return variants(&unlogged);
@@ -558,6 +565,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r303_forms::r303_wordings(ability, &mut texts);
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_each_paid(ability, written_variants, &mut texts);
@@ -676,6 +684,10 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     }
     super::wf27_writers::wf25_to_wf27_wordings(ability, written_variants, &mut texts);
     super::l293_events::l293_won_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_times_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_still_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_reattack_wordings(ability, written_variants, &mut texts);
+    super::l32a_paid::l32a_exchange_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1172,6 +1184,9 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
+    }
+    if let Some(found) = ce29_charm::ce29_joined(targets, effects) {
+        return found;
     }
     if let [
         Effect::Modal {

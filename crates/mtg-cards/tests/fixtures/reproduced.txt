@@ -80,6 +80,7 @@ Archon of Coronation
 Archon of Cruelty
 Archway Commons
 Armguard Familiar
+Arrest
 Arrogant Wurm
 Artful Maneuver
 Artificial Evolution
@@ -344,6 +345,7 @@ Consider
 Consign // Oblivion
 Consign to Dust
 Constable of the Realm
+Consume Spirit
 Consuming Aetherborn
 Consuming Vortex
 Contentious Plan
@@ -366,6 +368,7 @@ Crazed Firecat
 Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
+Crimson Hellkite
 Croakid Amphibonaut
 Crocanura
 Crop Rotation
@@ -374,6 +377,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Crypt Rats
 Crypt of Agadeem
 Cryptcaller Chariot
 Crystal Barricade
@@ -449,6 +453,7 @@ Demolition Field
 Demon Bolt
 Demon of Wailing Agonies
 Demonic Embrace
+Demotion
 Dense Canopy
 Deputized Protester
 Desert
@@ -645,6 +650,7 @@ Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
 Feaster of Fools
+Feasting Hobbit
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -742,6 +748,7 @@ Giant Beaver
 Giant Cindermaw
 Giant Growth
 Gift of Paradise
+Gilded Drake
 Gilded Goose
 Gilded Lotus
 Gilt-Leaf Palace
@@ -900,6 +907,7 @@ Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
+Illuminate History
 Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -928,11 +936,13 @@ Inspirit
 Intelligence Bobblehead
 Into the Roil
 Into the Time Vortex
+Intrepid Adversary
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
+Invasion of Theros // Ephara, Ever-Sheltering
 Invasion of Vryn // Overloaded Mage-Ring
 Invisible Force Field
 Invisible Stalker
@@ -1028,13 +1038,16 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+Landslide
 Lantern Flare
 Laquatus's Disdain
 Lash Out
+Last-Ditch Effort
 Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
+Lawmage's Binding
 Lay Bare the Heart
 Lazotep Reaver
 Leafkin Druid
@@ -1177,6 +1190,7 @@ Mirrorweave
 Misery Charm
 Mishra's Workshop
 Mishra, Excavation Prodigy
+Misleading Signpost
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
@@ -1210,6 +1224,7 @@ Myr Retriever
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
+Nahiri's Binding
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nanogene Conversion
@@ -1278,6 +1293,7 @@ Ordered Migration
 Organic Extinction
 Origin of the Hulk
 Orochi Hatchery
+Orzhov Charm
 Orzhov Enforcer
 Orzhov Locket
 Orzhov Pontiff
@@ -1324,6 +1340,7 @@ Persist
 Personal Sanctuary
 Pestilent Syphoner
 Peter Parker's Camera
+Petrify
 Petting Zookeeper
 Phantasmal Image
 Phantom Nantuko
@@ -1341,10 +1358,12 @@ Pinion Feast
 Piper of the Swarm
 Pippin, Warden of Isengard
 Pit Fight
+Pitiless Carnage
 Pixie Guide
 Plague Drone
 Plague Myr
 Plague Stinger
+Planar Disruption
 Planar Outburst
 Plaxcaster Frogling
 Plaxmanta
@@ -1356,6 +1375,7 @@ Pongify
 Pontiff of Blight
 Pop Quiz
 Porcuparrot
+Portal Mage
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
@@ -1364,6 +1384,7 @@ Prava of the Steel Legion
 Predator Dragon
 Predator Ooze
 Prey Upon
+Preyseizer Dragon
 Price of Fame
 Pridemalkin
 Priest of the Crossing
@@ -1375,6 +1396,7 @@ Primeval Protector
 Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
+Prison Sentence
 Prize Wall
 Prizefight
 Profane Command
@@ -1450,7 +1472,9 @@ Relic of Sauron
 Remorseful Cleric
 Render Inert
 Renewed Faith
+Renounce
 Replication Technique
+Reprocess
 Rescue Retriever
 Rescue Skiff
 Reset
@@ -1471,6 +1495,7 @@ Rhox Faithmender
 Rhys the Redeemed
 Rhystic Study
 Rhythm of the Wild
+Ribtruss Roaster
 Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
@@ -1507,6 +1532,7 @@ Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
 Sacred Cat
+Sacred Rites
 Sadistic Slash
 Safehold Elite
 Sage of Fables
@@ -1560,6 +1586,7 @@ Secluded Glen
 Second Guess
 Second Harvest
 Secret Rendezvous
+Secure Detention
 Seedglaive Mentor
 Seeds of Renewal
 Seedship Agrarian
@@ -1709,6 +1736,7 @@ Starforged Sword
 Starlit Sanctum
 Starscape Cleric
 Start the TARDIS
+Stasis Cocoon
 Stasis Field
 Steady Progress
 Steam Vents
@@ -1768,6 +1796,7 @@ Sunscorch Regent
 Suntouched Myr
 Super Combo
 Supernatural Rescue
+Suppression Bonds
 Supreme Verdict
 Surgehacker Mech
 Surrak Dragonclaw
@@ -1775,6 +1804,7 @@ Surreal Memoir
 Survivor's Med Kit
 Susurian Dirgecraft
 Suture Priest
+Svyelun of Sea and Sky
 Swarm Intelligence
 Swarm, Being of Bees
 Sweet-Gum Recluse
@@ -1791,6 +1821,7 @@ Syphon Life
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
+Tainted Adversary
 Tainted Isle
 Tainted Remedy
 Tamiyo's Logbook
@@ -1833,6 +1864,7 @@ The Birth of Meletis
 The Celestus
 The Cruelty of Gix
 The Dalek Emperor
+The Elder Dragon War
 The Gaffer
 The Locust God
 The Mechanist, Aerial Artisan
@@ -1913,6 +1945,7 @@ Trace of Abundance
 Trade Caravan
 Trailtracker Scout
 Trait Doctoring
+Trapped in the Tower
 Trash for Treasure
 Traumatic Visions
 Traveler's Cloak
@@ -2000,6 +2033,7 @@ Vibranium Strike Gauntlets
 Vigean Hydropon
 Village Pillagers
 Village Rites
+Viper's Kiss
 Viridian Corrupter
 Visage of Dread // Dread Osseosaur
 Vish Kal, Blood Arbiter
@@ -2073,6 +2107,7 @@ Windbrisk Heights
 Windfall
 Winds of Qal Sisma
 Winds of Rath
+Windshaper Planetar
 Winged Boots
 Winged Hive Tyrant
 Winged Portent

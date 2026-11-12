@@ -100,6 +100,7 @@ fn roster(rows: &[(&str, bool, bool)]) -> ServerMessage {
     ServerMessage::Lobby {
         seats,
         needed: u32::try_from(needed).unwrap(),
+        teams: None,
     }
 }
 

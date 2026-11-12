@@ -61,7 +61,11 @@ export default defineConfig({
   timeout: 60_000,
   workers: 1,
   reporter: [['list']],
+  // A failed test keeps its trace (`test-results/<test>/trace.zip`, `pnpm exec playwright show-trace`), so a flake that
+  // does not come back in solo runs can still be named.
+  outputDir: 'test-results',
   use: {
+    trace: 'retain-on-failure',
     baseURL: WEB_URL,
     viewport: { width: 1600, height: 1000 },
     actionTimeout: 15_000,

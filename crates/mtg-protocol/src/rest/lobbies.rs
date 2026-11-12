@@ -8,6 +8,7 @@ use std::fmt;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -60,9 +61,15 @@ pub struct LobbyGame {
     pub created_at: String,
     /// Whole seconds since the game was created, at the moment of the answer.
     pub age_secs: u64,
+    /// Whether the game runs: a signed-in visitor watches it (`GET /ws/{game}/watch`) instead of joining. Left out
+    /// while false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub running: bool,
 }
 
-/// The answer of `GET /api/lobbies`: the public games still in their lobby, newest first, at most 50.
+/// The answer of `GET /api/lobbies`: the public games still in their lobby and the running games, newest first, at
+/// most 50 of each.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct LobbyList {
     /// The games.
@@ -168,6 +175,15 @@ impl fmt::Debug for Joined {
 pub struct VisibilityBody {
     /// The visibility to set, or the one now in force.
     pub visibility: Visibility,
+}
+
+/// The body of `PUT /api/games/{id}/teams` and its answer: the teams the host sets before the start, one team per
+/// seat in seat order; `null` makes every player play alone. Every Ready is taken back.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct TeamsBody {
+    /// The teams to set, or the ones now in force.
+    pub teams: Option<Teams>,
 }
 
 /// The body of `PUT /api/games/{id}/seats/{n}/deck`: the deck the seat plays.

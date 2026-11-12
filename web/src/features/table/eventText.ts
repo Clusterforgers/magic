@@ -32,6 +32,7 @@ import type { HostRef } from '@/play/hosts'
 import { STEP_LABEL } from './turnText'
 import { REASON_WORDS } from './handReason'
 import { rollSentence } from './manual/panel/roll'
+import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 
 /** How the log names things; both fall back to a plain word when the thing is unknown. */
@@ -82,6 +83,13 @@ function stackName(n: EventNames, id: ObjectId, start: boolean): string {
 }
 
 const cards = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
+
+/** The longest clause the log quotes whole. */
+const QUOTE_CHARS = 160
+
+/** A clause of a card's rules in quotes, cut at `QUOTE_CHARS`. */
+export const quoted = (text: string): string =>
+  `“${text.length > QUOTE_CHARS ? `${text.slice(0, QUOTE_CHARS - 1)}…` : text}”`
 
 /** "A", "A and B", "A, B and C". */
 export function joinWords(items: readonly string[]): string {
@@ -679,6 +687,7 @@ const PIPELINE = [
   'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
+  'ByHandDue',
   'ZoneChanged',
   'LifeGained',
   'LifeLost',
@@ -785,6 +794,10 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(
       `${n.card(event.AbilityLeftToTable.source.id)}'s ability could not be run by the game: apply its text by hand`,
     )
+  }
+  if ('ByHandDue' in event) {
+    const { source, text } = event.ByHandDue
+    return line(`${n.card(source.id)} has a line to apply by hand now: ${quoted(text)}`)
   }
   if ('ZoneChanged' in event) {
     const { object, from, to, cause } = event.ZoneChanged
@@ -1109,6 +1122,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, target } = event.JoinedAttack
     return line(`${n.card(object)} enters attacking ${attackTarget(target, n)}`)
   }
+  if ('AttackRedirected' in event) {
+    const { object, target } = event.AttackRedirected
+    return line(`${n.card(object)} now attacks ${attackTarget(target, n)}`)
+  }
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
   }
@@ -1250,7 +1267,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ObjectLeftGame' in event) return quiet(`${n.card(event.ObjectLeftGame.object)} leaves the game`)
   if ('GameEnded' in event) {
     const { result } = event.GameEnded
-    return line(result === 'Draw' ? 'The game ends in a draw' : `${n.seat(result.Winner)} wins the game`)
+    if (result === 'Draw') return line('The game ends in a draw')
+    return line(
+      'Team' in result ? `${teamLabel(result.Team)} wins the game` : `${n.seat(result.Winner)} wins the game`,
+    )
   }
   if ('ManualAction' in event) {
     return line(describeManual(event.ManualAction.player, event.ManualAction.action, n))

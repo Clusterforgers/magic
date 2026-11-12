@@ -144,6 +144,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::DamageDealt { .. }
         | Event::CombatEnded
         | Event::JoinedAttack { .. }
+        | Event::AttackRedirected { .. }
         | Event::RemovedFromCombat { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
@@ -160,7 +161,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
-        Event::AbilityLeftToTable(_) => Ok(()),
+        Event::AbilityLeftToTable(_) | Event::ByHandDue(_) => Ok(()),
         Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
         Event::TriggersOrdered { player, order } => {
             crate::triggers::fold_ordered(state, *player, order)
@@ -652,6 +653,19 @@ fn create_effect(
     Ok(())
 }
 
+/// A Two-Headed Giant team has one life total (CR 810.9): a change to one player's total is the team's, so the
+/// teammates hold the same number.
+pub(crate) fn share_life(state: &mut GameState, id: PlayerId) {
+    let Some(life) = state.player(id).map(crate::player::Player::life) else {
+        return;
+    };
+    for mate in state.life_sharers(id) {
+        if let Ok(player) = player_mut(state, mate) {
+            player.life = life;
+        }
+    }
+}
+
 /// Takes `amount` off a life total as a cost; a player cannot pay more life than they have (CR 119.4).
 fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
     let player = player_mut(state, id)?;
@@ -659,6 +673,7 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
         Ok(paid) if paid > 0 && paid <= player.life => {
             player.life -= paid;
             state.tally_loss(id, amount);
+            share_life(state, id);
             Ok(())
         }
         _ => Err(invalid(format!(
@@ -695,6 +710,7 @@ fn change_life(
             if !gain {
                 state.tally_loss(id, amount);
             }
+            share_life(state, id);
             Ok(())
         }
         _ => Err(invalid(format!("{id:?} cannot change life by {amount}"))),

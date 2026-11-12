@@ -1,0 +1,40 @@
+{
+  "oracle_id": "670df8be-21cd-49d8-92e3-d7cc38b256d6",
+  "name": "Back for More",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back for More",
+      "oracle_fingerprint": "02d1e3572d35b4f3a2b5bc462885b00c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "it" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                      },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [{ "Fight": { "what": { "Bound": "it" }, "with": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

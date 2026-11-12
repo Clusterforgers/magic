@@ -1,4 +1,4 @@
-//! Goal: planeswalkers play as the rules say, at tables of two, three and four seats: one cast from a hand enters with its printed loyalty in the batch that brings it in; each loyalty cost (plus, zero and minus, down to nothing) changes the counters when the ability is activated and the ability resolves when its planeswalker has gone; a loyalty ability is offered only to the active player in a main step with an empty stack, only with the counters its cost removes, and once for each planeswalker each turn; damage to a planeswalker removes that many loyalty counters and marks none (unblocked, past a blocker with trample, more than it holds, with lifelink), and a planeswalker with no loyalty goes to the graveyard; a creature goes on attacking a planeswalker that left, is not redirected, cannot be blocked and deals no combat damage to it, nor to anything else when it was not blocked; and Jace the Mind Sculptor, Jace Beleren, Ajani and Garruk do what their cards say; and the log of such games replays to the live state.
+//! Goal: planeswalkers play as the rules say, at tables of two, three and four seats: one cast from a hand enters with its printed loyalty in the batch that brings it in; each loyalty cost (plus, zero and minus, down to nothing) changes the counters when the ability is activated and the ability resolves when its planeswalker has gone; a loyalty ability is offered only to the active player in a main step with an empty stack, only with the counters its cost removes, and once for each planeswalker each turn; damage to a planeswalker removes that many loyalty counters and marks none (unblocked, past a blocker with trample, more than it holds, with lifelink), and a planeswalker with no loyalty goes to the graveyard; one that is a creature as the damage is dealt has it marked too, even when the loyalty it loses ends the creature; a creature goes on attacking a planeswalker that left, is not redirected, cannot be blocked and deals no combat damage to it, nor to anything else when it was not blocked; and Jace the Mind Sculptor, Jace Beleren, Ajani and Garruk do what their cards say; and the log of such games replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -435,6 +435,46 @@ fn only_the_opponents_of_its_controller_may_attack_a_planeswalker(
         theirs,
         seats - 1,
         "each opponent's planeswalker is a defender"
+    );
+    Ok(())
+}
+
+// A planeswalker that is a creature as long as it holds enough loyalty
+
+#[rstest]
+#[case::a_creature_as_the_damage_is_dealt(7, 4, 3)]
+#[case::no_creature(6, 3, 0)]
+fn damage_to_a_planeswalker_that_is_a_creature_is_marked_even_when_the_loyalty_it_takes_ends_the_creature(
+    #[case] loyalty: u32,
+    #[case] left: u32,
+    #[case] marked: u32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .at(2, 0, Step::Main1)
+            .hand(0, [card("Lightning Bolt").unwrap()])
+            .battlefield(0, [ready(mountain())])
+            .battlefield(
+                1,
+                [with_counters(
+                    ready(card("Grand Master of Flowers").unwrap()),
+                    LOYALTY,
+                    loyalty,
+                )],
+            ),
+    )?;
+    bolt(&mut driver, "Grand Master of Flowers")?;
+    assert_eq!(loyalty_of(&driver, "Grand Master of Flowers"), Some(left));
+    let id = driver.id_of("Grand Master of Flowers")?;
+    let damage = driver
+        .state()
+        .object(id)
+        .and_then(|o| o.permanent())
+        .map(mtg_engine::object::PermanentState::damage);
+    assert_eq!(
+        damage,
+        Some(marked),
+        "marked as it was a creature when dealt"
     );
     Ok(())
 }

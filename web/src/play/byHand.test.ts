@@ -1,9 +1,10 @@
-// Goal: a seat owes the table its by-hand clauses from the resolution of a spell or ability of its own whose object the server flags `manual_owed` until it passes priority, in the order the events came, as the server holds the seat, and the hold names the card; the flag alone decides (clauses the server does not call owed, such as activated and loyalty abilities, hold nothing), other seats' objects, unflagged objects, anything that did not resolve, hidden events and a viewer with no seat owe nothing, and an ability put on the stack and resolved inside one batch has the flag of its source's card.
+// Goal: a seat owes the table its by-hand clauses from the resolution of a spell or ability of its own whose object the server flags `manual_owed` until it passes priority, in the order the events came, as the server holds the seat, and the hold names the card; the flag alone decides (clauses the server does not call owed, such as activated and loyalty abilities, hold nothing), other seats' objects, unflagged objects, anything that did not resolve, hidden events and a viewer with no seat owe nothing, an ability put on the stack and resolved inside one batch has the flag of its source's card, and an ability of its own the game left to the table (`AbilityLeftToTable`, public or hidden) holds it for its source card, as a by-hand line of its own that came due (`ByHandDue`) does.
 import { describe, expect, it } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
 import { must } from '@/test-utils/batches'
 import type { Event, EventView, ObjectId, ObjectView } from '@/protocol/generated'
-import { owesByHand } from './byHand'
+import { UNSEEN_SOURCE, dueLinesAfter, owesByHand } from './byHand'
+import type { DueLine } from './byHand'
 import { indexById } from './view'
 
 const view = buildFixture({ seats: 2 }).view
@@ -158,5 +159,79 @@ describe('an ability put on the stack and resolved inside one batch', () => {
 
   it('knows nothing of an ability whose source the view never held', () => {
     expect(owesByHand(null, goes(mine.id, 0, ended(ABILITY, 'Resolved')), 0, NONE, NONE)).toBeNull()
+  })
+})
+
+describe('an ability the game left to the table', () => {
+  const left = (source: ObjectId, controller: number): EventView =>
+    pub({ AbilityLeftToTable: { source: { id: source, counter: 0 }, controller, text: 'Draw a card.' } })
+  const hidden = (source: ObjectId, controller: number): EventView => ({
+    Hidden: { AbilityLeftToTable: { source: { id: source, counter: 0 }, controller } },
+  })
+
+  it.each<[string, string | null, EventView[], string | null]>([
+    ['its own, from a card without clauses', null, [left(mine.id, 0), ended(9001, 'Resolved')], mine.name],
+    ['its own, in a hidden event', null, [hidden(mine.id, 0)], mine.name],
+    ["another seat's", null, [left(theirs.id, 1)], null],
+    ["another seat's, hidden", EARLIER, [hidden(theirs.id, 1)], EARLIER],
+    ['its own, then the seat passes', null, [left(mine.id, 0), passed(0)], null],
+    ['its own, after the seat passed', null, [passed(0), left(mine.id, 0)], mine.name],
+    ['its own, from a source the view never held', null, [left(9999, 0)], UNSEEN_SOURCE],
+  ])('%s', (_what, owed, events, expected) => {
+    expect(owesByHand(owed, events, 0, table(mine, theirs), NONE)).toBe(expected)
+  })
+
+  it('holds nobody for a viewer with no seat', () => {
+    expect(owesByHand(null, [left(mine.id, 0)], null, table(mine), NONE)).toBeNull()
+  })
+})
+
+describe('a by-hand line that came due', () => {
+  const due = (source: ObjectId, controller: number): EventView =>
+    pub({
+      ByHandDue: {
+        source: { id: source, counter: 0 },
+        controller,
+        text: 'Whenever a creature dies, juggle.',
+      },
+    })
+
+  it.each<[string, string | null, EventView[], string | null]>([
+    ['its own', null, [due(mine.id, 0)], mine.name],
+    ["another seat's", EARLIER, [due(theirs.id, 1)], EARLIER],
+    ['its own, then the seat passes', null, [due(mine.id, 0), passed(0)], null],
+    ['its own, after the seat passed', null, [passed(0), due(mine.id, 0)], mine.name],
+    ['its own, from a source the view never held', null, [due(9999, 0)], UNSEEN_SOURCE],
+  ])('%s', (_what, owed, events, expected) => {
+    expect(owesByHand(owed, events, 0, table(mine, theirs), NONE)).toBe(expected)
+  })
+})
+
+describe('dueLinesAfter', () => {
+  const LINE = 'Whenever a creature dies, juggle.'
+  const due = (source: ObjectId, controller: number, text = LINE): EventView =>
+    pub({ ByHandDue: { source: { id: source, counter: 0 }, controller, text } })
+  const OLD: DueLine = { card: EARLIER, text: 'At the beginning of your upkeep, juggle.' }
+  const own = (text = LINE): DueLine => ({ card: mine.name, text })
+
+  it.each<[string, DueLine[], EventView[], number | null, DueLine[]]>([
+    ['its own line comes due', [], [due(mine.id, 0)], 0, [own()]],
+    ['a second one joins the first, in order', [OLD], [due(mine.id, 0)], 0, [OLD, own()]],
+    ['the same line twice', [], [due(mine.id, 0), due(mine.id, 0)], 0, [own(), own()]],
+    ["another seat's line", [OLD], [due(theirs.id, 1)], 0, [OLD]],
+    ['the seat passes', [OLD], [passed(0)], 0, []],
+    ['another seat passes', [OLD], [passed(1)], 0, [OLD]],
+    ['due, then the seat passes', [], [due(mine.id, 0), passed(0)], 0, []],
+    ['the seat passes, then a line comes due', [OLD], [passed(0), due(mine.id, 0)], 0, [own()]],
+    ['a source the view never held', [], [due(9999, 0)], 0, [{ card: UNSEEN_SOURCE, text: LINE }]],
+    ['a viewer with no seat', [OLD], [due(mine.id, 0)], null, []],
+    ['a hidden event', [OLD], [{ Hidden: { ManualMove: { player: 0, to: 'Graveyard' } } }], 0, [OLD]],
+  ])('when %s', (_what, lines, events, seat, expected) => {
+    expect(dueLinesAfter(lines, events, seat, table(mine, theirs), NONE)).toEqual(expected)
+  })
+
+  it('keeps the same list when nothing changes it', () => {
+    const lines = [OLD]
+    expect(dueLinesAfter(lines, [passed(1)], 0, NONE, NONE)).toBe(lines)
   })
 })

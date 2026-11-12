@@ -1,4 +1,4 @@
-// Goal: the not-validated page ("Cards to check") names its two jobs, offers a Review button for the cards that wait, lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, offers to play a card by hand in each deck that holds it, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
+// Goal: the not-validated page ("Cards to check") names its two jobs, offers a Review button for the cards that wait, lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, offers to play a card by hand in each deck that holds it, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and quotes from the report alone, reading no card.
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -12,7 +12,7 @@ import { renderInRouter } from '@/test-utils/router'
 import { fixMarksClient } from '../../fixmarks/client'
 import type { ByHandApi } from '../byHand'
 import { deckView } from '../fakeDecks'
-import { deckOf, filler, FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi, reportLine } from './fixture'
+import { deckOf, filler, FIXTURE_DECKS, fixtureDecksApi, reportLine } from './fixture'
 import type { FixtureOptions } from './fixture'
 import { UnvalidatedPage } from './UnvalidatedPage'
 
@@ -23,7 +23,6 @@ async function renderPage({
   ...fixture
 }: { deckId?: string; fixMarks?: FixMarksApi; byHand?: ByHandApi } & FixtureOptions = {}) {
   const decks = fixtureDecksApi(fixture)
-  const cards = fixtureCardsApi(fixture)
   const auth = createAuthStore({
     api: { ...offlineAccounts, myGames: async () => [] },
     initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
@@ -33,13 +32,12 @@ async function renderPage({
       <UnvalidatedPage
         {...(deckId === undefined ? {} : { deckId })}
         api={decks}
-        cards={cards}
         fixMarks={fixMarks}
         {...(byHand === undefined ? {} : { byHand })}
       />
     </AuthContext>,
   )
-  return { ...view, decks, cards, user: userEvent.setup() }
+  return { ...view, decks, user: userEvent.setup() }
 }
 
 const settled = () => screen.findByRole('list', { name: 'Cards not validated' })
@@ -176,7 +174,6 @@ describe('every saved deck', () => {
   ])('shows %s as %s with its decks, each a link to the builder', async (name, support, word, decks) => {
     await renderPage()
     await settled()
-    await waitFor(() => expect(screen.queryByText('Reading card text…')).toBeNull())
     const item = itemOf(name)
     expect(item).toHaveAttribute('data-support', support)
     expect(within(item).getByText(word)).toBeInTheDocument()
@@ -309,33 +306,18 @@ describe('Copy as text', () => {
     await waitFor(async () => expect(await navigator.clipboard.readText()).toBe(FULL_TEXT.split('\n\n')[0]))
   })
 
-  it('waits for the card texts: a disabled button says so instead of copying a list without quotes', async () => {
-    const decks = fixtureDecksApi()
-    const auth = createAuthStore({
-      api: { ...offlineAccounts, myGames: async () => [] },
-      initial: { status: 'signed-in', user: { id: 'ada', username: 'Ada_L', is_admin: false } },
-    })
-    await renderInRouter(
-      <AuthContext value={auth}>
-        <UnvalidatedPage api={decks} cards={{ get: () => new Promise(() => undefined) }} />
-      </AuthContext>,
-    )
+  it('quotes from the report and shows the reason alone for a clause the report quotes nothing for', async () => {
+    const quoteless = reportLine('drain')
+    const deck = deckOf('deck-old', 'Old Check', [
+      { ...quoteless, reasons: quoteless.reasons.map((reason) => ({ ...reason, quote: '' })) },
+    ])
+    const { user } = await renderPage({ decks: [deck] })
     await settled()
-    expect(screen.getByRole('button', { name: 'Reading card text…' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    )
-    expect(screen.queryByRole('button', { name: 'Copy as text' })).toBeNull()
-  })
-
-  it('says so when card texts cannot be read and copies the reasons alone', async () => {
-    const { user } = await renderPage({ cardsFail: true })
-    await settled()
-    expect(await screen.findByText(/The text of 6 cards could not be read/)).toBeInTheDocument()
+    expect(itemOf('Mana Drain').querySelector('blockquote')).toBeNull()
     await user.click(await screen.findByRole('button', { name: 'Copy as text' }))
     await waitFor(async () =>
-      expect((await navigator.clipboard.readText()).split('\n\n')[1]).toBe(
-        `Mana Drain (Partial) - decks: ${ATRAXA}, Izzet Spells\n  - The delayed mana is not implemented`,
+      expect(await navigator.clipboard.readText()).toBe(
+        'Mana Drain (Partial) - decks: Old Check\n  - The delayed mana is not implemented',
       ),
     )
   })
@@ -444,7 +426,7 @@ describe('the states of the page', () => {
     })
     await renderInRouter(
       <AuthContext value={auth}>
-        <UnvalidatedPage api={decks} cards={fixtureCardsApi()} />
+        <UnvalidatedPage api={decks} />
       </AuthContext>,
     )
     expect(await screen.findByText('Checking your decks…')).toBeInTheDocument()
