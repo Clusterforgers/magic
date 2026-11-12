@@ -607,6 +607,7 @@ fn ep23_written_anew(ability: &Ability) -> Vec<String> {
 }
 
 /// [`written_variants`] without the table of abilities written already.
+#[allow(clippy::too_many_lines)]
 fn written_anew(ability: &Ability) -> Vec<String> {
     let mut texts = written_ordered(ability);
     rmt3_enters::rmt3_variants(&mut texts);
