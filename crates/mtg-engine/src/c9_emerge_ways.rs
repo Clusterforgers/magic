@@ -172,6 +172,11 @@ pub(crate) fn c9_emerge_offered(
     way: &Way,
     cost: ManaCost,
 ) -> ManaCost {
+    if way.alternative == Some(CastWay::Offering) {
+        return crate::r301_offering::r301_offering_cost(
+            state, player, id, &way.parts, None, &cost,
+        );
+    }
     match c9_emerge_measure(way.alternative, way.variant) {
         Some(measure) => c9_emerge_reduced(
             &cost,

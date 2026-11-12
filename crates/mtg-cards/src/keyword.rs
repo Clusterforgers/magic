@@ -389,6 +389,8 @@ pub enum Keyword {
     Exploit,
     /// Soulbond (CR 702.95): the creature may be paired with another unpaired creature of its controller as either enters, and the pair lasts while both stay creatures under that controller on the battlefield.
     Soulbond,
+    /// Offering (CR 702.48): "Fox offering", what may be sacrificed to cast it at instant speed for less.
+    Offering(Selector),
     /// Emerge with its cost (CR 702.119): an alternative cost to cast the card from a hand by sacrificing a creature and paying the emerge cost reduced by that creature's mana value.
     Emerge(Cost),
     /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
@@ -638,6 +640,7 @@ impl Keyword {
         "Exploit",
         "Soulbond",
         "Emerge",
+        "Offering",
         "Harmonize",
         "Read ahead",
         "Exert",
@@ -842,6 +845,7 @@ impl Keyword {
             Keyword::Exploit => "Exploit",
             Keyword::Soulbond => "Soulbond",
             Keyword::Emerge(_) => "Emerge",
+            Keyword::Offering(_) => "Offering",
             Keyword::Harmonize(_) => "Harmonize",
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
@@ -1111,6 +1115,7 @@ mod tests {
             Keyword::Exploit,
             Keyword::Soulbond,
             Keyword::Emerge(Cost::default()),
+            Keyword::Offering(Selector::default()),
             Keyword::Harmonize(Cost::default()),
             Keyword::ReadAhead,
             Keyword::Exert {

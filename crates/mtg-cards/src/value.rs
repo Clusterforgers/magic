@@ -142,12 +142,17 @@ pub enum CastWay {
     Harmonize,
     /// An alternative cost the card prints in a static line, chosen per card (CR 118.9): cast from where `AltCast` names for the cost it gives.
     Alternative,
+    /// Offering (CR 702.48): from a hand at instant speed, its mana cost less a sacrificed permanent's.
+    Offering,
 }
 
 impl CastWay {
     /// Whether the way pays another cost in place of the mana cost (CR 118.9); jump-start and retrace add a cost to it.
     pub const fn replaces_cost(self) -> bool {
-        !matches!(self, CastWay::JumpStart | CastWay::Retrace)
+        !matches!(
+            self,
+            CastWay::JumpStart | CastWay::Retrace | CastWay::Offering
+        )
     }
 
     /// Whether a spell cast this way is exiled when it leaves the stack (flashback, jump-start, harmonize, disturb).
@@ -1496,6 +1501,7 @@ mod tests {
     #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
+    #[case::r301_offering_adds_to_the_cost(CastWay::Offering, false)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]
     #[case::warp(CastWay::Warp, true)]

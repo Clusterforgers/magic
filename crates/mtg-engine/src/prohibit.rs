@@ -82,6 +82,8 @@ pub(crate) enum Doing {
     Exile { object: ObjectId },
     /// `object` transforms.
     Transform { object: ObjectId },
+    /// `object` phases out on its own, not with the permanent it is attached to.
+    PhaseOut { object: ObjectId },
     /// `object` untaps.
     Untap { object: ObjectId },
     /// `object` moves onto the battlefield from another zone.
@@ -211,6 +213,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             Some(object),
         ),
         (Prohibited::Transform, Doing::Transform { object })
+        | (Prohibited::PhaseOut, Doing::PhaseOut { object })
         | (Prohibited::Untap, Doing::Untap { object })
         | (Prohibited::Crew, Doing::Crew { object })
         | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
@@ -456,6 +459,11 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             });
         }
         Event::Transformed { object, .. } => found.push(Doing::Transform { object: *object }),
+        Event::PermanentPhasedOut {
+            object,
+            indirect: false,
+            ..
+        } => found.push(Doing::PhaseOut { object: *object }),
         Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
         _ => {}
     }
@@ -467,12 +475,52 @@ pub(crate) fn filter(state: &GameState, events: Vec<Event>) -> Vec<Event> {
     if state.rules().cants.is_empty() {
         return events;
     }
-    events
+    let mut stayed: Vec<ObjectId> = Vec::new();
+    let kept: Vec<Event> = events
         .into_iter()
         .filter(|event| {
-            !doings(state, event)
+            let forbids = doings(state, event)
                 .into_iter()
-                .any(|doing| forbidden(state, doing))
+                .any(|doing| forbidden(state, doing));
+            if forbids && let Event::PermanentPhasedOut { object, .. } = event {
+                stayed.push(*object);
+            }
+            !forbids
+        })
+        .collect();
+    r301_attached_stay(state, kept, stayed)
+}
+
+/// `events` without the phasing out of what is attached, directly or through others, to a permanent in `stayed`: a
+/// permanent that can't phase out keeps what would have phased out with it (CR 702.26g).
+fn r301_attached_stay(
+    state: &GameState,
+    events: Vec<Event>,
+    mut stayed: Vec<ObjectId>,
+) -> Vec<Event> {
+    if stayed.is_empty() {
+        return events;
+    }
+    let host = |id: ObjectId| {
+        state
+            .object(id)
+            .and_then(GameObject::permanent)
+            .and_then(crate::object::PermanentState::attached_to)
+            .map(|host| host.id)
+    };
+    // The indirect events follow their host in the batch, so one pass in order finds every link of a chain.
+    events
+        .into_iter()
+        .filter(|event| match event {
+            Event::PermanentPhasedOut {
+                object,
+                indirect: true,
+                ..
+            } if host(*object).is_some_and(|h| stayed.contains(&h)) => {
+                stayed.push(*object);
+                false
+            }
+            _ => true,
         })
         .collect()
 }

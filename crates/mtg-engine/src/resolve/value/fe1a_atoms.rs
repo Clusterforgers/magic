@@ -24,9 +24,13 @@ impl Scope<'_> {
     ) -> Result<bool, ResolveError> {
         Ok(match pred {
             Pred::WasCast { by, from } => self.fe1a_was_cast(by.as_ref(), *from, seen)?,
-            Pred::CastWith(way) => {
-                Self::fe1a_cast_object(seen).is_some_and(|card| card.cast_way() == Some(*way))
-            }
+            Pred::CastWith(way) => match (self.casting, self.cast_targets.as_ref()) {
+                // The spell being announced is cast the way its choices name ("Dash costs you pay cost {2} less").
+                (Some((spell, _)), Some(cast)) if spell == reference.id => {
+                    cast.choices.way == Some(*way)
+                }
+                _ => Self::fe1a_cast_object(seen).is_some_and(|card| card.cast_way() == Some(*way)),
+            },
             Pred::Attacking => self
                 .state
                 .combat()

@@ -55,6 +55,7 @@ mod protection;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;
+mod r301_target_costs;
 mod r8p2_enters;
 mod reflexive;
 mod replacement;

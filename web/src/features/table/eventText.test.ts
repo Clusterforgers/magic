@@ -1001,6 +1001,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller while Jace Beleren stays tapped',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'WhileYouControlSourceTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while its controller controls Jace Beleren and it stays tapped',
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'UntilCastFromExile', { id: 6, counter: 0 }),
       'Hill Giant changes controller until Jace Beleren is cast from exile',
     ],

@@ -99,6 +99,8 @@ pub(crate) struct Pick {
     pub(crate) filter: Selector,
     /// How many; the least total power for a pick of [`Kind::TapPower`].
     pub(crate) count: usize,
+    /// The filter reads the X announced ("a red card with mana value X"): the part waits for X, then picks by it.
+    pub(crate) reads_x: bool,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -218,13 +220,15 @@ fn pick(
 ) -> Result<(Part, bool), &'static str> {
     let (count, x) = amount(count, item)?;
     let count = usize::try_from(count).unwrap_or(usize::MAX);
+    let reads_x = !x && filter.r301_reads_x();
     Ok((
         Part::Pick(Pick {
             kind,
             filter: filter.clone(),
             count,
+            reads_x,
         }),
-        x,
+        x || reads_x,
     ))
 }
 
@@ -260,6 +264,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -273,6 +278,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -289,6 +295,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count: 1,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -329,6 +336,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     kind,
                     filter,
                     count: 1,
+                    reads_x: false,
                 }),
                 false,
             )
@@ -474,6 +482,7 @@ impl Part {
                     count: x,
                 },
                 Part::Exert => Part::Exert,
+                Part::Pick(pick) if pick.reads_x => Part::Pick(pick.r301_at(x)),
                 Part::Pick(pick) => Part::Pick(Pick {
                     count: usize::try_from(x).unwrap_or(usize::MAX),
                     ..pick.clone()
@@ -487,6 +496,11 @@ impl Part {
     /// Whether the amount of the part is the X announced with the ability.
     pub(crate) const fn is_counted(&self) -> bool {
         matches!(self, Part::X(_))
+    }
+
+    /// Whether the part picks by the X announced ("a red card with mana value X").
+    pub(crate) fn r301_picks_by_x(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
     }
 
     /// Whether the part is energy of the X announced.
@@ -509,6 +523,7 @@ impl Part {
             Part::Among {
                 counter, filter, ..
             } => among::most(payer, filter, counter.as_ref()),
+            Part::Pick(pick) if pick.reads_x => pick.r301_most(payer),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
             Part::Exert
@@ -665,6 +680,10 @@ impl Part {
                 Part::Pick(pick) if pick.kind == Kind::Craft => Part::Pick(pick.clone())
                     .payable(payer, spare)
                     .map(|_| Vec::new()),
+                // Some X must leave the pick enough to take before X is announced.
+                Part::Pick(pick) if pick.reads_x => (0..=R301_MOST_X)
+                    .any(|x| Part::Pick(pick.r301_at(x)).payable(payer, spare).is_some())
+                    .then(Vec::new),
                 _ => Some(Vec::new()),
             },
         }
@@ -825,7 +844,32 @@ impl Payer<'_> {
     }
 }
 
+/// The largest X a pick whose filter reads X is tried with: more than any mana value or count a game has.
+const R301_MOST_X: u32 = 64;
+
 impl Pick {
+    /// The pick once X is announced as `x`: its filter reads `x` in the place of X.
+    fn r301_at(&self, x: u32) -> Pick {
+        Pick {
+            filter: self
+                .filter
+                .r301_with_x(i32::try_from(x).unwrap_or(i32::MAX)),
+            reads_x: false,
+            ..self.clone()
+        }
+    }
+
+    /// The largest X that leaves the pick enough to take; 0 when none does.
+    fn r301_most(&self, payer: &Payer<'_>) -> u32 {
+        (0..=R301_MOST_X)
+            .rev()
+            .find(|x| {
+                let at = self.r301_at(*x);
+                !at.short(payer.state, &at.candidates(payer))
+            })
+            .unwrap_or(0)
+    }
+
     /// Whether the part removes a counter of any kind, whose kind the player picks for each permanent.
     pub(crate) fn w2f_any_kind(&self) -> bool {
         self.kind == Kind::Counter && c11c_counter_picks::c11c_kind(&self.filter).is_none()

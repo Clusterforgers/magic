@@ -1,7 +1,7 @@
 {
   "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
   "name": "Gwen Stacy // Ghost-Spider",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gwen Stacy",
@@ -9,13 +9,30 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
             "effects": [
-              { "ExileTop": { "as": "impulse" } },
+              {
+                "ExileTop": {
+                  "as": "impulse"
+                }
+              },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": {
+                        "Bound": "impulse"
+                      },
+                      "play": true
+                    }
                   },
                   "duration": "WhileYouControlSource"
                 }
@@ -27,7 +44,13 @@
           "Activated": {
             "cost": "{2}{W}{U}{R}",
             "timing": "Sorcery",
-            "effects": [{ "Transform": { "what": "This" } }]
+            "effects": [
+              {
+                "Transform": {
+                  "what": "This"
+                }
+              }
+            ]
           }
         }
       ]
@@ -36,19 +59,89 @@
       "name": "Ghost-Spider",
       "oracle_fingerprint": "29941cfe91e39130f290b03cc3efd5e9",
       "abilities": [
-        { "Keyword": "Flying" },
-        { "Keyword": "Vigilance" },
-        { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 25, "end": 125 }
+          "Keyword": "Flying"
+        },
+        {
+          "Keyword": "Vigilance"
+        },
+        {
+          "Keyword": "Haste"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      {
+                        "Type": "Land"
+                      },
+                      {
+                        "ControlledBy": "You"
+                      },
+                      {
+                        "ArrivedFrom": "Exile"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "WasCast": {
+                          "from": "Exile"
+                        }
+                      }
+                    ],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 126, "end": 234 }
+          "Activated": {
+            "cost": [
+              {
+                "RemoveCounters": {
+                  "count": 2
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExileTop": {
+                  "as": "impulse"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": {
+                        "Bound": "impulse"
+                      },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,16 +1,23 @@
 {
   "oracle_id": "55e564b4-7c08-4109-bd67-da5f31fe002e",
   "name": "Fall of the Titans",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fall of the Titans",
       "oracle_fingerprint": "8a186e12c8952eb990e2c0297a8f0570",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 112 }
+          "AltCast": {
+            "way": "Surge",
+            "cost": "{X}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         },
         {

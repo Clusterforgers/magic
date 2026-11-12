@@ -320,6 +320,7 @@ impl<'a> Pairer<'a> {
         self.manual();
         self.rmt0_cleave();
         self.keywords();
+        self.r301_keyword_rules();
         self.alt_keywords();
         self.equip_options();
         self.champions();
@@ -469,6 +470,57 @@ impl<'a> Pairer<'a> {
                     self.slot_of[later] = Some(slot);
                     self.places[later] = Some(self.slots[slot].clause.span.start);
                 }
+            }
+        }
+    }
+
+    /// A keyword line or an activated ability with a rule about its cost after it ("Flashback {8}{W}{W}. This spell costs
+    /// {X} less to cast this way, where X is ...", "{2}, {T}: Tap target creature. This ability costs {1} less to
+    /// activate if ..."): the first ability reads or writes the head and the next one writes the sentence after it, so the
+    /// two stand for the clause together.
+    fn r301_keyword_rules(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len().saturating_sub(1) {
+            let keyword = matches!(abilities[at], Ability::Keyword(_));
+            let activated = matches!(abilities[at], Ability::Activated { .. });
+            if self.taken[at]
+                || self.taken[at + 1]
+                || !(keyword || activated)
+                || !matches!(abilities[at + 1], Ability::CostModifier { .. })
+            {
+                continue;
+            }
+            let written = written_variants(&abilities[at + 1]);
+            let heads = written_variants(&abilities[at]);
+            let found = self.slots.iter().position(|slot| {
+                let split = if keyword {
+                    slot.text.split_once(". ")
+                } else {
+                    slot.text
+                        .find(". This ability costs ")
+                        .map(|end| (&slot.text[..=end], &slot.text[end + 2..]))
+                };
+                let Some((line, rule)) = split else {
+                    return false;
+                };
+                let head_reads = if keyword {
+                    slot.clause.kind == ClauseKind::Keyword
+                        && read_keywords(line).is_some_and(|keywords| {
+                            keywords.len() == 1 && self.run_reads(at, &keywords)
+                        })
+                } else {
+                    slot.clause.kind == ClauseKind::Activated
+                        && heads.iter().any(|variant| self.same(variant, line))
+                };
+                slot.state.is_none()
+                    && head_reads
+                    && written.iter().any(|variant| self.same(variant, rule))
+            });
+            if let Some(slot) = found {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+                self.taken[at + 1] = true;
+                self.slot_of[at + 1] = Some(slot);
+                self.places[at + 1] = Some(self.slots[slot].clause.span.start);
             }
         }
     }

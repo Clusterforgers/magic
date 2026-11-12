@@ -87,6 +87,7 @@ pub(super) use r7d::WHILE_TAPPED;
 mod dk1d_gift_target;
 mod r280_steps;
 mod r287_words;
+mod r301_phasing;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -3571,6 +3572,7 @@ impl Writer<'_> {
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
             .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.r301_cant_phase_out(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

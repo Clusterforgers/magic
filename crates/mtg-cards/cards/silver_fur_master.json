@@ -1,7 +1,7 @@
 {
   "oracle_id": "60ec735d-c9be-4776-beb7-f603ae22edbf",
   "name": "Silver-Fur Master",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Silver-Fur Master",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Keyword": { "Ninjutsu": "{U}{B}" } },
         {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 148, "end": 206 }
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Ninjutsu"
           }
         },
         {

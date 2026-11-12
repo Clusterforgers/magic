@@ -1,7 +1,7 @@
 {
   "oracle_id": "bbd7b756-bbee-451e-9446-06019791cb36",
   "name": "The Pride of Hull Clade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Pride of Hull Clade",
@@ -22,9 +22,46 @@
         },
         { "Keyword": "Defender" },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 101, "end": 319 }
+          "Activated": {
+            "cost": "{2}{U}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Draw": { "count": { "Stat": { "of": "This", "stat": "Toughness" } } }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": { "Target": 0 }, "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "37d5c720-d090-44bc-91df-0a7bab79a03e",
+  "name": "The Underworld Cookbook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Underworld Cookbook",
+      "oracle_fingerprint": "dd502ad0376c5ff68cee5090e759d228",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Discard": {}
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Named": "food"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Mana": "{4}"
+              },
+              "Tap",
+              "SacrificeSelf"
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    },
+                    {
+                      "In": "Graveyard"
+                    },
+                    {
+                      "OwnedBy": "You"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Target": 0
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

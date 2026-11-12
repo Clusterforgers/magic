@@ -33,6 +33,22 @@ pub enum DeckCondition {
     },
     /// The deck holds at least this many cards more than the format's minimum deck size.
     ExtraCards(u32),
+    /// The cards that match `of` share a card type.
+    ShareCardType {
+        /// The cards; every card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        of: Selector,
+    },
+    /// Every card that matches `of` has an even (or odd) mana value.
+    ManaValueParity {
+        /// The cards; every card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        of: Selector,
+        /// Even, else odd.
+        even: bool,
+    },
+    /// No card repeats a mana symbol in its mana cost.
+    NoRepeatedSymbol,
 }
 
 /// A card of a starting deck as the condition reads it: the characteristics the predicates ask about.
@@ -50,6 +66,8 @@ pub struct DeckCard {
     pub subtypes: Vec<Subtype>,
     /// Its colours.
     pub colors: ColorSet,
+    /// Its mana cost holds one mana symbol more than once (`{1}{1}` does not occur; `{G}{G}` and `{X}{X}` do).
+    pub repeats_a_symbol: bool,
 }
 
 impl From<&CardDefinition> for DeckCard {
@@ -61,6 +79,13 @@ impl From<&CardDefinition> for DeckCard {
             supertypes: card.supertypes.clone(),
             subtypes: card.subtypes.clone(),
             colors: card.colors(),
+            repeats_a_symbol: card.mana_cost.as_ref().is_some_and(|cost| {
+                let symbols = cost.symbols();
+                symbols
+                    .iter()
+                    .enumerate()
+                    .any(|(at, symbol)| symbols[at + 1..].contains(symbol))
+            }),
         }
     }
 }
@@ -105,7 +130,10 @@ impl DeckCondition {
         let selectors: Vec<&Selector> = match self {
             DeckCondition::Each { of, has } => vec![of, has],
             DeckCondition::Distinct { of } => vec![of],
-            DeckCondition::ExtraCards(_) => Vec::new(),
+            DeckCondition::ShareCardType { of } | DeckCondition::ManaValueParity { of, .. } => {
+                vec![of]
+            }
+            DeckCondition::ExtraCards(_) | DeckCondition::NoRepeatedSymbol => Vec::new(),
         };
         let probe = DeckCard {
             name: String::new(),
@@ -114,6 +142,7 @@ impl DeckCondition {
             supertypes: BTreeSet::new(),
             subtypes: Vec::new(),
             colors: ColorSet::EMPTY,
+            repeats_a_symbol: false,
         };
         selectors
             .into_iter()
@@ -151,6 +180,41 @@ impl DeckCondition {
                     None => Ok(()),
                 }
             }
+            DeckCondition::ShareCardType { of } => {
+                let mut shared: Option<BTreeSet<CardType>> = None;
+                for card in deck.iter().filter(|card| selects(of, card)) {
+                    let left: BTreeSet<CardType> = match shared {
+                        None => card.types.clone(),
+                        Some(before) => before.intersection(&card.types).copied().collect(),
+                    };
+                    if left.is_empty() {
+                        return Err(format!(
+                            "{} shares no card type with the cards before it",
+                            card.name
+                        ));
+                    }
+                    shared = Some(left);
+                }
+                Ok(())
+            }
+            DeckCondition::ManaValueParity { of, even } => match deck
+                .iter()
+                .find(|card| selects(of, card) && (card.mana_value % 2 == 0) != *even)
+            {
+                Some(card) => Err(format!(
+                    "{} does not fit the companion's condition",
+                    card.name
+                )),
+                None => Ok(()),
+            },
+            DeckCondition::NoRepeatedSymbol => match deck.iter().find(|card| card.repeats_a_symbol)
+            {
+                Some(card) => Err(format!(
+                    "{} has a mana symbol more than once in its cost",
+                    card.name
+                )),
+                None => Ok(()),
+            },
             DeckCondition::ExtraCards(extra) => {
                 let wanted = minimum + usize::try_from(*extra).unwrap_or(usize::MAX - minimum);
                 if deck.len() >= wanted {
@@ -253,6 +317,31 @@ mod tests {
     #[case::lutri_with_two_lands_of_a_name(lutri(), &[("Forest", "", CardType::Land), ("Forest", "", CardType::Land), ("A", "{G}", CardType::Instant)], true)]
     #[case::lutri_with_a_repeated_spell(lutri(), &[("A", "{G}", CardType::Instant), ("A", "{G}", CardType::Instant)], false)]
     fn conditions_over_a_deck(
+        #[case] condition: DeckCondition,
+        #[case] cards: &[(&str, &str, CardType)],
+        #[case] holds: bool,
+    ) {
+        let deck: Vec<DeckCard> = cards
+            .iter()
+            .map(|(name, cost, ty)| card(name, cost, &[*ty], &[]))
+            .collect();
+        assert_eq!(condition.check(&deck, 60).is_ok(), holds);
+    }
+
+    fn nonland() -> Selector {
+        Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))])
+    }
+
+    #[rstest]
+    #[case::r301_umori_all_creatures(DeckCondition::ShareCardType { of: nonland() }, &[("A", "{G}", CardType::Creature), ("B", "{2}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_umori_a_creature_and_an_instant(DeckCondition::ShareCardType { of: nonland() }, &[("A", "{G}", CardType::Creature), ("B", "{U}", CardType::Instant)], false)]
+    #[case::r301_gyruda_even(DeckCondition::ManaValueParity { of: Selector::default(), even: true }, &[("A", "{1}{G}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_gyruda_an_odd_card(DeckCondition::ManaValueParity { of: Selector::default(), even: true }, &[("A", "{G}", CardType::Creature)], false)]
+    #[case::r301_obosh_odd_and_lands(DeckCondition::ManaValueParity { of: nonland(), even: false }, &[("A", "{2}{R}", CardType::Creature), ("F", "", CardType::Land)], true)]
+    #[case::r301_obosh_an_even_spell(DeckCondition::ManaValueParity { of: nonland(), even: false }, &[("A", "{1}{R}", CardType::Instant)], false)]
+    #[case::r301_jegantha_distinct_symbols(DeckCondition::NoRepeatedSymbol, &[("A", "{2}{R}{G}", CardType::Creature)], true)]
+    #[case::r301_jegantha_two_greens(DeckCondition::NoRepeatedSymbol, &[("A", "{1}{G}{G}", CardType::Creature)], false)]
+    fn r301_conditions_over_a_deck(
         #[case] condition: DeckCondition,
         #[case] cards: &[(&str, &str, CardType)],
         #[case] holds: bool,
