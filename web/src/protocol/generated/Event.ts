@@ -764,7 +764,11 @@ object: ObjectId,
 /**
  * The player whose next turn began: the copies until that turn end; none for those until end of turn.
  */
-next_turn_of?: PlayerId, } } | { "MonarchChanged": { 
+next_turn_of?: PlayerId, 
+/**
+ * The object whose staying attached kept the copy going ("for as long as this Equipment remains attached to it").
+ */
+attached_by?: ObjectRef, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */
