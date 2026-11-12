@@ -189,6 +189,7 @@ fn compact(name: &str) -> String {
     r#"{"CollectEvidence":3}"#
 )]
 #[case::overlord_tapped("Overlord of the Hauntwoods", r#""tapped":true,"#, "")]
+#[case::bolas_three("Nicol Bolas, the Deceiver", r#""amount":3"#, r#""amount":2"#)]
 fn r289_a_card_reads_back_and_a_near_miss_does_not(
     #[case] name: &str,
     #[case] from: &str,
@@ -210,7 +211,6 @@ fn r289_a_card_reads_back_and_a_near_miss_does_not(
 }
 
 #[rstest]
-#[case::bolas_unless_or_discard("Nicol Bolas, the Deceiver", 1)]
 #[case::cacophony_legendary_god("Cacophony Unleashed", 1)]
 #[case::pir_team_counters("Pir, Imaginative Rascal", 1)]
 #[case::campsite_sacrifice_foods("Campsite Cuisine", 1)]

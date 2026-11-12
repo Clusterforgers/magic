@@ -1,31 +1,141 @@
 {
   "oracle_id": "524b00ea-0372-40f9-a6a1-76a8497a1ea6",
   "name": "Nicol Bolas, the Deceiver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nicol Bolas, the Deceiver",
       "oracle_fingerprint": "ba8c83900f1b18990b51e6c0d8282f1a",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 0, "end": 116 }
-          }
-        },
-        {
           "Loyalty": {
-            "cost": { "Minus": 3 },
-            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
-            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Draw": {} }]
-          }
-        },
-        {
-          "Loyalty": {
-            "cost": { "Minus": 11 },
+            "cost": {
+              "Plus": 3
+            },
             "effects": [
-              { "DealDamage": { "to": "Opponents", "amount": 7 } },
-              { "Draw": { "count": 7 } }
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": {
+                          "Bound": "each"
+                        },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": {
+                                  "Bound": "each"
+                                },
+                                "cost": [
+                                  {
+                                    "Sacrifice": {
+                                      "filter": [
+                                        {
+                                          "Not": {
+                                            "Type": "Land"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "unpaid": [
+                                  {
+                                    "LoseLife": {
+                                      "who": {
+                                        "Bound": "each"
+                                      },
+                                      "amount": 3
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": {
+                                  "Bound": "each"
+                                },
+                                "cost": [
+                                  {
+                                    "Discard": {}
+                                  }
+                                ],
+                                "unpaid": [
+                                  {
+                                    "LoseLife": {
+                                      "who": {
+                                        "Bound": "each"
+                                      },
+                                      "amount": 3
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": {
+              "Minus": 3
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              },
+              {
+                "Draw": {}
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": {
+              "Minus": 11
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": 7
+                }
+              },
+              {
+                "Draw": {
+                  "count": 7
+                }
+              }
             ]
           }
         }

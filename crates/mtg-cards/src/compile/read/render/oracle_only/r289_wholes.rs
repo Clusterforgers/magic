@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R289_WHOLES: [(&str, &str); 22] = [
+const R289_WHOLES: [(&str, &str); 23] = [
     // gideon_martial_paragon
     (
         r#"{"Loyalty":{"cost":"Zero","effects":[{"Continuous":{"affected":"This","mods":[{"AddType":"Creature"},{"SetCreatureTypes":["Human","Soldier"]},{"SetPT":{"power":5,"toughness":5}},{"AddKeyword":"Indestructible"}],"duration":"UntilEndOfTurn"}},{"Shield":{"when":{"Damage":{"to":"This"}},"by":"Prevent","duration":"UntilEndOfTurn"}}]}}"#,
@@ -115,6 +115,11 @@ const R289_WHOLES: [(&str, &str); 22] = [
     (
         r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Everywhere","types":["Land"],"subtypes":["Plains","Island","Swamp","Mountain","Forest"]}},"tapped":true}}]}}"#,
         r"Whenever this permanent enters or attacks, create a tapped colorless land token named Everywhere that is every basic land type.",
+    ),
+    // nicol_bolas_the_deceiver
+    (
+        r#"{"Loyalty":{"cost":{"Plus":3},"effects":[{"RepeatEach":{"over":"Opponents","as":"each","effects":[{"OneOf":{"who":{"Bound":"each"},"options":[[{"Pay":{"who":{"Bound":"each"},"cost":[{"Sacrifice":{"filter":[{"Not":{"Type":"Land"}}]}}],"unpaid":[{"LoseLife":{"who":{"Bound":"each"},"amount":3}}]}}],[{"Pay":{"who":{"Bound":"each"},"cost":[{"Discard":{}}],"unpaid":[{"LoseLife":{"who":{"Bound":"each"},"amount":3}}]}}]]}}]}}]}}"#,
+        r"+3: Each opponent loses 3 life unless that player sacrifices a nonland permanent of their choice or discards a card.",
     ),
     // END
 ];
