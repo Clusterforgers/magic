@@ -1621,6 +1621,10 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::PlayerBecomesTarget { .. } => {
             super::l290_writers::l290_player_targeted_text(pattern)
         }
+        TriggerPattern::PlayerAttacks {
+            at: Ref::PlayersWhere { .. },
+            ..
+        } => super::l290_writers::l290_attacks_initiative_text(pattern),
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
         TriggerPattern::BecomesBlocked {
             by, once: false, ..

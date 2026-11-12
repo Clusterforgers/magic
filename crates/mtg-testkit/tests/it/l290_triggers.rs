@@ -243,3 +243,222 @@ fn witch_maw_nephilim_gains_trample_with_power_ten(
     );
     Ok(())
 }
+
+/// A card for `{0}` of the type with these rules (JSON), a 2/2 when it is a creature.
+fn free(name: &str, ty: CardType, legendary: bool, rules: &[&str]) -> Arc<CardDefinition> {
+    let mut definition = CardDefinition::new(name)
+        .with_type(ty)
+        .with_mana_cost(mtg_testkit::cards::cost(0, &[]));
+    if ty == CardType::Creature {
+        definition = definition.with_power_toughness(2, 2);
+    }
+    if legendary {
+        definition = definition.with_supertype(mtg_core::card::Supertype::Legendary);
+    }
+    for rule in rules {
+        definition = definition.with_rules(serde_json::from_str::<Ability>(rule).unwrap());
+    }
+    Arc::new(definition)
+}
+
+fn count_named(driver: &Driver, name: &str) -> usize {
+    names(driver.state(), Zone::Battlefield)
+        .iter()
+        .filter(|n| *n == name)
+        .count()
+}
+
+#[rstest]
+#[case::the_holder_attacked(1, 1)]
+#[case::the_holder_not_attacked(2, 0)]
+fn loot_dispute_makes_treasure_when_you_attack_the_initiative_holder(
+    #[case] holder: usize,
+    #[case] treasures: usize,
+    #[values(3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let gift = free(
+        "Gift",
+        CardType::Instant,
+        false,
+        &[
+            r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"TakeInitiative":{"who":{"Target":0}}}]}}"#,
+        ],
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .hand(0, [gift])
+            .battlefield(
+                0,
+                [
+                    ready(card("Loot Dispute").unwrap()),
+                    ready(free("Bear", CardType::Creature, false, &[])),
+                ],
+            ),
+    )?;
+    let player = driver.target_player(holder);
+    driver.cast_at("Gift", &[player])?;
+    settle(&mut driver)?;
+    driver.pass_until(Step::DeclareAttackers)?;
+    let before = count_named(&driver, "Treasure");
+    driver.attack(&[("Bear", 1)])?;
+    settle(&mut driver)?;
+    assert_eq!(count_named(&driver, "Treasure") - before, treasures);
+    Ok(())
+}
+
+#[rstest]
+#[case::a_targeted_ability(true, 20)]
+#[case::an_untargeted_ability(false, 1)]
+fn ertha_jo_copies_an_ability_that_targets_a_player(
+    #[case] targeted: bool,
+    #[case] gained: i32,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let source = if targeted {
+        healer()
+    } else {
+        engine_card(false)
+    };
+    let name = if targeted { "Healer" } else { "Engine" };
+    let mut driver = Driver::from_scenario(Scenario::new(seats).battlefield(
+        0,
+        [
+            ready(card("Ertha Jo, Frontier Mentor").unwrap()),
+            ready(source),
+        ],
+    ))?;
+    let before = life(&driver, 0);
+    driver.begin_ability(name, 0)?;
+    if targeted {
+        let player = driver.target_player(0);
+        driver.choose_targets(&[player])?;
+    }
+    settle(&mut driver)?;
+    assert_eq!(life(&driver, 0) - before, gained);
+    Ok(())
+}
+
+#[rstest]
+#[case::no_keimi_yet(false)]
+#[case::keimi_already(true)]
+fn tatsunari_makes_keimi_only_while_you_control_none(
+    #[case] already: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut mine = vec![ready(card("Tatsunari, Toad Rider").unwrap())];
+    if already {
+        mine.push(ready(free("Keimi", CardType::Creature, true, &[])));
+    }
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .hand(0, [free("Charm", CardType::Enchantment, false, &[])])
+            .battlefield(0, mine),
+    )?;
+    driver.cast("Charm")?;
+    settle(&mut driver)?;
+    let created = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| matches!(event, mtg_engine::events::Event::TokenCreated(token) if token.name == "Keimi"))
+        .count();
+    assert_eq!(created, usize::from(!already));
+    Ok(())
+}
+
+#[rstest]
+#[case::a_legendary_creature(true, 1)]
+#[case::another_creature(false, 0)]
+fn campsite_cuisine_makes_food_for_a_legendary_creature(
+    #[case] legendary: bool,
+    #[case] foods: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .hand(0, [free("Hero", CardType::Creature, legendary, &[])])
+            .battlefield(0, [ready(card("Campsite Cuisine").unwrap())]),
+    )?;
+    driver.cast("Hero")?;
+    settle(&mut driver)?;
+    assert_eq!(count_named(&driver, "Food"), foods);
+    Ok(())
+}
+
+#[rstest]
+fn phantom_steed_attacks_with_an_illusion_copy_of_the_exiled_card_until_end_of_combat(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let island = || ready(mtg_testkit::cards::island());
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .hand(0, [card("Phantom Steed").unwrap()])
+            .battlefield(
+                0,
+                [
+                    island(),
+                    island(),
+                    island(),
+                    island(),
+                    ready(free("Bear", CardType::Creature, false, &[])),
+                ],
+            ),
+    )?;
+    driver.cast_tapping("Phantom Steed", &["Island", "Island", "Island", "Island"])?;
+    settle(&mut driver)?;
+    assert_eq!(count_named(&driver, "Bear"), 0, "the bear is exiled");
+    let turn = 2 + u32::try_from(seats).unwrap();
+    driver.idle_until(turn, Step::DeclareAttackers)?;
+    driver.attack(&[("Phantom Steed", 1)])?;
+    settle(&mut driver)?;
+    let state = driver.state();
+    let copy = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .find(|id| state.object(*id).is_some_and(|o| o.card().name == "Bear"))
+        .expect("the copy attacks");
+    let values = state.object(copy).unwrap().card();
+    assert!(
+        values
+            .subtypes
+            .iter()
+            .any(|subtype| subtype.0 == "Illusion"),
+        "the copy is an Illusion"
+    );
+    driver.idle_until(turn, Step::End)?;
+    assert_eq!(count_named(&driver, "Bear"), 0, "the copy is sacrificed");
+    Ok(())
+}
+
+#[rstest]
+fn mirror_style_master_copies_each_attacking_modified_creature_until_end_of_combat(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let creature = |name: &str| ready(free(name, CardType::Creature, false, &[]));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(
+                0,
+                [
+                    ready(card("Mirror-Style Master").unwrap()),
+                    with_counters(creature("Bear"), CounterKind::PlusOnePlusOne, 1),
+                    creature("Wolf"),
+                ],
+            ),
+    )?;
+    driver.attack(&[("Mirror-Style Master", 1), ("Bear", 1), ("Wolf", 1)])?;
+    settle(&mut driver)?;
+    assert_eq!(
+        (count_named(&driver, "Bear"), count_named(&driver, "Wolf")),
+        (2, 1)
+    );
+    driver.idle_until(2, Step::End)?;
+    assert_eq!(count_named(&driver, "Bear"), 1, "the copy is exiled");
+    Ok(())
+}

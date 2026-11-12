@@ -57,6 +57,26 @@ fn says(json: &str, text: &str) -> bool {
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"You"},{"AnyOf":["This",{"Is":{"Each":["Commander",{"OwnedBy":"You"}]}}]}]}},"effects":[{"Draw":{}}]}}"#,
     "Whenever you attack with ~ and/or your commander, draw a card."
 )]
+#[case::initiative(
+    r#"{"Triggered":{"when":{"PlayerAttacks":{"by":"You","at":{"PlayersWhere":{"who":"EachPlayer","test":{"Initiative":"You"}}}}},"effects":[{"Draw":{}}]}}"#,
+    "Whenever you attack the player who has the initiative, draw a card."
+)]
+#[case::copy_a_targeting_ability(
+    r#"{"Triggered":{"when":{"Did":{"action":"Activated","who":"You"}},"if":{"AtTrigger":{"Matches":{"subject":"Dealer","selector":[{"AnyOf":[{"Targeting":[{"Type":"Creature"}]},{"TargetsPlayer":"EachPlayer"}]}]}}},"effects":[{"CopyAbility":{"what":"Dealer","new_targets":true}}]}}"#,
+    "Whenever you activate an ability that targets a creature or player, copy that ability. You may choose new targets for the copy."
+)]
+#[case::own_or_legendary_enters(
+    r#"{"Triggered":{"when":{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"ZoneChange":{"what":[{"Supertype":"Legendary"},{"Type":"Creature"},{"ControlledBy":"You"}],"to":"Battlefield"}}]},"effects":[{"CreateToken":{"token":{"Named":"food"}}}]}}"#,
+    "Whenever ~ or a legendary creature you control enters, create a Food token."
+)]
+#[case::modified_copies(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"RepeatEach":{"over":{"Each":[{"Type":"Creature"},"Attacking","Modified",{"ControlledBy":"You"}]},"as":"c","effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"c"}}},"tapped":true,"attacking":true,"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"EndCombat"}},"effects":[{"Exile":{"what":{"Bound":"copy"}}}]}}]}}]}}"#,
+    "Whenever ~ attacks, for each attacking modified creature you control, create a tapped and attacking token that's a copy of that creature. Exile those tokens at end of combat."
+)]
+#[case::named_token_unless_controlled(
+    r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Enchantment"}],"by":"You"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"},{"Named":"Mowu"}]},"op":"Lt","right":1}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Mowu","colors":["Green"],"supertypes":["Legendary"],"types":["Creature"],"subtypes":["Dog"],"power":3,"toughness":3}}}}]}}"#,
+    "Whenever you cast an enchantment spell, if you don't control a creature named Mowu, create Mowu, a legendary 3/3 green Dog creature token."
+)]
 fn a_shape_reads_as_its_card(#[case] json: &str, #[case] text: &str) {
     assert!(
         says(json, text),
@@ -97,6 +117,26 @@ fn a_shape_reads_as_its_card(#[case] json: &str, #[case] text: &str) {
 #[case::anyones_commander(
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"You"},{"AnyOf":["This","Commander"]}]}},"effects":[{"Draw":{}}]}}"#,
     "Whenever you attack with ~ and/or your commander, draw a card."
+)]
+#[case::the_monarch_attacked(
+    r#"{"Triggered":{"when":{"PlayerAttacks":{"by":"You","at":{"PlayersWhere":{"who":"EachPlayer","test":{"Monarch":"You"}}}}},"effects":[{"Draw":{}}]}}"#,
+    "Whenever you attack the player who has the initiative, draw a card."
+)]
+#[case::copy_any_ability(
+    r#"{"Triggered":{"when":{"Did":{"action":"Activated","who":"You"}},"effects":[{"CopyAbility":{"what":"Dealer","new_targets":true}}]}}"#,
+    "Whenever you activate an ability that targets a creature or player, copy that ability. You may choose new targets for the copy."
+)]
+#[case::copy_without_new_targets(
+    r#"{"Triggered":{"when":{"Did":{"action":"Activated","who":"You"}},"if":{"AtTrigger":{"Matches":{"subject":"Dealer","selector":[{"AnyOf":[{"Targeting":[{"Type":"Creature"}]},{"TargetsPlayer":"EachPlayer"}]}]}}},"effects":[{"CopyAbility":{"what":"Dealer"}}]}}"#,
+    "Whenever you activate an ability that targets a creature or player, copy that ability. You may choose new targets for the copy."
+)]
+#[case::modified_copies_sacrificed(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"RepeatEach":{"over":{"Each":[{"Type":"Creature"},"Attacking","Modified",{"ControlledBy":"You"}]},"as":"c","effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Bound":"c"}}},"tapped":true,"attacking":true,"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"EndCombat"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"copy"}}]}}]}}]}}]}}"#,
+    "Whenever ~ attacks, for each attacking modified creature you control, create a tapped and attacking token that's a copy of that creature. Exile those tokens at end of combat."
+)]
+#[case::exiled_copy_not_an_illusion(
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"CreateToken":{"token":{"CopyOf":{"of":{"Each":[{"ExiledWith":"This"},{"In":"Exile"}]}}},"tapped":true,"attacking":true,"as":"copy"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"EndCombat"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"copy"}}]}}]}}]}}"#,
+    "Whenever ~ attacks, create a tapped and attacking token that's a copy of the exiled card, except it's an Illusion in addition to its other types. Sacrifice that token at end of combat."
 )]
 fn a_near_miss_is_not_worded_as_the_card(#[case] json: &str, #[case] text: &str) {
     assert!(!says(json, text));
