@@ -9,9 +9,9 @@ export type DeckRules = {
  */
 singleton?: boolean, 
 /**
- * Whether every card must lie within the commanders' colour identity.
+ * Whether every card must lie within the commanders' color identity; the older key `colour_identity` reads the same.
  */
-colour_identity?: boolean, 
+color_identity?: boolean, 
 /**
  * The exact number of cards in a deck, its commanders included.
  */

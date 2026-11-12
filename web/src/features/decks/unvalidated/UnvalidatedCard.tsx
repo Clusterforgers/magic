@@ -14,10 +14,6 @@ import type { FlaggedCard } from './model'
 
 interface UnvalidatedCardProps {
   card: FlaggedCard
-  /** The oracle text of the card, one string per face, once read. */
-  faces: readonly string[] | undefined
-  /** The card's text is still being read. */
-  pending: boolean
   /** Name the decks that hold the card under its name. */
   showDecks: boolean
   /** The fix-mark endpoints; with them the card gets a flag that marks it important to fix. */
@@ -27,7 +23,7 @@ interface UnvalidatedCardProps {
 }
 
 /** One card the game does not run whole: its picture, name and state, the decks that hold it and each unread clause. */
-export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks, byHand }: UnvalidatedCardProps) {
+export function UnvalidatedCard({ card, showDecks, fixMarks, byHand }: UnvalidatedCardProps) {
   return (
     <li
       data-card={card.oracleId}
@@ -83,7 +79,7 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks, byH
           />
         )}
         <DiffersList differs={card.differs ?? []} />
-        <ClauseList lines={clauseLines(card, faces)} support={card.support} pending={pending} />
+        <ClauseList lines={clauseLines(card)} support={card.support} />
         <DraftNote draft={card.draft} />
       </div>
     </li>

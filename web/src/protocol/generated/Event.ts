@@ -3,6 +3,7 @@ import type { AbilityCopy } from "./AbilityCopy";
 import type { AbilitySource } from "./AbilitySource";
 import type { AttackTarget } from "./AttackTarget";
 import type { BecameCopy } from "./BecameCopy";
+import type { ByHandDue } from "./ByHandDue";
 import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
 import type { CardsFound } from "./CardsFound";
@@ -52,6 +53,7 @@ import type { TokenCreated } from "./TokenCreated";
 import type { Triggered } from "./Triggered";
 import type { Unplayable } from "./Unplayable";
 import type { W11dVentured } from "./W11dVentured";
+import type { Why } from "./Why";
 import type { Zone } from "./Zone";
 import type { ZoneCause } from "./ZoneCause";
 
@@ -191,7 +193,11 @@ object: ObjectId,
 /**
  * Why it could not go on.
  */
-reason: Unplayable, } } | { "PriorityGranted": { 
+reason: Unplayable, 
+/**
+ * The detail of the reason, when the engine can name it.
+ */
+why?: Why, } } | { "PriorityGranted": { 
 /**
  * Who has priority.
  */
@@ -570,7 +576,7 @@ object: ObjectId,
 /**
  * How it ended.
  */
-outcome: ResolutionOutcome, } } | { "AbilityLeftToTable": LeftToTable } | { "ZoneChanged": { 
+outcome: ResolutionOutcome, } } | { "AbilityLeftToTable": LeftToTable } | { "ByHandDue": ByHandDue } | { "ZoneChanged": { 
 /**
  * The object.
  */

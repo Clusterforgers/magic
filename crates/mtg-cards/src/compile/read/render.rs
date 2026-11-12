@@ -12,6 +12,7 @@ mod c10_dice_per_player;
 mod c10_uc;
 mod c6_blk_aura;
 mod c7_untap;
+mod ce29_charm;
 mod chance;
 mod compared_to_chosen;
 mod control;
@@ -1181,6 +1182,9 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
     }
     if targets.len() > 1 {
         return multi::alternatives(targets, effects);
+    }
+    if let Some(found) = ce29_charm::ce29_joined(targets, effects) {
+        return found;
     }
     if let [
         Effect::Modal {

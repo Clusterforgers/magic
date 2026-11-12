@@ -7,10 +7,11 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
-use mtg_db::{DraftKey, FixMark, FixMarkRepo, ReadRepo, Verdict};
+use mtg_db::{DraftKey, FixMark, FixMarkRepo, Marked, ReadRepo, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
-    DeckErrorCode, FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS,
+    DeckErrorCode, FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_MARKS_PER_USER,
+    MAX_FIX_NOTE_CHARS,
 };
 use sqlx::types::uuid::Uuid;
 
@@ -18,6 +19,7 @@ use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
 use crate::cards::CardSource;
 use crate::server::AppState;
+use crate::user_id::UserId;
 
 /// The note of the `wrong` verdict that a mark without a note of its own leaves on a card that runs on a read.
 const MARKED_TO_FIX: &str = "marked to fix";
@@ -31,6 +33,8 @@ struct Session {
     reads: ReadRepo,
     cards: CardSource,
     user: Uuid,
+    /// The account, as the throttle counts it.
+    account: UserId,
 }
 
 /// The 503 of a server without a database, then the 401 of a request without a session.
@@ -48,6 +52,7 @@ async fn session(app: &AppState, headers: &HeaderMap) -> Result<Session, ApiErro
         reads: cards.database().reads(),
         cards: cards.clone(),
         user: user.id.uuid(),
+        account: user.id,
     })
 }
 
@@ -125,6 +130,17 @@ pub(crate) fn clean_note(note: Option<String>) -> Result<Option<String>, ApiErro
     Ok((!note.is_empty()).then_some(note))
 }
 
+/// The 409 of an account that holds as many marks as allowed.
+fn limit_reached() -> ApiError {
+    ApiError::new(
+        StatusCode::CONFLICT,
+        DeckErrorCode::FixMarkLimit.as_str(),
+        format!(
+            "an account holds at most {MAX_FIX_MARKS_PER_USER} marks; take one back to mark another card"
+        ),
+    )
+}
+
 fn view_of(mark: FixMark) -> FixMarkView {
     FixMarkView {
         oracle_id: mark.oracle_id.to_string(),
@@ -158,15 +174,20 @@ pub(crate) async fn put(
     }
     let headers = request.headers().clone();
     let s = session(&app, &headers).await?;
+    app.auth().admit_fix_mark_write(s.account)?;
     let card = card_id(path)?;
     let body: FixMarkBody = read_json_limited(request, MARK_BODY_LIMIT).await?;
     let note = note_of(body)?;
-    let mark = s
+    let mark = match s
         .repo
-        .mark(s.user, &card, note.as_deref())
+        .mark_within(s.user, &card, note.as_deref(), MAX_FIX_MARKS_PER_USER)
         .await
         .map_err(|error| failed(&error))?
-        .ok_or_else(ApiError::not_found)?;
+    {
+        Marked::Mark(mark) => mark,
+        Marked::NoCard => return Err(ApiError::not_found()),
+        Marked::LimitReached => return Err(limit_reached()),
+    };
     s.read_wrong(&card, note.as_deref()).await;
     Ok(Json(view_of(mark)))
 }
@@ -177,7 +198,11 @@ pub(crate) async fn remove(
     path: Result<Path<String>, PathRejection>,
     headers: HeaderMap,
 ) -> Result<StatusCode, ApiError> {
+    if app.stopping() {
+        return Err(ApiError::unavailable());
+    }
     let s = session(&app, &headers).await?;
+    app.auth().admit_fix_mark_write(s.account)?;
     let card = card_id(path)?;
     let removed = s
         .repo

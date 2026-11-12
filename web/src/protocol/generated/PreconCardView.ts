@@ -29,6 +29,11 @@ card: CardHit | null,
  */
 support: Support, 
 /**
- * The clauses left to the table, each with the span of oracle text it covers.
+ * The clauses left to the table, each with the span of oracle text it covers and the words it quotes.
  */
-reasons: Array<Reason>, };
+reasons: Array<Reason>, 
+/**
+ * The card's oracle text for a card the game leaves to the table whole (no clause of its own); left out
+ * otherwise.
+ */
+whole_text?: string, };

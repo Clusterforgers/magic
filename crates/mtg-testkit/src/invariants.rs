@@ -1199,13 +1199,13 @@ impl InvariantChecker {
     /// The player who takes the regular turn after the one of `regular`: the next player in turn order whose turns are
     /// not skipped (CR 614.10), or the next player when every turn is skipped.
     fn next_turn_taker(&self, regular: PlayerId) -> Option<PlayerId> {
-        let first = self.shadow.next_alive_after(regular)?;
+        let first = self.shadow.next_turn_seat(regular)?;
         let mut next = first;
         for _ in 0..self.shadow.players().len() {
             if !mtg_engine::prohibit::skips_turn(&self.shadow, next) {
                 return Some(next);
             }
-            next = self.shadow.next_alive_after(next)?;
+            next = self.shadow.next_turn_seat(next)?;
         }
         Some(first)
     }
@@ -1361,7 +1361,10 @@ impl InvariantChecker {
             return Ok(());
         }
         let turn = self.shadow.turn();
-        if turn.active() != player || !turn.step().is_main() || !self.shadow.stack().is_empty() {
+        if !self.shadow.is_active(player)
+            || !turn.step().is_main()
+            || !self.shadow.stack().is_empty()
+        {
             return Err(Violation::Bookkeeping(format!(
                 "{player:?} activated a sorcery-speed ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
                 turn.step(),
@@ -1475,8 +1478,14 @@ impl InvariantChecker {
         self.change_life(player, -i64::from(amount), cause)
     }
 
-    /// Moves the independent life history of `player` by `delta` and compares it with the shadow state.
+    /// Moves the independent life history of `player` by `delta` and compares it with the shadow state; a Two-Headed
+    /// Giant teammate's history moves with it (CR 810.9).
     fn change_life(&mut self, player: PlayerId, delta: i64, cause: &str) -> Result<(), Violation> {
+        for mate in self.shadow.life_sharers(player) {
+            if let Some(life) = self.expected_life.get_mut(mate.index()) {
+                *life = i32::try_from(i64::from(*life) + delta).unwrap_or(i32::MAX);
+            }
+        }
         let life = self
             .expected_life
             .get_mut(player.index())

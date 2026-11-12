@@ -43,7 +43,7 @@
             "mods": [{ "AddKeyword": "Lifelink" }, { "AddKeyword": "Indestructible" }],
             "condition": {
               "Compare": {
-                "left": { "Count": ["Other", { "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                "left": { "Count": [{ "Type": "Enchantment" }, "Other", { "ControlledBy": "You" }] },
                 "op": "Ge",
                 "right": 3
               }

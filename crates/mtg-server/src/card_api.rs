@@ -385,7 +385,17 @@ pub(crate) async fn detail(
                 comment: ruling.comment.clone(),
             })
             .collect(),
-        reasons: record.clauses.iter().map(Reason::from).collect(),
+        reasons: record
+            .clauses
+            .iter()
+            .map(|clause| {
+                let text = card
+                    .faces
+                    .get(clause.face)
+                    .map(|face| face.oracle_text.as_str());
+                Reason::quoting(clause, text)
+            })
+            .collect(),
         draft: card_draft(&rules, card),
     }))
 }

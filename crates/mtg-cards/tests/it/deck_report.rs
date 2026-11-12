@@ -1,4 +1,4 @@
-//! Goal: the deck check reports every support state with its reasons and spans per zone, counts the sideboard and every other zone toward the state, applies the rules of Commander, the constructed formats and freeform exactly, derives hashes that move with the deck and with coverage and with nothing else, and keeps its wire shape.
+//! Goal: the deck check reports every support state with its reasons, spans and quoted words per zone (the whole text of a card left whole to the table), counts the sideboard and every other zone toward the state, applies the rules of Commander, the constructed formats and freeform exactly, derives hashes that move with the deck and with coverage and with nothing else, and keeps its wire shape.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -919,7 +919,7 @@ fn the_report_keeps_its_wire_shape() {
             {
                 "oracle_id": id(22), "name": "Partial Flyer", "zone": "sideboard", "count": 1,
                 "support": "partial",
-                "reasons": [{"face": 0, "span": {"start": 7, "end": 19}, "text": "no draw yet"}]
+                "reasons": [{"face": 0, "span": {"start": 7, "end": 19}, "text": "no draw yet", "quote": "Draw a card."}]
             }
         ])
     );
@@ -1044,4 +1044,40 @@ fn an_attraction_deck_under_ten_cards_or_with_a_name_twice_is_a_warning(
             .iter()
             .all(|issue| issue.zone == Some(DeckZone::Attractions))
     );
+}
+
+#[rstest]
+#[case::verified(21, &[], None)]
+#[case::partial_quotes_its_clause(22, &["Draw a card."], None)]
+#[case::declared_manual_is_left_whole(23, &[], Some("Whatever it says."))]
+#[case::stale_is_left_whole(24, &[], Some("The new text."))]
+#[case::no_rules_file_is_left_whole(26, &[], Some("Some text."))]
+fn each_reason_quotes_its_span_and_a_card_without_one_carries_its_whole_text(
+    #[case] n: u32,
+    #[case] quotes: &[&str],
+    #[case] whole: Option<&str>,
+) {
+    let found = states_report(&[(Main, n, 1)], &Caps::everything());
+    let card = &found.cards[0];
+    let quoted: Vec<&str> = card
+        .reasons
+        .iter()
+        .map(|reason| reason.quote.as_str())
+        .filter(|quote| !quote.is_empty())
+        .collect();
+    assert_eq!(quoted, quotes, "{}", card.name);
+    if card.reasons.is_empty() {
+        assert_eq!(card.whole_text.as_deref(), whole, "{}", card.name);
+    } else {
+        assert_eq!(card.whole_text, None, "{}", card.name);
+    }
+}
+
+#[test]
+fn a_card_the_database_lacks_quotes_nothing() {
+    let found = states_report(&[(Main, 99, 1)], &Caps::everything());
+    let card = &found.cards[0];
+    assert_eq!(card.support, Support::Unplayable);
+    assert!(card.reasons.iter().all(|reason| reason.quote.is_empty()));
+    assert_eq!(card.whole_text, None);
 }

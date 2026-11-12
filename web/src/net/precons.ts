@@ -131,6 +131,7 @@ function readCard(item: unknown): PreconCardView | null {
     return null
   }
   if (!isSupport(item.support) || !isListOf(item.reasons, isClause)) return null
+  if (item.whole_text !== undefined && !isText(item.whole_text)) return null
   const card = item.card === null ? null : readCardHit(item.card)
   if (item.card !== null && card === null) return null
   return {
@@ -140,6 +141,7 @@ function readCard(item: unknown): PreconCardView | null {
     card,
     support: item.support,
     reasons: item.reasons,
+    ...(item.whole_text === undefined ? {} : { whole_text: item.whole_text }),
   }
 }
 

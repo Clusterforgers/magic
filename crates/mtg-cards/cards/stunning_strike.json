@@ -1,0 +1,27 @@
+{
+  "oracle_id": "139574fd-c61b-4615-9200-59f2c65f5703",
+  "name": "Stunning Strike",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stunning Strike",
+      "oracle_fingerprint": "ff0f89a790af61e6f7e304fda8520f67",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 23, "end": 95 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 96, "end": 195 }
+          }
+        }
+      ]
+    }
+  ]
+}

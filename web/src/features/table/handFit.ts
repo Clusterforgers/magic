@@ -171,3 +171,43 @@ export function handLayout({ width, height, count, coarse = false, cap }: HandIn
   }
   return make(coarse ? widest : floor, 1, cards, true)
 }
+
+/** What `dockLayouts` needs: a hand line's room, with `commanders` waiting at its head. */
+export interface DockInput extends HandInput {
+  commanders: number
+}
+
+/** The layouts of a dock's hand and of its commanders, and the width the commanders' list may take. */
+export interface DockLayouts {
+  hand: HandLayout
+  /** The commanders' list, in one row of the hand's card size; scrolls when the hand needs the rest of the line. */
+  command?: HandLayout
+  /** The widest the commanders' list and its divider may be in px. */
+  commandWidth?: number
+}
+
+/**
+ * The hand and the commanders at its head share the line: the commanders take one card's width each and a divider,
+ * but never so much that a hand of one card or more loses its last whole card; the commanders then scroll in what is
+ * left, at least one of them in view.
+ */
+export function dockLayouts({ commanders, ...input }: DockInput): DockLayouts {
+  if (commanders <= 0) return { hand: handLayout(input) }
+  const all = handLayout({ ...input, count: input.count + commanders })
+  const card = all.box.width + all.gap
+  const head = commanders * card + COMMAND_GAP_PX
+  // A touch screen's hand that scrolls keeps the full card size, so that is the card it must hold.
+  const whole = input.coarse === true ? handCardWidth(input.height, input.cap) : all.box.width
+  const keep = input.count > 0 ? whole : 0
+  const most = Math.max(card + COMMAND_GAP_PX, input.width - keep)
+  const commandWidth = Math.min(head, most)
+  const hand = handLayout({ ...input, width: Math.max(0, input.width - commandWidth) })
+  const command: HandLayout = {
+    ...hand,
+    rows: 1,
+    perRow: commanders,
+    scrolls: commandWidth < head,
+    overlap: 0,
+  }
+  return { hand, command, commandWidth }
+}

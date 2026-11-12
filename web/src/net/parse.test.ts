@@ -97,6 +97,7 @@ const samples: Record<string, Record<string, unknown>> = {
   Bank: { type: 'Bank', seat: 1, bank: 2 },
   Presence: { type: 'Presence', seat: 1, connected: false },
   Deciding: { type: 'Deciding', seats: [{ seat: 1, kind: 'ChooseTargets' }] },
+  Spectators: { type: 'Spectators', count: 2 },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -265,6 +266,10 @@ describe('parseFrame checks the fields of each message', () => {
     ['Lobby', 'needed as negative', ['needed'], -1],
     ['Lobby', 'needed as a fraction', ['needed'], 0.5],
     ['Lobby', 'needed as null', ['needed'], null],
+    ['Lobby', 'teams as null', ['teams'], null],
+    ['Lobby', 'teams of an unknown mode', ['teams'], { mode: 'pairs', seats: [0, 1] }],
+    ['Lobby', 'teams with a team as text', ['teams'], { mode: 'teams', seats: [0, '1'] }],
+    ['Lobby', 'teams for fewer seats than the roster', ['teams'], { mode: 'teams', seats: [0] }],
     ['Welcome', 'yielding as an unknown word', ['yielding'], 'Soon'],
     ['Welcome', 'yielding in lower case', ['yielding'], 'endofturn'],
     ['Welcome', 'yielding as a number', ['yielding'], 1],
@@ -355,6 +360,8 @@ describe('parseFrame checks the fields of each message', () => {
     ['Deciding', 'seats as text', ['seats'], 'Bob'],
     ['Deciding', 'seat as text', ['seats', '0', 'seat'], '1'],
     ['Deciding', 'kind as a number', ['seats', '0', 'kind'], 3],
+    ['Spectators', 'a negative count', ['count'], -1],
+    ['Spectators', 'count as text', ['count'], '2'],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],
@@ -430,6 +437,14 @@ describe('parseFrame checks the fields of each message', () => {
     ['GameOver', 'an unknown word as result', ['result'], 'Win'],
     ['GameOver', 'a winner that is text', ['result'], { Winner: 'x' }],
     ['GameOver', 'a winner with company', ['result'], { Winner: 0, Draw: true }],
+    ['GameOver', 'a team that is negative', ['result'], { Team: -1 }],
+    ['GameOver', 'a team with a winner', ['result'], { Team: 0, Winner: 1 }],
+    [
+      'Events',
+      'teams of the wrong shape in the house rules',
+      ['table', 'house_rules'],
+      { teams: { mode: 'teams' } },
+    ],
     ['GameOver', 'result as null', ['result'], null],
   ]
 
@@ -488,10 +503,21 @@ describe('parseFrame checks the fields of each message', () => {
     expect(plain.ok && 'show_after_ms' in plain.message).toBe(false)
   })
 
-  it('accepts a draw and a winner as results', () => {
-    for (const result of ['Draw', { Winner: 3 }]) {
+  it('accepts a draw, a winner and a winning team as results, also in a table view', () => {
+    for (const result of ['Draw', { Winner: 3 }, { Team: 1 }]) {
       expect(parseFrame(wire({ type: 'GameOver', result })).ok).toBe(true)
+      expect(parseFrame(wire(put(samples.Events, ['table', 'result'], result))).ok).toBe(true)
     }
+  })
+
+  it('hands on the teams of a roster and of the house rules of a table view, and leaves them out when absent', () => {
+    const teams = { mode: 'two_headed_giant', seats: [0, 1] }
+    expect(parseFrame(wire({ ...samples.Lobby, teams }))).toMatchObject({ ok: true, message: { teams } })
+    const plain = parseFrame(wire(samples.Lobby))
+    expect(plain.ok && 'teams' in plain.message).toBe(false)
+    const rules = { starting_life: 30, teams: { mode: 'teams', seats: [0, 1, 0, 1] } }
+    const view = parseFrame(wire(put(samples.Events, ['table', 'house_rules'], rules)))
+    expect(view).toMatchObject({ ok: true, message: { table: { house_rules: rules } } })
   })
 
   it.each([null, 'Resolve', 'EndOfTurn', 'MyTurn'])(
@@ -749,5 +775,46 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
       ok: false,
       error: { kind: 'bad_shape', detail: expect.stringContaining('objects') },
     })
+  })
+})
+
+describe('the refusal of an Error', () => {
+  const error = (refusal: unknown): unknown => ({
+    type: 'Error',
+    code: 'IllegalAnswer',
+    message: 'no',
+    refusal,
+  })
+  const refusalIn = (frame: unknown): unknown => {
+    const parsed = parseMessage(frame)
+    return parsed.ok && parsed.message.type === 'Error' ? parsed.message.refusal : 'not an Error'
+  }
+
+  it.each<[string, unknown, unknown]>([
+    [
+      'a plain detail',
+      { object: 3, reason: 'Cost', why: 'Tapped' },
+      { object: 3, reason: 'Cost', why: 'Tapped' },
+    ],
+    [
+      'a target',
+      { object: 3, reason: 'Targets', why: { Target: { needs: 'a spell on the stack', zone: 'Stack' } } },
+      { object: 3, reason: 'Targets', why: { Target: { needs: 'a spell on the stack', zone: 'Stack' } } },
+    ],
+    [
+      'an ability',
+      { object: 3, ability: { object: 3, ability: 1 }, reason: 'Mana' },
+      { object: 3, ability: { object: 3, ability: 1 }, reason: 'Mana' },
+    ],
+    [
+      'a detail it cannot read',
+      { object: 3, reason: 'Targets', why: { Target: { zone: 1 } } },
+      { object: 3, reason: 'Targets' },
+    ],
+    ['an unknown reason', { object: 3, reason: 'Nope' }, undefined],
+    ['no object', { reason: 'Mana' }, undefined],
+    ['none', undefined, undefined],
+  ])('keeps %s as the session can read it', (_, given, kept) => {
+    expect(refusalIn(error(given))).toEqual(kept)
   })
 })

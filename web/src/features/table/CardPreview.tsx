@@ -220,7 +220,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             data-slot="preview-reason"
             className="w-fit rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
           >
-            {reason}.
+            {reason.endsWith('.') ? reason : `${reason}.`}
           </p>
         )}
         {/* What the card is: cost, type and size, each fact named in bold. */}

@@ -1,4 +1,4 @@
-// Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), names the decks whose owner plays a card by hand, narrows them to a state, quotes each clause from the text of its face by spans counted in Unicode scalar values, and writes the copy text in exactly one format.
+// Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), names the decks whose owner plays a card by hand, narrows them to a state, quotes each clause with the words the report gives (else from the text of its face by spans counted in Unicode scalar values) and a card left whole with the text the report gives, and writes the copy text in exactly one format.
 import { describe, expect, it } from 'vitest'
 import { reportCard } from '../fakeDecks'
 import {
@@ -13,7 +13,12 @@ import {
 } from './model'
 import type { CheckedDeck, FlaggedCard } from './model'
 
-const clause = (text: string, face = 0, start = 0, end = 4) => ({ face, span: { start, end }, text })
+const clause = (text: string, face = 0, start = 0, end = 4, quote = '') => ({
+  face,
+  span: { start, end },
+  text,
+  quote,
+})
 
 const deck = (id: string, name: string, cards: CheckedDeck['cards']): CheckedDeck => ({ id, name, cards })
 
@@ -197,6 +202,11 @@ describe('quoteOf', () => {
     expect(quoteOf(clause('why', face, start, end), faces)).toBe(quote)
   })
 
+  it('prefers the words the report quotes, joined like the text', () => {
+    expect(quoteOf(clause('why', 0, 0, 12, 'Draw a card.\nScry 2.'), faces)).toBe('Draw a card. / Scry 2.')
+    expect(quoteOf(clause('why', 0, 0, 12, 'Draw a card.'))).toBe('Draw a card.')
+  })
+
   it.each([
     ['an empty span', 0, 5, 5, ['Some text']],
     ['a reversed span', 0, 5, 2, ['Some text']],
@@ -246,24 +256,29 @@ describe('clauseLines', () => {
       { key: 'whole', quote: 'Line one / Line two / Back', text },
     ])
     expect(clauseLines(whole, undefined)[0]?.quote).toBeNull()
+    expect(clauseLines({ ...whole, wholeText: 'Its own\ntext' })[0]?.quote).toBe('Its own / text')
   })
 })
 
 describe('copyText', () => {
-  const texts = new Map([
-    ['oracle-x', ['Draw a card. Then more.']],
-    ['oracle-y', ['Whenever you cast a spell,\nyou win.']],
-  ])
   const x = flagged({
+    reasons: [clause('the draw is not implemented', 0, 0, 12, 'Draw a card.')],
     decks: [
       { id: 'a', name: 'Aristocrats' },
       { id: 'b', name: 'Bees' },
     ],
   })
-  const y = flagged({ oracleId: 'oracle-y', name: 'Card Y', support: 'manual', reasons: [], decks: [] })
+  const y = flagged({
+    oracleId: 'oracle-y',
+    name: 'Card Y',
+    support: 'manual',
+    reasons: [],
+    wholeText: 'Whenever you cast a spell,\nyou win.',
+    decks: [],
+  })
 
   it('writes one block a card, a line a clause, blocks apart by an empty line', () => {
-    expect(copyText([x, y], texts)).toBe(
+    expect(copyText([x, y])).toBe(
       [
         'Card X (Partial) - decks: Aristocrats, Bees',
         '  - "Draw a card.": The draw is not implemented',
@@ -274,16 +289,16 @@ describe('copyText', () => {
     )
   })
 
-  it('writes the reason alone for a clause whose text is not known, and a line for every clause', () => {
+  it('writes the reason alone for a clause the report quotes nothing for, and a line for every clause', () => {
     const two = flagged({
       reasons: [clause('first thing', 0, 0, 4), clause('second thing', 0, 5, 9)],
     })
-    expect(copyText([two], new Map())).toBe(
+    expect(copyText([two])).toBe(
       ['Card X (Partial) - decks: Aristocrats', '  - First thing', '  - Second thing'].join('\n'),
     )
   })
 
   it('is empty for no cards', () => {
-    expect(copyText([], texts)).toBe('')
+    expect(copyText([])).toBe('')
   })
 })

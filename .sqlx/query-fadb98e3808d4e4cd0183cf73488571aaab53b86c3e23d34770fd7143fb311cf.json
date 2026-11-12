@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE tournament_entrants SET dropped = true WHERE tournament_id = $1 AND entrant = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fadb98e3808d4e4cd0183cf73488571aaab53b86c3e23d34770fd7143fb311cf"
+}
