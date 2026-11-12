@@ -31,9 +31,7 @@ fn zap(name: &str, what: &str) -> Arc<CardDefinition> {
 
 /// A plain Wall.
 fn wall() -> Arc<CardDefinition> {
-    Arc::new(
-        CardDefinition::clone(&free_creature("Brick Wall", 0, 4)).with_subtype("Wall"),
-    )
+    Arc::new(CardDefinition::clone(&free_creature("Brick Wall", 0, 4)).with_subtype("Wall"))
 }
 
 #[rstest]
