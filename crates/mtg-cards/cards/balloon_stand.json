@@ -1,0 +1,71 @@
+{
+  "oracle_id": "abb6f51b-2a14-44ac-8c19-e135c9deb1ea",
+  "name": "Balloon Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balloon Stand",
+      "oracle_fingerprint": "b214b5344cb870201ecb476a243bdacc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Balloon",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Balloon"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Sacrifice": { "filter": [{ "Subtype": "Balloon" }], "as": "popped" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "CountOf": { "of": { "Bound": "popped" }, "filter": [] } },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "Continuous": {
+                                  "affected": { "Target": 0 },
+                                  "mods": [{ "AddKeyword": "Flying" }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

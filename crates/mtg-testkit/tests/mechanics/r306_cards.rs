@@ -1,7 +1,8 @@
 //! Goal: the r30-6 cards play their whole text at two to four seats: a control change to the one player with the most
 //! cards in hand and none on a tie, a reveal repeated while lands come up, lands put down by each player and a draw for
 //! each opponent who put none, a sacrifice any opponent may make before the creature transforms, three different players
-//! for three gifts, and an X held to the cap of its payment.
+//! for three gifts, an X held to the cap of its payment, a payment shrunk by domain and paid with no question at five
+//! types, and a dance of discards.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -16,7 +17,7 @@ use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{forest, free_creature};
+use mtg_testkit::cards::{forest, free_creature, island, mountain, plains, swamp};
 use mtg_testkit::corpus;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -367,5 +368,106 @@ fn an_x_is_held_to_the_cap_of_its_payment(
         }
     }
     assert_eq!(hand(&driver, 0), before + most as usize);
+    Ok(())
+}
+
+#[rstest]
+#[case::five_types_cost_nothing(vec![plains(), island(), swamp(), mountain(), forest()], false, true)]
+#[case::three_types_paid(vec![plains(), island(), swamp(), swamp(), swamp(), swamp()], true, true)]
+#[case::three_types_short(vec![plains(), island(), swamp()], true, false)]
+#[case::declined(vec![plains(), island(), swamp(), swamp(), swamp(), swamp()], false, false)]
+fn draco_costs_ten_less_two_for_each_basic_land_type(
+    #[case] lands: Vec<Arc<CardDefinition>>,
+    #[case] yes: bool,
+    #[case] stays: bool,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .at(2, 0, Step::Untap)
+            .battlefield(
+                0,
+                std::iter::once(ready(card("Draco"))).chain(lands.into_iter().map(ready)),
+            )
+            .library(0, bears("Deck", 3))
+            .library(1, bears("Deck", 3)),
+    )?;
+    let policy: &dyn Fn(&Driver, &Decision) -> Option<Answer> =
+        if yes { &pay_yes } else { &passive };
+    run_until(&mut driver, 2, Step::Draw, policy)?;
+    let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
+    assert_eq!(!graveyard.contains(&"Draco".to_owned()), stays);
+    Ok(())
+}
+
+#[rstest]
+#[case::creature_and_spell(2, &[Some(true), Some(false)], 1, 1)]
+#[case::nobody(2, &[None, None], 0, 0)]
+#[case::only_creatures(4, &[None, Some(true), None, Some(true)], 1, 0)]
+fn mog_dances_with_each_discard(
+    #[case] seats: usize,
+    #[case] discards: &[Option<bool>],
+    #[case] tokens: usize,
+    #[case] counters: u32,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(2, 0, Step::Main2)
+        .battlefield(0, [ready(card("Mog, Moogle Warrior"))]);
+    for (seat, discard) in discards.iter().enumerate().take(seats) {
+        let kept: Arc<CardDefinition> = match discard {
+            Some(false) => {
+                Arc::new(CardDefinition::new(format!("Spell {seat}")).with_type(CardType::Sorcery))
+            }
+            _ => free_creature(&format!("Spell {seat}"), 1, 1),
+        };
+        scenario = scenario
+            .hand(seat, [kept])
+            .library(seat, bears(&format!("Deck {seat}"), 3));
+    }
+    let mut driver = Driver::from_scenario(scenario)?;
+    let before: Vec<usize> = (0..seats).map(|seat| hand(&driver, seat)).collect();
+    let wants = discards.to_vec();
+    let policy = move |_: &Driver, decision: &Decision| match &decision.kind {
+        DecisionKind::ChooseCards(o) => {
+            let seat = (0..wants.len())
+                .find(|seat| pid(*seat) == decision.player)
+                .unwrap();
+            let take = if wants[seat].is_some() {
+                1
+            } else {
+                o.min as usize
+            };
+            Some(Answer::ChooseCards(CardsChoice(
+                o.from.iter().copied().take(take).collect(),
+            )))
+        }
+        _ => None,
+    };
+    run_until(&mut driver, 3, Step::Upkeep, &policy)?;
+    let moogles: Vec<ObjectId> = driver
+        .state()
+        .objects()
+        .filter(|o| o.card().name == "Moogle" && o.zone() == Zone::Battlefield)
+        .map(mtg_engine::object::GameObject::id)
+        .collect();
+    assert_eq!(
+        moogles.len(),
+        tokens,
+        "{:?}",
+        names(driver.state(), Zone::Battlefield)
+    );
+    let mog = driver
+        .state()
+        .object(id(&driver, "Mog, Moogle Warrior"))
+        .unwrap();
+    assert_eq!(
+        mog.permanent()
+            .unwrap()
+            .counters_of(&CounterKind::PlusOnePlusOne),
+        counters
+    );
+    for (seat, held) in before.iter().enumerate() {
+        // A discard is followed by a draw, so each hand keeps its size.
+        assert_eq!(hand(&driver, seat), *held, "seat {seat}");
+    }
     Ok(())
 }

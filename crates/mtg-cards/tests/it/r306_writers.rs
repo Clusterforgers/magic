@@ -1,6 +1,7 @@
-//! Goal: the r30-6 writers word "whenever you forage", an X held to a cap ("X can't be greater than ...") and the steps
-//! added after this one as the cards print them, and refuse the near misses: another player, another action, another
-//! amount for the cap, no cap, another comparison of hands, another step, a step added with no "first" test.
+//! Goal: the r30-6 writers word "whenever you forage", an X held to a cap ("X can't be greater than ..."), an untap in
+//! your untap step and the steps added after this one as the cards print them, and refuse the near misses: another
+//! player, another action, another amount for the cap, no cap, another comparison of hands, any untap, another step, a
+//! step added with no "first" test.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
@@ -14,6 +15,7 @@ fn says(json: &str, text: &str) -> bool {
 
 const FORAGE: &str = "Whenever you forage, put a +1/+1 counter on ~.";
 const SHANNA: &str = "At the beginning of your end step, you may pay {X}. If you do, draw X cards. X can't be greater than the amount of life you gained this turn.";
+const MORTARION: &str = "Primarch of the Death Guard \u{2014} At the beginning of your end step, you may pay {X}. If you do, create X 2/2 black Astartes Warrior creature tokens with menace. X can't be greater than the amount of life you lost this turn.";
 const SOKENZAN: &str = "At the beginning of your upkeep, if a player has more cards in hand than each other player, the player who has the most cards in hand gains control of this creature.";
 
 fn foraged(who: &str, action: &str) -> String {
@@ -29,6 +31,7 @@ fn shanna(cap: &str) -> String {
 }
 
 const GAINED: &str = r#",{"XAtMost":{"Tallied":{"who":"You","what":"LifeGainedTotal"}}}"#;
+const MORTARION_JSON: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"Pay":{"cost":[{"Mana":"{X}"},{"XAtMost":{"Tallied":{"who":"You","what":"LifeLost"}}}],"paid":[{"CreateToken":{"token":{"Custom":{"name":"Astartes Warrior","colors":["Black"],"types":["Creature"],"subtypes":["Astartes","Warrior"],"power":2,"toughness":2,"abilities":[{"Keyword":"Menace"}]}},"count":"X"}}]}}]}}"#;
 
 fn sokenzan(op: &str) -> String {
     let most = format!(
@@ -40,11 +43,18 @@ fn sokenzan(op: &str) -> String {
 }
 
 const HAZE: &str = "At the beginning of enchanted player's first upkeep each turn, that player gets an additional upkeep step after this step.";
+const DOCTOR: &str = "Into the TARDIS \u{2014} Whenever ~ becomes untapped during your untap step, you get an additional upkeep step after this step.";
 const YSHTOLA: &str = "At the beginning of your end step, exile target creature you control, then return it to the battlefield under its owner's control. Then if it's the first end step of the turn, there is an additional end step after this step.";
 
 fn haze(condition: &str, step: &str) -> String {
     format!(
         r#"{{"Triggered":{{"when":{{"StepBegins":{{"step":"Upkeep","whose":"AttachedPlayer"}}}}{condition},"effects":[{{"AddStep":{{"step":"{step}"}}}}]}}}}"#
+    )
+}
+
+fn doctor(untap_step: bool, step: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"Untapped":{{"what":["This"],"untap_step":{untap_step}}}}},"effects":[{{"AddStep":{{"step":"{step}"}}}}]}}}}"#
     )
 }
 
@@ -58,6 +68,9 @@ fn yshtola(then: &str) -> String {
 #[case::haze(haze(r#","if":"FirstStep""#, "Upkeep"), HAZE, true)]
 #[case::haze_every_upkeep(haze("", "Upkeep"), HAZE, false)]
 #[case::haze_another_step(haze(r#","if":"FirstStep""#, "Draw"), HAZE, false)]
+#[case::doctor(doctor(true, "Upkeep"), DOCTOR, true)]
+#[case::doctor_any_untap(doctor(false, "Upkeep"), DOCTOR, false)]
+#[case::doctor_another_step(doctor(true, "End"), DOCTOR, false)]
 #[case::yshtola(
     yshtola(r#"{"If":{"condition":"FirstStep","then":[{"AddStep":{"step":"End"}}]}}"#),
     YSHTOLA,
@@ -95,6 +108,8 @@ fn r306_added_steps_read_as_printed(#[case] json: String, #[case] text: &str, #[
     false
 )]
 #[case::no_cap(shanna(""), SHANNA, false)]
+#[case::mortarion(MORTARION_JSON.to_owned(), MORTARION, true)]
+#[case::mortarion_capped_by_gains(MORTARION_JSON.replace("LifeLost", "LifeGainedTotal"), MORTARION, false)]
 #[case::sokenzan(sokenzan("Eq"), SOKENZAN, true)]
 #[case::sokenzan_at_least(sokenzan("Ge"), SOKENZAN, false)]
 fn r306_writers_word_the_cards_and_refuse_near_misses(

@@ -166,3 +166,22 @@ fn yshtola_blinks_twice_over_two_end_steps(#[case] seats: usize) -> Result<(), S
     assert_eq!(blinks, 2, "one blink in each end step");
     Ok(())
 }
+
+#[rstest]
+#[case::its_turn(0, 2)]
+#[case::another_turn(1, 1)]
+fn the_ninth_doctor_adds_an_upkeep_on_its_turn(
+    #[case] active: usize,
+    #[case] upkeeps: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .at(2, active, Step::Untap)
+            .battlefield(0, [tapped(card("The Ninth Doctor"))])
+            .library(0, deck(0))
+            .library(1, deck(1)),
+    )?;
+    to_draw(&mut driver, 2)?;
+    assert_eq!(begun(&driver, 2, Step::Upkeep), upkeeps);
+    Ok(())
+}
