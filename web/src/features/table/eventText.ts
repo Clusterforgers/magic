@@ -108,6 +108,7 @@ const KEYWORD_KIND_WORDS = {
   Landwalk: 'all landwalk abilities',
   Protection: 'protection',
   Ward: 'ward',
+  BandsWithOther: 'all "bands with other" abilities',
 } as const
 
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */

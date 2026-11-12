@@ -80,6 +80,7 @@ mod player_keywords;
 mod priority_can_act;
 mod priority_stack;
 mod r2a_adventure;
+mod r301b_control_tapped;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

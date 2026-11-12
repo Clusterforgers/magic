@@ -59,6 +59,7 @@ mod r300c_cards;
 mod r302_cards;
 mod r302b_cards;
 mod r302c_writers;
+mod r301b_cards;
 mod r303_cards;
 mod r304c_cards;
 mod r305b_writers;

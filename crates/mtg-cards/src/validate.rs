@@ -3886,6 +3886,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("with", |w| w.reference(with, Kind::Player));
             }
+            Effect::ExchangeLifeWithToughness { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::RemoveDamage { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RepeatWhile {
                 condition,
@@ -4179,6 +4183,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Rule", "Duration.WhileSourceTapped");
                 }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Rule", "Duration.WhileYouControlSourceTapped");
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -4251,6 +4258,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Shield", "Duration.WhileSourceTapped");
+                }
+                if *duration == Duration::WhileYouControlSourceTapped {
+                    w.uses("Shield", "Duration.WhileYouControlSourceTapped");
                 }
                 if *duration == Duration::NextUntapStep {
                     w.problem(C7_UNTAP_ONLY);

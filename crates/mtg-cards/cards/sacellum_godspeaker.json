@@ -1,0 +1,41 @@
+{
+  "oracle_id": "891e9a08-35ec-422f-87a8-1f3f5c705699",
+  "name": "Sacellum Godspeaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sacellum Godspeaker",
+      "oracle_fingerprint": "59630c286a21fc96d141ca92c2d1c3b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "CountOf": { "of": { "Bound": "revealed" }, "filter": [] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

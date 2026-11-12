@@ -1,7 +1,7 @@
 {
   "oracle_id": "9879a4f3-3b9c-45cf-af03-7f2ae4c689b4",
   "name": "Tolaria",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tolaria",
@@ -14,9 +14,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 142 }
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Step": "Upkeep" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "RemoveKeyword": "Banding" },
+                    { "RemoveKeywordKind": "BandsWithOther" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1266,6 +1266,10 @@ mod tests {
     #[case(Duration::WhileYouControlSource, r#""WhileYouControlSource""#)]
     #[case(Duration::WhileSourceTapped, r#""WhileSourceTapped""#)]
     #[case(
+        Duration::WhileYouControlSourceTapped,
+        r#""WhileYouControlSourceTapped""#
+    )]
+    #[case(
         Duration::WhileHasCounter(Box::new(CounterKind::Other("vow".into()))),
         r#"{"WhileHasCounter":{"Other":"vow"}}"#
     )]

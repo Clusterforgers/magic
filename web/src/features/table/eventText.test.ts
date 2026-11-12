@@ -917,6 +917,10 @@ describe('events with more than one shape', () => {
       'Hill Giant loses all landwalk abilities until end of turn',
     ],
     [
+      effect(objects(2), { RemoveKeywordKind: 'BandsWithOther' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all "bands with other" abilities until end of turn',
+    ],
+    [
       effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
       'Grizzly Bears and Hill Giant lose ward until end of turn',
     ],
@@ -1018,6 +1022,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { SetController: 1 }, 'WhileSourceTapped', { id: 6, counter: 0 }),
       'Hill Giant changes controller while Jace Beleren stays tapped',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, 'WhileYouControlSourceTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while its controller controls Jace Beleren and it stays tapped',
     ],
     [
       effect(objects(2), { SetController: 1 }, 'UntilCastFromExile', { id: 6, counter: 0 }),
