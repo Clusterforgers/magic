@@ -54,6 +54,7 @@ mod pg_deck_import_printings;
 mod pg_decks;
 mod pg_failed_games;
 mod pg_favourites;
+mod pg_ffa_games;
 mod pg_fix21;
 mod pg_fix_marks;
 mod pg_forge_tier;
