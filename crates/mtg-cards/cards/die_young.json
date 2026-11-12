@@ -13,17 +13,8 @@
             "effects": [
               { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
               {
-                "ChooseValue": {
-                  "kind": {
-                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
-                  },
-                  "as": "number"
-                }
-              },
-              {
                 "Pay": {
-                  "cost": [{ "PayEnergy": 1 }],
-                  "times": { "ChosenAs": "number" },
+                  "cost": [{ "PayEnergy": "X" }],
                   "paid": [
                     {
                       "Continuous": {
@@ -31,8 +22,8 @@
                         "mods": [
                           {
                             "ModifyPT": {
-                              "power": { "Times": { "by": -1, "of": { "ChosenAs": "number" } } },
-                              "toughness": { "Times": { "by": -1, "of": { "ChosenAs": "number" } } }
+                              "power": { "Times": { "by": -1, "of": "X" } },
+                              "toughness": { "Times": { "by": -1, "of": "X" } }
                             }
                           }
                         ],

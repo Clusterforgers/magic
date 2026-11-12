@@ -226,11 +226,57 @@ pub fn implementation_hash(card: &Card) -> String {
 /// verdicts on the old one count for nothing; the engine's `Caps` do not enter it.
 pub fn read_hash(printed: &PrintedCard, draft: &Card) -> String {
     let current = current_fingerprints(printed);
-    let implementation = implementation_hash(draft);
+    let implementation = read_implementation_hash(draft);
     let mut parts: Vec<&[u8]> = vec![printed.oracle_id.as_bytes()];
     parts.extend(current.iter().map(String::as_bytes));
     parts.push(implementation.as_bytes());
     digest(&parts)
+}
+
+/// The implementation hash a read is given on: that of the abilities without their keyword-action logs
+/// (`Effect::Performed`), which change nothing a player reads, so adding one keeps the verdicts.
+fn read_implementation_hash(card: &Card) -> String {
+    let abilities: Vec<_> = card.faces.iter().map(|face| &face.abilities).collect();
+    let json =
+        String::from_utf8(serde_json::to_vec(&abilities).unwrap_or_default()).unwrap_or_default();
+    digest(&[without_logs(&json).as_bytes()])
+}
+
+/// The compact JSON without each `{"Performed":...}` step and the comma that joins it to the list.
+fn without_logs(json: &str) -> String {
+    const LOG: &str = "{\"Performed\":";
+    let mut out = String::with_capacity(json.len());
+    let mut rest = json;
+    while let Some(at) = rest.find(LOG) {
+        let mut depth = 0_usize;
+        let mut end = None;
+        for (offset, c) in rest[at..].char_indices() {
+            match c {
+                '{' => depth += 1,
+                '}' => {
+                    depth = depth.saturating_sub(1);
+                    if depth == 0 {
+                        end = Some(at + offset + 1);
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+        let Some(end) = end else {
+            break;
+        };
+        let before = &rest[..at];
+        if let Some(kept) = before.strip_suffix(',') {
+            out.push_str(kept);
+            rest = &rest[end..];
+        } else {
+            out.push_str(before);
+            rest = rest[end..].strip_prefix(',').unwrap_or(&rest[end..]);
+        }
+    }
+    out.push_str(rest);
+    out
 }
 
 fn current_fingerprints(printed: &PrintedCard) -> Vec<String> {
@@ -588,6 +634,50 @@ mod tests {
                 ..PrintedFace::default()
             }],
         }
+    }
+
+    const CLUE: &str = r#"{"CreateToken":{"token":{"Named":"clue"}}}"#;
+    const LOG: &str =
+        r#"{"Performed":{"action":"Investigated","times":{"Count":[{"Type":"Creature"}]}}}"#;
+
+    /// A spell of these steps, each a JSON effect.
+    fn spell(steps: &[&str]) -> Ability {
+        serde_json::from_str(&format!(
+            r#"{{"Spell":{{"effects":[{}]}}}}"#,
+            steps.join(",")
+        ))
+        .unwrap()
+    }
+
+    #[rstest]
+    #[case::log_after(&[CLUE, LOG], &[CLUE], true)]
+    #[case::log_first(&[LOG, CLUE], &[CLUE], true)]
+    #[case::two_logs(&[CLUE, LOG, CLUE, LOG], &[CLUE, CLUE], true)]
+    #[case::nested(
+        &[r#"{"May":{"effects":[{"CreateToken":{"token":{"Named":"clue"}}},{"Performed":{"action":"Investigated"}}]}}"#],
+        &[r#"{"May":{"effects":[{"CreateToken":{"token":{"Named":"clue"}}}]}}"#],
+        true
+    )]
+    #[case::another_step(&[CLUE, CLUE], &[CLUE], false)]
+    fn a_read_ignores_the_keyword_action_logs(
+        #[case] with: &[&str],
+        #[case] without: &[&str],
+        #[case] same: bool,
+    ) {
+        let logged = card(ImplStatus::Full, vec![spell(with)], TEXT);
+        let plain = card(ImplStatus::Full, vec![spell(without)], TEXT);
+        let printed = printed(TEXT);
+        assert_eq!(
+            read_hash(&printed, &logged) == read_hash(&printed, &plain),
+            same
+        );
+        // Without a log the read hash is the one it always was: over the implementation hash.
+        let before = digest(&[
+            printed.oracle_id.as_bytes(),
+            oracle_fingerprint(TEXT).as_bytes(),
+            implementation_hash(&plain).as_bytes(),
+        ]);
+        assert_eq!(read_hash(&printed, &plain), before);
     }
 
     #[rstest]

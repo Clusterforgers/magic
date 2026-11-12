@@ -12,17 +12,8 @@
             "effects": [
               { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": "X" } },
               {
-                "ChooseValue": {
-                  "kind": {
-                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
-                  },
-                  "as": "number"
-                }
-              },
-              {
                 "Pay": {
-                  "cost": [{ "PayEnergy": 1 }],
-                  "times": { "ChosenAs": "number" },
+                  "cost": [{ "PayEnergy": "X" }],
                   "paid": [
                     {
                       "Destroy": {
@@ -35,13 +26,7 @@
                                 { "Type": "Enchantment" }
                               ]
                             },
-                            {
-                              "Compare": {
-                                "stat": "ManaValue",
-                                "op": "Le",
-                                "to": { "ChosenAs": "number" }
-                              }
-                            }
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
                           ]
                         }
                       }

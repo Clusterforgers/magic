@@ -199,6 +199,8 @@ enum Happened {
     },
     /// A player surveilled, the `nth` time of their turn.
     Surveilled { player: PlayerId, nth: u32 },
+    /// A player investigated (CR 701.16a), the `nth` time this turn.
+    Investigated { player: PlayerId, nth: u32 },
     /// The Ring tempted a player, who chose `bearer`.
     RingTempted {
         player: PlayerId,
@@ -373,6 +375,14 @@ impl Happened {
             {
                 Some(*nth_any)
             }
+            (
+                Happened::Did {
+                    action: Action::Investigated,
+                    amount,
+                    ..
+                },
+                TriggerPattern::Did { .. },
+            ) => Some(*amount),
             _ => self.nth(),
         }
     }
@@ -755,6 +765,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
         | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
+        | (Tally::L31aInvestigated, Event::Investigated { player: who })
         | (
             Tally::Tokens,
             Event::TokenCreated(TokenCreated {
@@ -1181,6 +1192,10 @@ fn about_players_and_permanents(
         Event::Surveilled(surveilled) => found.push(Happened::Surveilled {
             player: surveilled.player,
             nth: ordinal(look.post, look.later, surveilled.player, Tally::Surveilled),
+        }),
+        Event::Investigated { player } => found.push(Happened::Investigated {
+            player: *player,
+            nth: ordinal(look.post, look.later, *player, Tally::L31aInvestigated),
         }),
         Event::RingTempted { player, bearer, .. } => found.push(Happened::RingTempted {
             player: *player,

@@ -15,10 +15,12 @@
               { "Choose": { "from": { "Bound": "looked1" }, "as": "kept1", "rest_as": "rest1" } },
               { "Move": { "what": { "Bound": "rest1" }, "to": "Graveyard" } },
               { "Manifest": {} },
+              { "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest1" } } },
               { "LookAtTop": { "count": 2, "as": "looked2" } },
               { "Choose": { "from": { "Bound": "looked2" }, "as": "kept2", "rest_as": "rest2" } },
               { "Move": { "what": { "Bound": "rest2" }, "to": "Graveyard" } },
-              { "Manifest": {} }
+              { "Manifest": {} },
+              { "Performed": { "action": "ManifestedDread", "card": { "Bound": "rest2" } } }
             ]
           }
         },

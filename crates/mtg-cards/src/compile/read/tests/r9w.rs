@@ -306,11 +306,11 @@ fn r9w_prohibitions_of_another_meaning_differ(#[case] cant: &str, #[case] clause
     "When this enchantment enters, it becomes an Aura with enchant creature. Manifest the top card of your library and attach this enchantment to it."
 )]
 #[case::dread(
-    r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"LookAtTop":{"as":"looked","count":2}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{"as":"manifested"}},{"Attach":{"to":{"Bound":"manifested"},"what":"This"}}]}}"#,
+    r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"LookAtTop":{"as":"looked","count":2}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{"as":"manifested"}},{"Performed":{"action":"ManifestedDread","card":{"Bound":"rest"}}},{"Attach":{"to":{"Bound":"manifested"},"what":"This"}}]}}"#,
     "When this Equipment enters, manifest dread, then attach this Equipment to that creature."
 )]
 #[case::their_dread(
-    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"LookAtTop":{"as":"looked","count":2,"who":{"ControllerOf":{"Target":0}}}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest","who":{"ControllerOf":{"Target":0}}}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{"who":{"ControllerOf":{"Target":0}}}}]}}"#,
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"LookAtTop":{"as":"looked","count":2,"who":{"ControllerOf":{"Target":0}}}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest","who":{"ControllerOf":{"Target":0}}}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{"who":{"ControllerOf":{"Target":0}}}},{"Performed":{"action":"ManifestedDread","who":{"ControllerOf":{"Target":0}},"card":{"Bound":"rest"}}}]}}"#,
     "Destroy target creature. Its controller manifests dread."
 )]
 #[case::chosen_source(
@@ -343,11 +343,11 @@ fn r9w_named_steps_write_back(#[case] json: &str, #[case] clause: &str) {
     "Manifest the top card of your library, then put two +1/+1 counters on it."
 )]
 #[case::three_looked(
-    r#"{"Spell":{"effects":[{"LookAtTop":{"as":"looked","count":3}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{}}]}}"#,
+    r#"{"Spell":{"effects":[{"LookAtTop":{"as":"looked","count":3}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Graveyard","what":{"Bound":"rest"}}},{"Manifest":{}},{"Performed":{"action":"ManifestedDread","card":{"Bound":"rest"}}}]}}"#,
     "Manifest dread."
 )]
 #[case::rest_to_hand(
-    r#"{"Spell":{"effects":[{"LookAtTop":{"as":"looked","count":2}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Hand","what":{"Bound":"rest"}}},{"Manifest":{}}]}}"#,
+    r#"{"Spell":{"effects":[{"LookAtTop":{"as":"looked","count":2}},{"Choose":{"as":"kept","from":{"Bound":"looked"},"rest_as":"rest"}},{"Move":{"to":"Hand","what":{"Bound":"rest"}}},{"Manifest":{}},{"Performed":{"action":"ManifestedDread","card":{"Bound":"rest"}}}]}}"#,
     "Manifest dread."
 )]
 #[case::any_zone_source(

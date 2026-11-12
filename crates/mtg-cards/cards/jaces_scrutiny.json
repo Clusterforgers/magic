@@ -18,7 +18,8 @@
                   "duration": "UntilEndOfTurn"
                 }
               },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         }
