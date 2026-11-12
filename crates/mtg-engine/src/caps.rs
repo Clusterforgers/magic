@@ -912,6 +912,8 @@ const RUNS: &[&str] = &[
     "Pred.ArrivedFrom",
     "Pred.DidThisTurn",
     "Pred.BlockedThisTurn",
+    "Pred.EnteredSinceLastTurn",
+    "Condition.CombatDamagedSinceLastTurn",
     "Pred.WasCast",
     "Pred.CastWith",
     "Pred.Test",
@@ -1283,6 +1285,8 @@ mod tests {
     #[case::the_ring_bearer("Pred.RingBearer", true)]
     #[case::did_this_turn("Pred.DidThisTurn", true)]
     #[case::r379_blocked_either_way("Pred.BlockedThisTurn", true)]
+    #[case::r379_entered_since_your_last_turn("Pred.EnteredSinceLastTurn", true)]
+    #[case::r379_hurt_since_your_last_turn("Condition.CombatDamagedSinceLastTurn", true)]
     #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]

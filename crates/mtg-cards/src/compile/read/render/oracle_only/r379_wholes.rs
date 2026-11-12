@@ -6,7 +6,17 @@ use std::sync::LazyLock;
 use crate::ability::Ability;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R379_WHOLES: [(&str, &str); 5] = [
+const R379_WHOLES: [(&str, &str); 7] = [
+    // invasion_of_fiora_marchesa_resolute_monarch
+    (
+        r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Not":{"CombatDamagedSinceLastTurn":"You"}},"effects":[{"Draw":{}},{"LoseLife":{"amount":1}}]}}"#,
+        r"At the beginning of your upkeep, if you haven't been dealt combat damage since your last turn, you draw a card and you lose 1 life.",
+    ),
+    // o_kagachi_vengeful_kami
+    (
+        r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"if":{"AttackedYouLastTurn":"Triggering"},"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"ControlledBy":"Triggering"}]}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}"#,
+        r"Whenever ~ deals combat damage to a player, if that player attacked you during their last turn, exile target nonland permanent that player controls.",
+    ),
     // timeline_culler
     (
         r#"{"AltCast":{"way":"Warp","cost":[{"Mana":"{B}"},{"PayLife":2}],"from":"Graveyard"}}"#,

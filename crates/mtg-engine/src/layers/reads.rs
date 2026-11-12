@@ -321,7 +321,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Kicked
         | Pred::AdditionalCostPaid
         | Pred::Suspended
-        | Pred::BlockedThisTurn(_) => Traits::NONE,
+        | Pred::BlockedThisTurn(_)
+        | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
             .iter()
@@ -543,6 +544,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::StartingPlayer(who)
         | Condition::Searched { who, .. }
         | Condition::VotedAs { with: who, .. }
+        | Condition::CombatDamagedSinceLastTurn(who)
         | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

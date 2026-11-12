@@ -127,3 +127,14 @@ fn r379_a_warp_from_the_graveyard_is_written_only_with_its_own_cost() {
     assert!(written(culler, text));
     assert!(!written(other, text));
 }
+
+#[rstest]
+#[case::that_player(r#""Triggering""#, true)]
+#[case::near_miss_a_player(r#""EachPlayer""#, false)]
+fn r379_o_kagachi_reads_that_players_last_turn(#[case] who: &str, #[case] reads: bool) {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"DealsDamage":{{"source":["This"],"to":"EachPlayer","combat":true}}}},"if":{{"AttackedYouLastTurn":{who}}},"targets":[{{"what":{{"Object":[{{"Not":{{"Type":"Land"}}}},{{"ControlledBy":"Triggering"}}]}}}}],"effects":[{{"Exile":{{"what":{{"Target":0}}}}}}]}}}}"#
+    );
+    let clause = "Whenever ~ deals combat damage to a player, if that player attacked you during their last turn, exile target nonland permanent that player controls.";
+    assert_eq!(written(&json, clause), reads);
+}

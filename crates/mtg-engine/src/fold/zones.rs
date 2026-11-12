@@ -141,6 +141,7 @@ pub(super) fn move_object(
     crate::effects::follow_spell(&mut state.effects, entered, resolved);
     if to == Zone::Battlefield {
         state.tally_object(entered, None, Tally::Entered);
+        state.r379_entered(entered);
     }
     w21a_tally_graveyards(state, (from, to), (owner, controlled_by), entered);
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {

@@ -12,6 +12,9 @@ use mtg_core::card::CardType;
 
 /// A suffix of this module after the noun of a single object.
 pub(super) fn r379_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+    if !form.plural() && r.words("that entered since your last turn ended") {
+        return Some(Pred::EnteredSinceLastTurn(Ref::You));
+    }
     if form.plural() || !r.words("that blocked or was blocked") {
         return None;
     }
@@ -27,6 +30,9 @@ pub(super) fn r379_suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
 
 /// The suffix of this module for a predicate.
 pub(super) fn r379_suffix_text(pred: &Pred, form: Form) -> Option<String> {
+    if *pred == Pred::EnteredSinceLastTurn(Ref::You) && !form.plural() {
+        return Some("that entered since your last turn ended".to_owned());
+    }
     let Pred::BlockedThisTurn(with) = pred else {
         return None;
     };

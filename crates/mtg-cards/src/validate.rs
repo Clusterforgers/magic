@@ -829,6 +829,10 @@ impl<'a> Walker<'a> {
                     self.at("to", |w| w.reference(to, Kind::Either));
                 }
             }
+            Pred::EnteredSinceLastTurn(who) => {
+                self.uses("Pred", "EnteredSinceLastTurn");
+                self.at("EnteredSinceLastTurn", |w| w.reference(who, Kind::Player));
+            }
             Pred::BlockedThisTurn(with) => {
                 self.uses("Pred", "BlockedThisTurn");
                 self.at("BlockedThisTurn", |w| w.selector(with));
@@ -1390,6 +1394,9 @@ impl<'a> Walker<'a> {
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
             Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::VotedAs { with, .. } => self.player_condition("VotedAs", with),
+            Condition::CombatDamagedSinceLastTurn(who) => {
+                self.player_condition("CombatDamagedSinceLastTurn", who);
+            }
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),

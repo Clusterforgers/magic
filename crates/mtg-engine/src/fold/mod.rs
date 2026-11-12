@@ -355,6 +355,7 @@ fn begin_turn(
     if before != 0 {
         let ending = state.turn.active;
         state.summarize_turn(ending);
+        state.r379_turn_ended(ending, before);
     }
     if extra {
         if state.extra_turns.pop().map(|turn| turn.player) != Some(active) {

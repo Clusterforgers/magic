@@ -318,6 +318,9 @@ pub struct GameState {
     pub(crate) r379_votes: Vec<Vec<(PlayerId, u32)>>,
     /// The spells each player has cast this game.
     pub(crate) r379_cast_game: BTreeMap<PlayerId, u32>,
+    /// The "since your last turn" history (`r379_since.rs`); derived from the turn events and left out of the hash, so a
+    /// game hashes as it did before it was kept.
+    pub(crate) r379_since: crate::r379_since::Since,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.

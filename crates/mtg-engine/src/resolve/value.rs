@@ -1837,6 +1837,10 @@ impl<'a> Scope<'a> {
                 combat,
             } => self.did_this_turn(*event, (by.as_ref(), to.as_ref()), *combat, reference),
             Pred::BlockedThisTurn(with) => self.r379_blocked_this_turn(with, reference),
+            Pred::EnteredSinceLastTurn(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| state.r379_since.entered_since(reference, *player)),
             Pred::DamagedBy(named) => self.objects(named)?.iter().any(|source| {
                 state.damaged_by(reference, *source)
                     || state.damaged_by_departed(reference, *source)
@@ -2922,6 +2926,10 @@ impl<'a> Scope<'a> {
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Searched { who, zone } => self.searched(who, *zone)?,
             Condition::VotedAs { with, same } => self.r379_voted_as(with, *same)?,
+            Condition::CombatDamagedSinceLastTurn(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.r379_since.hurt_since(*player)),
             Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)

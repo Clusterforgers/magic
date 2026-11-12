@@ -167,5 +167,6 @@ mod w7b_rad;
 mod w7d_control_scenarios;
 mod w7d_selector_scenarios;
 mod w8a_declaration_limits;
+mod r379_since_last_turn;
 mod w9a_expend;
 mod wave_goodbye;

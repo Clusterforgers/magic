@@ -1508,6 +1508,9 @@ pub enum Condition {
     CitysBlessing(Ref),
     /// A player the reference names has an enduring story (storied).
     EnduringStory(Ref),
+    /// A player the reference names was dealt combat damage since their latest turn ended ("if you haven't been dealt combat
+    /// damage since your last turn" is its negation).
+    CombatDamagedSinceLastTurn(Ref),
     /// In the vote that triggered the ability (`TriggerPattern::Did` with `FinishedVoting`), "you" voted for a choice a
     /// player `with` names voted for (`same`), or for a choice none of them voted for ("each opponent who voted for a
     /// choice you didn't vote for").
