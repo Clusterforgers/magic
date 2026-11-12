@@ -30,6 +30,7 @@ const game = {
   result: null,
   visibility: 'public',
   manual_play: false,
+  spectators: true,
 }
 const decks = [
   {
@@ -161,6 +162,14 @@ describe('requests and answers', () => {
     const { manual_play: _manual, ...older } = game
     const fake = fakeFetch(() => jsonResponse(200, older))
     expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, manual_play: false })
+  })
+
+  it('takes a server that sends no spectators flag for one that allows none, and refuses a flag that is not one', async () => {
+    const { spectators: _spectators, ...older } = game
+    const fake = fakeFetch(() => jsonResponse(200, older))
+    expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, spectators: false })
+    const bad = fakeFetch(() => jsonResponse(200, { ...game, spectators: 'yes' }))
+    await expect(createApi({ fetch: bad.fetch }).getGame('g-1')).rejects.toThrow()
   })
 
   it('takes a server that names no format for one that plays Normal only', async () => {

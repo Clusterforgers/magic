@@ -52,7 +52,7 @@ pub(crate) fn stamp(table: &mut TableView, connected: &[PlayerId]) {
 }
 
 impl<S: EventStore> GameActor<S> {
-    /// Tells the seats of a running game whose client came or went since they last heard; nothing in the lobby, whose
+    /// Tells the seats (and the spectators) of a running game whose client came or went since they last heard; nothing in the lobby, whose
     /// roster carries the same news.
     ///
     /// A seat is never told of itself: while it can hear, it is connected. A client that cannot take the message is
@@ -73,6 +73,8 @@ impl<S: EventStore> GameActor<S> {
                 for other in connected.iter().filter(|other| **other != seat) {
                     self.seats.send(*other, message.clone());
                 }
+                let spectator = self.seats.spectator();
+                self.seats.send(spectator, message);
             }
             if !self.seats.take_gone() {
                 return;
@@ -80,7 +82,7 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Tells the other seats the time `seat` now has, when it is away: it was issued a decision or its clock grew.
+    /// Tells the other seats and the spectators the time `seat` now has, when it is away: it was issued a decision or its clock grew.
     pub(crate) fn tell_away(&mut self, seat: PlayerId, deadline_ms: Option<u64>) {
         let connected = self.seats.connected();
         if connected.contains(&seat) {
@@ -94,6 +96,8 @@ impl<S: EventStore> GameActor<S> {
         for other in connected {
             self.seats.send(other, message.clone());
         }
+        let spectator = self.seats.spectator();
+        self.seats.send(spectator, message);
     }
 
     /// Tells a client that just joined how long each seat that is away on a clock has; its snapshot says who is away.

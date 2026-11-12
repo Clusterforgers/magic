@@ -19,7 +19,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
-    LobbyGame, LobbyList, VisibilityBody,
+    LobbyGame, LobbyList, SpectatorsBody, VisibilityBody, WatchLink,
 };
 use sha2::{Digest, Sha256};
 
@@ -28,7 +28,7 @@ use crate::auth::client_address;
 use crate::deck_choice::{self, Refused};
 use crate::game_id::GameId;
 use crate::registry::{
-    ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError,
+    ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError, WatchError,
 };
 use crate::server::AppState;
 use crate::throttle::Blocked;
@@ -476,6 +476,53 @@ pub(crate) async fn set_visibility(
     app.registry()
         .set_visibility(game, by, body.visibility)
         .await?;
+    Ok(Json(body))
+}
+
+/// `POST /api/games/{id}/spectators`: a player of the game (any seat, by token or session) gets a new watch link
+/// to hand out, while the host allows spectators.
+pub(crate) async fn watch_link(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    headers: HeaderMap,
+) -> Result<(StatusCode, Json<WatchLink>), ApiError> {
+    let game = game_of(path)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let by = holder(&app, &headers, game).await?;
+    match app.registry().watch_link(game, by) {
+        Ok(token) => Ok((
+            StatusCode::CREATED,
+            Json(WatchLink {
+                game: game.to_string(),
+                token: token.expose().to_owned(),
+            }),
+        )),
+        Err(WatchError::NotFound) => Err(ApiError::not_found()),
+        Err(WatchError::NotAllowed) => Err(forbidden("the host does not allow spectators")),
+        Err(WatchError::Random) => {
+            tracing::error!(%game, "no random source for a watch link");
+            Err(ApiError::internal())
+        }
+    }
+}
+
+/// `PUT /api/games/{id}/spectators`: the host allows spectators or stops them (which ends every watch link and
+/// closes the spectators' sockets).
+pub(crate) async fn set_spectators(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    request: Request,
+) -> Result<Json<SpectatorsBody>, ApiError> {
+    let game = game_of(path)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let headers = request.headers().clone();
+    let body = read_json::<SpectatorsBody>(request).await?;
+    let by = holder(&app, &headers, game).await?;
+    app.registry().set_spectators(game, by, body.allowed)?;
     Ok(Json(body))
 }
 

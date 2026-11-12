@@ -48,8 +48,8 @@ const INTERNAL: Goodbye = Goodbye::new(1011, "internal error");
 const TOO_SLOW: Goodbye = Goodbye::new(1013, "too slow; reconnect");
 /// Application code: another connection took this seat, so do not reconnect on your own.
 const REPLACED: Goodbye = Goodbye::new(4000, "replaced by a newer connection");
-/// Application code: the seat was given back or the host removed its player, and its token no
-/// longer opens anything, so do not reconnect.
+/// Application code: the seat was given back or the host removed its player (or, for a spectator,
+/// stopped spectators), and its token no longer opens anything, so do not reconnect.
 const REMOVED: Goodbye = Goodbye::new(4001, "removed from the game");
 /// Application code: the host closed the game before it started, so its links and code open
 /// nothing any more and there is nothing to reconnect to.
@@ -128,13 +128,12 @@ async fn handshake(
         let message = "the game does not match the socket address";
         return Err(refuse(socket, &limits, ErrorCode::UnknownGame, message).await);
     }
-    let seat = session.access.seat;
-    session
-        .access
-        .handle
-        .join(seat)
-        .await
-        .map_err(|_| Exit::Say(GAME_ENDED))
+    let joined = if session.access.spectators.is_some() {
+        session.access.handle.watch().await
+    } else {
+        session.access.handle.join(session.access.seat).await
+    };
+    joined.map_err(|_| Exit::Say(GAME_ENDED))
 }
 
 /// The first text frame (`None` for a binary one), skipping pings and pongs.
@@ -169,11 +168,13 @@ async fn pump(
     pings.set_missed_tick_behavior(MissedTickBehavior::Delay);
     let mut last_pong = Instant::now();
     let mut bad_in_a_row = 0u32;
+    let spectator = access.spectators.is_some();
     loop {
         // Unbiased on purpose: a long burst from the game must not starve the client's messages.
         tokio::select! {
             () = stopped(stop) => return Exit::Say(SHUTTING_DOWN),
             _ = access.removed.changed() => return Exit::Say(why_removed(&access.removed)),
+            () = spectators_stopped(&mut access.spectators) => return Exit::Say(REMOVED),
             outgoing = queue.recv() => match outgoing {
                 Some(message) => {
                     if let Err(exit) = send(socket, &message, limits.send_timeout).await {
@@ -202,6 +203,20 @@ async fn pump(
                     Message::Ping(_) => continue,
                     Message::Close(_) => return Exit::PeerClosed,
                 };
+                // A spectator that lost its place reconnects, which brings a fresh snapshot.
+                if spectator && matches!(parsed, Some(ClientMessage::Resync)) {
+                    return Exit::Say(TOO_SLOW);
+                }
+                if parsed.is_some() && spectator {
+                    let error = ServerMessage::Error {
+                        code: ErrorCode::BadMessage,
+                        message: "a spectator watches and sends nothing".into(),
+                    };
+                    if let Err(exit) = send(socket, &error, limits.send_timeout).await {
+                        return exit;
+                    }
+                    continue;
+                }
                 if let Some(message) = parsed {
                     bad_in_a_row = 0;
                     if access.handle.send(access.seat, message).await.is_err() {
@@ -247,6 +262,19 @@ fn read_failure(error: &axum::Error) -> Goodbye {
     }
 }
 
+/// Resolves once the host no longer allows spectators; never for a seat's socket.
+async fn spectators_stopped(spectators: &mut Option<watch::Receiver<bool>>) {
+    match spectators {
+        // A game the registry let go closes the socket through `removed` instead.
+        Some(allowed) => {
+            if allowed.wait_for(|allowed| !*allowed).await.is_err() {
+                std::future::pending::<()>().await;
+            }
+        }
+        None => std::future::pending().await,
+    }
+}
+
 /// Resolves once the server is stopping (or gone, which comes to the same).
 async fn stopped(stop: &mut watch::Receiver<bool>) {
     let _ = stop.wait_for(|stopping| *stopping).await;
@@ -264,6 +292,13 @@ fn why_removed(removed: &watch::Receiver<Removal>) -> Goodbye {
 /// The actor closed this seat's queue: another socket took the seat, the seat was emptied, the
 /// client was too slow, or the game ended.
 async fn why_queue_closed(access: &SeatAccess) -> Goodbye {
+    if access.spectators.is_some() {
+        // A spectator's queue closes only when it fell behind or the game ended.
+        return match access.handle.status().await {
+            Ok(_) => TOO_SLOW,
+            Err(_) => GAME_ENDED,
+        };
+    }
     match access.handle.status().await {
         Err(_) => GAME_ENDED,
         Ok(status) if status.connected.contains(&access.seat) => REPLACED,

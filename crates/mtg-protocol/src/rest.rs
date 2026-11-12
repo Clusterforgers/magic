@@ -43,7 +43,8 @@ pub use favourites::FavouritePrecons;
 pub use fix_marks::{FixMarkBody, FixMarkList, FixMarkView, MAX_FIX_NOTE_CHARS};
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
-    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility, VisibilityBody,
+    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, SpectatorsBody, Visibility,
+    VisibilityBody, WatchLink,
 };
 pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,

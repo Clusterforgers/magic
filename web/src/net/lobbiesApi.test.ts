@@ -1,4 +1,4 @@
-// Goal: the game browser calls send the documented requests (path, method, body, token and session), keep the list's ETag and answer a 304 with the listing already held, return only checked bodies, and turn every failure into a LobbyError whose code, status and wait are the server's.
+// Goal: the game browser calls (spectators' watch links and the host's switch among them) send the documented requests (path, method, body, token and session), keep the list's ETag and answer a 304 with the listing already held, return only checked bodies, and turn every failure into a LobbyError whose code, status and wait are the server's.
 import { describe, expect, it } from 'vitest'
 import { fakeFetch, jsonResponse } from '@/test-utils/fakeFetch'
 import type { FetchCall } from '@/test-utils/fakeFetch'
@@ -59,6 +59,16 @@ const calls: [string, (api: Api) => Promise<unknown>, () => Response][] = [
     () => jsonResponse(200, { visibility: 'invite' }),
   ],
   ['closeGame', (api) => api.closeGame(GAME, { token: TOKEN }), () => empty(204)],
+  [
+    'watchLink',
+    (api) => api.watchLink(GAME, { token: TOKEN }),
+    () => jsonResponse(201, { game: GAME, token: 'watch' }),
+  ],
+  [
+    'setSpectators',
+    (api) => api.setSpectators(GAME, false, { token: TOKEN }),
+    () => jsonResponse(200, { allowed: false }),
+  ],
 ]
 
 /** Every error the game browser endpoints send, with its status and a real message. */
@@ -328,6 +338,39 @@ describe('setVisibility', () => {
     const fake = fakeFetch(() => jsonResponse(200, body))
     const error = await failureOf(createApi({ fetch: fake.fetch }).setVisibility(GAME, 'public'))
     expect(error.code).toBe('bad_response')
+  })
+})
+
+describe('spectators', () => {
+  it('asks for a watch link with the seat token and returns the checked link', async () => {
+    const fake = fakeFetch(() => jsonResponse(201, { game: GAME, token: 'watch-token' }))
+    expect(await createApi({ fetch: fake.fetch }).watchLink(GAME, { token: TOKEN })).toEqual({
+      game: GAME,
+      token: 'watch-token',
+    })
+    expect(fake.calls[0]?.url).toBe(`/api/games/${GAME}/spectators`)
+    expect(fake.calls[0]?.init?.method).toBe('POST')
+  })
+
+  it('puts the host’s switch as JSON and returns the setting in force', async () => {
+    const fake = fakeFetch(() => jsonResponse(200, { allowed: true }))
+    expect(await createApi({ fetch: fake.fetch }).setSpectators(GAME, true, { token: TOKEN })).toBe(true)
+    expect(fake.calls[0]?.init).toEqual({
+      method: 'PUT',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${TOKEN}` },
+      body: '{"allowed":true}',
+    })
+  })
+
+  it.each<[string, (api: Api) => Promise<unknown>, unknown]>([
+    ['a link without a token', (api) => api.watchLink(GAME), { game: GAME }],
+    ['a link with an empty token', (api) => api.watchLink(GAME), { game: GAME, token: '' }],
+    ['a switch that is not a flag', (api) => api.setSpectators(GAME, true), { allowed: 'yes' }],
+  ])('refuses %s as a bad_response', async (_what, run, body) => {
+    const status = (body as { game?: string }).game === undefined ? 200 : 201
+    const fake = fakeFetch(() => jsonResponse(status, body))
+    expect((await failureOf(run(createApi({ fetch: fake.fetch })))).code).toBe('bad_response')
   })
 })
 

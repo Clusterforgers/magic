@@ -9,7 +9,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
 - Done: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, deployment.
 - In progress: M3 card system and M6 coverage. A card the compiler does not read whole is played through by-hand clauses. The owner's Moxfield deck is fully Verified. Run `mtg-cli compile` and `coverage` for the current numbers before quoting any.
-- Open: spectators, handicaps, an off-queen copy of the backups (M7), sounds, replays and solo play (M8).
+- Open: spectators in the web, an off-queen copy of the backups (M7), sounds, replays and solo play (M8).
 
 ## Order of work
 
@@ -147,7 +147,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (tm2) Tournaments: an organiser sets up 1v1 or 2v2 Commander rounds (Swiss or single elimination), pairings, results and standings, each match a normal game
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
-- [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
+- [ ] (v1g) Watch links are stored with the game, so they outlive a restart of the server
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 
 ## M8 Polish and deploy

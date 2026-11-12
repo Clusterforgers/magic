@@ -1,4 +1,4 @@
-//! Per-seat outbound queues: bounded, so a slow client can never stall the game.
+//! Per-seat outbound queues, and one per spectator: bounded, so a slow client can never stall the game.
 
 use std::future::{Future, poll_fn};
 use std::pin::Pin;
@@ -12,10 +12,12 @@ use tokio::sync::mpsc::{self, Receiver, Sender};
 /// Smallest queue that still holds everything a join sends (welcome, snapshot, decision, game over).
 pub const MIN_QUEUE: usize = 4;
 
-/// The live connection of each seat, if it has one.
+/// The live connection of each seat, if it has one, and of each spectator.
 #[derive(Debug)]
 pub(crate) struct Seats {
     sinks: Vec<Option<Sender<ServerMessage>>>,
+    /// The spectators' queues; a spectator that hangs up or falls behind is dropped without a word to the table.
+    watchers: Vec<Sender<ServerMessage>>,
     capacity: usize,
     /// Set when a queue was dropped because its client hung up or fell behind; see [`Seats::take_gone`].
     gone: bool,
@@ -26,6 +28,7 @@ impl Seats {
     pub(crate) fn new(seats: usize, capacity: usize) -> Seats {
         Seats {
             sinks: (0..seats).map(|_| None).collect(),
+            watchers: Vec::new(),
             capacity: capacity.max(MIN_QUEUE),
             gone: false,
         }
@@ -34,6 +37,30 @@ impl Seats {
     /// Number of seats at the table.
     pub(crate) fn len(&self) -> usize {
         self.sinks.len()
+    }
+
+    /// The viewer every spectator is: the number of seats, which names no seat.
+    pub(crate) fn spectator(&self) -> PlayerId {
+        PlayerId::from_index(self.sinks.len())
+    }
+
+    /// Opens a queue for one more spectator holding `first` (its welcome and snapshot); a queue too small for them
+    /// is closed at once, so the client reconnects.
+    pub(crate) fn watch(&mut self, first: Vec<ServerMessage>) -> Receiver<ServerMessage> {
+        let (sink, inbox) = mpsc::channel(self.capacity);
+        if first
+            .into_iter()
+            .all(|message| sink.try_send(message).is_ok())
+        {
+            self.watchers.push(sink);
+        }
+        inbox
+    }
+
+    /// Whether some spectator listens; queues whose client went away are closed first.
+    pub(crate) fn watched(&mut self) -> bool {
+        self.watchers.retain(|sink| !sink.is_closed());
+        !self.watchers.is_empty()
     }
 
     /// Opens a queue for `seat`, replacing (and so closing) any earlier one; `None` for a seat that does not exist.
@@ -95,8 +122,14 @@ impl Seats {
         .await;
     }
 
-    /// Queues `message` for `seat` without waiting; a full or abandoned queue drops that client.
+    /// Queues `message` for `seat`, or for every spectator when `seat` is [`Seats::spectator`], without waiting; a
+    /// full or abandoned queue drops that client.
     pub(crate) fn send(&mut self, seat: PlayerId, message: ServerMessage) {
+        if seat == self.spectator() {
+            self.watchers
+                .retain(|sink| sink.try_send(message.clone()).is_ok());
+            return;
+        }
         let Some(slot) = self.sinks.get_mut(seat.index()) else {
             return;
         };
@@ -113,9 +146,9 @@ impl Seats {
         }
     }
 
-    /// Queues a copy of `message` for every connected seat.
+    /// Queues a copy of `message` for every connected seat and every spectator.
     pub(crate) fn broadcast(&mut self, message: &ServerMessage) {
-        for seat in 0..self.sinks.len() {
+        for seat in 0..=self.sinks.len() {
             self.send(PlayerId::from_index(seat), message.clone());
         }
     }
@@ -123,7 +156,7 @@ impl Seats {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat's queue is bounded and never blocks the sender; overflow or abandonment drops only that client, and a new join replaces the old queue.
+    //! Goal: a seat's queue is bounded and never blocks the sender; overflow or abandonment drops only that client, and a new join replaces the old queue; spectators share every message sent to the spectator viewer, each starts with its own first messages, and none counts as a seat or a client gone.
     use super::*;
     use mtg_protocol::ServerMessage::Chat;
 
@@ -279,5 +312,62 @@ mod tests {
                 .is_err()
         );
         drop(first);
+    }
+
+    #[test]
+    fn spectators_share_what_the_spectator_viewer_is_sent_and_start_with_their_own() {
+        let mut seats = Seats::new(2, 8);
+        let mut seat = seats.attach(PlayerId(0)).unwrap();
+        let mut first = seats.watch(vec![line(10)]);
+        let mut second = seats.watch(vec![line(20)]);
+        assert_eq!(seats.spectator(), PlayerId(2));
+        assert!(seats.watched());
+        seats.send(PlayerId(2), line(1));
+        seats.broadcast(&line(2));
+        for (inbox, own) in [(&mut first, 10), (&mut second, 20)] {
+            assert_eq!(inbox.try_recv().unwrap(), line(own));
+            assert_eq!(inbox.try_recv().unwrap(), line(1));
+            assert_eq!(inbox.try_recv().unwrap(), line(2));
+        }
+        assert_eq!(
+            seat.try_recv().unwrap(),
+            line(2),
+            "a seat gets the broadcast only"
+        );
+        assert!(seat.try_recv().is_err());
+        assert_eq!(seats.connected(), [PlayerId(0)], "a spectator is no seat");
+    }
+
+    #[test]
+    fn a_spectator_that_goes_or_falls_behind_is_dropped_without_a_client_gone() {
+        let mut seats = Seats::new(1, MIN_QUEUE);
+        let gone = seats.watch(Vec::new());
+        let mut slow = seats.watch(Vec::new());
+        drop(gone);
+        for n in 0..=(MIN_QUEUE as u64) {
+            seats.send(PlayerId(1), line(n));
+        }
+        assert!(!seats.watched());
+        assert!(!seats.take_gone());
+        for n in 0..MIN_QUEUE as u64 {
+            assert_eq!(slow.try_recv().unwrap(), line(n));
+        }
+        assert_eq!(
+            slow.try_recv(),
+            Err(mpsc::error::TryRecvError::Disconnected)
+        );
+    }
+
+    #[test]
+    fn a_spectator_whose_first_messages_overflow_its_queue_is_closed() {
+        let mut seats = Seats::new(1, MIN_QUEUE);
+        let too_many = (0..=MIN_QUEUE as u64).map(line).collect();
+        let mut refused = seats.watch(too_many);
+        assert!(!seats.watched());
+        while refused.try_recv().is_ok() {}
+        assert_eq!(
+            refused.try_recv(),
+            Err(mpsc::error::TryRecvError::Disconnected)
+        );
     }
 }

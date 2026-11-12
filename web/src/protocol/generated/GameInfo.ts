@@ -43,6 +43,11 @@ visibility: Visibility,
  */
 manual_play: boolean, 
 /**
+ * Whether the host allows spectators (`PUT /api/games/{id}/spectators`); a player's watch link opens the game
+ * to one while they do.
+ */
+spectators: boolean, 
+/**
  * What the creator set in place of the format's values; left out when nothing is set, so an invite-only lobby can name them.
  */
 house_rules?: HouseRules, };

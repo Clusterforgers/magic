@@ -7,9 +7,9 @@ import type { GameInfo } from '@/protocol/generated'
 /** How often the lobby asks who is there, in milliseconds. */
 export const LOBBY_POLL_MS = 3000
 
-/** What a lookup keeps of the answer: all of `GameInfo`, though a stand-in lookup (a table fixture) may omit `visibility`, `format` and `manual_play`. */
-export type KnownGame = Omit<GameInfo, 'visibility' | 'format' | 'manual_play'> &
-  Partial<Pick<GameInfo, 'visibility' | 'format' | 'manual_play'>>
+/** What a lookup keeps of the answer: all of `GameInfo`, though a stand-in lookup (a table fixture) may omit `visibility`, `format`, `manual_play` and `spectators`. */
+export type KnownGame = Omit<GameInfo, 'visibility' | 'format' | 'manual_play' | 'spectators'> &
+  Partial<Pick<GameInfo, 'visibility' | 'format' | 'manual_play' | 'spectators'>>
 
 /** What REST knows about the game: the public facts, and whether the last look worked. */
 export interface GameLookup {

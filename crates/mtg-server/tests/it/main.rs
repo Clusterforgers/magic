@@ -90,6 +90,7 @@ mod resume;
 mod seat_decks;
 mod seat_http;
 mod shutdown;
+mod spectators;
 mod stops;
 mod store_contract;
 mod store_failures;

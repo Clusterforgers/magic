@@ -17,6 +17,7 @@ mod claims;
 mod departure;
 mod listing;
 mod resume;
+mod watching;
 
 use std::collections::HashMap;
 use std::net::IpAddr;
@@ -60,6 +61,7 @@ pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
+pub use watching::{MAX_WATCH_LINKS, WatchError};
 
 pub(crate) use cause::Cause;
 
@@ -162,6 +164,8 @@ pub struct PublicGame {
     pub manual_play: bool,
     /// What the creator set in place of the format's values.
     pub house_rules: HouseRules,
+    /// Whether the host allows spectators.
+    pub spectators: bool,
 }
 
 /// Why a game left the registry, as the sockets of its seats learn it.
@@ -184,6 +188,8 @@ pub struct SeatAccess {
     pub seat: PlayerId,
     /// Reports an error, or a change, once the registry drops the game; the value says why.
     pub removed: watch::Receiver<Removal>,
+    /// For a spectator: whether the host still allows spectators; `None` for a seat.
+    pub spectators: Option<watch::Receiver<bool>>,
 }
 
 /// What the registry knows about one seat.
@@ -283,6 +289,10 @@ struct Entry {
     /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
     /// host says so first.
     alive: watch::Sender<Removal>,
+    /// The digests of the watch links the players handed out, newest last.
+    watch_links: Vec<TokenDigest>,
+    /// Whether the host allows spectators; a change to false closes their sockets.
+    spectators: watch::Sender<bool>,
 }
 
 impl Entry {
@@ -302,6 +312,8 @@ impl Entry {
             finished: None,
             last_connected: Instant::now(),
             alive,
+            watch_links: Vec::new(),
+            spectators: watch::channel(true).0,
         }
     }
 
@@ -834,6 +846,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(found?),
             removed: entry.alive.subscribe(),
+            spectators: None,
         })
     }
 
@@ -851,6 +864,7 @@ impl Registry {
             handle: entry.handle.clone(),
             seat: PlayerId::from_index(seat),
             removed: entry.alive.subscribe(),
+            spectators: None,
         })
     }
 
@@ -936,7 +950,7 @@ impl Registry {
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, format, visibility, house_rules, seats) = {
+        let (handle, format, visibility, house_rules, seats, spectators) = {
             let games = self.games();
             let entry = games.get(&id)?;
             let seats: Vec<SeatSummary> = entry
@@ -955,6 +969,7 @@ impl Registry {
                 entry.visibility,
                 entry.house_rules.clone(),
                 seats,
+                *entry.spectators.borrow(),
             )
         };
         let status = handle.status().await.ok()?;
@@ -968,6 +983,7 @@ impl Registry {
             result: status.result,
             manual_play: status.manual_play,
             house_rules,
+            spectators,
         })
     }
 

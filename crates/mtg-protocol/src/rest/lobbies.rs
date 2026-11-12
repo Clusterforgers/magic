@@ -98,6 +98,9 @@ pub struct GameInfo {
     pub visibility: Visibility,
     /// Whether some seat plays a deck with cards the game does not run whole; fixed when the game begins.
     pub manual_play: bool,
+    /// Whether the host allows spectators (`PUT /api/games/{id}/spectators`); a player's watch link opens the game
+    /// to one while they do.
+    pub spectators: bool,
     /// What the creator set in place of the format's values; left out when nothing is set, so an invite-only lobby can name them.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
@@ -168,6 +171,32 @@ impl fmt::Debug for Joined {
 pub struct VisibilityBody {
     /// The visibility to set, or the one now in force.
     pub visibility: Visibility,
+}
+
+/// The body of `PUT /api/games/{id}/spectators` and its answer: whether the host allows spectators.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct SpectatorsBody {
+    /// True to allow them; false forgets every watch link and closes the spectators' sockets.
+    pub allowed: bool,
+}
+
+/// The answer of `POST /api/games/{id}/spectators`: a new watch link for a player of the game to hand out.
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct WatchLink {
+    /// The game.
+    pub game: String,
+    /// The token of `GET /ws/{game}/watch/{token}`, shown here and never again.
+    pub token: String,
+}
+
+impl std::fmt::Debug for WatchLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("WatchLink")
+            .field("game", &self.game)
+            .field("token", &"<redacted>")
+            .finish()
+    }
 }
 
 /// The body of `PUT /api/games/{id}/seats/{n}/deck`: the deck the seat plays.

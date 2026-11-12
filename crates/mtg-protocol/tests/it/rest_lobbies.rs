@@ -9,7 +9,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
     GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
-    Visibility, VisibilityBody,
+    SpectatorsBody, Visibility, VisibilityBody, WatchLink,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -100,6 +100,7 @@ fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> 
         result,
         visibility,
         manual_play: false,
+        spectators: true,
         house_rules: None,
     }
 }
@@ -119,6 +120,7 @@ fn the_game_lookup_has_the_documented_wire_shape() {
             "result": null,
             "visibility": "public",
             "manual_play": false,
+            "spectators": true,
         })
     );
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), waiting);
@@ -414,6 +416,7 @@ fn the_bindings_carry_the_game_browser_types() {
         "result: GameResult | null",
         "visibility: Visibility",
         "manual_play: boolean",
+        "spectators: boolean",
         "house_rules?: HouseRules",
     ] {
         assert!(files["GameInfo.ts"].contains(field), "{field}");
@@ -496,4 +499,28 @@ fn the_game_lookup_names_house_rules_only_when_some_are_set() {
     let value = serde_json::to_value(&info).unwrap();
     assert_eq!(value["house_rules"], json!({ "starting_life": 30 }));
     assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), info);
+}
+
+#[test]
+fn the_spectator_bodies_have_the_documented_wire_shape_and_a_watch_link_hides_its_token() {
+    let allowed = SpectatorsBody { allowed: false };
+    assert_eq!(
+        serde_json::to_value(allowed).unwrap(),
+        json!({ "allowed": false })
+    );
+    assert!(
+        serde_json::from_value::<SpectatorsBody>(json!({ "allowed": true, "more": 1 })).is_err()
+    );
+    let link = WatchLink {
+        game: "g".into(),
+        token: "secret-token".into(),
+    };
+    assert_eq!(
+        serde_json::to_value(&link).unwrap(),
+        json!({ "game": "g", "token": "secret-token" })
+    );
+    assert!(!format!("{link:?}").contains("secret-token"));
+    let files = generated();
+    assert!(files["SpectatorsBody.ts"].contains("allowed: boolean"));
+    assert!(files["WatchLink.ts"].contains("token: string"));
 }

@@ -1,5 +1,6 @@
-//! The game sockets: `GET /ws/{game}/{token}` for a seat's link and `GET /ws/{game}` for a signed-in
-//! user's bound seat. Both authenticate before the upgrade and hand the socket to a session.
+//! The game sockets: `GET /ws/{game}/{token}` for a seat's link, `GET /ws/{game}` for a signed-in
+//! user's bound seat and `GET /ws/{game}/watch/{token}` for a spectator's watch link. Each
+//! authenticates before the upgrade and hands the socket to a session.
 
 use axum::extract::rejection::PathRejection;
 use axum::extract::ws::rejection::WebSocketUpgradeRejection;
@@ -66,6 +67,34 @@ pub(crate) async fn upgrade_as_user(
         Err(error) => return error.into_response(),
     };
     let Some(access) = app.registry().authenticate_user(id, user.id) else {
+        return ApiError::not_found().into_response();
+    };
+    if app.stopping() {
+        return ApiError::unavailable().into_response();
+    }
+    match upgrade {
+        Ok(upgrade) => start(&app, access, upgrade),
+        Err(rejection) => rejection.into_response(),
+    }
+}
+
+/// The watch-link upgrade handler: a spectator, no seat. An unknown game, a malformed address, a
+/// wrong token and a game whose host stopped spectators all get the same 404. A game that has not
+/// started takes the socket and closes it, as a seat's socket to an ended game.
+pub(crate) async fn upgrade_watcher(
+    State(app): State<AppState>,
+    path: Result<Path<(String, String)>, PathRejection>,
+    headers: HeaderMap,
+    upgrade: Result<WebSocketUpgrade, WebSocketUpgradeRejection>,
+) -> Response {
+    if !origin_allowed(&headers, &app.config().allowed_origins) {
+        return ApiError::forbidden_origin().into_response();
+    }
+    let access = path.ok().and_then(|Path((game, token))| {
+        let id = game.parse::<GameId>().ok()?;
+        app.registry().authenticate_watcher(id, &token)
+    });
+    let Some(access) = access else {
         return ApiError::not_found().into_response();
     };
     if app.stopping() {

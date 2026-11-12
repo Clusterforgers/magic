@@ -12,10 +12,19 @@ import type {
   PlayerId,
   SeatDeck,
   Visibility,
+  WatchLink,
 } from '@/protocol/generated'
 import { isCount, isRecord, isText } from './check'
 import { LobbyError, lobbyFailure } from './lobbyErrors'
-import { readGameInfo, readJoined, readLobbyList, readSeatDeck, readVisibility } from './parseLobbies'
+import {
+  readGameInfo,
+  readJoined,
+  readLobbyList,
+  readSeatDeck,
+  readSpectators,
+  readVisibility,
+  readWatchLink,
+} from './parseLobbies'
 
 /** One seat of a new game: the name shown to others and, for a seat that starts with one, a deck id from `listDecks`. */
 export interface SeatRequest {
@@ -175,6 +184,10 @@ export interface Api {
   releaseSeat(game: string, seat: number, as?: SeatCredential): Promise<void>
   /** `PATCH /api/games/{id}`: the host lists the game or hides it again; resolves with the visibility now in force. */
   setVisibility(game: string, visibility: Visibility, as?: SeatCredential): Promise<Visibility>
+  /** `POST /api/games/{id}/spectators`: a player of the game gets a new watch link to hand out. */
+  watchLink(game: string, as?: SeatCredential): Promise<WatchLink>
+  /** `PUT /api/games/{id}/spectators`: the host allows spectators or stops them; resolves with the setting now in force. */
+  setSpectators(game: string, allowed: boolean, as?: SeatCredential): Promise<boolean>
   /** `DELETE /api/games/{id}`: the host closes a game that is still in its lobby; every socket of it ends with 4002. */
   closeGame(game: string, as?: SeatCredential): Promise<void>
   /**
@@ -366,6 +379,10 @@ export function createApi(options: ApiOptions = {}): Api {
     // `async` so that a token that cannot go into a header rejects like every other failure.
     setVisibility: async (id, visibility, as = {}) =>
       lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
+    watchLink: async (id, as = {}) =>
+      lobbyCall(`${game(id)}/spectators`, readWatchLink, change('POST', as), 201),
+    setSpectators: async (id, allowed, as = {}) =>
+      lobbyCall(`${game(id)}/spectators`, readSpectators, change('PUT', as, { allowed })),
     closeGame: async (id, as = {}) => {
       await lobbyCall(game(id), () => true, change('DELETE', as), 204)
     },
