@@ -15,6 +15,12 @@ pub(super) fn r304_damage_texts(
     by: &ReplaceBy,
     steps: &[Effect],
 ) -> Vec<String> {
+    // Only steps that read the damage (its amount, recipient or source) are written here.
+    let reads_it = serde_json::to_string(steps)
+        .is_ok_and(|json| json.contains("\"Triggering\"") || json.contains("\"Dealer\""));
+    if !reads_it {
+        return Vec::new();
+    }
     let mut found = Vec::new();
     for head in heads {
         match by {
