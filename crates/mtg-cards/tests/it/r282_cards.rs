@@ -130,7 +130,11 @@ fn the_whole_cards_of_the_pack_read_back_as_their_oracle_text() {
             line.strip_suffix(" => Open")
                 .is_some_and(|clause| !clause.contains(' '))
         };
-        if !whole && !lines.iter().all(|line| line.ends_with("=> Reads") || open_keyword(line)) {
+        if !whole
+            && !lines
+                .iter()
+                .all(|line| line.ends_with("=> Reads") || open_keyword(line))
+        {
             wrong.push(format!("{slug}:\n{}", lines.join("\n")));
         }
     }

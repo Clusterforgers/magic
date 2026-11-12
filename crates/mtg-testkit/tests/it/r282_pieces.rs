@@ -1,4 +1,4 @@
-//! Goal: the r28-2 pieces play at tables of two, three and four seats: suspend X asks X from the least it allows, costs X more and puts X time counters on the card; compleated takes two loyalty counters for each Phyrexian symbol paid with life and none when it is paid with mana; More Than Meets the Eye casts the back face from a hand for its cost and the card enters converted, or the front face for its mana cost when the caster picks it; cumulative upkeep with an action for its cost asks its controller to do the actions once for each age counter or sacrifice the permanent, offers the actions only while they can be done, and a spell that plots a card exiles it face up, plotted, so that its owner may cast it for free on a later turn and not on the turn it was plotted in; the log replays to the live state.
+//! Goal: the r28-2 pieces play at tables of two, three and four seats: a spell whose first step runs again keeps the targets it began with; suspend X asks X from the least it allows, costs X more and puts X time counters on the card; compleated takes two loyalty counters for each Phyrexian symbol paid with life and none when it is paid with mana; More Than Meets the Eye casts the back face from a hand for its cost and the card enters converted, or the front face for its mana cost when the caster picks it; cumulative upkeep with an action for its cost asks its controller to do the actions once for each age counter or sacrifice the permanent, offers the actions only while they can be done, and a spell that plots a card exiles it face up, plotted, so that its owner may cast it for free on a later turn and not on the turn it was plotted in; the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -385,6 +385,39 @@ fn suspend_x_asks_x_and_puts_that_many_time_counters(
         .unwrap()
         .card_counters_of(&mtg_cards::value::CounterKind::Other("time".to_owned()));
     assert_eq!(time, x);
+    assert_replays(&driver, &setup);
+    Ok(())
+}
+
+/// A spell whose first step runs again (an amass that makes its Army first) keeps the targets it recorded as it began:
+/// Surrounded by Orcs makes a 0/0 Army, puts three counters on it and mills the target player three cards.
+#[rstest]
+fn a_first_step_that_runs_again_keeps_the_targets_it_began_with(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let orcs = mtg_testkit::corpus::card("Surrounded by Orcs").unwrap();
+    let build = || {
+        let islands: Vec<_> = (0..4)
+            .map(|_| ready(mtg_testkit::cards::island()))
+            .collect();
+        let mut table = Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [orcs.clone()])
+            .battlefield(0, islands);
+        for seat in 0..seats {
+            table = table.library(seat, vec![forest(); 20]);
+        }
+        table
+    };
+    let setup = build().setup()?;
+    let mut driver = Driver::from_scenario(build())?;
+    let foe = driver.target_player(1);
+    driver.cast_at("Surrounded by Orcs", &[foe])?;
+    while !driver.state().stack().is_empty() {
+        driver.answer_passively()?;
+    }
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(1))).len(), 3);
+    assert!(on_battlefield(&driver, "Orc Army"));
     assert_replays(&driver, &setup);
     Ok(())
 }

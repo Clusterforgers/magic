@@ -922,13 +922,16 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The bound names that record, for each specification, its targets that are legal now; none unless `starting`.
+    /// The bound names that record, for each specification, its targets that are legal now; none unless `starting`,
+    /// and none already recorded: a first step that runs again (an amass that made its Army) keeps the first record.
     pub(crate) fn w7d_legal_at_start(&self, starting: bool) -> Vec<(String, Vec<Target>)> {
         if !starting {
             return Vec::new();
         }
         (0..self.choices.targets.len())
-            .map(|index| (format!("{W7D_LEGAL}{index}"), self.w7d_legal_now(index)))
+            .map(|index| (index, format!("{W7D_LEGAL}{index}")))
+            .filter(|(_, name)| !self.bindings.contains_key(name))
+            .map(|(index, name)| (name, self.w7d_legal_now(index)))
             .collect()
     }
 
