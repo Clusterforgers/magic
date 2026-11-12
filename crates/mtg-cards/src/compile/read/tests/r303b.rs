@@ -153,5 +153,9 @@ fn r303b_a_creature_planeswalker_or_player_is_its_own_target(
     #[case] first: &str,
     #[case] same: bool,
 ) {
-    assert_eq!(written(&maneuver(first), MANEUVER), same, "{first}");
+    let wordings = written_variants(&ability(&maneuver(first)));
+    let found = wordings
+        .iter()
+        .any(|wording| same_written_text(wording, MANEUVER));
+    assert_eq!(found, same, "{first}: {wordings:?}");
 }

@@ -59,6 +59,7 @@ pub(super) fn chosen_source(from: &Ref) -> Option<String> {
 impl Writer<'_> {
     /// A shield of the next damage this turn, with the choice of its source before it, as one sentence, and the number of
     /// effects it covers.
+    #[allow(clippy::too_many_lines)]
     pub(super) fn r9w_shields(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
         match effects {
             [

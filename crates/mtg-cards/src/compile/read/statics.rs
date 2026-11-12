@@ -1764,6 +1764,7 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
     }])
 }
 
+#[allow(clippy::too_many_lines)]
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
     if let Some(texts) = ep27_rule_texts(rule, condition, from) {
         return texts;

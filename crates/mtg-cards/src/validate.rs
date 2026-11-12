@@ -4926,7 +4926,11 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
+            GameRule::CanBeCommander
+            | GameRule::AnyNumberInDeck
+            | GameRule::Draft(_)
+            | GameRule::DamageAsWither
+            | GameRule::ManaBurn => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -4937,9 +4941,8 @@ impl Walker<'_> {
             | GameRule::CantCastSpells { .. }
             | GameRule::ToughnessAssignsDamage(_)
             | GameRule::CountersRemain => self.w17b_rule(&tag, rule),
-            GameRule::DamageAsWither | GameRule::ManaBurn => {}
             GameRule::AttackAsThoughHasteAt(who) => {
-                self.at(tag, |w| w.reference(who, Kind::Player))
+                self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::Cant { who, action } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Either));

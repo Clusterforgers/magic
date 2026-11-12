@@ -264,19 +264,19 @@ fn a_chosen_creature_type_is_added_to_the_others(
         Scenario::new(seats).battlefield(0, [ready(shifter()), ready(free_creature("Elf", 1, 1))]),
     )?;
     let id = driver.id_of("Shifter")?;
-    let before = characteristics(driver.state(), id).unwrap().subtypes.len();
+    let before = characteristics(driver.state(), id).unwrap().subtypes;
     driver.begin_activation("Shifter")?;
     settle(&mut driver)?;
     let after = characteristics(driver.state(), id).unwrap().subtypes;
     assert!(
-        after.iter().any(|kind| kind.0 == "Sliver"),
-        "the old type stays: {after:?}"
+        before.iter().all(|kind| after.contains(kind)),
+        "the old types stay: {before:?} in {after:?}"
     );
-    assert!(after.len() > before, "a type is added: {after:?}");
+    assert_eq!(after.len(), before.len() + 1, "a type is added: {after:?}");
     driver.idle_until(2, Step::Upkeep)?;
     let id = driver.id_of("Shifter")?;
     assert_eq!(
-        characteristics(driver.state(), id).unwrap().subtypes.len(),
+        characteristics(driver.state(), id).unwrap().subtypes,
         before
     );
     Ok(())
