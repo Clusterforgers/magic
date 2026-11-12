@@ -375,6 +375,7 @@ mod r7c_searches;
 // rmt5
 mod r283_wholes;
 mod r287_wholes;
+mod r306b_wholes;
 mod rmt5_wholes;
 
 use crate::ability::Ability;
@@ -520,6 +521,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     rmt5_wholes::rmt5_add_wholes(ability, texts);
     r283_wholes::r283_add_wholes(ability, texts);
     r287_wholes::r287_add_wholes(ability, texts);
+    r306b_wholes::r306b_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
 }
 

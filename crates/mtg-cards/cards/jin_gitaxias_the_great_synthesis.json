@@ -1,7 +1,7 @@
 {
   "oracle_id": "b70c3adb-64ba-49ea-bcf6-6406a58cb453",
   "name": "Jin-Gitaxias // The Great Synthesis",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jin-Gitaxias",
@@ -77,9 +77,46 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 258, "end": 413 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "In": "Hand" },
+                          { "OwnedBy": "You" },
+                          { "Not": { "Type": "Land" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "spell"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "spell" }, "free": true } }
+                  ],
+                  "most": 100,
+                  "ask": "You"
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

@@ -155,6 +155,7 @@ mod r288_final_chapter;
 mod r2e_cost_parts;
 mod r307c_exile;
 mod r302c_cards;
+mod r306b_spend_any;
 mod r3f_mana;
 mod r4f_stack_move;
 mod r4i_may_flash;

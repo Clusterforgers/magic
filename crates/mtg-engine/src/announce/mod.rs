@@ -214,6 +214,8 @@ pub(crate) struct Granted {
     pub(crate) transformed: bool,
     /// What it is cast for rather than its mana cost (CR 118.9), its amounts counted for the card.
     pub(crate) rather: Option<mtg_cards::cost::Cost>,
+    /// Which mana may pay for the spell (CR 609.4b).
+    pub(crate) spend_as: mtg_cards::modify::SpendAs,
 }
 
 impl Needs {
@@ -374,21 +376,9 @@ impl Pending {
     }
 
     /// The cast of `spell` that a resolution lets `player` make, with or without paying its mana cost.
-    pub(crate) fn during_resolution(
-        player: PlayerId,
-        spell: ObjectId,
-        free: bool,
-        way: Option<CastWay>,
-        transformed: bool,
-        rather: Option<mtg_cards::cost::Cost>,
-    ) -> Self {
+    pub(crate) fn during_resolution(player: PlayerId, spell: ObjectId, granted: Granted) -> Self {
         Pending {
-            granted: Some(Granted {
-                free,
-                way,
-                transformed,
-                rather,
-            }),
+            granted: Some(granted),
             ..Pending::new(player, What::Spell(spell))
         }
     }

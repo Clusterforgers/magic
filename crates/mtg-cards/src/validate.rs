@@ -2135,6 +2135,10 @@ impl<'a> Walker<'a> {
 
     fn modification(&mut self, modification: &Modification) {
         self.uses("Mod", &tag_of(modification));
+        // A name the card's own effect gives ("named Fenric") is a name its other abilities may refer to.
+        if let Modification::SetName(name) = modification {
+            self.rmt7_token_names.insert(name.to_lowercase());
+        }
         match modification {
             Modification::AddSubtype(subtype) => self.known_subtype(subtype),
             Modification::SetCreatureTypes(types) | Modification::SetLandTypes(types) => {
