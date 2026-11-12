@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8f262a8b-2553-45c9-b37f-218a5547fcff",
+  "name": "Firecat Blitz",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firecat Blitz",
+      "oracle_fingerprint": "e6892dd119f7622bc19ff30d3ed33ac8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental Cat",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental", "Cat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": "X",
+                  "as": "cats"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "cats" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              { "Mana": "{R}{R}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Mountain" }], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

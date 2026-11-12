@@ -1,0 +1,29 @@
+{
+  "oracle_id": "967c509f-dbde-44ee-93fa-a01376f34b99",
+  "name": "Behemoth's Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behemoth's Herald",
+      "oracle_fingerprint": "14ff6debb07bb1080f6cbda2ee5b1c05",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{G}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Red" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Green" }] } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "White" }] } }
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Named": "Godsire" }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

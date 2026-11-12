@@ -1,7 +1,7 @@
 {
   "oracle_id": "2ef75cf3-30dc-4852-a6d1-1d6391fad022",
   "name": "Forgotten Ancient",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Forgotten Ancient",
@@ -16,9 +16,38 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 79, "end": 194 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, "Other"] },
+                        "as": "onto"
+                      }
+                    },
+                    {
+                      "MoveCounters": {
+                        "from": "This",
+                        "to": { "Bound": "onto" },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "ask": "You"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "dea8c725-455e-4668-877a-df388fe22255",
+  "name": "Illicit Auction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illicit Auction",
+      "oracle_fingerprint": "0b077f8928302418c4155d0908935717",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "BidLife": { "start": 0, "as": "bid", "winner": "bidder" } },
+              { "LoseLife": { "who": { "Bound": "bidder" }, "amount": { "ChosenAs": "bid" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": { "Bound": "bidder" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

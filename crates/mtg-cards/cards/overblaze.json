@@ -1,0 +1,28 @@
+{
+  "oracle_id": "543599e2-8312-43a6-ab26-0be17e690d4f",
+  "name": "Overblaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overblaze",
+      "oracle_fingerprint": "e6f55dc13fe1bb5517795ae403e4f867",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{2}{R}{R}" } } }
+      ]
+    }
+  ]
+}

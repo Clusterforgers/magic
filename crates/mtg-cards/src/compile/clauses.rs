@@ -107,9 +107,9 @@ pub fn word_block(text: &str) -> Option<WordBlock<'_>> {
     (modes.len() == words.len() && lines.next().is_none()).then_some((words, modes))
 }
 
-/// A mode of a modal spell or a cost of a Spree spell.
+/// A mode of a modal spell, a cost of a Spree spell or a mode counted in pawprints ("{P}{P} — ...").
 fn is_bullet(line: &str) -> bool {
-    line.starts_with('\u{2022}') || line.starts_with("+ {")
+    line.starts_with('\u{2022}') || line.starts_with("+ {") || line.starts_with("{P}")
 }
 
 /// `LEVEL 2-3`, `9+ | Flying` and `{3}{U}: Level 2`, the lines that open a level block, a station block and a level of a Class.
@@ -195,6 +195,10 @@ mod tests {
     #[case::modal(
         "Choose one \u{2014}\n\u{2022} Counter target spell.\n\u{2022} Draw a card.\n\u{2022} Gain 2 life.",
         &["Choose one \u{2014}\n\u{2022} Counter target spell.\n\u{2022} Draw a card.\n\u{2022} Gain 2 life."]
+    )]
+    #[case::r302_pawprint_modes(
+        "Choose up to five {P} worth of modes. You may choose the same mode more than once.\n{P} \u{2014} Draw a card.\n{P}{P} \u{2014} Gain 2 life.",
+        &["Choose up to five {P} worth of modes. You may choose the same mode more than once.\n{P} \u{2014} Draw a card.\n{P}{P} \u{2014} Gain 2 life."]
     )]
     #[case::modal_then_more(
         "Choose one or both \u{2014}\n\u{2022} A.\n\u{2022} B.\nDraw a card.",

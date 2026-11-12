@@ -1,7 +1,7 @@
 {
   "oracle_id": "c983644d-6741-4aa1-aa68-a6e680c26bb6",
   "name": "Serpentine Spike",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Serpentine Spike",
@@ -9,9 +9,40 @@
       "abilities": [
         { "Keyword": "Devoid" },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 33, "end": 237 }
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    { "Not": { "Is": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } },
+              { "DealDamage": { "to": { "Target": 2 }, "amount": 4 } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

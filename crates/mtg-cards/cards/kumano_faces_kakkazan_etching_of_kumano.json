@@ -1,7 +1,7 @@
 {
   "oracle_id": "535916f8-b51a-4414-8ab0-fdccdefd9433",
   "name": "Kumano Faces Kakkazan // Etching of Kumano",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kumano Faces Kakkazan",
@@ -61,9 +61,15 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 6, "end": 98 }
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedThisTurnBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
           }
         }
       ]

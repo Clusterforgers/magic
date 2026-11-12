@@ -1,7 +1,7 @@
 {
   "oracle_id": "fed77e0a-a4a6-4409-9cab-bf0fc2cd9f9b",
   "name": "Crown of Doom",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Crown of Doom",
@@ -24,9 +24,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 96, "end": 200 }
+          "Activated": {
+            "cost": "{2}",
+            "condition": "YourTurn",
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Not": {
+                          "Matches": { "subject": "This", "selector": [{ "OwnedBy": "Asker" }] }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

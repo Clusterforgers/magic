@@ -121,6 +121,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::BasicLandTypes
         | StatKind::Name
         | StatKind::CounterKinds
+        | StatKind::Subtypes
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness

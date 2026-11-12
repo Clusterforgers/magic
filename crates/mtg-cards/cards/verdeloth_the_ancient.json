@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": { "Kicker": "{X}" } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 67, "end": 126 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Saproling" },
+                    { "Not": { "AnyOf": [{ "Not": { "Subtype": "Treefolk" } }, "This"] } }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
           }
         },
         {

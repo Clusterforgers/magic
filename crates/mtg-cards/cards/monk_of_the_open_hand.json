@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2d3998fc-a68a-4923-a456-b3e43ab6decb",
+  "name": "Monk of the Open Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monk of the Open Hand",
+      "oracle_fingerprint": "d9e33787462af529c9f2032ff39a9b8f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "597ca66c-6bb1-4661-8ed9-8236f546e536",
+  "name": "Rust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rust",
+      "oracle_fingerprint": "45773b85753a85d8eb35621e7e3b6a08",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Ability": "Activated" }, { "FromSource": [{ "Type": "Artifact" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

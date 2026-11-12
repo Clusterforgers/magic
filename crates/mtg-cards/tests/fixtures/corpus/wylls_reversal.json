@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "3d8df219-1da0-4311-b9bb-c74b5fa55293",
+  "oracle_id": "8d35cef8-a52d-45fb-8f5f-cccea26826d0",
+  "multiverse_ids": [
+    563092
+  ],
+  "tcgplayer_id": 272737,
+  "cardmarket_id": 660742,
+  "name": "Wyll's Reversal",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/3d8df219-1da0-4311-b9bb-c74b5fa55293",
+  "scryfall_uri": "https://scryfall.com/card/clb/209/wylls-reversal?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723",
+    "normal": "https://cards.scryfall.io/normal/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723",
+    "large": "https://cards.scryfall.io/large/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723",
+    "png": "https://cards.scryfall.io/png/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.png?1783922723",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.webp?1783922723",
+    "grid": "https://cards.scryfall.io/grid/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.webp?1783922723",
+    "display": "https://cards.scryfall.io/display/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.webp?1783922723",
+    "art": "https://cards.scryfall.io/art/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.webp?1783922723",
+    "crop": "https://cards.scryfall.io/crop/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.webp?1783922723",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/d/3d8df219-1da0-4311-b9bb-c74b5fa55293.jpg?1783922723"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose target spell or ability with one or more targets. Roll a d20 and add the greatest power among creatures you control.\n1—14 | You may choose new targets for that spell or ability.\n15+ | You may choose new targets for that spell or ability. Then copy it. You may choose new targets for the copy.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3d8df219-1da0-4311-b9bb-c74b5fa55293/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8d35cef8-a52d-45fb-8f5f-cccea26826d0&unique=prints",
+  "collector_number": "209",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Irina Nordsol",
+  "artist_ids": [
+    "1e4cb52d-476e-4c68-ac87-2e620aede6d4"
+  ],
+  "illustration_id": "715683f1-fe09-41fb-a7e4-db0295add4ce",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2939,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "3.57",
+    "usd_foil": "3.63",
+    "usd_etched": null,
+    "eur": "3.28",
+    "eur_foil": "2.76",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563092&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWyll%2527s%2BReversal",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWyll%2527s%2BReversal",
+    "edhrec": "https://edhrec.com/route/?cc=Wyll%27s+Reversal"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272737%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660742&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Wyll%27s+Reversal&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -185,7 +185,16 @@ mod r284_pairs;
 mod r284_rules;
 mod r285_writers;
 mod r287_facts;
+mod r300b_writers;
+mod r300c_cost_pairs;
+mod r300c_writers;
+mod r302c_writers;
 mod r303_forms;
+mod r303b_statics;
+mod r303b_writers;
+mod r304b_writers;
+mod r305b_writers;
+mod r307c_events;
 mod r372_suspend;
 mod r5a_order;
 mod r5a_wordings;
@@ -333,6 +342,7 @@ pub use levels::block as level_block;
 pub use levels::{Plan as BlockPlan, given as keyword_grant, plan as block_plan, without_header};
 pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_line};
 pub use r303_forms::form_text;
+pub use r304b_writers::r304b_triple_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
@@ -571,6 +581,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         && let Some(found) = r372_suspend::r372_not_from_exile_read(text, |twin| {
             clause_with(twin, kind, x_free, own)
         })
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = r304b_writers::r304b_tapped_read(text)
     {
         return Some(found);
     }

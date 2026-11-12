@@ -1,7 +1,7 @@
 {
   "oracle_id": "21390513-1ed0-48f2-a7fa-020da8f803c0",
   "name": "Molten Disaster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Molten Disaster",
@@ -9,15 +9,24 @@
       "abilities": [
         { "Keyword": { "Kicker": "{R}" } },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 67, "end": 230 }
+          "Static": {
+            "affected": { "Each": ["This", { "In": "Stack" }] },
+            "mods": [{ "AddKeyword": "SplitSecond" }],
+            "condition": "Kicked",
+            "from": "Stack"
           }
         },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 231, "end": 310 }
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+                  "amount": "X"
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": "X" } }
+            ]
           }
         }
       ]

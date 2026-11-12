@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::TokenSpec;
 use crate::cost::Cost;
-use crate::modify::{CastPermission, Duration, GameRule, Modification};
+use crate::modify::{CastPermission, Duration, GameRule, Modification, SpendAs};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn, WhenSpent};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -1224,6 +1224,11 @@ pub enum Effect {
         who: Ref,
         /// What the card that ends the exiling must be.
         filter: Selector,
+        /// The exiling goes on until the cards the player has exiled this way have this total mana value or more, the last
+        /// one also matching the filter ("until they have exiled cards with total mana value 5 or greater"); the first
+        /// card that matches ends it when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
         /// The name the card found is bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -1288,6 +1293,9 @@ pub enum Effect {
         /// The card is cast transformed: the spell is its back face (CR 712.4, 310.11b "cast it transformed").
         #[serde(default, skip_serializing_if = "is_false")]
         transformed: bool,
+        /// Which mana may pay for the spell: "mana of any type can be spent to cast that spell" (CR 609.4b).
+        #[serde(default, skip_serializing_if = "SpendAs::is_normal")]
+        spend_as: SpendAs,
         /// The name the spell cast is bound to, as the object it is on the stack ("that spell"); nothing is bound when the
         /// card is not cast or is played as a land.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
@@ -1895,6 +1903,10 @@ pub enum Effect {
         /// The cost added for each mode chosen beyond the first (Escalate).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         extra_mode_cost: Option<Cost>,
+        /// The pawprints ({P}) each mode takes, parallel to `modes` ("Choose up to five {P} worth of modes"): the modes
+        /// chosen take at most the most of `choose` in all; empty when each mode counts one.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        pawprints: Vec<u32>,
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
@@ -1989,11 +2001,13 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
         Effect::ExileUntil {
             who: Ref::You,
             filter,
+            total: None,
             bind: FOUND.to_owned(),
             exiled_as: EXILED.to_owned(),
         },
         Effect::CastFromZone {
             rather: None,
+            spend_as: SpendAs::default(),
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
