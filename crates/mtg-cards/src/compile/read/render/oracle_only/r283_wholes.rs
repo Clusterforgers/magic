@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const R283_WHOLES: [(&str, &str); 59] = [
+const R283_WHOLES: [(&str, &str); 60] = [
     // ad_nauseam#0.0
     (
         r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":{"Compare":{"left":{"Count":[{"In":"Library"},{"OwnedBy":"You"}]},"op":"Ge","right":1}},"effects":[{"Bind":{"what":{"Each":[{"In":"Library"},{"OwnedBy":"You"},"TopOfLibrary"]},"as":"card"}},{"Reveal":{"what":{"Bound":"card"}}},{"Let":{"as":"mv","amount":{"Stat":{"of":{"Bound":"card"},"stat":"ManaValue"}}}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"LoseLife":{"amount":{"Bound":"mv"}}}],"most":1000,"at_least_once":true,"ask":"You"}}]}}"#,
@@ -85,6 +85,11 @@ const R283_WHOLES: [(&str, &str); 59] = [
     (
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Knight","colors":["White"],"types":["Creature"],"subtypes":["Knight"],"power":1,"toughness":1,"abilities":[{"Keyword":"Banding"}]}}}}]}}"#,
         r"Create a 1/1 white Knight creature token with banding.",
+    ),
+    // errand_rider_of_gondor#0.0
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}},{"If":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"Supertype":"Legendary"},{"ControlledBy":"You"}]},"op":"Eq","right":0}},"then":[{"Choose":{"from":{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]},"as":"picked"}},{"Move":{"what":{"Bound":"picked"},"to":{"Library":{"place":"Bottom"}}}}]}}]}}"#,
+        r"When ~ enters, draw a card. Then if you don't control a legendary creature, put a card from your hand on the bottom of your library.",
     ),
     // feast_of_dreams#0.0
     (
