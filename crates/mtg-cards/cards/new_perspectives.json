@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e1b8a89a-b308-4fc5-ada7-61de6e21b7f9",
+  "name": "New Perspectives",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "New Perspectives",
+      "oracle_fingerprint": "31679c01bf41b31488f1ff8f833107b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        },
+        {
+          "FreeActivation": {
+            "kind": "Cycling",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": 6
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
