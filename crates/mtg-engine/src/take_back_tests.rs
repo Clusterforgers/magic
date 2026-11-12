@@ -75,7 +75,7 @@ fn finish_shock(engine: &mut Engine) {
     let DecisionKind::ChooseTargets(options) = &engine.decision().unwrap().kind else {
         panic!("the target is asked first");
     };
-    let target = options.legal[0].clone();
+    let target = options.legal[0];
     engine
         .apply(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
         .unwrap();
@@ -323,7 +323,7 @@ fn backing_out_of_a_cast_untaps_the_mana_tapped_for_it(#[case] at: Backed, #[cas
         let DecisionKind::ChooseTargets(options) = &engine.decision().unwrap().kind else {
             panic!("the target is asked first");
         };
-        let target = options.legal[0].clone();
+        let target = options.legal[0];
         engine
             .apply(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
             .unwrap();

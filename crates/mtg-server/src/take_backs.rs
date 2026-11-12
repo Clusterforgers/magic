@@ -86,7 +86,7 @@ impl<S: EventStore> GameActor<S> {
         let waiting = state
             .players()
             .iter()
-            .map(|player| player.id())
+            .map(mtg_engine::player::Player::id)
             .filter(|player| *player != seat && state.is_alive(*player))
             .collect::<Vec<_>>();
         let request = Request {
