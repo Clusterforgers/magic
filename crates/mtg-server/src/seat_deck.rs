@@ -13,6 +13,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::Teams;
 use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
 
@@ -495,6 +496,8 @@ pub(crate) struct SeatDecks {
     current: Vec<Option<ChosenDeck>>,
     /// The seats bots play, which every recipe it writes keeps.
     bots: Vec<PlayerId>,
+    /// Whether the host set the teams again since the game was made.
+    teams_set: bool,
 }
 
 impl SeatDecks {
@@ -508,6 +511,7 @@ impl SeatDecks {
             current: defaults.clone(),
             defaults,
             bots: Vec::new(),
+            teams_set: false,
         }
     }
 
@@ -587,8 +591,17 @@ impl SeatDecks {
             .collect())
     }
 
-    /// Whether any seat plays something else than the deck the game was made with.
+    /// Sets the teams every recipe it writes keeps.
+    pub(crate) fn set_teams(&mut self, teams: Option<Teams>) {
+        self.house_rules.teams = teams;
+        self.teams_set = true;
+    }
+
+    /// Whether any seat plays something else than the deck the game was made with, or the teams were set again.
     pub(crate) fn changed(&self) -> bool {
+        if self.teams_set {
+            return true;
+        }
         let named = |deck: &Option<ChosenDeck>| {
             deck.as_ref()
                 .map(|deck| (deck.deck.clone(), deck.fingerprint, deck.reads.clone()))

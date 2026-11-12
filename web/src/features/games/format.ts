@@ -1,4 +1,5 @@
 /** Words for the "My games" list: who else is in the game, how a finished one ended, and what the page counts. */
+import { teamLabel } from '@/lib/teams'
 import type { MyGame, MyGameSeat } from '@/protocol/generated'
 
 /** The name to show for another seat: the username of the account sitting there, else the name the seat was given. */
@@ -33,6 +34,8 @@ export function resultText(game: MyGame): string | null {
   if (game.status !== 'finished') return null
   if (game.result === null) return 'Ended without a result'
   if (game.result === 'Draw') return 'Draw'
+  // The list does not say which team the user's seat was on, so a team's win is told by its label.
+  if ('Team' in game.result) return `${teamLabel(game.result.Team)} won`
   const winner = game.result.Winner
   if (winner === game.seat) return 'You won'
   const other = game.others.find((seat) => seat.seat === winner)

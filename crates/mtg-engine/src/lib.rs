@@ -77,6 +77,7 @@ mod spend_rider;
 mod spend_tests;
 mod steps;
 mod stun;
+mod teams;
 mod unplayable;
 mod w10a_attack_limits_at;
 mod w11a_exert;

@@ -67,6 +67,7 @@ describe('resultText', () => {
     ['an account won', { seat: 0, result: { Winner: 1 } as const }, 'bo won'],
     ['a guest won', { seat: 0, result: { Winner: 2 } as const }, 'Cy won'],
     ['it was a draw', { seat: 0, result: 'Draw' as const }, 'Draw'],
+    ['a team won', { seat: 0, result: { Team: 1 } as const }, 'Team 2 won'],
     ['the finished game has no result', { seat: 0, result: null }, 'Ended without a result'],
     [
       'the winner is a seat the list does not know',

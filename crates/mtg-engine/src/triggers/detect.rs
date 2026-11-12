@@ -808,9 +808,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
 
 /// Which card of the draw step under way a draw by `player` is, when it is their own draw step (CR 504.1); 0 otherwise.
 fn draw_step_ordinal(look: Look<'_>, player: PlayerId) -> u32 {
-    if look.post.turn().step() != crate::turn::Step::Draw
-        || look.post.active_player() != Some(player)
-    {
+    if look.post.turn().step() != crate::turn::Step::Draw || !look.post.is_active(player) {
         return 0;
     }
     ordinal(look.post, look.later, player, Tally::C6BlkDrawStepDrawn)
@@ -1571,6 +1569,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 None
             } else if scope.players(whose).ok()?.contains(active) {
                 Some(cause(state, vec![Target::Player(*active)]))
+            } else if let Some(mate) = scope
+                .players(whose)
+                .ok()?
+                .into_iter()
+                .find(|player| state.is_alive(*player) && state.is_active(*player))
+            {
+                // A teammate who shares the turn has the step too (CR 805.3).
+                Some(cause(state, vec![Target::Player(mate)]))
             } else if whose.is_each_player() && !state.is_alive(*active) {
                 // The steps of a turn without an active player still begin (CR 800.4) but name no player.
                 Some(cause(state, Vec::new()))

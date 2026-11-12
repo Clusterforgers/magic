@@ -315,7 +315,9 @@ fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether `id` may be declared as an attacker by `player` now.
 pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> bool {
-    controller_of(state, id) == Some(player)
+    // A Two-Headed Giant team attacks as one: the active player declares the attacks of the team.
+    controller_of(state, id)
+        .is_some_and(|c| c == player || (state.shares_turns() && state.are_teammates(c, player)))
         && !cant_attack(state, id)
         && (!keywords::summoning_sick(state, id)
             || crate::combat_quirks::attacks_as_though_haste(state, id))
@@ -505,19 +507,25 @@ pub fn attack_cost(
     attack_tax::total(state, attackers)
 }
 
-/// Players being attacked, in turn order after the active player.
+/// Whether `player` defends against attacks on `attacked`: they are that player, or a teammate when the team is
+/// attacked as one (Two-Headed Giant), so either of its players blocks any creature attacking it.
+fn defends(state: &GameState, attacked: PlayerId, player: PlayerId) -> bool {
+    attacked == player || (state.shares_turns() && state.are_teammates(attacked, player))
+}
+
+/// Players being attacked, in turn order after the active player; both players of an attacked Two-Headed Giant team.
 pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
     let active = state.turn().active();
     state
         .turn_order_from(active)
         .into_iter()
-        .filter(|p| *p != active)
+        .filter(|p| state.is_opponent(active, *p))
         .filter(|p| {
             state
                 .combat()
                 .attackers()
                 .iter()
-                .any(|a| a.defender(state) == Some(*p))
+                .any(|a| a.defender(state).is_some_and(|d| defends(state, d, *p)))
         })
         .collect()
 }
@@ -532,7 +540,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .combat()
         .attackers()
         .iter()
-        .filter(|a| a.defender(state) == Some(player))
+        .filter(|a| a.defender(state).is_some_and(|d| defends(state, d, player)))
         .map(Attacker::object)
         .collect();
     let (candidates, able) = block_pairs(state, player, &blockable);

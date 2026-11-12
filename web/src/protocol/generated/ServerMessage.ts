@@ -17,6 +17,7 @@ import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
+import type { Teams } from "./Teams";
 import type { YieldUntil } from "./YieldUntil";
 
 /**
@@ -79,7 +80,11 @@ seats: Array<LobbySeat>,
 /**
  * How many seats still have to press Ready before the game starts.
  */
-needed: number, } | { "type": "Decision", 
+needed: number, 
+/**
+ * The teams of the table and the team of each seat; left out when every player plays alone.
+ */
+teams?: Teams, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */

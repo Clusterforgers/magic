@@ -19,10 +19,12 @@ import {
   chooseBots,
   chooseFormat,
   chooseLinks,
+  chooseMode,
   chooseVisibility,
   defaultDraft,
   editRule,
   editSeat,
+  modeProblem,
   nameFieldId,
   pickBotPrecons,
   problemCount,
@@ -35,6 +37,7 @@ import {
 import type { Draft } from './form'
 import { GameCreated } from './GameCreated'
 import { FormatField } from './FormatField'
+import { GameModeField } from './GameModeField'
 import { HostFields } from './HostFields'
 import { HouseRulesField } from './HouseRulesField'
 import { SeatList } from './SeatList'
@@ -71,7 +74,8 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
 
   const problems = problemsOf(draft, decks)
   const rules = ruleProblems(draft)
-  const troubled = problemCount(problems) + Object.keys(rules).length
+  const seatsWrong = modeProblem(draft)
+  const troubled = problemCount(problems) + Object.keys(rules).length + (seatsWrong === null ? 0 : 1)
 
   useEffect(() => {
     const id = focusAfterRender.current
@@ -219,6 +223,11 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
             value={draft.format}
             onChange={(format) => setDraft((current) => chooseFormat(current, decks, format))}
           />
+          <GameModeField
+            value={draft.mode}
+            problem={seatsWrong}
+            onChange={(mode) => setDraft((current) => chooseMode(current, decks, mode))}
+          />
           {draft.links ? (
             <SeatList
               draft={draft}
@@ -269,11 +278,13 @@ export function CreateForm({ api, decks, precons = preconsApi }: CreateFormProps
         <Alert variant="destructive">
           <CircleAlertIcon aria-hidden="true" />
           <AlertDescription className="text-foreground">
-            {draft.links
-              ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
-              : Object.keys(rules).length > 0 && problemCount(problems) === 0
-                ? 'Fix the house rules marked below before the game can be created.'
-                : 'Fix your name, deck or house rules before the game can be created.'}
+            {seatsWrong !== null && troubled === 1
+              ? `${seatsWrong} Change the seats or the game mode before the game can be created.`
+              : draft.links
+                ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
+                : Object.keys(rules).length > 0 && problemCount(problems) === 0
+                  ? 'Fix the house rules marked below before the game can be created.'
+                  : 'Fix your name, deck or house rules before the game can be created.'}
           </AlertDescription>
         </Alert>
       ) : null}

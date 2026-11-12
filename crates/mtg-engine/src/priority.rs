@@ -77,7 +77,7 @@ fn priority_mana(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
 
 /// Whether `player` could cast a sorcery now: their own turn, a main step and an empty stack (CR 307.1).
 pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
-    state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
+    state.is_active(player) && state.turn().step().is_main() && state.stack().is_empty()
 }
 
 /// The answer that plots `object`, when it is offered.
@@ -120,8 +120,14 @@ fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, E
 /// Whether `player` has a land play left this turn (CR 305.2): the turn's plays so far are fewer than the ruleset and
 /// the rules in play allow.
 pub(crate) fn land_play_left(state: &GameState, player: PlayerId) -> bool {
+    // Each player of a team that shares the turn has their own land plays (CR 305.2).
+    let plays_made = if state.shares_turns() {
+        state.tallied(player, crate::state::Tally::LandsPlayed)
+    } else {
+        state.turn().lands_played()
+    };
     !crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player })
-        && state.turn().lands_played()
+        && plays_made
             < state
                 .ruleset()
                 .land_plays_per_turn()
@@ -135,7 +141,7 @@ pub(crate) fn may_play_land_while_resolving(
     player: PlayerId,
     resolving: ObjectId,
 ) -> bool {
-    state.turn().active() == player
+    state.is_active(player)
         && state.turn().step().is_main()
         && state.stack().iter().all(|id| *id == resolving)
         && land_play_left(state, player)
@@ -433,7 +439,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
             let allowed = match by {
                 Activators::Controller => controller == player,
                 Activators::Anyone => true,
-                Activators::Opponents => controller != player,
+                Activators::Opponents => state.is_opponent(controller, player),
             };
             if allowed && can_activate(state, player, object, address, &rules) {
                 found.push(address);

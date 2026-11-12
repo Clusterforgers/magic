@@ -3,6 +3,7 @@
 //! Both enums are internally tagged with `type`, so each message is one flat JSON object.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::teams::Teams;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
@@ -423,6 +424,10 @@ pub enum ServerMessage {
         seats: Vec<LobbySeat>,
         /// How many seats still have to press Ready before the game starts.
         needed: u32,
+        /// The teams of the table and the team of each seat; left out when every player plays alone.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        teams: Option<Teams>,
     },
     /// The client must answer; the engine's legal options are inside.
     Decision {

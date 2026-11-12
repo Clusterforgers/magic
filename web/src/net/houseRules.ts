@@ -1,6 +1,6 @@
 /** Reads the `house_rules` of a game browser row or a table view: every rule that is there must be right, unknown rules are left out. */
-import type { HouseRules } from '@/protocol/generated'
-import { isCount, isFlag, isRecord, isText } from './check'
+import type { HouseRules, Teams } from '@/protocol/generated'
+import { isCount, isFlag, isListOf, isRecord, isText } from './check'
 
 type Rules = Record<string, unknown>
 
@@ -48,6 +48,12 @@ const isHandicap = (value: unknown): boolean =>
   optional(value.starting_life, isCount) &&
   optional(value.opening_hand_size, isCount)
 
+const TEAM_MODES: readonly string[] = ['two_headed_giant', 'teams']
+
+/** True for the teams of a table: a known mode and a team number for every seat. */
+export const isTeams = (value: unknown): value is Teams =>
+  isRecord(value) && isText(value.mode) && TEAM_MODES.includes(value.mode) && isListOf(value.seats, isCount)
+
 /** The rules a body holds, `undefined` for none, or null when a rule is there but wrong. */
 export function readHouseRules(body: unknown): HouseRules | undefined | null {
   if (body === undefined) return undefined
@@ -75,6 +81,7 @@ export function readHouseRules(body: unknown): HouseRules | undefined | null {
     ['commander_damage', isDamageLimit],
     ['deck', isDeckRules],
     ['handicaps', (value) => Array.isArray(value) && value.every(isHandicap)],
+    ['teams', isTeams],
   ]
   for (const [key, check] of shaped) {
     if (given[key] === undefined) continue

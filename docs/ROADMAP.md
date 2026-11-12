@@ -7,9 +7,9 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Live: foundations, card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
+- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander (the companion conditions of m4c aside), the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
 - Cards: 94.7% of the 32,116 Commander cards play automatically (Verified 22,622, Read 4,863, Unverified 2,935); Partial (973) and Manual (723) cards play through by-hand clauses. Run `mtg-cli compile` and `coverage` before quoting newer numbers.
-- In progress: team Commander (tm1), refusal explanations, tutorial fixes and the card coverage of M3 and M6.
+- In progress: refusal explanations, tutorial fixes and the card coverage of M3 and M6.
 - Open: an off-queen copy of the backups (M7).
 
 ## Order of work
@@ -108,7 +108,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## M7 Product
 
-- [ ] (tm1) Team Commander: 2v2 as Two-Headed Giant (shared turn and life, CR 810) and teams of any size N v N with shared victory (CR 808), chosen on the create form
+- [ ] (tm1a) Team life and choices of Two-Headed Giant beyond the shared total: an effect that sets each player's life (CR 810.9e), the team mulligan, teammates who see each other's hands, priority by team and each player declaring their own attackers
+- [ ] (tm1b) Teams the host sets in the lobby are stored when set, so a restart before the start keeps them, and My games carries each seat's team so a team win counts for its members
 - [ ] (tm2a) 2v2 tournaments start: their matches pass the team mode of Team Commander (tm1) when the server makes their games, and `TEAM_GAMES` turns on (`crates/mtg-server/src/tournaments.rs`; after tm1)
 - [ ] (tm2b) A tournament match game offers its seat-0 player no host controls (visibility, Close game, Remove), so no player can strand a match; the organiser's correction stays the way to settle one (`docs/server.md`, Tournaments)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic

@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 use crate::ids::PlayerId;
+use crate::teams::{TeamError, Teams};
 
 /// The starting life totals a table may set.
 pub const STARTING_LIFE: RangeInclusive<i32> = 1..=1000;
@@ -253,6 +254,10 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<Handicap>>"))]
     pub handicaps: Vec<Handicap>,
+    /// The teams of the table; left out, every player plays for themself.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub teams: Option<Teams>,
 }
 
 /// Why house rules cannot be played.
@@ -293,6 +298,9 @@ pub enum HouseRuleError {
         /// The seats the table has.
         seats: usize,
     },
+    /// The team assignment does not fit the table.
+    #[error(transparent)]
+    Teams(#[from] TeamError),
 }
 
 impl HouseRuleError {
@@ -304,6 +312,7 @@ impl HouseRuleError {
             HouseRuleError::DuplicateHandicap { .. }
             | HouseRuleError::EmptyHandicap { .. }
             | HouseRuleError::NoSuchSeat { .. } => "handicaps",
+            HouseRuleError::Teams(_) => "teams",
         }
     }
 }
@@ -394,17 +403,20 @@ impl HouseRules {
         Ok(())
     }
 
-    /// Checks every value like [`validate`](HouseRules::validate), and that every handicap names a seat of a table
-    /// of `seats`.
+    /// Checks every value like [`validate`](HouseRules::validate), that every handicap names a seat of a table of
+    /// `seats` and that the teams fit it.
     pub fn validate_for(&self, seats: usize) -> Result<(), HouseRuleError> {
         self.validate()?;
-        match self.handicaps.iter().find(|h| h.seat.index() >= seats) {
-            Some(handicap) => Err(HouseRuleError::NoSuchSeat {
+        if let Some(handicap) = self.handicaps.iter().find(|h| h.seat.index() >= seats) {
+            return Err(HouseRuleError::NoSuchSeat {
                 seat: handicap.seat,
                 seats,
-            }),
-            None => Ok(()),
+            });
         }
+        if let Some(teams) = &self.teams {
+            teams.validate_for(seats)?;
+        }
+        Ok(())
     }
 
     /// What `seat` starts with in place of the table's values, if a handicap names it.
@@ -767,6 +779,22 @@ mod tests {
         );
     }
 
+    #[rstest]
+    #[case::giant(json!({"mode": "two_headed_giant", "seats": [0, 0, 1, 1]}), 4, None)]
+    #[case::giant_at_six(json!({"mode": "two_headed_giant", "seats": [0, 0, 1, 1]}), 6, Some("teams: 4 seats assigned at a table of 6"))]
+    #[case::three_v_three(json!({"mode": "teams", "seats": [0, 1, 0, 1, 0, 1]}), 6, None)]
+    #[case::one_team(json!({"mode": "teams", "seats": [0, 0]}), 2, Some("teams: at least two teams play"))]
+    fn teams_fit_the_table(
+        #[case] teams: serde_json::Value,
+        #[case] seats: usize,
+        #[case] refused: Option<&str>,
+    ) {
+        let rules: HouseRules = serde_json::from_value(json!({ "teams": teams })).unwrap();
+        let error = rules.validate_for(seats).err();
+        assert_eq!(error.as_ref().map(ToString::to_string).as_deref(), refused);
+        assert!(error.is_none_or(|e| e.field() == "teams"));
+    }
+
     #[test]
     fn a_handicap_is_found_by_seat() {
         let rules = HouseRules {
@@ -820,6 +848,7 @@ mod tests {
             })
     }
 
+    #[allow(clippy::too_many_lines)]
     fn any_rules() -> impl Strategy<Value = HouseRules> {
         let scalars = (
             proptest::option::of(any::<i32>()),
@@ -875,12 +904,23 @@ mod tests {
             proptest::option::of(0..=101u32),
             proptest::option::of(0..=3u32),
         );
-        (scalars, turn, table, commander).prop_map(
+        let teams = proptest::option::of((any::<bool>(), 2..=3u32, 1..=3u32).prop_map(
+            |(giant, teams, size)| {
+                let mode = if giant {
+                    crate::teams::TeamMode::TwoHeadedGiant
+                } else {
+                    crate::teams::TeamMode::Teams
+                };
+                Teams::even(mode, teams, size)
+            },
+        ));
+        (scalars, turn, table, commander, teams).prop_map(
             |(
                 (life, hand, free, cap, first, limit),
                 (draws, lands, burn, library, turns, wins, poison, handicaps),
                 (range, open, top, smoothing, style),
                 (tax, damage, singleton, identity, size, copies, per_seat),
+                teams,
             )| HouseRules {
                 commander_tax: tax,
                 commander_damage: damage,
@@ -910,6 +950,7 @@ mod tests {
                 opening_hand_smoothing: smoothing,
                 mulligan_style: style,
                 handicaps,
+                teams,
             },
         )
     }

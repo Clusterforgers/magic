@@ -6,9 +6,11 @@ import { useShallow } from 'zustand/react/shallow'
 import { useFitWindow } from '@/components/appChrome'
 import { PageShell } from '@/components/PageShell'
 import { Pill } from '@/components/Pill'
+import { TeamBadge } from '@/components/TeamBadge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
 import { formatTurnTime, turnTimeText } from '@/lib/turnTime'
+import { teamName, winningSeats } from '@/lib/teams'
 import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
@@ -51,19 +53,21 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
   if (result === null) return null
   const name = (who: number): string => seatName(lookup, who)
   const players = view?.players ?? []
-  const { headline, detail } = describeResult(result, seat, name, players)
-  const seats = seatOutcomes(result, seat, name, players)
-  const kind = endKind(result, seat, players)
+  const teams = view?.house_rules?.teams ?? lookup.game?.house_rules?.teams ?? null
+  const { headline, detail } = describeResult(result, seat, name, players, teams)
+  const seats = seatOutcomes(result, seat, name, players, teams)
+  const kind = endKind(result, seat, players, teams)
   const Icon = ICON[kind]
-  // Every seat celebrates a winner: the winner with the burst, even when the last opponent conceded or left, and the
-  // others with a banner naming them.
-  const winner = result === 'Draw' ? null : result.Winner
-  const won = winner !== null && winner === seat
+  // Every seat celebrates a winner: each seat of the winner or the winning team with the burst, even when the last
+  // opponent conceded or left, and the others with a banner naming them.
+  const winner =
+    result === 'Draw' ? null : 'Team' in result ? teamName(teams, result.Team, name) : name(result.Winner)
+  const won = seat !== null && winningSeats(result, teams).includes(seat)
 
   return (
     <PageShell className="flex min-h-0 flex-1 flex-col gap-6 sm:py-6">
       <section aria-labelledby="over-title" data-end={kind} className="flex min-h-0 flex-1 flex-col gap-6">
-        {winner === null || won ? null : <WinnerBanner name={name(winner)} />}
+        {winner === null || won ? null : <WinnerBanner name={winner} />}
         <header className="flex shrink-0 items-start gap-4">
           {won ? (
             <WinBurst />
@@ -100,6 +104,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
                   <span className="shrink-0 text-muted-foreground">Seat {entry.seat + 1}</span>
                   <span className="truncate font-medium">{entry.name}</span>
                   {entry.you ? <Pill>you</Pill> : null}
+                  {entry.team === null ? null : <TeamBadge team={entry.team} />}
                 </span>
                 <span className="text-left sm:text-right">
                   <span className={cn(entry.status === 'Winner' && 'font-medium text-success')}>

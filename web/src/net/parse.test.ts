@@ -266,6 +266,10 @@ describe('parseFrame checks the fields of each message', () => {
     ['Lobby', 'needed as negative', ['needed'], -1],
     ['Lobby', 'needed as a fraction', ['needed'], 0.5],
     ['Lobby', 'needed as null', ['needed'], null],
+    ['Lobby', 'teams as null', ['teams'], null],
+    ['Lobby', 'teams of an unknown mode', ['teams'], { mode: 'pairs', seats: [0, 1] }],
+    ['Lobby', 'teams with a team as text', ['teams'], { mode: 'teams', seats: [0, '1'] }],
+    ['Lobby', 'teams for fewer seats than the roster', ['teams'], { mode: 'teams', seats: [0] }],
     ['Welcome', 'yielding as an unknown word', ['yielding'], 'Soon'],
     ['Welcome', 'yielding in lower case', ['yielding'], 'endofturn'],
     ['Welcome', 'yielding as a number', ['yielding'], 1],
@@ -433,6 +437,14 @@ describe('parseFrame checks the fields of each message', () => {
     ['GameOver', 'an unknown word as result', ['result'], 'Win'],
     ['GameOver', 'a winner that is text', ['result'], { Winner: 'x' }],
     ['GameOver', 'a winner with company', ['result'], { Winner: 0, Draw: true }],
+    ['GameOver', 'a team that is negative', ['result'], { Team: -1 }],
+    ['GameOver', 'a team with a winner', ['result'], { Team: 0, Winner: 1 }],
+    [
+      'Events',
+      'teams of the wrong shape in the house rules',
+      ['table', 'house_rules'],
+      { teams: { mode: 'teams' } },
+    ],
     ['GameOver', 'result as null', ['result'], null],
   ]
 
@@ -491,10 +503,21 @@ describe('parseFrame checks the fields of each message', () => {
     expect(plain.ok && 'show_after_ms' in plain.message).toBe(false)
   })
 
-  it('accepts a draw and a winner as results', () => {
-    for (const result of ['Draw', { Winner: 3 }]) {
+  it('accepts a draw, a winner and a winning team as results, also in a table view', () => {
+    for (const result of ['Draw', { Winner: 3 }, { Team: 1 }]) {
       expect(parseFrame(wire({ type: 'GameOver', result })).ok).toBe(true)
+      expect(parseFrame(wire(put(samples.Events, ['table', 'result'], result))).ok).toBe(true)
     }
+  })
+
+  it('hands on the teams of a roster and of the house rules of a table view, and leaves them out when absent', () => {
+    const teams = { mode: 'two_headed_giant', seats: [0, 1] }
+    expect(parseFrame(wire({ ...samples.Lobby, teams }))).toMatchObject({ ok: true, message: { teams } })
+    const plain = parseFrame(wire(samples.Lobby))
+    expect(plain.ok && 'teams' in plain.message).toBe(false)
+    const rules = { starting_life: 30, teams: { mode: 'teams', seats: [0, 1, 0, 1] } }
+    const view = parseFrame(wire(put(samples.Events, ['table', 'house_rules'], rules)))
+    expect(view).toMatchObject({ ok: true, message: { table: { house_rules: rules } } })
   })
 
   it.each([null, 'Resolve', 'EndOfTurn', 'MyTurn'])(

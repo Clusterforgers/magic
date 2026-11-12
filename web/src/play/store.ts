@@ -19,6 +19,7 @@ import type {
   PlayerId,
   StateView,
   Stop,
+  Teams,
   YieldUntil,
 } from '@/protocol/generated'
 import type { DueLine } from './byHand'
@@ -66,6 +67,8 @@ export interface LobbyRoster {
   seats: LobbySeat[]
   /** How many seats still have to press Ready. */
   needed: number
+  /** The teams of the table; absent while every player plays alone. */
+  teams?: Teams
 }
 
 /** One event of the game log with its position in the server's log. */

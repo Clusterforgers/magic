@@ -861,6 +861,10 @@ describe('events with more than one shape', () => {
     expect(say({ GameEnded: { result: 'Draw' } })).toBe('The game ends in a draw')
   })
 
+  it("says a team's win by its label", () => {
+    expect(say({ GameEnded: { result: { Team: 1 } } })).toBe('Team 2 wins the game')
+  })
+
   it.each([
     [
       effect('AllCreatures', { AddType: 'Artifact' }, 'UntilEndOfTurn'),

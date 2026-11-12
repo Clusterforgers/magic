@@ -74,7 +74,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 ## Lobby
 
 - `Ready` says the seat is set to play and `NotReady` takes that back. Both are ignored once the game runs. A seat without a deck cannot press Ready (`Error{BadMessage}` to that seat alone); a ready seat keeps its deck until `NotReady`. The deck is chosen over REST, never over the socket.
-- `Lobby { seats, needed }` is the roster before the start, sent after `Welcome` and to every connected seat when a seat joins or leaves or a ready flag changes. A message that changes nothing sends nothing, and the `Ready` that starts the game is answered by the opening `Events` instead. A client drops its lobby view when the first batch or a snapshot arrives.
+- `Lobby { seats, needed, teams? }` is the roster before the start, with the table's teams when it has them, sent after `Welcome` and to every connected seat when a seat joins or leaves or a ready flag changes. A message that changes nothing sends nothing, and the `Ready` that starts the game is answered by the opening `Events` instead. A client drops its lobby view when the first batch or a snapshot arrives.
 - A seat's `deck` is `SeatDeck {name, format, manual_cards}`: the deck's name, format key and the number of copies the game does not run whole ([deck-check.md](deck-check.md), Decisions), never the name of a card.
 
 ## Decisions

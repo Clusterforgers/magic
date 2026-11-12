@@ -19,7 +19,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
-    LobbyGame, LobbyList, VisibilityBody,
+    LobbyGame, LobbyList, TeamsBody, VisibilityBody,
 };
 use sha2::{Digest, Sha256};
 
@@ -125,6 +125,7 @@ impl From<TableError> for ApiError {
                 DeckChoiceErrorCode::SeatReady.as_str(),
                 "the seat is ready; take Ready back to change its deck",
             ),
+            TableError::Teams(teams) => ApiError::from(teams),
             TableError::Record(_) => {
                 tracing::error!(%error, "a change to a table could not be saved");
                 failure(
@@ -480,6 +481,25 @@ pub(crate) async fn set_visibility(
     let by = holder(&app, &headers, game).await?;
     app.registry()
         .set_visibility(game, by, body.visibility)
+        .await?;
+    Ok(Json(body))
+}
+
+/// `PUT /api/games/{id}/teams`: the host sets the teams before the start; every seat takes Ready back.
+pub(crate) async fn set_teams(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    request: Request,
+) -> Result<Json<TeamsBody>, ApiError> {
+    let game = game_of(path)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let headers = request.headers().clone();
+    let body = read_json::<TeamsBody>(request).await?;
+    let by = holder(&app, &headers, game).await?;
+    app.registry()
+        .set_teams(game, by, body.teams.clone())
         .await?;
     Ok(Json(body))
 }

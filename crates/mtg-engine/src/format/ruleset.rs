@@ -5,6 +5,7 @@ use mtg_core::house::{
     SkipFirstDraw,
 };
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::teams::Teams;
 
 use super::{FormatRules, MulliganRule};
 use crate::decision::MulliganOptions;
@@ -19,6 +20,9 @@ pub struct RuleSet<'a> {
     house: &'a HouseRules,
 }
 
+/// The poison counters a Two-Headed Giant team loses at (CR 810.10).
+const TEAM_POISON: u32 = 15;
+
 fn count(n: u32) -> usize {
     usize::try_from(n).unwrap_or(usize::MAX)
 }
@@ -29,8 +33,15 @@ impl<'a> RuleSet<'a> {
         RuleSet { format, house }
     }
 
-    /// Life `seat` starts with: its handicap, else the table's rule, else the format's.
+    /// Life `seat` starts with: its handicap, else the table's rule, else the format's. A Two-Headed Giant team shares
+    /// one total: the table's rule, else the format's team life (CR 810.4); handicaps do not apply to it.
     pub fn starting_life(&self, seat: PlayerId) -> i32 {
+        if self.shares_life() {
+            return self
+                .house
+                .starting_life
+                .unwrap_or_else(|| self.format.team_life());
+        }
         self.house
             .handicap(seat)
             .and_then(|handicap| handicap.starting_life)
@@ -97,7 +108,7 @@ impl<'a> RuleSet<'a> {
     /// are worked out over the seats still in the game, so a seat that left changes who is next.
     pub fn defending_seats(&self, state: &GameState, attacker: PlayerId) -> Vec<PlayerId> {
         let mut others = state.turn_order_from(attacker);
-        others.retain(|seat| *seat != attacker);
+        others.retain(|seat| state.is_opponent(attacker, *seat));
         match self.attack_range() {
             AttackRange::Any => others,
             AttackRange::Left => others.into_iter().take(1).collect(),
@@ -109,6 +120,11 @@ impl<'a> RuleSet<'a> {
                     .collect()
             }
         }
+    }
+
+    /// Whether teams share their turns and life totals (Two-Headed Giant).
+    pub fn shares_life(&self) -> bool {
+        self.house.teams.as_ref().is_some_and(Teams::shared)
     }
 
     /// Whether every seat sees every hand.
@@ -207,11 +223,16 @@ impl<'a> RuleSet<'a> {
         self.house.winning_life
     }
 
-    /// The poison counters that make a player lose.
+    /// The poison counters that make a player lose; a Two-Headed Giant team loses at 15 of its shared counters
+    /// (CR 810.10).
     pub fn poison_threshold(&self) -> u32 {
-        self.house
-            .poison_threshold
-            .unwrap_or_else(|| self.format.poison_threshold())
+        self.house.poison_threshold.unwrap_or_else(|| {
+            if self.shares_life() {
+                TEAM_POISON
+            } else {
+                self.format.poison_threshold()
+            }
+        })
     }
 
     /// The generic mana a commander costs more for each cast from the command zone (CR 903.8).
@@ -264,9 +285,12 @@ impl<'a> RuleSet<'a> {
         self.house.commanders_per_seat != Some(2)
     }
 
-    /// The game result once decided: the format's, else a draw when every player left is at the winning life total
+    /// The game result once decided: the last team left at a table with teams, else the format's, else a draw when every player left is at the winning life total
     /// (state-based actions have already removed the others, so one player left is the format's win).
     pub fn game_result(&self, state: &GameState) -> Option<GameResult> {
+        if let Some(team) = state.last_team() {
+            return Some(GameResult::Team(team));
+        }
         self.format.game_result(state).or_else(|| {
             let goal = self.winning_life()?;
             state
