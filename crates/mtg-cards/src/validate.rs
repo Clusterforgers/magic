@@ -7684,7 +7684,7 @@ mod tests {
     )]
     #[case::a_secret_vote_on_objects(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}},"secret":true,"as":"won"}}]}}"#,
-        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices is secret"
+        "faces[0].abilities[0].Spell.effects[0].Vote: only a vote on named choices or on players is secret"
     )]
     #[case::a_vote_name_bound_twice(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]}}},{"Vote":{"options":{"Named":["b","c"]}}}]}}"#,

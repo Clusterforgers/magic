@@ -124,7 +124,8 @@ pub(super) fn r371_not_legendary_too(texts: &mut Vec<String>) {
 }
 
 /// Keeps "a copy of that creature" in a triggered ability only for a trigger on a creature's death, where it names the
-/// creature as it last existed; any other trigger words its triggering object otherwise.
+/// creature as it last existed, or on its entering the battlefield; any other trigger words its triggering object
+/// otherwise.
 pub(super) fn r371_that_creature_dies(ability: &crate::ability::Ability, texts: &mut Vec<String>) {
     use crate::refs::ZoneKind;
     use crate::trigger::TriggerPattern;
@@ -140,7 +141,17 @@ pub(super) fn r371_that_creature_dies(ability: &crate::ability::Ability, texts: 
             ..
         }
     );
-    if other_trigger && !dies {
+    let enters = matches!(
+        ability,
+        crate::ability::Ability::Triggered {
+            when: TriggerPattern::ZoneChange {
+                to: Some(ZoneKind::Battlefield),
+                ..
+            },
+            ..
+        }
+    );
+    if other_trigger && !dies && !enters {
         texts.retain(|text| !text.contains("a copy of that creature"));
     }
 }
