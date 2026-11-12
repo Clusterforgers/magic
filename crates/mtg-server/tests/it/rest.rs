@@ -288,6 +288,7 @@ async fn health_decks_and_game_lookup() {
             "ready",
             "result",
             "seats",
+            "spectators",
             "started",
             "visibility"
         ])
