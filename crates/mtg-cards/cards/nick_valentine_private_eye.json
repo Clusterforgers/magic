@@ -33,7 +33,14 @@
               ]
             },
             "effects": [
-              { "May": { "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }] } }
+              {
+                "May": {
+                  "effects": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
+                }
+              }
             ]
           }
         }

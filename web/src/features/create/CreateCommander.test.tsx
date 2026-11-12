@@ -108,6 +108,29 @@ describe('creating the game', () => {
     await waitFor(() => expect(router.state.location.href).toContain(`/game/${MADE_GAME}`))
   })
 
+  it('sends a handicap for each seat that has one, by the seat’s number', async () => {
+    const { server, user } = await openCreateForm({}, 'default')
+    await user.click(screen.getByText('House rules'))
+    await user.type(rule('Life of Seat 1, Player 1'), '30')
+    await user.type(rule('Opening hand of Seat 3'), '8')
+    await user.type(rule('Opening hand of Seat 4'), '0')
+    await user.click(create())
+    expect(await screen.findByText('Use a whole number from 1 to 20.')).toBeInTheDocument()
+    expect(server.creates).toHaveLength(0)
+    await user.clear(rule('Opening hand of Seat 4'))
+    expect(screen.getByText('1 rule differs')).toBeInTheDocument()
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    expect(server.creates[0]).toMatchObject({
+      house_rules: {
+        handicaps: [
+          { seat: 0, starting_life: 30 },
+          { seat: 2, opening_hand_size: 8 },
+        ],
+      },
+    })
+  })
+
   it('leaves the Commander rules out of a Normal game', async () => {
     const { server, user } = await openCreateForm({}, 'default')
     await user.click(screen.getByText('House rules'))

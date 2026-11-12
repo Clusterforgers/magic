@@ -12,9 +12,10 @@ import { usePageTitle } from '@/hooks/usePageTitle'
 import { cn } from '@/lib/utils'
 import { ChangePasswordForm } from './ChangePasswordForm'
 import { DeleteAccountSection } from './DeleteAccountSection'
+import { SoundToggle } from '@/features/sound/SoundToggle'
 
 /**
- * `/settings`: change the password and delete the account. Without a session it sends the visitor to sign in and back
+ * `/settings`: the sound cues, change the password and delete the account. Without a session it sends the visitor to sign in and back
  * here; a server without accounts says so. A deleted account leaves the page for the home page by itself.
  */
 export function SettingsPage() {
@@ -71,6 +72,7 @@ export function SettingsPage() {
           Signed in as <span className="font-medium break-all text-foreground">{user?.username}</span>.
         </p>
       </header>
+      <SoundToggle />
       <ChangePasswordForm />
       <DeleteAccountSection onDeleting={setDeleting} />
     </PageShell>

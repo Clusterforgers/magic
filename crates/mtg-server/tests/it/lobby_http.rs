@@ -1,4 +1,4 @@
-//! Goal: `GET /api/lobbies` over real HTTP lists exactly the public games still in their lobby, newest first and at most fifty, with the host, format, seats filled and total and age; never lists an invite game or one that started; follows joins, leaves and the host's switch; carries an `ETag` of what the rows say (not of their age) and answers `304` to it; turns an address away after thirty requests a minute; and no answer on the way holds a token, a join code or a seat link.
+//! Goal: `GET /api/lobbies` over real HTTP lists the public games still in their lobby, newest first and at most fifty, with the host, format, seats filled and total and age; never lists an invite lobby and lists a game that started as running, after the lobbies; follows joins, leaves and the host's switch; carries an `ETag` of what the rows say (not of their age) and answers `304` to it; turns an address away after thirty requests a minute; and no answer on the way holds a token, a join code or a seat link.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -175,13 +175,21 @@ async fn at_most_fifty_games_are_listed_the_newest() {
 }
 
 #[tokio::test]
-async fn a_game_that_starts_leaves_the_list() {
+async fn a_game_that_starts_stays_in_the_list_as_running_after_the_lobbies() {
     let server = server().await;
     let kept = lobby::make(server.addr, "Ann", 2, 1, "public").await;
     let started = lobby::make(server.addr, "Bo", 2, 2, "public").await;
     assert_eq!(listed(&lobbies(server.addr, &[]).await).len(), 2);
     lobby::start(&server.registry, &started.id, 2).await;
-    assert_eq!(listed(&lobbies(server.addr, &[]).await), [kept.id]);
+    let reply = lobbies(server.addr, &[]).await;
+    assert_eq!(listed(&reply), [kept.id, started.id.clone()]);
+    let rows = reply.json()["games"].clone();
+    assert_eq!(
+        rows[0].get("running"),
+        None,
+        "a lobby row leaves the flag out"
+    );
+    assert_eq!(rows[1]["running"], true);
 }
 
 #[tokio::test]

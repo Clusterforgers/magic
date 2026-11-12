@@ -86,10 +86,15 @@ export function createdReply(body: unknown): Response {
   })
 }
 
-/** The reply of a real server to a good change: the visibility now in force for a `PATCH`, 204 for the rest. */
+/**
+ * The reply of a real server to a good change: the visibility now in force for a `PATCH`, the teams for a `PUT` of
+ * them, 204 for the rest.
+ */
 export function changedReply(call: FetchCall): Response {
-  if (call.init?.method !== 'PATCH') return new Response(null, { status: 204 })
-  const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
+  const method = call.init?.method
+  if (method !== 'PATCH' && method !== 'PUT') return new Response(null, { status: 204 })
+  const body: unknown = typeof call.init?.body === 'string' ? JSON.parse(call.init.body) : null
+  if (method === 'PUT') return jsonResponse(200, { teams: isRecord(body) ? body.teams : null })
   return jsonResponse(200, { visibility: isRecord(body) ? body.visibility : 'invite' })
 }
 
@@ -106,7 +111,8 @@ export function demoDeckReply(body: unknown, decks: readonly DeckInfo[] = DECKS)
 const isChange = (path: string, method: string | undefined): boolean =>
   method === 'PATCH' ||
   method === 'DELETE' ||
-  (method === 'POST' && /\/(leave|seats\/\d+\/release)$/.test(path))
+  (method === 'POST' && /\/(leave|seats\/\d+\/release)$/.test(path)) ||
+  (method === 'PUT' && path.endsWith('/teams'))
 
 /** Builds a REST client whose `fetch` is answered by `script`; unknown paths get the server's 404. */
 export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS): FakeServer {

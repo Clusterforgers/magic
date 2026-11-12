@@ -32,7 +32,11 @@ export function HostFields({ draft, decks, problems, onEdit, onCount }: HostFiel
         Players
       </h2>
       <div className="grid items-start gap-4 lg:grid-cols-2">
-        <SeatCountField count={draft.seats.length} onCount={onCount} />
+        <SeatCountField
+          count={draft.seats.length}
+          onCount={onCount}
+          fixed={draft.mode === 'two_headed_giant' ? 'Two-Headed Giant is played by 4 players.' : undefined}
+        />
         <div className="grid gap-2">
           <Label htmlFor={nameId}>Your name</Label>
           <Input

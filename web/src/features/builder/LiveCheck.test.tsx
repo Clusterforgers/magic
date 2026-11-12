@@ -35,7 +35,9 @@ const judging = (extra: Partial<CheckScript> = {}): BuilderScript => ({
   check: {
     cards: POOL.map((card) => (card.oracle_id === GROWTH.oracle_id ? { ...card, support: 'manual' } : card)),
     reasons: {
-      [GROWTH.oracle_id]: [{ face: 0, span: { start: 0, end: 10 }, text: 'no rules for this card yet' }],
+      [GROWTH.oracle_id]: [
+        { face: 0, span: { start: 0, end: 10 }, text: 'no rules for this card yet', quote: '' },
+      ],
     },
     legality: (request: CheckRequest) =>
       [GROWTH, SOL_RING]

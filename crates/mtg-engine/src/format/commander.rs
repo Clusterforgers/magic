@@ -118,6 +118,11 @@ impl FormatRules for Commander {
         COMMANDER_LIFE
     }
 
+    // Two-Headed Giant keeps the ratio of CR 810.4 to a player's life, so a Commander team shares 60.
+    fn team_life(&self) -> i32 {
+        COMMANDER_LIFE * 3 / 2
+    }
+
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError> {
         self.validate_seat(deck, &[], &RuleSet::new(self, &HouseRules::default()))
     }
@@ -154,7 +159,7 @@ impl FormatRules for Commander {
                 got,
             });
         }
-        if !rules.checks_colour_identity() {
+        if !rules.checks_color_identity() {
             return Ok(());
         }
         let identity = identity_of(commanders);
@@ -174,7 +179,7 @@ impl FormatRules for Commander {
         rules: &RuleSet<'_>,
     ) -> Result<(), DeckError> {
         check_companion(companion, deck, commanders, self.deck_minimum(rules))?;
-        if rules.checks_colour_identity() {
+        if rules.checks_color_identity() {
             inside_identity(companion, identity_of(commanders))?;
         }
         Ok(())
@@ -558,7 +563,7 @@ mod tests {
     }
 
     #[test]
-    fn the_colour_identity_of_a_pair_of_the_new_kinds_is_the_two_together() {
+    fn the_color_identity_of_a_pair_of_the_new_kinds_is_the_two_together() {
         let blue_background = Arc::new(
             (*background("Sage"))
                 .clone()
@@ -676,9 +681,9 @@ mod tests {
 
     #[rstest]
     #[case::the_formats_identity(HouseRules::default(), false)]
-    #[case::identity_on(deck_rules(|d| d.colour_identity = Some(true)), false)]
-    #[case::identity_off(deck_rules(|d| d.colour_identity = Some(false)), true)]
-    fn a_table_lifts_the_colour_identity(#[case] house: HouseRules, #[case] legal: bool) {
+    #[case::identity_on(deck_rules(|d| d.color_identity = Some(true)), false)]
+    #[case::identity_off(deck_rules(|d| d.color_identity = Some(false)), true)]
+    fn a_table_lifts_the_color_identity(#[case] house: HouseRules, #[case] legal: bool) {
         let result = under(&house, &with_one("{1}{G}"), &red_leader());
         assert_eq!(result.is_ok(), legal, "{result:?}");
         assert!(matches!(
@@ -689,7 +694,7 @@ mod tests {
 
     #[test]
     fn the_relaxations_are_independent_of_each_other() {
-        let house = deck_rules(|d| d.colour_identity = Some(false));
+        let house = deck_rules(|d| d.color_identity = Some(false));
         assert!(matches!(
             under(&house, &spells(98), &red_leader()),
             Err(DeckError::WrongSize { .. })

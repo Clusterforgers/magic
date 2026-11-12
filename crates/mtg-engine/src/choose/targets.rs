@@ -221,7 +221,10 @@ fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, Resol
             .collect(),
         Targetable::Player => players().collect(),
         Targetable::Opponent => players()
-            .filter(|t| t.player() != Some(scope.controller))
+            .filter(|t| {
+                t.player()
+                    .is_some_and(|p| scope.state.is_opponent(scope.controller, p))
+            })
             .collect(),
         // The players the reference names now, in seat order: those still in the game.
         Targetable::PlayerAmong(among) => {

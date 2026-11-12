@@ -168,7 +168,7 @@ describe('describeLobbyError', () => {
 describe('describeLobbyError for a lobby control', () => {
   const words = (code: LobbyFailureCode, about?: LobbyAbout): string =>
     describeLobbyError(new LobbyError(code, 409, 'server message'), about)
-  const controls: LobbyAbout[] = ['visibility', 'close', 'remove', 'leave']
+  const controls: LobbyAbout[] = ['visibility', 'close', 'remove', 'leave', 'teams']
 
   it.each<[LobbyAbout, LobbyFailureCode, RegExp]>([
     ['visibility', 'forbidden', /Only the host/],
@@ -184,6 +184,9 @@ describe('describeLobbyError for a lobby control', () => {
     ['leave', 'not_found', /no longer have a seat/],
     ['leave', 'started', /no longer be given back/],
     ['leave', 'not_claimed', /own link/],
+    ['teams', 'invalid_request', /do not fit this table/],
+    ['teams', 'forbidden', /Only the host can change the teams/],
+    ['teams', 'started', /teams can no longer change/],
   ])('says %s / %s in its own words', (about, code, expected) => {
     expect(words(code, about)).toMatch(expected)
     expect(words(code, about)).not.toBe(words(code))

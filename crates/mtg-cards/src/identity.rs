@@ -233,6 +233,66 @@ pub fn pairing_keywords(printed: &PrintedCard) -> Vec<Keyword> {
     found
 }
 
+/// Keyword abilities that are activated abilities (CR 702), as Scryfall names them; a `...cycling` keyword is one too.
+const ACTIVATED_KEYWORDS: [&str; 20] = [
+    "auraswap",
+    "bloodrush",
+    "commander ninjutsu",
+    "craft",
+    "crew",
+    "embalm",
+    "encore",
+    "equip",
+    "eternalize",
+    "forecast",
+    "fortify",
+    "level up",
+    "ninjutsu",
+    "outlast",
+    "reconfigure",
+    "reinforce",
+    "saddle",
+    "scavenge",
+    "station",
+    "transmute",
+];
+
+/// Whether the printed card has an activated ability (CR 602.1): a line `[Cost]: [Effect]` of its own (a loyalty
+/// ability among them), an activated keyword, or the mana ability of a basic land type (CR 305.6). A card in a deck has
+/// the characteristics of its front face, or of both halves of a split card.
+pub fn has_activated_ability(printed: &PrintedCard) -> bool {
+    let faces = if printed.layout == "split" {
+        &printed.faces[..]
+    } else {
+        printed.faces.get(..1).unwrap_or_default()
+    };
+    let keyword = printed.keywords.iter().any(|keyword| {
+        let keyword = keyword.to_lowercase();
+        keyword.ends_with("cycling") || ACTIVATED_KEYWORDS.contains(&keyword.as_str())
+    });
+    keyword
+        || faces.iter().any(|face| {
+            let basic = ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                .iter()
+                .any(|land| face.type_line.split_whitespace().any(|word| word == *land));
+            basic || face.oracle_text.lines().any(line_is_activated)
+        })
+}
+
+/// Whether a line of rules text is an activated ability of the card: a colon ends its cost, outside quoted text and
+/// not inside a triggered, static or replacement sentence.
+fn line_is_activated(line: &str) -> bool {
+    let line = without_reminders(line);
+    let Some((cost, _)) = line.split_once(':') else {
+        return false;
+    };
+    let lower = cost.trim().to_lowercase();
+    !cost.contains('"')
+        && !["when", "whenever", "at ", "as ", "if ", "each ", "choose"]
+            .iter()
+            .any(|head| lower.starts_with(head))
+}
+
 /// Whether rules text says the card can be a commander, the rule the deck check and game start share.
 pub fn text_says_commander(text: &str) -> bool {
     text.to_lowercase().contains("can be your commander")

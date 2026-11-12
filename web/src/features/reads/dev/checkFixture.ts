@@ -45,7 +45,7 @@ const SPECS: readonly Spec[] = [
 function reasonsOf(spec: Spec): Reason[] {
   return spec.clauses.map(([phrase, text]) => {
     const start = Array.from(spec.text.slice(0, Math.max(0, spec.text.indexOf(phrase)))).length
-    return { face: 0, span: { start, end: start + Array.from(phrase).length }, text }
+    return { face: 0, span: { start, end: start + Array.from(phrase).length }, text, quote: phrase }
   })
 }
 

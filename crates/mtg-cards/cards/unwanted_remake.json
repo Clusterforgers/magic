@@ -28,7 +28,14 @@
                 }
               },
               { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
-              { "Manifest": { "who": { "ControllerOf": { "Target": 0 } } } }
+              { "Manifest": { "who": { "ControllerOf": { "Target": 0 } } } },
+              {
+                "Performed": {
+                  "action": "ManifestedDread",
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "card": { "Bound": "rest3" }
+                }
+              }
             ]
           }
         }

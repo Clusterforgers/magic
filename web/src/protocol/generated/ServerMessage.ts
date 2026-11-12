@@ -15,8 +15,10 @@ import type { LobbySeat } from "./LobbySeat";
 import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
+import type { Refusal } from "./Refusal";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
+import type { Teams } from "./Teams";
 import type { YieldUntil } from "./YieldUntil";
 
 /**
@@ -79,7 +81,11 @@ seats: Array<LobbySeat>,
 /**
  * How many seats still have to press Ready before the game starts.
  */
-needed: number, } | { "type": "Decision", 
+needed: number, 
+/**
+ * The teams of the table and the team of each seat; left out when every player plays alone.
+ */
+teams?: Teams, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */
@@ -148,7 +154,12 @@ code: ErrorCode,
 /**
  * Human-readable detail.
  */
-message: string, } | { "type": "GameOver", 
+message: string, 
+/**
+ * For an `IllegalAnswer` that plays a card or ability the engine cannot play now: which, and why, for the
+ * client's own words. Only the refused seat gets it.
+ */
+refusal?: Refusal, } | { "type": "GameOver", 
 /**
  * How it ended.
  */
@@ -205,4 +216,8 @@ deadline_ms?: number, } | { "type": "Deciding",
 /**
  * The seats asked now, in the order the server asks them, each with the kind of its decision.
  */
-seats: Array<DecidingView>, };
+seats: Array<DecidingView>, } | { "type": "Spectators", 
+/**
+ * The spectators connected now.
+ */
+count: number, };

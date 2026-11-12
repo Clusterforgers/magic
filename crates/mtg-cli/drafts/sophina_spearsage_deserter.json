@@ -16,7 +16,10 @@
                 "RepeatEach": {
                   "over": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }, "Attacking"] },
                   "as": "attacker",
-                  "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                  "effects": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
                 }
               }
             ]

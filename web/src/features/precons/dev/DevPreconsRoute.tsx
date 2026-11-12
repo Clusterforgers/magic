@@ -4,8 +4,6 @@ import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import { ApiError } from '@/net/api'
 import type { Api } from '@/net/api'
-import { cardDetail } from '@/features/builder/fakeCards'
-import type { CardsApi } from '@/net/cards'
 import type { FavouritesApi } from '@/net/favourites'
 import { PreconError } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
@@ -39,16 +37,6 @@ function devApi(view: DevView): PreconsApi {
         : Promise.resolve(found)
     },
   }
-}
-
-// Every card reads the same made-up text, long enough for the fixture's spans to quote something.
-const MADE_UP = Array.from(
-  { length: 5 },
-  (_, index) => `Clause ${index + 1} of the made-up text reads like this.`,
-).join(' ')
-const devCards: Pick<CardsApi, 'get'> = {
-  get: (id) =>
-    Promise.resolve(cardDetail(id, { faces: [{ ...cardDetail(id).faces[0]!, oracle_text: MADE_UP }] })),
 }
 
 // The signed-in player starred two older precons, so "Favorites first" changes the order; stars change in memory.
@@ -102,7 +90,7 @@ export function DevPreconsRoute() {
       <p className="sr-only" data-fixture={PRECONS_FIXTURE_MARKER}>
         Development precon list
       </p>
-      <PreconsPage api={api} games={games} cards={devCards} favouritesApi={favorites} />
+      <PreconsPage api={api} games={games} favouritesApi={favorites} />
     </AuthContext>
   )
 }

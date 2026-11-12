@@ -26,6 +26,14 @@
                     "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
                   }
                 }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
               }
             ]
           }

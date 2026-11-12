@@ -724,6 +724,7 @@ mod tests {
             draft: None,
             differs: Vec::new(),
             reasons: Vec::new(),
+            whole_text: None,
             by_hand: false,
         }
     }

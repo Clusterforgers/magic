@@ -1,6 +1,9 @@
 import type { TourStop } from '@/components/tour/TourCard'
 import type { PlayState } from '@/play/store'
 import type { CardType, ObjectId, Step } from '@/protocol/generated'
+import { primaryLabel } from '@/features/table/prompt/passWords'
+import { decisionName } from '@/features/table/turnText'
+import type { DecisionName } from '@/features/table/turnText'
 
 /** A card of the player's, by name and id. */
 export interface Named {
@@ -16,6 +19,8 @@ export interface LessonFacts {
   mine: boolean
   /** The step of the turn, null before the first view. */
   step: Step | null
+  /** The kind of the decision waiting for the player's answer, null while none waits. */
+  decision: DecisionName | 'Unknown' | null
   hand: readonly Named[]
   /** The player's lands and creatures on the battlefield. */
   lands: readonly Named[]
@@ -48,6 +53,7 @@ export function lessonFacts(state: PlayState): LessonFacts {
     turn: 0,
     mine: false,
     step: null,
+    decision: null,
     hand: [],
     lands: [],
     creatures: [],
@@ -60,7 +66,12 @@ export function lessonFacts(state: PlayState): LessonFacts {
     theirLife: null,
     byHand: 0,
     over: state.result !== null,
-    won: seat !== null && state.result !== null && state.result !== 'Draw' && state.result.Winner === seat,
+    won:
+      seat !== null &&
+      state.result !== null &&
+      state.result !== 'Draw' &&
+      'Winner' in state.result &&
+      state.result.Winner === seat,
   }
   if (view === null || seat === null) return empty
   const table = view
@@ -92,6 +103,7 @@ export function lessonFacts(state: PlayState): LessonFacts {
     turn: table.turn.number,
     mine: table.turn.active === seat,
     step: table.turn.step,
+    decision: state.pending === null ? null : decisionName(state.pending.decision.kind),
     hand: inZone('Hand'),
     lands: onField('Land', true),
     creatures: onField('Creature', true),
@@ -112,6 +124,25 @@ export function lessonFacts(state: PlayState): LessonFacts {
   }
 }
 
+/** Where a step's text names the primary button: its words as the dock draws them now. */
+export const PASS = '{pass}'
+
+/**
+ * The text of `step` with the primary button's words in place of `PASS`: `shown`, the words the dock draws (short on a
+ * narrow dock), else the whole words for `facts`.
+ */
+export function stepText(
+  step: Pick<LessonStep, 'text'>,
+  facts: LessonFacts,
+  shown: string | null = null,
+): string {
+  if (!step.text.includes(PASS)) return step.text
+  const top = facts.stack.at(-1)?.name ?? null
+  const words =
+    shown ?? (facts.step === null ? null : primaryLabel({ step: facts.step, yourTurn: facts.mine, top }))
+  return step.text.replaceAll(PASS, words ?? 'End turn')
+}
+
 /** One step of a lesson: a tour stop that is done when the game shows the player did what it asks. */
 export interface LessonStep extends Omit<TourStop, 'targets'> {
   /** Selectors of the part to light up, worked out from the facts (a card in hand by its id). */
@@ -120,6 +151,8 @@ export interface LessonStep extends Omit<TourStop, 'targets'> {
   done?: (facts: LessonFacts) => boolean
   /** What the step waits for, said in place of Next. */
   waiting?: string
+  /** The decisions of the player's the step is shown at; empty for a step the game plays by itself. */
+  decisions?: readonly DecisionName[]
 }
 
 /** A lesson: its id and its steps in order. */
@@ -158,14 +191,53 @@ const THEIRS = '[data-area="opponents"]'
 /** The bot's starting life, as the server sets it (`tutorial::BOT_LIFE`). */
 export const BOT_LIFE = 6
 
-/** The guided game: the turns of the tutorial table, from the first land to the winning attack. */
+/** The steps of a turn in order, to tell whether the game is past a moment. */
+const STEPS: readonly Step[] = [
+  'Untap',
+  'Upkeep',
+  'Draw',
+  'Main1',
+  'BeginCombat',
+  'DeclareAttackers',
+  'DeclareBlockers',
+  'FirstStrikeDamage',
+  'CombatDamage',
+  'EndCombat',
+  'Main2',
+  'End',
+  'Cleanup',
+]
+
+/** Whether the game is past `step` of turn `turn`. */
+export function past(facts: LessonFacts, turn: number, step: Step): boolean {
+  if (facts.turn !== turn) return facts.turn > turn
+  return facts.step !== null && STEPS.indexOf(facts.step) > STEPS.indexOf(step)
+}
+
+const has = (cards: readonly Named[], name: string): boolean => cards.some((each) => each.name === name)
+
+/** Whether the player has finished casting `name`: it is on the stack or the battlefield, or out of the zone it came from. */
+const cast = (facts: LessonFacts, name: string, from: readonly Named[]): boolean =>
+  !has(from, name) || has(facts.stack, name) || has(facts.creatures, name)
+
+/** Whether the player is past choosing `name` to cast: paying for it, or done. */
+const chosen = (facts: LessonFacts, name: string, from: readonly Named[]): boolean =>
+  facts.decision === 'PayMana' || facts.decision === 'ChooseTargets' || cast(facts, name, from)
+
+const GIADA = 'Giada, Font of Hope'
+
+/**
+ * The guided game: the turns of the tutorial table, from the first land to the winning attack. Each step that waits on
+ * the player is shown at the decisions it lists and names the button to press; `tutorialTrace.json` (written by the
+ * server's tutorial test) holds every decision the table sends, and `lesson.test.ts` walks it.
+ */
 export const GAME_LESSON: Lesson = {
   id: 'game',
   steps: [
     {
       id: 'welcome',
       title: 'Your first game',
-      text: 'A real game against a practice bot that plays the same way every time. Each step says what to do and moves on when you have done it. Skip ends the lesson; the game stays yours.',
+      text: 'A real game against a practice bot that plays the same way every time. Each step says what to do and which button to press, and moves on when the game does. Skip ends the lesson; the game stays yours.',
       targets: () => [],
     },
     {
@@ -175,117 +247,231 @@ export const GAME_LESSON: Lesson = {
       targets: (facts) => [...card(facts.hand, 'Forest'), HAND],
       done: (facts) => facts.lands.length >= 3,
       waiting: 'Waiting for your land',
+      decisions: ['Priority'],
     },
     {
       id: 'cast',
       title: 'Cast a creature',
-      text: 'Grizzly Bears costs {1}{G}: one mana of any kind and one green. Click it, then pay: click two Forests to tap them, or press Pay automatically.',
-      targets: (facts) => [...card(facts.hand, 'Grizzly Bears'), SHARED, HAND],
-      done: (facts) => facts.creatures.some((each) => each.name === 'Grizzly Bears'),
+      text: 'Grizzly Bears costs {1}{G}: one mana of any kind and one green, and your three Forests make three. Click Grizzly Bears in your hand.',
+      targets: (facts) => [...card(facts.hand, 'Grizzly Bears'), HAND],
+      done: (facts) => chosen(facts, 'Grizzly Bears', facts.hand),
       waiting: 'Waiting for Grizzly Bears',
+      decisions: ['Priority'],
+    },
+    {
+      id: 'pay',
+      title: 'Pay the cost',
+      text: 'Now pay {1}{G}: press Pay automatically in the middle bar, or click two Forests to tap them.',
+      targets: () => [SHARED],
+      done: (facts) => cast(facts, 'Grizzly Bears', facts.hand) && facts.decision !== 'PayMana',
+      waiting: 'Waiting for the payment',
+      decisions: ['PayMana'],
     },
     {
       id: 'pass',
-      title: 'Pass priority',
-      text: 'With nothing more to do, press the main button at the bottom right to pass. Passing with an empty stack moves the game on; here it ends your turn.',
+      title: 'End your turn',
+      text: 'The Bears resolved and the game moved on to your second main phase: new creatures cannot attack yet. Press {pass} at the bottom right to end your turn.',
       targets: () => [CONTROLS],
       done: (facts) => facts.turn >= 2,
       waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'their-turn',
       title: 'The bot’s turn',
-      text: 'The middle bar says whose turn it is. The bot plays a Mountain and casts Goblin Piker; your next turn comes by itself.',
+      text: 'The middle bar says whose turn it is. The bot plays a Swamp and casts Dregscape Zombie; nothing asks you anything, and your next turn comes by itself.',
       targets: () => [SHARED],
-      done: (facts) => facts.turn > 3 || (facts.turn === 3 && facts.mine),
+      done: (facts) => past(facts, 2, 'Cleanup'),
       waiting: 'Waiting for the bot',
+      decisions: [],
     },
     {
       id: 'second-land',
       title: 'Another land',
-      text: 'You drew a Plains. Play it: Hero in Training costs three, and one Forest stays open for later.',
+      text: 'You drew a Plains, your first white mana. Click it to play it.',
       targets: (facts) => [...card(facts.hand, 'Plains'), HAND],
       done: (facts) => facts.lands.length >= 4,
       waiting: 'Waiting for your land',
+      decisions: ['Priority'],
+    },
+    {
+      id: 'to-combat',
+      title: 'Go to combat',
+      text: 'Your Bears are no longer new, so they may attack. Press {pass} at the bottom right.',
+      targets: () => [CONTROLS],
+      done: (facts) => past(facts, 3, 'Main1'),
+      waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'attack',
       title: 'Attack',
-      text: 'Press the main button to go to combat, click Grizzly Bears to attack the bot, then confirm the attack in the middle bar. Your Bears are no longer new, so they may attack.',
-      // The middle bar first, so the card never lies over the button that confirms the attack.
-      targets: () => [SHARED, CONTROLS],
-      done: (facts) => facts.attacking > 0 || (facts.theirLife ?? BOT_LIFE) < BOT_LIFE,
+      text: 'Click Grizzly Bears to attack the bot, then press Attack in the middle bar.',
+      targets: (facts) => [...card(facts.creatures, 'Grizzly Bears'), SHARED],
+      done: (facts) => facts.attacking > 0 || past(facts, 3, 'DeclareAttackers'),
       waiting: 'Waiting for your attack',
+      decisions: ['DeclareAttackers'],
+    },
+    {
+      id: 'attacking',
+      title: 'Let combat go on',
+      text: 'Your Bears attack. Now you may cast instants before blocks, but you have none: press {pass}. The bot does not block, and the Bears deal 2 damage.',
+      targets: () => [CONTROLS],
+      done: (facts) => past(facts, 3, 'DeclareAttackers'),
+      waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'hero',
       title: 'Cast Hero in Training',
-      text: 'After combat you are in your second main phase. Cast Hero in Training {2}{W}: Pay automatically taps the Plains and two Forests.',
-      targets: (facts) => [...card(facts.hand, 'Hero in Training'), HAND, CONTROLS],
-      done: (facts) =>
-        facts.stack.some((each) => each.mine && each.name === 'Hero in Training') ||
-        facts.creatures.some((each) => each.name === 'Hero in Training'),
+      text: 'After combat you are in your second main phase, with all four lands untapped. Click Hero in Training {2}{W} in your hand.',
+      targets: (facts) => [...card(facts.hand, 'Hero in Training'), HAND],
+      done: (facts) => chosen(facts, 'Hero in Training', facts.hand),
       waiting: 'Waiting for Hero in Training',
+      decisions: ['Priority'],
+    },
+    {
+      id: 'hero-pay',
+      title: 'Pay with the Plains',
+      text: 'Press Pay automatically: it taps the Plains and two Forests, and one Forest stays open.',
+      targets: () => [SHARED],
+      done: (facts) => cast(facts, 'Hero in Training', facts.hand) && facts.decision !== 'PayMana',
+      waiting: 'Waiting for the payment',
+      decisions: ['PayMana'],
+    },
+    {
+      id: 'resolve',
+      title: 'The stack',
+      text: 'A spell waits on the stack until both players pass. Press {pass} at the bottom right.',
+      targets: () => [SHARED, CONTROLS],
+      done: (facts) => has(facts.creatures, 'Hero in Training'),
+      waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'trigger',
       title: 'A trigger on the stack',
-      text: 'When Hero in Training enters, its ability triggers: “draw a card” waits on the stack in the middle bar. Pass priority to let it resolve.',
+      text: 'Hero in Training entered, so its ability triggers: “draw a card” waits on the stack too. Press {pass} again.',
       targets: () => [SHARED, CONTROLS],
-      done: (facts) => facts.turn >= 4 || facts.hand.some((each) => each.name === 'Giant Growth'),
+      done: (facts) => has(facts.hand, 'Giant Growth') || facts.turn >= 4,
       waiting: 'Waiting for the trigger',
+      decisions: ['Priority'],
     },
     {
       id: 'end-turn',
       title: 'Keep mana open',
-      text: 'You drew Giant Growth, an instant: you may cast it on any turn. Your last Forest stays untapped for it. Pass to end your turn.',
+      text: 'You drew Giant Growth, an instant: you may cast it on any turn, and your last Forest stays untapped for it. Press {pass}.',
       targets: () => [CONTROLS],
       done: (facts) => facts.turn >= 4,
       waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
+    },
+    {
+      id: 'attacked',
+      title: 'The bot attacks',
+      text: 'Dregscape Zombie attacks you. You could cast Giant Growth now, but wait for the blocks: press {pass}.',
+      targets: () => [THEIRS, CONTROLS],
+      done: (facts) => past(facts, 4, 'DeclareAttackers'),
+      waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'block',
       title: 'Block',
-      text: 'The bot attacks with Goblin Piker. Your Bears are tapped from attacking, so click Hero in Training, then the Piker, to block it; then confirm the blocks in the middle bar.',
-      targets: () => [SHARED, THEIRS],
-      done: (facts) => facts.blocking > 0 || facts.turn >= 5,
+      text: 'Your Bears are tapped from attacking. Click Hero in Training: one click blocks the only attacker, Dregscape Zombie. Then press Block in the middle bar.',
+      targets: (facts) => [...card(facts.creatures, 'Hero in Training'), SHARED],
+      done: (facts) => facts.blocking > 0 || past(facts, 4, 'DeclareBlockers'),
       waiting: 'Waiting for your block',
+      decisions: ['DeclareBlockers'],
     },
     {
       id: 'instant',
       title: 'Respond with an instant',
-      text: 'Before damage you get priority again. Cast Giant Growth on Hero in Training: +3/+3 until end of turn, so it survives the fight.',
+      text: 'The Zombie would kill your 2/2 Hero. Before damage you get priority again: click Giant Growth in your hand.',
       targets: (facts) => [...card(facts.hand, 'Giant Growth'), HAND],
-      done: (facts) => !facts.hand.some((each) => each.name === 'Giant Growth') || facts.turn >= 5,
+      done: (facts) => chosen(facts, 'Giant Growth', facts.hand) || facts.turn >= 5,
       waiting: 'Waiting for Giant Growth',
+      decisions: ['Priority'],
     },
     {
-      id: 'resolve',
-      title: 'Let it resolve',
-      text: 'Your spell waits on the stack until both players pass. Pass priority: Giant Growth resolves, then combat damage is dealt.',
-      targets: () => [SHARED, CONTROLS],
-      done: (facts) => facts.turn >= 5,
-      waiting: 'Waiting for the turn to end',
+      id: 'target',
+      title: 'Choose the target',
+      text: 'Giant Growth gives a creature +3/+3 until end of turn. Click Hero in Training, then press Confirm targets.',
+      targets: (facts) => [...card(facts.creatures, 'Hero in Training'), SHARED],
+      done: (facts) => facts.decision === 'PayMana' || !has(facts.hand, 'Giant Growth') || facts.turn >= 5,
+      waiting: 'Waiting for the target',
+      decisions: ['ChooseTargets'],
+    },
+    {
+      id: 'growth-pay',
+      title: 'Pay with the open Forest',
+      text: 'Press Pay automatically: the Forest you kept open pays {G}.',
+      targets: () => [SHARED],
+      done: (facts) => !has(facts.hand, 'Giant Growth') || facts.turn >= 5,
+      waiting: 'Waiting for the payment',
+      decisions: ['PayMana'],
+    },
+    {
+      id: 'fight',
+      title: 'Combat damage',
+      text: 'You have no mana left, so the game passes for you: Giant Growth resolves, your 5/5 Hero survives and the Zombie dies. Your turn comes by itself.',
+      targets: () => [OWN],
+      done: (facts) => past(facts, 4, 'Cleanup'),
+      waiting: 'Waiting for the bot',
+      decisions: [],
+    },
+    {
+      id: 'third-land',
+      title: 'Your land for the turn',
+      text: 'You drew a Forest: click it to play it.',
+      targets: (facts) => [...card(facts.hand, 'Forest'), HAND],
+      done: (facts) => facts.lands.length >= 5,
+      waiting: 'Waiting for your land',
+      decisions: ['Priority'],
     },
     {
       id: 'commander',
       title: 'The command zone',
-      text: 'Isamaru, Hound of Konda is your commander. It waits in the command zone, beside your hand, and you may cast it from there like a card in hand. Play your land, then cast Isamaru.',
+      text: 'Giada, Font of Hope is your commander. It waits in the command zone, beside your hand, and you may cast it from there like a card in hand: click Giada.',
       targets: (facts) => [
-        ...card(facts.command, 'Isamaru, Hound of Konda'),
+        ...card(facts.command, GIADA),
         '[data-slot="hand-command"]',
         `${OWN} [data-zone="command"]`,
       ],
-      done: (facts) => !facts.command.some((each) => each.name.startsWith('Isamaru')),
-      waiting: 'Waiting for Isamaru',
+      done: (facts) => chosen(facts, GIADA, facts.command),
+      waiting: 'Waiting for Giada',
+      decisions: ['Priority'],
+    },
+    {
+      id: 'commander-pay',
+      title: 'Pay for your commander',
+      text: 'Press Pay automatically: the Plains pays {W}. Giada is new, so it stays home; once it resolves the game moves on to combat by itself.',
+      targets: () => [SHARED],
+      done: (facts) => cast(facts, GIADA, facts.command) && facts.decision !== 'PayMana',
+      waiting: 'Waiting for the payment',
+      decisions: ['PayMana'],
     },
     {
       id: 'win',
       title: 'Win the game',
-      text: 'The bot has 4 life and no blockers. Go to combat and attack with Grizzly Bears and Hero in Training.',
-      targets: (facts) => [...card(facts.creatures, 'Grizzly Bears'), OWN, CONTROLS],
-      done: (facts) => facts.over,
+      text: 'The bot has 4 life and no blockers. Click Grizzly Bears and Hero in Training, then press Attack.',
+      targets: (facts) => [
+        ...card(facts.creatures, 'Grizzly Bears'),
+        ...card(facts.creatures, 'Hero in Training'),
+        SHARED,
+      ],
+      done: (facts) => facts.attacking > 0 || facts.over,
       waiting: 'Waiting for your attack',
+      decisions: ['DeclareAttackers'],
+    },
+    {
+      id: 'finish',
+      title: 'Deal the damage',
+      text: 'Press {pass}. The bot has no creature to block with, and 4 damage ends the game.',
+      targets: () => [CONTROLS],
+      done: (facts) => facts.over,
+      waiting: 'Waiting for you to pass',
+      decisions: ['Priority'],
     },
     {
       id: 'won',

@@ -117,6 +117,7 @@ const reasonsOf = (spec: CardSpec): Reason[] =>
       face,
       span: clause.phrase === undefined ? spanOf(text, text) : spanOf(text, clause.phrase),
       text: clause.reason,
+      quote: clause.phrase ?? text,
     }
   })
 
@@ -127,7 +128,9 @@ export const reportLine = (
   draft?: ReadState,
 ): ReportCard => {
   const spec = CARDS[key] as CardSpec
-  return reportCard(spec.name, { zone, support: spec.support, reasons: reasonsOf(spec), draft })
+  const reasons = reasonsOf(spec)
+  const whole = reasons.length === 0 ? { whole_text: spec.faces.join('\n') } : {}
+  return reportCard(spec.name, { zone, support: spec.support, reasons, draft, ...whole })
 }
 
 /** What `GET /api/cards/{oracle_id}` answers for a card of the fixture. */
@@ -245,8 +248,6 @@ export interface FixtureOptions {
   decks?: readonly FixtureDeck[]
   /** Milliseconds each answer waits. */
   delayMs?: number
-  /** The card texts are never read. */
-  cardsFail?: boolean
 }
 
 const later = <T>(value: () => T, delayMs: number): Promise<T> =>
@@ -312,7 +313,7 @@ export function fixtureCardsApi(options: FixtureOptions = {}): Pick<CardsApi, 'g
       later(() => {
         asked.push(oracleId)
         const key = Object.keys(CARDS).find((name) => oracleIdOf(CARDS[name]?.name ?? '') === oracleId)
-        if (options.cardsFail === true || key === undefined) throw new Error('no such card')
+        if (key === undefined) throw new Error('no such card')
         return detailOf(key)
       }, options.delayMs ?? 0),
   }

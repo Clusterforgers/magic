@@ -25,6 +25,8 @@ pub struct TokenPictures {
     pub card: Card,
     /// The newest printing of the token that has a picture.
     pub pictures: PrintingPictures,
+    /// How many printings the token has, pictured or not.
+    pub printings: u32,
 }
 
 impl CardRepo {
@@ -55,7 +57,7 @@ impl CardRepo {
     }
 
     /// The tokens named `name` (case, accents and the second face's name ignored) that have a
-    /// picture, each with the printing that shows it, by oracle id.
+    /// picture, each with the printing that shows it and its printing count, by oracle id.
     pub async fn token_pictures(&self, name: &str) -> Result<Vec<TokenPictures>, DbError> {
         let key = normalize_name(name);
         if key.is_empty() {
@@ -63,7 +65,9 @@ impl CardRepo {
         }
         let rows = sqlx::query!(
             r#"SELECT DISTINCT ON (c.oracle_id) c.oracle_id AS "oracle_id: Uuid", p.printing_id,
-                      p.images AS "images: Json<PrintingImages>"
+                      p.images AS "images: Json<PrintingImages>",
+                      (SELECT count(*) FROM printings q WHERE q.oracle_id = c.oracle_id)
+                        AS "printings!"
                FROM cards c JOIN printings p ON p.oracle_id = c.oracle_id
                WHERE NOT c.is_deck_card AND c.layout IN ('token', 'double_faced_token')
                  AND (c.name_normalized = $1 OR c.front_name_normalized = $1)
@@ -90,6 +94,7 @@ impl CardRepo {
                         printing_id: PrintingId(row.printing_id.to_string()),
                         images: row.images.0.clone(),
                     },
+                    printings: u32::try_from(row.printings).unwrap_or(u32::MAX),
                     card,
                 })
             })

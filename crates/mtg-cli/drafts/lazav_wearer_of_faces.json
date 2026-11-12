@@ -13,7 +13,8 @@
             "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
             "effects": [
               { "Exile": { "what": { "Target": 0 } } },
-              { "CreateToken": { "token": { "Named": "clue" } } }
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
             ]
           }
         },

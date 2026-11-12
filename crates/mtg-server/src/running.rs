@@ -4,6 +4,8 @@ use std::collections::VecDeque;
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::decision::Refusal;
+use mtg_engine::error::IllegalAnswer;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
@@ -35,6 +37,8 @@ const MAX_IDLE_PASSES: usize = 500;
 pub(crate) struct Rejection {
     pub(crate) code: ErrorCode,
     pub(crate) message: String,
+    /// Which play the engine refused and why, for an illegal answer that names one.
+    pub(crate) refusal: Option<Box<Refusal>>,
 }
 
 impl Rejection {
@@ -42,6 +46,20 @@ impl Rejection {
         Rejection {
             code,
             message: message.into(),
+            refusal: None,
+        }
+    }
+
+    /// The rejection of an answer the engine found illegal, with the refused play when the engine names one.
+    pub(crate) fn illegal(illegal: IllegalAnswer) -> Rejection {
+        let message = illegal.to_string();
+        Rejection {
+            code: ErrorCode::IllegalAnswer,
+            message,
+            refusal: match illegal {
+                IllegalAnswer::Refused(refusal) => Some(refusal),
+                _ => None,
+            },
         }
     }
 
@@ -49,6 +67,7 @@ impl Rejection {
         ServerMessage::Error {
             code: self.code,
             message: self.message,
+            refusal: self.refusal.map(|refusal| *refusal),
         }
     }
 
@@ -561,9 +580,7 @@ impl Running {
                 ..step
             })
             .map_err(|error| match error {
-                EngineError::Illegal(illegal) => {
-                    Rejection::new(ErrorCode::IllegalAnswer, illegal.to_string())
-                }
+                EngineError::Illegal(illegal) => Rejection::illegal(illegal),
                 EngineError::NoDecision => {
                     Rejection::new(ErrorCode::StaleDecision, "no decision is pending")
                 }
