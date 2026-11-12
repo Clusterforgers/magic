@@ -55,6 +55,14 @@ pub(crate) fn variants(card: &CardDefinition) -> Option<Vec<Variant>> {
         else {
             continue;
         };
+        // "Spend only black mana on X" pays nothing: it colors the mana of the X (`price::spell_x_color`).
+        if cost
+            .0
+            .iter()
+            .all(|item| matches!(item, CostItem::XColor(_)))
+        {
+            continue;
+        }
         let options = alternatives(cost);
         let mut next = Vec::new();
         for before in &found {

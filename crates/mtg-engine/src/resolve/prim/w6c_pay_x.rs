@@ -5,7 +5,7 @@
 use std::iter::Peekable;
 
 use mtg_core::ids::PlayerId;
-use mtg_core::mana::{ManaCost, ManaSymbol};
+use mtg_core::mana::ManaCost;
 
 use super::pay::can_pay;
 use crate::choose::{Choice, NumberOptions, Target};
@@ -28,8 +28,12 @@ pub(super) enum Announced {
 pub(super) fn at(template: &Price, x: u32) -> Price {
     let mut price = template.at(x);
     if price.x > 0 {
-        let generic = ManaSymbol::Generic(x.saturating_mul(price.x));
-        price.mana = Some(price.mana.take().unwrap_or(ManaCost::ZERO).with(generic));
+        let mana = price.mana.take().unwrap_or(ManaCost::ZERO);
+        price.mana = Some(crate::price::with_x(
+            mana,
+            x.saturating_mul(price.x),
+            price.x_color,
+        ));
         price.x = 0;
     }
     price

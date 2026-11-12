@@ -1,0 +1,72 @@
+{
+  "oracle_id": "4d2a465e-9ebd-4002-b6cd-e0eab08bad54",
+  "name": "Last Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Stand",
+      "oracle_fingerprint": "ee0f93de3527c99156af9e44ccb6c812",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 1 },
+                  "amount": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Discard": {
+                  "count": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

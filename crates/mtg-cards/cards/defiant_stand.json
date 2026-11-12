@@ -1,0 +1,35 @@
+{
+  "oracle_id": "05e61628-cdae-4664-b866-be438fb3a6ba",
+  "name": "Defiant Stand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defiant Stand",
+      "oracle_fingerprint": "783b39d52c426eaac3f9646a08fd35bc",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

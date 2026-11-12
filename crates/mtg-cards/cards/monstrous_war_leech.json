@@ -1,7 +1,7 @@
 {
   "oracle_id": "b92f2a4c-36dc-40a6-a874-7405fc97fb7a",
   "name": "Monstrous War-Leech",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Monstrous War-Leech",
@@ -9,9 +9,10 @@
       "abilities": [
         { "Keyword": { "Kicker": "{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 67, "end": 198 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Mill": 4 },
+            "condition": "Kicked"
           }
         },
         {

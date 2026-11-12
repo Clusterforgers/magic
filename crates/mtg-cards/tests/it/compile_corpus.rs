@@ -461,6 +461,17 @@ fn pair_is_written(
     }))
 }
 
+/// Whether an opening-hand reveal of the face writes the line, which is then no line of the face's spell (Providence).
+fn revealed_line(listed: &[(usize, &Ability)], face: usize, line: &str) -> bool {
+    listed.iter().any(|&(other, ability)| {
+        other == face
+            && matches!(ability, Ability::OpeningReveal { .. })
+            && written_variants(ability)
+                .iter()
+                .any(|text| same_written_text(text, line))
+    })
+}
+
 /// How many abilities of the hand-written card the renderer writes, and each one not written as a clause of the card.
 #[allow(clippy::too_many_lines)]
 fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usize, Vec<String>) {
@@ -535,6 +546,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CostModifier { .. } => &[ClauseKind::Static],
             // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
             Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],
+            // On an instant or sorcery the reveal is a spell line (Providence).
+            Ability::OpeningReveal { .. } => &[ClauseKind::Static, ClauseKind::Spell],
             _ => &[ClauseKind::Activated],
         };
         let lines: Vec<&str> = compiled
@@ -542,6 +555,9 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             .iter()
             .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
             .map(|clause| without_numerals(without_ability_word(&clause.text)))
+            .filter(|line| {
+                !matches!(ability, Ability::Spell { .. }) || !revealed_line(&listed, face, line)
+            })
             .collect();
         let mut wanted = if matches!(ability, Ability::Spell { .. }) {
             vec![lines.join("\n"), without_die_rows(&lines)]

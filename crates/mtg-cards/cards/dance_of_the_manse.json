@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fdfac093-a5c0-47b4-9052-e0af517d83cf",
+  "name": "Dance of the Manse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance of the Manse",
+      "oracle_fingerprint": "25b79bae2859f2aea8da32c71bdbe7a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Not": { "Subtype": "Aura" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "them" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 6 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "them" },
+                        "mods": [
+                          { "AddType": "Creature" },
+                          { "SetPT": { "power": 4, "toughness": 4 } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -7,7 +7,7 @@ use mtg_cards::ability::{Ability, Activators, LoyaltyCost, Timing};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::{ManaCost, ManaSymbol};
+use mtg_core::mana::ManaCost;
 
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
@@ -491,11 +491,8 @@ fn can_pay_x(
     let Some(seat) = state.player(player) else {
         return false;
     };
-    let mana = price
-        .mana
-        .clone()
-        .unwrap_or(ManaCost::ZERO)
-        .with(ManaSymbol::Generic(x.saturating_mul(price.x)));
+    let mana = price.mana.clone().unwrap_or(ManaCost::ZERO);
+    let mana = crate::price::with_x(mana, x.saturating_mul(price.x), price.x_color);
     let mut sources = price.at(x).sources(state, player, object.id());
     sources.retain(|option| !claimed.contains(&option.source.object));
     let life = seat

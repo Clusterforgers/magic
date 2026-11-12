@@ -1,7 +1,7 @@
 {
   "oracle_id": "eaffdf95-8e20-408d-99fa-3adc9e19523d",
   "name": "Misleading Signpost",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Misleading Signpost",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 203 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "AtTrigger": { "Step": "DeclareAttackers" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Reattack": { "what": { "Target": 0 } } }]
           }
         },
         {

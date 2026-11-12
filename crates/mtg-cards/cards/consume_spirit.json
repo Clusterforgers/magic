@@ -1,0 +1,23 @@
+{
+  "oracle_id": "861fa80d-99e0-4332-a2b8-5aa959fd41a4",
+  "name": "Consume Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consume Spirit",
+      "oracle_fingerprint": "ecb746acfcf5a6da414e8ea73afd7378",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "XColor": "Black" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "GainLife": { "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

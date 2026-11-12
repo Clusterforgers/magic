@@ -103,9 +103,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     Ok(Run::Done {
         events,
+        // The number discarded is kept apart, as a step that moves its objects keeps it (`moved_as`).
         bound: bind
             .iter()
-            .map(|name| (name.clone(), discarded.clone()))
+            .flat_map(|name| {
+                [
+                    (name.clone(), discarded.clone()),
+                    super::moved_as::count_entry(name, discarded.len()),
+                ]
+            })
             .collect(),
         snapshots,
         next: Next::Sibling,
@@ -167,7 +173,7 @@ fn c6_eg_at_random(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a discard takes the number of cards from each player it names in turn order, the player chooses and is asked only when the hand holds more than that, a smaller or empty hand is discarded without a question, the question carries the words of the card, and what cannot be played yet is refused by name.
+    //! Goal: a discard takes the number of cards from each player it names in turn order, the player chooses and is asked only when the hand holds more than that, a smaller or empty hand is discarded without a question, the question carries the words of the card, the cards discarded are bound under its name with their number, and what cannot be played yet is refused by name.
     use mtg_core::ids::{ObjectId, PlayerId};
     use rstest::rstest;
 
@@ -278,7 +284,8 @@ mod tests {
     }
 
     #[test]
-    fn the_cards_discarded_are_bound_as_the_objects_they_become_in_the_graveyards() {
+    fn the_cards_discarded_are_bound_as_the_objects_they_become_in_the_graveyards_with_their_number()
+     {
         let game = game();
         let run = run_with(
             &game,
@@ -289,10 +296,14 @@ mod tests {
         let Run::Done { events, bound, .. } = run else {
             panic!("the effect is done");
         };
-        let [(name, gone)] = bound.as_slice() else {
-            panic!("one name is bound");
+        let [(name, gone), count] = bound.as_slice() else {
+            panic!("one name and its count are bound");
         };
         assert_eq!(name, "gone");
+        assert_eq!(
+            *count,
+            super::super::moved_as::count_entry("gone", gone.len())
+        );
         let all: Vec<ObjectId> = [ME, FOE]
             .into_iter()
             .flat_map(|player| hand(&game, player))
