@@ -69,7 +69,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 ### House rules
 
 - `POST /api/games` takes `house_rules` (`HouseRules`, [engine.md](engine.md), House rules): every rule is optional and an absent rule keeps the format's value. A value out of range, or a handicap for a seat beyond the request's `seats`, is checked before anything is made and is 400 `invalid_request` with the rule's name in `field` (`deck.deck_size`, `handicaps[1].starting_life`); an unknown rule or a value of the wrong type is 400 without one.
-- The rules are part of `GameRecipe` (`games.recipe`, `jsonb`, so no migration), left out of the JSON while none is set. A resume and a replay build the setup from the recipe and play under the rules the game was made with; a stored recipe whose rules are out of range fails with `RecipeError::Setup`.
+- The rules are part of `GameRecipe` (`games.recipe`, `jsonb`), left out of the JSON while none is set. A migration renames the older key `deck.colour_identity` of stored recipes to `color_identity`, and the older key still reads. A resume and a replay build the setup from the recipe and play under the rules the game was made with; a stored recipe whose rules are out of range fails with `RecipeError::Setup`.
 - A game checks its decks with the rules when it starts (`GameSetup::validate`); the server judges a seat's deck with the same rules when it is chosen and for the lobby's deck check ([Decks](#decks)). The lobby row and the table view show the rules to every seat.
 
 ## Accounts

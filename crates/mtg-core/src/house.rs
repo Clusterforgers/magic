@@ -134,10 +134,10 @@ pub struct DeckRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub singleton: Option<bool>,
-    /// Whether every card must lie within the commanders' colour identity.
-    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Whether every card must lie within the commanders' color identity; the older key `colour_identity` reads the same.
+    #[serde(alias = "colour_identity", skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
-    pub colour_identity: Option<bool>,
+    pub color_identity: Option<bool>,
     /// The exact number of cards in a deck, its commanders included.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
@@ -415,7 +415,7 @@ impl HouseRules {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every rule is checked against its range and named in the error, the wire form leaves unset rules out and loads without any, and an unknown rule is refused.
+    //! Goal: every rule is checked against its range and named in the error, the wire form leaves unset rules out and loads without any, the color identity rule reads its older spelling, and an unknown rule is refused.
     use proptest::prelude::*;
     use rstest::rstest;
     use serde_json::json;
@@ -494,7 +494,7 @@ mod tests {
     #[case::copies_of_a_singleton("deck", json!({"singleton": true, "max_copies": 3}), Some("deck.max_copies"))]
     #[case::copies_of_the_formats_singleton("deck", json!({"max_copies": 3}), Some("deck.max_copies"))]
     #[case::singleton_off("deck", json!({"singleton": false}), None)]
-    #[case::identity_off("deck", json!({"colour_identity": false}), None)]
+    #[case::identity_off("deck", json!({"color_identity": false}), None)]
     #[case::no_relaxation("deck", json!({}), None)]
     #[case::one_commander("commanders_per_seat", json!(1), None)]
     #[case::two_commanders("commanders_per_seat", json!(2), None)]
@@ -658,7 +658,7 @@ mod tests {
             commander_damage: Some(CommanderDamageLimit::Lethal(15)),
             deck: DeckRules {
                 singleton: Some(false),
-                colour_identity: Some(false),
+                color_identity: Some(false),
                 deck_size: Some(60),
                 max_copies: Some(4),
             },
@@ -667,7 +667,7 @@ mod tests {
         };
         let wire = json!({
             "commander_tax": 0, "commander_damage": {"lethal": 15}, "commanders_per_seat": 2,
-            "deck": {"singleton": false, "colour_identity": false, "deck_size": 60, "max_copies": 4}
+            "deck": {"singleton": false, "color_identity": false, "deck_size": 60, "max_copies": 4}
         });
         assert_eq!(serde_json::to_value(&set).unwrap(), wire);
         assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
@@ -708,7 +708,7 @@ mod tests {
     #[case::lethal_negative("commander_damage", json!({"lethal": -1}))]
     #[case::deck_unknown_relaxation("deck", json!({"banana": true}))]
     #[case::singleton_text("deck", json!({"singleton": "off"}))]
-    #[case::identity_number("deck", json!({"colour_identity": 0}))]
+    #[case::identity_number("deck", json!({"color_identity": 0}))]
     #[case::size_negative("deck", json!({"deck_size": -60}))]
     #[case::deck_not_an_object("deck", json!(60))]
     #[case::commanders_text("commanders_per_seat", json!("two"))]
@@ -782,6 +782,20 @@ mod tests {
             Some(9)
         );
         assert!(rules.handicap(PlayerId(1)).is_none());
+    }
+
+    #[rstest]
+    #[case::the_wire_spelling(json!({"deck": {"color_identity": false}}))]
+    #[case::the_older_spelling(json!({"deck": {"colour_identity": false}}))]
+    fn the_color_identity_rule_reads_in_either_spelling_and_writes_color(
+        #[case] stored: serde_json::Value,
+    ) {
+        let rules: HouseRules = serde_json::from_value(stored).unwrap();
+        assert_eq!(rules.deck.color_identity, Some(false));
+        assert_eq!(
+            serde_json::to_value(&rules).unwrap(),
+            json!({"deck": {"color_identity": false}})
+        );
     }
 
     #[test]
@@ -872,7 +886,7 @@ mod tests {
                 commander_damage: damage,
                 deck: DeckRules {
                     singleton,
-                    colour_identity: identity,
+                    color_identity: identity,
                     deck_size: size,
                     max_copies: copies,
                 },

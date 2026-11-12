@@ -72,7 +72,7 @@ fn some_rules() -> HouseRules {
         commander_damage: Some(CommanderDamageLimit::Lethal(30)),
         deck: DeckRules {
             singleton: Some(false),
-            colour_identity: Some(false),
+            color_identity: Some(false),
             deck_size: Some(60),
             max_copies: Some(4),
         },
@@ -144,7 +144,7 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "mulligan_style": "vancouver",
                 "commander_tax": 1,
                 "commander_damage": { "lethal": 30 },
-                "deck": { "singleton": false, "colour_identity": false, "deck_size": 60, "max_copies": 4 },
+                "deck": { "singleton": false, "color_identity": false, "deck_size": 60, "max_copies": 4 },
                 "commanders_per_seat": 2,
                 "handicaps": [{ "seat": 1, "starting_life": 9, "opening_hand_size": 4 }],
             })

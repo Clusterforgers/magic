@@ -653,7 +653,7 @@ mod tests {
     #[case::no_rules(HouseRules::default(), &[IssueCode::Copies, IssueCode::DeckSize])]
     #[case::one_lifted(deck_rules(|d| d.singleton = Some(false)), &[IssueCode::DeckSize])]
     #[case::both_lifted(deck_rules(|d| { d.singleton = Some(false); d.deck_size = Some(60); }), &[])]
-    #[case::another_rule(deck_rules(|d| d.colour_identity = Some(false)), &[IssueCode::Copies, IssueCode::DeckSize])]
+    #[case::another_rule(deck_rules(|d| d.color_identity = Some(false)), &[IssueCode::Copies, IssueCode::DeckSize])]
     fn a_commander_table_lifts_the_issues_of_the_rules_it_relaxed(
         #[case] house: HouseRules,
         #[case] left: &[IssueCode],

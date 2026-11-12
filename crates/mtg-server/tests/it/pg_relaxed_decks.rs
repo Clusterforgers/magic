@@ -141,7 +141,7 @@ fn relaxed() -> Vec<Relaxed> {
                     line("main", "Forest", 98),
                 ],
             ),
-            rules: json!({"deck": {"colour_identity": false}}),
+            rules: json!({"deck": {"color_identity": false}}),
             code: "color_identity",
         },
         Relaxed {
@@ -233,9 +233,9 @@ async fn a_relaxed_table_still_warns_for_what_it_did_not_relax(pool: PgPool) {
     let singleton_off = json!({"deck": {"singleton": false}});
     let limit_three = json!({"deck": {"singleton": false, "max_copies": 3}});
     let size = json!({"deck": {"deck_size": 51}});
-    let identity_off = json!({"deck": {"colour_identity": false}});
+    let identity_off = json!({"deck": {"color_identity": false}});
     let one = json!({"commanders_per_seat": 1});
-    let all = json!({"deck": {"singleton": false, "colour_identity": false, "deck_size": 100},
+    let all = json!({"deck": {"singleton": false, "color_identity": false, "deck_size": 100},
         "commanders_per_seat": 2});
     let red = relaxed().remove(2).deck;
     let short = relaxed().remove(3).deck;
@@ -316,7 +316,7 @@ async fn a_precon_the_check_warns_only_for_a_relaxed_rule_is_legal_at_that_table
         (TWICE, json!({"deck": {"singleton": false}}), "copies"),
         (
             RED,
-            json!({"deck": {"colour_identity": false}}),
+            json!({"deck": {"color_identity": false}}),
             "color_identity",
         ),
         (SHORT, json!({"deck": {"deck_size": 51}}), "deck_size"),
@@ -362,7 +362,7 @@ async fn a_precon_the_check_warns_only_for_a_relaxed_rule_is_legal_at_that_table
 
     // What no table relaxes still warns, wherever the precon is brought.
     let everything =
-        json!({"deck": {"singleton": false, "colour_identity": false}, "commanders_per_seat": 2});
+        json!({"deck": {"singleton": false, "color_identity": false}, "commanders_per_seat": 2});
     for (code, issue) in [(BEAR, "commander_eligibility"), (GHOST, "unknown_card")] {
         let game = open(&server, &ann, &everything).await;
         let choice = choose(&server, &ann, &game, 0, &on(code)).await;

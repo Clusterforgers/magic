@@ -247,8 +247,8 @@ impl<'a> RuleSet<'a> {
     }
 
     /// Whether every card of a deck must lie within the colour identity of its commanders.
-    pub fn checks_colour_identity(&self) -> bool {
-        self.house.deck.colour_identity.unwrap_or(true)
+    pub fn checks_color_identity(&self) -> bool {
+        self.house.deck.color_identity.unwrap_or(true)
     }
 
     /// The most commanders a seat may start with: one, or a pair.
@@ -785,12 +785,12 @@ mod commander_tests {
         #[case] checks_identity: bool,
     ) {
         let house = rules(|r| {
-            r.deck.colour_identity = identity;
+            r.deck.color_identity = identity;
             r.deck.deck_size = size;
         });
         let set = RuleSet::new(&Commander, &house);
         assert_eq!(set.deck_size(100), expected_size);
-        assert_eq!(set.checks_colour_identity(), checks_identity);
+        assert_eq!(set.checks_color_identity(), checks_identity);
     }
 
     #[rstest]
