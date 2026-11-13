@@ -203,7 +203,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <SeatDot seat={seat} />
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
       {team === null ? null : <TeamBadge team={team.team} size="chip" />}
-      {player.boss ? <BossChip compact={line} /> : null}
+      {player.boss ? <BossChip /> : null}
       {player.spirit ? <SpiritMark compact={line} /> : null}
       {defender.state === 'chosen' ? (
         <Crosshair aria-hidden="true" className="size-3.5 shrink-0 text-primary" />
@@ -229,7 +229,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           '@container flex min-w-0 flex-col gap-1 rounded-xl bg-card px-2 py-1 text-card-foreground',
           ring,
           eliminated && 'border-l-4 border-destructive',
-          player.boss && 'border-t-2 border-boss',
+          player.boss && 'border-2 border-boss',
           defenderClass(defender.state),
         )}
       >
@@ -335,7 +335,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         '@container relative grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-2 rounded-xl bg-card p-2 text-card-foreground',
         ring,
         eliminated && 'border-l-4 border-destructive',
-        player.boss && 'border-t-2 border-boss',
+        player.boss && 'border-2 border-boss',
         defenderClass(defender.state),
       )}
     >

@@ -480,6 +480,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-rooms': withRooms(priority),
   'priority-stack-ability': priority,
   'priority-companion': priority,
+  // The same at a Delves boss fight: the last seat a boss in its second phase, another seat a fallen hero's Spirit.
+  'priority-delve': priority,
   // The same with a creature on top of the viewer's library that it sees and may cast (`dev/topCardScene.ts`).
   'priority-top': withTopCast(priority),
   attack,
@@ -575,6 +577,18 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-rooms': roomsTable,
   'priority-stack-ability': stackAbilityTable,
   'priority-companion': companionTable,
+  'priority-delve': (fixture) => {
+    const { view } = fixture
+    const last = view.players.length - 1
+    const players = view.players.map((player, at) =>
+      at === last
+        ? { ...player, boss: { phases: ['The Nest Stirs', 'Swarm Queen'], begun: 1 } }
+        : at === 1 && last > 1
+          ? { ...player, life: 0, spirit: true }
+          : player,
+    )
+    return { ...fixture, view: { ...view, players } }
+  },
   'priority-top': (fixture) => withTopCard(quietMoment('Main1', true)(fixture)),
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.

@@ -115,16 +115,13 @@
   --color-team-2: var(--team-2);
   --color-team-3: var(--team-3);
   --color-team-4: var(--team-4);
-<<<<<<< HEAD
   --color-delve: var(--delve);
   --color-on-delve: var(--on-delve);
   --color-delve-stone: var(--delve-stone);
   --color-relic: var(--relic);
-=======
   --color-boss: var(--boss);
   --color-on-boss: var(--on-boss);
   --color-spirit: var(--spirit);
->>>>>>> du55-table
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -198,18 +195,15 @@
   --team-2: oklch(0.5 0.13 60);
   --team-3: oklch(0.47 0.09 190);
   --team-4: oklch(0.48 0.15 310);
-<<<<<<< HEAD
   /* Delves: the torch's ember, the dungeon's stone ground and a relic's gold. */
   --delve: oklch(0.5 0.15 45);
   --on-delve: oklch(0.985 0 0);
   --delve-stone: oklch(0.945 0.012 60);
   --relic: oklch(0.5 0.1 85);
-=======
   /* A boss seat's frame and chip (wine), and a fallen hero's Spirit mark (cold blue-grey). */
   --boss: oklch(0.45 0.16 350);
   --on-boss: oklch(0.985 0 0);
   --spirit: oklch(0.47 0.07 230);
->>>>>>> du55-table
 
   /* The four phase themes, each an accent, a soft tint and the text on the accent (turn/phase.css picks one). */
   --phase-beginning: oklch(0.54 0.16 250);
@@ -305,16 +299,13 @@
   --team-2: oklch(0.8 0.12 65);
   --team-3: oklch(0.78 0.09 190);
   --team-4: oklch(0.76 0.12 310);
-<<<<<<< HEAD
   --delve: oklch(0.76 0.14 55);
   --on-delve: oklch(0.17 0.012 50);
   --delve-stone: oklch(0.195 0.014 50);
   --relic: oklch(0.82 0.12 88);
-=======
   --boss: oklch(0.74 0.13 350);
   --on-boss: oklch(0.17 0.012 265);
   --spirit: oklch(0.8 0.06 230);
->>>>>>> du55-table
 
   --phase-beginning: oklch(0.84 0.09 250);
   --phase-beginning-soft: oklch(0.3 0.05 250);
