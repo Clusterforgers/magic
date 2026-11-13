@@ -143,6 +143,7 @@ impl<S: EventStore> GameActor<S> {
             passed,
             banks,
             times,
+            cut,
         } = step;
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -156,6 +157,7 @@ impl<S: EventStore> GameActor<S> {
         let skipped = running.skip_idle(&mut events, &mut stops, &mut yields);
         let halt = skipped.as_ref().ok().copied().unwrap_or(Halt::Ask);
         let committed = match skipped {
+            Ok(_) if cut => self.persist_cut(&events, from_seq).await,
             Ok(_) => self.persist(&before, &events, from_seq).await,
             Err(error) => Err(CommitError::from(error)),
         };
@@ -182,7 +184,11 @@ impl<S: EventStore> GameActor<S> {
                 if let (Some(recorder), Some(result)) = (&self.recorder, result) {
                     recorder.finished(result).await;
                 }
-                self.announce(batches, notices, next);
+                if cut {
+                    self.announce_cut(notices);
+                } else {
+                    self.announce(batches, notices, next);
+                }
                 Ok(())
             }
             Err(error) => {
@@ -225,6 +231,51 @@ impl<S: EventStore> GameActor<S> {
         Ok(viewers.into_iter().zip(batches).collect())
     }
 
+    /// Cuts the stored log back to `from_seq` and saves `events` after it; nothing is projected, since every viewer gets
+    /// a snapshot ([`announce_cut`](GameActor::announce_cut)).
+    async fn persist_cut(
+        &mut self,
+        events: &[Event],
+        from_seq: u64,
+    ) -> Result<Vec<(PlayerId, EventBatch)>, CommitError> {
+        self.store.rewind(self.id, from_seq, events).await?;
+        Ok(Vec::new())
+    }
+
+    /// Tells every connected seat and spectator the game after a cut of the log: a snapshot marked `rewound`, who the
+    /// game waits for, the seat's pending decision and the result, then each notice.
+    pub(crate) fn announce_cut(&mut self, notices: Vec<(PlayerId, ServerMessage)>) {
+        let Phase::Running(running) = &mut self.phase else {
+            return;
+        };
+        let _ = running.deciding_news();
+        let connected = self.seats.connected();
+        let mut viewers = connected.clone();
+        if self.seats.watched() {
+            viewers.push(self.seats.spectator());
+        }
+        let Phase::Running(running) = &self.phase else {
+            return;
+        };
+        let mut queued = Vec::new();
+        for viewer in viewers {
+            for mut message in running.sync_after(viewer, true) {
+                if let ServerMessage::Snapshot { state, .. } = &mut message {
+                    presence::stamp(&mut state.table, &connected);
+                }
+                queued.push((viewer, message));
+            }
+        }
+        for (viewer, message) in queued {
+            self.seats.send(viewer, message);
+        }
+        for (seat, notice) in notices {
+            self.seats.send(seat, notice);
+        }
+        self.presence.told(&connected);
+        self.take_back_news();
+    }
+
     /// Records the server's `wrong` verdict for each ability the game left to the table in `events`, on the card whose
     /// rules it was (`before` still holds the source), so the card is played by hand from the next game.
     async fn record_failed_reads(&self, before: &GameState, events: &[Event]) {
@@ -246,7 +297,8 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control), then
+    /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control, then what each
+    /// seat may take back), then
     /// each next decision to the seat it names, then the result.
     ///
     /// A yield that ended is told before the decision that ended it, so the prompt never appears under a
@@ -263,6 +315,7 @@ impl<S: EventStore> GameActor<S> {
         for (seat, notice) in notices {
             self.seats.send(seat, notice);
         }
+        self.take_back_news();
         for Issued {
             id,
             decision,

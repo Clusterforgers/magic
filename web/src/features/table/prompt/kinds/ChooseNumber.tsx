@@ -139,7 +139,7 @@ export const ChooseNumberPrompt: PromptComponent<'ChooseNumber'> = ({ options })
           {problem === undefined ? `Choose ${value}` : 'Choose'}
         </Button>
         {options.can_cancel === true ? (
-          <UndoButton zone={source?.zone} onUndo={() => void answer({ ChooseNumber: 'Cancel' })} />
+          <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
         ) : null}
         {problem === undefined ? null : (
           <p id={problemId} data-slot="number-problem" className="text-muted-foreground basis-full text-sm">

@@ -27,7 +27,7 @@ pub use events::{
 pub use message::{
     AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
     ErrorCode, FullControlMode, LobbySeat, MAX_AUTO_SKIPS, MAX_ORDER_TRIGGERS, PROTOCOL_VERSION,
-    SeatDeck, ServerMessage, Stop, StopSide, TriggerKey, YieldUntil, manual_play,
+    SeatDeck, ServerMessage, Stop, StopSide, TakeBackOutcome, TriggerKey, YieldUntil, manual_play,
 };
 pub use project::{spectator_viewer, zone_is_visible, zone_is_visible_in};
 pub use rest::{

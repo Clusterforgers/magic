@@ -58,7 +58,11 @@ enabled: boolean, } | { "type": "Yield",
 /**
  * How long to pass for.
  */
-until: YieldUntil, } | { "type": "CancelYield" } | { "type": "SetStop", 
+until: YieldUntil, } | { "type": "CancelYield" } | { "type": "TakeBack" } | { "type": "TakeBackVote", 
+/**
+ * True to agree.
+ */
+approve: boolean, } | { "type": "SetStop", 
 /**
  * Whose turns the stop is for.
  */

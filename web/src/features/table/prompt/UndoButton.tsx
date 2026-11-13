@@ -15,7 +15,7 @@ export interface UndoButtonProps {
 }
 
 /**
- * Backs out of the spell or ability being announced, as Arena's Undo does: nothing is paid or moved before the last
+ * Backs out of the spell or ability being announced, as Arena's Undo does, under the word Cancel: nothing is paid or moved before the last
  * step, so the card stays where it was and no mana is spent. Escape presses it.
  */
 export function UndoButton({ zone, onUndo, ref, className = 'h-10 px-4' }: UndoButtonProps) {

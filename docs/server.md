@@ -315,6 +315,14 @@ A question with one legal answer whose options every seat sees (`mtg_engine::cho
 - An answer, its passes and the save are one unit (`publish_with`): copies of yields and stops, `Running::skip_idle` (the passes, appended to the step), one projection, one append, one batch per seat. The copies replace the seats' own only once saved, so a failed save restores engine, yields, stops and modes.
 - A run of passes stops at the first decision the windows ask or that waits for a dwell, at any other decision, at the game's end and after `MAX_IDLE_PASSES` (500), where the decision is sent as it is and its seat's yield ends with a notice. `start_up` settles a resumed game before any client connects.
 
+### Take-backs
+
+- `take_backs.rs`: `TakeBack` from a seat asks the engine (`take_back_offer`); a refusal is `TakeBackRefused {reason}` to that seat, a second request while one is open `Error{BadMessage}`. Otherwise every other seat still in the game is asked (`TakeBackAsked`, to every viewer) and has `TAKE_BACK_WAIT` (15 s) to answer `TakeBackVote`; a decline or silence ends it (`TakeBackEnded` `Declined`, `TimedOut`). Bots agree at once (`bots.rs`).
+- The game goes on meanwhile; a step that changes the seat's offer ends the request as `Withdrawn`. Once every seat agreed, `Running::take_back` is a step like an answer: its passes follow, then `TakeBackEnded` `Approved`.
+- After every step each connected seat is sent `TakeBackOffer` when what it may take back changed, and on join or resync with the open request.
+- Tournament games are made with `take_backs: false` (`match_rules`), so the engine refuses them as `Off`.
+- A step that cuts the log (`Engine::cut_since`: a take-back, or a cast backed out of with its mana) is saved with `EventStore::rewind` (delete from the cut and append, one transaction under the game's lock) and announced as a `Snapshot` marked `rewound` to every connected seat and spectator, with the pending decision and `Deciding`. A failed save restores the engine and its cut events.
+
 ### Manual actions
 
 - `ClientMessage::Manual {action}` is accepted at any time from a seat in the game (`running/manual.rs`); the actor handles one message at a time, so it lands between engine decisions. A seat that lost or a finished game gets `Error{BadMessage}`, a refused action `Error{IllegalAnswer}` with the engine's reason.

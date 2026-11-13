@@ -38,6 +38,10 @@ import type {
   Stop,
   StopSide,
   TableView,
+  TakeBackKind,
+  TakeBackOffer,
+  TakeBackOutcome,
+  TakeBackRefusal,
   YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
@@ -79,6 +83,10 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   AutoSkips: true,
   Bank: true,
   Presence: true,
+  TakeBackOffer: true,
+  TakeBackAsked: true,
+  TakeBackEnded: true,
+  TakeBackRefused: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -519,6 +527,40 @@ function isTriggerKey(value: unknown): value is TriggerKey {
   return isRecord(value) && isText(value.name) && isCount(value.ability)
 }
 
+const TAKE_BACK_KINDS: Record<TakeBackKind, true> = { Cast: true, Activation: true, Land: true }
+
+const TAKE_BACK_REFUSALS: Record<TakeBackRefusal, true> = {
+  Off: true,
+  Nothing: true,
+  MovedOn: true,
+  OtherPlayerActed: true,
+  CardDrawn: true,
+  CardRevealed: true,
+  LibrarySearched: true,
+  LibraryShuffled: true,
+  Random: true,
+}
+
+function isTakeBackOffer(value: unknown): value is TakeBackOffer {
+  return (
+    isRecord(value) &&
+    isCount(value.player) &&
+    isText(value.kind) &&
+    Object.hasOwn(TAKE_BACK_KINDS, value.kind) &&
+    isText(value.name) &&
+    isCount(value.at)
+  )
+}
+
+function isTakeBackOutcome(value: unknown): value is TakeBackOutcome {
+  if (!isRecord(value)) return false
+  if (value.type === 'Approved' || value.type === 'Withdrawn') return true
+  return (value.type === 'Declined' || value.type === 'TimedOut') && isCount(value.by)
+}
+
+const isTakeBackRefusal = (value: unknown): value is TakeBackRefusal =>
+  isText(value) && Object.hasOwn(TAKE_BACK_REFUSALS, value)
+
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
   switch (type) {
     case 'Welcome':
@@ -619,12 +661,14 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (v.names !== undefined && !isListOf(v.names, isLogName)) {
         return '"names" must be a list of objects with names'
       }
+      if (v.rewound !== undefined && !isFlag(v.rewound)) return '"rewound" must be true or false when present'
       return {
         type,
         seq: v.seq,
         state: v.state,
         ...(v.log === undefined ? {} : { log: v.log }),
         ...(v.names === undefined ? {} : { names: v.names }),
+        ...(v.rewound === true ? { rewound: true } : {}),
       }
     case 'Chat':
       if (!isCount(v.from)) return '"from" must be a seat number'
@@ -681,6 +725,23 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Spectators':
       if (!isCount(v.count)) return '"count" must be a whole number'
       return { type, count: v.count }
+    case 'TakeBackOffer':
+      if (v.offer !== null && !isTakeBackOffer(v.offer))
+        return '"offer" must be null or a take-back offer (player, kind, name, at)'
+      return { type, offer: v.offer }
+    case 'TakeBackAsked':
+      if (!isTakeBackOffer(v.offer)) return '"offer" must be a take-back offer (player, kind, name, at)'
+      if (!isIdList(v.waiting)) return '"waiting" must be a list of seats'
+      if (!isCount(v.deadline_ms)) return '"deadline_ms" must be a whole number'
+      return { type, offer: v.offer, waiting: v.waiting, deadline_ms: v.deadline_ms }
+    case 'TakeBackEnded':
+      if (!isTakeBackOffer(v.offer)) return '"offer" must be a take-back offer (player, kind, name, at)'
+      if (!isTakeBackOutcome(v.outcome))
+        return '"outcome" must be Approved, Declined or TimedOut with a seat, or Withdrawn'
+      return { type, offer: v.offer, outcome: v.outcome }
+    case 'TakeBackRefused':
+      if (!isTakeBackRefusal(v.reason)) return '"reason" is not a known take-back refusal'
+      return { type, reason: v.reason }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

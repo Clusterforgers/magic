@@ -107,6 +107,9 @@ pub(crate) struct Step {
     pub(crate) banks: Banks,
     /// The turn times before the step, which come back with the banks.
     pub(crate) times: TurnTimes,
+    /// Whether the step cut the log back to `from_seq` (a take-back, or a cast backed out of with its mana): the store is
+    /// cut there and every viewer gets a snapshot instead of a batch.
+    pub(crate) cut: bool,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -192,7 +195,8 @@ mod opening;
 
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
-    pub(crate) fn new(engine: Engine, pace: Pace) -> Running {
+    pub(crate) fn new(mut engine: Engine, pace: Pace) -> Running {
+        engine.set_rewind_on_cancel(true);
         let mut banks = Banks::new(engine.state().players().len(), pace.extension.is_some());
         banks.watch(engine.state());
         let mut times = TurnTimes::new(engine.state().players().len());
@@ -507,6 +511,11 @@ impl Running {
     /// The decision carries the time its clock has left, not the time it started with. One that is held back for its
     /// dwell is not sent: the seat is passed for, and a snapshot taken meanwhile must not tell it so.
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
+        self.sync_after(seat, false)
+    }
+
+    /// [`sync_messages`](Running::sync_messages), with the snapshot marked `rewound` when the log was cut back.
+    pub(crate) fn sync_after(&self, seat: PlayerId, rewound: bool) -> Vec<ServerMessage> {
         let mut view = StateView::for_player(self.engine.state(), seat);
         self.stamp(&mut view.table);
         let LogWindow { log, names, hosts } = self.recent_log(seat);
@@ -517,6 +526,7 @@ impl Running {
                 log,
                 names,
                 hosts,
+                rewound,
             },
             ServerMessage::Deciding {
                 seats: self.deciding(),
@@ -701,6 +711,11 @@ impl Running {
             .map_err(|_| Rejection::engine_failed())
     }
 
+    /// Takes back `seat`'s last action, which every other seat agreed to.
+    pub(crate) fn take_back(&mut self, seat: PlayerId) -> Result<Step, EngineError> {
+        self.step(seat, false, |engine| engine.take_back(seat))
+    }
+
     /// Removes `seat` from the game.
     pub(crate) fn concede(&mut self, seat: PlayerId) -> Result<Step, Rejection> {
         self.step(seat, true, |engine| engine.concede(seat))
@@ -728,7 +743,8 @@ impl Running {
         let events = run(&mut self.engine)?;
         self.banks.watch(self.engine.state());
         self.times.watch(self.engine.state(), Instant::now());
-        let from_seq = count(self.engine.events().len() - events.len());
+        let cut = self.engine.cut_since(&checkpoint);
+        let from_seq = count(cut.unwrap_or(self.engine.events().len() - events.len()));
         Ok(Step {
             before,
             checkpoint,
@@ -739,6 +755,7 @@ impl Running {
             passed: false,
             banks,
             times,
+            cut: cut.is_some(),
         })
     }
 }

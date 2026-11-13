@@ -98,6 +98,19 @@ const samples: Record<string, Record<string, unknown>> = {
   Presence: { type: 'Presence', seat: 1, connected: false },
   Deciding: { type: 'Deciding', seats: [{ seat: 1, kind: 'ChooseTargets' }] },
   Spectators: { type: 'Spectators', count: 2 },
+  TakeBackOffer: { type: 'TakeBackOffer', offer: { player: 0, kind: 'Cast', name: 'Shock', at: 12 } },
+  TakeBackAsked: {
+    type: 'TakeBackAsked',
+    offer: { player: 0, kind: 'Land', name: 'Forest', at: 9 },
+    waiting: [1, 2],
+    deadline_ms: 15_000,
+  },
+  TakeBackEnded: {
+    type: 'TakeBackEnded',
+    offer: { player: 1, kind: 'Activation', name: 'Prodigal Sorcerer', at: 30 },
+    outcome: { type: 'Declined', by: 0 },
+  },
+  TakeBackRefused: { type: 'TakeBackRefused', reason: 'CardDrawn' },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -362,6 +375,22 @@ describe('parseFrame checks the fields of each message', () => {
     ['Deciding', 'kind as a number', ['seats', '0', 'kind'], 3],
     ['Spectators', 'a negative count', ['count'], -1],
     ['Spectators', 'count as text', ['count'], '2'],
+    ['TakeBackOffer', 'offer as text', ['offer'], 'Shock'],
+    ['TakeBackOffer', 'an unknown kind', ['offer', 'kind'], 'Spell'],
+    ['TakeBackOffer', 'a kind that is a prototype name', ['offer', 'kind'], 'toString'],
+    ['TakeBackOffer', 'player as text', ['offer', 'player'], '0'],
+    ['TakeBackOffer', 'at as negative', ['offer', 'at'], -1],
+    ['TakeBackOffer', 'name as null', ['offer', 'name'], null],
+    ['TakeBackAsked', 'offer as null', ['offer'], null],
+    ['TakeBackAsked', 'waiting as a seat', ['waiting'], 1],
+    ['TakeBackAsked', 'a waiting seat as text', ['waiting', '0'], 'Bo'],
+    ['TakeBackAsked', 'deadline_ms as a fraction', ['deadline_ms'], 1.5],
+    ['TakeBackEnded', 'an unknown outcome', ['outcome', 'type'], 'Vetoed'],
+    ['TakeBackEnded', 'a decline without a seat', ['outcome', 'by'], undefined],
+    ['TakeBackEnded', 'outcome as text', ['outcome'], 'Approved'],
+    ['TakeBackRefused', 'an unknown reason', ['reason'], 'Bored'],
+    ['TakeBackRefused', 'reason as an object', ['reason'], { Off: {} }],
+    ['Snapshot', 'rewound as text', ['rewound'], 'yes'],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],
@@ -816,5 +845,50 @@ describe('the refusal of an Error', () => {
     ['none', undefined, undefined],
   ])('keeps %s as the session can read it', (_, given, kept) => {
     expect(refusalIn(error(given))).toEqual(kept)
+  })
+})
+
+describe('parseFrame on take-backs', () => {
+  it('reads a Snapshot marked rewound, and leaves the flag out while false', () => {
+    const rewound = parseFrame(wire({ ...samples.Snapshot, rewound: true }))
+    expect(rewound.ok && rewound.message).toMatchObject({ type: 'Snapshot', rewound: true })
+    const plain = parseFrame(wire({ ...samples.Snapshot, rewound: false }))
+    expect(plain.ok && 'rewound' in plain.message).toBe(false)
+  })
+
+  it('reads an offer of nothing as null', () => {
+    const frame = parseFrame(wire({ type: 'TakeBackOffer', offer: null }))
+    expect(frame.ok && frame.message).toEqual({ type: 'TakeBackOffer', offer: null })
+  })
+
+  it.each(['Cast', 'Activation', 'Land'])('reads an offer to take back a %s', (kind) => {
+    const offer = { player: 2, kind, name: 'Shock', at: 4 }
+    const frame = parseFrame(wire({ type: 'TakeBackOffer', offer }))
+    expect(frame.ok && frame.message).toEqual({ type: 'TakeBackOffer', offer })
+  })
+
+  it.each([
+    { type: 'Approved' },
+    { type: 'Declined', by: 1 },
+    { type: 'TimedOut', by: 2 },
+    { type: 'Withdrawn' },
+  ])('reads the outcome $type', (outcome) => {
+    const frame = parseFrame(wire({ ...samples.TakeBackEnded, outcome }))
+    expect(frame.ok && frame.message).toMatchObject({ outcome })
+  })
+
+  it.each([
+    'Off',
+    'Nothing',
+    'MovedOn',
+    'OtherPlayerActed',
+    'CardDrawn',
+    'CardRevealed',
+    'LibrarySearched',
+    'LibraryShuffled',
+    'Random',
+  ])('reads the refusal %s', (reason) => {
+    const frame = parseFrame(wire({ type: 'TakeBackRefused', reason }))
+    expect(frame.ok && frame.message).toEqual({ type: 'TakeBackRefused', reason })
   })
 })

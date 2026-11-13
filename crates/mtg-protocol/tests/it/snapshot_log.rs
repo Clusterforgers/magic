@@ -175,6 +175,7 @@ fn a_snapshot_with_its_log_stays_small_next_to_the_state() {
             log,
             names,
             hosts: Vec::new(),
+            rewound: false,
         };
         serde_json::to_string(&message).unwrap().len()
     };

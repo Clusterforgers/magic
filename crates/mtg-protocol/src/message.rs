@@ -8,6 +8,7 @@ use mtg_engine::decision::Refusal;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
+use mtg_engine::take_back::{TakeBackOffer, TakeBackRefusal};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, DecisionKind};
 use serde::{Deserialize, Serialize};
@@ -295,6 +296,17 @@ pub enum ClientMessage {
     },
     /// Ends this seat's yield, if it has one.
     CancelYield,
+    /// Asks the table to take back this seat's last cast, activation or land play.
+    ///
+    /// Refused with [`ServerMessage::TakeBackRefused`] when the engine cannot undo it, and with `Error{BadMessage}`
+    /// while another take-back is being asked. Otherwise every other seat in the game is asked
+    /// ([`ServerMessage::TakeBackAsked`]); bots agree at once.
+    TakeBack,
+    /// This seat's answer to the open take-back request.
+    TakeBackVote {
+        /// True to agree.
+        approve: bool,
+    },
     /// Sets or clears one of this seat's stops: a step at which the seat asks to be given priority.
     ///
     /// Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or
@@ -481,6 +493,12 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[ts(as = "Option<Vec<LogHost>>", optional)]
         hosts: Vec<LogHost>,
+        /// Whether the log was cut back since the client's last batch (a take-back, or a cast backed out of with the
+        /// mana tapped for it): the client drops what it holds from the first position of `log` on instead of
+        /// merging. Left out while false.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[ts(as = "Option<bool>", optional)]
+        rewound: bool,
     },
     /// A chat line from a player.
     Chat {
@@ -505,6 +523,34 @@ pub enum ServerMessage {
     GameOver {
         /// How it ended.
         result: GameResult,
+    },
+    /// What this seat may ask the table to take back now (see [`ClientMessage::TakeBack`]); `None` when nothing.
+    ///
+    /// Sent when it changes, after the events of the step that changed it.
+    TakeBackOffer {
+        /// The last action of the seat that a take-back would undo.
+        offer: Option<TakeBackOffer>,
+    },
+    /// A take-back request is open, or its waiting list changed; sent to every seat.
+    TakeBackAsked {
+        /// What would be undone and who asks.
+        offer: TakeBackOffer,
+        /// The seats whose answer is still awaited.
+        waiting: Vec<PlayerId>,
+        /// Milliseconds left before the request counts as declined.
+        deadline_ms: u64,
+    },
+    /// The open take-back request ended; sent to every seat.
+    TakeBackEnded {
+        /// What was asked.
+        offer: TakeBackOffer,
+        /// How it ended.
+        outcome: TakeBackOutcome,
+    },
+    /// This seat's take-back request was refused before anyone was asked.
+    TakeBackRefused {
+        /// Why.
+        reason: TakeBackRefusal,
     },
     /// This seat's yield changed (see [`ClientMessage::Yield`]).
     ///
@@ -701,4 +747,24 @@ impl DecisionName {
             DecisionKind::ChooseReplacement(_) => DecisionName::ChooseReplacement,
         }
     }
+}
+
+/// How a take-back request ended.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(tag = "type")]
+pub enum TakeBackOutcome {
+    /// Every seat agreed and the game was rebuilt without the action.
+    Approved,
+    /// A seat declined.
+    Declined {
+        /// The seat that declined.
+        by: PlayerId,
+    },
+    /// A seat did not answer in time, which counts as declining.
+    TimedOut {
+        /// The first seat that had not answered.
+        by: PlayerId,
+    },
+    /// The game moved on before every seat answered, so there was nothing left to take back.
+    Withdrawn,
 }

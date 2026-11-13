@@ -33,6 +33,9 @@ pub enum EngineError {
     /// A spell or ability could not be run: it uses something the engine does not play, or its data is wrong.
     #[error("cannot resolve: {0}")]
     Resolution(String),
+    /// The last action cannot be taken back; nothing changed.
+    #[error("cannot take back: {0}")]
+    TakeBack(#[from] crate::take_back::TakeBackRefusal),
 }
 
 /// Why an answer could not be previewed with [`Engine::preview_forecast`](crate::engine::Engine::preview_forecast).

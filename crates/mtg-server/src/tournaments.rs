@@ -243,6 +243,7 @@ fn match_rules(format: TournamentFormat) -> HouseRules {
     HouseRules {
         teams: (size > 1)
             .then(|| Teams::even(TeamMode::Teams, 2, u32::try_from(size).unwrap_or(u32::MAX))),
+        take_backs: Some(false),
         ..HouseRules::default()
     }
 }
@@ -1058,13 +1059,22 @@ mod tests {
     }
 
     #[test]
-    fn a_team_match_seats_two_teams_that_alternate_and_a_duel_none() {
-        let teams = match_rules(TournamentFormat::Commander2v2).teams.unwrap();
+    fn a_team_match_seats_two_teams_that_alternate_and_a_duel_none_and_neither_takes_back() {
+        let rules = match_rules(TournamentFormat::Commander2v2);
+        let teams = rules.teams.unwrap();
         assert_eq!(teams.mode, TeamMode::Teams);
         assert_eq!(teams.seats, [0, 1, 0, 1]);
         assert_eq!(
+            rules.take_backs,
+            Some(false),
+            "tournament games allow no take-backs"
+        );
+        assert_eq!(
             match_rules(TournamentFormat::Commander1v1),
-            HouseRules::default()
+            HouseRules {
+                take_backs: Some(false),
+                ..HouseRules::default()
+            }
         );
     }
 

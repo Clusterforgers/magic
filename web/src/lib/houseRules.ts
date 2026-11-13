@@ -23,6 +23,8 @@ export type RuleGroup = 'Life and cards' | 'Mulligans' | 'Turns and winning' | '
 export type RuleInput =
   | { kind: 'number'; min: number; max: number; word?: string }
   | { kind: 'choice'; options: readonly { value: string; label: string }[] }
+  /** On unless its text is "off"; only off is sent. */
+  | { kind: 'switch' }
 
 /** The field text of every rule being edited, by `RuleSpec.id`; an empty or missing text keeps the format's value. */
 export type RuleTexts = Readonly<Record<string, string>>
@@ -71,9 +73,11 @@ interface Spec<V> {
 function rule<V>(spec: Spec<V>): RuleSpec {
   const { input } = spec
   const problem =
-    input.kind === 'number'
-      ? `Use a whole number from ${input.min} to ${input.max}${input.word === undefined ? '' : `, or "${input.word}"`}.`
-      : 'Choose one of the listed values.'
+    input.kind === 'switch'
+      ? 'Choose on or off.'
+      : input.kind === 'number'
+        ? `Use a whole number from ${input.min} to ${input.max}${input.word === undefined ? '' : `, or "${input.word}"`}.`
+        : 'Choose one of the listed values.'
   return {
     id: spec.id,
     label: spec.label,
@@ -83,7 +87,7 @@ function rule<V>(spec: Spec<V>): RuleSpec {
     input,
     apply(rules, text) {
       const trimmed = text.trim()
-      if (trimmed === '') return null
+      if (trimmed === '' || (input.kind === 'switch' && trimmed === 'on')) return null
       const value = spec.from(trimmed)
       if (value === null) return problem
       spec.put(rules, value)
@@ -177,6 +181,23 @@ const flag = (id: Flag, label: string, help: string, group: RuleGroup, on: strin
     text: (value) => (value ? 'on' : 'off'),
     show: (value) => (value ? on : off),
     own: { normal: false, commander: false },
+  })
+
+/** A rule that is on unless the creator turns it off; on is never sent, since the server's default is on. */
+const defaultOn = (id: 'take_backs', label: string, help: string, group: RuleGroup, off: string): RuleSpec =>
+  rule<false>({
+    id,
+    label,
+    help,
+    group,
+    input: { kind: 'switch' },
+    get: (rules) => (rules[id] === false ? false : undefined),
+    put: (rules) => {
+      rules[id] = false
+    },
+    from: (text) => (text === 'off' ? false : null),
+    text: () => 'off',
+    show: () => off,
   })
 
 const deckFlag = (id: 'singleton' | 'color_identity', label: string, help: string, on: string, off: string) =>
@@ -439,6 +460,13 @@ export const RULES: readonly RuleSpec[] = [
     },
     own: 'any',
   }),
+  defaultOn(
+    'take_backs',
+    'Take-backs',
+    'A player may ask the table to undo their last cast, activation or land play.',
+    'Table',
+    'No take-backs',
+  ),
   flag('open_hands', 'Open hands', 'Every player sees every hand.', 'Table', 'Open hands', 'Hands hidden'),
   flag(
     'revealed_library_top',

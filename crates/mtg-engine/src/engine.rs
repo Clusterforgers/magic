@@ -22,6 +22,7 @@ use crate::replace::{self, Processed};
 use crate::rules::{Rule, RuleEffect};
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState, Stage};
+use crate::take_back::{self, LastAction, ManaRun, StepFacts, TakeBackOffer, TakeBackRefusal};
 use crate::triggers;
 
 /// Internal progress steps allowed between decisions before the engine reports a stall.
@@ -36,6 +37,9 @@ pub struct Checkpoint {
     decision: Option<Decision>,
     pending: Option<Pending>,
     held: Option<Held>,
+    last: Option<LastAction>,
+    mana_run: Option<ManaRun>,
+    rewinds: usize,
 }
 
 /// A batch of events the replacement step has questions about: the batch waits, and the answers so far are kept, until
@@ -77,6 +81,14 @@ pub struct Engine {
     held: Option<Held>,
     /// The open `Together` batch: where its events begin in the log and the state before them.
     batch: Option<(usize, GameState)>,
+    /// The table's last cast, activation or land play, which a take-back may undo.
+    last: Option<LastAction>,
+    /// The mana abilities the player with priority activated just now, undone with a cast they back out of.
+    mana_run: Option<ManaRun>,
+    /// Each rewind of the log: where it cut and the events it cut, so a checkpoint from before it can be restored.
+    dropped: Vec<(usize, Vec<Event>)>,
+    /// Whether backing out of a cast also undoes the mana tapped for it, cutting the log ([`Engine::set_rewind_on_cancel`]).
+    rewind_on_cancel: bool,
 }
 
 impl Engine {
@@ -97,6 +109,10 @@ impl Engine {
             pending: None,
             held: None,
             batch: None,
+            last: None,
+            mana_run: None,
+            dropped: Vec::new(),
+            rewind_on_cancel: false,
         };
         engine.advance()?;
         Ok(engine)
@@ -220,14 +236,114 @@ impl Engine {
         )?;
         let announced = self.held.is_none() && Answered::of_kind(&outcome);
         let player = decision.player;
+        let priority = matches!(decision.kind, crate::decision::DecisionKind::Priority(_));
+        let pass = given == Answer::Priority(crate::decision::PriorityAction::Pass);
+        if given == Answer::Undo
+            && matches!(outcome, Outcome::CancelCast)
+            && let Some(from) = self.mana_run_to_undo(player)
+        {
+            return self.rewind(from, None);
+        }
         let checkpoint = self.checkpoint();
+        let (mark, rng) = (checkpoint.mark, self.state.rng_index());
         let result = self.run(outcome, player).and_then(|()| {
             if announced && let Some(pending) = self.pending.as_mut() {
                 pending.note(given);
             }
             self.advance()
         });
-        self.finish(checkpoint, result)
+        let events = self.finish(checkpoint, result)?;
+        let step = StepFacts {
+            player,
+            priority,
+            pass,
+            mark,
+            rng,
+            events: &events,
+        };
+        self.last = take_back::next_last(self.last.take(), &self.state, self.mana_run, &step);
+        self.mana_run = take_back::next_run(self.mana_run, &step);
+        Ok(events)
+    }
+
+    /// Where the mana abilities `player` activated just before the cast they back out of begin, when the log can be cut
+    /// back to there: nothing hidden or random came of them.
+    fn mana_run_to_undo(&self, player: PlayerId) -> Option<usize> {
+        if !self.rewind_on_cancel {
+            return None;
+        }
+        let run = self.mana_run.filter(|run| run.player == player)?;
+        let casting = self.pending.as_ref().is_some_and(|pending| {
+            pending.player == player && matches!(pending.what, What::Spell(_) | What::Ability(_))
+        });
+        let since = self.events.get(run.from..)?;
+        (casting && take_back::refusal(since, player, run.rng, &self.state).is_none())
+            .then_some(run.from)
+    }
+
+    /// Lets `Answer::Undo` of a cast also undo the mana abilities its player activated just before it, which cuts the log
+    /// ([`cut_since`](Engine::cut_since)); off by default, so a caller that only appends events never sees a cut.
+    pub fn set_rewind_on_cancel(&mut self, on: bool) {
+        self.rewind_on_cancel = on;
+    }
+
+    /// What `player` could take back now, or why nothing can be.
+    pub fn take_back_offer(&self, player: PlayerId) -> Result<TakeBackOffer, TakeBackRefusal> {
+        if !self.state.ruleset().take_backs() {
+            return Err(TakeBackRefusal::Off);
+        }
+        if self.decision.is_none() {
+            return Err(TakeBackRefusal::MovedOn);
+        }
+        let last = self.last.as_ref().ok_or(TakeBackRefusal::Nothing)?;
+        if last.offer.player != player {
+            return Err(TakeBackRefusal::OtherPlayerActed);
+        }
+        if let Some(blocked) = last.blocked {
+            return Err(blocked);
+        }
+        let since = self.events.get(last.from..).unwrap_or_default();
+        match take_back::refusal(since, player, last.rng, &self.state) {
+            Some(refusal) => Err(refusal),
+            None => Ok(last.offer.clone()),
+        }
+    }
+
+    /// Takes back `player`'s last action: the game is rebuilt from the log before it and `TookBack` is logged. Returns
+    /// the events after the cut, which [`cut_since`](Engine::cut_since) places.
+    pub fn take_back(&mut self, player: PlayerId) -> Result<Vec<Event>, EngineError> {
+        let offer = self.take_back_offer(player)?;
+        let from = self.last.as_ref().map_or(0, |last| last.from);
+        let note = Event::TookBack {
+            player,
+            kind: offer.kind,
+            name: offer.name,
+        };
+        self.rewind(from, Some(note))
+    }
+
+    /// Rebuilds the game from the log up to `from`, logs `note` if any, and keeps the cut events for a restore.
+    fn rewind(&mut self, from: usize, note: Option<Event>) -> Result<Vec<Event>, EngineError> {
+        let from = from.min(self.events.len());
+        let mut rebuilt = Engine::resume(self.setup.clone(), self.events[..from].to_vec())?;
+        if let Some(note) = note {
+            rebuilt.commit(vec![note])?;
+            rebuilt.advance()?;
+        }
+        let cut = self.events.split_off(from);
+        rebuilt.dropped = std::mem::take(&mut self.dropped);
+        rebuilt.rewind_on_cancel = self.rewind_on_cancel;
+        rebuilt.dropped.push((from, cut));
+        *self = rebuilt;
+        Ok(self.events[from..].to_vec())
+    }
+
+    /// Where the log was cut back to since `checkpoint`, if a rewind cut it: the events from there on replace those
+    /// stored.
+    pub fn cut_since(&self, checkpoint: &Checkpoint) -> Option<usize> {
+        self.dropped
+            .get(checkpoint.rewinds..)
+            .and_then(|cuts| cuts.iter().map(|(at, _)| *at).min())
     }
 
     /// What combat damage would do if `seat` gave `answer` to the decision it faces now, without giving it.
@@ -267,7 +383,15 @@ impl Engine {
             reason: LossReason::Conceded,
         };
         let result = self.commit(vec![lost]).and_then(|()| self.advance());
-        self.finish(checkpoint, result)
+        let events = self.finish(checkpoint, result)?;
+        self.acted_aside(player);
+        Ok(events)
+    }
+
+    /// Notes that `player` did something outside the take-back records: a later take-back cannot undo it.
+    fn acted_aside(&mut self, player: PlayerId) {
+        self.last = take_back::acted_aside(self.last.take(), player);
+        self.mana_run = None;
     }
 
     /// Applies `player`'s manual action out of band, whoever the pending decision belongs to (`manual.rs`).
@@ -305,7 +429,9 @@ impl Engine {
             pending.unsettle();
         }
         let result = self.commit(made).and_then(|()| self.advance());
-        self.finish(checkpoint, result)
+        let events = self.finish(checkpoint, result)?;
+        self.acted_aside(player);
+        Ok(events)
     }
 
     /// Notes the current position so that the steps taken after it can be undone with [`restore`](Engine::restore).
@@ -315,6 +441,9 @@ impl Engine {
             decision: self.decision.clone(),
             pending: self.pending.clone(),
             held: self.held.clone(),
+            last: self.last.clone(),
+            mana_run: self.mana_run,
+            rewinds: self.dropped.len(),
         }
     }
 
@@ -323,6 +452,12 @@ impl Engine {
     /// The checkpoint must come from this engine and not lie beyond the current log. Callers use
     /// this when persisting a step fails, so the in-memory game never runs ahead of the store.
     pub fn restore(&mut self, checkpoint: Checkpoint) -> Result<(), EngineError> {
+        while self.dropped.len() > checkpoint.rewinds {
+            if let Some((at, cut)) = self.dropped.pop() {
+                self.events.truncate(at);
+                self.events.extend(cut);
+            }
+        }
         if checkpoint.mark > self.events.len() {
             return Err(EngineError::InvalidEvent(format!(
                 "checkpoint at event {} lies beyond the log of {} events",
@@ -336,6 +471,8 @@ impl Engine {
         self.set_decision(checkpoint.decision);
         self.pending = checkpoint.pending;
         self.held = checkpoint.held;
+        self.last = checkpoint.last;
+        self.mana_run = checkpoint.mana_run;
         self.batch = None;
         Ok(())
     }

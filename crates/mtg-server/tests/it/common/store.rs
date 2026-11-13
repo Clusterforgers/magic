@@ -18,7 +18,7 @@ impl FlakyStore {
         FlakyStore::default()
     }
 
-    /// While on, every append fails; loads keep working.
+    /// While on, every append and rewind fails; loads keep working.
     pub fn fail(&self, on: bool) {
         self.failing.store(on, Ordering::SeqCst);
     }
@@ -44,5 +44,12 @@ impl EventStore for FlakyStore {
 
     async fn load(&self, game: GameId) -> Result<Vec<Event>, StoreError> {
         self.inner.load(game).await
+    }
+
+    async fn rewind(&self, game: GameId, keep: u64, events: &[Event]) -> Result<(), StoreError> {
+        if self.failing.load(Ordering::SeqCst) {
+            return Err(StoreError::Unavailable("injected failure".to_owned()));
+        }
+        self.inner.rewind(game, keep, events).await
     }
 }

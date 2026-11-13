@@ -18,6 +18,9 @@ import type { PlayerId } from "./PlayerId";
 import type { Refusal } from "./Refusal";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
+import type { TakeBackOffer } from "./TakeBackOffer";
+import type { TakeBackOutcome } from "./TakeBackOutcome";
+import type { TakeBackRefusal } from "./TakeBackRefusal";
 import type { Teams } from "./Teams";
 import type { YieldUntil } from "./YieldUntil";
 
@@ -138,7 +141,13 @@ names?: Array<LogName>,
  * The host each attach event of `log` replaced, for those the client may read it for, by index into `log`; a
  * client words such a line "moves from A to B" from here. Left out while there are none.
  */
-hosts?: Array<LogHost>, } | { "type": "Chat", 
+hosts?: Array<LogHost>, 
+/**
+ * Whether the log was cut back since the client's last batch (a take-back, or a cast backed out of with the
+ * mana tapped for it): the client drops what it holds from the first position of `log` on instead of
+ * merging. Left out while false.
+ */
+rewound?: boolean, } | { "type": "Chat", 
 /**
  * The sender.
  */
@@ -163,7 +172,35 @@ refusal?: Refusal, } | { "type": "GameOver",
 /**
  * How it ended.
  */
-result: GameResult, } | { "type": "Yielding", 
+result: GameResult, } | { "type": "TakeBackOffer", 
+/**
+ * The last action of the seat that a take-back would undo.
+ */
+offer: TakeBackOffer | null, } | { "type": "TakeBackAsked", 
+/**
+ * What would be undone and who asks.
+ */
+offer: TakeBackOffer, 
+/**
+ * The seats whose answer is still awaited.
+ */
+waiting: Array<PlayerId>, 
+/**
+ * Milliseconds left before the request counts as declined.
+ */
+deadline_ms: number, } | { "type": "TakeBackEnded", 
+/**
+ * What was asked.
+ */
+offer: TakeBackOffer, 
+/**
+ * How it ended.
+ */
+outcome: TakeBackOutcome, } | { "type": "TakeBackRefused", 
+/**
+ * Why.
+ */
+reason: TakeBackRefusal, } | { "type": "Yielding", 
 /**
  * The yield now in force, or `None` when the seat is not yielding.
  */
