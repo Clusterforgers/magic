@@ -1,0 +1,99 @@
+Kodama of the East Tree	trigger reader: existing event with new filter or condition [A]	triggered: Whenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.
+Reidane, God of the Worthy // Valkmira, Protector's Shield	trigger reader: existing event with new filter or condition [A]	triggered: Whenever you or another permanent you control becomes the target of a spell or ability an opponent controls, counter that spell or ability unless its controller pays {M}.
+Rigo, Streetwise Mentor	trigger reader: existing event with new filter or condition [A]	triggered: Whenever you attack a player or planeswalker with N or more creatures with power N or less, draw a card.
+Riku of Many Paths	trigger reader: existing event with new filter or condition [A]	triggered: Whenever you cast a modal spell, choose up to X, where X is the number of times you chose a mode for that spell — | • Exile the top card of your library. Until the end of your next turn, you may play it. | • Put a +N/+N counter on ~. It gains trample until end of turn. | • Create a N/N blue Bird creature token with flying.
+Yidaro, Wandering Monster	trigger reader: existing event with new filter or condition [A]	triggered: When you cycle this card, shuffle it into your library from your graveyard. If you've cycled a card named ~ N or more times this game, put it onto the battlefield from your graveyard instead.
+Arboria	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: Creatures can't attack a player unless that player cast a spell or put a nontoken permanent onto the battlefield during their last turn.
+Backdraft	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	spell: Choose a player who cast N or more sorcery spells this turn. ~ deals damage to that player equal to half the damage dealt by N of those sorcery spells this turn, rounded down.
+Boxing Ring	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	activated: {T}: Create a Treasure token. Activate only if you control a creature that fought this turn.
+Brass's Tunnel-Grinder // Tecutlan, the Searing Rift	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your end step, if you descended this turn, put a bore counter on ~. Then if there are N or more bore counters on it, remove those counters and transform it.
+Churning Reservoir	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	activated: {M}, {T}: Create a N/N red Phyrexian Goblin creature token. Activate only if an oil counter was removed from a permanent you controlled this turn or a permanent with an oil counter on it was put into a graveyard this turn.
+Desolation	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, each player who tapped a land for mana this turn sacrifices a land of their choice. This enchantment deals N damage to each player who sacrificed a Plains this way.
+Diseased Vermin	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your upkeep, this creature deals X damage to target opponent previously dealt damage by it, where X is the number of infection counters on it.
+Glyph of Delusion	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	spell: Put X glyph counters on target creature that target Wall blocked this turn, where X is the power of that blocked creature. The creature gains "This creature doesn't untap during your untap step if it has a glyph counter on it" and "At the beginning of your upkeep, remove a glyph counter from this creature."
+Glyph of Reincarnation	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	spell: Destroy all creatures that were blocked by target Wall this turn. They can't be regenerated. For each creature that died this way, put a creature card from the graveyard of the player who controlled that creature the last time it became blocked by that Wall onto the battlefield under its owner's control.
+Gollum, Obsessed Stalker	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your end step, each opponent dealt combat damage this game by a creature named ~ loses life equal to the amount of life you gained this turn.
+Izzet Generatorium	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	activated: {T}: Draw a card. Activate only if you've paid or lost N or more {E} this turn.
+Mana Maze	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: Players can't cast spells that share a color with the spell most recently cast this turn.
+Oblivious Bookworm	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your end step, you may draw a card. If you do, discard a card unless a permanent entered the battlefield face down under your control this turn or you turned a permanent face up this turn.
+Ojer Axonil, Deepest Might // Temple of Power	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	activated: {M}, {T}: Transform this land. Activate only if red sources you controlled dealt N or more noncombat damage this turn and only as a sorcery.
+Power Surge	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each player's upkeep, this enchantment deals X damage to that player, where X is the number of untapped lands they controlled at the beginning of this turn.
+Season of the Witch	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of the end step, destroy all untapped creatures that didn't attack this turn, except for creatures that couldn't attack.
+Spider-Man 2099	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your end step, if you've played a land or cast a spell this turn from anywhere other than your hand, ~ deals damage equal to his power to any target.
+Spiny Starfish	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, if this creature regenerated this turn, create a N/N blue Starfish creature token for each time it regenerated this turn.
+Storrev, Devkarin Lich	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: Whenever ~ deals combat damage to a player or planeswalker, return to your hand target creature or planeswalker card in your graveyard that wasn't put there this combat.
+Suffocation	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	spell: Draw a card at the beginning of the next turn's upkeep.
+Syrix, Carrier of the Flame	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, if a creature card left your graveyard this turn, target Phoenix you control deals damage equal to its power to any target.
+The Celestial Toymaker	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, each opponent loses N life for each spell or ability that caused N or more players to guess or to group cards or permanents into a pile this turn.
+The Fallen	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of your upkeep, this creature deals N damage to each opponent and planeswalker it has dealt damage to this game.
+Unstable Glyphbridge // Sandswirl Wanderglyph	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: Each opponent who attacked you or a planeswalker you control this turn can't cast spells.
+Vodalian War Machine	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: When this creature dies, destroy all Merfolk tapped this turn to pay for its abilities.
+Vren, the Relentless	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	triggered: At the beginning of each end step, create X N/N black Rat creature tokens with "This token gets +N/+N for each other Rat you control," where X is the number of creatures that were exiled under your opponents' control this turn.
+Weathered Sentinels	turn/game history facts (blocked by, dealt damage by, regenerated, first spell...) [B]	static: This creature can attack players who attacked you during their last turn as though it didn't have defender.
+Accursed Witch // Infectious Curse	(unsorted)	
+Aether Searcher	(unsorted)	
+Agent's Toolkit	(unsorted)	
+Animus of Predation	(unsorted)	
+Arcane Savant	(unsorted)	
+Archnemesis	(unsorted)	
+Bullseye, Death Dealer	(unsorted)	
+Cacophony Unleashed	(unsorted)	
+Caller of the Untamed	(unsorted)	
+Chance for Glory	(unsorted)	
+Cogwork Grinder	(unsorted)	
+Cogwork Tracker	(unsorted)	
+Custodi Peacekeeper	(unsorted)	
+Deathmist Raptor	(unsorted)	
+Doc Aurlock, Grizzled Genius	(unsorted)	
+Face Yourself	(unsorted)	
+Fast Forward	(unsorted)	
+Garbage Fire	(unsorted)	
+Genju of the Realm	(unsorted)	
+Heartwood Storyteller	(unsorted)	
+Hundred-Battle Veteran	(unsorted)	
+Jegantha, the Wellspring	(unsorted)	
+Khârn the Betrayer	(unsorted)	
+Kozilek, the Great Distortion	(unsorted)	
+Lurking Automaton	(unsorted)	
+March of Reckless Joy	(unsorted)	
+Martyrdom	(unsorted)	
+Noble Banneret	(unsorted)	
+Omnath, Locus of Mana	(unsorted)	
+Paliano, the High City	(unsorted)	
+Paliano Vanguard	(unsorted)	
+Prairie Dog	(unsorted)	
+Pyretic Hunter	(unsorted)	
+Raphael, Tag Team Tough	(unsorted)	
+Regicide	(unsorted)	
+Smuggler Captain	(unsorted)	
+Spawnsire of Ulamog	(unsorted)	
+Spire Phantasm	(unsorted)	
+Strixhaven Stadium	(unsorted)	
+Tazri, Stalwart Survivor	(unsorted)	
+Terra, Magical Adept // Esper Terra	(unsorted)	
+The Curse of Fenric	(unsorted)	
+The Kami War // O-Kagachi Made Manifest	(unsorted)	
+The Masamune	(unsorted)	
+The Master, Multiplied	(unsorted)	
+Vault 11: Voter's Dilemma	(unsorted)	
+Vazi, Keen Negotiator	(unsorted)	
+Volatile Chimera	(unsorted)	
+Wolverine, Best There Is	(unsorted)	
+Yuna, Grand Summoner	(unsorted)	
+Blade of the Swarm	warp [B]	triggered: When this creature enters, choose N — | • Put N +N/+N counters on this creature. | • Put target exiled card with warp on the bottom of its owner's library.
+Tannuk, Steadfast Second	warp [B]	static: Artifact cards and red creature cards in your hand have warp {M}.
+Peter Parker // Amazing Spider-Man	web-slinging [B]	static: Each legendary spell you cast that's N or more colors has web-slinging {M}.
+Scarlet Spider, Ben Reilly	web-slinging [B]	static: Sensational Save — If ~ was cast using web-slinging, he enters with X +N/+N counters on him, where X is the mana value of the returned creature.
+Brass Infiniscope	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: Add {M}. When you next cast a spell with {M} in its mana cost this turn, you draw a card and gain half X life, rounded down.
+Eye of Ojer Taq // Apex Observatory	when you next cast a spell this turn (delayed, reader) [A]	activated: {T}: The next spell you cast this turn of the chosen type can be cast without paying its mana cost.
+Clergy of the Holy Nimbus	who may activate and when (any player, opponents only, while on stack) [A]	activated: {M}: This creature can't be regenerated this turn. Only your opponents may activate this ability.
+Merseine	who may activate and when (any player, opponents only, while on stack) [A]	activated: Pay enchanted creature's mana cost: Remove a net counter from this Aura. Only the controller of the enchanted creature may activate this ability.
+Katara, Water Tribe's Hope	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: Waterbend {M}: Creatures you control have base power and toughness X/X until end of turn. X can't be N. Activate only during your turn.
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	X restrictions and X colour rules (X cannot be N, up to players) [A]	activated: {M}, Exile X creature cards from your graveyard: Transform ~. X can't be N. Activate only as a sorcery.
+Open the Way	X restrictions and X colour rules (X cannot be N, up to players) [A]	spell: X can't be greater than the number of players in the game.
+Brutal Hordechief	you choose how other players attack, block or vote [B]	activated: {M}: Creatures your opponents control block this turn if able, and you choose how those creatures block.
+Illusion of Choice	you choose how other players attack, block or vote [B]	spell: You choose how each player votes this turn.
+Invasion Plans	you choose how other players attack, block or vote [B]	static: The attacking player chooses how each creature blocks each combat.
+Master Warcraft	you choose how other players attack, block or vote [B]	spell: You choose which creatures attack this turn.
+Melee	you choose how other players attack, block or vote [B]	spell: You choose which creatures block this combat and how those creatures block.
+Odric, Master Tactician	you choose how other players attack, block or vote [B]	triggered: Whenever ~ and at least N other creatures attack, you choose which creatures block this combat and how those creatures block.
