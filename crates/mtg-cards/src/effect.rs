@@ -61,6 +61,8 @@ pub enum NewTargets {
     Choose,
     /// "Change a target of it to ~": one target becomes the object `onto` names, if that is a legal target (CR 115.7c).
     One,
+    /// "Change the target ... The new target must be a player.": as `Another`, among the players only.
+    AnotherPlayer,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).

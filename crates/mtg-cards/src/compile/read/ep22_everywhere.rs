@@ -85,13 +85,35 @@ pub(super) fn texts(ability: &Ability) -> Vec<String> {
             && EVERY_ZONE.iter().all(|zone| list.contains(&Pred::In(*zone))))
     };
     if !selector.0.iter().any(every) {
-        return Vec::new();
+        return super::r5504_everywhere::r5504_texts(
+            selector,
+            mods,
+            condition.as_ref(),
+            *defining,
+            *from,
+        );
     }
     let rest: Vec<Pred> = selector.0.iter().filter(|p| !every(p)).cloned().collect();
+    if rest.is_empty() {
+        return super::r5504_everywhere::r5504_all_texts(
+            mods,
+            condition.as_ref(),
+            *defining,
+            *from,
+        );
+    }
     let noun = match rest.as_slice() {
         [Pred::Type(kind), Pred::ControlledBy(Ref::You)]
         | [Pred::ControlledBy(Ref::You), Pred::Type(kind)] => format!("{kind:?}").to_lowercase(),
-        _ => return Vec::new(),
+        _ => {
+            return super::r5504_everywhere::r5504_rest_texts(
+                &rest,
+                mods,
+                condition.as_ref(),
+                *defining,
+                *from,
+            );
+        }
     };
     let plain = Ability::Static {
         affected: Ref::Each(Selector(rest)),

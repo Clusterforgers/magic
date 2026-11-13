@@ -203,6 +203,7 @@ mod r4705_ward_poison;
 mod r4709_apart_costs;
 mod r4f_stack_move;
 mod r4i_may_flash;
+mod r5504_rebound;
 mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;

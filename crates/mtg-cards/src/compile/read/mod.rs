@@ -245,6 +245,10 @@ mod r4708_reveal;
 mod r4709_differ;
 mod r4710_atoms;
 mod r4711_drafted;
+mod r5504_everywhere;
+mod r5504_look;
+        return Some(found);
+    }
 mod r5507_dice;
 mod r5507_prevent;
 mod r5a_order;
@@ -666,6 +670,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r4708_actions::r4708_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r5504_look::r5504_read(text) {
         return Some(found);
     }
     if let Some(found) = r5507_prevent::r5507_read(text) {

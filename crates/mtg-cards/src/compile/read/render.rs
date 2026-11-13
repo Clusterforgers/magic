@@ -615,6 +615,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r4708_actions::r4708_wordings(ability, &mut texts);
     super::r5507_prevent::r5507_wordings(ability, &mut texts);
     super::r5507_dice::r5507_wordings(ability, written_variants, &mut texts);
+    super::r5504_look::r5504_wordings(ability, &mut texts);
     super::r4708_reveal::r4708_reveal_wordings(ability, &mut texts);
     super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
@@ -1929,7 +1930,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::TurnFaceDown { .. }
                 | Effect::CopySpell { .. }
                 | Effect::ChangeTargets {
-                    to: NewTargets::Another | NewTargets::One,
+                    to: NewTargets::Another | NewTargets::One | NewTargets::AnotherPlayer,
                     ..
                 }
         )
