@@ -558,6 +558,8 @@ pub(crate) fn lasts(
         | Duration::WhileEnchanted
         | Duration::WhileMonarch(_)
         | Duration::WhileSourceAttached => false,
+        // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
+        Duration::WhileTapped => true,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
 }
@@ -713,6 +715,10 @@ impl ContinuousEffect {
         match duration {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
             Duration::WhileEnchanted => self.stays_enchanted(state),
+            Duration::WhileTapped => match &self.selector {
+                Selector::Objects(named) => r5509_stays_tapped(state, named),
+                Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+            },
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
@@ -785,6 +791,19 @@ pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef,
             }
         }
     }
+}
+
+/// Whether every object named is still the object it named, on the battlefield and tapped ("for as long as it remains
+/// tapped").
+pub(crate) fn r5509_stays_tapped(state: &GameState, named: &[ObjectRef]) -> bool {
+    !named.is_empty()
+        && named.iter().all(|r| {
+            state.object(r.id).is_some_and(|o| {
+                o.counter() == r.counter
+                    && o.zone() == Zone::Battlefield
+                    && o.permanent().is_some_and(|p| p.tapped)
+            })
+        })
 }
 
 #[cfg(test)]

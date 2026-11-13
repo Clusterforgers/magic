@@ -1,25 +1,15 @@
 {
   "oracle_id": "b45a0a2f-39fd-47b9-bc9d-3d4321b377d3",
   "name": "Coalition Flag",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Coalition Flag",
       "oracle_fingerprint": "4c7836783740c12b1922a3568e53a7b7",
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 64 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 65, "end": 257 }
-          }
-        }
+        { "Static": { "affected": "Attached", "mods": [{ "AddSubtype": "Flagbearer" }] } },
+        { "Rule": { "rule": "Flagbearers" } }
       ]
     }
   ]

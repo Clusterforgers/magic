@@ -3779,6 +3779,11 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::BecomeForetold { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::FaceDownPile { what, top, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("top", |w| w.amount(top));
+            }
             Effect::Manifest {
                 who,
                 count,
@@ -4491,6 +4496,9 @@ impl Walker<'_> {
                 if *duration == Duration::WhileEnchanted {
                     w.uses("Duration", "WhileEnchanted");
                 }
+                if *duration == Duration::WhileTapped {
+                    w.uses("Duration", "WhileTapped");
+                }
                 if *duration == Duration::UntilItsControllersNextUntapStep {
                     w.uses("Duration", "UntilItsControllersNextUntapStep");
                 }
@@ -4524,6 +4532,7 @@ impl Walker<'_> {
                 if matches!(
                     duration,
                     Duration::WhileEnchanted
+                        | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
@@ -4569,6 +4578,7 @@ impl Walker<'_> {
                 if matches!(
                     duration,
                     Duration::WhileEnchanted
+                        | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
@@ -5513,6 +5523,8 @@ impl Walker<'_> {
             | GameRule::ManaBurn
             | GameRule::CantBeCopied
             | GameRule::CantSpendMana
+            | GameRule::Flagbearers
+            | GameRule::ExhaustAgain
             | GameRule::RevealFirstDraw { .. } => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {

@@ -600,6 +600,23 @@ impl RuleEffect {
             self.controller,
             self.source,
         ) && !self.spent(state)
+            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state))
+    }
+
+    /// Whether every object a prohibition names is still tapped on the battlefield (`Duration::WhileTapped`); a rule
+    /// of any other kind names no object to follow.
+    fn r5509_stays_tapped(&self, state: &GameState) -> bool {
+        let Rule::Cant { who, .. } = &self.rule else {
+            return false;
+        };
+        let named: Vec<ObjectRef> = who
+            .iter()
+            .filter_map(|subject| match subject {
+                Target::Object(named) => Some(*named),
+                Target::Player(_) => None,
+            })
+            .collect();
+        crate::effects::r5509_stays_tapped(state, &named)
     }
 
     /// Whether every object the rule names has become a new object or is gone: it can never apply to anything again.
@@ -1634,6 +1651,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // The announcement reads it from the permanents as targets are chosen (`announce::r5509_flagbearer`).
+        GameRule::Flagbearers => return Err(ResolveError::Unsupported("Rule.Flagbearers")),
+        // The limits of activated abilities read it from the permanents (`r5509_exhaust`).
+        GameRule::ExhaustAgain => return Err(ResolveError::Unsupported("Rule.ExhaustAgain")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
