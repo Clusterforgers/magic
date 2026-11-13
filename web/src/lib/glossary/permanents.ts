@@ -81,6 +81,7 @@ export const PERMANENTS: readonly Entry[] = [
     'Crew',
     'Tap any number of untapped creatures you control with total power N or more: this Vehicle becomes an artifact creature until end of turn.',
   ],
+  ['Crew once', 'Crew N, but it can be activated only once each turn.'],
   [
     'Saddle|Saddled',
     'Tap any number of other untapped creatures you control with total power N or more: this Mount becomes saddled until end of turn. Saddle only as a sorcery.',
