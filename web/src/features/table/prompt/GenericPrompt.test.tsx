@@ -69,7 +69,7 @@ const ROWS: Row[] = [
         max_life: 0,
       },
     },
-    ['Pay automatically', 'Undo the spell'],
+    ['Pay automatically', 'Cancel the spell'],
     1,
     { PayMana: 'Cancel' },
   ],
@@ -112,7 +112,7 @@ const ROWS: Row[] = [
         can_cancel: true,
       },
     },
-    ['Bo', nameOf(foe), 'Undo the spell'],
+    ['Bo', nameOf(foe), 'Cancel the spell'],
     1,
     { ChooseTargets: { Targets: [object(foe)] } },
   ],
@@ -131,7 +131,7 @@ const ROWS: Row[] = [
         can_cancel: true,
       },
     },
-    ['Draw a card', 'Gain 3 life', 'Undo the spell'],
+    ['Draw a card', 'Gain 3 life', 'Cancel the spell'],
     2,
     { ChooseMode: 'Cancel' },
   ],
@@ -152,7 +152,7 @@ const ROWS: Row[] = [
   [
     'DivideAmount',
     { DivideAmount: { source: mine, total: 3, among: [{ Player: 1 }, object(foe)], can_cancel: true } },
-    ['Divide evenly', 'Undo the ability'],
+    ['Divide evenly', 'Cancel the ability'],
     0,
     {
       DivideAmount: {
@@ -274,8 +274,8 @@ describe('a decision with no prompt of its own', () => {
   })
 
   it.each<[string, number, string]>([
-    ['an ability of a permanent', mine, 'Undo the ability'],
-    ['a spell on the stack', spell, 'Undo the spell'],
+    ['an ability of a permanent', mine, 'Cancel the ability'],
+    ['a spell on the stack', spell, 'Cancel the spell'],
   ])('words the cancel of %s', async (_what, source, words) => {
     const { user, answer } = renderDecision({ ChooseCosts: { source, optional: [], can_cancel: true } })
     await user.click(screen.getByRole('button', { name: words }))

@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e3085d8-9d46-41e0-ad9d-54c44d9ef267",
   "name": "Freya Crescent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Freya Crescent",
@@ -15,9 +15,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 143 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [
+                    { "Spell": { "subtypes": ["Equipment"] } },
+                    { "Ability": { "facts": ["Equip"] } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

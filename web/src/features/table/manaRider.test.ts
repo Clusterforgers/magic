@@ -91,6 +91,21 @@ describe('spendFilterWords', () => {
     ['a kicker', { facts: ['Kicked'] }, 'a spell that is kicked'],
     ['freerunning', { facts: ['Freerunning'] }, 'a spell with freerunning'],
     ['no abilities', { facts: ['NoAbilities'] }, 'a spell with no abilities'],
+    [
+      'a creature type to avoid',
+      { not_subtypes: ['Human'], types: ['Creature'] },
+      'a non-Human creature spell',
+    ],
+    [
+      'the chosen color',
+      { chosen_color: true, facts: ['Monocolored'] },
+      'a chosen-color spell that is monocolored',
+    ],
+    [
+      'colored without {X}',
+      { facts: ['Colored', 'NoXInCost'] },
+      "a spell that's one or more colors without {X} in its cost",
+    ],
   ])('words %s', (_case, filter, expected) => {
     expect(spendFilterWords(filter)).toBe(expected)
   })

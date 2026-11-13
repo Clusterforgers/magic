@@ -44,4 +44,13 @@ min_value?: number,
 /**
  * Facts about the spell beyond its kind that must all hold.
  */
-facts?: Array<SpendFact>, };
+facts?: Array<SpendFact>, 
+/**
+ * Has none of these subtypes ("a non-Human creature spell").
+ */
+not_subtypes?: Array<Subtype>, 
+/**
+ * Has the color chosen as the source entered the battlefield ("spells of that color"); the engine puts that color
+ * in `colors` when the mana is added.
+ */
+chosen_color?: boolean, };

@@ -281,16 +281,16 @@ describe('the sentence and the way out', () => {
 
   it('takes a spell back with Cancel, which nothing is paid for yet', async () => {
     const { answer, user } = mount(two)
-    await user.click(screen.getByRole('button', { name: 'Undo the spell' }))
-    expect(answer).toHaveBeenCalledWith({ ChooseTargets: 'Cancel' })
+    await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
+    expect(answer).toHaveBeenCalledWith('Undo')
   })
 
   it('calls the way out of an activated ability the ability', () => {
     const fixture = fixtureOf(2)
     const permanent = must(fixture.view.objects.find((o) => o.zone === 'Battlefield' && o.controller === 0))
     mount(two, { source: permanent.id })
-    expect(screen.getByRole('button', { name: 'Undo the ability' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Undo the spell' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Cancel the ability' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Cancel the spell' })).toBeNull()
   })
 
   it('has no way out of a triggered ability, which names its source', () => {

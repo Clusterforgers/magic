@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8c612741-2b30-43b3-bd3f-7df19662d298",
+  "name": "Case File Auditor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case File Auditor",
+      "oracle_fingerprint": "f8940c5d8613964d10f0b6cc2c2c58e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "SolvedCase", "who": "You" } }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Enchantment" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyColor",
+                "spells": [{ "Subtype": "Case" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

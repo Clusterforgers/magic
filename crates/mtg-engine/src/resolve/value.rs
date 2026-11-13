@@ -320,6 +320,14 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
             matches!(**rule, Ability::Loyalty { .. })
                 || (matches!(**rule, Ability::Activated { .. }) && !rule.is_mana_ability())
         }),
+        // A plain mana ability is "{T}: Add ...".
+        HeldAbility::TapCost => {
+            plain_mana
+                || rules.iter().any(|(_, rule)| {
+                    matches!(&**rule, Ability::Activated { cost, .. }
+                        if cost.0.contains(&mtg_cards::cost::CostItem::Tap))
+                })
+        }
     }
 }
 
@@ -1904,6 +1912,10 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::CouldProduce(mana) => {
+                seen.zone == Zone::Battlefield
+                    && crate::mana_kinds::could_produce(state, reference.id).contains(mana)
+            }
             Pred::Stickered => crate::un34_stickers::has_sticker(state, reference, None),
             Pred::WithSticker(kind) => {
                 crate::un34_stickers::has_sticker(state, reference, Some(*kind))

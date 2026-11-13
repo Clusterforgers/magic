@@ -270,7 +270,7 @@ export const isPlayable = (card: Card): boolean => !/, not castable/.test(card.l
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
-/** The prompt's Undo ("Undo the spell", "Undo the ability"): backs out of the spell or ability being announced. */
+/** The prompt's Cancel ("Cancel the spell", "Cancel the ability"): backs out of the spell or ability being announced. */
 const undo = (page: Page): Locator => prompt(page).locator('[data-slot="undo"]')
 /**
  * The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does
@@ -287,7 +287,7 @@ const enabled = (seen: Seen, label: string): boolean =>
 /**
  * Presses one of the payment prompt's "pay for me" buttons. The server refuses a payment the seat's mana cannot make
  * ("That answer is not allowed") and the prompt stays, so a prompt that is still the same after two seconds is
- * backed out of with Undo.
+ * backed out of with Cancel.
  */
 async function payFor(page: Page, label: string, id: string, done: string): Promise<string> {
   await button(page, label).click()

@@ -51,6 +51,7 @@ fn mid_game_batches_are_a_fraction_of_a_snapshot(
                 log: Vec::new(),
                 names: Vec::new(),
                 hosts: Vec::new(),
+                rewound: false,
             };
             samples.push(Sample {
                 answers: step.answers,

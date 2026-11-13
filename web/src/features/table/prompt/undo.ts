@@ -1,11 +1,11 @@
-/** Backing out of a spell or ability being announced: the words of its button and its Escape key. */
+/** Cancelling a spell or ability being announced: the words of its button and its Escape key. */
 import { useEffect, useRef } from 'react'
 import type { Zone } from '@/protocol/generated'
 import { isTyping } from './usePromptKeys'
 
-/** "Undo the ability" for an ability of a permanent, "Undo the spell" for anything else, by the zone of what asks. */
+/** "Cancel the ability" for an ability of a permanent, "Cancel the spell" for anything else, by the zone of what asks. */
 export function undoWords(zone: Zone | undefined): string {
-  return zone === 'Battlefield' ? 'Undo the ability' : 'Undo the spell'
+  return zone === 'Battlefield' ? 'Cancel the ability' : 'Cancel the spell'
 }
 
 /** Whether Escape pressed with `target` focused belongs to something else: a field, menu or dialog outside the prompt. */

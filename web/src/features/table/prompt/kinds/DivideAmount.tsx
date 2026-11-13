@@ -170,7 +170,7 @@ export const DivideAmountPrompt: PromptComponent<'DivideAmount'> = ({ options })
             Confirm
           </Button>
           {options.can_cancel === true ? (
-            <UndoButton zone={source?.zone} onUndo={() => void answer({ DivideAmount: 'Cancel' })} />
+            <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
           ) : null}
           <p
             id={statusId}

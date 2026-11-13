@@ -949,6 +949,7 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::CouldProduce(_)
             | Pred::Stickered
             | Pred::WithSticker(_)
             | Pred::Harnessed
@@ -1629,6 +1630,8 @@ impl<'a> Walker<'a> {
         }
     }
 
+    // One arm for each part of a cost.
+    #[allow(clippy::too_many_lines)]
     fn cost(&mut self, cost: &Cost) {
         for (i, item) in cost.0.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
@@ -1715,6 +1718,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OthersGainLife(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
+                    CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
                     CostItem::XAtMost(most) => {
                         // The most X is read where an effect asks the payment and announces its X.
                         if !w.r306_paying || !w.x_free {
@@ -3760,6 +3764,7 @@ impl Walker<'_> {
             | Effect::TurnFaceDown { what }
             | Effect::LockOrUnlockDoor { what }
             | Effect::Prepare { what }
+            | Effect::Unprepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
@@ -5168,6 +5173,10 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
+            Ability::CantTargetAsCast { what } => {
+                w.uses("Ability", "CantTargetAsCast");
+                w.at("what", |w| w.selector(what));
+            }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
@@ -5600,6 +5609,8 @@ impl Walker<'_> {
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
             | ReplaceWhen::TurnedFaceUp { what }
+            | ReplaceWhen::Explores { what }
+            | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
             }
@@ -5620,6 +5631,7 @@ impl Walker<'_> {
             ReplaceWhen::LifeGain { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
+            | ReplaceWhen::Proliferates { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -5633,6 +5645,7 @@ impl Walker<'_> {
         {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
+        crate::r406_actions::r406_check(when, by, |problem| self.problem(problem));
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object

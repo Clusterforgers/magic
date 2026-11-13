@@ -198,6 +198,10 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub mana_burn: Option<bool>,
+    /// Whether a player may ask the table to take back their last cast, activation or land play; on when left out.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub take_backs: Option<bool>,
     /// What drawing from an empty library does.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
@@ -470,6 +474,8 @@ mod tests {
     #[case::lands_high("land_plays_per_turn", json!(11), Some("land_plays_per_turn"))]
     #[case::burn_on("mana_burn", json!(true), None)]
     #[case::burn_off("mana_burn", json!(false), None)]
+    #[case::take_backs_on("take_backs", json!(true), None)]
+    #[case::take_backs_off("take_backs", json!(false), None)]
     #[case::library_loses("empty_library", json!("lose"), None)]
     #[case::library_reshuffles("empty_library", json!("reshuffle_graveyard"), None)]
     #[case::limit_none_at_all("turn_limit", json!(0), Some("turn_limit"))]
@@ -886,6 +892,7 @@ mod tests {
             proptest::option::of(any::<bool>()),
             proptest::option::of(any::<bool>()),
             proptest::option::of(any::<bool>()),
+            proptest::option::of(any::<bool>()),
             proptest::option::of(prop_oneof![
                 Just(MulliganStyle::London),
                 Just(MulliganStyle::Paris),
@@ -918,7 +925,7 @@ mod tests {
             |(
                 (life, hand, free, cap, first, limit),
                 (draws, lands, burn, library, turns, wins, poison, handicaps),
-                (range, open, top, smoothing, style),
+                (range, open, top, smoothing, take_backs, style),
                 (tax, damage, singleton, identity, size, copies, per_seat),
                 teams,
             )| HouseRules {
@@ -940,6 +947,7 @@ mod tests {
                 draw_step_cards: draws,
                 land_plays_per_turn: lands,
                 mana_burn: burn,
+                take_backs,
                 empty_library: library,
                 turn_limit: turns,
                 winning_life: wins,

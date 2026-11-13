@@ -387,7 +387,13 @@ fn rule_mana(
             Some(Chosen::CreatureType(subtype)) => Some(subtype),
             _ => None,
         };
-        let Some(only) = mtg_cards::spend::resolve_uses(shape.only, chosen) else {
+        let chosen_color = match object.permanent().and_then(PermanentState::chosen) {
+            Some(Chosen::Color(color)) => Some(*color),
+            _ => None,
+        };
+        let Some(only) = mtg_cards::spend::resolve_uses(shape.only, chosen)
+            .and_then(|only| mtg_cards::spend::resolve_color(&only, chosen_color))
+        else {
             continue;
         };
         // The mana may be spent on anything; a rider remembers the permanent that makes the mana.

@@ -395,6 +395,8 @@ fn spend_filter() -> impl Strategy<Value = SpendFilter> {
                 chosen_type,
                 min_value,
                 facts,
+                not_subtypes: Vec::new(),
+                chosen_color: false,
             },
         )
 }

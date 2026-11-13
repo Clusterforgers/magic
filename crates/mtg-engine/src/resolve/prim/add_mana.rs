@@ -81,7 +81,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         _ => None,
     };
     // Mana that may be spent only on the chosen type is none while no type is chosen.
-    let Some(only) = mtg_cards::spend::resolve_uses(only, chosen_type) else {
+    let chosen_color = match source
+        .and_then(|id| state.object(id))
+        .and_then(GameObject::permanent)
+        .and_then(PermanentState::chosen)
+    {
+        Some(Chosen::Color(color)) => Some(*color),
+        _ => None,
+    };
+    // Mana that may be spent only on the chosen type or color is none while none is chosen.
+    let Some(only) = mtg_cards::spend::resolve_uses(only, chosen_type)
+        .and_then(|only| mtg_cards::spend::resolve_color(&only, chosen_color))
+    else {
         return Ok(Run::events(Vec::new()));
     };
     // The mana may be spent on anything; a rider remembers the permanent that made the mana.

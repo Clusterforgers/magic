@@ -668,6 +668,9 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LoseGame { .. }
+        | ReplaceWhen::Explores { .. }
+        | ReplaceWhen::Connives { .. }
+        | ReplaceWhen::Proliferates { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -3619,6 +3622,7 @@ mod day;
 mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
+pub(crate) mod r406_actions;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

@@ -139,6 +139,7 @@ mod r379_since_last_turn;
 mod r3e;
 mod r3f_airbend;
 mod r3f_waterbend;
+mod r406_actions;
 mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;

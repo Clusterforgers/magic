@@ -189,6 +189,7 @@ const RUNS: &[&str] = &[
     "Cost.Waterbend",
     "Cost.XAtLeast",
     "Cost.XColor",
+    "Cost.ChosenColorOnly",
     "Stat.R374Types",
     "Stat.R374CreatureTypes",
     "Stat.R374Bushido",
@@ -293,6 +294,7 @@ const RUNS: &[&str] = &[
     "Effect.TurnFaceUp",
     "Effect.TurnFaceDown",
     "Effect.Prepare",
+    "Effect.Unprepare",
     "Effect.Suspect",
     "Effect.Unsuspect",
     "Effect.Solve",
@@ -653,6 +655,7 @@ const RUNS: &[&str] = &[
     "Ability.AltCast",
     "Ability.AltCast.X",
     "Ability.CastOnly",
+    "Ability.CantTargetAsCast",
     "Condition.AdditionalCostPaid",
     "Keyword.Flashback",
     "Keyword.Flashback.Cost.Discard.X",
@@ -772,6 +775,9 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Draw",
     "ReplaceWhen.Draw.ExceptDrawStep",
     "ReplaceWhen.Enters",
+    "ReplaceWhen.Explores",
+    "ReplaceWhen.Connives",
+    "ReplaceWhen.Proliferates",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
@@ -1102,6 +1108,9 @@ mod tests {
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
     #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
     #[case::replacing_a_loss("ReplaceWhen.LoseGame", true)]
+    #[case::r406_replacing_an_exploration("ReplaceWhen.Explores", true)]
+    #[case::r406_replacing_a_connive("ReplaceWhen.Connives", true)]
+    #[case::r406_replacing_a_proliferation("ReplaceWhen.Proliferates", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]

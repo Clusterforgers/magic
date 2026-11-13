@@ -85,7 +85,13 @@ pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
             matches!(x, Some(XCost::Mana { .. })),
         )
         .cast_as(way),
-        What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
+        What::Ability(ability) => {
+            let spend = Spend::for_ability(ctx.state, ability.object, has_x);
+            match ctx.ability {
+                Some(rules) => spend.of_ability(ctx.state, *ability, rules),
+                None => spend,
+            }
+        }
         What::Trigger(_) | What::Attack(..) | What::Block(_) => Spend::other(),
     }
 }

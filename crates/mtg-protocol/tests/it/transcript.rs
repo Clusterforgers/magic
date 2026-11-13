@@ -149,6 +149,7 @@ fn late_join(seed: u64) -> (Vec<ServerMessage>, StateView) {
             log: Vec::new(),
             names: Vec::new(),
             hosts: Vec::new(),
+            rewound: false,
         },
     ];
     if let Some((id, decision)) = before.pending.as_ref().filter(|(_, d)| d.player == SEAT) {

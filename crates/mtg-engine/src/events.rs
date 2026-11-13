@@ -208,6 +208,16 @@ pub enum Event {
         #[cfg_attr(feature = "ts", ts(optional))]
         why: Option<crate::decision::Why>,
     },
+    /// A player took back their last cast, activation or land play with the table's consent: the log before it is the
+    /// game, and this note follows it. Nothing else changed.
+    TookBack {
+        /// Who took it back.
+        player: PlayerId,
+        /// What they took back.
+        kind: crate::take_back::TakeBackKind,
+        /// The card cast or played, or the source of the ability.
+        name: String,
+    },
     /// A priority round started with this player.
     PriorityGranted {
         /// Who has priority.
@@ -1408,6 +1418,7 @@ impl Event {
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
             | Event::AnnouncementRewound { .. }
+            | Event::TookBack { .. }
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }

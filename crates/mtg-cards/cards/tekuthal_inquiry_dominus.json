@@ -1,7 +1,7 @@
 {
   "oracle_id": "4716ab91-30e6-4c63-8389-a9db8f9414d8",
   "name": "Tekuthal, Inquiry Dominus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tekuthal, Inquiry Dominus",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 7, "end": 59 }
+          "Replacement": {
+            "when": { "Proliferates": {} },
+            "by": { "Instead": [{ "Proliferate": {} }, { "Proliferate": {} }] }
           }
         },
         {

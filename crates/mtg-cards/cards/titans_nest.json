@@ -1,7 +1,7 @@
 {
   "oracle_id": "04505544-8341-4bd9-afa7-b31d6b415c47",
   "name": "Titans' Nest",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Titans' Nest",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 127, "end": 262 }
+          "Activated": {
+            "cost": [{ "ExileFromGraveyard": { "filter": [] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [{ "Spell": { "facts": ["Colored", "NoXInCost"] } }]
+                }
+              }
+            ]
           }
         }
       ]

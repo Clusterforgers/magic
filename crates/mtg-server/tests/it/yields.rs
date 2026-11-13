@@ -203,6 +203,10 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Presence { .. } => "presence".into(),
         ServerMessage::Deciding { .. } => "deciding".into(),
         ServerMessage::Spectators { .. } => "spectators".into(),
+        ServerMessage::TakeBackOffer { .. }
+        | ServerMessage::TakeBackAsked { .. }
+        | ServerMessage::TakeBackEnded { .. }
+        | ServerMessage::TakeBackRefused { .. } => "take-back".into(),
     }
 }
 
@@ -825,7 +829,8 @@ async fn a_failed_save_takes_back_the_end_of_a_yield_too() {
     store.fail(true);
     let (id, decision) = clients[FOE].decision().await;
     answer(&handle, &clients[FOE], id, passive(&decision)).await;
-    assert!(is_error(&clients[FOE].drain(), ErrorCode::Internal));
+    let told = clients[FOE].drain();
+    assert!(is_error(&told, ErrorCode::Internal), "{told:?}");
     silent(&clients[ME].drain());
     assert_eq!(handle.status().await.unwrap(), before);
 

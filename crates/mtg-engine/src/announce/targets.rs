@@ -34,7 +34,7 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     }
     let modes = &choices.modes;
     if let What::Spell(spell) = ctx.what
-        && let Some(spec) = attach::spell_target(ctx.state, *spell)
+        && let Some(spec) = attach::cast_target(ctx.state, *spell)
     {
         return vec![spec];
     }

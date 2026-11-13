@@ -51,6 +51,10 @@ land_plays_per_turn?: number,
  */
 mana_burn?: boolean, 
 /**
+ * Whether a player may ask the table to take back their last cast, activation or land play; on when left out.
+ */
+take_backs?: boolean, 
+/**
  * What drawing from an empty library does.
  */
 empty_library?: EmptyLibrary, 

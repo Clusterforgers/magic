@@ -108,6 +108,27 @@ describe('creating the game', () => {
     await waitFor(() => expect(router.state.location.href).toContain(`/game/${MADE_GAME}`))
   })
 
+  it('shows Take-backs on and sends nothing for it, and false once it is turned off', async () => {
+    const { server, user } = await openCreateForm({}, 'default')
+    await user.click(screen.getByText('House rules'))
+    const takeBacks = screen.getByRole('switch', { name: 'Take-backs' })
+    expect(takeBacks).toBeChecked()
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    expect(server.creates[0]).not.toHaveProperty('house_rules.take_backs')
+  })
+
+  it('sends take_backs false when the switch is turned off, and counts it as a rule that differs', async () => {
+    const { server, user } = await openCreateForm({}, 'default')
+    await user.click(screen.getByText('House rules'))
+    await user.click(screen.getByRole('switch', { name: 'Take-backs' }))
+    expect(screen.getByRole('switch', { name: 'Take-backs' })).not.toBeChecked()
+    expect(screen.getByText('1 rule differs')).toBeInTheDocument()
+    await user.click(create())
+    await waitFor(() => expect(server.creates).toHaveLength(1))
+    expect(server.creates[0]).toMatchObject({ house_rules: { take_backs: false } })
+  })
+
   it('sends a handicap for each seat that has one, by the seat’s number', async () => {
     const { server, user } = await openCreateForm({}, 'default')
     await user.click(screen.getByText('House rules'))

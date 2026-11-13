@@ -198,6 +198,22 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ yielding: null })
       return true
     },
+    takeBack: () => false,
+    voteTakeBack(approve) {
+      store.setState((state) =>
+        state.takeBackRequest === null
+          ? {}
+          : {
+              takeBackRequest: null,
+              takeBackNotice: {
+                offer: state.takeBackRequest.offer,
+                outcome: approve ? { type: 'Approved' } : { type: 'Declined', by: state.seat ?? 0 },
+              },
+            },
+      )
+      return true
+    },
+    dismissTakeBackNotice: () => store.setState({ takeBackNotice: null }),
     chat(text) {
       const line = text.trim()
       if (line === '') return false

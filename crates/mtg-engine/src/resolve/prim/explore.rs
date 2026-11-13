@@ -27,31 +27,35 @@ pub(super) struct Actor {
 /// The creatures `what` names that act, once each: one on the battlefield acts for its controller, one that has left
 /// it acts for the controller the ability remembers (last known information), and one it cannot find does not act.
 pub(super) fn actors(cx: &Cx<'_>, what: &Ref) -> Result<Vec<Actor>, ResolveError> {
-    let state = cx.state();
     let mut found: Vec<Actor> = Vec::new();
     for named in cx.scope.objects(what)? {
         if found.iter().any(|seen| seen.object == named.id) {
             continue;
         }
-        let live = state.object(named.id).filter(|object| {
-            object.counter() == named.counter && object.zone() == Zone::Battlefield
-        });
-        let (player, permanent) = match live {
-            Some(object) => (object.controller(), Some(object.reference())),
-            None => match cx.scope.snapshot_of(named) {
-                Some(shot) if shot.zone == Zone::Battlefield => (shot.controller, None),
-                _ => continue,
-            },
-        };
-        if state.is_alive(player) {
-            found.push(Actor {
-                object: named.id,
-                player,
-                permanent,
-            });
-        }
+        found.extend(actor_of(cx, named));
     }
     Ok(found)
+}
+
+/// The creature `named` as it acts: on the battlefield for its controller, gone for the controller the ability
+/// remembers; none when it cannot be found or its player has left the game.
+pub(super) fn actor_of(cx: &Cx<'_>, named: ObjectRef) -> Option<Actor> {
+    let state = cx.state();
+    let live = state
+        .object(named.id)
+        .filter(|object| object.counter() == named.counter && object.zone() == Zone::Battlefield);
+    let (player, permanent) = match live {
+        Some(object) => (object.controller(), Some(object.reference())),
+        None => match cx.scope.snapshot_of(named) {
+            Some(shot) if shot.zone == Zone::Battlefield => (shot.controller, None),
+            _ => return None,
+        },
+    };
+    state.is_alive(player).then_some(Actor {
+        object: named.id,
+        player,
+        permanent,
+    })
 }
 
 /// Each creature the effect names explores in turn, once each. Its controller (as it was, when the creature has left
@@ -66,11 +70,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Explore"));
     };
     let explorers = actors(cx, what)?;
+    if let Some(run) = super::r406_actions::r406_replaced(cx, effect, &explorers)? {
+        return Ok(run);
+    }
     Stop::settle(explorations(cx, &explorers).map(Run::events))
 }
 
 /// The events of each exploration, asking in turn.
-fn explorations(cx: &Cx<'_>, explorers: &[Actor]) -> Result<Vec<Event>, Stop> {
+pub(super) fn explorations(cx: &Cx<'_>, explorers: &[Actor]) -> Result<Vec<Event>, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();

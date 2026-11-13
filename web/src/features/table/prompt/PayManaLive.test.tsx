@@ -90,7 +90,7 @@ describe('a payment decision from the server', () => {
 
   it.each([
     ['Pay automatically', { PayMana: 'Auto' }],
-    [/^Undo the (spell|ability)$/, { PayMana: 'Cancel' }],
+    [/^Cancel the (spell|ability)$/, 'Undo'],
   ])('%s sends the answer once, even on a double click', async (name, expected) => {
     const { h, send, user, button } = mount()
     send(decision(22, pay('{2}')))

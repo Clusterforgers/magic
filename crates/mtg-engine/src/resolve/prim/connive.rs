@@ -29,12 +29,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let conniving = actors(cx, what)?;
     let count = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
+    if let Some(run) = super::r406_actions::r406_replaced(cx, effect, &conniving)? {
+        return Ok(run);
+    }
     Stop::settle(connivances(cx, &conniving, count).map(Run::events))
 }
 
 /// The events of each connive N, asking in turn: N draws, then N discards (all the hand when it holds no more), and a
 /// +1/+1 counter for each nonland card discarded (CR 701.50e).
-fn connivances(cx: &Cx<'_>, conniving: &[Actor], count: usize) -> Result<Vec<Event>, Stop> {
+pub(super) fn connivances(
+    cx: &Cx<'_>,
+    conniving: &[Actor],
+    count: usize,
+) -> Result<Vec<Event>, Stop> {
     let state = cx.state();
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();

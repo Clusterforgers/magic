@@ -86,18 +86,18 @@ describe('one mode', () => {
 })
 
 describe('backing out', () => {
-  it('Undo the spell sends Cancel and takes focus first, as the clock would', async () => {
+  it('Cancel the spell sends Undo and takes focus first, as the clock would', async () => {
     const { user, answer, sent } = mount()
-    const cancel = screen.getByRole('button', { name: 'Undo the spell' })
+    const cancel = screen.getByRole('button', { name: 'Cancel the spell' })
     expect(cancel).toHaveFocus()
     await user.keyboard('{Enter}')
     expect(answer).toHaveBeenCalledTimes(1)
-    expect(sent()).toEqual({ ChooseMode: 'Cancel' })
+    expect(sent()).toEqual('Undo')
   })
 
   it('names the ability when a permanent asks', () => {
     mount({}, creature)
-    expect(screen.getByRole('button', { name: 'Undo the ability' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Cancel the ability' })).toBeInTheDocument()
   })
 
   it('has no way out for a trigger, and focus starts on the first mode', async () => {

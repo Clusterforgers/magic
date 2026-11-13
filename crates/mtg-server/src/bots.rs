@@ -491,6 +491,13 @@ async fn play(
             }
             ServerMessage::Events(batch) => brain.turn_is(batch.table.turn.number),
             ServerMessage::Snapshot { state, .. } => brain.turn_is(state.table.turn.number),
+            // A friendly table: a bot agrees to every take-back at once.
+            ServerMessage::TakeBackAsked { waiting, .. } if waiting.contains(&seat) => {
+                let vote = ClientMessage::TakeBackVote { approve: true };
+                if handle.send(seat, vote).await.is_err() {
+                    return Ended::Over;
+                }
+            }
             // A change of teams takes every Ready back; the bot says it again so the lobby can still start.
             ServerMessage::Lobby { seats, .. }
                 if seats.iter().any(|lobby| lobby.seat == seat && !lobby.ready) =>

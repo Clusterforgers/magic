@@ -25,6 +25,9 @@ describe('reading field text', () => {
     ['commander damage off', { commander_damage: 'off' }, 'commander', { commander_damage: 'off' }],
     ['a choice', { mulligan_style: 'vancouver' }, 'normal', { mulligan_style: 'vancouver' }],
     ['a switch', { mana_burn: 'on', open_hands: 'off' }, 'normal', { mana_burn: true, open_hands: false }],
+    ['take-backs turned off', { take_backs: 'off' }, 'commander', { take_backs: false }],
+    ['take-backs left on, which is not sent', { take_backs: '' }, 'normal', {}],
+    ['take-backs on, which is not sent either', { take_backs: 'on' }, 'normal', {}],
     [
       'deck rules gather in one object',
       { 'deck.singleton': 'off', 'deck.max_copies': '3', 'deck.deck_size': '60' },
@@ -51,6 +54,7 @@ describe('reading field text', () => {
     ['3 commanders', 'commanders_per_seat', '3', 'commander'],
     ['an unknown style', 'mulligan_style', 'paris-ish', 'normal'],
     ['a switch worded freely', 'mana_burn', 'yes', 'normal'],
+    ['take-backs worded freely', 'take_backs', 'no', 'normal'],
     ['a tax of 11', 'commander_tax', '11', 'commander'],
   ]
   it.each(refused)('names the field of %s', (_name, id, text, format) => {
@@ -70,6 +74,8 @@ describe('reading field text', () => {
 
   it('sends no rules when none is set', () => {
     expect(requestRules({}, 'commander')).toBeUndefined()
+    expect(requestRules({ take_backs: '' }, 'normal')).toBeUndefined()
+    expect(requestRules({ take_backs: 'off' }, 'normal')).toEqual({ take_backs: false })
     expect(requestRules({ starting_life: '' }, 'commander')).toBeUndefined()
     expect(requestRules({ starting_life: '30' }, 'commander')).toEqual({ starting_life: 30 })
   })
@@ -93,6 +99,8 @@ describe('naming the rules that differ', () => {
     ['the format’s hand limit', { max_hand_size: { cards: 7 } }, 'normal', []],
     ['a switch that is the default', { mana_burn: false }, 'normal', []],
     ['a switch turned on', { open_hands: true }, 'normal', ['Open hands']],
+    ['take-backs off', { take_backs: false }, 'commander', ['No take-backs']],
+    ['take-backs on, as every game has them', { take_backs: true }, 'normal', []],
     ['a Vancouver mulligan', { mulligan_style: 'vancouver' }, 'commander', ['Vancouver mulligan']],
     ['the London mulligan', { mulligan_style: 'london' }, 'commander', []],
     [

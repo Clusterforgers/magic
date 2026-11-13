@@ -1,0 +1,35 @@
+{
+  "oracle_id": "08a0e845-9ef9-4de1-b9fe-4530357346ca",
+  "name": "Biblioplex Tomekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biblioplex Tomekeeper",
+      "oracle_fingerprint": "b79cb0980310e5b279a73d766c13fac4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Prepare": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Unprepare": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

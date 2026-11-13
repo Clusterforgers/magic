@@ -40,6 +40,15 @@ pub trait EventStore: Send + Sync + 'static {
 
     /// Every stored event of the game in order; empty when the game has none.
     fn load(&self, game: GameId) -> impl Future<Output = Result<Vec<Event>, StoreError>> + Send;
+
+    /// Cuts the game's log back to its first `keep` events and appends `events` after them, as one write; `keep` must
+    /// not lie beyond the stored log.
+    fn rewind(
+        &self,
+        game: GameId,
+        keep: u64,
+        events: &[Event],
+    ) -> impl Future<Output = Result<(), StoreError>> + Send;
 }
 
 /// A store that keeps every log in memory; clones share the same logs.
@@ -70,6 +79,22 @@ impl MemoryStore {
         }
         Ok(())
     }
+
+    fn rewind_now(&self, game: GameId, keep: u64, events: &[Event]) -> Result<(), StoreError> {
+        let mut logs = self.logs();
+        let log = logs.entry(game).or_default();
+        let stored = u64::try_from(log.len()).unwrap_or(u64::MAX);
+        let kept = usize::try_from(keep)
+            .ok()
+            .filter(|_| keep <= stored)
+            .ok_or(StoreError::OutOfOrder {
+                from_seq: keep,
+                stored,
+            })?;
+        log.truncate(kept);
+        log.extend_from_slice(events);
+        Ok(())
+    }
 }
 
 // Memory never waits, so each call finishes before it returns and the futures are already complete.
@@ -85,6 +110,15 @@ impl EventStore for MemoryStore {
 
     fn load(&self, game: GameId) -> impl Future<Output = Result<Vec<Event>, StoreError>> + Send {
         std::future::ready(Ok(self.logs().get(&game).cloned().unwrap_or_default()))
+    }
+
+    fn rewind(
+        &self,
+        game: GameId,
+        keep: u64,
+        events: &[Event],
+    ) -> impl Future<Output = Result<(), StoreError>> + Send {
+        std::future::ready(self.rewind_now(game, keep, events))
     }
 }
 
@@ -107,6 +141,27 @@ mod tests {
                 player: PlayerId(i),
             })
             .collect()
+    }
+
+    #[rstest]
+    #[case::to_the_start(0, true)]
+    #[case::inside(3, true)]
+    #[case::at_the_end(5, true)]
+    #[case::beyond_the_end(6, false)]
+    #[tokio::test]
+    async fn a_rewind_cuts_the_log_and_continues_it(#[case] keep: u64, #[case] allowed: bool) {
+        let store = MemoryStore::new();
+        let all = events(5);
+        store.append(game(1), 0, &all).await.unwrap();
+        let more = events(7)[5..].to_vec();
+        let result = store.rewind(game(1), keep, &more).await;
+        assert_eq!(result.is_ok(), allowed);
+        let mut expected = all.clone();
+        if allowed {
+            expected.truncate(usize::try_from(keep).unwrap());
+            expected.extend(more);
+        }
+        assert_eq!(store.load(game(1)).await.unwrap(), expected);
     }
 
     #[tokio::test]

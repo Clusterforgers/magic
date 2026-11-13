@@ -126,6 +126,10 @@ pub enum Action {
     ExploredLand,
     /// A creature explored and revealed a card that is not a land card (CR 701.44); `what` is the creature.
     ExploredNonland,
+    /// An eternalize or embalm ability was activated (CR 702.129, 702.128); `what` is its source.
+    ActivatedEternalizeOrEmbalm,
+    /// A player solved a Case (CR 719.3); the player is its controller, `what` the Case.
+    SolvedCase,
     /// A player put a sticker on an object (CR 123); `what` is the object.
     PutSticker,
     /// A player put a name sticker on an object; `what` is the object.
@@ -255,6 +259,11 @@ impl Action {
             ),
             Action::ExploredLand => ("explore a land card", "explores a land card"),
             Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
+            Action::SolvedCase => ("solve a Case", "solves a Case"),
+            Action::ActivatedEternalizeOrEmbalm => (
+                "activate an eternalize or embalm ability",
+                "activates an eternalize or embalm ability",
+            ),
             Action::ControlTakenByOpponent => (
                 "have an opponent gain control of a permanent from you",
                 "has an opponent gain control of a permanent from them",
@@ -290,6 +299,7 @@ impl Action {
                 | Action::ActivatedLoyalty
                 | Action::ActivatedExhaust
                 | Action::ActivatedBoast
+                | Action::ActivatedEternalizeOrEmbalm
                 | Action::ActivatedAny
                 | Action::Destroyed
                 | Action::Exiled

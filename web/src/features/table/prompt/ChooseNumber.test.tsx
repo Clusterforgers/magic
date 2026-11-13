@@ -118,11 +118,11 @@ describe('answers', () => {
     [false, 0],
   ])('offers Undo only when the options allow it (%s)', async (canCancel, buttons) => {
     const { user, answer } = mount({ can_cancel: canCancel })
-    const cancel = screen.queryAllByRole('button', { name: /^Undo the (spell|ability)$/ })
+    const cancel = screen.queryAllByRole('button', { name: /^Cancel the (spell|ability)$/ })
     expect(cancel).toHaveLength(buttons)
     if (canCancel) {
       await user.click(must(cancel[0]))
-      expect(answer.mock.calls).toEqual([[{ ChooseNumber: 'Cancel' }]])
+      expect(answer.mock.calls).toEqual([['Undo']])
     }
   })
 })

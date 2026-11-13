@@ -1,7 +1,7 @@
 {
   "oracle_id": "5b9a2b81-a645-43be-8001-03817ac210ca",
   "name": "Throne of Eldraine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Throne of Eldraine",
@@ -11,15 +11,22 @@
           "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 46, "end": 148 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "ChosenColor": 4 },
+                  "only": [{ "Spell": { "facts": ["Monocolored"], "chosen_color": true } }]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 149, "end": 236 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "ChosenColorOnly"],
+            "effects": [{ "Draw": { "count": 2 } }]
           }
         }
       ]

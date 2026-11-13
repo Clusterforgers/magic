@@ -1,0 +1,21 @@
+{
+  "oracle_id": "913b57de-f921-40ea-9124-0da35a269181",
+  "name": "Carry Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carry Away",
+      "oracle_fingerprint": "f6c9b725cee6f929fa0a7a3f8ebc1a74",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Equipment" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Unattach": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

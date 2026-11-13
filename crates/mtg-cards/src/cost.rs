@@ -219,6 +219,9 @@ pub enum CostItem {
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
     /// nothing itself.
     XColor(mtg_core::color::Color),
+    /// "Spend only mana of the chosen color to activate this ability.": every mana of the cost is paid with mana of the
+    /// color the source chose, after the cost modifiers apply; pays nothing itself.
+    ChosenColorOnly,
     /// The X announced for the cost is at most this amount, read as the payment is asked ("X can't be greater than the
     /// amount of life you gained this turn"); pays nothing itself. Only a payment an effect asks for (`Effect::Pay`) reads it.
     XAtMost(crate::value::Amount),

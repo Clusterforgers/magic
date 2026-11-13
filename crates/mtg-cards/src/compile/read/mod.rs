@@ -215,6 +215,9 @@ mod r376_nearest;
 mod r376_seats;
 mod r376_secret;
 mod r379_atoms;
+mod r405_cast_target;
+mod r405_events;
+mod r406_actions;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -483,7 +486,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
+    let found = if let Some(found) = r406_actions::r406_pair_read(text) {
+        found
+    } else if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
         found
     } else if let Some(found) = ce29_arrest::ce29_arrest(text, x_free, own) {
         found
@@ -578,11 +583,22 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) =
+        l31d_x_color::r405_chosen_only_read(text, kind, |head| clause_with(head, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
+    }
+    if let Some(found) =
         l31d_x_color::l31d_x_color_read(text, kind, |head| clause_with(head, kind, x_free, own))
         && written_variants(&found)
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r406_actions::r406_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Static

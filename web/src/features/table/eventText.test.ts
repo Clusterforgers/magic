@@ -220,6 +220,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PriorityGranted: [{ PriorityGranted: { player: 0 } }, 'Ana receives priority'],
   PriorityPassed: [{ PriorityPassed: { player: 1 } }, 'Bo passes priority'],
   LandPlayed: [{ LandPlayed: { player: 0, object: 3 } }, 'Ana plays Forest'],
+  TookBack: [{ TookBack: { player: 0, kind: 'Cast', name: 'Shock' } }, 'Ana took back casting Shock'],
   SpellCast: [{ SpellCast: { player: 1, object: 4 } }, 'Bo casts Lightning Bolt'],
   SpellResolved: [{ SpellResolved: { object: 4 } }, 'Lightning Bolt resolves'],
   PermanentTapped: [{ PermanentTapped: { object: 3 } }, 'Forest becomes tapped'],
@@ -1404,5 +1405,18 @@ describe('an attachment that moves', () => {
     expect(say({ Entered: { object: 3, tapped: false, controller: 1 } }, { card: 1 })).toBe(
       "Forest enters under Bo's control",
     )
+  })
+})
+
+describe('a take-back in the log', () => {
+  it.each([
+    ['Cast', 'Shock', 'Ana took back casting Shock'],
+    ['Activation', 'Prodigal Sorcerer', 'Ana took back activating Prodigal Sorcerer'],
+    ['Land', 'Forest', 'Ana took back playing Forest'],
+  ] as const)('%s: names the card and what was undone', (kind, name, words) => {
+    expect(describeEvent({ Public: { TookBack: { player: 0, kind, name } } }, names)).toEqual({
+      text: words,
+      minor: false,
+    })
   })
 })

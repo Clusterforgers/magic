@@ -30,6 +30,7 @@ describe('the house rules in the top bar', () => {
     ['no rules', 'Commander', undefined],
     ['rules equal to the format’s own', 'Commander', { starting_life: 40, commander_tax: 2 }],
     ['a Commander rule in a Normal game', 'Normal', { commander_tax: 0 }],
+    ['take-backs on, as every game has them', 'Normal', { take_backs: true }],
   ])('shows nothing for %s', (_what, format, rules) => {
     show(format, rules)
     expect(screen.queryByRole('button', { name: /House rules/ })).toBeNull()
@@ -45,6 +46,17 @@ describe('the house rules in the top bar', () => {
       'Open hands',
       'No commander tax',
     ])
+  })
+})
+
+describe('take-backs turned off', () => {
+  it('is named among the rules that differ', async () => {
+    show('Normal', { take_backs: false })
+    await userEvent
+      .setup()
+      .click(screen.getByRole('button', { name: 'House rules: 1 differs from the format' }))
+    const list = await screen.findByRole('list', { name: 'House rules of this game' })
+    expect([...list.children].map((item) => item.textContent)).toEqual(['No take-backs'])
   })
 })
 
