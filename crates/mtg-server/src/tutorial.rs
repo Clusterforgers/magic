@@ -188,7 +188,7 @@ pub fn spawn_bot(handle: GameHandle) -> JoinHandle<()> {
                         return;
                     }
                 }
-                ServerMessage::GameOver { .. } => return,
+                ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => return,
                 _ => {}
             }
         }

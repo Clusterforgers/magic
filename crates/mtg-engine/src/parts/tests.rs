@@ -71,6 +71,7 @@ fn payer<'a>(game: &'a GameState, barred: &'a [ObjectId]) -> Payer<'a> {
         source: named(game, "Source"),
         barred,
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     }
 }
 

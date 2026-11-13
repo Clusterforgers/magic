@@ -172,7 +172,11 @@ refusal?: Refusal, } | { "type": "GameOver",
 /**
  * How it ended.
  */
-result: GameResult, } | { "type": "TakeBackOffer", 
+result: GameResult, } | { "type": "EndedByAdmin", 
+/**
+ * What the admin wrote, if anything.
+ */
+reason?: string, } | { "type": "TakeBackOffer", 
 /**
  * The last action of the seat that a take-back would undo.
  */

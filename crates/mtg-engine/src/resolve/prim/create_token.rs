@@ -274,7 +274,34 @@ fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveErro
             except,
             no_mana_cost,
         } => copies_of(cx, of, except, *no_mana_cost)?,
+        TokenRef::R4700OfChosen { size } => {
+            let Some(spec) = r4700_of_chosen(cx, size)? else {
+                return Ok(Vec::new());
+            };
+            vec![(Arc::new(token_definition(&spec, &caps())), None)]
+        }
     })
+}
+
+/// The creature token of the colour and creature type the source chose as it entered, of the size counted now; none
+/// when it chose no colour and type.
+fn r4700_of_chosen(cx: &Cx<'_>, size: &Amount) -> Result<Option<TokenSpec>, ResolveError> {
+    let Some(crate::object::Chosen::ColorAndType(color, subtype)) = cx.scope.entered_choice()
+    else {
+        return Ok(None);
+    };
+    let size = i32::try_from(cx.scope.amount(size)?.max(0)).unwrap_or(i32::MAX);
+    Ok(Some(TokenSpec {
+        name: subtype.0.clone(),
+        colors: vec![*color],
+        supertypes: Vec::new(),
+        types: vec![mtg_core::card::CardType::Creature],
+        subtypes: vec![subtype.clone()],
+        power: Some(size),
+        toughness: Some(size),
+        abilities: Vec::new(),
+        mana_cost: None,
+    }))
 }
 
 #[cfg(test)]
