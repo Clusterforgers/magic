@@ -7,70 +7,24 @@
       "name": "Kangee, Aerie Keeper",
       "oracle_fingerprint": "7b2678e131f52f93802e03f04270440b",
       "abilities": [
-        {
-          "Keyword": {
-            "Kicker": "{X}{2}"
-          }
-        },
-        {
-          "Keyword": "Flying"
-        },
+        { "Keyword": { "Kicker": "{X}{2}" } },
+        { "Keyword": "Flying" },
         {
           "Triggered": {
-            "when": {
-              "ZoneChange": {
-                "what": [
-                  "This",
-                  "Kicked"
-                ],
-                "to": "Battlefield"
-              }
-            },
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
             "effects": [
-              {
-                "PutCounters": {
-                  "on": "This",
-                  "counter": {
-                    "Other": "feather"
-                  },
-                  "count": "X"
-                }
-              }
+              { "PutCounters": { "on": "This", "counter": { "Other": "feather" }, "count": "X" } }
             ]
           }
         },
         {
           "Static": {
-            "affected": {
-              "Each": [
-                {
-                  "Type": "Creature"
-                },
-                {
-                  "Subtype": "Bird"
-                },
-                "Other"
-              ]
-            },
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Bird" }, "Other"] },
             "mods": [
               {
                 "ModifyPT": {
-                  "power": {
-                    "Counters": {
-                      "on": "This",
-                      "counter": {
-                        "Other": "feather"
-                      }
-                    }
-                  },
-                  "toughness": {
-                    "Counters": {
-                      "on": "This",
-                      "counter": {
-                        "Other": "feather"
-                      }
-                    }
-                  }
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "feather" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "feather" } } }
                 }
               }
             ]

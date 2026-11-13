@@ -107,6 +107,12 @@ fn r4710_probe() {
 #[case("Matter Reshaper")]
 #[case("Gisa's Favorite Shovel")]
 #[case("Imperial Mask")]
+#[case("Vannifar, Evolved Enigma")]
+#[case("Kozilek, the Broken Reality")]
+#[case("Kaust, Eyes of the Glade")]
+#[case("The Motherlode, Excavator")]
+#[case("Shark Shredder, Killer Clone")]
+#[case("Galloping Lizrog")]
 fn r4710_reads_back_whole(#[case] name: &str) {
     let report = r4710_report(name, &r4710_file(name));
     assert_eq!(
@@ -157,6 +163,24 @@ fn r4710_reads_back_whole(#[case] name: &str) {
     r#""if": { "Not": { "Matches": { "subject": "This", "selector": ["Token"] } } },"#,
     ""
 )]
+#[case::manifested_not_cloaked("Vannifar, Evolved Enigma", r#""Cloak""#, r#""Manifest""#)]
+#[case::token_creatures("Vannifar, Evolved Enigma", r#""Colorless""#, r#""Token""#)]
+#[case::cloaked_not_manifested("Kozilek, the Broken Reality", r#""Manifest""#, r#""Cloak""#)]
+#[case::up_to_two_cards("Kozilek, the Broken Reality", r#""min": 2"#, r#""min": 0"#)]
+#[case::attacked_this_turn("Kaust, Eyes of the Glade", r#""TurnedFaceUp""#, r#""Attacked""#)]
+#[case::three_energy("The Motherlode, Excavator", r#""PayEnergy": 4"#, r#""PayEnergy": 3"#)]
+#[case::cant_attack("The Motherlode, Excavator", r#""CantBlock""#, r#""CantAttack""#)]
+#[case::attacking_another(
+    "Shark Shredder, Killer Clone",
+    r#""against": "Triggering""#,
+    r#""against": "You""#
+)]
+#[case::your_graveyard(
+    "Shark Shredder, Killer Clone",
+    r#""OwnedBy": "Triggering""#,
+    r#""OwnedBy": "You""#
+)]
+#[case::thrice_that_many("Galloping Lizrog", r#""by": 2"#, r#""by": 3"#)]
 fn r4710_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4710_file(name);
     assert!(file.contains(from), "{name} has {from}");

@@ -9,12 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "BeginCombat",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
             "effects": [
               {
                 "Modal": {
@@ -23,26 +18,11 @@
                       "effects": [
                         {
                           "Choose": {
-                            "from": {
-                              "Each": [
-                                {
-                                  "In": "Hand"
-                                },
-                                {
-                                  "OwnedBy": "You"
-                                }
-                              ]
-                            },
+                            "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
                             "as": "cloaked"
                           }
                         },
-                        {
-                          "Cloak": {
-                            "cards": {
-                              "Bound": "cloaked"
-                            }
-                          }
-                        }
+                        { "Cloak": { "cards": { "Bound": "cloaked" } } }
                       ]
                     },
                     {
@@ -51,13 +31,9 @@
                           "PutCounters": {
                             "on": {
                               "Each": [
-                                {
-                                  "Type": "Creature"
-                                },
+                                { "Type": "Creature" },
                                 "Colorless",
-                                {
-                                  "ControlledBy": "You"
-                                }
+                                { "ControlledBy": "You" }
                               ]
                             },
                             "counter": "+1/+1"

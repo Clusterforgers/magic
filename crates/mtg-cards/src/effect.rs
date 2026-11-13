@@ -951,6 +951,10 @@ pub enum Effect {
     JoinAttack {
         /// The creature that joins the attack.
         what: Ref,
+        /// The player it attacks, in place of what the cost's creature attacked or its controller's choice ("It enters
+        /// tapped and attacking that player"): nothing joins when that player can't be attacked.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        against: Option<Ref>,
     },
     /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
     MyriadCopies {

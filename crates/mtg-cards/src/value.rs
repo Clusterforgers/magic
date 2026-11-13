@@ -456,6 +456,9 @@ pub enum TallyEvent {
     /// A card was discarded (the card as it lies in the graveyard it went to, for the player who discarded it): "the first
     /// time each turn you discard one or more nonland cards".
     Discarded,
+    /// A permanent was turned face up (the permanent, for its controller): "a creature you control that was turned face
+    /// up this turn".
+    TurnedFaceUp,
 }
 
 /// Which result of the latest die roll an amount reads.

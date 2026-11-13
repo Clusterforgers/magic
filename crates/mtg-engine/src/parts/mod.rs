@@ -518,6 +518,12 @@ impl Part {
         matches!(self, Part::X(inner) if matches!(&**inner, Part::Pick(pick) if pick.reads_x))
     }
 
+    /// Whether the part is counters removed from among permanents, as many as the X announced ("remove any number of
+    /// +1/+1 counters from among creatures you control").
+    pub(crate) fn r4710_is_counted_among(&self) -> bool {
+        matches!(self, Part::X(inner) if matches!(**inner, Part::Among { .. }))
+    }
+
     /// Whether the part is energy of the X announced.
     pub(crate) fn is_counted_energy(&self) -> bool {
         matches!(self, Part::X(inner) if matches!(**inner, Part::Energy(_)))

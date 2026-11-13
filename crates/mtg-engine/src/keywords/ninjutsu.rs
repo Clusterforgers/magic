@@ -81,7 +81,10 @@ fn activation(cost: &Cost) -> Ability {
                     subject: ninja(),
                     selector: Selector(vec![Pred::In(ZoneKind::Battlefield)]),
                 },
-                then: vec![Effect::JoinAttack { what: ninja() }],
+                then: vec![Effect::JoinAttack {
+                    what: ninja(),
+                    against: None,
+                }],
                 otherwise: Vec::new(),
             },
         ],

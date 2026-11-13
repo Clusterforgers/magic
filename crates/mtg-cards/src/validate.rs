@@ -2127,10 +2127,12 @@ impl<'a> Walker<'a> {
         if has_x_mana(cost) {
             self.uses("Effect", "Pay.X");
         }
-        // Energy of that count is paid once X is announced; any other part is not.
+        // Energy of that count is paid once X is announced, and so are counters from among permanents; any other part is
+        // not.
         if cost.0.iter().any(|item| {
             amount_is_x(item)
                 && !matches!(item, CostItem::PayEnergy(_) | CostItem::PayLife(Amount::X))
+                && !r4710_among_x(item)
         }) {
             self.uses("Effect", "Pay.X.Parts");
         }
@@ -2148,6 +2150,10 @@ impl<'a> Walker<'a> {
             .any(|item| matches!(item, CostItem::PayEnergy(Amount::X)))
         {
             self.uses("Effect", "Pay.X.Energy");
+        }
+        // Counters removed from among permanents, as many as X ("remove any number of +1/+1 counters from among ...").
+        if cost.0.iter().any(r4710_among_x) {
+            self.uses("Effect", "Pay.X.Among");
         }
     }
 
@@ -4089,8 +4095,20 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
-            Effect::Unattach { what } | Effect::JoinAttack { what } | Effect::Reattack { what, .. } => {
+            Effect::Unattach { what }
+            | Effect::JoinAttack {
+                what,
+                against: None,
+            }
+            | Effect::Reattack { what, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::JoinAttack {
+                what,
+                against: Some(against),
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("against", |w| w.reference(against, Kind::Player));
             }
             Effect::MyriadCopies { of, bind } => {
                 w.at("of", |w| w.reference(of, Kind::Object));
@@ -6404,8 +6422,19 @@ fn announces_x(cost: &Cost) -> bool {
             matches!(
                 item,
                 CostItem::PayEnergy(Amount::X) | CostItem::PayLife(Amount::X)
-            )
+            ) || r4710_among_x(item)
         })
+}
+
+/// Whether the part removes X counters from among permanents.
+fn r4710_among_x(item: &CostItem) -> bool {
+    matches!(
+        item,
+        CostItem::RemoveCountersAmong {
+            count: Amount::X,
+            ..
+        }
+    )
 }
 
 /// The tag of mana read from one player's game (`CommanderIdentity`, `ProducedBy`), through `Instead` on either side.
