@@ -515,7 +515,7 @@ impl<'a> ManaProduced<'a> {
             Produce::AnyColorAmong(among) => ManaProduced::AnyColorAmong(among),
             Produce::DraftedColors => ManaProduced::DraftedColors,
             Produce::Devotion => ManaProduced::Devotion,
-            Produce::OfTapped => return None,
+            Produce::OfTapped | Produce::CostOf(_) => return None,
         })
     }
 }

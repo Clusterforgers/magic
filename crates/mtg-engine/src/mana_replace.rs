@@ -74,24 +74,57 @@ fn orders(
         .collect();
     let ordered = changes.len().min(MOST_ORDERED);
     let mut found: Vec<ManaOption> = Vec::new();
-    for order in permutations(ordered) {
-        let mut next = option.clone();
-        for at in order {
-            change(&mut next, changes[at]);
-        }
-        // Replacements past the limit apply last, in the order of the rules.
-        for &how in &changes[ordered..] {
-            change(&mut next, how);
-        }
-        let same = |kept: &ManaOption| {
-            (kept.produces, kept.count, &kept.also) == (next.produces, next.count, &next.also)
-        };
-        if !found.iter().any(same) {
-            next.source.ability += found.len() * ORDER_STRIDE;
-            found.push(next);
+    for changes in r5511_chosen(&changes) {
+        for order in permutations(ordered) {
+            let mut next = option.clone();
+            for at in order {
+                change(&mut next, changes[at]);
+            }
+            // Replacements past the limit apply last, in the order of the rules.
+            for &how in &changes[ordered..] {
+                change(&mut next, how);
+            }
+            let same = |kept: &ManaOption| {
+                (kept.produces, kept.count, &kept.also) == (next.produces, next.count, &next.also)
+            };
+            if !found.iter().any(same) {
+                next.source.ability += found.len() * ORDER_STRIDE;
+                found.push(next);
+            }
         }
     }
     found
+}
+
+/// The changes with each color the tapping player may choose put in place of a choice of color, one list per way to
+/// choose (CR 106.6): each way is a source of its own, as an order is.
+fn r5511_chosen(changes: &[ManaChange]) -> Vec<Vec<ManaChange>> {
+    const COLORS: [ManaType; 5] = [
+        ManaType::White,
+        ManaType::Blue,
+        ManaType::Black,
+        ManaType::Red,
+        ManaType::Green,
+    ];
+    let mut all: Vec<Vec<ManaChange>> = vec![Vec::new()];
+    for change in changes {
+        let ways: Vec<ManaChange> = match change {
+            ManaChange::OnlyChosenColor => COLORS.map(ManaChange::OnlyType).to_vec(),
+            ManaChange::OneChosenColor => COLORS.map(ManaChange::One).to_vec(),
+            other => vec![*other],
+        };
+        all = all
+            .into_iter()
+            .flat_map(|done| {
+                ways.iter().map(move |way| {
+                    let mut next = done.clone();
+                    next.push(*way);
+                    next
+                })
+            })
+            .collect();
+    }
+    all
 }
 
 /// Every order of `0..n`, the rule order first.
@@ -133,6 +166,8 @@ fn change(option: &mut ManaOption, how: ManaChange) {
             let also: Vec<ManaType> = option.also.repeat(times);
             option.also = also.into_iter().take(MOST).collect();
         }
+        // A choice of color is made before the change applies (`r5511_chosen`).
+        ManaChange::OnlyChosenColor | ManaChange::OneChosenColor => {}
         ManaChange::Convert { from, to } => {
             if option.produces == from {
                 option.produces = to;

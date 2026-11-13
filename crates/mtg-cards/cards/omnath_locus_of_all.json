@@ -1,7 +1,7 @@
 {
   "oracle_id": "26445dc7-8363-4205-aee8-1cafeb4ba4c0",
   "name": "Omnath, Locus of All",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Omnath, Locus of All",
@@ -9,9 +9,45 @@
       "abilities": [
         { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Black" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 65, "end": 366 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "card" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Stat": { "of": { "Bound": "card" }, "stat": "ColoredManaSymbols" }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Reveal": { "what": { "Bound": "card" } } },
+                          {
+                            "AddMana": {
+                              "mana": {
+                                "AnyColorAmong": [
+                                  { "Is": { "Bound": "card" } },
+                                  { "In": "Library" }
+                                ]
+                              },
+                              "times": 3
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
           }
         }
       ]

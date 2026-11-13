@@ -1,7 +1,7 @@
 {
   "oracle_id": "040cbd8a-a9e5-454b-a5ae-9b66bb66b8e9",
   "name": "Nethergoyf",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nethergoyf",
@@ -23,12 +23,7 @@
             "defining": true
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 136, "end": 309 }
-          }
-        }
+        { "Keyword": { "Escape": [{ "Mana": "{2}{B}" }, { "ExileCardTypes": 4 }] } }
       ]
     }
   ]

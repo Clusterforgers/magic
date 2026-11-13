@@ -53,7 +53,7 @@ fn of_keyword(rules: &Ability, keyword: Option<&Keyword>) -> Option<ActivationKi
         Some(Keyword::Equip(_) | Keyword::EquipTo { .. }) => Some(ActivationKind::Equip),
         Some(Keyword::Cycling(_) | Keyword::Typecycling { .. }) => Some(ActivationKind::Cycling),
         Some(Keyword::Unearth(_)) => Some(ActivationKind::Unearth),
-        Some(Keyword::Ninjutsu(_)) => Some(ActivationKind::Ninjutsu),
+        Some(Keyword::Ninjutsu(_) | Keyword::CommanderNinjutsu(_)) => Some(ActivationKind::Ninjutsu),
         _ => r5506_labelled(rules),
     }
 }
@@ -328,6 +328,10 @@ mod r301_tests {
     #[case::cycling(Keyword::Cycling(Cost::default()), Some(ActivationKind::Cycling))]
     #[case::unearth(Keyword::Unearth(Cost::default()), Some(ActivationKind::Unearth))]
     #[case::r301_ninjutsu(Keyword::Ninjutsu(Cost::default()), Some(ActivationKind::Ninjutsu))]
+    #[case::r5511_commander_ninjutsu(
+        Keyword::CommanderNinjutsu(Cost::default()),
+        Some(ActivationKind::Ninjutsu)
+    )]
     #[case::scavenge_has_none(Keyword::Scavenge(Cost::default()), None)]
     fn the_kind_of_a_keyword_ability(
         #[case] keyword: Keyword,

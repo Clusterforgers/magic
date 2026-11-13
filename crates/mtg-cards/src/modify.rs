@@ -65,6 +65,21 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Gives each of the listed keywords that one of the objects the reference names has, with the variant it has
+    /// ("hexproof from white" for hexproof) (layer 6): "If a creature card with flying was exiled with this creature's
+    /// delve ability, this creature has flying. The same is true for ..." (Soulflayer).
+    KeywordsOf {
+        /// The objects whose keywords are read.
+        from: Box<Ref>,
+        /// The keywords given.
+        keywords: Vec<Keyword>,
+    },
+    /// Replaces the creature types with those of the object the reference names (layer 4): "has the creature types of the
+    /// last creature card exiled with it" (Duplicant).
+    SetCreatureTypesOf(Ref),
+    /// Makes the land type at this place among the basic land types the source chose as it entered the land types (layer
+    /// 4): "are the second chosen type" (Illusionary Terrain).
+    SetLandTypesNthChosen(u8),
     /// Makes these the land types, the old ones and the abilities of the land gone, and gives it the mana ability of each
     /// basic land type among them (layer 4): "Nonbasic lands are Mountains" (CR 305.7).
     SetLandTypes(Vec<Subtype>),
@@ -212,6 +227,8 @@ impl Modification {
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetCreatureTypesOf(_)
+            | Modification::SetLandTypesNthChosen(_)
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
@@ -226,6 +243,7 @@ impl Modification {
             | Modification::AddChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
+            | Modification::KeywordsOf { .. }
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
@@ -1322,6 +1340,11 @@ pub enum ManaChange {
     One(ManaType),
     /// As many times as much mana.
     Times(u32),
+    /// Every mana is of one color the tapping player chooses instead of any other type, in the same amount ("it produces
+    /// mana of a color of your choice instead of any other type").
+    OnlyChosenColor,
+    /// One mana of a color the tapping player chooses instead of any other type and amount.
+    OneChosenColor,
     /// Mana of the first type is of the second instead.
     Convert {
         /// The type that changes.

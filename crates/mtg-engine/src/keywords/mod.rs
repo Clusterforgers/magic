@@ -500,7 +500,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Dash(_) | Keyword::Blitz(_) | Keyword::Prowl(_) | Keyword::Mayhem(_) => {
             cost_rules(keyword)
         }
-        Keyword::Ninjutsu(_) => &ninjutsu::Ninjutsu,
+        Keyword::Ninjutsu(_) | Keyword::CommanderNinjutsu(_) => &ninjutsu::Ninjutsu,
         Keyword::Echo(_) => &echo::Echo,
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::CumulativeUpkeepActs { .. } => &r282_cumulative_acts::CumulativeUpkeepActs,
@@ -961,6 +961,7 @@ mod tests {
             Keyword::Disturb(cost()),
             Keyword::MoreThanMeetsTheEye(cost()),
             Keyword::Ninjutsu(cost()),
+            Keyword::CommanderNinjutsu(cost()),
             Keyword::Echo(cost()),
             Keyword::CumulativeUpkeep(cost()),
             Keyword::CumulativeUpkeepActs {
@@ -1171,6 +1172,7 @@ mod tests {
         "Keyword.Disturb",
         "Keyword.MoreThanMeetsTheEye",
         "Keyword.Ninjutsu",
+        "Keyword.CommanderNinjutsu",
         "Keyword.Echo",
         "Keyword.CumulativeUpkeep",
         "Keyword.CumulativeUpkeepActs",
@@ -1401,6 +1403,7 @@ mod tests {
     #[case::disturb(Keyword::Disturb(Cost::mana("{2}{W}".parse().unwrap())), Hooks::none())]
     #[case::encore(Keyword::Encore(Cost::mana("{2}{W}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ninjutsu(Keyword::Ninjutsu(Cost::mana("{1}{U}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::r5511_commander_ninjutsu(Keyword::CommanderNinjutsu(Cost::mana("{U}{B}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::echo(Keyword::Echo(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]

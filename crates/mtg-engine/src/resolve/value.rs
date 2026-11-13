@@ -1256,6 +1256,44 @@ impl<'a> Scope<'a> {
         Ok(held)
     }
 
+    /// The cards the delve of the source's spell exiled that are still those objects in exile (CR 702.66, 607.2a).
+    fn r5511_delved(&self) -> Vec<Target> {
+        let delved = self
+            .state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map(|object| object.delved().to_vec())
+            .unwrap_or_default();
+        delved
+            .into_iter()
+            .filter(|card| {
+                self.state.object(card.id).is_some_and(|object| {
+                    object.counter() == card.counter && object.zone() == crate::zones::Zone::Exile
+                })
+            })
+            .map(Target::Object)
+            .collect()
+    }
+
+    /// The card each object `on` names exiled last among those `filter` selects, while it is still in exile.
+    fn r5511_last_exiled(&self, on: &Ref, filter: &Selector) -> Result<Vec<Target>, ResolveError> {
+        let mut found = Vec::new();
+        for source in self.objects(on)? {
+            let exiled = crate::memory::recall(self.state, source, mtg_cards::refs::EXILED_SLOT);
+            for object in exiled.into_iter().rev() {
+                let in_exile = self
+                    .state
+                    .object(object.id)
+                    .is_some_and(|card| card.zone() == crate::zones::Zone::Exile);
+                if in_exile && self.selects(filter, object)? {
+                    found.push(Target::Object(object));
+                    break;
+                }
+            }
+        }
+        Ok(found)
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
@@ -1348,7 +1386,9 @@ impl<'a> Scope<'a> {
             Ref::Bound(name) => self.bindings.get(name).cloned().unwrap_or_default(),
             Ref::Paid => self.paid(),
             Ref::Convoked => self.convoked(),
+            Ref::Delved => self.r5511_delved(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
+            Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::SourceOf(of) => self.r302b_sources(of)?,
@@ -2103,9 +2143,11 @@ impl<'a> Scope<'a> {
                     &c.card().name,
                 ))
             }),
-            Pred::ChosenColor | Pred::ChosenSubtype | Pred::ChosenName | Pred::ChosenAs(_) => {
-                self.chosen_pred(pred, seen)
-            }
+            Pred::ChosenColor
+            | Pred::ChosenSubtype
+            | Pred::NthChosenLandType(_)
+            | Pred::ChosenName
+            | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
@@ -2222,6 +2264,22 @@ impl<'a> Scope<'a> {
             StatKind::ColorsSpent => seen
                 .card
                 .and_then(|c| i64::try_from(colors_among(c.mana_spent())).ok()),
+            StatKind::ColoredManaSymbols => seen
+                .card
+                .filter(|card| card.face_down().is_none())
+                .map(|card| {
+                    card.mana_cost().map_or(0, |cost| {
+                        let colored = cost
+                            .symbols()
+                            .iter()
+                            .filter(|symbol| r5511_is_colored(**symbol))
+                            .count();
+                        i64::try_from(colored).unwrap_or(i64::MAX)
+                    })
+                }),
+            StatKind::TreasureManaSpent | StatKind::ArtifactManaSpent => seen
+                .card
+                .map(|c| r5511_spent_from(c.mana_spent_from(), stat)),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen
                 .card
@@ -2630,6 +2688,12 @@ impl<'a> Scope<'a> {
                     .entered_choice()
                     .is_some_and(|chosen| Self::is_chosen(seen, chosen))
             }
+            Pred::NthChosenLandType(at) => match self.entered_choice() {
+                Some(Chosen::LandTypes(types)) => types
+                    .get(usize::from(*at))
+                    .is_some_and(|land| Self::is_chosen(seen, &Chosen::LandType(land.clone()))),
+                _ => false,
+            },
             Pred::ChosenName => {
                 matches!(self.entered_choice(), Some(Chosen::Name(_)))
                     && self
@@ -2673,6 +2737,7 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|color| seen.chars.colors.contains(*color)),
             Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => has_subtype(subtype),
+            Chosen::LandTypes(types) => types.iter().any(has_subtype),
             Chosen::CardType(kind) => seen.chars.types.contains(*kind),
             Chosen::Name(name) => seen.card.is_some_and(|c| {
                 crate::un34_stickers::name_with(&seen.chars.name_words, &c.card().name) == *name
@@ -3491,6 +3556,36 @@ impl<'a> Scope<'a> {
                     .any(|ty| chars.types.contains(ty))
             })
     }
+}
+
+/// How much of `spent` came from Treasures or from artifact sources, as `stat` names (CR 106.4a: mana knows its source).
+fn r5511_spent_from(spent: &[mtg_cards::spend::SpentFrom], stat: StatKind) -> i64 {
+    let wanted = |traits: &mtg_cards::spend::SpendTraits| match stat {
+        StatKind::TreasureManaSpent => traits
+            .subtypes
+            .iter()
+            .any(|subtype| subtype.0 == "Treasure"),
+        _ => traits.types.contains(mtg_core::card::CardType::Artifact),
+    };
+    spent
+        .iter()
+        .filter(|from| wanted(&from.traits))
+        .map(|from| i64::from(from.count))
+        .sum()
+}
+
+/// Whether a mana symbol is a colored mana symbol (CR 107.4: it has a color; a hybrid symbol of two colors is one symbol).
+const fn r5511_is_colored(symbol: mtg_core::mana::ManaSymbol) -> bool {
+    use mtg_core::mana::ManaSymbol;
+    matches!(
+        symbol,
+        ManaSymbol::Colored(_)
+            | ManaSymbol::Hybrid(..)
+            | ManaSymbol::MonoHybrid(_)
+            | ManaSymbol::Phyrexian(_)
+            | ManaSymbol::HybridPhyrexian(..)
+            | ManaSymbol::ColorlessHybrid(_)
+    )
 }
 
 #[cfg(test)]

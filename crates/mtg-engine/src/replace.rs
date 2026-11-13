@@ -3437,8 +3437,17 @@ impl Pass<'_> {
                 })
             })
             .flatten();
-        let scope = Scope::announcing(self.state, candidate.controller, candidate.object)
+        // "For each mana from a Treasure spent to cast them" reads the entering card as the affected object.
+        let read = std::cell::Cell::new(false);
+        let entering = self.state.object(object).map(|card| ObjectRef {
+            id: object,
+            counter: card.counter(),
+        });
+        let mut scope = Scope::announcing(self.state, candidate.controller, candidate.object)
             .with_entering(chosen.as_ref());
+        if let Some(entering) = entering {
+            scope = scope.with_affected(entering, &read);
+        }
         let number = scope.amount(count)?.max(0);
         if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
             && delta > 0
@@ -3632,6 +3641,14 @@ impl Pass<'_> {
         Ok(Asked::Got(picked.and_then(|index| {
             match options[index].clone() {
                 ChoiceOption::Color(color) => Some(Chosen::Color(color)),
+                ChoiceOption::Label(name) if kind == EntersChoice::TwoBasicLandTypes => {
+                    name.split_once(R5511_THEN).map(|(first, second)| {
+                        Chosen::LandTypes(vec![
+                            Subtype(first.to_owned()),
+                            Subtype(second.to_owned()),
+                        ])
+                    })
+                }
                 ChoiceOption::Label(name)
                     if matches!(kind, EntersChoice::LandType | EntersChoice::BasicLandType) =>
                 {
@@ -3694,6 +3711,23 @@ impl Pass<'_> {
             EntersChoice::CardType => values::card_types(),
             EntersChoice::CardTypeOf(set) => values::card_types_of(set),
             EntersChoice::BasicLandType => values::basic_land_types(),
+            // Two different types in order: "Plains, then Island" is Plains first.
+            EntersChoice::TwoBasicLandTypes => {
+                let names: Vec<String> = values::basic_land_types()
+                    .into_iter()
+                    .filter_map(|option| match option {
+                        ChoiceOption::Label(name) => Some(name),
+                        _ => None,
+                    })
+                    .collect();
+                let mut pairs = Vec::new();
+                for first in &names {
+                    for second in names.iter().filter(|second| *second != first) {
+                        pairs.push(ChoiceOption::Label(format!("{first}{R5511_THEN}{second}")));
+                    }
+                }
+                pairs
+            }
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
             | EntersChoice::NoncreatureNonlandCardName
@@ -3720,6 +3754,9 @@ impl Pass<'_> {
     }
 }
 
+/// The words between the first and the second of two land types chosen in order.
+const R5511_THEN: &str = ", then ";
+
 /// The question of a choice made as a permanent enters, in words.
 fn entering_question(kind: EntersChoice) -> String {
     match kind {
@@ -3733,6 +3770,9 @@ fn entering_question(kind: EntersChoice) -> String {
         EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
         EntersChoice::LandType => "Choose a land type.".to_owned(),
         EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
+        EntersChoice::TwoBasicLandTypes => {
+            "Choose two basic land types: the first, then the second.".to_owned()
+        }
         EntersChoice::Player => "Choose a player.".to_owned(),
         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),

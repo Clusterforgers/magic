@@ -66,6 +66,7 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Colors' in chosen) return `, choosing ${joinWords(chosen.Colors.map((color) => color.toLowerCase()))}`
   if ('Player' in chosen) return `, choosing ${n.seat(chosen.Player)}`
   if ('LandType' in chosen) return `, choosing ${chosen.LandType}`
+  if ('LandTypes' in chosen) return `, choosing ${chosen.LandTypes.join(', then ')}`
   if ('CardType' in chosen) return `, choosing ${chosen.CardType.toLowerCase()}`
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
@@ -192,6 +193,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${becomes} ${joinWords(colors)} in addition to its other colors`
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
+  if ('AddKeywords' in modification) {
+    const keywords = Array.isArray(modification.AddKeywords) ? (modification.AddKeywords as unknown[]) : []
+    return `${gains} ${joinWords(keywords.map(keywordWords))}`
+  }
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
   if ('RemoveKeywordKind' in modification) {
     return `${loses} ${KEYWORD_KIND_WORDS[modification.RemoveKeywordKind]}`

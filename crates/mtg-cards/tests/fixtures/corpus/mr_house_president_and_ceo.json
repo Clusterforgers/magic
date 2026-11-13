@@ -1,0 +1,170 @@
+{
+  "object": "card",
+  "id": "23eb3cf7-c90d-4bfa-b125-4fbcb5614468",
+  "oracle_id": "d4e54b48-956f-4467-8485-a5fdb44779fd",
+  "multiverse_ids": [
+    652070
+  ],
+  "mtgo_id": 132563,
+  "tcgplayer_id": 523013,
+  "cardmarket_id": 755875,
+  "name": "Mr. House, President and CEO",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/23eb3cf7-c90d-4bfa-b125-4fbcb5614468",
+  "scryfall_uri": "https://scryfall.com/card/pip/7/mr-house-president-and-ceo?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421",
+    "large": "https://cards.scryfall.io/large/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421",
+    "png": "https://cards.scryfall.io/png/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.png?1783912421",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.webp?1783912421",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.webp?1783912421",
+    "display": "https://cards.scryfall.io/display/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.webp?1783912421",
+    "art": "https://cards.scryfall.io/art/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.webp?1783912421",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.webp?1783912421",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/23eb3cf7-c90d-4bfa-b125-4fbcb5614468.jpg?1783912421"
+  },
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact Creature — Human",
+  "oracle_text": "Whenever you roll a 4 or higher, create a 3/3 colorless Robot artifact creature token. If you rolled 6 or higher, instead create that token and a Treasure token.\n{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability.",
+  "power": "0",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1d74d012-66ca-4a0c-9e90-e31e96730d4d",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/1d74d012-66ca-4a0c-9e90-e31e96730d4d"
+    },
+    {
+      "object": "related_card",
+      "id": "d54fa1d0-ec56-4be8-973b-384ae0e66b6c",
+      "component": "combo_piece",
+      "name": "Mr. House, President and CEO",
+      "type_line": "Legendary Artifact Creature — Human",
+      "uri": "https://api.scryfall.com/cards/d54fa1d0-ec56-4be8-973b-384ae0e66b6c"
+    },
+    {
+      "object": "related_card",
+      "id": "76cde21f-2f01-4560-972b-7ecd6740d6de",
+      "component": "token",
+      "name": "Robot",
+      "type_line": "Token Artifact Creature — Robot",
+      "uri": "https://api.scryfall.com/cards/76cde21f-2f01-4560-972b-7ecd6740d6de"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/23eb3cf7-c90d-4bfa-b125-4fbcb5614468/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad4e54b48-956f-4467-8485-a5fdb44779fd&unique=prints",
+  "collector_number": "7",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joseph Meehan",
+  "artist_ids": [
+    "6befd6d5-7f8d-4b7c-87e3-5511391a3359"
+  ],
+  "illustration_id": "49f26fd9-a98f-4450-9c65-59462650598d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6117,
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.88",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.54",
+    "tix": "1.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652070&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMr.%2BHouse%252C%2BPresident%2Band%2BCEO",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMr.%2BHouse%252C%2BPresident%2Band%2BCEO",
+    "edhrec": "https://edhrec.com/route/?cc=Mr.+House%2C+President+and+CEO"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F523013%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=755875&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132563?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

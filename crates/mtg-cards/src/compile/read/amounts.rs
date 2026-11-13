@@ -134,6 +134,9 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::BaseToughness
         | StatKind::ManaSpent
         | StatKind::ColorsSpent
+        | StatKind::TreasureManaSpent
+        | StatKind::ArtifactManaSpent
+        | StatKind::ColoredManaSymbols
         | StatKind::Kicks => None,
     }
 }

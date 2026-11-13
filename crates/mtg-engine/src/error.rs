@@ -278,6 +278,14 @@ pub enum IllegalAnswer {
         /// The total mana value of the cards chosen.
         got: u32,
     },
+    /// The cards exiled for a cost have fewer card types among them than it asks (Nethergoyf's escape).
+    #[error("the cards exiled have {got} card types among them but the cost asks {needed}")]
+    TooFewCardTypes {
+        /// The card types the cost asks.
+        needed: u32,
+        /// The card types among the cards chosen.
+        got: u32,
+    },
     /// The card or ability the answer plays cannot be played now, for the reason it carries.
     #[error("that cannot be played now ({:?})", .0.reason)]
     Refused(Box<crate::decision::Refusal>),

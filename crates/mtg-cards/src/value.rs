@@ -37,6 +37,12 @@ pub enum StatKind {
     ManaSpent,
     /// How many colors there are among the mana spent to cast it (CR 105.4): none when no colored mana was spent.
     ColorsSpent,
+    /// How much mana from Treasures was spent to cast it ("for each mana from a Treasure spent to cast them").
+    TreasureManaSpent,
+    /// How much mana from artifact sources was spent to cast it ("for each mana from an artifact source spent to cast it").
+    ArtifactManaSpent,
+    /// How many colored mana symbols its mana cost has (a hybrid symbol is one); none without a mana cost.
+    ColoredManaSymbols,
     /// How many times its kicker costs were paid, while it is a spell or the permanent it became (CR 702.33).
     Kicks,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).

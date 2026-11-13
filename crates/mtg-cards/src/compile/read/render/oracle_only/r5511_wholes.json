@@ -1,0 +1,1008 @@
+[
+ [
+  {
+   "Rule": {
+    "rule": {
+     "ManaProduced": {
+      "what": [
+       {
+        "Supertype": "Basic"
+       },
+       {
+        "Type": "Land"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "who": "You",
+      "change": "OnlyChosenColor"
+     }
+    }
+   }
+  },
+  "If a basic land you control is tapped for mana, it produces mana of a color of your choice instead of any other type."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{G}"
+     },
+     "Tap",
+     {
+      "Discard": {}
+     }
+    ],
+    "effects": [
+     {
+      "Rule": {
+       "rule": {
+        "ManaProduced": {
+         "what": [
+          {
+           "Type": "Land"
+          }
+         ],
+         "who": "You",
+         "change": "OneChosenColor"
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{G}, {T}, Discard a card: Until end of turn, if you tap a land for mana, it produces one mana of a color of your choice instead of any other type and amount."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       "Other",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "by": {
+     "WithCounters": {
+      "counter": "+1/+1",
+      "count": {
+       "Stat": {
+        "of": "Affected",
+        "stat": "TreasureManaSpent"
+       }
+      }
+     }
+    }
+   }
+  },
+  "Other creatures you control enter with an additional +1/+1 counter on them for each mana from a Treasure spent to cast them."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "by": {
+     "WithCounters": {
+      "counter": "+1/+1",
+      "count": {
+       "Stat": {
+        "of": "Affected",
+        "stat": "ArtifactManaSpent"
+       }
+      }
+     }
+    }
+   }
+  },
+  "Each creature you control enters with an additional +1/+1 counter on it for each mana from an artifact source spent to cast it."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       {
+        "Subtype": "Ninja"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "Each": [
+         {
+          "In": "Library"
+         },
+         {
+          "OwnedBy": "You"
+         },
+         "TopOfLibrary"
+        ]
+       },
+       "as": "card"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     },
+     {
+      "Let": {
+       "as": "mv",
+       "amount": {
+        "Stat": {
+         "of": {
+          "Bound": "card"
+         },
+         "stat": "ManaValue"
+        }
+       }
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "LoseLife": {
+       "who": "Opponents",
+       "amount": {
+        "Bound": "mv"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a Ninja you control deals combat damage to a player, reveal the top card of your library and put that card into your hand. Each opponent loses life equal to that card's mana value."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Modal": {
+       "modes": [
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Not": {
+               "Supertype": "Snow"
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "mods": [
+             {
+              "AddSupertype": "Snow"
+             }
+            ],
+            "duration": "UntilEndOfTurn"
+           }
+          },
+          {
+           "DelayedTrigger": {
+            "when": {
+             "StepBegins": {
+              "step": "Upkeep"
+             }
+            },
+            "effects": [
+             {
+              "Draw": {}
+             }
+            ]
+           }
+          }
+         ]
+        },
+        {
+         "targets": [
+          {
+           "what": {
+            "Object": [
+             {
+              "Supertype": "Snow"
+             }
+            ]
+           }
+          }
+         ],
+         "effects": [
+          {
+           "Continuous": {
+            "affected": {
+             "Target": 0
+            },
+            "mods": [
+             {
+              "RemoveSupertype": "Snow"
+             }
+            ],
+            "duration": "UntilEndOfTurn"
+           }
+          },
+          {
+           "DelayedTrigger": {
+            "when": {
+             "StepBegins": {
+              "step": "Upkeep"
+             }
+            },
+            "effects": [
+             {
+              "Draw": {}
+             }
+            ]
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose one —\n• Target nonsnow permanent becomes snow until end of turn.\n• Target snow permanent isn't snow until end of turn.\nDraw a card at the beginning of the next turn's upkeep."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DiceRolled": {
+      "who": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": "Triggering",
+      "op": "Ge",
+      "right": 4
+     }
+    },
+    "effects": [
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": "Triggering",
+         "op": "Ge",
+         "right": 6
+        }
+       },
+       "then": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Robot",
+            "colors": [],
+            "types": [
+             "Artifact",
+             "Creature"
+            ],
+            "subtypes": [
+             "Robot"
+            ],
+            "power": 3,
+            "toughness": 3
+           }
+          }
+         }
+        },
+        {
+         "CreateToken": {
+          "token": {
+           "Named": "treasure"
+          }
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "CreateToken": {
+          "token": {
+           "Custom": {
+            "name": "Robot",
+            "colors": [],
+            "types": [
+             "Artifact",
+             "Creature"
+            ],
+            "subtypes": [
+             "Robot"
+            ],
+            "power": 3,
+            "toughness": 3
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you roll a 4 or higher, create a 3/3 colorless Robot artifact creature token. If you rolled 6 or higher, instead create that token and a Treasure token."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{4}"
+     },
+     "Tap"
+    ],
+    "effects": [
+     {
+      "RepeatWhile": {
+       "condition": {
+        "Compare": {
+         "left": 0,
+         "op": "Eq",
+         "right": 0
+        }
+       },
+       "effects": [
+        {
+         "RollDice": {
+          "sides": 6,
+          "results": []
+         }
+        }
+       ],
+       "most": 1000,
+       "times": {
+        "Sum": [
+         1,
+         {
+          "ManaSpent": {
+           "of": null,
+           "from": {
+            "subtypes": [
+             "Treasure"
+            ]
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{4}, {T}: Roll a six-sided die plus an additional six-sided die for each mana from Treasures spent to activate this ability."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}"
+     },
+     "Tap"
+    ],
+    "condition": {
+     "All": [
+      "YourTurn",
+      {
+       "Step": "Upkeep"
+      }
+     ]
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Land"
+        },
+        {
+         "Not": {
+          "Subtype": "Swamp"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "PutCounters": {
+       "on": {
+        "Target": 0
+       },
+       "counter": {
+        "Other": "mire"
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetLandTypes": [
+          "Swamp"
+         ]
+        }
+       ],
+       "duration": {
+        "WhileHasCounter": {
+         "Other": "mire"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "{2}, {T}: Put a mire counter on target non-Swamp land. That land is a Swamp for as long as it has a mire counter on it. Activate only during your upkeep."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "AddKeyword": {
+       "Echo": [
+        {
+         "GenericOf": {
+          "Life": "You"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "This creature has echo {X}, where X is your life total. (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)"
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "AddKeyword": {
+       "Echo": [
+        {
+         "GenericOf": {
+          "Life": "You"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "This creature has echo {X}, where X is your life total."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "ChooseNumbers": {
+       "who": "You",
+       "as": "amount",
+       "highest": "chose",
+       "lowest": "chose_least"
+      }
+     },
+     {
+      "DealDamage": {
+       "to": {
+        "Union": [
+         "You",
+         {
+          "Target": 0
+         }
+        ]
+       },
+       "amount": {
+        "ChosenAs": "amount"
+       },
+       "unpreventable": true
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, it deals an amount of damage of your choice to you and target creature. The damage can't be prevented."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Main1",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "CostOf": "Attached"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your first main phase, add mana equal to enchanted permanent's mana cost. (Mana cost includes color. If a mana symbol has multiple colors, choose one.)"
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Main1",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "AddMana": {
+       "mana": {
+        "CostOf": "Attached"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your first main phase, add mana equal to enchanted permanent's mana cost."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Main1",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "card"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Stat": {
+           "of": {
+            "Bound": "card"
+           },
+           "stat": "ColoredManaSymbols"
+          }
+         },
+         "op": "Ge",
+         "right": 3
+        }
+       },
+       "then": [
+        {
+         "May": {
+          "effects": [
+           {
+            "Reveal": {
+             "what": {
+              "Bound": "card"
+             }
+            }
+           },
+           {
+            "AddMana": {
+             "mana": {
+              "AnyColorAmong": [
+               {
+                "Is": {
+                 "Bound": "card"
+                }
+               },
+               {
+                "In": "Library"
+               }
+              ]
+             },
+             "times": 3
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand"
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your first main phase, look at the top card of your library. You may reveal that card if it has three or more colored mana symbols in its mana cost. If you do, add three mana in any combination of its colors and put it into your hand. If you don't reveal it, put it into your hand."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "SetPT": {
+       "power": {
+        "Stat": {
+         "of": {
+          "LastExiledWith": {
+           "on": "This",
+           "filter": [
+            {
+             "In": "Exile"
+            },
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         },
+         "stat": "Power"
+        }
+       },
+       "toughness": {
+        "Stat": {
+         "of": {
+          "LastExiledWith": {
+           "on": "This",
+           "filter": [
+            {
+             "In": "Exile"
+            },
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         },
+         "stat": "Toughness"
+        }
+       }
+      }
+     },
+     {
+      "SetCreatureTypesOf": {
+       "LastExiledWith": {
+        "on": "This",
+        "filter": [
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "AddSubtype": "Shapeshifter"
+     }
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "In": "Exile"
+        },
+        {
+         "ExiledWith": "This"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    }
+   }
+  },
+  "As long as a card exiled with ~ is a creature card, ~ has the power, toughness, and creature types of the last creature card exiled with ~. It's still a Shapeshifter."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "SetPT": {
+       "power": {
+        "Stat": {
+         "of": {
+          "LastExiledWith": {
+           "on": "This",
+           "filter": [
+            {
+             "In": "Exile"
+            },
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         },
+         "stat": "Power"
+        }
+       },
+       "toughness": {
+        "Stat": {
+         "of": {
+          "LastExiledWith": {
+           "on": "This",
+           "filter": [
+            {
+             "In": "Exile"
+            },
+            {
+             "Type": "Creature"
+            }
+           ]
+          }
+         },
+         "stat": "Toughness"
+        }
+       }
+      }
+     },
+     {
+      "SetCreatureTypesOf": {
+       "LastExiledWith": {
+        "on": "This",
+        "filter": [
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "AddSubtype": "Shapeshifter"
+     }
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "In": "Exile"
+        },
+        {
+         "ExiledWith": "This"
+        },
+        {
+         "Type": "Creature"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    }
+   }
+  },
+  "As long as a card exiled with this creature is a creature card, this creature has the power, toughness, and creature types of the last creature card exiled with it. It's still a Shapeshifter."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Enters": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": {
+     "Choose": "TwoBasicLandTypes"
+    }
+   }
+  },
+  "As this enchantment enters, choose two basic land types."
+ ],
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Supertype": "Basic"
+      },
+      {
+       "Type": "Land"
+      },
+      {
+       "NthChosenLandType": 0
+      }
+     ]
+    },
+    "mods": [
+     {
+      "SetLandTypesNthChosen": 1
+     }
+    ]
+   }
+  },
+  "Basic lands of the first chosen type are the second chosen type."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": {
+        "Each": [
+         {
+          "Is": "Delved"
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Reach",
+        "Trample",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If a creature card with flying was exiled with this creature's delve ability, this creature has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, reach, trample, and vigilance."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "KeywordsOf": {
+       "from": {
+        "Each": [
+         {
+          "Is": "Delved"
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       "keywords": [
+        "Flying",
+        "FirstStrike",
+        "DoubleStrike",
+        "Deathtouch",
+        "Haste",
+        "Hexproof",
+        "Indestructible",
+        "Lifelink",
+        "Reach",
+        "Trample",
+        "Vigilance"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "If a creature card with flying was exiled with ~'s delve ability, ~ has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, reach, trample, and vigilance."
+ ]
+]

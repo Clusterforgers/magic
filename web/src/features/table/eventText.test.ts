@@ -953,6 +953,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2), { AddKeywords: ['Flying', 'Trample'] }, 'Forever'),
+      'Hill Giant gains flying and trample',
+    ],
+    [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
     ],
@@ -1397,6 +1401,12 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { LandType: 'Swamp' } } },
       "Forest enters under Ana's control, choosing Swamp",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { LandTypes: ['Plains', 'Island'] } },
+      },
+      "Forest enters under Ana's control, choosing Plains, then Island",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { CardType: 'Creature' } } },

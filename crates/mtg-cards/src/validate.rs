@@ -321,12 +321,16 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
 
 /// The target specifications and bound names an ability body can see.
 #[derive(Default)]
+// Each flag is a separate place a reference may stand in.
+#[allow(clippy::struct_excessive_bools)]
 struct Scope {
     targets: Vec<(Kind, bool, bool)>,
     used: BTreeSet<usize>,
     in_trigger: bool,
     /// The changes of a static ability are being checked: `Affected` names the object each one applies to.
     in_static: bool,
+    /// The count of counters an entering permanent gets: `Affected` is the entering card.
+    r5511_entering: bool,
     /// How many `Pred::Test` are being checked around this point: `Candidate` names the object the innermost judges.
     tests: u8,
     /// `Dealer` names something: a triggered ability, or a replacement of damage.
@@ -355,6 +359,7 @@ impl Scope {
             in_trigger,
             dealer: in_trigger,
             in_static: false,
+            r5511_entering: false,
             tests: 0,
             names: vec![BTreeMap::new()],
             numbers: BTreeSet::new(),
@@ -445,6 +450,8 @@ struct Walker<'a> {
     /// Whether a choice between costs is the whole cost of a payment an effect asks once ("unless they sacrifice a creature or
     /// pay 3 life"), which the engine asks of the payer.
     r281_paying: bool,
+    /// A cost paid as an effect resolves (`Effect::Pay`, echo): a `GenericOf` part is counted then.
+    r5511_resolving_cost: bool,
     /// Whether the cost walked is the cost of a payment an effect asks (`Effect::Pay`), the one place an `XAtMost` is read.
     r306_paying: bool,
     /// Walking a required additional cost of the card, which caps the X its spell announces (Open the Way).
@@ -497,6 +504,7 @@ impl<'a> Walker<'a> {
             choosing: false,
             r400_alternative: false,
             r281_paying: false,
+            r5511_resolving_cost: false,
             r306_paying: false,
             r5523_spell_cap: false,
             amounting: Amounting::Other,
@@ -655,6 +663,12 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
+            Ref::Delved => self.expect(Kind::Object, want),
+            Ref::LastExiledWith { on, filter } => {
+                self.reference(on, Kind::Object);
+                self.at("filter", |w| w.selector(filter));
+                self.expect(Kind::Object, want);
+            }
             Ref::Paid => {
                 if !self.pays_objects {
                     self.problem("`Paid` needs a cost that takes objects: a sacrifice, a discard, an exile or a tap");
@@ -694,7 +708,7 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Either, want);
             }
             Ref::Affected => {
-                if !self.scope.in_static {
+                if !self.scope.in_static && !self.scope.r5511_entering {
                     self.problem("`Affected` is only valid in the changes of a static ability");
                 }
                 self.expect(Kind::Object, want);
@@ -1055,6 +1069,7 @@ impl<'a> Walker<'a> {
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::ChosenSubtype
+            | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::OriginallyPrintedIn(_)
             | Pred::In(_) => {}
@@ -1801,6 +1816,10 @@ impl<'a> Walker<'a> {
                 if matches!(item, CostItem::Untap) && !w.activated_cost {
                     w.uses("Cost", "Untap.Elsewhere");
                 }
+                // Only a payment during a resolution counts the amount; an announced cost does not.
+                if matches!(item, CostItem::GenericOf(_)) && !w.r5511_resolving_cost {
+                    w.uses("Cost", "GenericOf.Announced");
+                }
                 w.r400_counted(item);
                 match item {
                     CostItem::PayLife(amount)
@@ -1810,6 +1829,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardRandom(amount)
                     | CostItem::DamageToYou(amount)
                     | CostItem::ExileTop(amount)
+                    | CostItem::GenericOf(amount)
                     | CostItem::Blight(amount) => {
                         w.amount(amount);
                     }
@@ -1864,6 +1884,7 @@ impl<'a> Walker<'a> {
                     | CostItem::DiscardSelf
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
+                    | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::GetPoison(_)
@@ -2243,6 +2264,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Unattach
                     | CostItem::ExileTop(_)
                     | CostItem::CollectEvidence(_)
+                    | CostItem::ExileCardTypes(_)
                     | CostItem::Blight(_)
                     | CostItem::Behold { .. }
                     | CostItem::ExiledToGraveyard { .. }
@@ -2458,7 +2480,9 @@ impl<'a> Walker<'a> {
                 self.payment_of_the_source(cost);
             }
             Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
+                self.r5511_resolving_cost = true;
                 self.at("cost", |w| w.cost(cost));
+                self.r5511_resolving_cost = false;
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
             }
@@ -2473,6 +2497,7 @@ impl<'a> Walker<'a> {
             | Keyword::Scavenge(cost)
             | Keyword::Transmute(cost)
             | Keyword::Ninjutsu(cost)
+            | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
                 let held = std::mem::replace(&mut self.activated_cost, true);
@@ -2600,6 +2625,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // one arm for each kind of modification
     fn modification(&mut self, modification: &Modification) {
         self.uses("Mod", &tag_of(modification));
         // A name the card's own effect gives ("named Fenric") is a name its other abilities may refer to.
@@ -2633,7 +2659,19 @@ impl<'a> Walker<'a> {
                 self.keyword(keyword);
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
-            Modification::GainAbilitiesOf(from) => self.reference(from, Kind::Object),
+            Modification::GainAbilitiesOf(from) | Modification::SetCreatureTypesOf(from) => {
+                self.reference(from, Kind::Object);
+            }
+            Modification::KeywordsOf { from, keywords } => {
+                self.reference(from, Kind::Object);
+                if keywords.is_empty() {
+                    self.problem("a keyword copied from other objects names at least one keyword");
+                }
+                for keyword in keywords {
+                    self.granted.push(keyword.clone());
+                    self.keyword(keyword);
+                }
+            }
             Modification::GrantAbility(granted) => self.granted(granted),
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
@@ -2656,6 +2694,7 @@ impl<'a> Walker<'a> {
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
             | Modification::AddChosenColor => {
+            | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
                         "the choice the source made as it entered is read by its static ability only",
@@ -3493,6 +3532,8 @@ impl Walker<'_> {
             | Ref::PlayersWhere { .. }
             | Ref::Seated { .. } => Kind::Player,
             Ref::Affected
+            | Ref::LastExiledWith { .. }
+            | Ref::Delved
             | Ref::Candidate
             | Ref::This
             | Ref::Dealer
@@ -3773,6 +3814,9 @@ impl Walker<'_> {
             }
             Produce::EachColorAmong(among) => {
                 self.at("EachColorAmong", |w| w.selector(among));
+            }
+            Produce::CostOf(of) => {
+                self.at("CostOf", |w| w.reference(of, Kind::Object));
             }
             Produce::Instead {
                 base,
@@ -5100,7 +5144,9 @@ impl Walker<'_> {
                 w.r281_paying = *times == Amount::one()
                     && matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 w.r306_paying = true;
+                w.r5511_resolving_cost = true;
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                w.r5511_resolving_cost = false;
                 w.r306_paying = false;
                 w.r281_paying = false;
                 (w.x_free, w.x_now) = (saved, saved_now);
@@ -6546,7 +6592,10 @@ impl Walker<'_> {
                 if !enters && !matches!(when, ReplaceWhen::TurnedFaceUp { .. }) {
                     self.problem("`WithCounters` replaces an `Enters` or a `TurnedFaceUp`");
                 }
+                let held = self.scope.r5511_entering;
+                self.scope.r5511_entering = enters;
                 self.at("count", |w| w.amount(count));
+                self.scope.r5511_entering = held;
             }
             ReplaceBy::WithCountersAnd {
                 count,
@@ -6831,6 +6880,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
+                | CostItem::ExileCardTypes(_)
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::ExiledToGraveyard { .. }
@@ -7970,6 +8020,10 @@ mod tests {
     #[case::a_spell_word_as_an_added_subtype(
         r#"{"Static":{"affected":"This","mods":[{"AddSubtype":"Spell"}]}}"#,
         "`Spell` is not a subtype"
+    )]
+    #[case::r5511_affected_outside_an_entering_count(
+        r#"{"Replacement":{"when":{"Destroyed":{"what":["This"]}},"by":"Regenerate","condition":{"Compare":{"left":{"Stat":{"of":"Affected","stat":"Power"}},"op":"Ge","right":1}}}}"#,
+        "`Affected` is only valid in the changes of a static ability"
     )]
     #[case::affected_outside_a_static_ability(
         r#"{"Spell":{"effects":[{"Draw":{"count":{"Counters":{"on":"Affected","counter":"charge"}}}}]}}"#,

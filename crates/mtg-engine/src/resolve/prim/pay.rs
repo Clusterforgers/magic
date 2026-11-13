@@ -153,6 +153,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
+        // "{X}, where X is your life total": generic mana of the number counted now.
+        if let CostItem::GenericOf(amount) = item {
+            let count = cx.scope.amount(amount)?.clamp(0, i64::from(u32::MAX));
+            let generic =
+                mtg_core::mana::ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(
+                    u32::try_from(count).unwrap_or(u32::MAX),
+                )]);
+            *item = CostItem::Mana(mtg_cards::mana::ManaCostX::new(0, generic));
+            continue;
+        }
         if let CostItem::Discard { count: amount, .. }
         | CostItem::ExileFromGraveyard { count: amount, .. } = item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)

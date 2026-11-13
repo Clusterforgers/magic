@@ -109,6 +109,30 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let (kinds, each): (Vec<ManaType>, u32) = match mana {
         // A triggered mana ability adds its mana with the tap that triggered it (`mana_bonus`), never on the stack.
         Produce::OfTapped => return unsupported("Effect.AddMana.OfTapped.Stack"),
+        // "Add mana equal to enchanted permanent's mana cost": one list for each way to read its symbols.
+        Produce::CostOf(of) => {
+            let objects = cx.scope.objects(of)?;
+            let symbols: Vec<mtg_core::mana::ManaSymbol> = match objects.as_slice() {
+                [object] => state
+                    .object(object.id)
+                    .filter(|found| found.face_down().is_none())
+                    .and_then(GameObject::mana_cost)
+                    .map(|cost| cost.symbols().to_vec())
+                    .unwrap_or_default(),
+                _ => Vec::new(),
+            };
+            let Some(lists) = r5511_cost_lists(&symbols) else {
+                return unsupported("Effect.AddMana.CostOf.Snow");
+            };
+            let added = Added {
+                players: &players,
+                times,
+                source,
+                only,
+                lasts: *lasts,
+            };
+            return choose_list(cx, &added, &lists);
+        }
         // Each mana of the combination is picked as it is added: the pick is asked once for each of them.
         Produce::AnyCombination { count, among } => {
             let count = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
@@ -316,6 +340,51 @@ struct Added<'a> {
 }
 
 /// Each addition asks its player to pick one of `lists` ("Add {W}{W}, {W}{U}, or {U}{U}") and adds all the mana of the
+/// The mana a mana cost stands for (Elemental Resonance's rulings): colorless for generic mana, the mana of each colored
+/// or colorless symbol, one of its colors for a symbol of two, its color for a monocolored hybrid or Phyrexian symbol, and
+/// the color or colorless for a colorless hybrid symbol; one list for each different way, sorted. `None` for a snow
+/// symbol, which stands for no type of mana.
+fn r5511_cost_lists(symbols: &[mtg_core::mana::ManaSymbol]) -> Option<Vec<Vec<ManaType>>> {
+    use mtg_core::mana::ManaSymbol;
+    let mut lists: Vec<Vec<ManaType>> = vec![Vec::new()];
+    for symbol in symbols {
+        let ways: Vec<Vec<ManaType>> = match *symbol {
+            ManaSymbol::Generic(count) => {
+                vec![vec![
+                    ManaType::Colorless;
+                    usize::try_from(count).unwrap_or(0)
+                ]]
+            }
+            ManaSymbol::Colored(color)
+            | ManaSymbol::MonoHybrid(color)
+            | ManaSymbol::Phyrexian(color) => vec![vec![mana_of(color)]],
+            ManaSymbol::Colorless | ManaSymbol::ColorlessPhyrexian => {
+                vec![vec![ManaType::Colorless]]
+            }
+            ManaSymbol::Hybrid(first, second) | ManaSymbol::HybridPhyrexian(first, second) => {
+                vec![vec![mana_of(first)], vec![mana_of(second)]]
+            }
+            ManaSymbol::ColorlessHybrid(color) => {
+                vec![vec![mana_of(color)], vec![ManaType::Colorless]]
+            }
+            ManaSymbol::Snow => return None,
+        };
+        let mut next = Vec::new();
+        for list in &lists {
+            for way in &ways {
+                let mut made = list.clone();
+                made.extend(way.iter().copied());
+                made.sort_by_key(|mana| mana.index());
+                if !next.contains(&made) {
+                    next.push(made);
+                }
+            }
+        }
+        lists = next;
+    }
+    Some(lists)
+}
+
 /// list picked; one list is not asked.
 fn choose_list(
     cx: &Cx<'_>,
@@ -731,5 +800,37 @@ mod tests {
         let any = effect(r#"{"AddMana":{"mana":{"AnyColor":1}}}"#);
         let error = run_with(&game(), vec![(ME, Choice::Option(9))], &any).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)));
+    }
+}
+
+#[cfg(test)]
+mod r5511_tests {
+    //! Goal: the mana a mana cost stands for follows Elemental Resonance's rulings: {2}{W}{U} adds {C}{C}{W}{U}, {X}{G}
+    //! adds {G}, {W/U}{W/U} offers {W}{W}, {W}{U} or {U}{U}, a monocolored hybrid or Phyrexian symbol adds its color, and a
+    //! snow symbol is refused.
+    use super::r5511_cost_lists;
+    use mtg_core::mana::ManaCost;
+    use mtg_core::mana::ManaType::{Black as B, Blue as U, Colorless as C, Green as G, White as W};
+    use rstest::rstest;
+
+    #[rstest]
+    #[case::generic_and_colors("{2}{W}{U}", vec![vec![W, U, C, C]])]
+    #[case::x_adds_nothing("{X}{G}", vec![vec![G]])]
+    #[case::two_hybrids("{W/U}{W/U}", vec![vec![W, W], vec![W, U], vec![U, U]])]
+    #[case::mono_hybrid_and_phyrexian("{2/B}{G/P}", vec![vec![B, G]])]
+    #[case::colorless("{C}{C}", vec![vec![C, C]])]
+    #[case::nothing("{0}", vec![vec![]])]
+    fn r5511_a_mana_cost_stands_for_these_lists(
+        #[case] cost: &str,
+        #[case] lists: Vec<Vec<mtg_core::mana::ManaType>>,
+    ) {
+        let cost = ManaCost::parse(&cost.replace("{X}", "")).unwrap();
+        assert_eq!(r5511_cost_lists(cost.symbols()), Some(lists));
+    }
+
+    #[test]
+    fn r5511_a_snow_symbol_stands_for_no_mana() {
+        let cost = ManaCost::parse("{1}{S}").unwrap();
+        assert_eq!(r5511_cost_lists(cost.symbols()), None);
     }
 }

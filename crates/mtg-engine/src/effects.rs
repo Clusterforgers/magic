@@ -130,6 +130,9 @@ pub enum Modification {
     AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Adds these keyword abilities, one at a time in the order listed (layer 6): the keywords other objects have, as a
+    /// static ability that copies them found them.
+    AddKeywords(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Vec<Keyword>),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection, ward or
@@ -274,6 +277,7 @@ impl Modification {
             | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
@@ -387,6 +391,7 @@ impl Modification {
             // The controller is walked with the characteristics (`characteristics::walk`).
             Modification::SetController(_)
             | Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)

@@ -162,6 +162,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("miracle", Params::Cost),
     ("mutate", Params::Cost),
     ("ninjutsu", Params::Cost),
+    ("commander ninjutsu", Params::Cost),
     ("prototype", Params::Cost),
     ("replicate", Params::Cost),
     ("scavenge", Params::Cost),
@@ -483,6 +484,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "freerunning" => spell_cost(rest).map(Keyword::Freerunning),
         "afterlife" => positive(rest).map(Keyword::Afterlife),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
+        "commander ninjutsu" => cost(rest).map(Keyword::CommanderNinjutsu),
         "echo" => spell_cost(rest).map(Keyword::Echo),
         "recover" => spell_cost(rest).map(Keyword::Recover),
         "ripple" => positive(rest).map(Keyword::Ripple),
@@ -1740,12 +1742,24 @@ mod tests {
     #[case::afterlife_three("afterlife 3", Keyword::Afterlife(3))]
     #[case::ninjutsu("Ninjutsu {1}{U}", Keyword::Ninjutsu(mana("{1}{U}")))]
     #[case::ninjutsu_for_one_mana("ninjutsu {B}", Keyword::Ninjutsu(mana("{B}")))]
+    #[case::r5511_commander_ninjutsu(
+        "Commander ninjutsu {U}{B}",
+        Keyword::CommanderNinjutsu(mana("{U}{B}"))
+    )]
     #[case::escape_exiling_cards(
         "Escape\u{2014}{2}{R}, Exile three other cards from your graveyard.",
         Keyword::Escape(Cost(vec![
             CostItem::Mana("{2}{R}".parse().unwrap()),
             CostItem::ExileFromGraveyard { filter: Selector(vec![Pred::Other]), any_player: false, count: Amount::Fixed(3) },
         ]))
+    )]
+    #[case::r5511_escape_card_types(
+        "Escape\u{2014}{2}{B}, Exile any number of other cards from your graveyard with four or more card types among them.",
+        Keyword::Escape(Cost(vec![CostItem::Mana("{2}{B}".parse().unwrap()), CostItem::ExileCardTypes(4)]))
+    )]
+    #[case::r5511_escape_card_types_three(
+        "Escape\u{2014}{1}, Exile any number of other cards from your graveyard with three or more card types among them.",
+        Keyword::Escape(Cost(vec![CostItem::Mana("{1}".parse().unwrap()), CostItem::ExileCardTypes(3)]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
     #[case::vanishing("Vanishing 3", Keyword::Vanishing(3))]
@@ -1976,6 +1990,13 @@ mod tests {
     #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
     #[case::suspend_without_time("Suspend {U}")]
+    #[case::r5511_escape_colors_among_them(
+        "Escape\u{2014}{2}{B}, Exile any number of other cards from your graveyard with four or more colors among them."
+    )]
+    #[case::r5511_escape_types_without_a_number(
+        "Escape\u{2014}{2}{B}, Exile any number of other cards from your graveyard with card types among them."
+    )]
+    #[case::r5511_commander_ninjutsu_without_a_cost("Commander ninjutsu")]
     #[case::not_a_keyword("Draw a card.")]
     fn other_items_stay_unread(#[case] item: &str) {
         assert_eq!(read(item), None);
