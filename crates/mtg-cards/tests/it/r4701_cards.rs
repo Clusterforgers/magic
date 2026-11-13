@@ -108,6 +108,10 @@ fn r4701_probe() {
 #[case("Haakon, Stromgald Scourge")]
 #[case("Birgi, God of Storytelling // Harnfel, Horn of Bounty")]
 #[case("Azor, the Lawbringer")]
+#[case("Glimpse the Cosmos")]
+#[case("Sanwell, Avenger Ace")]
+#[case("Sunbird's Invocation")]
+#[case("Tinybones, the Pickpocket")]
 fn r4701_reads_back_whole(#[case] name: &str) {
     let report = r4701_report(name, &r4701_file(name));
     assert_eq!(
@@ -144,6 +148,30 @@ fn r4701_reads_back_whole(#[case] name: &str) {
     r#"{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }"#,
     r#"{ "Type": "Creature" }"#
 )]
+#[case::glimpse_for_two("Glimpse the Cosmos", r#""rather": "{U}""#, r#""rather": "{U}{U}""#)]
+#[case::glimpse_kept(
+    "Glimpse the Cosmos",
+    r#""riders": ["ExiledInstead"]"#,
+    r#""riders": ["EntersTapped"]"#
+)]
+#[case::sanwell_five("Sanwell, Avenger Ace", r#""count": 6"#, r#""count": 5"#)]
+#[case::sanwell_free(
+    "Sanwell, Avenger Ace",
+    r#""what": { "Bound": "kept" } }"#,
+    r#""what": { "Bound": "kept" }, "free": true }"#
+)]
+#[case::sunbird_any_spell("Sunbird's Invocation", r#"[{ "CastFrom": "Hand" }]"#, "[]")]
+#[case::sunbird_ordered("Sunbird's Invocation", r#""order": "Random""#, r#""order": "Chosen""#)]
+#[case::tinybones_free(
+    "Tinybones, the Pickpocket",
+    r#""spend_as": "AnyType""#,
+    r#""free": true"#
+)]
+#[case::tinybones_your_graveyard(
+    "Tinybones, the Pickpocket",
+    r#""OwnedBy": "Triggering""#,
+    r#""OwnedBy": "You""#
+)]
 fn r4701_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4701_file(name);
     assert!(file.contains(from), "{name} holds {from}");
@@ -157,6 +185,7 @@ fn r4701_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[
 #[case("Tegwyll's Scouring", &[0])]
 #[case("Haakon, Stromgald Scourge", &[0, 1])]
 #[case("Birgi, God of Storytelling // Harnfel, Horn of Bounty", &[1])]
+#[case("Tinybones, the Pickpocket", &[1])]
 fn r4701_compiler_reads_the_rules(#[case] name: &str, #[case] places: &[usize]) {
     let printed = common::printed()
         .into_iter()

@@ -2580,8 +2580,8 @@ pub(crate) fn c11b_once_source(
 }
 
 /// The riders a cast of `card` by `player` from `from` for `way` takes from the permission it goes through: a cast for the
-/// mana cost from a zone other than a hand or the command zone, or a free cast, goes through the first permission that
-/// covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
+/// mana cost from a zone other than a hand or the command zone, a free cast, or a cast for the cost a permission puts in
+/// place of the mana cost goes through the first permission that covers it, one that works once each turn after the others (as [`c11b_once_source`] counts it). None for any other
 /// cast.
 pub(crate) fn r401_cast_riders(
     state: &GameState,
@@ -2591,7 +2591,9 @@ pub(crate) fn r401_cast_riders(
     way: Option<mtg_cards::value::CastWay>,
 ) -> Vec<CastRider> {
     let free = way == Some(mtg_cards::value::CastWay::Free);
-    if (way.is_some() && !free) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+    // A cast for the cost a permission puts in place of the mana cost (Glimpse the Cosmos) takes that permission's riders.
+    let rather = way == Some(mtg_cards::value::CastWay::Alternative);
+    if (way.is_some() && !free && !rather) || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return Vec::new();
     }
     let Some(card) = state.object(card) else {
@@ -2605,6 +2607,8 @@ pub(crate) fn r401_cast_riders(
                 && cast.from == Some(zone)
                 && (if free {
                     cast.free
+                } else if rather {
+                    cast.rather.is_some() || cast.instead.is_some()
                 } else {
                     cast.adds_to_printed(zone)
                 })

@@ -80,6 +80,7 @@ mod r408_rules;
 mod r409_crag_saurian;
 mod r409_loyalty_twice;
 mod r409_spellgorger;
+mod r4701_cast_from_among;
 mod r4a_enters_with;
 mod r4i_granter;
 mod r5e_done_once;

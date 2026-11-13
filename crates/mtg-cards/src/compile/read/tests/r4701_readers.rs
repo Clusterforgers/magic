@@ -130,3 +130,33 @@ fn r4701_boast_twice(#[case] text: &str, #[case] reads: bool) {
         golden(text, ClauseKind::Static, true);
     }
 }
+
+/// The cast of a target card that any type of mana pays for (Tinybones); another phrase of the mana or a free cast is not it.
+#[rstest]
+#[case::any_type(
+    "Whenever ~ deals combat damage to a player, you may cast target nonland permanent card from that player's graveyard, and mana of any type can be spent to cast that spell.",
+    true
+)]
+#[case::any_color(
+    "Whenever ~ deals combat damage to a player, you may cast target nonland permanent card from that player's graveyard, and mana of any color can be spent to cast that spell.",
+    false
+)]
+#[case::free_and_any_type(
+    "Whenever ~ deals combat damage to a player, you may cast target nonland permanent card from that player's graveyard without paying its mana cost, and mana of any type can be spent to cast that spell.",
+    false
+)]
+fn r4701_cast_target_with_any_type_of_mana(#[case] text: &str, #[case] reads: bool) {
+    let read = clause(text, ClauseKind::Triggered, false);
+    let any_type = matches!(
+        &read,
+        Some(Ability::Triggered { effects, .. })
+            if matches!(effects.as_slice(), [crate::effect::Effect::CastFromZone {
+                spend_as: crate::modify::SpendAs::AnyType,
+                ..
+            }])
+    );
+    assert_eq!(any_type, reads, "{text}: {read:?}");
+    if reads {
+        golden(text, ClauseKind::Triggered, false);
+    }
+}
