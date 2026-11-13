@@ -150,8 +150,10 @@ fn r5513_reads_back_whole(#[case] name: &str) {
 )]
 #[case::neyith_opponents_creatures(
     "Neyith of the Dire Hunt",
-    r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]"#,
-    r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]"#
+    r#""what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }"#,
+    r#""what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                    }"#
 )]
 #[case::witches_both_yours(
     "Cuombajj Witches",
