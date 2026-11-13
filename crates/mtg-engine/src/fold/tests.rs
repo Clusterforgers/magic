@@ -1308,3 +1308,23 @@ fn a_turn_begins_by_recording_whether_each_permanent_of_its_player_came_under_th
     assert!(!permanent.is_new_to(PlayerId::from_index(1 - active)));
     assert_eq!(permanent.summoning_sick(), still_sick);
 }
+
+#[test]
+fn each_payment_of_a_resolution_binds_what_it_took_anew() {
+    let mut game = game();
+    let put = put_totem_ability(&game);
+    fold(&mut game, &[put]);
+    let id = *game.stack().last().unwrap();
+    fold(&mut game, &[Event::ResolutionBegan { object: id }]);
+    for (position, player) in [(1, 0), (2, 1)] {
+        let step = Event::StepDone {
+            position: vec![position],
+            bound: vec![(
+                crate::resolve::R5520_PAID.to_owned(),
+                vec![Target::Player(PlayerId(player))],
+            )],
+            snapshots: Vec::new(),
+        };
+        assert!(apply_event(&mut game, &step).is_ok(), "payment {position}");
+    }
+}

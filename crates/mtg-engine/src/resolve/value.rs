@@ -34,7 +34,7 @@ mod r374_counts;
 mod r402_cast;
 pub(crate) mod r5520_atoms;
 mod r5523_attacked;
-pub(crate) use r5520_atoms::r5520_took;
+pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
