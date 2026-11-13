@@ -31,6 +31,8 @@ mod r285_ruin;
 mod r374_counts;
 #[cfg(test)]
 mod r3d_atoms;
+#[cfg(test)]
+mod r5520_atoms;
 mod resolution;
 #[cfg(test)]
 mod rmt8_atoms;

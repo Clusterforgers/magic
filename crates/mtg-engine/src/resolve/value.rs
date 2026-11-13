@@ -32,6 +32,8 @@ mod r302b_sources;
 mod r305b_amounts;
 mod r374_counts;
 mod r402_cast;
+pub(crate) mod r5520_atoms;
+pub(crate) use r5520_atoms::r5520_took;
 mod soulbond;
 mod w21a_atoms;
 mod w6d_shares;
@@ -1366,6 +1368,13 @@ impl<'a> Scope<'a> {
             .flatten()
             .copied()
             .collect();
+        // The ability's own cost took nothing: what a payment among its steps took ("If you do").
+        if picked.is_empty()
+            && shots.is_empty()
+            && let Some(took) = self.bindings.get(r5520_atoms::R5520_PAID)
+        {
+            return took.clone();
+        }
         let refs: Vec<ObjectRef> = if picked.is_empty() {
             shots
                 .iter()
@@ -2075,6 +2084,7 @@ impl<'a> Scope<'a> {
             | Pred::Kicked
             | Pred::AdditionalCostPaid
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
+            Pred::Foretold | Pred::HasName => self.r5520_pred(pred, reference, seen),
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
         })

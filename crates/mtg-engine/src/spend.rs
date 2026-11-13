@@ -251,6 +251,9 @@ pub(crate) fn traits_of(state: &GameState, id: ObjectId) -> SpendTraits {
         flashback: keywords
             .iter()
             .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Flashback(_))),
+        foretell: keywords
+            .iter()
+            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Foretell(_))),
         freerunning: keywords
             .iter()
             .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Freerunning(_))),

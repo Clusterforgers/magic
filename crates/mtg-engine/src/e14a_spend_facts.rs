@@ -101,6 +101,9 @@ fn where_a_spell_is_cast_from_is_read_while_it_is_still_there(
 #[case::colorless_without_devoid(SpendFact::Devoid, &[], Vec::new(), false)]
 #[case::flashback(SpendFact::Flashback, &[Color::Red], vec![Keyword::Flashback(Cost::mana("{R}".parse().unwrap()))], true)]
 #[case::no_flashback(SpendFact::Flashback, &[Color::Red], Vec::new(), false)]
+#[case::foretell(SpendFact::Foretell, &[Color::Blue], vec![Keyword::Foretell(Cost::mana("{U}".parse().unwrap()))], true)]
+#[case::flashback_is_not_foretell(SpendFact::Foretell, &[Color::Red], vec![Keyword::Flashback(Cost::mana("{R}".parse().unwrap()))], false)]
+#[case::no_foretell(SpendFact::Foretell, &[Color::Blue], Vec::new(), false)]
 fn what_a_spell_is_is_read_from_its_characteristics(
     #[case] fact: SpendFact,
     #[case] colors: &[Color],

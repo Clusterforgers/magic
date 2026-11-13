@@ -234,6 +234,7 @@ mod r408_pact;
 mod r4708_actions;
 mod r4708_reveal;
 mod r4711_drafted;
+mod r5520_atoms;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

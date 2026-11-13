@@ -1316,6 +1316,7 @@ Nightmare
 Nightscape Familiar
 Nightveil Sprite
 Nihil Spellbomb
+Niko Defies Destiny
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -1444,6 +1445,7 @@ Poet's Quill
 Poison the Waters
 Pollen Lullaby
 Polymorphist's Jest
+Pompous Gadabout
 Pongify
 Pontiff of Blight
 Pop Quiz

@@ -1025,6 +1025,8 @@ const RUNS: &[&str] = &[
     "Pred.HasKeywordNamed",
     "Pred.CounterCount",
     "Pred.Suspended",
+    "Pred.Foretold",
+    "Pred.HasName",
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
 ];

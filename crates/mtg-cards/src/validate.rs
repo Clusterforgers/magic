@@ -795,6 +795,8 @@ impl<'a> Walker<'a> {
             Pred::Kicked => self.uses("Pred", "Kicked"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
+            Pred::Foretold => self.uses("Pred", "Foretold"),
+            Pred::HasName => self.uses("Pred", "HasName"),
             _ => self.uses("Pred", "Suspended"),
         }
     }
@@ -936,6 +938,8 @@ impl<'a> Walker<'a> {
             | Pred::Kicked
             | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
+            | Pred::Foretold
+            | Pred::HasName
             | Pred::Suspended => self.fe1a_pred(pred),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
