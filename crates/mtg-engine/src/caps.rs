@@ -203,6 +203,7 @@ const RUNS: &[&str] = &[
     "Amount.R374AtMost",
     "Cost.Alternative.X",
     "Cost.XAtMost",
+    "Cost.XAtMost.Spell",
     "Cost.ExiledToGraveyard",
     "Cost.DamageToYou.Counted.Activated",
     "Cost.ExileTop.Counted.Activated",

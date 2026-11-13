@@ -739,6 +739,7 @@ impl GameState {
         });
         let supertypes = self.any_face(crate::ability_reader::definition_gives_supertype);
         self.possible.supertypes = supertypes;
+        self.possible.pools = self.any_face(crate::ability_reader::r5523_static_reads_pool);
         self.possible.legends = legends || supertypes;
         let costs = self.objects().any(|object| {
             object

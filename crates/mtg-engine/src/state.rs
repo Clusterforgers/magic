@@ -76,6 +76,9 @@ pub(crate) struct Possible {
     pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
+    /// Some card has a static ability that reads a mana pool ("for each unspent green mana you have"), so the layers
+    /// are worked out again as mana is added, spent or emptied.
+    pub(crate) pools: bool,
     /// Some card has a static ability that gives a supertype ("enchanted permanent is legendary").
     pub(crate) supertypes: bool,
     /// Some card or token made has a cost modifier, so the cost of a spell is worked out against the permanents.

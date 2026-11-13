@@ -591,6 +591,14 @@ pub(crate) fn leaves_alone(event: &Event) -> bool {
     )
 }
 
+/// Whether the event changes what a mana pool holds, which a static ability may read (Omnath, Locus of Mana).
+pub(crate) fn r5523_moves_mana(event: &Event) -> bool {
+    matches!(
+        event,
+        Event::ManaAdded { .. } | Event::ManaSpent { .. } | Event::ManaPoolEmptied { .. }
+    )
+}
+
 /// How the objects of the game are read: the pass's objects as they are, and perhaps some of them as a trial changed them.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct View<'a> {

@@ -53,3 +53,30 @@ fn r5523_open_the_way_caps_x_at_the_players(
     assert_eq!(lands, 10 + seats, "X land cards entered");
     Ok(())
 }
+
+#[test]
+fn r5523_probe_support() {
+    if std::env::var("R5523_SUPPORT").is_err() {
+        return;
+    }
+    for name in [
+        "Open the Way",
+        "Omnath, Locus of Mana",
+        "Genju of the Realm",
+        "Cacophony Unleashed",
+        "Prairie Dog",
+        "Heartwood Storyteller",
+        "Paliano, the High City",
+        "Fast Forward",
+        "Weathered Sentinels",
+        "Wolverine, Best There Is",
+        "Hundred-Battle Veteran",
+        "Yuna, Grand Summoner",
+    ] {
+        let support = mtg_testkit::corpus::corpus()
+            .unwrap()
+            .support(name)
+            .unwrap();
+        println!("{name}: {support:?}");
+    }
+}

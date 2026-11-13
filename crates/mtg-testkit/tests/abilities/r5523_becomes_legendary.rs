@@ -7,6 +7,7 @@
 use mtg_core::card::{CardType, Supertype};
 use mtg_engine::characteristics;
 use mtg_engine::characteristics::has_supertype;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{forest, plains};
 use mtg_testkit::corpus::card;
@@ -22,7 +23,11 @@ fn r5523_until(driver: &mut Driver, done: impl Fn(&Driver) -> bool) -> Result<bo
         if driver.state().turn().step() != Step::Main1 {
             return Ok(false);
         }
-        driver.answer_passively()?;
+        if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+            driver.answer(Answer::PayMana(PayChoice::Auto))?;
+        } else {
+            driver.answer_passively()?;
+        }
     }
     Ok(done(driver))
 }

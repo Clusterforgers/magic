@@ -84,7 +84,8 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     // What the layers make of the permanents is read from the state, which this event changes.
     // The rules in force read the same things, so they go with the layers.
-    let changes_layers = !crate::layers::leaves_alone(event);
+    let changes_layers = !crate::layers::leaves_alone(event)
+        || (state.possible.pools && crate::layers::r5523_moves_mana(event));
     if changes_layers {
         state.layers.reset();
         state.rules_cache.reset();
