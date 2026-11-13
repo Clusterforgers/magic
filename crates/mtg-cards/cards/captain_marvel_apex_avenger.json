@@ -1,7 +1,7 @@
 {
   "oracle_id": "6d86d783-7116-4426-8c0f-718c2d904887",
   "name": "Captain Marvel, Apex Avenger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Captain Marvel, Apex Avenger",
@@ -11,9 +11,29 @@
         { "Keyword": "DoubleStrike" },
         { "Keyword": "Indestructible" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 38, "end": 184 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Creature" }, "Other"], "each": true }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "if": {
+              "Not": { "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Kree" }] } }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCountersOf": { "on": "This", "of": "Triggering", "put": true } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

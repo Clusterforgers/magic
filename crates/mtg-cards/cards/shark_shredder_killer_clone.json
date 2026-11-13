@@ -1,7 +1,7 @@
 {
   "oracle_id": "dabd0867-ee3f-40cb-8314-b4a3966f8b24",
   "name": "Shark Shredder, Killer Clone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shark Shredder, Killer Clone",
@@ -36,9 +36,30 @@
         },
         { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 234 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                  "as": "returned"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "returned" }, "against": "Triggering" } }
+            ]
           }
         }
       ]

@@ -136,6 +136,7 @@ fn revealed_text(effects: &[Effect], count: &Amount) -> Option<String> {
                 count: bounds,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             Effect::Reveal {
                 what: Ref::Bound(shown),
@@ -201,6 +202,7 @@ fn chosen_counter_text(effects: &[Effect]) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::PutCounters {
             on: Ref::Bound(on),

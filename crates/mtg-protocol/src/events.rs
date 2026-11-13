@@ -1484,6 +1484,7 @@ mod tests {
             controller: OWNER,
             cause: Cause {
                 dealers: Vec::new(),
+                counters: Vec::new(),
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,

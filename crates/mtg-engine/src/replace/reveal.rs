@@ -81,6 +81,7 @@ impl Pass<'_> {
                     max: 1,
                     text: "Choose the card to reveal.".into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 }),
             })),
             Some((who, Choice::Cards(cards)))

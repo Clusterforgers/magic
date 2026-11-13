@@ -231,8 +231,18 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4700_writers;
+mod r4701_flash;
+mod r4701_pairs;
+mod r4702_names;
+pub(crate) mod r4703_reads;
+mod r4706_counters;
+mod r4707_costs;
+mod r4707_printed;
 mod r4708_actions;
 mod r4708_reveal;
+mod r4709_differ;
+mod r4710_atoms;
 mod r4711_drafted;
 mod r5510_fortified;
 mod r5510_own_cost;
@@ -717,6 +727,11 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     }
     if kind == ClauseKind::Static
         && let Some(found) = r400_reads::r400_static_read(text)
+    {
+        return Some(found);
+    }
+    if kind == ClauseKind::Static
+        && let Some(found) = r4703_reads::r4703_static_read(text)
     {
         return Some(found);
     }

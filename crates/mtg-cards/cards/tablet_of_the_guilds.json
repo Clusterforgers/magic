@@ -1,0 +1,38 @@
+{
+  "oracle_id": "71ce7034-1400-4e7c-9ef3-37baed669faf",
+  "name": "Tablet of the Guilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tablet of the Guilds",
+      "oracle_fingerprint": "adb5ee2672852821d55c36ad7cb720c7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Colors": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "R4700ChosenColors" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": "Triggering", "stat": "R4700ChosenColors" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
