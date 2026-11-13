@@ -20,7 +20,7 @@ pub const BULWARK: &str = "bulwark";
 pub const MOST: usize = 6;
 
 /// The boss's life by party size, in percent of its base and the life it gets for each hero after the first.
-const LIFE: [i32; MOST + 1] = [100, 100, 115, 100, 85, 100, 90];
+const LIFE: [i32; MOST + 1] = [100, 100, 100, 100, 85, 100, 90];
 /// Reserves a boss gets, by party size.
 const RESERVED: [usize; MOST + 1] = [0, 0, 1, 0, 0, 0, 0];
 /// Reinforcements a boss gets, by party size.

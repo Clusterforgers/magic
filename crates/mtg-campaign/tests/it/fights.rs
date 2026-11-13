@@ -67,14 +67,14 @@ type Row = (i32, usize, usize, usize, usize, bool);
 
 #[rstest]
 #[case::solo(1, 0, (100, 0, 0, 0, 0, false))]
-#[case::duo(2, 0, (115, 1, 0, 0, 0, false))]
+#[case::duo(2, 0, (100, 1, 0, 0, 0, false))]
 #[case::three(3, 0, (100, 0, 1, 0, 0, true))]
 #[case::four(4, 0, (85, 0, 1, 0, 1, true))]
 #[case::five(5, 0, (100, 0, 2, 0, 1, true))]
 #[case::six(6, 0, (90, 0, 2, 1, 2, true))]
 #[case::four_at_heat_1(4, 1, (85, 0, 1, 0, 1, true))]
 #[case::six_at_heat_2(6, 2, (90, 0, 2, 1, 2, true))]
-#[case::two_at_heat_2(2, 2, (115, 1, 0, 0, 0, false))]
+#[case::two_at_heat_2(2, 2, (100, 1, 0, 0, 0, false))]
 fn the_boss_scales_with_the_party_and_the_heat(
     #[case] heroes: usize,
     #[case] heat: u8,

@@ -130,8 +130,8 @@ function Lobby({
     <section aria-label="Lobby" className="surface grid gap-3 p-4">
       <h2 className="text-lg font-semibold">Gather the party</h2>
       <p className="text-sm text-muted-foreground">
-        Share the invite code <strong className="font-mono">{view.code}</strong>. Up to six heroes; bot
-        allies fill the gaps.
+        Share the invite code <strong className="font-mono">{view.code}</strong>. Up to six heroes; bot allies
+        fill the gaps.
       </p>
       <ul className="grid gap-2">
         {view.run.heroes.map((hero, i) => (
