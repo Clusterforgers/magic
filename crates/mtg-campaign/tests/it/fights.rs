@@ -91,7 +91,7 @@ fn the_boss_scales_with_the_party_and_the_heat(
     assert_eq!(plan.boss.life, base + base * 20 * i32::from(heat) / 100);
     assert_eq!(
         plan.boss.hand,
-        boss.hand - 5 + u32::try_from(extra).unwrap()
+        boss.hand - 5 + u32::try_from(extra).unwrap() + u32::from(heat)
     );
     let brain = if heat >= 2 {
         boss.brain.stronger()

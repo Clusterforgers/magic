@@ -32,7 +32,7 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 | 6 | 90 % | base | | 2 | 1 | 2 | yes |
 
 - Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep; Reinforcements a card and a 2/2 Zombie; Warpath untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
-- Heat raises the difficulty: each Heat gives the boss and its minions a fifth more life; Heat 2 gives them a stronger brain.
+- Heat raises the difficulty: each Heat gives the boss a card more in its opening hand and the boss and its minions a fifth more life; Heat 2 gives them a stronger brain.
 
 ## Loot
 
@@ -57,4 +57,16 @@ One table (`scale.rs`) sets the boss for the party's size, so every size meets t
 - Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
 - The target at Heat 0 for a party of Hard bots, at every size: each fight won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 15 to 40 minutes for three or more heroes.
 
-MEASURED
+Measured with Hard heroes at Heat 0, seeds from 1 (`fights`, each boss in turn):
+
+| Heroes | Fights won | Turns (boss side) | Minutes |
+|---|---|---|---|
+| 1 | 28/48 (58 %) | 14.7 (7.3) | 8 |
+| 2 | 24/48 (50 %) | 22.5 (7.6) | 13 |
+| 3 | 10/24 (42 %) | 34.8 (8.8) | 20 |
+| 4 | 13/24 (54 %) | 50.8 (15.2) | 29 |
+| 5 | 8/16 (50 %) | 54.2 (13.8) | 31 |
+| 6 | 7/16 (44 %) | 59.9 (18.7) | 34 |
+
+- Heat 1: one hero wins 20/48 fights (42 %), two heroes 14/32 (44 %).
+- Whole runs at Heat 0 (`runs`): one hero wins 2/16 (12 %), two heroes 1/16 (6 %); life carried between fights makes each later fight harder than the table.

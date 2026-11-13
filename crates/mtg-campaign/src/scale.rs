@@ -71,9 +71,10 @@ impl Scale {
         self.heated(base * LIFE[self.heroes] / 100)
     }
 
-    /// The boss's opening hand: its base less [`SOLO_HAND`], and one card for each hero after the first.
+    /// The boss's opening hand: its base less [`SOLO_HAND`], one card for each hero after the first and one for each
+    /// Heat.
     pub fn hand(self, boss: &Boss) -> u32 {
-        let extra = u32::try_from(self.heroes - 1).unwrap_or(0);
+        let extra = u32::try_from(self.heroes - 1).unwrap_or(0) + u32::from(self.heat);
         boss.hand.saturating_sub(SOLO_HAND).max(1) + extra
     }
 
