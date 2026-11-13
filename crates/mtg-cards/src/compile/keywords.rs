@@ -2233,6 +2233,7 @@ mod tests {
             "Job select",
             "Equip legendary creature {1}",
             "Ninjutsu {1}{U}",
+            "Commander ninjutsu {U}{B}",
             "Improvise",
             "Affinity for artifacts",
             "Cipher",

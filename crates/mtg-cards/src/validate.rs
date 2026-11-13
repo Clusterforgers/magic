@@ -4439,7 +4439,6 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
-            | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
             | Effect::ReduceSpeed { who }
             | Effect::RingTempts { who }
@@ -4452,6 +4451,10 @@ impl Walker<'_> {
             | Effect::Learn { who }
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+            }
+            Effect::ControlPlayer { who, by, .. } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("by", |w| w.reference(by, Kind::Player));
             }
             Effect::Performed {
                 action,
@@ -7831,8 +7834,8 @@ mod tests {
     #[case::e19_ward_of_life_equal_to_its_power(r#"{"Keyword":{"Ward":[{"PayLife":{"Stat":{"of":"This","stat":"Power"}}}]}}"#, &["Cost.PayLife", "Effect.Pay.Counted", "Keyword.Ward"])]
     #[case::e19_ward_of_a_blight(r#"{"Keyword":{"Ward":[{"Blight":2}]}}"#, &["Cost.Blight", "Keyword.Ward"])]
     #[case::r303c_a_spell_costing_the_hand_and_every_permanent(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[],"count":{"Count":[{"ControlledBy":"You"}]}}},{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Discard", "Cost.Discard.Hand", "Cost.Sacrifice", "Cost.Sacrifice.All"])]
-    #[case::r303c_half_the_lands_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Half":{"of":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"up":true}}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
-    #[case::r303c_all_of_another_kind_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted"])]
+    #[case::r303c_half_the_lands_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Half":{"of":{"Count":[{"Type":"Land"},{"ControlledBy":"You"}]},"up":true}}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted.Required"])]
+    #[case::r303c_all_of_another_kind_is_counted(r#"{"AdditionalCost":{"cost":[{"Sacrifice":{"filter":[{"Type":"Land"}],"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.Sacrifice", "Cost.Sacrifice.Counted.Required"])]
     #[case::e19_ward_of_a_counted_discard(r#"{"Keyword":{"Ward":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}]}}"#, &["Cost.Discard", "Cost.Discard.Counted", "Keyword.Ward"])]
     #[case::r5g_untapping_the_source(r#"{"Activated":{"cost":["Untap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Untap", "Effect.Draw"])]
     #[case::r5g_untapping_in_a_payment(r#"{"Spell":{"effects":[{"Pay":{"cost":["Untap"],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Untap", "Cost.Untap.Elsewhere", "Effect.Draw", "Effect.Pay"])]
