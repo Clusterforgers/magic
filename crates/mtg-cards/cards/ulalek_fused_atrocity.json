@@ -5,22 +5,12 @@
   "faces": [
     {
       "name": "Ulalek, Fused Atrocity",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "8bfbf1e56659b5b26bed75ab456ef718",
       "abilities": [
-        {
-          "Keyword": "Devoid"
-        },
+        { "Keyword": "Devoid" },
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {
-                "what": [
-                  {
-                    "Subtype": "Eldrazi"
-                  }
-                ]
-              }
-            },
+            "when": { "SpellCast": { "what": [{ "Subtype": "Eldrazi" }], "by": "You" } },
             "effects": [
               {
                 "Pay": {
@@ -28,14 +18,7 @@
                   "paid": [
                     {
                       "CopySpell": {
-                        "what": {
-                          "Each": [
-                            "Spell",
-                            {
-                              "ControlledBy": "You"
-                            }
-                          ]
-                        },
+                        "what": { "Each": ["Spell", { "ControlledBy": "You" }] },
                         "new_targets": true
                       }
                     },
@@ -43,19 +26,8 @@
                       "CopyAbility": {
                         "what": {
                           "Each": [
-                            {
-                              "AnyOf": [
-                                {
-                                  "Ability": "Activated"
-                                },
-                                {
-                                  "Ability": "Triggered"
-                                }
-                              ]
-                            },
-                            {
-                              "ControlledBy": "You"
-                            }
+                            { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                            { "ControlledBy": "You" }
                           ]
                         },
                         "new_targets": true

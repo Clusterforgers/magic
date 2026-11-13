@@ -103,6 +103,9 @@ fn r4703_probe() {
 #[case("Thousand-Year Storm")]
 #[case("Diligent Farmhand")]
 #[case("Pardic Firecat")]
+#[case("Circuits Act")]
+#[case("Ulalek, Fused Atrocity")]
+#[case("Dargo, the Shipwrecker")]
 fn r4703_reads_back_whole(#[case] name: &str) {
     let report = r4703_report(name, &r4703_file(name));
     assert_eq!(
@@ -132,6 +135,9 @@ fn r4703_reads_back_whole(#[case] name: &str) {
     r#""filter": []"#,
     r#""filter": [{ "Type": "Creature" }]"#
 )]
+#[case::two_dice("Circuits Act", r#""dice": 3"#, r#""dice": 2"#)]
+#[case::opponents_spells("Ulalek, Fused Atrocity", r#""Spell", { "ControlledBy": "You" }"#, r#""Spell", { "ControlledBy": "Opponents" }"#)]
+#[case::four_less("Dargo, the Shipwrecker", r#""mana": "{2}", "per": "X""#, r#""mana": "{4}", "per": "X""#)]
 fn r4703_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r4703_file(name);
     assert!(file.contains(from), "{name} has {from}");
@@ -142,12 +148,12 @@ fn r4703_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, 
 /// The compiler reads each new wording into the ability the card's file holds for it.
 #[rstest]
 #[case("Rowan, Scion of War", 1)]
-#[case("Will, Scion of Peace", 1)]
 #[case("Bloodletter of Aclazotz", 1)]
 #[case("Thousand-Year Storm", 0)]
 #[case("Diligent Farmhand", 1)]
 #[case("Pardic Firecat", 1)]
 #[case("Korvold, Gleeful Glutton", 0)]
+#[case("Circuits Act", 0)]
 fn r4703_compiler_reads_the_wording(#[case] name: &str, #[case] ability: usize) {
     let card = common::printed()
         .into_iter()

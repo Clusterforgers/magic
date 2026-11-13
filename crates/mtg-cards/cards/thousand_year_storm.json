@@ -11,18 +11,8 @@
           "Triggered": {
             "when": {
               "SpellCast": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      {
-                        "Type": "Instant"
-                      },
-                      {
-                        "Type": "Sorcery"
-                      }
-                    ]
-                  }
-                ]
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
               }
             },
             "effects": [
@@ -34,19 +24,8 @@
                       "event": "SpellCast",
                       "who": "You",
                       "filter": [
-                        {
-                          "AnyOf": [
-                            {
-                              "Type": "Instant"
-                            },
-                            {
-                              "Type": "Sorcery"
-                            }
-                          ]
-                        },
-                        {
-                          "CastBefore": "Triggering"
-                        }
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "CastBefore": "Triggering" }
                       ]
                     }
                   },

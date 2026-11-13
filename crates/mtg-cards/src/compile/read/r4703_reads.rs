@@ -98,6 +98,15 @@ pub(super) fn r4703_sacrificed_types_text(per: &crate::value::Amount) -> Option<
     (*per == r4703_sacrificed_types_count()).then(|| R4703_SACRIFICED_TYPES.to_owned())
 }
 
+/// A card name of one or more capitalized words ("Muscle Burst").
+fn r4703_name(r: &mut Reader<'_>) -> Option<String> {
+    let mut words = vec![r.name()?.to_owned()];
+    while let Some(word) = r.attempt(|r| r.name().map(str::to_owned)) {
+        words.push(word);
+    }
+    Some(words.join(" "))
+}
+
 /// "If this card is in a graveyard, effects from spells named <name> count it as a card named <name>."
 fn r4703_counts_as_named(text: &str) -> Option<Ability> {
     let tokens = tokenize(text);
@@ -107,9 +116,9 @@ fn r4703_counts_as_named(text: &str) -> Option<Ability> {
     r.need("is in a graveyard")?;
     r.punct(',').then_some(())?;
     r.need("effects from spells named")?;
-    let name = r.name()?.to_owned();
+    let name = r4703_name(&mut r)?;
     r.need("count it as a card named")?;
-    (r.name()? == name).then_some(())?;
+    (r4703_name(&mut r)? == name).then_some(())?;
     (r.sentence_end() && r.end()).then_some(())?;
     Some(Ability::Rule {
         rule: crate::modify::GameRule::CountsAsNamed(name),
@@ -181,5 +190,23 @@ mod tests {
     #[case::not_instead("If an opponent would lose life during your turn, they lose twice that much life.", false)]
     fn r4703_loss_times_reads(#[case] text: &str, #[case] reads: bool) {
         assert_eq!(r4703_static_read(text).is_some(), reads, "{text}");
+    }
+
+    /// The compiler reaches the readers of the pack through its templates.
+    #[rstest]
+    #[case::rowan(
+        "{T}: Spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn. Activate only as a sorcery.",
+        crate::compile::ClauseKind::Activated
+    )]
+    #[case::farmhand(
+        "If ~ is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.",
+        crate::compile::ClauseKind::Static
+    )]
+    fn r4703_the_compiler_reads(#[case] text: &str, #[case] kind: crate::compile::ClauseKind) {
+        let read = super::super::clause_with(text, kind, false, &super::super::Own::default());
+        assert!(
+            read.as_ref().is_some_and(|ability| !matches!(ability, Ability::Manual { .. })),
+            "{text}: {read:?}"
+        );
     }
 }

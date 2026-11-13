@@ -5,19 +5,10 @@
   "faces": [
     {
       "name": "Pardic Firecat",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "9af0398006d6666d0b1536f3df492364",
       "abilities": [
-        {
-          "Keyword": "Haste"
-        },
-        {
-          "Rule": {
-            "rule": {
-              "CountsAsNamed": "Flame Burst"
-            },
-            "from": "Graveyard"
-          }
-        }
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "CountsAsNamed": "Flame Burst" }, "from": "Graveyard" } }
       ]
     }
   ]

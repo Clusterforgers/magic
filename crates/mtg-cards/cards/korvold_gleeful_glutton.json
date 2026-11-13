@@ -5,40 +5,23 @@
   "faces": [
     {
       "name": "Korvold, Gleeful Glutton",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "c6fc0cdbb33159ada13a6df45d3e914b",
       "abilities": [
         {
           "CostModifier": {
-            "applies_to": [
-              "This"
-            ],
+            "applies_to": ["This"],
             "change": "Reduce",
             "mana": "{1}",
-            "per": {
-              "TallyTypes": {
-                "event": "Sacrificed",
-                "who": "You",
-                "filter": []
-              }
-            }
+            "per": { "TallyTypes": { "event": "Sacrificed", "who": "You", "filter": [] } }
           }
         },
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Keyword": "Trample"
-        },
-        {
-          "Keyword": "Haste"
-        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
         {
           "Manual": {
             "reason": "you apply this triggered ability by hand",
-            "span": {
-              "start": 122,
-              "end": 293
-            }
+            "span": { "start": 122, "end": 293 }
           }
         }
       ]

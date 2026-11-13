@@ -5,56 +5,23 @@
   "faces": [
     {
       "name": "Diligent Farmhand",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "03cb7fdea7bf35658ef1aa6014648cd2",
       "abilities": [
         {
           "Activated": {
-            "cost": [
-              {
-                "Mana": "{1}{G}"
-              },
-              "SacrificeSelf"
-            ],
+            "cost": [{ "Mana": "{1}{G}" }, "SacrificeSelf"],
             "effects": [
               {
-                "Search": {
-                  "filter": [
-                    {
-                      "Supertype": "Basic"
-                    },
-                    {
-                      "Type": "Land"
-                    }
-                  ],
-                  "as": "land"
-                }
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
               },
               {
-                "Move": {
-                  "what": {
-                    "Bound": "land"
-                  },
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true
-                    }
-                  }
-                }
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
               },
-              {
-                "Shuffle": {}
-              }
+              { "Shuffle": {} }
             ]
           }
         },
-        {
-          "Rule": {
-            "rule": {
-              "CountsAsNamed": "Muscle Burst"
-            },
-            "from": "Graveyard"
-          }
-        }
+        { "Rule": { "rule": { "CountsAsNamed": "Muscle Burst" }, "from": "Graveyard" } }
       ]
     }
   ]

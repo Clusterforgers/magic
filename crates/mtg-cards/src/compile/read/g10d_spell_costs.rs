@@ -207,3 +207,23 @@ pub fn g10d_spell_cost_text(effect: &Effect) -> Option<String> {
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod r4703_tests {
+    //! Goal: a cost change for the turn that counts life lost or gained reads and writes back.
+    use super::*;
+    use crate::compile::read::tokens::{same_text, tokenize};
+    use rstest::rstest;
+
+    #[rstest]
+    #[case("spells you cast this turn that are black and/or red cost {X} less to cast, where X is the amount of life you lost this turn")]
+    #[case("spells you cast this turn that are white and/or blue cost {X} less to cast, where X is the amount of life you gained this turn")]
+    fn r4703_counted_spell_costs_read_back(#[case] text: &str) {
+        let tokens = tokenize(text);
+        let mut r = Reader::new(&tokens, false);
+        let effects = g10d_spell_cost(&mut r).expect("read");
+        assert!(r.end(), "{text}");
+        let written = g10d_spell_cost_text(&effects[0]).expect("written");
+        assert!(same_text(&written, text), "{written}");
+    }
+}
