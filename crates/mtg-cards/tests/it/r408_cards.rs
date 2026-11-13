@@ -94,6 +94,9 @@ fn r408_probe() {
 #[case("Gor Muldrak, Amphinologist")]
 #[case("Sekki, Seasons' Guide")]
 #[case("Catalyst Stone")]
+#[case("Days Undoing")]
+#[case("Mental Modulation")]
+#[case("Murderous Betrayal")]
 fn r408_reads_back_whole(#[case] name: &str) {
     let report = r408_report(name, &r408_file(name));
     assert_eq!(
