@@ -65,8 +65,8 @@ fn a_brain_that_never_acts_fails_the_cases_that_need_action() {
 }
 
 #[rstest]
-#[case::normal(Level::Normal, 0.75)]
-#[case::hard(Level::Hard, 0.7)]
+#[case::normal(Level::Normal, 0.9)]
+#[case::hard(Level::Hard, 0.9)]
 fn each_level_keeps_its_floor(#[case] level: Level, #[case] floor: f64) {
     let verdicts = score(level, 7, false);
     let total = verdicts.len();

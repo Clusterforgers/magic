@@ -709,7 +709,7 @@ fn kill_the_flyer_not_the_walled_ground_creature() -> Result<Table, SuiteError> 
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| {
+        outcome(Until::TurnEnds, |e| {
             !on_battlefield(e, "Sky Raider") && on_battlefield(e, "Ground Pounder")
         }),
     )
@@ -727,7 +727,7 @@ fn bolt_the_lifelinker_not_the_chaff() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Leech Vampire")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Leech Vampire")),
     )
 }
 
@@ -755,7 +755,7 @@ fn kill_the_card_engine_not_the_vanilla() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| {
+        outcome(Until::TurnEnds, |e| {
             !on_battlefield(e, "Kynaios and Tiro of Meletis")
         }),
     )
@@ -792,9 +792,7 @@ fn kill_the_commander_not_the_vanilla() -> Result<Table, SuiteError> {
     to_seat0(&mut driver)?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| {
-            !on_battlefield(e, "Warlord General")
-        }),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Warlord General")),
     )
 }
 
@@ -816,9 +814,7 @@ fn break_the_combo() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| {
-            !on_battlefield(e, "Walking Ballista")
-        }),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Walking Ballista")),
     )
 }
 
@@ -834,7 +830,7 @@ fn pacify_the_attacker_not_the_wall() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| {
+        outcome(Until::TurnEnds, |e| {
             let state = e.state();
             named(e, "Pacifism")
                 .and_then(|id| state.object(id))
@@ -866,7 +862,7 @@ fn exile_the_indestructible() -> Result<Table, SuiteError> {
     let driver = Driver::from_scenario(scenario)?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Iron Golem")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Iron Golem")),
     )
 }
 
@@ -893,7 +889,7 @@ fn remove_the_leaders_threat() -> Result<Table, SuiteError> {
     let driver = Driver::from_scenario(scenario)?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Leader Angel")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Leader Angel")),
     )
 }
 
@@ -1311,7 +1307,7 @@ fn wrath_when_behind() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Their C")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Their C")),
     )
 }
 
@@ -1360,7 +1356,7 @@ fn wrath_when_the_table_is_ahead() -> Result<Table, SuiteError> {
     let driver = Driver::from_scenario(scenario)?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Two A")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Two A")),
     )
 }
 
@@ -1375,7 +1371,7 @@ fn wrath_a_bigger_board() -> Result<Table, SuiteError> {
     )?;
     table(
         &driver,
-        outcome(Until::StepChanges, |e| !on_battlefield(e, "Their Drake")),
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Their Drake")),
     )
 }
 
@@ -1478,7 +1474,14 @@ fn trick_table(
     driver.attack(&[(ours.0, 1)])?;
     for _ in 0..40 {
         let decision = driver.decision()?.clone();
-        if let mtg_engine::decision::DecisionKind::DeclareBlockers(_) = decision.kind {
+        let blocking = matches!(
+            decision.kind,
+            mtg_engine::decision::DecisionKind::DeclareBlockers(_)
+        );
+        if !blocking && driver.state().turn().step() != Step::DeclareAttackers {
+            break;
+        }
+        if blocking {
             match blocker {
                 Some((name, _, _)) => driver.block(&[(name, ours.0)])?,
                 None => driver.answer(Answer::DeclareBlockers(Vec::new()))?,
