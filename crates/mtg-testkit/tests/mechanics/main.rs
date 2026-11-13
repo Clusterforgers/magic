@@ -153,6 +153,7 @@ mod r4b_skip;
 mod r5501_opponent_chooses;
 mod r5507_dice;
 mod r5507_prevent;
+mod r5513_exploited;
 mod r5g;
 mod r6f;
 mod repeat_each;

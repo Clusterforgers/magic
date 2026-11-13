@@ -1,7 +1,7 @@
 {
   "oracle_id": "b3122a15-c7ab-40f1-9632-f5fbc4484c59",
   "name": "Karplusan Minotaur",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Karplusan Minotaur",
@@ -16,9 +16,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 255, "end": 353 }
+          "Triggered": {
+            "when": { "Did": { "action": "LostCoinFlip", "who": "You" } },
+            "targets": [{ "what": { "ChosenBy": { "who": "Opponents", "what": "AnyTarget" } } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
           }
         }
       ]

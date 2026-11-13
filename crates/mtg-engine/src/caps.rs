@@ -1028,6 +1028,8 @@ const RUNS: &[&str] = &[
     "Condition.FirstCombat",
     "Condition.FirstStep",
     "Condition.Drafted",
+    "Condition.AttackedThisTurnBy",
+    "Condition.Exploited",
     "Condition.AttackedThisCombat",
     "Condition.SorceryTiming",
     "Condition.AfterCombat",
@@ -1733,6 +1735,8 @@ mod tests {
     #[case::undaunted("Keyword.Undaunted", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::a_class_level("Condition.Level", true)]
+    #[case::r5513_attacked_this_turn_by("Condition.AttackedThisTurnBy", true)]
+    #[case::r5513_exploited("Condition.Exploited", true)]
     #[case::a_search_of_the_library_this_way("Condition.Searched", true)]
     #[case::a_step_of_the_turn("Condition.Step", true)]
     #[case::before_attackers("Condition.BeforeAttackers", true)]

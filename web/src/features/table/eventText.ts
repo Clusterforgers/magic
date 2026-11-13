@@ -1134,6 +1134,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Renowned' in event) return line(`${n.card(event.Renowned.object)} becomes renowned`)
   if ('Enlisted' in event)
     return line(`${n.card(event.Enlisted.object)} enlists ${n.card(event.Enlisted.enlisted)}`)
+  if ('Fought' in event)
+    return line(`${n.card(event.Fought.object)} fights ${n.card(event.Fought.other)}`)
   if ('Exploited' in event)
     return line(`${n.card(event.Exploited.object)} exploits ${n.card(event.Exploited.sacrificed)}`)
   if ('Crewed' in event) {

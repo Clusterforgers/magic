@@ -245,6 +245,27 @@ impl Scope<'_> {
         total
     }
 
+    /// Whether one of the players was attacked this turn by a creature `by` selects as it was when declared as an
+    /// attacker; an attack on their planeswalker or battle names that permanent, not them.
+    pub(crate) fn r5513_attacked_by(&self, players: &[PlayerId], by: &Selector) -> bool {
+        let mut scope = self.clone();
+        scope.as_was = true;
+        scope.snapshots.extend(
+            self.state
+                .tallies
+                .records
+                .iter()
+                .filter_map(|record| record.shot.as_ref()),
+        );
+        self.state.tallies.records.iter().any(|record| {
+            record.event == TallyEvent::Attacked
+                && matches!(record.other, Some(Target::Player(player)) if players.contains(&player))
+                && record.shot.as_ref().is_some_and(|shot| {
+                    by.is_empty() || scope.selects(by, shot.reference()).unwrap_or(false)
+                })
+        })
+    }
+
     /// Whether the object blocked or was blocked this turn by a creature `with` selects as it was when the block was
     /// declared; by any creature when `with` is empty.
     pub(crate) fn r379_blocked_this_turn(&self, with: &Selector, object: ObjectRef) -> bool {

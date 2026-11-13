@@ -1099,7 +1099,15 @@ enlisted: ObjectId,
 /**
  * The controller of the enlisting creature.
  */
-player: PlayerId, } } | { "Exploited": { 
+player: PlayerId, } } | { "Fought": { 
+/**
+ * The creature that fought.
+ */
+object: ObjectId, 
+/**
+ * The creature it fought.
+ */
+other: ObjectId, } } | { "Exploited": { 
 /**
  * The creature whose exploit ability resolved.
  */

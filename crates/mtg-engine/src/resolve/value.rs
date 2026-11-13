@@ -3297,6 +3297,21 @@ impl<'a> Scope<'a> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
             Condition::Drafted(_) => false,
+            Condition::Exploited { by, what } => {
+                let sacrificed = self.objects(what)?;
+                self.objects(by)?.iter().any(|exploiter| {
+                    sacrificed.iter().any(|creature| {
+                        self.state
+                            .tallies
+                            .exploits
+                            .contains(&(*exploiter, creature.id))
+                    })
+                })
+            }
+            Condition::AttackedThisTurnBy { player, by } => {
+                let players = self.players(player)?;
+                self.r5513_attacked_by(&players, by)
+            }
             Condition::All(all) => all.iter().try_fold(true, |held, inner| {
                 Ok::<_, ResolveError>(held && self.holds(inner)?)
             })?,

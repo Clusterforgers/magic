@@ -81,11 +81,12 @@ pub(super) fn l31a_targeted_text(patterns: &[TriggerPattern]) -> Option<String> 
 }
 
 /// The keyword actions a player performs with no object, and the verb of each.
-const ACTIONS: [(Action, &str); 4] = [
+const ACTIONS: [(Action, &str); 5] = [
     (Action::Investigated, "investigate"),
     (Action::Discovered, "discover"),
     (Action::ManifestedDread, "manifest dread"),
     (Action::GaveGift, "give a gift"),
+    (Action::LostCoinFlip, "lose a coin flip"),
 ];
 
 /// After "When" or "Whenever": "you investigate", "an opponent discovers", "you manifest dread", "you give a gift".

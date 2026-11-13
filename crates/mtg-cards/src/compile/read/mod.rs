@@ -256,6 +256,7 @@ mod r5507_prevent;
 mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
+mod r5513_events;
 mod r5516_actions;
 mod r5516_reflexive;
 mod r5517_wholes;

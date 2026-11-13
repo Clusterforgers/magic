@@ -993,6 +993,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
+    } else if let Some(fought) = super::r5513_events::r5513_fights(r, what) {
+        return Some(fought);
     } else if r.word("mutates") {
         return Some(TriggerPattern::Mutates { what: what.clone() });
     } else if r.word("adapts") {
@@ -1124,6 +1126,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(attacked) = r.attempt(super::r5513_events::r5513_condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype(r) {
         return Some(kind);
     }
@@ -1317,6 +1322,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(attacked) = super::r5513_events::r5513_condition_text(condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype_text(condition) {
         return Some(kind);
     }

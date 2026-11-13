@@ -68,6 +68,7 @@ mod r409_combat_triggers;
 mod r4a_champion;
 mod r4a_tribute;
 mod r5501_attack_at;
+mod r5513_fights;
 mod riot;
 mod rmt1_become_blocked;
 mod rmt7_blocks_per;

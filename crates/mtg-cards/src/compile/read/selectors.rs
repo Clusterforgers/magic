@@ -2036,6 +2036,18 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 };
                 format!("{} chosen at random", spec_text(&one)?)
             }
+            // "Any target of an opponent's choice": the first opponent in turn order chooses (CR 601.2c).
+            Targetable::ChosenBy {
+                who: Ref::Opponents,
+                what,
+            } => {
+                let one = TargetSpec {
+                    what: (**what).clone(),
+                    bounds: spec.bounds.clone(),
+                    divide: None,
+                };
+                format!("{} of an opponent's choice", spec_text(&one)?)
+            }
             Targetable::Together { .. }
             | Targetable::PerPlayer { .. }
             | Targetable::ChosenBy { .. } => return None,

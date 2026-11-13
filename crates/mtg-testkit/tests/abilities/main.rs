@@ -104,6 +104,7 @@ mod r5505_control;
 mod r5505_convert;
 mod r5505_folly;
 mod r5510_fortify_crew;
+mod r5513_ramses;
 mod r5516_pack;
 mod r5517_reveal_life;
 mod r5519_ashiok;
