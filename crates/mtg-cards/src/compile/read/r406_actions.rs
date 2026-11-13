@@ -80,6 +80,8 @@ fn around(step: &Effect) -> Option<String> {
         Effect::Surveil {
             who: Ref::You,
             count: n,
+            bind: None,
+            kept: None,
         } => format!("you surveil {}", count(n)?),
         Effect::Draw {
             who: Ref::You,
@@ -133,6 +135,8 @@ pub(super) fn r406_read(text: &str) -> Option<Ability> {
             Effect::Surveil {
                 who: Ref::You,
                 count: fixed.clone(),
+                bind: None,
+                kept: None,
             },
             Effect::Draw {
                 who: Ref::You,
