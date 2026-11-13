@@ -470,6 +470,14 @@ pub enum DieResult {
     Chosen,
     /// The result they did not choose ("the other result").
     Other,
+    /// How many of the dice of a roll of several dice (`RollDice` with `count`) came up odd ("for each odd result").
+    Odd,
+    /// How many of them came up even ("for each even result").
+    Even,
+    /// The total of their results ("the total of those results").
+    Total,
+    /// How many of them rolled this number ("if you rolled 6 exactly seven times").
+    Times(u32),
 }
 
 /// A number, fixed or worked out when the effect runs.

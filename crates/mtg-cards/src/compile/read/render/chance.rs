@@ -95,6 +95,7 @@ impl Writer<'_> {
                 choose: false,
                 plus,
                 results,
+                count: None,
             } if plus.is_zero()
                 && matches!(results.as_slice(), [DieRow { from: 1, to: Some(highest), .. }] if highest < sides) =>
             {
@@ -117,6 +118,7 @@ impl Writer<'_> {
                 dice: 1,
                 choose: false,
                 plus,
+                count: None,
                 ..
             } if plus.is_zero() => Some((vec![format!("roll a d{sides}")], 1)),
             Effect::RollDice {
@@ -124,6 +126,7 @@ impl Writer<'_> {
                 sides,
                 dice: 2,
                 choose: true,
+                count: None,
                 ..
             } => Some((vec![format!("roll two d{sides} and choose one result")], 1)),
             Effect::Vote {

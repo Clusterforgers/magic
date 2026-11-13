@@ -25,6 +25,7 @@ pub fn fix23_inline_roll(ability: &Ability) -> Option<Ability> {
         choose: false,
         plus,
         results,
+        count: None,
         ..
     }) = effects.last_mut()
     else {

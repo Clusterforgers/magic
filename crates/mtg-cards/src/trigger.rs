@@ -1118,6 +1118,18 @@ pub enum ReplaceBy {
     /// All of the damage is prevented and the permanent with the ability loses one counter of this kind, if it has one
     /// ("prevent that damage. Remove a +1/+1 counter from this creature").
     PreventRemovingCounter(CounterKind),
+    /// For each 1 damage, while the permanent with the ability has a counter of this kind, one such counter is removed
+    /// and that 1 damage is prevented; damage that can't be prevented still removes the counters ("For each 1 damage that
+    /// would be dealt to this creature, if it has a +1/+1 counter on it, remove a +1/+1 counter from it and prevent that
+    /// 1 damage.").
+    PreventByCounters(CounterKind),
+    /// The next damage event a shield covers loses half of it, rounded down, and the shield ends ("the next time a source
+    /// of your choice would deal damage to you this turn, prevent half that damage, rounded down"); only a shield uses it.
+    PreventHalfNext,
+    /// The next damage event a shield covers loses all but this much of it, and the shield ends ("the next time an
+    /// unblocked creature of your choice would deal combat damage to you this turn, prevent all but 1 of that damage");
+    /// only a shield uses it.
+    PreventAllButNext(u32),
     /// A draw is skipped: the player mills this many cards and returns the card with the ability from its graveyard to
     /// their hand (dredge, CR 702.52a).
     Dredge(u32),
@@ -1369,6 +1381,8 @@ impl ShieldShape {
                 ReplaceBy::Prevent
                 | ReplaceBy::PreventNext
                 | ReplaceBy::PreventNextAnd(_)
+                | ReplaceBy::PreventHalfNext
+                | ReplaceBy::PreventAllButNext(_)
                 | ReplaceBy::PreventUpTo(_)
                 | ReplaceBy::PreventCounted(_)
                 | ReplaceBy::PreventCountedAnd { .. }

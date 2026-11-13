@@ -332,6 +332,7 @@ Cloud Sprite
 Cloudfin Raptor
 Cloudform
 Cloudskate
+Clown Car
 Clutch of Currents
 Clutch of the Undercity
 Coastal Breach
@@ -1152,6 +1153,7 @@ Loxodon Smiter
 Loyal Retainers
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
+Luck Bobblehead
 Ludevic's Test Subject // Ludevic's Abomination
 Lumen-Class Frigate
 Lunar Rejection
@@ -1305,6 +1307,7 @@ Nessian Asp
 Netherese Puzzle-Ward
 Nettlecyst
 Neverwinter Dryad
+Neverwinter Hydra
 New Horizons
 Niblis of Frost
 Nicanzil, Current Conductor

@@ -1,7 +1,7 @@
 {
   "oracle_id": "aff84707-f5f8-4f53-869e-feec78da8d8d",
   "name": "Rock Hydra",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rock Hydra",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 50, "end": 196 }
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": { "PreventByCounters": "+1/+1" }
           }
         },
         {

@@ -714,7 +714,10 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventHalf
         | ReplaceBy::PreventRemovingCounter(_)
         | ReplaceBy::PreventAnd(_)
-        | ReplaceBy::PreventAllBut(_) => {
+        | ReplaceBy::PreventAllBut(_)
+        | ReplaceBy::PreventByCounters(_)
+        | ReplaceBy::PreventHalfNext
+        | ReplaceBy::PreventAllButNext(_) => {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
@@ -853,6 +856,8 @@ impl Action {
                     | ReplaceBy::PreventAnd(_)
                     | ReplaceBy::PreventCountedAnd { .. }
                     | ReplaceBy::PreventAllBut(_)
+                    | ReplaceBy::PreventHalfNext
+                    | ReplaceBy::PreventAllButNext(_)
             )
         )
     }
@@ -2170,10 +2175,19 @@ impl Pass<'_> {
         };
         match (by, &unit) {
             (
-                ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_) | ReplaceBy::PreventHalf,
+                ReplaceBy::Prevent
+                | ReplaceBy::PreventUpTo(_)
+                | ReplaceBy::PreventHalf
+                | ReplaceBy::PreventHalfNext,
                 Unit::Damage { .. },
             ) => {
                 self.prevent(at, candidate, by, applied);
+            }
+            (ReplaceBy::PreventAllButNext(kept), Unit::Damage { .. }) => {
+                self.w9c_prevent_all_but(at, candidate, *kept, applied);
+            }
+            (ReplaceBy::PreventByCounters(kind), Unit::Damage { .. }) => {
+                self.r5507_prevent_by_counters(at, candidate, kind, applied);
             }
             (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
                 self.prevent(at, candidate, &ReplaceBy::Prevent, applied.clone());
@@ -2424,6 +2438,7 @@ impl Pass<'_> {
         let most = match by {
             ReplaceBy::PreventUpTo(most) => *most,
             ReplaceBy::PreventHalf => amount.div_ceil(2),
+            ReplaceBy::PreventHalfNext => amount / 2,
             _ => u32::MAX,
         };
         let taken = most.min(amount);
@@ -3670,6 +3685,7 @@ mod r304_skip;
 pub(crate) mod r406_actions;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
+mod r5507_counters;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
