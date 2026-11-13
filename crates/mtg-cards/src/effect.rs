@@ -1547,6 +1547,13 @@ pub enum Effect {
     AddStep {
         /// The step added.
         step: crate::trigger::Step,
+        /// How many such steps are added ("you get that many additional upkeep steps").
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The steps come after the current phase, each on its own and not as part of a phase (CR 500.10: "you get that
+        /// many additional upkeep steps after this phase"), before any phase added earlier.
+        #[serde(default, skip_serializing_if = "is_false")]
+        after_phase: bool,
     },
     /// The player wins the game.
     WinGame {
@@ -2318,6 +2325,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 only: Some(Ref::Bound(IMPULSE.to_owned())),
                 play: true,
                 once: false,
+                any_turn: false,
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,

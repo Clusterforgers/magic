@@ -245,6 +245,7 @@ mod r4708_reveal;
 mod r4709_differ;
 mod r4710_atoms;
 mod r4711_drafted;
+mod r5500_reads;
 mod r5501_attached;
 mod r5501_echo;
 mod r5502_attack_with_one;
@@ -735,6 +736,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r5500_reads::r5500_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = r406_actions::r406_read(text) {

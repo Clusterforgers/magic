@@ -345,6 +345,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         once: bool,
+        /// With `once`, once each turn on every player's turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        any_turn: bool,
         /// What the caster pays in addition to the other costs of a cast through it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
@@ -912,6 +916,8 @@ pub(crate) struct Cast {
     pub(crate) play: bool,
     /// Only once during each of the controller's turns, and only on their turns.
     pub(crate) once: bool,
+    /// With `once`, once each turn on every player's turn.
+    pub(crate) any_turn: bool,
     /// What the caster pays in addition to the other costs of a cast through it.
     pub(crate) additional: Option<Cost>,
     /// How the mana of a cast through it may be spent.
@@ -966,11 +972,11 @@ impl Cast {
         })
     }
 
-    /// Whether a permission that works once each turn is open: it is its controller's turn and no spell was cast through
-    /// it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
+    /// Whether a permission that works once each turn is open: it is its controller's turn (any turn with `any_turn`) and
+    /// no spell was cast through it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
     fn c11b_open(&self, state: &GameState) -> bool {
         !self.once
-            || (state.is_active(self.controller)
+            || ((self.any_turn || state.is_active(self.controller))
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
     }
 
@@ -1142,6 +1148,7 @@ impl RulesInForce {
                         only: None,
                         play: false,
                         once: false,
+                        any_turn: false,
                         additional: None,
                         spend_as: SpendAs::Normal,
                         when: None,
@@ -1170,6 +1177,7 @@ impl RulesInForce {
                 only: None,
                 play: false,
                 once: false,
+                any_turn: false,
                 additional: None,
                 spend_as: SpendAs::Normal,
                 when: None,
@@ -1400,6 +1408,7 @@ impl RulesInForce {
                 only,
                 play,
                 once,
+                any_turn,
                 additional,
                 rather,
                 spend_as,
@@ -1423,6 +1432,7 @@ impl RulesInForce {
                         only: only.clone(),
                         play: *play,
                         once: *once,
+                        any_turn: *any_turn,
                         additional: additional.as_deref().cloned(),
                         spend_as: *spend_as,
                         when: when.as_deref().cloned(),
@@ -1445,6 +1455,7 @@ impl RulesInForce {
                             only: Some(vec![*card]),
                             play: false,
                             once: false,
+                            any_turn: false,
                             additional: None,
                             spend_as: SpendAs::Normal,
                             when: None,
@@ -1758,6 +1769,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .transpose()?,
             play: permission.play,
             once: permission.once,
+            any_turn: permission.any_turn,
             additional: permission.additional.clone().map(Box::new),
             rather: permission.rather.clone().map(Box::new),
             spend_as: permission.spend_as,
@@ -1864,6 +1876,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
         GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
+        // The cost of the cast reads it from the card (`r5500_tax_life`); it is no rule of the game.
+        GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
@@ -3436,6 +3450,7 @@ mod tests {
             only,
             play,
             once: false,
+            any_turn: false,
             additional: None,
             spend_as: SpendAs::Normal,
             when: None,

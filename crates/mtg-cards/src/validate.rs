@@ -1051,6 +1051,7 @@ impl<'a> Walker<'a> {
             | Pred::SummoningSick
             | Pred::MilledThisTurn
             | Pred::DrawnThisTurn
+            | Pred::LastDrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::AttackedLastTurn
@@ -2100,6 +2101,14 @@ impl<'a> Walker<'a> {
                     w.problem("a limit counts one or more of the objects `only` names");
                 });
             }
+        }
+        if permission.any_turn {
+            if !permission.once {
+                self.problem(
+                    "only a permission that works once each turn works on any player's turn",
+                );
+            }
+            self.uses("MayCast", "AnyTurn");
         }
         for rider in &permission.riders {
             let tag = match rider {
@@ -3747,6 +3756,8 @@ impl Walker<'_> {
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
+                            // A transformation (or conversion) logs its event only when the permanent turns over.
+                            | Effect::Transform { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
@@ -4996,6 +5007,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::KeepsDamage) {
                     w.problem("a permanent keeps its damage by a static ability of its own, not by an effect");
                 }
+                if matches!(rule, GameRule::TaxAsLife(_)) {
+                    w.problem("a commander tax is paid as life by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::CountsAsNamed(_)) {
                     w.problem("a card counts as another name by a static ability of its own, not by an effect");
                 }
@@ -5949,6 +5963,13 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::TaxAsLife(life) => {
+                if *life == 0 {
+                    self.at(tag, |w| {
+                        w.problem("a commander tax paid as life costs at least 1 life a cast");
+                    });
+                }
+            }
             GameRule::CountsAsNamed(name) => {
                 if name.trim().is_empty() {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
@@ -6190,6 +6211,7 @@ impl Walker<'_> {
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
                     | GameRule::CantSpendMana
+                    | GameRule::TaxAsLife(_)
                     | GameRule::SpendOnlyFrom(_)
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
@@ -6293,6 +6315,9 @@ impl Walker<'_> {
             self.problem(
                 "an attachment chooses only a color or a creature type as it becomes attached",
             );
+        }
+        if matches!((when, by), (ReplaceWhen::Scries { .. }, ReplaceBy::Add(_))) {
+            self.uses("Scries", "Add");
         }
     }
 

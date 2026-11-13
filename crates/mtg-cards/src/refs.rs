@@ -339,6 +339,8 @@ pub enum Pred {
     MilledThisTurn,
     /// Is a card its owner drew this turn, still in the hand ("cards in your hand drawn this turn").
     DrawnThisTurn,
+    /// Is the last card its owner drew this turn, still in the hand it was drawn into ("the last card you drew this turn").
+    LastDrawnThisTurn,
     /// Is a card with an Adventure (CR 715): a card of the Adventure layout, in any zone and on the stack as either half.
     HasAdventure,
     /// Has the card type.

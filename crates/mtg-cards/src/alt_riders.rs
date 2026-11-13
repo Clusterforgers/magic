@@ -108,6 +108,7 @@ pub fn warp_riders() -> Vec<Ability> {
                 only: Some(Ref::Bound(EXILED.to_owned())),
                 play: false,
                 once: false,
+                any_turn: false,
                 additional: None,
                 spend_as: crate::modify::SpendAs::Normal,
                 when: None,

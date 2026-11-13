@@ -394,6 +394,8 @@ fn begin_turn(
     state.turn.lands_played = 0;
     state.turn.combats = 0;
     state.turn.ahead.clear();
+    state.turn.r5500_lone.clear();
+    state.turn.r5500_in_lone = false;
     state.turn.r306_steps.clear();
     state.turn.r306_seen = 0;
     state.turn.r306_again = 0;
@@ -411,14 +413,18 @@ fn begin_turn(
 
 /// Phases are added after the current one (CR 500.8): they begin before any added earlier, and the phase of the
 /// regular sequence that follows the current one comes after all of them.
-fn add_phases(state: &mut GameState, steps: &[Step]) -> Result<(), EngineError> {
+fn add_phases(state: &mut GameState, steps: &[Step], lone: bool) -> Result<(), EngineError> {
     let turn = &mut state.turn;
     if turn.ahead.is_empty() {
+        // After a step on its own, the phase that follows the one it came after is still held.
         let held = turn.step.phase().next_start();
         turn.ahead
             .push(held.ok_or_else(|| invalid("no phase follows the ending phase"))?);
+        if !turn.r5500_lone.is_empty() {
+            turn.r5500_lone.push(false);
+        }
     }
-    turn.ahead.splice(0..0, steps.iter().copied());
+    turn.r5500_add_ahead(steps, lone);
     Ok(())
 }
 
@@ -444,17 +450,20 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
             }
         }
-        Event::PhasesAdded { steps } => add_phases(state, steps)?,
+        Event::PhasesAdded { steps, lone } => add_phases(state, steps, *lone)?,
         Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
             // A step added after the one that ends begins next, and its entry is spent.
-            if state.turn.r306_steps.first() == Some(step) {
+            let from_added = state.turn.r306_steps.first() == Some(step);
+            if from_added {
                 state.turn.r306_steps.remove(0);
             }
             state.turn.r306_note_step(*step);
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
-                state.turn.ahead.remove(0);
+                state.turn.r5500_begin_ahead();
+            } else if !from_added {
+                state.turn.r5500_in_lone = false;
             }
             if *step == Step::Upkeep {
                 state.rmt8_mark_upkeep();

@@ -111,6 +111,9 @@ pub(crate) enum Tally {
     R377Ventured,
     /// A card drawn (counted for the card as it lies in the hand it was drawn into).
     Dk26Drawn,
+    /// The number of the draw of the turn a card was drawn by, for its owner (counted for the card as it lies in the hand
+    /// it was drawn into): the card is the last one drawn while it equals the owner's `Drawn`.
+    R5500DrawnNth,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
     /// A spell cast.

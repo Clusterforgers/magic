@@ -67,6 +67,7 @@ mod r400_attack_follow;
 mod r409_combat_triggers;
 mod r4a_champion;
 mod r4a_tribute;
+mod r5500_lone_steps;
 mod r5501_attack_at;
 mod r5502_attack_with_one;
 mod r5502_blocked_by_one;

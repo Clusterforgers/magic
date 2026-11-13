@@ -767,6 +767,12 @@ describe('describeEvent', () => {
     for (const line of lines) expect(describeEvent(line, names).text.length).toBeGreaterThan(3)
   })
 
+  it('says steps added on their own after a phase are steps, not phases', () => {
+    expect(say({ PhasesAdded: { steps: ['Upkeep', 'Upkeep'], lone: true } })).toBe(
+      '2 additional upkeep step(s) follow this phase',
+    )
+  })
+
   it('names an object it does not know "a card" rather than print an id', () => {
     expect(say({ SpellCast: { player: 0, object: 99 } })).toBe('Ana casts a card')
     expect(say({ DamageDealt: { source: 99, target: { Object: 98 }, amount: 1 } })).toBe(

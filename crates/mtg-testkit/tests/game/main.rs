@@ -95,6 +95,7 @@ mod r4705_liege;
 mod r4705_loyalty_any_time;
 mod r4705_rowans_talent;
 mod r4705_vecna;
+mod r5500_tax_life;
 mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;

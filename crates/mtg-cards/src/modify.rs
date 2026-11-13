@@ -407,6 +407,10 @@ pub struct CastPermission {
     /// turn ("Once during each of your turns, you may cast a creature spell from your graveyard").
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub once: bool,
+    /// With `once`, the permission works once each turn on every player's turn, not only on the controller's ("Once each
+    /// turn, you may pay {0} rather than pay the mana cost for a spell you cast ...").
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub any_turn: bool,
     /// What the caster pays in addition to the other costs of a cast through it (CR 601.2b): "by paying 3 life and
     /// discarding a card in addition to paying its other costs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -447,6 +451,7 @@ impl Default for CastPermission {
             only: None,
             play: false,
             once: false,
+            any_turn: false,
             additional: None,
             rather: None,
             spend_as: SpendAs::Normal,
@@ -1091,6 +1096,10 @@ pub enum GameRule {
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
     /// only what pays without mana (convoke, delve) pays its cost; no `from`.
     CantSpendMana,
+    /// "Rather than pay {2} for each previous time you've cast this spell from the command zone this game, pay 2 life that
+    /// many times.": the commander tax of the card is paid as this much life for each previous cast from the command zone
+    /// in place of its generic mana (CR 903.8); no `from`.
+    TaxAsLife(u32),
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),

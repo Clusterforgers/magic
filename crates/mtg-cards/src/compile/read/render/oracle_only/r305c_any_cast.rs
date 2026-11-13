@@ -77,6 +77,7 @@ mod tests {
             only: None,
             play: false,
             once: false,
+            any_turn: false,
             additional: None,
             rather: rather.map(|mana| Cost(vec![CostItem::Mana(mana.parse().unwrap())])),
             spend_as: SpendAs::Normal,

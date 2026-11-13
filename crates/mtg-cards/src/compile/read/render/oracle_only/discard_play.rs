@@ -53,6 +53,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         only: Some(Ref::Bound(exiled.clone())),
         play: true,
         once: false,
+        any_turn: false,
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,

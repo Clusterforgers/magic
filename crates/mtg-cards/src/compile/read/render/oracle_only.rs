@@ -226,6 +226,7 @@ mod r4705_wholes;
 mod r4707_wordings;
 mod r4710_wordings;
 mod r4711_wholes;
+mod r5500_wordings;
 mod r5503_wholes;
 mod r5505_wholes;
 mod r5509_wholes;
@@ -838,6 +839,7 @@ fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     r305c_random_keyword::r305c_add_random_keyword(ability, texts);
     r306c_wholes::r306c_add_wholes(ability, texts);
     r400_wholes::r400_add_wholes(ability, texts);
+    r5500_wordings::r5500_add_wholes(ability, texts);
     r4703_wholes::r4703_add_wholes(ability, texts);
     r4705_wholes::r4705_add_wholes(ability, texts);
 }

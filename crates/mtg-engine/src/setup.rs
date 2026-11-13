@@ -600,6 +600,8 @@ impl GameState {
                 combats: 0,
                 ahead: Vec::new(),
                 r306_steps: Vec::new(),
+                r5500_lone: Vec::new(),
+                r5500_in_lone: false,
                 r306_seen: 0,
                 r306_again: 0,
                 ending: false,

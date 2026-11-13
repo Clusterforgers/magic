@@ -244,6 +244,10 @@ play: boolean,
  */
 once?: boolean, 
 /**
+ * With `once`, once each turn on every player's turn.
+ */
+any_turn?: boolean, 
+/**
  * What the caster pays in addition to the other costs of a cast through it.
  */
 additional?: unknown, 

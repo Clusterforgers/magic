@@ -699,6 +699,11 @@ fn card_drawn(
     state.tally(player, Tally::Drawn);
     if let Some(reference) = state.object(object).map(GameObject::reference) {
         state.tally_object(reference, None, Tally::Dk26Drawn);
+        let nth = state.tallied(player, Tally::Drawn);
+        state
+            .tallies
+            .objects
+            .insert((reference, None, Tally::R5500DrawnNth), nth);
     }
     if state.turn.step == crate::turn::Step::Draw
         && state.is_alive(player)

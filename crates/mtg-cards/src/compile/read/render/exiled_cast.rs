@@ -40,6 +40,7 @@ impl Writer<'_> {
             only: Some(Ref::Bound(FOUND.to_owned())),
             play: false,
             once: false,
+            any_turn: false,
             additional: None,
             spend_as: crate::modify::SpendAs::Normal,
             when: None,

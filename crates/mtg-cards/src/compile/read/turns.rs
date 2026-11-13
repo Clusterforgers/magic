@@ -48,6 +48,8 @@ fn phases(r: &mut Reader<'_>) -> Option<Vec<PhaseKind>> {
     r.word("additional").then_some(())?;
     let kind = if r.word("combat") {
         PhaseKind::Combat
+    } else if count == 1 && r.word("beginning") {
+        PhaseKind::Beginning
     } else if r.word("main") {
         PhaseKind::Main
     } else {
@@ -94,6 +96,7 @@ fn turns_text(count: i32) -> Option<String> {
 fn phases_text(list: &[PhaseKind]) -> Option<String> {
     let (anchor, text) = match list {
         [PhaseKind::Combat] => ("phase", "there is an additional combat phase".to_owned()),
+        [PhaseKind::Beginning] => ("phase", "there is an additional beginning phase".to_owned()),
         [PhaseKind::Combat, PhaseKind::Main] => (
             "main phase",
             "there is an additional combat phase followed by an additional main phase".to_owned(),

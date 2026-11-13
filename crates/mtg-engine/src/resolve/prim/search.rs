@@ -243,6 +243,7 @@ fn exiled_as_found(
                     only: Some(exiled.clone()),
                     play: true,
                     once: false,
+                    any_turn: false,
                     additional: None,
                     rather: None,
                     spend_as: SpendAs::AnyColor,

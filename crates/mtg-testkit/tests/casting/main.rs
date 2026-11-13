@@ -203,6 +203,7 @@ mod r4705_ward_poison;
 mod r4709_apart_costs;
 mod r4f_stack_move;
 mod r4i_may_flash;
+mod r5500_once_each_turn;
 mod r5502_flash_teamwork;
 mod r5503_exile_casts;
 mod r5503_free_once;
