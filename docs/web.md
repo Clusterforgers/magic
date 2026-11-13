@@ -60,16 +60,16 @@ The session's rules:
 - `/watch/$gameId` (`game/WatchRoute`, `WatchPage`): a signed-in visitor watches a running game. `GamePage` with `watch` opens `/ws/{game}/watch` (`socketUrl`) and sends only `Join`; signed out it asks to sign in (`/login?next=`). A spectator's table (`TableView.spectator`) is drawn from seat 0's side with that hand face down and "Watching: you hold no seat" in place of the pass controls. A player's top bar counts the watchers (`SpectatorCount`, from `Spectators`, `PlayState.spectators`).
 - `game/GamePage` makes one session per (game, seat, token) and connects one microtask after mount, so StrictMode opens one socket. With a seat link it joins by token; without one and signed in it opens `/ws/{game}` with no token and the upgrade's cookie picks the seat. `game/gameContext` gives `useGame()` and `usePlay(selector)`; `lookup` is `GET /api/games/{id}`, polled every 3 s in the lobby.
 
-| Store | Screen (`connectionOf`, `game/connection.ts`) |
-|---|---|
-| no seat link and not signed in | `SeatLinkMissing`; no socket |
-| `phase` over | `GameOver`; no connection notice |
-| `status` replaced or stopped | `ConnectionNotice` alone: the reason and a button to connect again |
-| `status` closed | `ConnectionNotice` alone, with Back to Play and Create a game, no way to connect again |
-| idle or connecting, never welcomed | "Connecting to the game…" |
-| `reconnecting`, `attempt` below 5 | "Connection lost. Reconnecting… (attempt N)" |
-| `reconnecting`, `attempt` 5 or more | "Cannot reach the game" and "Try again now"; the socket keeps retrying |
-| welcomed | `Lobby` while `phase` is lobby, `GameTable` while playing |
+| Store                               | Screen (`connectionOf`, `game/connection.ts`)                                          |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| no seat link and not signed in      | `SeatLinkMissing`; no socket                                                           |
+| `phase` over                        | `GameOver`; no connection notice                                                       |
+| `status` replaced or stopped        | `ConnectionNotice` alone: the reason and a button to connect again                     |
+| `status` closed                     | `ConnectionNotice` alone, with Back to Play and Create a game, no way to connect again |
+| idle or connecting, never welcomed  | "Connecting to the game…"                                                              |
+| `reconnecting`, `attempt` below 5   | "Connection lost. Reconnecting… (attempt N)"                                           |
+| `reconnecting`, `attempt` 5 or more | "Cannot reach the game" and "Try again now"; the socket keeps retrying                 |
+| welcomed                            | `Lobby` while `phase` is lobby, `GameTable` while playing                              |
 
 After a Welcome the lobby or table stays under the reconnect notice. A `notice` shows above any other screen as a dismissible alert.
 
@@ -100,22 +100,22 @@ Teams: `table/teamLife.ts` (`useSeatTeam`) reads the view's `house_rules.teams`;
 
 `TableGrid` is one grid inside a root that clips (`h-dvh overflow-hidden`). Each region is a cell with `min-height: 0` (`data-area`); a zone that cannot fit scrolls inside itself with an edge fade (`fade-scroll`, `useEdgeFade`), never the page. The offline, connection and server notices (`data-slot="table-notices"`) float under the top bar.
 
-| Region | Content | Size |
-|---|---|---|
-| bar | home, the turn badge, the side sheet's button (S, XS), the table menu | 44 px; 32 px on a phone on its side |
-| opponents | the opponents' pods and boards | `minmax(0, Ofr)`: the board split |
-| shared | the stack as chips, the prompt or the waiting line, priority, the combat key | `SHARED_CLAMP` `clamp(56px, 7dvh, 72px)` |
-| own | your pod and battlefield | `minmax(0, Yfr)`: the board split |
-| hand | your hand as a fan | `HAND_CLAMP` `clamp(96px, 13dvh, 168px)`, grown to the rows of a hand one row does not hold (at most 23 dvh); phone `clamp(96px, 14dvh, 120px)` |
-| controls | the passing line, the stops, the pass buttons | bottom right, as wide as its content up to 480 px (760 with the stops row, 160 on a phone) |
-| side | Commands, Log, Chat, Stack | by breakpoint |
+| Region    | Content                                                                      | Size                                                                                                                                            |
+| --------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| bar       | home, the turn badge, the side sheet's button (S, XS), the table menu        | 44 px; 32 px on a phone on its side                                                                                                             |
+| opponents | the opponents' pods and boards                                               | `minmax(0, Ofr)`: the board split                                                                                                               |
+| shared    | the stack as chips, the prompt or the waiting line, priority, the combat key | `SHARED_CLAMP` `clamp(56px, 7dvh, 72px)`                                                                                                        |
+| own       | your pod and battlefield                                                     | `minmax(0, Yfr)`: the board split                                                                                                               |
+| hand      | your hand as a fan                                                           | `HAND_CLAMP` `clamp(96px, 13dvh, 168px)`, grown to the rows of a hand one row does not hold (at most 23 dvh); phone `clamp(96px, 14dvh, 120px)` |
+| controls  | the passing line, the stops, the pass buttons                                | bottom right, as wide as its content up to 480 px (760 with the stops row, 160 on a phone)                                                      |
+| side      | Commands, Log, Chat, Stack                                                   | by breakpoint                                                                                                                                   |
 
-| Breakpoint | Width | Side area |
-|---|---|---|
-| XS | under 640 | a sheet from the top bar; a phone layout |
-| S | 640 to 1023 | a sheet from the top bar |
-| M | 1024 to 1279 | a 44 px rail; a tab opens a 320 px panel over the table |
-| L, XL | 1280 up | a column of 22 % of the width, 280 to 320 px |
+| Breakpoint | Width        | Side area                                               |
+| ---------- | ------------ | ------------------------------------------------------- |
+| XS         | under 640    | a sheet from the top bar; a phone layout                |
+| S          | 640 to 1023  | a sheet from the top bar                                |
+| M          | 1024 to 1279 | a 44 px rail; a tab opens a 320 px panel over the table |
+| L, XL      | 1280 up      | a column of 22 % of the width, 280 to 320 px            |
 
 - `layout.ts` (pure) holds the sizes: `regionSizes`, `sidePanelRows` (an open rail panel or sheet leaves a waiting strip prompt and its cards clickable), the grid templates (`gridRows`, `gridColumns`, `mainColumns`, held to the numbers by `layoutRegions.test.ts`), `chooseMode`, `arrangeSeats` and `planTable`.
 - Mode: grid for 2 to 4 seats unless a board column would be under 280 px (`gridColumnWidth`), focus otherwise; the menu overrides it. Seats are unlimited: compact cards from `COMPACT_FROM_SEATS` (8), and the tile strip scrolls sideways. Focus draws a tile per opponent and one large board that follows the turn until a tile is chosen ("Follow the turn" undoes it); a change of board cross-fades (`FocusBoard`, `useBoardFade`), except under reduced motion.
@@ -237,13 +237,13 @@ Teams: `table/teamLife.ts` (`useSeatTeam`) reads the view's `house_rules.teams`;
 
 - `watchBatches(store, fx)` (`batch.ts`) subscribes to the play store. `batchBetween(prev, next)` takes a change for a batch only when `seq` moved on by exactly the events appended to the log, so snapshots, decisions and chat never animate. `deriveEffects` (`derive.ts`, pure) returns `Effect[]` in a fixed order.
 
-| Effect | Comes from | ms |
-|---|---|---|
-| `attacked`, `blocked` | `AttackersDeclared`, `BlockersDeclared` and the combat diff | 500 |
-| `damaged` | a permanent: `DamageDealt`, else newly marked damage; a seat: the life diff | 550 |
-| `healed` | a seat: the life diff | 550 |
-| `entered` | a permanent that was not on the battlefield | 350 |
-| `died` | battlefield to graveyard, or named by `CreatureDied` (a token); at most 24 a batch | 500 |
+| Effect                | Comes from                                                                         | ms  |
+| --------------------- | ---------------------------------------------------------------------------------- | --- |
+| `attacked`, `blocked` | `AttackersDeclared`, `BlockersDeclared` and the combat diff                        | 500 |
+| `damaged`             | a permanent: `DamageDealt`, else newly marked damage; a seat: the life diff        | 550 |
+| `healed`              | a seat: the life diff                                                              | 550 |
+| `entered`             | a permanent that was not on the battlefield                                        | 350 |
+| `died`                | battlefield to graveyard, or named by `CreatureDied` (a token); at most 24 a batch | 500 |
 
 - A `died` effect carries the card's last look, so a ghost stands where it was (`GhostCard`, `aria-hidden`); a player who loses takes their permanents out without ghosts. A lane whose last permanent died keeps its place while the ghost plays (`useGhosts`).
 - `createFx` (`store.ts`) keys effects by card, seat and row; one timer per kind and batch removes them after `FX_MS`; a batch plays at most 120. `mode` (`off`, `reduced`, `full`) is read every batch; `reduced` plays still highlights only.
@@ -287,12 +287,12 @@ The Priority prompt's controls (`prompt/PassControls.tsx`, drawn in the controls
 
 `data-slot="primary-action"` answers `Pass` (disabled when `can_pass` is false). `primaryLabel` (`passWords.ts`) is display only; the server decides what happens. "Pass priority" is never a visible label; it is the `aria-description`. Resolve and End turn are never one button: the primary button never says "End turn", and in the last window of the viewer's turn over an empty stack (`lastWindow`) it is not drawn, so a Resolve pressed twice never ends the turn.
 
-| Situation | Label |
-|---|---|
-| a spell on the stack | "Resolve <top spell>" ("Resolve" in a short dock) |
-| the viewer's turn, before the last window | "Next: <next step>" |
-| the viewer's turn, the End step, empty stack | no primary button; "End turn" alone |
-| another seat's turn | "Continue" |
+| Situation                                    | Label                                             |
+| -------------------------------------------- | ------------------------------------------------- |
+| a spell on the stack                         | "Resolve <top spell>" ("Resolve" in a short dock) |
+| the viewer's turn, before the last window    | "Next: <next step>"                               |
+| the viewer's turn, the End step, empty stack | no primary button; "End turn" alone               |
+| another seat's turn                          | "Continue"                                        |
 
 The dock's form (`dockForm(regions)` in `layout.ts`) sets how much the words say: `full` (a main area of `DOCK_FULL_MIN_MAIN_PX` or more) draws key hints and the whole words; `short` leaves the hints to tooltips and `aria-keyshortcuts` and writes short words; `compact` is the phone's dock.
 
@@ -324,13 +324,13 @@ The dock's form (`dockForm(regions)` in `layout.ts`) sets how much the words say
 
 ### Keys
 
-| Key | Action |
-|---|---|
-| Space | presses the primary button |
-| Enter | presses "End turn"; where none is drawn (Full Control, the End step) the primary button (`enterYields`) |
-| Shift+Enter or another modifier | nothing |
-| Ctrl alone | Full Control `NextWindow`; again, Off; nothing from `Held` |
-| Ctrl and Shift together | Full Control `Held`; again, Off |
+| Key                             | Action                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Space                           | presses the primary button                                                                              |
+| Enter                           | presses "End turn"; where none is drawn (Full Control, the End step) the primary button (`enterYields`) |
+| Shift+Enter or another modifier | nothing                                                                                                 |
+| Ctrl alone                      | Full Control `NextWindow`; again, Off; nothing from `Held`                                              |
+| Ctrl and Shift together         | Full Control `Held`; again, Off                                                                         |
 
 Space and Enter act only when nothing has the keyboard (`isFocusFree`: no field, button, link, menu or dialog has focus, no modifier is held, the key is not repeating); a focused card plays itself instead. `useFullControlKeys` follows the same rule and `ModifierChords` fires on release, so Ctrl+Shift+I and Ctrl-click do not count.
 
@@ -372,9 +372,15 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 ## Delves
 
 - `/delves` (`features/delves/DelvesPage.tsx`) lists the player's runs and holds the forms for a new run (Heat, optional seed code) and for joining a friend's by invite code; `/delves/$delveId` (`DelvePage.tsx`) is one run, read every 4 s through `net/delves.ts` so a finished fight comes back by itself.
-- The run page shows the state of the run: the lobby (a deck choice per hero from the player's Commander decks under their deck groups, the last used group first, and the precons (`groupedOptions`), the host's bot allies and Descend), the boss fight (a link to the table, the boss card and its phases), the player's first offer (`DelveOffer.tsx`: card pick, relic pick, shop, campfire, event), the end with the seed code, and below them the ladder with a Vote button on each next camp and the voters' names. The party (life, gold, relics, won cards), the hearts and the log sit at the side.
-- Custom cards (relics, boss cards, phases) are drawn by `CustomCardFrame.tsx` from the content endpoint: name, an art placeholder tinted by kind, type line, rules text and role; a risky relic says it helps the boss too.
+- The run page wears the dungeon theme (tokens `delve` ember, `on-delve`, `delve-stone` ground, `relic` gold; contrast held in `tokens.test.ts`): `RunHeader.tsx` (stage, Heat, hearts, seed code to copy, each hero's life bar, gold, colors and relic chips whose rules show in a tooltip), then the stage, then the descent and the chronicle (the log) at the side.
+- Lobby (`PartyLobby.tsx`): one card per hero with their commander's art crop, deck, colors and a Ready (deck chosen) or Choosing badge, "N of M heroes ready", the host's bot allies and Descend once all are ready.
+- Deck picker (`DeckPicker.tsx`, model in `deckPicker.ts`): the player's Commander decks and the precons as cards (art crop, name, commanders, colors as mana symbols, size, validity, last delve kept per browser), in collapsible sections built on the deck groups' `folds.ts` and `GroupToggle`, which the lobby's `DeckList` shares: the player's groups (last used first, the hero's deck's section open first), Ungrouped or "Your decks", then Precons; search and a color filter open every match; a large preview of the deck picked; nothing is sent before Take, which remembers the deck's group.
+- The descent (`BossLadder.tsx`, states in `model.ts`): a vertical path of boss portraits and camp signs, each cleared, current ("You are here", "Fighting"), next or locked; a next camp shows its voters by initial and name, the player's own vote pressed, and "N of M voted" with the torch bearer.
+- Scenes (`DelveOffer.tsx`): card picks and shop cards as card pictures (`NamedCard.tsx`, found by name through the card search), relics as `CustomCardFrame` cards (a risky one with a hazard edge and a Dangerous badge), the goblin trader with the purse and "Needs N gold", the campfire's Rest and Reforge with the life a rest heals, an event as a story card with numbered choices. The fight panel shows the boss's portrait, life for the party and Heat, its line, its card and phases and the link to the table.
+- Motion: scenes fade and rise in, bars and states ease, all under `motion-safe`; `/dev/delve?state=lobby|map|fight|relics|cards|shop|campfire|event|victory|defeat` shows each state on a fixture without a server.
 - At the table a Spirit and a boss's phase show as seat chips (`campaignFacts` in `playerEffects.ts`), the phase emblems and relics as emblem chips, and the log names both events.
+- A boss seat's pod and tile carry a crown chip and the `boss` edge, and the pod a phase track (passed, now, to come; the current phase named); a fallen hero's carry the Spirit mark, a ghost at the life figure, colour drained and "Spirit" in their names (`table/campaign/`).
+- When a batch raises a boss's `begun`, the phase banner hangs from the top bar ("Phase II · The Nest Stirs") in the turn banner's times, with a polite announcement; never for a snapshot (`PhaseBanner.tsx`, `campaign.css`).
 
 ## Reviewing cards
 
@@ -402,16 +408,16 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 
 Every `/dev/*` route exists only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle, and each route has a test that it answers "not found" when DEV is off. By hand: `pnpm build && ! grep -r dev-table-fixture dist`. The parameters are read in the route and fixture files; this is what each stands for.
 
-| Route | Stands for |
-|---|---|
-| `/dev/table` | the real table over `features/table/dev/fixture.ts` (a Commander game, about 40 permanents per seat, an attack, a stack, a log), answered by `fixtureSession` (`dev/devGame.ts`); parameters set the seats, board, mode, step, a prompt (`DEV_PROMPTS`), an effect (`fx`), stops, real pictures (`cards=real`) and scenes (`dev/*Scene.ts`) |
-| `/dev/lobby` | the lobby over made-up decks (`dev/deckFixture.ts`): seats, ready, away, me (0 is the host), visibility, invites, format, rules, account, decks, list, detail, mode (`two_headed_giant` or `teams`) |
-| `/dev/builder` | the real builder over `builder/dev/fixture.ts` and in-memory servers; `deck` picks the case (`mixed`, `manual`, `verified`, `reads`, `drafts`, `changed`, `unchecked`, `partners`, `refused`); `cards=real` searches a running server |
-| `/dev/accounts` | the real Accounts page as the admin over an in-memory list (`admin/dev`); `many=1` lists thirty friends, `names=long` gives 32-character usernames |
-| `/dev/precons` | the real precon page over `precons/dev/fixture.ts` (every check state); `view` (`list`, `empty`, `loading`, `error`, `unavailable`), `account=1`, `play=refused` |
-| `/dev/unvalidated` | the real not-validated page over `decks/unvalidated/fixture.ts`, signed in; `view` (`all`, `deck`, `clean`, `none`, `loading`, `error`, `unavailable`, `failed`, `reads`) |
-| `/dev/read` | the real review screen over `reads/dev/fixture.ts` and `reads/dev/checkFixture.ts` with one wording-only offer, signed in; `view` (`deck`, `precon`, `all`, `mine`, `done`, `loading`, `error`, `stale`, `dialog`) |
-| `/dev/read-bulk` | the wording-only page over `bulk-reads/dev/fixture.ts` |
+| Route              | Stands for                                                                                                                                                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/dev/table`       | the real table over `features/table/dev/fixture.ts` (a Commander game, about 40 permanents per seat, an attack, a stack, a log), answered by `fixtureSession` (`dev/devGame.ts`); parameters set the seats, board, mode, step, a prompt (`DEV_PROMPTS`), an effect (`fx`), stops, real pictures (`cards=real`) and scenes (`dev/*Scene.ts`) |
+| `/dev/lobby`       | the lobby over made-up decks (`dev/deckFixture.ts`): seats, ready, away, me (0 is the host), visibility, invites, format, rules, account, decks, list, detail, mode (`two_headed_giant` or `teams`)                                                                                                                                         |
+| `/dev/builder`     | the real builder over `builder/dev/fixture.ts` and in-memory servers; `deck` picks the case (`mixed`, `manual`, `verified`, `reads`, `drafts`, `changed`, `unchecked`, `partners`, `refused`); `cards=real` searches a running server                                                                                                       |
+| `/dev/accounts`    | the real Accounts page as the admin over an in-memory list (`admin/dev`); `many=1` lists thirty friends, `names=long` gives 32-character usernames                                                                                                                                                                                          |
+| `/dev/precons`     | the real precon page over `precons/dev/fixture.ts` (every check state); `view` (`list`, `empty`, `loading`, `error`, `unavailable`), `account=1`, `play=refused`                                                                                                                                                                            |
+| `/dev/unvalidated` | the real not-validated page over `decks/unvalidated/fixture.ts`, signed in; `view` (`all`, `deck`, `clean`, `none`, `loading`, `error`, `unavailable`, `failed`, `reads`)                                                                                                                                                                   |
+| `/dev/read`        | the real review screen over `reads/dev/fixture.ts` and `reads/dev/checkFixture.ts` with one wording-only offer, signed in; `view` (`deck`, `precon`, `all`, `mine`, `done`, `loading`, `error`, `stale`, `dialog`)                                                                                                                          |
+| `/dev/read-bulk`   | the wording-only page over `bulk-reads/dev/fixture.ts`                                                                                                                                                                                                                                                                                      |
 
 ## Testing
 
