@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0073d731-e60d-433a-ac35-a22af855da20",
+  "name": "Dungeon Delver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungeon Delver",
+      "oracle_fingerprint": "3fd05a387581a57dac6ae503ef0d09ed",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Rule": {
+                    "rule": {
+                      "TriggerAgain": {
+                        "source": ["Dungeon", { "In": "Command" }, { "OwnedBy": "You" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

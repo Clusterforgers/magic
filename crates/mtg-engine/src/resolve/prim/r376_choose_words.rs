@@ -257,7 +257,7 @@ mod tests {
                     asked += 1;
                 }
                 Run::Done { bound, .. } => break bound,
-                _ => panic!("a choice of words asks or is done"),
+                Run::Cast(_) => panic!("a choice of words asks or is done"),
             }
         };
         assert_eq!(asked, seats, "one question for each player");

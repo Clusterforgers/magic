@@ -7,6 +7,7 @@ use rstest::rstest;
 #[rstest]
 #[case("Agatha's Soul Cauldron")]
 #[case("Dragon Cultist")]
+#[case("Dungeon Delver")]
 #[case("Grothama, All-Devouring")]
 #[case("Niv-Mizzet Reborn")]
 #[case("Pulmonic Sliver")]

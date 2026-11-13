@@ -513,6 +513,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)
         | Amount::SourcesDealtDamage(who)
+        | Amount::MostDamageBySource(who)
         | Amount::GreatestCast { who, .. }
         | Amount::CommanderCasts(who)
         | Amount::CastsFromCommand(who)
@@ -536,6 +537,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::DamageDealtByTo { by, to } => reads_of_ref(by).or(reads_of_ref(to)),
+        Amount::DamageToFromPlayers { to, players } => reads_of_ref(to).or(reads_of_ref(players)),
         Amount::CountOf { of, filter } => reads_of_ref(of).or(reads_of_selector(filter)),
         // A copy that was not cast reads the inner amount now.
         Amount::EvenShare(total) | Amount::CountedAsCast(total) => reads_of_amount(total),

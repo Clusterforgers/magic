@@ -219,16 +219,15 @@ impl Scope<'_> {
             }
             let amount = i64::from(record.amount);
             let total = match record.subject {
-                Some(subject) => match totals.iter_mut().find(|(seen, _)| *seen == subject) {
-                    Some((_, total)) => {
+                Some(subject) => {
+                    if let Some((_, total)) = totals.iter_mut().find(|(seen, _)| *seen == subject) {
                         *total += amount;
                         *total
-                    }
-                    None => {
+                    } else {
                         totals.push((subject, amount));
                         amount
                     }
-                },
+                }
                 None => amount,
             };
             most = most.max(total);

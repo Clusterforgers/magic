@@ -71,6 +71,18 @@ fn r6008_names(
         .collect()
 }
 
+/// The names of the permanents the seat controls.
+fn r6008_permanents(driver: &Driver, seat: usize) -> Vec<String> {
+    let state = driver.state();
+    let player = state.players()[seat].id();
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| mtg_engine::characteristics::controller_of(state, **id) == Some(player))
+        .map(|id| state.object(*id).unwrap().card().name.clone())
+        .collect()
+}
+
 #[rstest]
 #[case::kept_on_top(true)]
 #[case::let_go(false)]
@@ -119,7 +131,7 @@ fn r6008_friends_return_a_creature_card_and_foes_sacrifice(
     for (seat, pick) in picks[..seats].iter().enumerate() {
         let friend = *pick == 0;
         let hand = r6008_names(&driver, seat, Zone::Hand);
-        let field = r6008_names(&driver, seat, Zone::Battlefield);
+        let field = r6008_permanents(&driver, seat);
         assert_eq!(
             hand.contains(&"Llanowar Elves".to_owned()),
             friend,
