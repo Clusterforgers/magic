@@ -139,11 +139,7 @@ pub(crate) fn activation_events(
         // stands once they are paid.
         Ability::Loyalty { cost, .. } => {
             let more = crate::rules::loyalty_costs_more(state, player);
-            let delta = loyalty::paid_change_with(*cost, choices.x, more)?;
-            if let Some(paid) = loyalty::payment_with(source, *cost, choices.x, more) {
-                events.push(paid);
-                loyalty::after_payment(&mut before.counters, delta);
-            }
+            loyalty::pay_into(source, (*cost, choices.x, more), &mut before, &mut events)?;
         }
         _ => return None,
     }

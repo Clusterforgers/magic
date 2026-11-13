@@ -87,6 +87,7 @@ pub(crate) fn paid_change_with(cost: LoyaltyCost, x: Option<u32>, more: u32) -> 
 
 /// The change of counters that pays `cost` on `object`, with the X announced for a `-X`; `None` when the cost
 /// changes nothing (`0`, `-0`) or has no number yet.
+#[cfg(test)]
 pub(crate) fn payment(object: &GameObject, cost: LoyaltyCost, x: Option<u32>) -> Option<Event> {
     payment_with(object, cost, x, 0)
 }
@@ -104,6 +105,22 @@ pub(crate) fn payment_with(
         counter: CounterKind::Loyalty,
         delta,
     }))
+}
+
+/// Pushes the payment of `cost` (with its X and the counters a rule adds) and moves the snapshot's counters with it;
+/// `None` when the cost has no number yet.
+pub(crate) fn pay_into(
+    source: &GameObject,
+    (cost, x, more): (LoyaltyCost, Option<u32>, u32),
+    before: &mut crate::snapshot::Snapshot,
+    events: &mut Vec<Event>,
+) -> Option<()> {
+    let delta = paid_change_with(cost, x, more)?;
+    if let Some(paid) = payment_with(source, cost, x, more) {
+        events.push(paid);
+        after_payment(&mut before.counters, delta);
+    }
+    Some(())
 }
 
 /// Moves the loyalty counters a snapshot lists by `delta`, as paying a cost moved the permanent's own, so the ability

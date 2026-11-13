@@ -68,7 +68,7 @@ mod tests {
         assert_eq!(R4705_SHAPES.len(), entries.len());
         for (shape, text) in R4705_SHAPES.iter() {
             let read = match shape.as_slice() {
-                [one] => r4705_read(text).map(|found| vec![found]),
+                [_] => r4705_read(text).map(|found| vec![found]),
                 _ => r4705_pair_read(text),
             };
             assert_eq!(read.as_ref(), Some(shape), "{text}");
