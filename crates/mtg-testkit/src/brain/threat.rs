@@ -328,16 +328,6 @@ pub fn player_threat(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 
         + 0.25 * f64::from(seen.life(player).max(0))
 }
 
-/// The opponent who threatens the seat's team most (the archenemy), if any opponent is alive.
-pub fn archenemy(seen: &Seen<'_>, bodies: &[Body]) -> Option<PlayerId> {
-    seen.opponents()
-        .into_iter()
-        .filter(|player| seen.is_alive(*player))
-        .map(|player| (player_threat(seen, player, bodies), player))
-        .max_by(|a, b| a.0.total_cmp(&b.0).then(b.1.cmp(&a.1)))
-        .map(|(_, player)| player)
-}
-
 /// A small count as a float.
 fn count(n: usize) -> f64 {
     f64::from(u32::try_from(n).unwrap_or(u32::MAX))

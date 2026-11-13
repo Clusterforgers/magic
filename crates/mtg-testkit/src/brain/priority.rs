@@ -197,9 +197,13 @@ pub fn plan_priority(
     best.map_or(PriorityAction::Pass, |(_, play)| play)
 }
 
-/// What a careful seat's non-interaction instant must gain beyond the margin in its main phase: it waits for an
+/// What a careful seat's other instant must gain beyond the margin in its main phase: it waits for an
 /// opponent's turn.
 const INSTANT_WAIT: f64 = 1.0;
+
+/// What a careful seat's instant-speed answer (removal, burn, a trick) must gain beyond the margin in its main phase:
+/// it waits for combat, a reply or a target worth it.
+const ANSWER_WAIT: f64 = 5.0;
 
 /// What a careful seat's flash permanent must gain beyond the margin in its main phase: it waits for an opponent's end
 /// step, keeping mana up for the seat's interaction meanwhile.
@@ -208,6 +212,19 @@ const FLASH_WAIT: f64 = 2.0;
 /// The share of the held interaction's value a main-phase play that taps the seat below it must gain beyond the
 /// margin.
 const TAP_OUT: f64 = 1.0;
+
+/// The share of held interaction's worth that tapping below it loses: a counterspell only works in reply, so all of
+/// it; removal and tricks can still be cast on the seat's own turn, so a quarter.
+fn reactive(share: f64) -> f64 {
+    if (share - COUNTER_SHARE).abs() < f64::EPSILON {
+        share
+    } else {
+        share * 0.25
+    }
+}
+
+/// The share of [`threat::hold_value`] a counterspell is held at ([`threat::interaction`]).
+const COUNTER_SHARE: f64 = 1.0;
 
 /// The cards in hand from which the seat spends its mana rather than keep it up: past the maximum hand size it would
 /// discard.
@@ -230,12 +247,14 @@ pub fn hold_cost(careful: bool, seen: &Seen<'_>, window: Window, play: &Priority
     let traits = threat::traits(card);
     let opponents = !seen.opponents().is_empty();
     let mut cost = 0.0;
-    if threat::interaction(card).is_none() && opponents {
-        if traits.fast && traits.permanent {
-            cost += FLASH_WAIT;
-        } else if traits.fast {
-            cost += INSTANT_WAIT;
-        }
+    if opponents && traits.fast {
+        cost += if traits.permanent {
+            FLASH_WAIT
+        } else if threat::interaction(card).is_some() {
+            ANSWER_WAIT
+        } else {
+            INSTANT_WAIT
+        };
     }
     let bodies = seen.bodies();
     let open = threat::open_mana(seen, &bodies);
@@ -244,7 +263,7 @@ pub fn hold_cost(careful: bool, seen: &Seen<'_>, window: Window, play: &Priority
     let lost: f64 = held
         .iter()
         .filter(|(cost, _)| *cost <= open && *cost > after)
-        .map(|(_, share)| *share)
+        .map(|(_, share)| reactive(*share))
         .fold(0.0, f64::max);
     // A hand that would go past its maximum size at the end of the turn spends rather than discards.
     let crowded = seen.own_hand().len() >= CROWDED_HAND;
