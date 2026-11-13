@@ -627,6 +627,7 @@ impl GameState {
             tallies: Tallies::default(),
             r379_votes: Vec::new(),
             r379_cast_game: BTreeMap::new(),
+            r5512_creature_cast_at: None,
             r379_since: crate::r379_since::Since::default(),
             triggers_possible: false,
             statics_possible: false,

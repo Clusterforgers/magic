@@ -852,6 +852,10 @@ impl<'a> Walker<'a> {
             Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
             Pred::SpentFrom { .. } => self.uses("Pred", "SpentFrom"),
+            Pred::ManaFrom(r) => {
+                self.uses("Pred", "ManaFrom");
+                self.reference(r, Kind::Object);
+            }
             Pred::TargetsPlayer(who) => {
                 self.uses("Pred", "TargetsPlayer");
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
@@ -915,6 +919,7 @@ impl<'a> Walker<'a> {
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             // An Aura is attached to a permanent, or to a player it enchants ("Curses attached to you").
             Pred::AttachedTo(r) => self.reference(r, Kind::Either),
+            Pred::EnchantableBy(r) => self.reference(r, Kind::Object),
             Pred::ChosenAs(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
@@ -970,6 +975,7 @@ impl<'a> Walker<'a> {
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
             | Pred::SpentFrom { .. }
+            | Pred::ManaFrom(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
             | Pred::SharesColorWithLastCast
@@ -1859,6 +1865,7 @@ impl<'a> Walker<'a> {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
+                    CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
                         w.at("count", |w| w.amount(count));
@@ -2279,6 +2286,7 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
                     | CostItem::ExilePermanents { .. }
+                    | CostItem::ExileSpell { .. }
                     | CostItem::DamageToYou(_)
                     | CostItem::Unattach
                     | CostItem::ExileTop(_)
@@ -3819,9 +3827,12 @@ impl Walker<'_> {
             Produce::OneOfLists(lists) if lists.len() < 2 => {
                 self.problem("a choice of mana needs at least two lists");
             }
-            // "Two mana of different colors" is ten lists, which the engine keeps as ten sources (`MANA_COMBINATIONS`).
+            // "Two mana of different colors" is ten lists, which the engine keeps as ten sources (`MANA_COMBINATIONS`);
+            // so is "two mana of any one color and two mana of any other color".
             Produce::OneOfLists(lists)
-                if lists.len() > MANA_WAYS && *mana != Produce::two_different_colors() =>
+                if lists.len() > MANA_WAYS
+                    && *mana != Produce::two_different_colors()
+                    && *mana != Produce::two_pairs_of_colors() =>
             {
                 self.problem("a choice of mana has at most six lists");
             }
@@ -6058,6 +6069,16 @@ impl Walker<'_> {
             GameRule::SpendManaAs {
                 who,
                 spells: Some(spells),
+                abilities: Some(abilities),
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+                w.at("abilities", |w| w.selector(abilities));
+            }),
+            GameRule::SpendManaAs {
+                who,
+                spells: Some(spells),
                 ..
             }
             | GameRule::PayLifeForOneSymbol { who, spells, .. } => self.at(tag, |w| {
@@ -6916,6 +6937,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::RevealFromHand { .. }
                 | CostItem::ReturnToHand { .. }
                 | CostItem::ExilePermanents { .. }
+                | CostItem::ExileSpell { .. }
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)

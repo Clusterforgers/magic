@@ -364,6 +364,9 @@ pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
         if r.words("activate abilities") {
             return Some(vec![SpendOn::abilities()]);
         }
+        if r.words("pay cumulative upkeep costs") {
+            return Some(vec![SpendOn::CumulativeUpkeep]);
+        }
         // "to pay a disturb cost or cast an instant or sorcery spell".
         if r.words("pay a disturb cost or cast") {
             return Some(vec![SpendOn::Spell(disturb()), SpendOn::Spell(spells(r)?)]);
@@ -604,6 +607,9 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
     Some(match only {
         [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),
+        [SpendOn::CumulativeUpkeep] => {
+            "Spend this mana only to pay cumulative upkeep costs".to_owned()
+        }
         [SpendOn::Ability(filter)] if *filter == SpendFilter::default() => {
             "Spend this mana only to activate abilities".to_owned()
         }

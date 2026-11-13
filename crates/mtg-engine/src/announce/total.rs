@@ -100,7 +100,11 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         What::Spell(spell) => Some(*spell),
         _ => None,
     };
-    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell) {
+    let source = match ctx.what {
+        What::Ability(address) => Some(address.object),
+        _ => None,
+    };
+    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell, source) {
         SpendAs::AnyType => mana.map(|mana| mana.paid_by_any_mana()),
         SpendAs::AnyColor => mana.map(|mana| mana.paid_by_any_color()),
         SpendAs::Normal => mana,

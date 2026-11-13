@@ -2188,6 +2188,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             }
         }
         _ if *mana == Produce::two_different_colors() => "two mana of different colors".to_owned(),
+        _ if *mana == Produce::two_pairs_of_colors() => {
+            "two mana of any one color and two mana of any other color".to_owned()
+        }
         Produce::OneOfLists(lists) if lists.len() > 1 => {
             let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
             match texts.as_slice() {

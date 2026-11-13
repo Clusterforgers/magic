@@ -1,7 +1,7 @@
 {
   "oracle_id": "32af5f7b-a970-484a-9aff-226749551d32",
   "name": "Thousand Moons Smithy // Barracks of the Thousand",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thousand Moons Smithy",
@@ -87,9 +87,58 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 316 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                  { "ManaFrom": "This" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Gnome Soldier",
+                      "colors": ["White"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Gnome", "Soldier"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [
+                                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  },
+                                  "toughness": {
+                                    "Count": [
+                                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                                      { "ControlledBy": "You" }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

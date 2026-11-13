@@ -533,6 +533,7 @@ fn spell_cast(
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
     state.log_event(TallyEvent::SpellCast, player, object);
+    crate::r5512_until_cast::r5512_note_cast(state, object);
     if let Some(name) = state
         .objects
         .get(&object)

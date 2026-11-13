@@ -15,6 +15,7 @@ Acererak the Archlich
 Act of Aggression
 Act of Treason
 Adaptive Snapjaw
+Adarkar Unicorn
 Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
@@ -1404,6 +1405,7 @@ On Thin Ice
 Onakke Oathkeeper
 Ondu Spiritdancer
 Oona's Blackguard
+Open the Omenpaths
 Open the Way
 Opposition Agent
 Opt

@@ -67,7 +67,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Faces and copies
 
-- [ ] (n1d3) Meld (CR 712.4): two cards exile and return as one permanent with the combined back face and leave as two objects; frees 3 cards (Bruna, Gisela, Brisela)
+- [ ] (n1d3) Meld (CR 712.4): two cards exile and return as one permanent with the combined back face and leave as two objects; frees the meld pairs (Gisela and Bruna, Graf Rats, Hanweir Battlements, Titania, Voice of Gaea, Urza, Lord Protector, Vanille, Cheerful l'Cie)
 - [ ] (n1d6) The day and night wordings left; frees about 10 corpus cards (Celestus Sanctifier, Angel of Eternal Dawn, Tovolar, Dire Overlord)
 - [ ] (n2b) Face-down remaining: manifest dread and of chosen cards, face-up and face-down predicates, turn-up conditions, morph costs beyond mana; frees about 14 cards (Write into Being, Whisperwood Elemental, Fathom Seer)
 - [ ] (ep33a) Open families: a secretly chosen player, "you choose how each player votes", face-down permanents with set characteristics (a Forest land), manifest and cloak of named cards in a shuffled pile, "whenever you give a gift", spend on face-down creature spells, morphing up, equip, kicked spells and cumulative upkeep, and writers for the exile-memory drafts (Cemetery Protector, Wormfang Crab)
@@ -90,6 +90,9 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (r2d) Costs in the engine: `PayLife.Counted`, `PayEnergy.Counted`, `Discard.Counted`, `Untap`, `OneOf`, `ReturnToHand`, `Pay.ExileSelf`; frees about 12 cards (G'raha Tia, Confiscation Coup, Order of Whiteclay)
 - [ ] (r1va) Reductions of other activated abilities: Equip lines with a reduction, "Equip, Cycling, Boast abilities you activate", "abilities of Foods", "the first activated ability each turn"; frees about 12 cards (Arm-Mounted Anchor, Fluctuator, Sam, Loyal Attendant, Tezzeret, Betrayer of Flesh)
 - [ ] (r1vb) Reductions granted for later spells ("the next spell you cast this turn costs less", counts of opponents attacked or energy paid, the first face-down or X spell); frees about 12 cards (Kaza, Roil Chaser, Kadena)
+- [ ] (r5512a) Spend permissions still missing: one color spent as another (Sunglasses of Urza), "for one spell this turn" of the player's choice (North Star), mana of any type for the source's own abilities (Sharkey, Tyrant of the Shire), and power-up abilities as an activation kind for restricted mana (Quinjet Technician)
+- [ ] (r5512b) Cost parts still missing: exile cards with a total mana value of X or at least N (Fabrication Foundry, The Capitoline Triad), pay the mana cost of the card exiled by the same cost (Back from the Brink), exile permanents named as a group with a token that has their triggered abilities (The Book of Vile Darkness)
+- [ ] (r5512c) Counters moved by kind: "a counter of each kind not on ~" and "one or more counters" with a least of one (Goldberry, River-Daughter)
 - [ ] (c14a) The rest of the top coverage blockers: Multiclass Baldric, Yavimaya Bloomsage, a secretly chosen opponent, six spell lines and rules for the 61 other prepare cards; frees about 70 cards (Stalking Leonin, Ponder)
 
 ## Keywords and cast ways

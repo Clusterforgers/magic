@@ -156,6 +156,7 @@ mod r5507_prevent;
 mod r5509_cards;
 mod r5511_cost_mana;
 mod r5511_linked_types;
+mod r5512_until_creature_cast;
 mod r5513_exploited;
 mod r5514_pieces;
 mod r5522_game;

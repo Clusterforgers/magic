@@ -4,4 +4,4 @@ import type { SpecialAction } from "./SpecialAction";
 /**
  * What is paid for.
  */
-export type SpendKind = "Other" | "Spell" | "Ability" | { "Special": SpecialAction };
+export type SpendKind = "Other" | "Spell" | "Ability" | { "Special": SpecialAction } | "CumulativeUpkeep";

@@ -231,6 +231,9 @@ pub enum Rule {
         /// The spells it is for; everything when absent.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         spells: Option<Selector>,
+        /// With `spells`, the permanents whose abilities it is also for.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        abilities: Option<Selector>,
     },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
@@ -808,7 +811,12 @@ pub(crate) struct RulesInForce {
     /// The players whose opponents' spells and abilities can't make them discard.
     spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
-    spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
+    spend_mana_as: Vec<(
+        PlayerId,
+        mtg_cards::modify::SpendAs,
+        Option<Selector>,
+        Option<Selector>,
+    )>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
     /// Who controls each player while they search their library, the latest rule last.
@@ -1283,9 +1291,13 @@ impl RulesInForce {
                 players,
                 spend_as,
                 spells,
+                abilities,
             } => {
-                self.spend_mana_as
-                    .extend(players.iter().map(|p| (*p, *spend_as, spells.clone())));
+                self.spend_mana_as.extend(
+                    players
+                        .iter()
+                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone())),
+                );
             }
             Rule::DrawLimit(players, most) => {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
@@ -1729,10 +1741,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             who,
             spend_as,
             spells,
+            abilities,
         } => Rule::SpendManaAs {
             players: scope.players(who)?,
             spend_as: *spend_as,
             spells: spells.clone(),
+            abilities: abilities.clone(),
         },
         GameRule::DrawLimit { who, most } => Rule::DrawLimit(scope.players(who)?, *most),
         GameRule::PayLifeForMana { who, color } => {
@@ -2723,27 +2737,34 @@ pub(crate) fn r4702_spared_discard(state: &GameState, player: PlayerId, by: Play
     state.is_opponent(by, player) && state.rules().spared_discard.contains(&player)
 }
 
-/// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any
-/// color over the normal rule.
+/// How `player` may spend mana on the spell `spell`, or on an ability of `source` when `spell` is `None`, under the rules
+/// in force: any type over any color over the normal rule.
 pub(crate) fn ep24_spend_as(
     state: &GameState,
     player: PlayerId,
     spell: Option<ObjectId>,
+    source: Option<ObjectId>,
 ) -> SpendAs {
+    let selects = |selector: &Selector, id: ObjectId| {
+        state.object(id).is_some_and(|object| {
+            let reference = object.reference();
+            Scope::announcing(state, player, reference)
+                .selects(selector, reference)
+                .unwrap_or(false)
+        })
+    };
     let mut found = SpendAs::Normal;
-    for (who, spend_as, spells) in &state.rules().spend_mana_as {
+    for (who, spend_as, spells, abilities) in &state.rules().spend_mana_as {
         if *who != player {
             continue;
         }
-        let applies = match (spells, spell.and_then(|id| state.object(id))) {
+        let applies = match (spells, spell) {
             (None, _) => true,
-            (Some(spells), Some(object)) => {
-                let reference = object.reference();
-                Scope::announcing(state, player, reference)
-                    .selects(spells, reference)
-                    .unwrap_or(false)
-            }
-            (Some(_), None) => false,
+            (Some(spells), Some(spell)) => selects(spells, spell),
+            (Some(_), None) => abilities
+                .as_ref()
+                .zip(source)
+                .is_some_and(|(abilities, source)| selects(abilities, source)),
         };
         if applies {
             match spend_as {

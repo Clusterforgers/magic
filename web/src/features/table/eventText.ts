@@ -310,6 +310,7 @@ function durationWords(
       source === null
         ? ' until its source is cast from exile'
         : ` until ${n.card(source.id)} is cast from exile`,
+    UntilCreatureSpellCast: ' until a player casts a creature spell',
     WhileEnchanted: several ? ' while each is enchanted' : ' while it is enchanted',
     UntilItsControllersNextUntapStep: " until its controller's next untap step",
     Forever: '',

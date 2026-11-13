@@ -151,6 +151,12 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Exile a spell on the stack the payer controls that matches ("Exile an instant or sorcery spell you control"); the
+    /// spell leaves the stack and does not resolve.
+    ExileSpell {
+        /// Which spells may be chosen; the stack is implied.
+        filter: Selector,
+    },
     /// Exile cards from the payer's hand that match ("Exile a red card from your hand").
     ExileFromHand {
         /// Which cards may be chosen.

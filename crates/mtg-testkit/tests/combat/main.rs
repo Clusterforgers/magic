@@ -74,6 +74,7 @@ mod r5502_blocked_by_one;
 mod r5502_next_combat;
 mod r5502_walkers;
 mod r5511_commander_ninjutsu;
+mod r5512_aloy_discover;
 mod r5513_fights;
 mod r5523_attack_history;
 mod r5523_dealt_damage;

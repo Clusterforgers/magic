@@ -25,6 +25,7 @@ pub(crate) mod mill;
 mod r300_random_shots;
 mod r303c_sacrifice_all;
 mod r5511_card_types;
+mod r5512_exile_spell;
 mod random;
 mod rmt5_top_shots;
 pub(crate) use r300_random_shots::r300_random_shots;
@@ -74,6 +75,8 @@ pub(crate) enum Kind {
     Return,
     /// A permanent the payer controls is exiled.
     ExilePermanent,
+    /// A spell on the stack the payer controls is exiled.
+    ExileSpell,
     /// A permanent the payer controls loses a counter of the kind its filter names.
     Counter,
     /// A card in any player's graveyard is exiled.
@@ -250,6 +253,7 @@ fn pick(
 #[allow(clippy::too_many_lines)]
 fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
     Ok(Some(match item {
+        CostItem::ExileSpell { filter } => pick(Kind::ExileSpell, filter, &Amount::one(), item)?,
         CostItem::DamageToYou(count) => {
             let (number, x) = amount(count, item)?;
             (Part::Damage(number), x)
@@ -617,6 +621,7 @@ impl Part {
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
                 Kind::ExilePermanent => "Cost.ExilePermanents",
+                Kind::ExileSpell => "Cost.ExileSpell",
                 Kind::Untap => "Cost.UntapPermanents",
                 Kind::Counter => "Cost.RemoveCounters",
             },
@@ -956,6 +961,7 @@ impl Pick {
             Kind::Return | Kind::Blight(_) | Kind::ExilePermanent => {
                 bounce::candidates(payer, &self.filter)
             }
+            Kind::ExileSpell => r5512_exile_spell::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
@@ -982,6 +988,7 @@ impl Pick {
             | Kind::ExileHand
             | Kind::ExileAny
             | Kind::ExilePermanent
+            | Kind::ExileSpell
             | Kind::Craft
             | Kind::Behold(true) => crate::prohibit::may_exile(payer.state, *id),
             _ => true,
@@ -1134,6 +1141,7 @@ impl Pick {
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
             Kind::ExilePermanent => bounce::exile_text(&self.filter, self.count),
+            Kind::ExileSpell => r5512_exile_spell::text(&self.filter),
             Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
@@ -1180,9 +1188,11 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile | Kind::ExileHand | Kind::Craft | Kind::ExilePermanent => {
-                exile_hand::event(state, object)
-            }
+            Kind::Exile
+            | Kind::ExileHand
+            | Kind::Craft
+            | Kind::ExilePermanent
+            | Kind::ExileSpell => exile_hand::event(state, object),
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),

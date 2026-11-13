@@ -1981,6 +1981,26 @@ impl<'a> Scope<'a> {
             Pred::CanEnchantSource => {
                 crate::attach::legal_host_entering(state, reference.id, self.source.id)
             }
+            Pred::ManaFrom(makers) => {
+                let makers = self.objects(makers)?;
+                seen.zone == Zone::Stack
+                    && seen.card.is_some_and(|card| {
+                        card.mana_spent_from().iter().any(|source| {
+                            source.traits.made_by.is_some_and(|(id, counter)| {
+                                makers
+                                    .iter()
+                                    .any(|maker| maker.id == id && maker.counter == counter)
+                            })
+                        })
+                    })
+            }
+            Pred::EnchantableBy(auras) => {
+                seen.zone == Zone::Battlefield
+                    && self
+                        .objects(auras)?
+                        .iter()
+                        .any(|aura| crate::attach::legal_host(state, aura.id, reference.id))
+            }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesCreatureTypeWithEach(named) => {
                 self.r376_shares_creature_type(named, seen)?

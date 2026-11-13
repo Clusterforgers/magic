@@ -487,6 +487,8 @@ pub(crate) fn lasts(
         | Duration::TheirNextTurn
         // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
         | Duration::WhileTapped => true,
+        // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
+        | Duration::UntilCreatureSpellCast => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -741,6 +743,9 @@ impl ContinuousEffect {
                 Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
             },
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
+            Duration::UntilCreatureSpellCast => {
+                !crate::r5512_until_cast::r5512_creature_cast_since(state, self.timestamp)
+            }
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
     }

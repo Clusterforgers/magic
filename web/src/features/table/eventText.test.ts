@@ -1102,6 +1102,10 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller until Jace Beleren is cast from exile',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'UntilCreatureSpellCast', { id: 6, counter: 0 }),
+      'Hill Giant changes controller until a player casts a creature spell',
+    ],
+    [
       effect(
         objects(2),
         { CantAttackYou: { you: 0, attacked: 'Both' } },

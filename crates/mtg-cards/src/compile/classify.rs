@@ -191,10 +191,10 @@ fn w20b_ability_letters(word: &str) -> bool {
 }
 
 /// Whether the text is a flavour name that holds a comma or a question mark ("In You, All Things Are Possible", "Do
-/// You Like Squirrels?"): up to five words that each begin with a capital letter or the card's name, so a clause
+/// You Like Squirrels?"): up to six words that each begin with a capital letter or the card's name, so a clause
 /// ("At the beginning of your end step, draw a card") is never taken for one.
 fn t16a_flavour_name(word: &str) -> bool {
-    word.split(' ').count() <= 5
+    word.split(' ').count() <= 6
         && word.split(' ').all(|part| {
             part.chars()
                 .next()
