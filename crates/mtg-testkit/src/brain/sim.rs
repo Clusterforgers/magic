@@ -70,16 +70,35 @@ pub struct Settings {
 }
 
 impl Settings {
-    /// Normal: heuristic combat and a shallow search of plays and targets with quick answers inside it, about 300 ms
-    /// at most.
+    /// Normal: Hard's searches (simulated attacks, blocks and plays through the next turn's combat in a redealt world)
+    /// with half the simulations and fewer targets, no tree search, about 300 ms at most.
     pub const NORMAL: Settings = Settings {
+        sims: 80,
+        forecasts: 250,
+        targets: 4,
+        depth: 1,
+        combat_search: true,
+        lookahead: true,
+        careful: true,
+        sequences: true,
+        fair: true,
+        weights: Weights::NORMAL,
+        deep: None,
+        votes: 1,
+        time: Some(Duration::from_millis(300)),
+        endgame: false,
+    };
+
+    /// The first Normal (heuristic combat, a shallow search of plays and targets, careless), kept as a fixed
+    /// yardstick for measuring the levels.
+    pub const BASELINE: Settings = Settings {
         sims: 40,
         forecasts: 160,
         targets: 3,
         depth: 1,
         combat_search: false,
         lookahead: false,
-        careful: true,
+        careful: false,
         sequences: false,
         fair: false,
         weights: Weights::NORMAL,
@@ -89,14 +108,9 @@ impl Settings {
         endgame: false,
     };
 
-    /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
-    pub const BASELINE: Settings = Settings {
-        careful: false,
-        ..Settings::NORMAL
-    };
-
     /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
-    /// cards are redealt, more candidates and searched targets inside simulations, about 1 s at most.
+    /// cards are redealt, more candidates and searched targets inside simulations, then a light tree search over the
+    /// decisions that matter ([`Deep::LIGHT`]), about 2 s at most.
     pub const HARD: Settings = Settings {
         sims: 160,
         forecasts: 500,
@@ -108,15 +122,14 @@ impl Settings {
         sequences: true,
         fair: true,
         weights: Weights::NORMAL,
-        deep: None,
+        deep: Some(Deep::LIGHT),
         votes: 1,
         time: Some(Duration::from_millis(1000)),
         endgame: true,
     };
 
-    /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
-    /// a tree search over that answer and its alternatives in worlds redealt from what the seat has seen
-    /// ([`Deep::FULL`]), about 2.5 s at most.
+    /// Very Hard: Hard with the full tree search over the decisions that matter (casts, attacks, blocks, targets) in
+    /// worlds redealt from what the seat has seen ([`Deep::FULL`]), at most 4.5 s ([`super::clock::DECISION_CAP`]).
     pub const VERY_HARD: Settings = Settings {
         deep: Some(Deep::FULL),
         ..Settings::HARD

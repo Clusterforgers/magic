@@ -32,27 +32,48 @@ Chess engines are strong through search under strict time control, a tuned evalu
 
 ## Approach
 
-The 5 s server deadline rules out deep full-game search per decision; the levels share one evaluation and one threat model, and add search:
+The 5 s server deadline rules out deep full-game search per decision; the levels share one evaluation and one threat model, and add search. Every decision ends within 4.5 s of being asked (`clock::DECISION_CAP`): the tree search's hard limit, a clock check every 16 steps inside each simulation and rollout, and a 0.4 s cap on the endgame probe.
 
 - **Threat model** (`brain/threat.rs`): card traits read once from the rules (draw and token engines, tutors, counters, removal, wipes, burn, fogs, tricks, flash); a permanent's danger beyond its body (engines, combo pieces doubled when their partner is in play, commanders with the commander damage they dealt); a player's threat (board, engines, hand, mana, life), which picks whom attacks go at; the worth of a spell on the stack.
 - **Evaluation** (`brain/eval.rs`): life, cards, permanents and mana per team, the threat model's engine values, and interaction in the seat's own hand counted at its hold value (4 plus 1.6 per card in the opponents' hands, up to five; wipes 1.4 of it, counters 1.0, removal 0.8, fogs 0.6, burn 0.5, tricks 0.35; each further piece half the one before). Spending a counter or removal therefore has to beat what keeping it is worth: the bomb, the engine, the combo piece, the wipe on the seat's board and lethal burn are answered; a mana dork, a bear or a shock at a high life total are not.
 - **Interaction policy** (`brain/priority.rs`): a main-phase play that taps the seat below a held counterspell pays its hold value (a quarter of it for removal and tricks), unless the hand would overflow; instant-speed answers, flash creatures and other instants wait for the opponents' turn; colour choices name the colour of the opposing spell on the stack (protection).
+- **Opening book** (`brain/choices.rs`): seven-card hands keep three to five lands, or two with a spell of mana value two or less; smaller hands keep two to their size less two.
 - **Search** (Normal, Hard): plays, attacks, blocks and targets are simulated on engine copies with quick policies for every seat and scored by the shared evaluation. Responses settle the whole stack (counter wars), combat plays run to the end of the turn (pumps wear off before scoring). In rollouts a seat holding a counterspell counters an opposing spell that threatens more than the counter's hold value, so opponents keeping mana up are modelled as holding interaction when their redealt hands have it.
-- **ISMCTS** (Very Hard): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers; the tree's favourite replaces the heuristic answer only when its mean reward is 0.05 higher.
+- **Endgame** (Hard, Very Hard; `brain/endgame.rs`): with an opponent within reach of the seat's creatures and burn, each answer worth trying is played to the end of the turn in three redealt worlds, and one that wins in all of them is played at once.
+- **ISMCTS** (Hard with `Deep::LIGHT`, Very Hard with `Deep::FULL`): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers. Iterations cycle through 32 fixed worlds (common random numbers, so answers are compared in the same deals); an opponent's blocks are a minimizing node of the tree (the paranoid reply of max^n, sound because blocks read only the public board); at a table of more than two a rollout plays once round the table, so every crack back is seen. Root answers that do the same thing are merged, answers clearly below the best are pruned, untried answers come in the history's order, and the search budget follows the decision's importance (`brain/clock.rs`). The tree's favourite replaces the heuristic answer only when its mean reward is 0.05 plus one standard error of the difference higher.
+- **Tuning** (`brain/knobs.rs`, `eval::Terms`): the policy constants and evaluation weights are parameters; Texel tuning (`examples/eval_tune.rs`) and SPSA (`examples/spsa_tune.rs`) fit them, and a fit is kept only when it wins matches without losing suite cases.
 
 ## Decision-quality suite
 
 `crates/mtg-testkit/src/brain/suite.rs` holds hand-made positions with their acceptable answers; `cargo run --release -p mtg-testkit --example bot_suite [level]` prints the score per level and per theme.
 
+## Testing
+
+- **Match testing** (`examples/bot_tournament.rs`): each deal is played twice with the sides swapped, so identical brains score exactly 50%; `DECKS=interaction` plays every pairing of an interaction deck (`Duel::INTERACTION`: Izzet, Dimir, Azorius) with every duel deck; `SPRT=elo0,elo1` stops at 5% error rates; the summary gives the Elo difference with its 95% interval and the longest answer. `old-<level>` plays main's brains, frozen in `examples/legacy_brain`.
+- **Benchmark**: the decision-quality suite (`bot_suite`), as a fixed position set.
+- **Clock**: `tests/game/brain_clock.rs` plays timed Hard and Very Hard games on the interaction decks and asserts every answer ends within the 5 s deadline.
+
 ## Measured
 
-Decision-quality suite (66 cases, untimed, seed 7; timed, the longest answer is 1.2 s):
+Decision-quality suite (66 cases, untimed, seed 7):
 
-| Level | Before | Now |
+| Level | main | Now |
 | --- | --- | --- |
-| Easy | 38% | 39% |
-| Normal | 76% | 97% |
-| Hard | 71% | 97% |
-| Very Hard | 73% | 92% |
+| Easy | 39% | 39% |
+| Normal | 97% | 97% |
+| Hard | 97% | 97% |
+| Very Hard | 92% | 97% |
 
-Seeded games against the brains of main before this work (`bot_tournament <level> old-<level>`, the three duel decks, `DECKS=3`): Normal 48% in 1v1 (240 games) and 24% of 4-player pods (160 games, 25% even); Hard 52% in 1v1 (240) and 25% of pods (160); Very Hard 46% in 1v1 (24 games; 42% before the tree search kept its heuristic answer), pods not measured (a pod of four tree searches plays for hours on four cores). The duel decks are creature mirrors where the suite's skills (counters, engines, combo pieces, wipes) rarely decide a game, so the judgement gains do not show as wins there; the evaluation weights moved by half either way also stay at 50%.
+Seeded 1v1 games against main's brains of the same level on the interaction pairings, untimed (Elo with its 95% interval):
+
+| Level | Games | Score | Elo |
+| --- | --- | --- | --- |
+| Normal | 480 | 59.6% | +67 [+36, +100] |
+| Hard | 204 | 51.5% | +10 [-38, +59] |
+| Very Hard | 64 | 50.0% | +0 [-87, +87] |
+
+Normal now runs Hard's former searches, so new Hard against new Normal is close: 51.2% in 80 games on the creature mirrors.
+
+The longest timed answer is 3.5 s (Very Hard, interaction decks, a loaded machine), under the 4.5 s cap; the clock test asserts 5 s.
+
+Tuning: Texel fitting of the evaluation's terms on 47,000 positions from 1,000 Hard games lowers the held-out loss from 0.231 to 0.184 but plays even (50.4% in 240 games); SPSA over the 32 policy constants and weights (430 rounds of 16 games) gains +4 Elo on the interaction pairings and +17 on all pairings, within noise, and loses five suite cases, so the hand-set values stay. The suite's judgement (counters held for threats, blocks against the crack back) shows little in bot-against-bot win rates: both sides share the same rollout policy, so most games turn on the same plays.

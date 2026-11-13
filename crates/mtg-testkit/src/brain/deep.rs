@@ -56,6 +56,13 @@ impl Deep {
         trust: 0.05,
     };
 
+    /// A light budget for Hard: up to 150 iterations, about 0.6 s for a decision of ordinary importance.
+    pub const LIGHT: Deep = Deep {
+        iterations: 150,
+        time: Some(Duration::from_millis(600)),
+        ..Deep::FULL
+    };
+
     /// This budget without a clock: the answers depend on the seed alone.
     #[must_use]
     pub const fn untimed(mut self) -> Deep {
