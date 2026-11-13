@@ -426,6 +426,7 @@ fn energy_sized_steps() -> Vec<Effect> {
             times: Amount::Fixed(1),
             paid: vec![Effect::Reflexive {
                 targets: Vec::new(),
+                condition: None,
                 effects: vec![Effect::Destroy {
                     what: Ref::Bound(PAID_FOR.to_owned()),
                     regenerate: true,
