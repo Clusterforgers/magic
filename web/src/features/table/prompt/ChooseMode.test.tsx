@@ -86,7 +86,7 @@ describe('one mode', () => {
 })
 
 describe('backing out', () => {
-  it('Cancel the spell sends Cancel and takes focus first, as the clock would', async () => {
+  it('Cancel the spell sends Undo and takes focus first, as the clock would', async () => {
     const { user, answer, sent } = mount()
     const cancel = screen.getByRole('button', { name: 'Cancel the spell' })
     expect(cancel).toHaveFocus()

@@ -61,7 +61,7 @@ describe('a mode decision from the server', () => {
     expect(h.state().pending).toBeNull()
   })
 
-  it('sends Cancel for a spell that is taken back', async () => {
+  it('sends Undo for a spell that is taken back', async () => {
     const { h, send, user } = mount()
     send(modes(62))
     await user.click(screen.getByRole('button', { name: 'Cancel the spell' }))
