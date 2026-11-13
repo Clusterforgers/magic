@@ -40,6 +40,11 @@ sources?: Array<SpentFrom>,
  */
 convoked?: Array<ObjectRef>, 
 /**
+ * The cards exiled to pay for the spell with delve, as the objects they became in exile (CR 702.66): "exiled with
+ * this creature's delve ability" reads them.
+ */
+delved?: Array<ObjectRef>, 
+/**
  * How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
  */
 removed?: number, 

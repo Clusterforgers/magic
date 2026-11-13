@@ -947,6 +947,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2), { AddKeywords: ['Flying', 'Trample'] }, 'Forever'),
+      'Hill Giant gains flying and trample',
+    ],
+    [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
     ],

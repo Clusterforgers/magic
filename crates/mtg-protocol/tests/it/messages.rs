@@ -1640,6 +1640,7 @@ fn w2f_cost_taken(
             count: 2,
         }],
         convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
+        delved: vec![mtg_engine::object::ObjectRef { id: b, counter: 2 }],
         removed: 3,
         spliced: vec![b],
         phyrexian_life: 2,

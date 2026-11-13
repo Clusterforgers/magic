@@ -188,6 +188,10 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${becomes} ${joinWords(colors)} in addition to its other colors`
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
+  if ('AddKeywords' in modification) {
+    const keywords = Array.isArray(modification.AddKeywords) ? (modification.AddKeywords as unknown[]) : []
+    return `${gains} ${joinWords(keywords.map(keywordWords))}`
+  }
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
   if ('RemoveKeywordKind' in modification) {
     return `${loses} ${KEYWORD_KIND_WORDS[modification.RemoveKeywordKind]}`
