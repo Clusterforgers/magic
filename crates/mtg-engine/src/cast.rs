@@ -55,6 +55,7 @@ fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
 ///
 /// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
 /// for it has ceased to exist by then, and the ability still has the rules it was activated from.
+#[allow(clippy::too_many_lines)]
 pub(crate) fn activation_events(
     state: &GameState,
     player: PlayerId,
