@@ -811,6 +811,7 @@ impl<'a> Walker<'a> {
                 self.at("TargetsPlayer", |w| w.reference(who, Kind::Player));
             }
             Pred::ArrivedFrom(_) => self.uses("Pred", "ArrivedFrom"),
+            Pred::ArrivedThisTurn => self.uses("Pred", "ArrivedThisTurn"),
             _ => self.uses("Pred", "GravedThisTurn"),
         }
     }
@@ -913,6 +914,7 @@ impl<'a> Walker<'a> {
             | Pred::TargetsPlayer(_)
             | Pred::SpentFrom { .. }
             | Pred::GravedThisTurn
+            | Pred::ArrivedThisTurn
             | Pred::ArrivedFrom(_) => {
                 self.w21a_pred(pred);
             }
@@ -1950,6 +1952,14 @@ impl<'a> Walker<'a> {
         if let Some(when) = &permission.when {
             self.at("when", |w| w.condition(when));
         }
+        if let Some(limit) = permission.limit {
+            self.uses("CastPermission", "limit");
+            if limit == 0 || permission.only.is_none() {
+                self.at("limit", |w| {
+                    w.problem("a limit counts one or more of the objects `only` names");
+                });
+            }
+        }
         for rider in &permission.riders {
             let tag = match rider {
                 crate::modify::CastRider::EntersTapped => "EntersTapped",
@@ -2723,6 +2733,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
+            TriggerPattern::PutOnStack { what } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DayNightChanges { .. }
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
@@ -4444,6 +4455,9 @@ impl Walker<'_> {
             }
             Effect::ChangeTargets { what, to, onto } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+                if *to == NewTargets::Random {
+                    w.uses("NewTargets", "Random");
+                }
                 match (to, onto) {
                     (NewTargets::One, Some(onto)) => {
                         w.at("onto", |w| w.reference(onto, Kind::Object));

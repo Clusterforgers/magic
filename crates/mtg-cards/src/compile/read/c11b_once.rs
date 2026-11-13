@@ -49,6 +49,7 @@ fn c11b_permission(what: Selector) -> CastPermission {
         when: None,
         any_cast: false,
         riders: Vec::new(),
+        limit: None,
     }
 }
 

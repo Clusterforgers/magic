@@ -393,6 +393,10 @@ pub struct CastPermission {
     /// What a spell cast through it gets: "If you cast a spell this way, that artifact enters tapped."
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub riders: Vec<CastRider>,
+    /// At most this many of the objects `only` names may be cast or played through it, all told, within the turn ("Until
+    /// end of turn, you may play one of those cards"); any number when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u32>,
 }
 
 impl Default for CastPermission {
@@ -413,6 +417,7 @@ impl Default for CastPermission {
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         }
     }
 }

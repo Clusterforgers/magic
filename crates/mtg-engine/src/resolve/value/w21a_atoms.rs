@@ -1,7 +1,7 @@
 //! The predicate atoms of the open selector language that read an object's own state or history: modified, face down,
 //! a player target, and a card put into a graveyard from the battlefield this turn.
 
-use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::CastWay;
 use mtg_core::card::Subtype;
 
@@ -75,6 +75,22 @@ impl Scope<'_> {
                         spent >= *least
                     })
             }
+            Pred::ArrivedThisTurn => [
+                ZoneKind::Battlefield,
+                ZoneKind::Hand,
+                ZoneKind::Library,
+                ZoneKind::Graveyard,
+                ZoneKind::Stack,
+                ZoneKind::Exile,
+                ZoneKind::Command,
+                ZoneKind::Outside,
+            ]
+            .into_iter()
+            .any(|origin| {
+                self.state
+                    .object_tallied(reference, None, Tally::ArrivedFrom(origin))
+                    > 0
+            }),
             Pred::ArrivedFrom(origin) => {
                 self.state
                     .object_tallied(reference, None, Tally::ArrivedFrom(*origin))

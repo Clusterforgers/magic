@@ -2048,6 +2048,7 @@ impl<'a> Scope<'a> {
             | Pred::SpentFrom { .. }
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
+            | Pred::ArrivedThisTurn
             | Pred::ArrivedFrom(_) => self.w21a_pred(pred, reference, seen)?,
             Pred::Attacking
             | Pred::AttackingPlayer(_)

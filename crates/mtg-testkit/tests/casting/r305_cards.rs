@@ -88,6 +88,7 @@ fn bolt_from(
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         },
         Duration::UntilEndOfTurn,
     )?;

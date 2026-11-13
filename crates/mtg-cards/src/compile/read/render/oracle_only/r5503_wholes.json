@@ -1,0 +1,262 @@
+[
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MayCast": {
+      "what": [
+       {
+        "Subtype": "Dinosaur"
+       },
+       {
+        "Type": "Creature"
+       },
+       {
+        "OwnedBy": "You"
+       },
+       {
+        "ExiledWith": "This"
+       }
+      ],
+      "from": "Exile"
+     }
+    }
+   }
+  },
+  "You may cast Dinosaur creature spells from among cards you own exiled with this creature."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     "Tap"
+    ],
+    "effects": [
+     {
+      "Rule": {
+       "rule": {
+        "MayCast": {
+         "what": [
+          {
+           "Type": "Creature"
+          }
+         ],
+         "from": "Graveyard",
+         "additional": [
+          "Forage"
+         ],
+         "riders": [
+          {
+           "EntersWithCounter": {
+            "Other": "finality"
+           }
+          }
+         ]
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{T}: Until end of turn, you may cast creature spells from your graveyard by foraging in addition to paying their other costs. If you cast a spell this way, that creature enters with a finality counter on it."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MayCast": {
+      "what": [
+       {
+        "ExiledWith": "This"
+       }
+      ],
+      "from": "Exile",
+      "play": true,
+      "when": "YourTurn"
+     }
+    }
+   }
+  },
+  "During your turn, you may play cards exiled with ~."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{4}{B}{B}{B}"
+     },
+     {
+      "Discard": {
+       "count": "X"
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "ExileTop": {
+       "who": {
+        "Target": 0
+       },
+       "count": "X",
+       "as": "exiled"
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "exiled"
+       },
+       "as": "card",
+       "effects": [
+        {
+         "CastFromZone": {
+          "what": {
+           "Bound": "card"
+          },
+          "free": true,
+          "play": true
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{4}{B}{B}{B}, Discard X cards: Exile the top X cards of target opponent's library. You may play lands and cast spells from among cards exiled this way without paying their mana costs."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "In": "Graveyard"
+        },
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        "ArrivedThisTurn"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "card"
+      }
+     },
+     {
+      "CopyCard": {
+       "what": {
+        "Bound": "card"
+       },
+       "as": "copy"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "copy"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "Exile target nonland card in a graveyard that was put there from anywhere this turn. Copy it. You may cast the copy without paying its mana cost."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "ExileTop": {
+       "who": "EachPlayer",
+       "count": 1,
+       "as": "exiled"
+      }
+     },
+     {
+      "Rule": {
+       "rule": {
+        "MayCast": {
+         "from": "Exile",
+         "only": {
+          "Bound": "exiled"
+         },
+         "play": true,
+         "rather": [
+          {
+           "PayLife": {
+            "Stat": {
+             "of": "This",
+             "stat": "ManaValue"
+            }
+           }
+          }
+         ],
+         "limit": 1
+        }
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player, exile the top card of each player's library. Until end of turn, you may play one of those cards. If you cast a spell this way, pay life equal to its mana value rather than paying its mana cost."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "PutOnStack": {}
+    },
+    "if": {
+     "Matches": {
+      "subject": "Triggering",
+      "selector": [
+       "SingleTarget"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "ChangeTargets": {
+       "what": "Triggering",
+       "to": "Random"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a spell or ability is put onto the stack, if it has a single target, reselect its target at random."
+ ]
+]

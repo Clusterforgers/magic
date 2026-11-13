@@ -330,6 +330,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
         | Pred::GravedThisTurn
+        | Pred::ArrivedThisTurn
         | Pred::ArrivedFrom(_)
         | Pred::CastWith(_)
         | Pred::TopOfLibrary

@@ -31,6 +31,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         when: None,
         any_cast: false,
         riders,
+        limit: _,
     } = permission
     else {
         return Vec::new();

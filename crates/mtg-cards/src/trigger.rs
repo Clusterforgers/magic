@@ -160,6 +160,13 @@ pub enum TriggerPattern {
         )]
         by: Ref,
     },
+    /// A spell or ability matching the selector is put onto the stack: cast, activated, triggered or copied ("Whenever a
+    /// spell or ability is put onto the stack"); `Triggering` is the spell or ability.
+    PutOnStack {
+        /// The spell or ability; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player copies a spell matching the selector (CR 707.10): the copy is put on the stack under their control.
     SpellCopied {
         /// The spell copied; any spell when empty.

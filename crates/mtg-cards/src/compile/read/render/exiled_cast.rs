@@ -45,6 +45,7 @@ impl Writer<'_> {
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         };
         (bind == FOUND && exiled_as == EXILED && *permission == allowed).then_some(())?;
         (self.single(&Ref::Target(0))

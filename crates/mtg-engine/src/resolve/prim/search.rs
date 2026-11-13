@@ -240,6 +240,7 @@ fn exiled_as_found(
                     when: None,
                     any_cast: false,
                     riders: Vec::new(),
+                    limit: None,
                 },
                 duration: Duration::Forever,
                 source,

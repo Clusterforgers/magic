@@ -55,6 +55,7 @@ fn c8_eg_permission(additional: Option<Cost>, zone: ZoneKind) -> CastPermission 
         when: None,
         any_cast: false,
         riders: Vec::new(),
+        limit: None,
     }
 }
 

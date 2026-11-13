@@ -84,6 +84,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         };
     let Some(words) = u32::try_from(*count).ok().and_then(count_word) else {
         return;

@@ -74,6 +74,8 @@ pub(super) enum Way {
     ChooseCopy,
     /// The only target becomes another legal target, if there is one (CR 115.7a).
     Another,
+    /// The only target becomes a legal target picked at random, the current one included (CR 115.7d).
+    Random,
 }
 
 /// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
@@ -95,7 +97,7 @@ pub(super) fn ask(
         let Some(kept) = original.choices.targets.get(at).filter(|t| !t.is_empty()) else {
             continue;
         };
-        if way == Way::Keep || (way == Way::Another && !single) {
+        if way == Way::Keep || (matches!(way, Way::Another | Way::Random) && !single) {
             break;
         }
         let mut legal = legal_from(
@@ -108,6 +110,12 @@ pub(super) fn ask(
             original.choices.x,
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
+        if way == Way::Random {
+            if !legal.is_empty() {
+                changeable.push((at, String::new(), legal));
+            }
+            continue;
+        }
         if way == Way::Another {
             legal.retain(|target| !kept.contains(target));
             if !legal.is_empty() {
@@ -122,6 +130,16 @@ pub(super) fn ask(
         }
     }
     if changeable.is_empty() {
+        return Ok(Retargeted::Done(copy));
+    }
+    if way == Way::Random {
+        let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index);
+        for (at, _, legal) in changeable {
+            if let Some(picked) = legal.get(rng.index(legal.len())) {
+                copy.targets[at] = vec![*picked];
+            }
+        }
+        copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
         return Ok(Retargeted::Done(copy));
     }
     if way != Way::Another {

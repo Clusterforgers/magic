@@ -61,6 +61,9 @@ pub enum NewTargets {
     Choose,
     /// "Change a target of it to ~": one target becomes the object `onto` names, if that is a legal target (CR 115.7c).
     One,
+    /// "Reselect its target at random": the only target becomes a target chosen at random from among all its legal
+    /// targets, the current one included (CR 115.7d).
+    Random,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -2218,6 +2221,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
                 when: None,
                 any_cast: false,
                 riders: Vec::new(),
+                limit: None,
             }),
             duration,
         },

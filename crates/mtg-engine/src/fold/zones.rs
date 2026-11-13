@@ -350,6 +350,9 @@ fn land_played(
     if from == Zone::Exile {
         state.tally(player, Tally::R287PlayedFromExile);
     }
+    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
+        state.tally_object(source, None, used);
+    }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
     if let Some(permanent) = state
@@ -458,6 +461,9 @@ fn spell_cast(
     let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
+    }
+    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
+        state.tally_object(source, None, used);
     }
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
