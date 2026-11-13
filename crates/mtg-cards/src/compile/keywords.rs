@@ -2039,8 +2039,9 @@ mod tests {
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks."), and the keywords whose lines only hand-written rules hold (More Than Meets the Eye, a cumulative upkeep
     /// whose cost is an action, compleated).
-    const W9D_SENTENCES: [&str; 9] = [
+    const W9D_SENTENCES: [&str; 10] = [
         "More Than Meets the Eye",
+        "Crew once",
         "Compleated",
         "Cumulative upkeep action",
         "Exert",
@@ -2229,6 +2230,7 @@ mod tests {
             "Bands with other Dinosaurs",
             "Splice onto Arcane {1}{R}",
             "Cleave {1}{R}",
+            "Fortify {3}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
