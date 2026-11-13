@@ -350,7 +350,7 @@ impl BlockOptions {
 
     /// Whether `option` could block `attacker`, which nothing blocks, without breaking a rule or giving up a requirement
     /// of its own.
-    fn could_serve(
+    pub(crate) fn could_serve(
         &self,
         option: &BlockerOption,
         attacker: ObjectId,

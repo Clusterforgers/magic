@@ -1,7 +1,7 @@
 {
   "oracle_id": "4e18d20f-f153-4607-9201-3e22591474db",
   "name": "Quantum Reduction",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quantum Reduction",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 131, "end": 206 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "flash": true,
+                "when": { "R401OnCast": "AdditionalCostPaid" }
+              }
+            },
+            "from": "Hand"
           }
         },
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },

@@ -32,6 +32,12 @@ required?: Array<ObjectId>,
  */
 must_be_blocked?: Array<ObjectId>, 
 /**
+ * The attackers a rule requires a creature of a kind to block (CR 509.1c: "must be blocked by an Eldrazi if able"),
+ * each with the creatures offered that are of that kind and could block it; the declaration has one of them block it
+ * unless none could. Left out while there are none (boxed, so the decision stays small).
+ */
+must_be_blocked_by?: Array<[ObjectId, Array<ObjectId>]>, 
+/**
  * The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
  * out while no rule limits the declaration.
  */

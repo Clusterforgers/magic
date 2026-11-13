@@ -409,6 +409,7 @@ mod r301b_wholes;
 mod r306_wholes;
 mod r306b_wholes;
 mod r379_wholes;
+mod r5502_wholes;
 mod rmt5_wholes;
 // r30-0
 mod r300_wholes;
@@ -567,6 +568,7 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     r283_wholes::r283_add_wholes(ability, texts);
     r287_wholes::r287_add_wholes(ability, texts);
     r306b_wholes::r306b_add_wholes(ability, texts);
+    r5502_wholes::r5502_add_wholes(ability, texts);
     l291_wholes::add(ability, texts);
     r379_wholes::add(ability, texts);
     r306_wholes::add(ability, texts);

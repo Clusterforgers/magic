@@ -185,6 +185,7 @@ mod tests {
             most_at: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
+            at_least_one: None,
         }
     }
 

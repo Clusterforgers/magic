@@ -2439,6 +2439,7 @@ impl<'a> Scope<'a> {
             | Amount::ManaInPool(_)
             | Amount::Doors(_) => self.fill_amount(amount, share)?,
             Amount::Tally { event, who, filter } => self.logged(*event, who, filter)?,
+            Amount::SourcesDealtDamage(who) => self.r5502_sources_dealt_damage(&self.players(who)?),
             Amount::CastSameNameThisGame(who) => {
                 let name = self
                     .state

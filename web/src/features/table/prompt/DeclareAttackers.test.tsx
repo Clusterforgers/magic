@@ -433,6 +433,23 @@ describe('a limit on the declaration', () => {
   })
 })
 
+describe('attacking with at least one creature', () => {
+  it.each([
+    [[], /You must attack with at least one creature this combat/],
+    [[{ Player: 1 }], /You must attack .+ with at least one creature this combat/],
+  ] as const)('names the requirement and offers no empty attack', (group, line) => {
+    attack({ ...optionsOf(SPECS[2] as Spec), at_least_one: [[...group]] })
+    expect(screen.getByText(line)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'No attack' })).toBeNull()
+  })
+
+  it('offers an empty attack without the requirement', () => {
+    attack(optionsOf(SPECS[2] as Spec))
+    expect(screen.queryByText(/with at least one creature/)).toBeNull()
+    expect(screen.getByRole('button', { name: 'No attack' })).toBeInTheDocument()
+  })
+})
+
 describe('exerting an attacker', () => {
   const [a, b] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId]
   const options: AttackOptions = {

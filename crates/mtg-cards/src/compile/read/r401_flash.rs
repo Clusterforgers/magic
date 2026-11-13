@@ -1,6 +1,7 @@
 //! A card's permission to cast itself as though it had flash under a condition on the spell: "You may cast this spell as
 //! though it had flash if it targets a permanent you control.", "... if X is 3 or less." The condition is the
-//! permission's `when`, judged as the announcement ends (`Condition::R401OnCast`).
+//! permission's `when`, judged as the announcement ends (`Condition::R401OnCast`); "... if it's cast using teamwork."
+//! is the optional additional cost of teamwork announced as paid (`Condition::AdditionalCostPaid`).
 
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -34,6 +35,9 @@ pub(super) fn r401_flash(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("you may cast")?;
     (r.source() || r.words("this spell")).then_some(())?;
     r.need("as though it had flash if")?;
+    if r.words("it's cast using teamwork") {
+        return Some(r401_rule(Condition::AdditionalCostPaid));
+    }
     if r.words("it targets") {
         (r.word("a") || r.word("an")).then_some(())?;
         let what = phrase(r, Form::Subject)?;
@@ -75,6 +79,7 @@ pub(super) fn r401_flash_texts(
             op: Cmp::Le,
             right: Amount::Fixed(most),
         } => format!("X is {most} or less"),
+        Condition::AdditionalCostPaid => "it's cast using teamwork".to_owned(),
         _ => return Vec::new(),
     };
     ["this spell", "~"]

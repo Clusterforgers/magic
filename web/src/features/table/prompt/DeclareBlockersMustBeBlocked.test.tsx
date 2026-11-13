@@ -1,4 +1,4 @@
-/** Goal: an attacker a rule says must be blocked (`BlockOptions.must_be_blocked`) is marked "Must be blocked" while a free creature could block it, Confirm and No blocks wait until something blocks it, and the marks and the wait are gone once it is blocked. */
+/** Goal: an attacker a rule says must be blocked (`BlockOptions.must_be_blocked`) is marked "Must be blocked" while a free creature could block it, Confirm and No blocks wait until something blocks it, and the marks and the wait are gone once it is blocked; one that must be blocked by a creature of a kind (`must_be_blocked_by`) waits for a creature of that kind. */
 import { describe, expect, it } from 'vitest'
 import type { BlockOptions, ObjectId } from '@/protocol/generated'
 import { creaturesOf, fixtureOf, renderCombat } from '@/test-utils/combatTable'
@@ -58,5 +58,32 @@ describe('an attacker a rule says must be blocked', () => {
         },
       ],
     ])
+  })
+})
+
+describe('an attacker a rule says must be blocked by a creature of a kind', () => {
+  function kinded() {
+    const attackers = creaturesOf(fixtureOf(2), 1).slice(0, 1) as [ObjectId]
+    const [a, b] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId]
+    const options: BlockOptions = {
+      blockers: [
+        { object: a, can_block: [...attackers] },
+        { object: b, can_block: [...attackers] },
+      ],
+      must_be_blocked_by: [[attackers[0], [b]]],
+    }
+    return { ...renderCombat({ DeclareBlockers: options }, { seats: 2 }), a, b, attackers }
+  }
+
+  it('waits for a creature of that kind, not any blocker', async () => {
+    const t = kinded()
+    expect(t.notes().get(t.attackers[0])).toBe('Must be blocked')
+    expect(t.button('No blocks')).toBeDisabled()
+    await t.user.click(t.card(t.a))
+    await t.user.click(t.card(t.attackers[0]))
+    expect(t.button('Confirm blocks')).toBeDisabled()
+    await t.user.click(t.card(t.b))
+    await t.user.click(t.card(t.attackers[0]))
+    expect(t.button('Confirm blocks')).toBeEnabled()
   })
 })

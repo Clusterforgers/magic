@@ -727,6 +727,10 @@ pub enum Amount {
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
+    /// The different sources that dealt damage this turn while one of the players the reference names controlled them,
+    /// each object once ("three or more sources you controlled dealt damage this turn"); a source that left and came back
+    /// is another.
+    SourcesDealtDamage(Ref),
     /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
     /// ("the second creature token you created this turn").
     Tally {
@@ -1030,6 +1034,7 @@ enum Tagged {
     },
     Party(Ref),
     Triggering,
+    SourcesDealtDamage(Ref),
     Tally {
         event: TallyEvent,
         who: Ref,
@@ -1223,6 +1228,7 @@ enum TaggedRef<'a> {
         directly: bool,
     },
     Triggering,
+    SourcesDealtDamage(&'a Ref),
     Tally {
         event: TallyEvent,
         who: &'a Ref,
@@ -1372,6 +1378,7 @@ impl From<Tagged> for Amount {
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
             Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
+            Tagged::SourcesDealtDamage(who) => Amount::SourcesDealtDamage(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
@@ -1533,6 +1540,9 @@ impl Serialize for Amount {
                 TaggedRef::DamageDealtByTo { by, to }.serialize(serializer)
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
+            Amount::SourcesDealtDamage(who) => {
+                TaggedRef::SourcesDealtDamage(who).serialize(serializer)
+            }
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::Stickers { on, kind } => {
                 TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
@@ -1946,6 +1956,10 @@ mod tests {
     #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned(), per: None }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
     #[case::damage_dealt_by_to(Amount::DamageDealtByTo { by: Ref::This, to: Ref::TriggeringPlayer }, r#"{"DamageDealtByTo":{"by":"This","to":"TriggeringPlayer"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
+    #[case::r5502_sources_dealt_damage(
+        Amount::SourcesDealtDamage(Ref::You),
+        r#"{"SourcesDealtDamage":"You"}"#
+    )]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
     #[case::when(

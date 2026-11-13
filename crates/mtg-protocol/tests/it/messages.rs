@@ -304,6 +304,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             most_at: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
+            at_least_one: None,
             attackers: vec![AttackerOption::free(
                 a,
                 vec![AttackTarget::Player(PlayerId(1))],
@@ -319,6 +320,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 extra: 0,
             }],
             must_be_blocked: Vec::new(),
+            must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: Vec::new(),
@@ -333,6 +335,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 extra: 0,
             }],
             must_be_blocked: Vec::new(),
+            must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: vec![(b, 2)],
@@ -1199,7 +1202,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
@@ -1214,7 +1217,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], must_be_blocked: Vec::new(), min_blockers: vec![], max_blockers: vec![], required: vec![], most: None, cant_alone: vec![], joins: vec![], must_be_blocked_by: None }),
         },
         deadline_ms: None,
         show_after_ms: None,

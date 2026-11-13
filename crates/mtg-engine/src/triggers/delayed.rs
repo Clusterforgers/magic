@@ -183,6 +183,7 @@ impl Delayed {
             // does.
             Duration::UntilOpponentBecomesMonarch
             | Duration::DuringItsControllersNextTurn
+            | Duration::UntilItsControllersNextCombatEnds
             | Duration::WhileYouControlSource
             | Duration::WhileSourceTapped
             | Duration::WhileSourceAttached

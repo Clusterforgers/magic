@@ -43,4 +43,10 @@ cant_alone?: Array<ObjectId>,
  * the creatures that count (CR 508.1c, 509.1b); a declaration that breaks one is refused. Left out while there are
  * none.
  */
-joins?: Array<JoinRule>, };
+joins?: Array<JoinRule>, 
+/**
+ * Groups of defenders the player must attack with at least one creature each (CR 508.1d: "each opponent must
+ * attack with at least one creature"); an empty group is any defender. Only a group some creature can attack for
+ * nothing is listed; a declaration with no attacker at one is refused. Left out while there are none (boxed, so the decision stays small).
+ */
+at_least_one?: Array<Array<AttackTarget>>, };

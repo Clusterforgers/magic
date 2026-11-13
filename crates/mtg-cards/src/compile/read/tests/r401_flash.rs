@@ -1,5 +1,5 @@
 //! Goal: a card's permission to cast itself as though it had flash if a condition on the spell holds ("if it targets a
-//! permanent you control", "if it targets a commander", "if X is 3 or less") reads as a flash permission whose condition
+//! permanent you control", "if it targets a commander", "if X is 3 or less", "if it's cast using teamwork") reads as a flash permission whose condition
 //! is judged as the spell is announced and writes back as the same text; a near-miss (another comparison, a condition of
 //! the board, another caster) does not read as one.
 use super::*;
@@ -14,6 +14,9 @@ use crate::value::Condition;
     "You may cast this spell as though it had flash if it targets a commander."
 )]
 #[case::x_at_most("You may cast this spell as though it had flash if X is 3 or less.")]
+#[case::r5502_teamwork(
+    "You may cast this spell as though it had flash if it's cast using teamwork."
+)]
 fn r401_flash_reads_and_writes_back(#[case] text: &str) {
     let read = golden(text, ClauseKind::Static, true);
     let Ability::Rule {
@@ -37,6 +40,9 @@ fn r401_flash_reads_and_writes_back(#[case] text: &str) {
     "Your opponents may cast this spell as though it had flash if it targets a permanent you control."
 )]
 #[case::without_flash("You may cast this spell if it targets a permanent you control.")]
+#[case::r5502_another_keyword(
+    "You may cast this spell as though it had flash if it's cast using kicker."
+)]
 fn r401_flash_near_misses_are_not_judged_on_the_spell(#[case] text: &str) {
     let read = clause(text, ClauseKind::Static, true);
     let on_cast = matches!(

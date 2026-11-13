@@ -13,24 +13,15 @@ import type { Target } from "./Target";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustAttackAt": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustAttackWithOne": { 
 /**
- * The creatures named.
- */
-creatures: Array<ObjectRef>, 
-/**
- * The players whose creatures attack it.
+ * The players who must attack.
  */
 players: Array<PlayerId>, 
 /**
- * The planeswalker they attack.
+ * The players and planeswalkers the creature attacks; any defender when empty.
  */
-at: ObjectRef, 
-/**
- * The players whose next turn the rule lasts through: the named players, or the controllers of the named
- * creatures as it began.
- */
-turn_of: Array<PlayerId>, } } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
+at: Array<AttackTarget>, } } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
 /**
  * The creatures that must block it.
  */
@@ -122,7 +113,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "OwnSpellsCantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */
@@ -146,15 +137,7 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "EchoRather": { 
-/**
- * The players it covers.
- */
-players: Array<PlayerId>, 
-/**
- * The cost they may pay instead.
- */
-cost: unknown, } } | { "RevealFirstDraw": { 
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "RevealFirstDraw": { 
 /**
  * Whether the reveal is optional.
  */

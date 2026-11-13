@@ -34,6 +34,7 @@ const RUNS: &[&str] = &[
     "Ability.Sorcery",
     "Ability.Condition",
     "Trigger.ZoneChange",
+    "Trigger.GroupAttacksAt.Walkers",
     "Trigger.DealtExcess",
     "Trigger.State",
     "Trigger.Attacks",
@@ -420,6 +421,7 @@ const RUNS: &[&str] = &[
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",
+    "Rule.Duration.UntilItsControllersNextCombatEnds",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
     "Duration.DuringItsControllersNextTurn",
@@ -443,6 +445,7 @@ const RUNS: &[&str] = &[
     "Rule.MustAttack",
     "Rule.MustAttackPlayers",
     "Rule.MustAttackAt",
+    "Rule.MustAttackWithOne",
     "Rule.AttackTax",
     "Rule.BlockTax",
     "Rule.AttackLimit",
@@ -453,6 +456,7 @@ const RUNS: &[&str] = &[
     "Rule.MustBlockAttacker",
     "Rule.Combat",
     "Rule.Combat.AttackIfAnyAttacks",
+    "Rule.Combat.MustBeBlockedByOne",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantBeRegenerated",
@@ -798,6 +802,7 @@ const RUNS: &[&str] = &[
     "Amount.TalliedLastTurn",
     "Amount.Party",
     "Amount.Tally",
+    "Amount.SourcesDealtDamage",
     "Amount.Drafted",
     "Amount.CommanderColors",
     "Amount.Remembered",
@@ -1175,6 +1180,7 @@ mod tests {
     #[case::r303c_discarding_the_hand_to_cast("Cost.Discard.Hand", true)]
     #[case::r400_revealing_the_hand_to_cast("Cost.RevealFromHand.Hand", true)]
     #[case::r400_following_another_attacker("Rule.Combat.AttackIfAnyAttacks", true)]
+    #[case::r5502_blocked_by_one_of_a_kind("Rule.Combat.MustBeBlockedByOne", true)]
     #[case::r303c_sacrificing_all_of_a_kind_to_cast("Cost.Sacrifice.All", true)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_activators("Ability.By", true)]
@@ -1253,6 +1259,10 @@ mod tests {
     #[case::discarding_the_source("Cost.DiscardSelf", true)]
     #[case::triggers("Ability.Triggered", true)]
     #[case::zone_changes("Trigger.ZoneChange", true)]
+    #[case::r5502_attacks_at_a_player_or_their_planeswalkers(
+        "Trigger.GroupAttacksAt.Walkers",
+        true
+    )]
     #[case::attacks("Trigger.Attacks", true)]
     #[case::casting("Trigger.SpellCast", true)]
     #[case::sacrifices("Trigger.Sacrificed", true)]
@@ -1277,6 +1287,10 @@ mod tests {
     #[case::a_rule_while_you_control_the_tapped_source(
         "Rule.Duration.WhileYouControlSourceTapped",
         false
+    )]
+    #[case::r5502_a_rule_until_its_controllers_next_combat(
+        "Rule.Duration.UntilItsControllersNextCombatEnds",
+        true
     )]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
@@ -1380,6 +1394,7 @@ mod tests {
     #[case::the_number_of_mutations("Amount.Mutations", true)]
     #[case::the_size_of_a_party("Amount.Party", true)]
     #[case::a_logged_tally("Amount.Tally", true)]
+    #[case::r5502_sources_that_dealt_damage("Amount.SourcesDealtDamage", true)]
     #[case::commander_colors("Amount.CommanderColors", true)]
     #[case::turn_number("Amount.TurnNumber", true)]
     #[case::damage_dealt_by_to("Amount.DamageDealtByTo", true)]
@@ -1798,6 +1813,7 @@ mod tests {
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]
     #[case::saving_by_umbra_armor("ReplaceBy.UmbraArmor", true)]
     #[case::pairing_attackers_with_players("Rule.MustAttackPlayers", true)]
+    #[case::r5502_attacking_with_at_least_one("Rule.MustAttackWithOne", true)]
     #[case::taxing_attackers("Rule.AttackTax", true)]
     #[case::taxing_blockers("Rule.BlockTax", true)]
     #[case::w8a_attack_limit("Rule.AttackLimit", true)]

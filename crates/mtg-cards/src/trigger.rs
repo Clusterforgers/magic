@@ -367,7 +367,7 @@ pub enum TriggerPattern {
     },
     /// At least this many creatures matching the selector are declared as attackers of one player together ("whenever one
     /// or more Dragons you control attack an opponent"): it triggers once for each player attacked, with the attackers of
-    /// that player; an attack on a planeswalker is no attack on its controller.
+    /// that player; an attack on a planeswalker is no attack on its controller unless `walkers`.
     GroupAttacksAt {
         /// The attackers.
         what: Selector,
@@ -376,6 +376,10 @@ pub enum TriggerPattern {
         /// The fewest that make it trigger.
         #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
         at_least: u32,
+        /// The attackers of the planeswalkers the player controls count with theirs ("attack one of your opponents or a
+        /// planeswalker they control").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        walkers: bool,
     },
     /// Counters are put on a permanent.
     CountersPut {

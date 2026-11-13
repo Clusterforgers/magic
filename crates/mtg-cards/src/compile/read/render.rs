@@ -94,6 +94,7 @@ mod r301_phasing;
 mod r307c_words;
 mod r5501_attack_at;
 mod r5501_base_equal;
+mod r5502_next_combat;
 mod rmt3_enters;
 mod rmt3_skips;
 
@@ -3800,6 +3801,7 @@ impl Writer<'_> {
             .or_else(|| self.rmt2_no_lands(effect))
             .or_else(|| self.r4710_no_monarch(effect))
             .or_else(|| self.r301_cant_phase_out(effect))
+            .or_else(|| self.r5502_attacks_next_combat(effect))
             .or_else(|| self.rmt2_reverberation(effect))
             .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {

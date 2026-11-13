@@ -438,11 +438,15 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
 
 /// The turn number an effect of `duration` that `controller` controls records as it begins now: the current turn, but for
 /// "until your next end step" begun before the end step of the controller's own turn the one before, so that the end step of
-/// this turn is the one it lasts until.
+/// this turn is the one it lasts until, and for "until its controller's next combat phase ends" begun before attackers are
+/// declared in that player's own turn the one before, so that this turn's combat is the one.
 pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: PlayerId) -> u32 {
     let turn = state.turn();
     let before_end = state.is_active(controller) && turn.step() < Step::End;
-    if *duration == Duration::UntilYourNextEndStep && before_end {
+    let before_attacks = state.is_active(controller) && turn.step() < Step::DeclareAttackers;
+    if (*duration == Duration::UntilYourNextEndStep && before_end)
+        || (*duration == Duration::UntilItsControllersNextCombatEnds && before_attacks)
+    {
         turn.number().saturating_sub(1)
     } else {
         turn.number()
@@ -488,7 +492,9 @@ pub(crate) fn lasts(
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
-        Duration::UntilEndOfCombatOnYourNextTurn => {
+        // `UntilItsControllersNextCombatEnds` is begun for the player who controls the creature (`prim/rule.rs`), and the
+        // turn before when begun before their attackers are declared (`began_turn`).
+        Duration::UntilEndOfCombatOnYourNextTurn | Duration::UntilItsControllersNextCombatEnds => {
             state.is_alive(controller)
                 && !(turn.number() > began
                     && turn.active() == controller
@@ -928,6 +934,28 @@ mod tests {
         let effect = effect(&game, Duration::UntilYourNextEndStep, ME).begun(ME, turn);
         at(&mut game, now.0, now.1, now.2);
         assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
+    #[case::r5502_begun_on_another_turn_through_their_combat((4, FOE, Step::Main1), (5, ME, Step::EndCombat), true)]
+    #[case::r5502_begun_on_another_turn_after_their_combat((4, FOE, Step::Main1), (5, ME, Step::Main2), false)]
+    #[case::r5502_another_seats_combat((4, FOE, Step::Main1), (4, FOE, Step::Main2), true)]
+    #[case::r5502_begun_before_their_attacks_this_combat((3, ME, Step::BeginCombat), (3, ME, Step::CombatDamage), true)]
+    #[case::r5502_begun_before_their_attacks_after_it((3, ME, Step::Main1), (3, ME, Step::Main2), false)]
+    #[case::r5502_begun_after_their_attacks_waits((3, ME, Step::CombatDamage), (3, ME, Step::End), true)]
+    #[case::r5502_begun_after_their_attacks_through_the_next((3, ME, Step::Main2), (5, ME, Step::DeclareAttackers), true)]
+    #[case::r5502_begun_after_their_attacks_ends_after_the_next((3, ME, Step::Main2), (5, ME, Step::Main2), false)]
+    fn r5502_until_its_controllers_next_combat_ends(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let duration = Duration::UntilItsControllersNextCombatEnds;
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(lasts(&game, &duration, turn, ME, None), active);
     }
 
     #[rstest]
