@@ -38,6 +38,9 @@ pub struct Deep {
     /// The soft time limit of a decision of ordinary importance ([`super::clock::Budget`]); `None` searches by count
     /// alone, so the answers replay with the seed.
     pub time: Option<Duration>,
+    /// The mean reward by which the tree's favourite must beat the heuristic answer (the first root answer) to replace
+    /// it: rollouts are noisy, and the heuristic answer carries the policy's knowledge the rollouts lack.
+    pub trust: f64,
 }
 
 impl Deep {
@@ -50,6 +53,7 @@ impl Deep {
         forecasts: 40,
         targets: 4,
         time: Some(Duration::from_millis(2500)),
+        trust: 0.05,
     };
 
     /// This budget without a clock: the answers depend on the seed alone.
@@ -274,15 +278,21 @@ pub fn distinct(engine: &Engine, root: Vec<Answer>) -> Vec<Answer> {
 }
 
 /// The child of `children` to walk among `open` (indices of the available ones, pruned ones left out): the first
-/// untried one, else the best UCB1 bound over its availability; the earlier on a tie.
-fn select(children: &[Child], open: &[usize], explore: f64) -> Option<usize> {
+/// untried one, else the best UCB1 bound over its availability, for the seat or, at an opponent's node (`minimize`),
+/// against it; the earlier on a tie.
+fn select(children: &[Child], open: &[usize], explore: f64, minimize: bool) -> Option<usize> {
     if let Some(untried) = open.iter().copied().find(|at| children[*at].visits == 0) {
         return Some(untried);
     }
     let bound = |at: usize| {
         let child = &children[at];
         let log = f64::from(child.available.max(1)).ln();
-        child.mean() + explore * (log / f64::from(child.visits)).sqrt()
+        let mean = if minimize {
+            1.0 - child.mean()
+        } else {
+            child.mean()
+        };
+        mean + explore * (log / f64::from(child.visits)).sqrt()
     };
     open.iter()
         .copied()
@@ -346,6 +356,9 @@ fn settled(root: &[Child], left: u32) -> bool {
     root[lead].visits > second + left
 }
 
+/// The redealt worlds one search cycles through ([`ismcts`]).
+const WORLDS: u32 = 32;
+
 /// How often (in iterations) the root is pruned and its leader checked.
 const CHECK_EVERY: u32 = 16;
 
@@ -383,7 +396,13 @@ pub fn ismcts(
             .total_cmp(&history.score(&root_keys[*a]))
     });
     order.insert(0, 0);
+    // At a table of more than two, a rollout plays at least once round the table, so every opponent's next attack (the
+    // crack back) is seen.
+    let seats = u32::try_from(Seen::new(engine.state(), seat).alive().len()).unwrap_or(2);
+    let turns = deep.turns.max(seats);
     let mut tree: Vec<Vec<Child>> = vec![root.iter().cloned().map(Child::new).collect()];
+    // Whose decision each node is: the seat's, or an opponent's blocks (a minimizing node).
+    let mut owners: Vec<Option<PlayerId>> = vec![Some(seat)];
     let mut last_leader = None;
     let mut stable_checks = 0u32;
     for iteration in 0..budget.iterations {
@@ -406,7 +425,10 @@ pub fn ismcts(
                 break;
             }
         }
-        let key = seed ^ u64::from(iteration + 1).wrapping_mul(0x9E37_79B9_7F4A_7C15);
+        // Common random numbers: the iterations cycle through a fixed set of worlds, so the answers are compared in
+        // the same deals and the same quick answers of the other seats.
+        let world_index = iteration % WORLDS + 1;
+        let key = seed ^ u64::from(world_index).wrapping_mul(0x9E37_79B9_7F4A_7C15);
         let mut world = engine.clone();
         world.redeal(seat, key);
         let mut rollout = Search::new(seat, settings, key);
@@ -422,7 +444,7 @@ pub fn ismcts(
                 break;
             };
             if world.result().is_some()
-                || reached(&world, &decision, start, Horizon::Turns(deep.turns), step)
+                || reached(&world, &decision, start, Horizon::Turns(turns), step)
             {
                 break;
             }
@@ -431,13 +453,43 @@ pub fn ismcts(
                 break;
             }
             let mut answer = None;
+            let own = decision.player == seat;
+            let opposing_blocks = !own
+                && node.is_some()
+                && matches!(decision.kind, DecisionKind::DeclareBlockers(_))
+                && !Seen::new(world.state(), seat).is_teammate(decision.player);
             if let Some(at) = node
-                && decision.player == seat
+                && (own || opposing_blocks)
             {
+                match owners.get(at).copied().flatten() {
+                    Some(owner) if owner != decision.player => node = None,
+                    Some(_) => {}
+                    None => {
+                        if let Some(slot) = owners.get_mut(at) {
+                            *slot = Some(decision.player);
+                        }
+                    }
+                }
+            }
+            if let Some(at) = node
+                && (own || opposing_blocks)
+            {
+                let offered = if step == 0 {
+                    Vec::new()
+                } else if own {
+                    candidates(&world, seat, &decision, &[], deep.forecasts, deep.targets)
+                } else if let DecisionKind::DeclareBlockers(options) = &decision.kind {
+                    combat::block_candidates(&world, decision.player, options, deep.forecasts)
+                        .into_iter()
+                        .map(Answer::DeclareBlockers)
+                        .collect()
+                } else {
+                    Vec::new()
+                };
                 let available: Vec<usize> = if step == 0 {
                     order.clone()
                 } else {
-                    candidates(&world, seat, &decision, &[], deep.forecasts, deep.targets)
+                    offered
                         .into_iter()
                         .map(|offered| {
                             if let Some(index) = tree[at].iter().position(|c| c.answer == offered) {
@@ -453,7 +505,7 @@ pub fn ismcts(
                     for index in &available {
                         tree[at][*index].available += 1;
                     }
-                    if let Some(pick) = select(&tree[at], &available, deep.explore) {
+                    if let Some(pick) = select(&tree[at], &available, deep.explore, !own) {
                         path.push((at, pick));
                         let child = &tree[at][pick];
                         answer = Some(child.answer.clone());
@@ -464,6 +516,7 @@ pub fn ismcts(
                             Some(next)
                         } else {
                             tree.push(Vec::new());
+                            owners.push(None);
                             let next = tree.len() - 1;
                             tree[at][pick].next = Some(next);
                             Some(next)
@@ -504,16 +557,12 @@ pub fn ismcts(
             }
         }
     }
-    choose(&tree[0])
+    choose(&tree[0], deep.trust)
 }
 
-/// The mean reward by which the tree's favourite must beat the heuristic answer (the first root child) to replace it:
-/// rollouts are noisy, and the heuristic answer carries the policy's knowledge the rollouts lack.
-const OVERRIDE: f64 = 0.05;
-
 /// The root answer to play: the most visited child, the earlier on a tie, unless the first (the heuristic answer) was
-/// tried and the favourite's mean reward does not beat it by [`OVERRIDE`].
-fn choose(root: &[Child]) -> Option<Answer> {
+/// tried and the favourite's mean reward does not beat it by `trust` plus one standard error of the difference.
+fn choose(root: &[Child], trust: f64) -> Option<Answer> {
     let mut best: Option<&Child> = None;
     for child in root {
         if child.visits > 0 && best.is_none_or(|held| child.visits > held.visits) {
@@ -522,7 +571,9 @@ fn choose(root: &[Child]) -> Option<Answer> {
     }
     let prior = root.first().filter(|child| child.visits > 0);
     match (best, prior) {
-        (Some(best), Some(prior)) if best.mean() < prior.mean() + OVERRIDE => {
+        (Some(best), Some(prior))
+            if best.mean() < prior.mean() + trust + best.spread().hypot(prior.spread()) =>
+        {
             Some(prior.answer.clone())
         }
         (best, _) => best.map(|child| child.answer.clone()),
@@ -567,7 +618,7 @@ mod tests {
     ) {
         let mut root = vec![child(20, prior * 20.0, 30), child(40, other * 40.0, 30)];
         root[1].answer = Answer::Priority(PriorityAction::BringCompanion);
-        let picked = choose(&root).unwrap();
+        let picked = choose(&root, 0.05).unwrap();
         assert_eq!(picked, root[chosen].answer);
     }
 
@@ -622,11 +673,22 @@ mod tests {
     #[test]
     fn untried_answers_come_first_then_the_best_bound() {
         let children = vec![child(3, 2.0, 6), child(0, 0.0, 6), child(3, 2.0, 6)];
-        assert_eq!(select(&children, &[0, 1, 2], 0.4), Some(1));
+        assert_eq!(select(&children, &[0, 1, 2], 0.4, false), Some(1));
         let poor = child(10, 1.0, 20);
         let good = child(10, 9.0, 20);
-        assert_eq!(select(&[poor.clone(), good.clone()], &[0, 1], 0.4), Some(1));
-        assert_eq!(select(&[poor, good], &[0], 0.4), Some(0));
-        assert_eq!(select(&[], &[], 0.4), None);
+        assert_eq!(
+            select(&[poor.clone(), good.clone()], &[0, 1], 0.4, false),
+            Some(1)
+        );
+        assert_eq!(
+            select(&[poor.clone(), good.clone()], &[0], 0.4, false),
+            Some(0)
+        );
+        assert_eq!(select(&[], &[], 0.4, false), None);
+        assert_eq!(
+            select(&[poor, good], &[0, 1], 0.4, true),
+            Some(0),
+            "an opponent picks the seat's worst"
+        );
     }
 }

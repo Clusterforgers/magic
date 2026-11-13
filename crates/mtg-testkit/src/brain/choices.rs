@@ -30,19 +30,23 @@ fn lands_out(seen: &Seen<'_>) -> usize {
         .count()
 }
 
-/// Whether to keep the opening hand: two to five lands in seven cards (fewer cards ask for fewer), always after two
-/// mulligans or when no mulligan is offered.
+/// Whether to keep the opening hand, by a small opening book: three to five lands in seven cards, two only with a
+/// spell of mana value two or less to cast early (fewer cards ask for fewer lands); always after two mulligans or when
+/// no mulligan is offered.
 pub fn keep(seen: &Seen<'_>, options: &MulliganOptions) -> bool {
     if !options.can_mulligan || options.mulligans_taken >= 2 {
         return true;
     }
     let lands = options.hand.iter().filter(|id| is_land(seen, **id)).count();
     let kept = options.hand.len().saturating_sub(options.bottom_if_keep);
-    let (least, most) = if kept >= 7 {
-        (2, 5)
-    } else {
-        (2.min(kept), kept.saturating_sub(2).max(2))
-    };
+    if kept >= 7 {
+        let early = options
+            .hand
+            .iter()
+            .any(|id| !is_land(seen, *id) && seen.mana_value(*id) <= 2);
+        return (3..=5).contains(&lands) || (lands == 2 && early);
+    }
+    let (least, most) = (2.min(kept), kept.saturating_sub(2).max(2));
     (least..=most).contains(&lands)
 }
 

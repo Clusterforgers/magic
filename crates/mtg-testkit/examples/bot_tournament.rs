@@ -190,9 +190,18 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                 deep.turns = number("EXP_TURNS", deep.turns);
                 deep.scale = number("EXP_SCALE", deep.scale);
                 deep.explore = number("EXP_EXPLORE", deep.explore);
+                deep.trust = number("EXP_TRUST", deep.trust);
                 settings.deep = Some(deep);
             }
             settings.votes = number("EXP_VOTES", base.votes);
+            if std::env::var("EXP_LEVEL").is_ok_and(|v| v == "veryhard")
+                && std::env::var("EXP_DEEP").is_err()
+            {
+                settings.deep = Settings::VERY_HARD.untimed().deep;
+                if let Some(deep) = &mut settings.deep {
+                    deep.trust = number("EXP_TRUST", deep.trust);
+                }
+            }
             settings.fair = flag("EXP_FAIR", base.fair);
             settings.careful = flag("EXP_CAREFUL", base.careful);
             settings.lookahead = flag("EXP_LOOKAHEAD", base.lookahead);
@@ -225,8 +234,55 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                     }
                 }
             }
-            Box::new(HeuristicBot::new(seed, seat, settings))
+            let mut knobs = mtg_testkit::brain::knobs::Knobs::TUNED;
+            if let Ok(list) = std::env::var("EXP_K") {
+                for pair in list.split(',') {
+                    let (name, value) = pair.split_once(':').unwrap();
+                    let value: f64 = value.parse().unwrap();
+                    let k = &mut knobs;
+                    match name {
+                        "margin" => k.margin = value,
+                        "ramp" => k.ramp = value,
+                        "ramp_until" => k.ramp_until = value,
+                        "instant_wait" => k.instant_wait = value,
+                        "flash_wait" => k.flash_wait = value,
+                        "tap_out" => k.tap_out = value,
+                        "reactive" => k.reactive = value,
+                        "hold_base" => k.hold_base = value,
+                        "hold_per_card" => k.hold_per_card = value,
+                        "hold_decay" => k.hold_decay = value,
+                        "wipe" => k.wipe = value,
+                        "counter" => k.counter = value,
+                        "removal" => k.removal = value,
+                        "fog" => k.fog = value,
+                        "burn" => k.burn = value,
+                        "trick" => k.trick = value,
+                        "trade_up" => k.trade_up = value,
+                        "wall" => k.wall = value,
+                        "lethal_hit" => k.lethal_hit = value,
+                        "lands_wanted" => k.lands_wanted = value,
+                        other => panic!("unknown knob {other}"),
+                    }
+                }
+            }
+            Box::new(Knobbed {
+                inner: HeuristicBot::new(seed, seat, settings),
+                knobs,
+            })
         }
+    }
+}
+
+/// A brain that plays with its own policy constants.
+struct Knobbed {
+    inner: HeuristicBot,
+    knobs: mtg_testkit::brain::knobs::Knobs,
+}
+
+impl SeatBrain for Knobbed {
+    fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
+        let inner = &mut self.inner;
+        mtg_testkit::brain::knobs::with_knobs(self.knobs, || inner.choose(decision, table))
     }
 }
 

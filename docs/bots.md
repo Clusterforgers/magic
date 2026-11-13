@@ -11,6 +11,25 @@ How the bot brains (`crates/mtg-testkit/src/brain`) decide, what the design draw
 - **Multiplayer search and politics**: Sturtevant and Korf, "On pruning techniques for multi-player games" (AAAI 2000) contrast max^n with the paranoid assumption; Schadd and Winands, "Best reply search for multiplayer games" (IEEE TCIAIG 2011) let only the strongest opponent reply. For Commander the practical rules are archenemy targeting (pressure the leader, not the weakest), not overextending into a single wipe, and avoiding kingmaking (do not cripple the player who is the only check on the leader).
 - **Strong Commander players**: hold interaction with mana up and spend it at the end of an opponent's turn when unused; counter or remove by threat, not by whatever came first (engines, commanders, combo pieces and bombs over mana dorks); judge threat by board power, evasion, card-advantage engines, commander and commander damage, mana available, cards in hand and life; sequence so mana is used fully; play around open mana and known tricks; chump only to survive; save wipes for when the opponents' boards are worth more than their own.
 
+## What transfers from chess engines
+
+Chess engines are strong through search under strict time control, a tuned evaluation, opening and endgame knowledge, and statistically sound testing (Stockfish's fishtest: SPRT on paired games, SPSA tuning). Magic hides hands and libraries, shuffles, and seats up to six players, so each idea is taken in the form that survives determinization:
+
+| Technique | In chess | Here |
+| --- | --- | --- |
+| Iterative deepening, anytime answer | deepen until the clock runs out, keep the last best move | the tree search is anytime: every iteration deepens the tree, the leader is always ready (`brain/deep.rs`) |
+| Time management | soft and hard limits, more time when the best move is unstable | `brain/clock.rs`: a budget scaled by the decision's importance (lethal in reach, a big opposing spell on the stack, the seat's big plays), a soft limit that stops once the leader is stable, a hard limit within 4.5 s of the question |
+| Alpha-beta, minimax | prune lines the opponent refutes | rejected: hidden cards and shuffles make exact minimax over redealt worlds strategy-fused and slow; the opponent's replies are the policy's in each world |
+| Late move reductions | search unlikely moves shallower | root answers whose mean reward is clearly below the best (two standard errors and 0.03) get no further iterations |
+| Move ordering, killer and history heuristics | try good moves first | untried answers are tried in the order of their mean advantage in earlier searches this game (`deep::History`), the heuristic answer first |
+| Transposition table | merge positions reached by different move orders | root answers that do the same thing (two copies of one card) are merged; positions in redealt worlds rarely repeat, so no table across iterations |
+| Quiescence search | never evaluate mid-capture | a search never stops with a spell on the stack or inside combat (`sim::reached`); counter wars settle first |
+| Mate search, tablebases | exact search near the end | `brain/endgame.rs`: with an opponent in reach, each answer is played to the end of the turn in three redealt worlds; one that wins in all is played at once |
+| Evaluation tuning (Texel) | fit weights to game results | `examples/eval_tune.rs` fits the evaluation's linear terms (`eval::Terms`) to results of self-play positions |
+| Parameter tuning (SPSA) | tune search and evaluation parameters by match play | `examples/spsa_tune.rs` tunes the policy constants (`brain/knobs.rs`) and evaluation weights by paired games between perturbed brains |
+| SPRT match testing | paired games until significant | `examples/bot_tournament.rs` with `SPRT=elo0,elo1`, Elo with a 95% interval, the longest answer |
+| Opening book | prepared openings | mulligan and land rules (`choices::keep`), ramp first (`knobs.ramp`) |
+
 ## Approach
 
 The 5 s server deadline rules out deep full-game search per decision; the levels share one evaluation and one threat model, and add search:
