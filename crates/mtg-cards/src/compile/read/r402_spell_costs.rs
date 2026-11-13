@@ -85,6 +85,10 @@ pub(super) fn r402_each_spell(text: &str) -> Option<String> {
     let (subject, rest) = text.split_once(" cost ")?;
     let (kinds, after) = subject.split_once("spells")?;
     (!kinds.contains("spell") && !after.contains("spell")).then_some(())?;
+    if kinds.is_empty() {
+        // "Spells you cast cost" as "Each spell you cast costs".
+        return Some(format!("Each spell{after} costs {rest}"));
+    }
     let mut lowered = kinds.chars();
     let first = lowered.next()?.to_lowercase();
     Some(format!(

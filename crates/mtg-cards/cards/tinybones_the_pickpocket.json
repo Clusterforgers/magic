@@ -1,7 +1,7 @@
 {
   "oracle_id": "7bc4c7e2-6758-4a85-84e7-03ab93981106",
   "name": "Tinybones, the Pickpocket",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tinybones, the Pickpocket",
@@ -9,9 +9,28 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 11, "end": 189 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CastFromZone": { "what": { "Target": 0 }, "spend_as": "AnyType" } }]
           }
         }
       ]

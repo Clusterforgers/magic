@@ -27,6 +27,15 @@ pub struct NameOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub nonland: bool,
+    /// The card must not be a creature ("choose a noncreature, nonland card name"); the client offers only such cards.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub noncreature: bool,
+    /// The card must be a land that is not basic ("choose a nonbasic land card name"); the client offers only such
+    /// cards.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub nonbasic_land: bool,
 }
 
 /// The answer to a name decision: the card name, or nothing.

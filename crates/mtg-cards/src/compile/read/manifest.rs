@@ -61,6 +61,7 @@ pub fn manifest(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             who,
             count,
             from,
+            cards: None,
             bind,
         }
     } else {
@@ -68,6 +69,7 @@ pub fn manifest(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             who,
             count,
             from,
+            cards: None,
             bind,
         }
     }])
@@ -90,12 +92,14 @@ pub(super) fn text(effect: &Effect, subject: &str) -> Option<String> {
                 who,
                 count,
                 from,
+                cards: None,
                 bind,
             } => (false, who, count, from, bind),
             Effect::Cloak {
                 who,
                 count,
                 from,
+                cards: None,
                 bind,
             } => (true, who, count, from, bind),
             _ => return None,

@@ -70,6 +70,11 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   if ('Name' in chosen) return `, choosing ${chosen.Name}`
   if ('Number' in chosen) return `, choosing ${chosen.Number}`
   if ('Word' in chosen) return `, choosing ${chosen.Word}`
+  if ('ColorAndType' in chosen) {
+    const [color, type] = chosen.ColorAndType
+    return `, choosing ${color.toLowerCase()} and ${type}`
+  }
+  if ('Players' in chosen) return `, choosing ${joinWords(chosen.Players.map((seat) => n.seat(seat)))}`
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -324,6 +329,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if (rule === 'DamageAsWither') what = 'Damage is dealt as though its source had wither'
   else if (rule === 'ManaBurn') what = 'Unspent mana makes its player lose that much life'
   else if (rule === 'ReverseTurnOrder') what = 'Turn order is reversed'
+  else if (rule === 'Planar') what = 'A rule about the planar die or planeswalking is in force'
   else if ('AttackAsThoughHasteAt' in rule)
     what = `Creatures can attack ${seats(rule.AttackAsThoughHasteAt)} as though they had haste`
   else if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`

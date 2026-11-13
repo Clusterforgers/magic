@@ -41,8 +41,8 @@ use crate::announce::payments;
 use crate::characteristics::controller_of_object;
 use crate::choose::values;
 use crate::choose::{
-    CardsOptions, Choice, ChoiceOption, NameOptions, NumberOptions, OptionOptions,
-    ReplacementCandidate, ReplacementOptions, Target, YesNoOptions,
+    CardsOptions, Choice, ChoiceOption, NumberOptions, OptionOptions, ReplacementCandidate,
+    ReplacementOptions, Target, YesNoOptions,
 };
 use crate::combat::DamageTarget;
 use crate::copies::{BecameCopy, copiable_values, may_be_copied};
@@ -568,7 +568,11 @@ enum Unit {
     Damage {
         source: ObjectId,
         target: DamageTarget,
+        /// The damage would make a player lose life.
+        loses_life: bool,
     },
+    /// A player would lose life by an effect (not by damage, which is `Damage`).
+    LifeLoss { player: PlayerId },
     /// Counters would be put on a permanent or a player.
     Counters { on: Target, counter: CounterKind },
     /// A player would gain life.
@@ -677,6 +681,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::TokenCreation { .. }
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
+        | ReplaceWhen::LifeLoss { .. }
         | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
@@ -721,6 +726,14 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
+        ReplaceBy::LossTimes(_) => matches!(
+            unit,
+            Unit::LifeLoss { .. }
+                | Unit::Damage {
+                    loses_life: true,
+                    ..
+                }
+        ),
         // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
         ReplaceBy::PreventCounted(_)
@@ -952,10 +965,19 @@ impl Pass<'_> {
             };
         }
         match event {
-            Event::DamageDealt { source, target, .. } => Unit::Damage {
+            Event::DamageDealt {
+                source,
+                target,
+                amount,
+                form,
+                ..
+            } => Unit::Damage {
                 source: *source,
                 target: *target,
+                loses_life: matches!(target, DamageTarget::Player(_))
+                    && form.life_lost(*amount) > 0,
             },
+            Event::LifeLost { player, .. } => Unit::LifeLoss { player: *player },
             Event::CountersChanged(CountersChanged { on, counter, delta }) if *delta > 0 => {
                 // What a planeswalker pays to activate a loyalty ability is a cost, not an effect.
                 let cost =
@@ -1064,6 +1086,7 @@ impl Pass<'_> {
                 Unit::Damage {
                     source: dealer,
                     target,
+                    ..
                 },
             ) => {
                 if combat.is_some_and(|wanted| wanted != self.combat_damage()) {
@@ -1133,6 +1156,15 @@ impl Pass<'_> {
                         Some(on) => self.includes(&scope, on, *put)?,
                     }
             }
+            (
+                ReplaceWhen::LifeLoss { who },
+                Unit::LifeLoss { player }
+                | Unit::Damage {
+                    target: DamageTarget::Player(player),
+                    loses_life: true,
+                    ..
+                },
+            ) => scope.players(who)?.contains(player),
             (ReplaceWhen::LifeGain { who }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
@@ -1211,7 +1243,7 @@ impl Pass<'_> {
         let regeneration = self.regeneration_candidate(&slot.item);
         let unpreventable = self.unpreventable(slot, &unit);
         if !unpreventable
-            && let Unit::Damage { source, target } = &unit
+            && let Unit::Damage { source, target, .. } = &unit
             && let Some(protection) = self.protection_candidate(*source, *target)
         {
             return Ok(vec![protection]);
@@ -1637,7 +1669,7 @@ impl Pass<'_> {
     /// The prevention shields that cover the damage the slot holds and have not been applied to it.
     fn shield_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
         let mut found = self.replaces_candidates(slot, unit)?;
-        let Unit::Damage { source, target } = unit else {
+        let Unit::Damage { source, target, .. } = unit else {
             return Ok(found);
         };
         for effect in &self.shields {
@@ -1825,7 +1857,10 @@ impl Pass<'_> {
         };
         match unit {
             Unit::Tokens { controller } | Unit::Enter { controller, .. } => *controller,
-            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => *player,
+            Unit::Life { player }
+            | Unit::Draw { player }
+            | Unit::Loss { player }
+            | Unit::LifeLoss { player } => *player,
             Unit::Damage { target, .. } => match target {
                 DamageTarget::Player(player) => *player,
                 DamageTarget::Object(object) => controller_of(*object),
@@ -2210,6 +2245,9 @@ impl Pass<'_> {
             (ReplaceBy::Redirect { .. }, Unit::Damage { .. }) => {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
+            }
+            (ReplaceBy::LossTimes(times), _) => {
+                self.r4703_loss_times(at, *times, &applied);
             }
             (by, _) if scales(by) => {
                 self.scale(at, by, &applied);
@@ -2984,6 +3022,9 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
+            ReplaceBy::Choose(EntersChoice::RevealedNonlandName) => {
+                return self.r4702_revealed_name(at, source, object, controller, applied);
+            }
             ReplaceBy::Choose(_) | ReplaceBy::ChooseWord(_) | ReplaceBy::OpponentChooses(_) => {
                 let chosen = match self.e15f_chosen(source, controller, by)? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
@@ -3083,6 +3124,7 @@ impl Pass<'_> {
                             min: 0,
                             text: "Choose permanents to sacrifice.".into(),
                             can_cancel: false,
+                            groups: Vec::new(),
                         }),
                     }));
                 }
@@ -3119,9 +3161,10 @@ impl Pass<'_> {
         if let Some(slot) = self.slots.get_mut(entering) {
             slot.applied.clone_from(&applied);
         }
+        let each = devoured_each(*counters, made);
         let gained = u32::try_from(made)
             .ok()
-            .and_then(|made| made.checked_mul(*counters))
+            .and_then(|made| made.checked_mul(each))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
         if let Some(slot) = w7e_devoured_slot(object, made) {
@@ -3230,6 +3273,7 @@ impl Pass<'_> {
                         max: 1,
                         text: "Choose a permanent to copy.".into(),
                         can_cancel: false,
+                        groups: Vec::new(),
                     }),
                 }));
             }
@@ -3450,35 +3494,6 @@ impl Pass<'_> {
         }
     }
 
-    /// A card name that `controller` names as the card enters (CR 201.3); nothing when they name nothing.
-    fn chooses_name(
-        &mut self,
-        source: ObjectId,
-        controller: PlayerId,
-        nonland: bool,
-    ) -> Result<Asked<Option<Chosen>>, EngineError> {
-        match self.answer() {
-            None => Ok(Asked::Ask(Decision {
-                player: controller,
-                kind: DecisionKind::ChooseName(NameOptions {
-                    source,
-                    text: if nonland {
-                        "Choose a nonland card name.".to_owned()
-                    } else {
-                        "Choose a card name.".to_owned()
-                    },
-                    nonland,
-                }),
-            })),
-            Some((who, Choice::Name(name))) if *who == controller => Ok(Asked::Got(
-                (!name.is_empty()).then(|| Chosen::Name(name.clone())),
-            )),
-            Some(other) => Err(Self::invalid(format!(
-                "{other:?} is no answer to the choice of a name of {controller:?}"
-            ))),
-        }
-    }
-
     /// A number from `min` to `max` that `controller` chooses as the card enters; the smallest when only one is allowed.
     fn chooses_number(
         &mut self,
@@ -3527,8 +3542,20 @@ impl Pass<'_> {
         if let EntersChoice::Number { min, max } = kind {
             return self.chooses_number(source, controller, min, max);
         }
-        if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) {
-            return self.chooses_name(source, controller, kind == EntersChoice::NonlandCardName);
+        if matches!(
+            kind,
+            EntersChoice::CardName
+                | EntersChoice::NonlandCardName
+                | EntersChoice::NoncreatureNonlandCardName
+                | EntersChoice::NonbasicLandCardName
+        ) {
+            return self.r4702_chooses_name(source, controller, kind);
+        }
+        if matches!(
+            kind,
+            EntersChoice::Colors(_) | EntersChoice::ColorAndCreatureType | EntersChoice::Players(_)
+        ) {
+            return self.r4700_chooses(source, controller, kind);
         }
         let options = self.options_of(kind, controller, source);
         let picked = match options.as_slice() {
@@ -3536,26 +3563,7 @@ impl Pass<'_> {
             [_] => Some(0),
             _ => match self.answer() {
                 None => {
-                    let text = match kind {
-                        EntersChoice::Color => "Choose a color.".to_owned(),
-                        EntersChoice::ColorOtherThan(other) => {
-                            format!(
-                                "Choose a color other than {}.",
-                                format!("{other:?}").to_lowercase()
-                            )
-                        }
-                        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
-                        EntersChoice::LandType => "Choose a land type.".to_owned(),
-                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
-                        EntersChoice::Player => "Choose a player.".to_owned(),
-                        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
-                        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
-                        EntersChoice::CardName
-                        | EntersChoice::NonlandCardName
-                        | EntersChoice::CardType
-                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
-                        EntersChoice::Number { .. } => String::new(),
-                    };
+                    let text = entering_question(kind);
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
@@ -3599,7 +3607,14 @@ impl Pass<'_> {
                         .map(Chosen::CardType)
                 }
                 ChoiceOption::Label(name)
-                    if matches!(kind, EntersChoice::CardName | EntersChoice::NonlandCardName) =>
+                    if matches!(
+                        kind,
+                        EntersChoice::CardName
+                            | EntersChoice::NonlandCardName
+                            | EntersChoice::NoncreatureNonlandCardName
+                            | EntersChoice::NonbasicLandCardName
+                            | EntersChoice::RevealedNonlandName
+                    ) =>
                 {
                     Some(Chosen::Name(name))
                 }
@@ -3642,7 +3657,13 @@ impl Pass<'_> {
             EntersChoice::BasicLandType => values::basic_land_types(),
             EntersChoice::CardName
             | EntersChoice::NonlandCardName
-            | EntersChoice::Number { .. } => Vec::new(),
+            | EntersChoice::NoncreatureNonlandCardName
+            | EntersChoice::NonbasicLandCardName
+            | EntersChoice::RevealedNonlandName
+            | EntersChoice::Number { .. }
+            | EntersChoice::Colors(_)
+            | EntersChoice::Players(_)
+            | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
                 .turn_order_from(controller)
@@ -3657,6 +3678,36 @@ impl Pass<'_> {
                 .map(ChoiceOption::Player)
                 .collect(),
         }
+    }
+}
+
+/// The question of a choice made as a permanent enters, in words.
+fn entering_question(kind: EntersChoice) -> String {
+    match kind {
+        EntersChoice::Color => "Choose a color.".to_owned(),
+        EntersChoice::ColorOtherThan(other) => {
+            format!(
+                "Choose a color other than {}.",
+                format!("{other:?}").to_lowercase()
+            )
+        }
+        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+        EntersChoice::LandType => "Choose a land type.".to_owned(),
+        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
+        EntersChoice::Player => "Choose a player.".to_owned(),
+        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
+        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
+        EntersChoice::CardName
+        | EntersChoice::NonlandCardName
+        | EntersChoice::NoncreatureNonlandCardName
+        | EntersChoice::NonbasicLandCardName
+        | EntersChoice::RevealedNonlandName
+        | EntersChoice::CardType
+        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
+        EntersChoice::Number { .. }
+        | EntersChoice::Colors(_)
+        | EntersChoice::Players(_)
+        | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }
 
@@ -3678,6 +3729,7 @@ mod r304_as_enters;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
+mod r4700_choices;
 pub(crate) mod r4708_actions;
 mod r4708_reveal;
 mod rmt5_next;
@@ -3736,14 +3788,26 @@ mod umbra;
 #[cfg(test)]
 mod ep21_plus;
 mod ep28_under;
+mod r4702_names;
 mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 
 mod r283_prevent;
 mod r304c_amounts;
+mod r4703_loss;
 mod r5501_attached;
 mod w9c_prevent;
+
+/// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is
+/// `counters` 0, the number devoured.
+fn devoured_each(counters: u32, made: usize) -> u32 {
+    if counters == 0 {
+        u32::try_from(made).unwrap_or(u32::MAX)
+    } else {
+        counters
+    }
+}
 
 #[cfg(test)]
 mod tests {

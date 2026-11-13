@@ -25,7 +25,14 @@ pub(crate) fn r377_their_turn_over(state: &GameState) -> Vec<Event> {
         .collect()
 }
 
-/// Whether the rule waits for a later turn: one for the next turn of its player, begun this turn.
+/// Whether the rule waits for a later turn: one for the next turn of its player, begun this turn, and a prohibition for
+/// that turn during the turns of other players before it ("can't cast instant or sorcery spells during that player's next
+/// turn").
 pub(crate) fn r377_waits(state: &GameState, effect: &RuleEffect) -> bool {
-    effect.duration == Duration::TheirNextTurn && state.turn().number() <= effect.turn
+    effect.duration == Duration::TheirNextTurn
+        && (state.turn().number() <= effect.turn
+            || match &effect.rule {
+                Rule::Cant { who, .. } => !covers(who, Some(state.turn().active()), None),
+                _ => false,
+            })
 }

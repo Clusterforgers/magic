@@ -226,6 +226,11 @@ pub(crate) fn for_card<'a>(
     if in_hand && sources.iter().any(mentioned) {
         let mut sources = without_taken(sources, &|other| other == id);
         sources.retain(|option| option.source.object != id);
+        crate::r4705_spend_from::r4705_sources(state, id, &mut sources);
+        Cow::Owned(sources)
+    } else if crate::r4705_spend_from::r4705_spend_from(state, id).is_some() {
+        let mut sources = sources.to_vec();
+        crate::r4705_spend_from::r4705_sources(state, id, &mut sources);
         Cow::Owned(sources)
     } else {
         Cow::Borrowed(sources)
