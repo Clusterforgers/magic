@@ -20,6 +20,7 @@ use super::deep::Deep;
 use super::eval::{Weights, evaluate_with};
 use super::seen::Seen;
 use super::targets::{rank_targets, target_answer};
+use super::threat;
 use crate::bot::{RandomBot, apply_answer};
 
 /// The most answers one simulation gives before it is scored where it stands.
@@ -131,10 +132,12 @@ impl Settings {
 /// How far a simulation plays on.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Horizon {
-    /// Until the object on top of the stack has resolved (or, on an empty stack, until priority comes back).
+    /// Until the whole stack has resolved, a counter war included (or, on an empty stack, until priority comes back).
     Settle,
     /// Until combat is over this turn.
     EndOfCombat,
+    /// Until this turn is over, so effects that last until end of turn have ended.
+    EndOfTurn,
     /// Until the combat of the next turn is over.
     NextTurn,
     /// Until the combat of the turn this many turns on is over (`Turns(1)` is [`Horizon::NextTurn`]).
@@ -146,8 +149,6 @@ pub enum Horizon {
 pub(crate) struct Start {
     /// The turn number.
     pub(crate) turn: u32,
-    /// The objects on the stack.
-    pub(crate) stack: usize,
 }
 
 /// One simulated outcome: its score and a fingerprint of what lasts beyond the turn.
@@ -257,7 +258,6 @@ impl Search {
         let decision = sim.decision()?.clone();
         let start = Start {
             turn: sim.state().turn().number(),
-            stack: sim.state().stack().len(),
         };
         apply_answer(&mut sim, &decision, answer).ok()?;
         self.prime(&sim);
@@ -457,9 +457,9 @@ impl Search {
     }
 }
 
-/// A seat's own play in a look-ahead simulation on an empty stack: in its main phase a land, else its most expensive
-/// castable permanent or sorcery spell; at an opponent's end step its most expensive castable instant (removal, burn);
-/// else a pass.
+/// A seat's own play in a look-ahead simulation: over an opposing spell a counterspell when the spell is worth it
+/// ([`counter_reply`]); on an empty stack in its main phase a land, else its most expensive castable permanent or
+/// sorcery spell; at an opponent's end step its most expensive castable instant (removal, burn); else a pass.
 fn rollout_play(
     engine: &Engine,
     options: &mtg_engine::decision::PriorityOptions,
@@ -468,10 +468,13 @@ fn rollout_play(
     let Some(seat) = engine.decision().map(|d| d.player) else {
         return PriorityAction::Pass;
     };
-    if !state.stack().is_empty() || engine.announcing() {
+    if engine.announcing() {
         return PriorityAction::Pass;
     }
     let seen = Seen::new(state, seat);
+    if let Some(top) = state.stack().last() {
+        return counter_reply(&seen, *top, options);
+    }
     let main = matches!(state.turn().step(), Step::Main1 | Step::Main2) && state.is_active(seat);
     let their_end = state.turn().step() == Step::End
         && seen
@@ -496,6 +499,33 @@ fn rollout_play(
         .map_or(PriorityAction::Pass, |id| PriorityAction::CastSpell(*id))
 }
 
+/// A seat's reply in a simulation to `top`, the object on top of the stack: a counterspell when it is an opposing
+/// spell that threatens more than keeping the counter is worth ([`threat::spell_threat`], [`threat::hold_value`]),
+/// else a pass.
+fn counter_reply(
+    seen: &Seen<'_>,
+    top: mtg_core::ids::ObjectId,
+    options: &mtg_engine::decision::PriorityOptions,
+) -> PriorityAction {
+    if seen
+        .controller(top)
+        .is_none_or(|player| seen.is_teammate(player))
+    {
+        return PriorityAction::Pass;
+    }
+    let Some(counter) = options.castable.iter().copied().find(|id| {
+        seen.card(*id)
+            .is_some_and(|card| threat::traits(card).counter)
+    }) else {
+        return PriorityAction::Pass;
+    };
+    if threat::spell_threat(seen, top) >= threat::hold_value(seen) {
+        PriorityAction::CastSpell(counter)
+    } else {
+        PriorityAction::Pass
+    }
+}
+
 /// Whether a simulation that started at `start` and has given `steps` answers has reached `horizon` at `decision`.
 pub(crate) fn reached(
     engine: &Engine,
@@ -512,10 +542,11 @@ pub(crate) fn reached(
     let turn = state.turn().number();
     let stack = state.stack().len();
     match horizon {
-        Horizon::Settle => turn != start.turn || stack <= start.stack.saturating_sub(1),
+        Horizon::Settle => turn != start.turn || stack == 0,
         Horizon::EndOfCombat => {
             turn != start.turn || (stack == 0 && after_combat(state.turn().step()))
         }
+        Horizon::EndOfTurn => turn != start.turn,
         Horizon::NextTurn => reached_turn(state, start.turn + 1, stack),
         Horizon::Turns(turns) => reached_turn(state, start.turn + turns, stack),
     }
