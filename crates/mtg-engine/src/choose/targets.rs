@@ -48,6 +48,7 @@ pub(crate) fn options_before_x(
         true,
         cause,
         None,
+        None,
         &[],
         None,
         None,
@@ -83,6 +84,7 @@ pub(crate) fn targets_met(
             false,
             cause,
             x,
+            None,
             &[],
             None,
             None,
@@ -275,11 +277,13 @@ pub fn legal_targets(
     source: ObjectId,
     controller: PlayerId,
 ) -> Vec<Target> {
-    legal_for(state, spec, source, controller, None, None, &[])
+    legal_for(state, spec, source, controller, None, None, None, &[])
 }
 
 /// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification
-/// names. `x` is the X announced, which a filter may read.
+/// names. `x` is the X announced, which a filter may read, and `modes_by` who chose the modes (`Ref::ModesChooser`).
+// Every argument is a different thing the legal targets depend on.
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn legal_for(
     state: &GameState,
     spec: &TargetSpec,
@@ -287,6 +291,7 @@ pub(crate) fn legal_for(
     controller: PlayerId,
     cause: Option<&Cause>,
     x: Option<u32>,
+    modes_by: Option<PlayerId>,
     earlier: &[Vec<Target>],
 ) -> Vec<Target> {
     let source = state.object(source).map_or(
@@ -296,7 +301,17 @@ pub(crate) fn legal_for(
         },
         GameObject::reference,
     );
-    legal_from(state, spec, source, &[], controller, cause, x, earlier)
+    legal_from(
+        state,
+        spec,
+        source,
+        &[],
+        controller,
+        cause,
+        x,
+        modes_by,
+        earlier,
+    )
 }
 
 /// [`legal_for`] for a source named by its reference, with the snapshots that say how objects were when they have gone:
@@ -313,10 +328,12 @@ pub(crate) fn legal_from(
     controller: PlayerId,
     cause: Option<&Cause>,
     x: Option<u32>,
+    modes_by: Option<PlayerId>,
     earlier: &[Vec<Target>],
 ) -> Vec<Target> {
     let announced = Choices {
         x,
+        modes_by: modes_by.and_then(|player| u8::try_from(player.index()).ok()),
         targets: earlier.to_vec(),
         ..Choices::default()
     };
@@ -407,6 +424,7 @@ pub(crate) fn options_for(
     can_cancel: bool,
     cause: Option<&Cause>,
     x: Option<u32>,
+    modes_by: Option<PlayerId>,
     paid: &[usize],
     way: Option<CastWay>,
     earlier: Option<&[Vec<Target>]>,
@@ -428,6 +446,7 @@ pub(crate) fn options_for(
         controller,
         cause,
         x,
+        modes_by,
         earlier.unwrap_or(&[]),
     );
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
@@ -446,6 +465,7 @@ pub(crate) fn options_for(
         );
         let announced = Choices {
             x,
+            modes_by: modes_by.and_then(|player| u8::try_from(player.index()).ok()),
             optional_costs: paid.to_vec(),
             way,
             ..Choices::default()
@@ -1065,6 +1085,7 @@ mod tests {
             0,
             &spec(json),
             true,
+            None,
             None,
             None,
             &[],

@@ -673,6 +673,7 @@ Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
+Fatal Lore
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -1943,6 +1944,7 @@ Tectonic Reformation
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Teferi's Reproach
 Tekuthal, Inquiry Dominus
 Telepathy
 Tempestra, Dame of Games
@@ -2031,6 +2033,7 @@ Time Sieve
 Time Stretch
 Time Walk
 Time Warp
+Time and Tide
 Time to Reflect
 Timeless Lotus
 Timeless Witness

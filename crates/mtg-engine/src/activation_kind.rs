@@ -129,6 +129,56 @@ pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost)
     modified_as(state, source, Some(ActivationKind::Mana), mana, Some(&[]))
 }
 
+/// The life the cost modifiers in play add to each activation of a mana ability of `source` ("Mana abilities of this land
+/// cost an additional 1 life to activate.", CR 601.2f, 605.3a).
+pub(crate) fn r5514_mana_life(state: &GameState, source: ObjectId) -> u32 {
+    if !state.possible.costs {
+        return 0;
+    }
+    let Some(target) = state
+        .object(source)
+        .map(crate::object::GameObject::reference)
+    else {
+        return 0;
+    };
+    let mut life = 0u32;
+    for id in state.zone(Zone::Battlefield).iter().copied() {
+        let Some(holder) = state.object(id) else {
+            continue;
+        };
+        let controller = controller_of_object(state, holder);
+        if !state.is_alive(controller) {
+            continue;
+        }
+        for (_, ability) in abilities_of(state, id) {
+            let Ability::CostModifier {
+                applies_to,
+                change: CostChange::Increase,
+                per,
+                condition,
+                activating: Some(ActivationKind::Mana),
+                life: added @ 1..,
+                ..
+            } = &*ability
+            else {
+                continue;
+            };
+            let scope = Scope::announcing(state, controller, holder.reference());
+            if !scope.selects(applies_to, target).unwrap_or(false)
+                || condition
+                    .as_ref()
+                    .is_some_and(|held| !scope.holds(held).unwrap_or(false))
+            {
+                continue;
+            }
+            let times =
+                u32::try_from(scope.amount(per).unwrap_or(0).clamp(0, MOST_TIMES)).unwrap_or(0);
+            life = life.saturating_add(added.saturating_mul(times));
+        }
+    }
+    life
+}
+
 /// The mana of unlocking a door of the Room `room` with the changes of unlock costs in play applied ("Unlock costs you
 /// pay cost {1} less").
 pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: ManaCost) -> ManaCost {

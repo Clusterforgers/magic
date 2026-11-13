@@ -1,0 +1,12 @@
+{
+  "oracle_id": "b6fee94a-30b8-415e-8567-ad03ccb1d658",
+  "name": "Time and Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time and Tide",
+      "oracle_fingerprint": "e5067f91214ac9858a856d31203aab61",
+      "abilities": [{ "Spell": { "effects": ["Rephase"] } }]
+    }
+  ]
+}

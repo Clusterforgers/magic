@@ -419,6 +419,7 @@ fn targets_remain(ctx: &Ctx<'_>, choices: &Choices) -> bool {
                 false,
                 ctx.cause(),
                 choices.x,
+                choices.modes_chooser(),
                 &choices.optional_costs,
                 choices.way,
                 None,

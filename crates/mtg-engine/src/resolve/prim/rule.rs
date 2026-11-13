@@ -1,7 +1,7 @@
 //! `Effect::Rule`: a rule of the game changes for a while (CR 611).
 
 use mtg_cards::effect::Effect;
-use mtg_cards::modify::GameRule;
+use mtg_cards::modify::{Duration, GameRule};
 use mtg_cards::refs::Pred;
 use mtg_core::ids::EffectId;
 use serde_json::Value;
@@ -19,6 +19,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("Rule"));
     };
     let state = cx.state();
+    // "Until that player's next turn": the rule lasts as one until that player's own next turn would.
+    let (duration, controller) = if *duration == Duration::UntilTheirNextTurn {
+        let who = mtg_cards::r5514_players::r5514_rule_player(rule).ok_or(
+            ResolveError::Unsupported("Rule.Duration.UntilTheirNextTurn"),
+        )?;
+        let Some(player) = cx.scope.players(who)?.first().copied() else {
+            return Ok(Run::events(Vec::new()));
+        };
+        (&Duration::UntilYourNextTurn, player)
+    } else {
+        (duration, cx.controller())
+    };
     let rule = lower_rule(&cx.scope, &fixed_choices(&cx.scope, rule))?;
     if names_nothing(&rule) {
         return Ok(Run::events(Vec::new()));
@@ -29,8 +41,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             rule,
             duration: duration.clone(),
             source: Some(cx.scope.source),
-            controller: cx.controller(),
-            turn: crate::effects::began_turn(state, duration, cx.controller()),
+            controller,
+            turn: crate::effects::began_turn(state, duration, controller),
         }),
     }]))
 }

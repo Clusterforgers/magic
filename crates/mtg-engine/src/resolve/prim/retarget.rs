@@ -106,6 +106,7 @@ pub(super) fn ask(
             judged,
             original.cause,
             original.choices.x,
+            original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
         if way == Way::Another {
@@ -239,6 +240,7 @@ pub(super) fn one_to(
             judged,
             original.cause,
             original.choices.x,
+            original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
         if legal.contains(&onto) {

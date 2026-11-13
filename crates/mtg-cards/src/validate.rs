@@ -43,6 +43,9 @@ const COUNTER_DURATION_ONLY: &str =
     "only a continuous effect lasts for as long as the permanents it names have a counter";
 
 /// Only a continuous effect ends when its controller pays to end it.
+/// Only a rule about one player lasts until that player's next turn.
+const R5514_THEIR_TURN_ONE_PLAYER: &str = "only a rule that a player has protection or that their life total can't change lasts until that player's next turn";
+
 const E15G_PAID_ONLY: &str = "only a continuous effect lasts until its controller pays to end it";
 
 /// An exchange of control names its two permanents with one reference or two.
@@ -612,6 +615,7 @@ impl<'a> Walker<'a> {
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
+            | Ref::ModesChooser
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
@@ -1619,8 +1623,8 @@ impl<'a> Walker<'a> {
         (self.x_free, self.x_now) = (saved, saved_now);
     }
 
-    /// The cost of an `Effect::Pay`: life or damage of a counted amount ("pay that much life", "have ~ deal that much
-    /// damage to them") and a counted draw the controller
+    /// The cost of an `Effect::Pay`: life, energy or damage of a counted amount ("pay that much life", "pay an amount of
+    /// {E} equal to target nonland permanent's mana value", "have ~ deal that much damage to them") and a counted draw the controller
     /// makes ("you may draw cards equal to its power") are counted as the effect
     /// resolves (`Effect.Pay.Counted`), and so is a counted discard the controller pays ("you may discard your hand") or
     /// one only a condition counts ("discard two cards if you're the monarch"): the count is the controller's, so a
@@ -1632,7 +1636,9 @@ impl<'a> Walker<'a> {
             .iter()
             .enumerate()
             .filter_map(|(i, item)| match item {
-                CostItem::PayLife(amount) | CostItem::DamageToYou(amount)
+                CostItem::PayLife(amount)
+                | CostItem::DamageToYou(amount)
+                | CostItem::PayEnergy(amount)
                     if !is_fixed(item) && *amount != Amount::X =>
                 {
                     Some((i, amount))
@@ -1663,6 +1669,7 @@ impl<'a> Walker<'a> {
                 CostItem::Discard { count, .. }
                 | CostItem::Draw(count)
                 | CostItem::DamageToYou(count)
+                | CostItem::PayEnergy(count)
                 | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
@@ -1990,8 +1997,20 @@ impl<'a> Walker<'a> {
             return;
         };
         self.cost_modifier(applies_to, mana, per, condition.as_ref());
-        if *life > 0 && (*change != crate::ability::CostChange::Increase || activating.is_some()) {
-            self.problem("life is added only to the cost of spells, by an increase");
+        // "Mana abilities of this land cost an additional 1 life to activate.": life on mana abilities, with no mana.
+        let mana_life = *activating == Some(crate::ability::ActivationKind::Mana)
+            && !mana.has_x()
+            && mana.rest().symbols().is_empty();
+        if *life > 0
+            && (*change != crate::ability::CostChange::Increase
+                || activating.is_some() && !mana_life)
+        {
+            self.problem(
+                "life is added only to the cost of spells or of mana abilities, by an increase",
+            );
+        }
+        if *life > 0 && mana_life {
+            self.uses("CostModifier", "ManaLife");
         }
         let Some(targeting) = targeting else {
             return;
@@ -3300,6 +3319,7 @@ impl Walker<'_> {
             | Ref::ActivePlayer
             | Ref::Chooser
             | Ref::Asker
+            | Ref::ModesChooser
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
@@ -4519,6 +4539,9 @@ impl Walker<'_> {
                 if *duration == Duration::DuringItsControllersNextTurn {
                     w.uses("Duration", "DuringItsControllersNextTurn");
                 }
+                if *duration == Duration::UntilTheirNextTurn {
+                    w.problem(R5514_THEIR_TURN_ONE_PLAYER);
+                }
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
@@ -4534,6 +4557,9 @@ impl Walker<'_> {
                 }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.problem(E15G_PAID_ONLY);
+                }
+                if *duration == Duration::UntilTheirNextTurn {
+                    w.problem(R5514_THEIR_TURN_ONE_PLAYER);
                 }
                 w.at("what", |w| {
                     for (at, one) in what.iter().enumerate() {
@@ -4579,6 +4605,12 @@ impl Walker<'_> {
                 }
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.problem(E15G_PAID_ONLY);
+                }
+                if *duration == Duration::UntilTheirNextTurn {
+                    w.uses("Rule", "Duration.UntilTheirNextTurn");
+                    if crate::r5514_players::r5514_rule_player(rule).is_none() {
+                        w.problem(R5514_THEIR_TURN_ONE_PLAYER);
+                    }
                 }
                 w.rule(rule);
                 // A rule ends when the layers give its source to another player (`RuleEffect::is_active`).
@@ -4635,6 +4667,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::StillResolves
+            | Effect::Rephase
             | Effect::AddStep { .. }
             | Effect::Forget { .. }
             | Effect::DrawGame {}
@@ -7224,6 +7257,7 @@ mod tests {
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
     #[case::r306c_counted_damage_an_opponent_takes(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Pay":{"who":{"ControllerOf":{"Target":0}},"cost":[{"DamageToYou":{"Counters":{"on":"This","counter":"+1/+1"}}}],"unpaid":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}]}}"#, &["Ability.Triggered", "Cost.DamageToYou", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.Counted", "Trigger.Attacks"])]
     #[case::c6_eg_counted_life_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"Triggering"}],"paid":[{"Draw":{"count":"Triggering"}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayLife", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
+    #[case::r5514_counted_energy_in_an_effect(r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Pay":{"cost":[{"PayEnergy":"Triggering"}],"paid":[{"Draw":{}}]}}]}}"#, &["Ability.Triggered", "Amount.Triggering", "Cost.PayEnergy", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted", "Trigger.LifeGained"])]
     #[case::c6_eg_counted_life_in_a_cost(r#"{"Activated":{"cost":[{"PayLife":{"Life":"You"}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.PayLife", "Cost.PayLife.Counted.Activated", "Effect.Draw"])]
     #[case::r5g_discarding_your_hand_as_you_pay(r#"{"Spell":{"effects":[{"Pay":{"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"paid":[{"Draw":{"count":2}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Effect.Draw", "Effect.Pay", "Effect.Pay.Counted"])]
     #[case::r5g_another_player_discarding_your_hand_count(r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Pay":{"who":{"Target":0},"cost":[{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.Discard.Counted", "Effect.Draw", "Effect.Pay"])]

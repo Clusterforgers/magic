@@ -275,6 +275,7 @@ fn each_target_choices(
         player,
         None,
         original.x,
+        original.modes_chooser(),
         &original.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
     );
     let mut found = Vec::new();

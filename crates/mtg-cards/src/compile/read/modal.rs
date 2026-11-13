@@ -143,7 +143,7 @@ fn c11d_small<'a>(r: &mut Reader<'a>) -> Option<&'a str> {
 
 /// The sentences of one bullet, up to the next bullet or the end, with targets of their own and a
 /// fresh "it": nothing a mode names is known to the others.
-fn mode(r: &mut Reader<'_>) -> Option<Mode> {
+pub(super) fn mode(r: &mut Reader<'_>) -> Option<Mode> {
     let outer = (std::mem::take(&mut r.targets), r.it.take());
     let label = r.attempt(label);
     let mut effects = Vec::new();

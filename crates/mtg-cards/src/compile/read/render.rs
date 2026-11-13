@@ -608,6 +608,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r285_writers::r285_wordings(ability, &mut texts);
     super::r406_actions::r406_wordings(ability, &mut texts);
     super::r4708_actions::r4708_wordings(ability, &mut texts);
+    super::r5514_pieces::r5514_wordings(ability, &mut texts);
     super::r4708_reveal::r4708_reveal_wordings(ability, &mut texts);
     super::r303c_writers::r303c_wordings(ability, written_variants, &mut texts);
     super::r303_forms::r303_wordings(ability, &mut texts);
@@ -820,7 +821,10 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::e15a_max_speed::e15a_variants(ability, written_variants) {
         return texts;
     }
-    if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants) {
+    // The reflexive destruction of an energy payment's target is worded with the payment (`r5514_pieces`).
+    if !super::r5514_pieces::r5514_is_energy_sized(ability)
+        && let Some(texts) = super::w20b_reflexive::w20b_variants(ability, written_variants)
+    {
         return texts;
     }
     if let Some(texts) = super::e15g_licid::e15g_licid_texts(ability, written_variants) {
@@ -1254,6 +1258,17 @@ pub(super) fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Ve
         return multi::alternatives(targets, effects);
     }
     if let Some(found) = ce29_charm::ce29_joined(targets, effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_modal_texts(effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_energy_sized_sentences(targets, effects) {
+        return found;
+    }
+    if let Some(found) = super::r5514_pieces::r5514_their_turn_sentences(targets, effects, |rest| {
+        alternatives(&[], rest)
+    }) {
         return found;
     }
     if let [
@@ -3750,6 +3765,7 @@ impl Writer<'_> {
             .or_else(|| super::turns::effect_text(effect, None))
             .or_else(|| super::r376_seats::r376_reverse_text(effect))
             .or_else(|| c10_vp_planar_text(effect))
+            .or_else(|| super::r5514_pieces::r5514_effect_text(effect))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".
