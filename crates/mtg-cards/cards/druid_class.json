@@ -1,7 +1,7 @@
 {
   "oracle_id": "dcbcbf42-4654-487a-acad-21f2606d229b",
   "name": "Druid Class",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Druid Class",
@@ -33,9 +33,49 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 190, "end": 404 }
+          "Activated": {
+            "cost": "{4}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 3 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" },
+                    {
+                      "GrantAbility": {
+                        "Static": {
+                          "affected": "This",
+                          "mods": [
+                            {
+                              "SetPT": {
+                                "power": {
+                                  "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                },
+                                "toughness": {
+                                  "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

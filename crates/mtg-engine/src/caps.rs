@@ -187,6 +187,7 @@ const RUNS: &[&str] = &[
     "Cost.ExileFromHand",
     "Cost.Pick.FilterX",
     "Cost.RevealFromHand",
+    "Cost.AlikeFromHand",
     "Cost.OneOf",
     "Cost.TapPower",
     "Cost.Changed",
@@ -229,6 +230,7 @@ const RUNS: &[&str] = &[
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Discard.Random",
+    "Effect.RollDice.Highest",
     "Effect.Choose.Differ",
     "Effect.Discard.Filter",
     "Effect.Discard.Chooser",
@@ -1189,6 +1191,8 @@ mod tests {
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", true)]
     #[case::r5505_a_player_controlled_by_another("Effect.ControlPlayer.By", true)]
+    #[case::r5518_dice_keeping_the_highest("Effect.RollDice.Highest", true)]
+    #[case::r5518_alike_cards_from_hand("Cost.AlikeFromHand", true)]
     #[case::choosing_apart("Effect.Choose.Differ", true)]
     #[case::discarding_matching_cards("Effect.Discard.Filter", true)]
     #[case::discarding_cards_another_player_chooses("Effect.Discard.Chooser", true)]

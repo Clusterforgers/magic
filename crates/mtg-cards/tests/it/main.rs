@@ -111,6 +111,7 @@ mod r5513_cards;
 mod r5514_cards;
 mod r5516_cards;
 mod r5517_cards;
+mod r5518_cards;
 mod r5519_cards;
 mod r5521_cards;
 mod r5522_cards;

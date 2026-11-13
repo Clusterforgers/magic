@@ -1878,6 +1878,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
+                    | CostItem::AlikeFromHand { filter, count, .. }
                     | CostItem::ReturnToHand { filter, count }
                     | CostItem::ExilePermanents { filter, count }
                     | CostItem::Behold { filter, count, .. }
@@ -2304,6 +2305,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromGraveyard { .. }
                     | CostItem::ExileFromHand { .. }
                     | CostItem::RevealFromHand { .. }
+                    | CostItem::AlikeFromHand { .. }
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
@@ -3921,6 +3923,16 @@ impl Walker<'_> {
         if matches!(effect, Effect::ControlPlayer { by, .. } if *by != Ref::You) {
             self.uses("Effect", "ControlPlayer.By");
         }
+        // One die for each of an amount, the highest kept, is a roll only an engine that knows it runs.
+        if matches!(
+            effect,
+            Effect::RollDice {
+                highest: Some(_),
+                ..
+            }
+        ) {
+            self.uses("Effect", "RollDice.Highest");
+        }
         // A choice whose chosen objects differ in a quality needs the engine to keep them apart.
         if matches!(
             effect,
@@ -4664,9 +4676,16 @@ impl Walker<'_> {
                 dice,
                 choose,
                 plus,
+                highest,
                 results,
                 count,
             } => {
+                if let Some(highest) = highest {
+                    w.at("highest", |w| w.amount(highest));
+                    if count.is_some() {
+                        w.problem("a roll keeping the highest of one die each has no count of dice");
+                    }
+                }
                 w.roll_dice(who, *sides, (*dice, *choose), plus, results);
                 if let Some(count) = count {
                     w.uses("RollDice", "Count");
@@ -6994,6 +7013,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileFromGraveyard { .. }
                 | CostItem::ExileFromHand { .. }
                 | CostItem::RevealFromHand { .. }
+                | CostItem::AlikeFromHand { .. }
                 | CostItem::ReturnToHand { .. }
                 | CostItem::ExilePermanents { .. }
                 | CostItem::ExileSpell { .. }
@@ -7779,6 +7799,7 @@ mod tests {
     #[case::a_choice_with_different_powers(r#"{"Spell":{"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":null},"as":"chosen","differ":"DifferentPowers"}}]}}"#, &["Ability.Spell", "Effect.Choose", "Effect.Choose.Differ"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
     #[case::r5505_a_player_controlled_by_another(r#"{"Spell":{"targets":[{"what":"Player"},{"what":"Player"}],"effects":[{"ControlPlayer":{"who":{"Target":1},"by":{"Target":0}}}]}}"#, &["Ability.Spell", "Effect.ControlPlayer", "Effect.ControlPlayer.By"])]
+    #[case::r5518_dice_keeping_the_highest(r#"{"Spell":{"effects":[{"RollDice":{"sides":20,"highest":2,"results":[]}}]}}"#, &["Ability.Spell", "Effect.RollDice", "Effect.RollDice.Highest"])]
     #[case::a_discard_of_matching_cards(r#"{"Spell":{"effects":[{"Discard":{"filter":[{"Type":"Creature"}]}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Filter"])]
     #[case::a_move_to_the_hand(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
