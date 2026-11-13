@@ -503,8 +503,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     add_t17b(ability, texts);
     // dk1b
     dk1b_attached::add(ability, texts);
-    r5515_attached::r5515_add(ability, texts);
-    r5515_attached::r5515_add_enchanting(ability, texts);
+    r5515_attached::r5515_adds(ability, texts);
     // deck-auras
     // t19c
     t19c_put_many::add(ability, texts);

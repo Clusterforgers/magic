@@ -12,10 +12,16 @@ use crate::ability::Ability;
 use crate::refs::Selector;
 use serde_json::{Value, json};
 
+/// Adds the attached-to-player and enchanting wordings.
+pub(super) fn r5515_adds(ability: &Ability, texts: &mut Vec<String>) {
+    r5515_add(ability, texts);
+    r5515_add_enchanting(ability, texts);
+}
+
 /// Adds the wordings of an ability that puts a card onto the battlefield attached to a player: a target player or
 /// opponent the ability names only there, or "you". The twin puts it onto the plain battlefield (transformed and under
 /// whose control kept) and the player's words follow the destination.
-pub(super) fn r5515_add(ability: &Ability, texts: &mut Vec<String>) {
+fn r5515_add(ability: &Ability, texts: &mut Vec<String>) {
     let mut found = None;
     let Some(plain) = twin(ability, |value| {
         let body = inner_mut(value)?;
@@ -116,7 +122,7 @@ fn r5515_names_target(value: &Value) -> bool {
 }
 
 /// Adds the wordings of a spell whose one step returns Auras to the battlefield enchanting only what a selector matches.
-pub(super) fn r5515_add_enchanting(ability: &Ability, texts: &mut Vec<String>) {
+fn r5515_add_enchanting(ability: &Ability, texts: &mut Vec<String>) {
     let mut only = None;
     let Some(plain) = twin(ability, |value| {
         let body = inner_mut(value)?;

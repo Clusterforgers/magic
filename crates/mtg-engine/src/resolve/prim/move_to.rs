@@ -112,6 +112,7 @@ fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, 
 /// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
 /// it when the card comes in tapped or under a player other than its owner; an instant or a sorcery card stays where it
 /// is (CR 304.4, 307.4). A random order is not played yet; `Caps` keeps those cards out.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Move { what, to, .. } = effect else {
         return Err(wrong_effect("Move"));
@@ -337,6 +338,7 @@ fn as_entering(state: &GameState, id: ObjectId, transformed: bool) -> Cow<'_, Ga
 /// attached to a permanent its controller chooses among those it may enchant (asked unless there is one), and one with
 /// nothing to enchant stays where it is (CR 303.4g). A card put there transformed comes in with its back face up, as
 /// one `Transformed` after the move (CR 712.14a); a card that is not a transforming double-faced card stays where it is.
+#[allow(clippy::too_many_lines)]
 fn onto_battlefield(
     cx: &Cx<'_>,
     what: &Ref,

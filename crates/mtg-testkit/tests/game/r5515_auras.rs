@@ -212,7 +212,10 @@ fn r5515_radiant_grace_returns_transformed_on_the_target_opponent(
     driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
     r5515_settle(&mut driver, 1, 0)?;
     let grace = driver.id_of("Radiant Grace")?;
-    let host = driver.state().host_of(grace).expect("Radiant Grace enchants");
+    let host = driver
+        .state()
+        .host_of(grace)
+        .expect("Radiant Grace enchants");
     let name = driver.state().object(host).unwrap().card().name.clone();
     r5515_kill(&mut driver, &name)?;
     r5515_drive(&mut driver, victim, 0, |driver| {
@@ -220,7 +223,10 @@ fn r5515_radiant_grace_returns_transformed_on_the_target_opponent(
     })?;
     let restraints = driver.id_of("Radiant Restraints")?;
     assert_eq!(driver.state().player_host_of(restraints), Some(pid(victim)));
-    assert_eq!(driver.state().object(restraints).unwrap().controller(), pid(0));
+    assert_eq!(
+        driver.state().object(restraints).unwrap().controller(),
+        pid(0)
+    );
     Ok(())
 }
 
@@ -381,7 +387,9 @@ fn r5515_lynde_returns_a_curse_put_into_your_graveyard_attached_to_you(
         vec![plains()],
     )?;
     driver.concede(pid(leaving))?;
-    r5515_drive(&mut driver, 0, 0, |driver| driver.state().turn().number() == 2)?;
+    r5515_drive(&mut driver, 0, 0, |driver| {
+        driver.state().turn().number() == 2
+    })?;
     let curse = driver.id_of("Curse of Predation")?;
     assert_eq!(driver.state().player_host_of(curse), Some(pid(0)));
     Ok(())
@@ -446,7 +454,10 @@ fn r5515_curse_of_misfortunes_finds_a_curse_of_another_name(
         .iter()
         .filter(|id| driver.state().object(**id).unwrap().card().name == "Curse of Predation")
         .count();
-    assert_eq!(predations, 1, "a Curse of the same name stays in the library");
+    assert_eq!(
+        predations, 1,
+        "a Curse of the same name stays in the library"
+    );
     Ok(())
 }
 
@@ -488,7 +499,10 @@ fn r5515_ice_cave_counters_a_spell_another_player_pays_for(
         };
         driver.answer(answer)?;
     }
-    assert!(r5515_in_graveyard(&driver, 1, "Zap").is_some(), "Zap resolved or was countered");
+    assert!(
+        r5515_in_graveyard(&driver, 1, "Zap").is_some(),
+        "Zap resolved or was countered"
+    );
     let tapped = |seat: usize| {
         driver
             .state()
@@ -502,7 +516,11 @@ fn r5515_ice_cave_counters_a_spell_another_player_pays_for(
     };
     assert_eq!(tapped(1), 1, "the caster paid for Zap only");
     if let Some(seat) = payer.filter(|seat| *seat != 1) {
-        assert_eq!(tapped(seat) == 1, countered, "another player's payment counters");
+        assert_eq!(
+            tapped(seat) == 1,
+            countered,
+            "another player's payment counters"
+        );
     }
     Ok(())
 }

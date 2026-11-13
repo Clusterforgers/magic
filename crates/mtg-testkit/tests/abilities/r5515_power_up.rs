@@ -126,7 +126,10 @@ fn r5515_a_power_up_costs_less_by_the_mana_cost_the_turn_it_entered(
             object.card().name == "Mountain" && !object.permanent().unwrap().tapped()
         })
         .count();
-    assert_eq!(untapped, 0, "the reduced power-up took the last three lands");
+    assert_eq!(
+        untapped, 0,
+        "the reduced power-up took the last three lands"
+    );
     Ok(())
 }
 
