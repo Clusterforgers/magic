@@ -1,7 +1,7 @@
 {
   "oracle_id": "c6aadaf0-eb47-4228-95e2-48e3ff7b6e2f",
   "name": "Sower of Discord",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sower of Discord",
@@ -9,12 +9,15 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 51 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Players": 2 } }
+          }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 157 }
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Chosen" } } },
+            "effects": [{ "LoseLife": { "who": "R4700OtherChosen", "amount": "Triggering" } }]
           }
         }
       ]

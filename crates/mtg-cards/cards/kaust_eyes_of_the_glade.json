@@ -1,16 +1,26 @@
 {
   "oracle_id": "af78c13f-67f8-42bf-b012-482a48af4f31",
   "name": "Kaust, Eyes of the Glade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kaust, Eyes of the Glade",
       "oracle_fingerprint": "a1654d64bdc8750ae67ba4d0ae873cd9",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 111 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "DidThisTurn": { "event": "TurnedFaceUp" } }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         },
         {

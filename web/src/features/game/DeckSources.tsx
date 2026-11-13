@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { buttonVariants } from '@/components/ui/button'
 import { useDecks } from '@/features/create/useDecks'
+import type { GroupLike } from '@/features/decks/groups/grouping'
 import { useDeckList } from '@/features/decks/useDeckList'
 import type { GameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
@@ -54,8 +55,10 @@ function List({
   empty,
   note,
   colours = false,
+  groups,
   ...source
 }: Omit<SourceProps, 'format'> & {
+  groups?: readonly GroupLike[]
   label: string
   state: ListState
   entries: readonly DeckEntry[]
@@ -85,6 +88,7 @@ function List({
       onChoose={source.onChoose}
       onRetry={retry}
       autoSelect={source.active}
+      groups={groups}
     />
   )
 }
@@ -118,8 +122,15 @@ export function OwnSource({
   decks,
   precons,
   favourites,
+  groups,
   ...source
-}: SourceProps & { decks: DecksApi; precons: PreconList; favourites: ReadonlySet<string> }) {
+}: SourceProps & {
+  decks: DecksApi
+  precons: PreconList
+  favourites: ReadonlySet<string>
+  /** The account's deck groups, which the list shows its decks in. */
+  groups?: readonly GroupLike[]
+}) {
   const { state, reload } = useDeckList(decks)
   const commander = source.format === 'commander'
   const starred = useMemo(
@@ -156,6 +167,7 @@ export function OwnSource({
       state={list}
       entries={entries}
       retry={reload}
+      groups={groups}
       colours={entries.some((entry) => entry.identity !== null)}
       empty={
         total === 0 ? (

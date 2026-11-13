@@ -301,7 +301,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::AutoSkips { .. } => "auto skips",
             ServerMessage::Yielding { .. } => "yielding",
             ServerMessage::Error { .. } => "error",
-            ServerMessage::GameOver { .. } => "game over",
+            ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => "game over",
             ServerMessage::Snapshot { .. } => "snapshot",
             ServerMessage::Welcome { .. } => "welcome",
             ServerMessage::Chat { .. } => "chat",

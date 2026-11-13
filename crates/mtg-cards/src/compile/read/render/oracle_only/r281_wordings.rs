@@ -52,6 +52,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 count,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             Effect::AddMana { who, .. },
         ] if count.is_one() && *who == Ref::Bound(bind.clone()) => {

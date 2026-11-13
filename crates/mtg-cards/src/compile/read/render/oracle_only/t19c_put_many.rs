@@ -44,6 +44,7 @@ fn many_from_hand(effects: &[Effect]) -> Option<(String, Selector, Bounds)> {
                 count,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             Effect::Move {
                 what: Ref::Bound(moved),

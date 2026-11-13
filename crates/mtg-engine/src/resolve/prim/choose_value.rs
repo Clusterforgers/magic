@@ -156,6 +156,8 @@ fn name(
                 nonland: filter.0.iter().any(
                     |pred| matches!(pred, Pred::Not(inner) if **inner == Pred::Type(CardType::Land)),
                 ),
+                noncreature: false,
+                nonbasic_land: false,
             }),
         })),
         other => Err(ResolveError::Invalid(format!(

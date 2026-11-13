@@ -29,6 +29,7 @@ pub(super) fn w4a_step_texts(before: &[Effect], steps: &[Effect]) -> Vec<String>
                 bind,
                 rest_as: None,
                 count,
+                differ: None,
             },
             Effect::PutCounters {
                 on,

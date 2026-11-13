@@ -1,0 +1,12 @@
+{
+  "oracle_id": "fbb6ec41-3017-4d8d-bca0-c93040f1b291",
+  "name": "Thromok the Insatiable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thromok the Insatiable",
+      "oracle_fingerprint": "7ee0e863b78bea33521a213c9c2dfcb5",
+      "abilities": [{ "Keyword": { "Devour": { "counters": 0, "of": [{ "Type": "Creature" }] } } }]
+    }
+  ]
+}

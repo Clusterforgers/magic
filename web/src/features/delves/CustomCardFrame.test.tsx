@@ -1,7 +1,8 @@
-// Goal: a custom card shows its name, art placeholder, type line, rules text and role, and a risky relic says it helps the boss too.
-import { render, screen } from '@testing-library/react'
+// Goal: a custom card shows its name, art placeholder, type line, rules text and role, and only a risky relic wears the Dangerous badge and says it helps the boss too.
+import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { CustomCardFrame } from './CustomCardFrame'
+import { isRisky } from './model'
 import { roleLabel } from './words'
 import { CONTENT } from './fakeDelves'
 
@@ -13,6 +14,15 @@ describe('CustomCardFrame', () => {
     expect(screen.getByText(card.type_line)).toBeInTheDocument()
     expect(screen.getByText(card.text)).toBeInTheDocument()
     expect(screen.getByRole('img', { name: `Art placeholder: ${card.art}` })).toBeInTheDocument()
+    const badge = within(figure).queryByText('Dangerous')
+    if (isRisky(card)) {
+      expect(badge).toBeInTheDocument()
+      expect(figure).toHaveAttribute('data-risky', 'true')
+      expect(within(figure).getByText(roleLabel(card.role))).toBeInTheDocument()
+    } else {
+      expect(badge).toBeNull()
+      expect(figure).not.toHaveAttribute('data-risky')
+    }
   })
 
   it('says a risky relic helps the boss too', () => {

@@ -93,6 +93,7 @@ pub(crate) fn encoded(object: &GameObject, rules: Arc<Ability>) -> Arc<Ability> 
             count: Bounds::up_to(Some(Amount::one())),
             bind: CARRIER.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Encode {
             what: Ref::This,

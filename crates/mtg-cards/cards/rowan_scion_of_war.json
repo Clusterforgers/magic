@@ -1,7 +1,7 @@
 {
   "oracle_id": "333c15c6-c8fd-4cdd-89d2-06b921edeb8b",
   "name": "Rowan, Scion of War",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rowan, Scion of War",
@@ -9,9 +9,28 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 164 }
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        { "ControlledBy": "You" },
+                        { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{1}",
+                      "per": { "Tallied": { "who": "You", "what": "LifeLost" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]
