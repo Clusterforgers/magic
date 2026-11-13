@@ -1,0 +1,51 @@
+{
+  "oracle_id": "cef87a98-61a0-4a88-950f-867144f685e3",
+  "name": "Scheming Fence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scheming Fence",
+      "oracle_fingerprint": "f074fc3fa42a526b2799b64ac2e540d5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "Not": { "Type": "Land" } }] },
+                    "count": { "min": 0, "max": 1 },
+                    "as": "chosen"
+                  }
+                },
+                { "Remember": { "what": { "Bound": "chosen" }, "slot": "chosen" } }
+              ]
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Is": { "Remembered": { "on": "This", "slot": "chosen" } } }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "GainAbilitiesOf": { "Remembered": { "on": "This", "slot": "chosen" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

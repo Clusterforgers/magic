@@ -1,0 +1,266 @@
+{
+  "oracle_id": "957df9f4-73e9-4540-b838-52f65d0c62ee",
+  "name": "Hurkyl, Master Wizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurkyl, Master Wizard",
+      "oracle_fingerprint": "59539289b3ffeb9cccbbe36605366027",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Artifact" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Artifact" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "artifact"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "artifact" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Enchantment" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Enchantment" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "enchantment"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "enchantment" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Instant" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Instant" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "instant"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "instant" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Sorcery" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Sorcery" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "sorcery"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "sorcery" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Planeswalker" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "planeswalker"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "planeswalker" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Battle" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Battle" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "battle"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "battle" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "You",
+                          "filter": [{ "Not": { "Type": "Creature" } }, { "Type": "Kindred" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Kindred" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "kindred"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "kindred" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

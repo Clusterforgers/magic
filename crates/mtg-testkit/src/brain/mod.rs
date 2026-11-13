@@ -16,7 +16,9 @@ pub mod eval;
 pub mod priority;
 pub mod seen;
 pub mod sim;
+pub mod suite;
 pub mod targets;
+pub mod threat;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
@@ -337,10 +339,22 @@ impl HeuristicBot {
         }
         answers.retain(|answer| *answer != prior);
         answers.insert(0, prior.clone());
+        let seen = Seen::new(engine.state(), self.seat);
+        let window = priority::window(&seen);
+        let costs: Vec<f64> = answers
+            .iter()
+            .map(|answer| match answer {
+                Answer::Priority(play) => {
+                    priority::hold_cost(self.settings.careful, &seen, window, play)
+                }
+                _ => 0.0,
+            })
+            .collect();
         let chosen = deep::ismcts(
             engine,
             self.seat,
             &answers,
+            &costs,
             deep,
             self.settings.weights,
             key,

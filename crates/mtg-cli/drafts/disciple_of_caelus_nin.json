@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2e5440ef-6887-4c79-98f5-49db82406d71",
+  "name": "Disciple of Caelus Nin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Caelus Nin",
+      "oracle_fingerprint": "d77704fccc02b06833845ff8085fe1fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "ControlledBy": { "Bound": "player" } }] },
+                        "count": { "min": 0, "max": 5 },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "chosen" }, "as": "kept", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "PhaseOut": {
+                  "what": { "Each": [{ "Not": "This" }, { "Not": { "Is": { "Bound": "kept" } } }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "Cant": { "who": { "Each": [] }, "action": "PhaseIn" } } } }
+      ]
+    }
+  ]
+}

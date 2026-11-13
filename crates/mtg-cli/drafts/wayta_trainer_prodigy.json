@@ -1,0 +1,60 @@
+{
+  "oracle_id": "e507df33-d150-4b21-8ddb-90799f412dd8",
+  "name": "Wayta, Trainer Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wayta, Trainer Prodigy",
+      "oracle_fingerprint": "b3d96ca3534ea2a532e3249001aedd74",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{G}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{2}",
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CastTargetsOf": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  }
+                }
+              }
+            ],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Another": { "what": { "Object": [{ "Type": "Creature" }] }, "earlier": [0] }
+                }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "DealsDamage": {
+                    "source": [],
+                    "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
