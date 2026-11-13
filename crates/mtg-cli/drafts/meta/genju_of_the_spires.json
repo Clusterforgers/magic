@@ -1,5 +1,4 @@
 {
   "source": "forge",
-  "oracle_matches": true,
-  "differs": true
+  "oracle_matches": true
 }

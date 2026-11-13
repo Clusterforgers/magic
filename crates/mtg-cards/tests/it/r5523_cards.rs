@@ -105,6 +105,11 @@ fn r5523_probe() {
 /// abilities; with `R5523_RULES` (a rules file per path, same order) also the checker's verdict; a tool for new cards.
 #[test]
 fn r5523_probe_outside() {
+    if let Ok(path) = std::env::var("R5523_CANON") {
+        let card: mtg_cards::card::Card =
+            serde_json::from_str(&std::fs::read_to_string(&path).unwrap()).unwrap();
+        std::fs::write(&path, mtg_cards::load::canonical(&card)).unwrap();
+    }
     let Ok(list) = std::env::var("R5523_SCRYFALL") else {
         return;
     };
