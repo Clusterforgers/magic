@@ -981,6 +981,21 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would learn (CR 701.48); only `MayInstead` of returning the source from its owner's graveyard to the
+    /// battlefield ("As long as this card is in your graveyard, if you would learn, you may instead return this card to
+    /// the battlefield").
+    Learns {
+        /// Who would learn.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would copy a spell one or more times (CR 707.10); only `AddAmount` of a fixed number ("instead copy it
+    /// that many times plus an additional time"), and its controller may choose new targets for each added copy.
+    CopiesSpell {
+        /// Who would copy the spell.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
 }
 
 /// What a permanent's controller chooses as it enters the battlefield.
@@ -1341,6 +1356,9 @@ pub enum ReplaceBy {
     /// opponent's ("it enters under your control instead", "is created under your control instead"); only an `Enters`
     /// or a `TokenCreation` uses it, and only for what an opponent would get.
     UnderYourControl,
+    /// The controller of the replacement may have these steps happen instead of the event, which then does not happen
+    /// ("you may instead return this card to the battlefield"); only a `Learns` uses it.
+    MayInstead(Vec<crate::effect::Effect>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

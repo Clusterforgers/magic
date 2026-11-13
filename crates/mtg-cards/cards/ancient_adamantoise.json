@@ -1,7 +1,7 @@
 {
   "oracle_id": "e6873252-653a-47a8-99b7-b2ef70aa1f7f",
   "name": "Ancient Adamantoise",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ancient Adamantoise",
@@ -9,16 +9,19 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         { "Keyword": { "Ward": "{3}" } },
+        { "Rule": { "rule": "KeepsDamage" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 20, "end": 81 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 187 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Union": ["You", { "Each": [{ "ControlledBy": "You" }, "Other"] }] }
+              }
+            },
+            "by": {
+              "Instead": [
+                { "DealDamage": { "source": "Dealer", "to": "This", "amount": "Triggering" } }
+              ]
+            }
           }
         },
         {

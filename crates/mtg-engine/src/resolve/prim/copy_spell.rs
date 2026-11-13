@@ -25,6 +25,8 @@ use crate::zones::Zone;
 /// is made from the spell as it resolved (`copy_kept`).
 ///
 /// A step with k questions runs k + 1 times; every copy's questions are read from the journal in the order of the copies.
+/// A replacement that adds copies (`ReplaceWhen::CopiesSpell`) adds them after the others, each with new targets.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CopySpell {
         who,
@@ -47,6 +49,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     };
     let copies = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
+    // A copy of a spell one or more times may be replaced by more copies, each with new targets (Twinning Staff).
+    let added = if copies > 0 || each_target.is_some() {
+        crate::replace::r5516_copies::r5516_added_copies(state, player)?
+    } else {
+        0
+    };
     let spells: Vec<_> = cx
         .scope
         .live_objects(what)?
@@ -57,7 +65,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if spells.is_empty()
         && let Some(kept) = left_spell(cx, what)?
     {
-        return copy_kept(cx, player, kept, copies, *new_targets, except);
+        return copy_kept(cx, player, kept, (copies, added), *new_targets, except);
     }
     let rules =
         |spell: &crate::object::GameObject| crate::resolve::spell_ability(state, spell.id());
@@ -65,17 +73,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut planned = Vec::new();
     for spell in &spells {
         let ability = rules(spell);
+        let mut made = copies;
         if let Some(selector) = each_target {
-            if let Some((_, ability)) = &ability {
-                planned.extend(
-                    each_target_choices(cx, player, spell, ability, selector)?
-                        .into_iter()
-                        .map(|choices| (*spell, choices)),
-                );
+            let Some((_, ability)) = &ability else {
+                continue;
+            };
+            let choices = each_target_choices(cx, player, spell, ability, selector)?;
+            made = u32::try_from(choices.len()).unwrap_or(u32::MAX);
+            planned.extend(choices.into_iter().map(|choices| (*spell, choices)));
+            if made == 0 {
+                continue;
             }
-            continue;
         }
-        for _ in 0..copies {
+        let start = if each_target.is_some() { made } else { 0 };
+        let total = if made > 0 {
+            made.saturating_add(added)
+        } else {
+            0
+        };
+        for n in start..total {
+            // An added copy may always get new targets.
+            let new_targets = *new_targets || n >= made;
             // A permanent spell has no rules of a spell (an Aura asks for its host through its keyword): its copy
             // announces what it did.
             let choices = if let Some((_, ability)) = &ability {
@@ -87,7 +105,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     origin: spell.reference(),
                     cause: None,
                 };
-                match retarget(cx, player, &mut answers, original, *new_targets)? {
+                match retarget(cx, player, &mut answers, original, new_targets)? {
                     Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
                     Retargeted::Done(choices) => choices,
                 }
@@ -172,14 +190,14 @@ fn r302_uncopyable(definition: &mtg_cards::CardDefinition) -> bool {
     })
 }
 
-/// Copies of the spell a delayed ability kept, `copies` of them, made the way copies of a spell on the stack are: with the
+/// Copies of the spell a delayed ability kept, `copies` of them and `added` more with new targets, made the way copies of a spell on the stack are: with the
 /// exceptions of the effect, and the modes, X and targets of the original, which the controller may change when the effect
 /// lets them. The copy goes on top of the stack (CR 702.50a, 707.10).
 fn copy_kept(
     cx: &Cx<'_>,
     player: PlayerId,
     kept: &KeptSpell,
-    copies: u32,
+    (copies, added): (u32, u32),
     new_targets: bool,
     except: &[Modification],
 ) -> Result<Run, ResolveError> {
@@ -197,7 +215,12 @@ fn copy_kept(
         .find(|rule| matches!(***rule, Ability::Spell { .. }));
     let mut answers = cx.journal().iter();
     let mut planned = Vec::new();
-    for _ in 0..copies {
+    let total = if copies > 0 {
+        copies.saturating_add(added)
+    } else {
+        0
+    };
+    for n in 0..total {
         let choices = if let Some(ability) = ability {
             let original = Original {
                 id: kept.of.id,
@@ -207,7 +230,13 @@ fn copy_kept(
                 origin: kept.of,
                 cause: None,
             };
-            match retarget(cx, player, &mut answers, original, new_targets)? {
+            match retarget(
+                cx,
+                player,
+                &mut answers,
+                original,
+                new_targets || n >= copies,
+            )? {
                 Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
                 Retargeted::Done(choices) => choices,
             }

@@ -1693,6 +1693,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // The cleanup step reads it from the permanent (`r5516_damage`); it is no rule of the game.
+        GameRule::KeepsDamage => return Err(ResolveError::Unsupported("Rule.KeepsDamage")),
         // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
         GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),

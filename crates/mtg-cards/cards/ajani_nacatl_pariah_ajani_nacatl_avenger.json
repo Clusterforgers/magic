@@ -76,9 +76,44 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 236 }
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "Warrior"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [{ "what": "AnyTarget" }],
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "if": {
+                    "Compare": {
+                      "left": { "Count": [{ "Color": "Red" }, { "ControlledBy": "You" }, "Other"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

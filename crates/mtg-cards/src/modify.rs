@@ -1016,6 +1016,9 @@ pub enum GameRule {
     CountsAsNamed(String),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
+    /// "Damage isn't removed from ~ during cleanup steps." (CR 514.2): the cleanup step removes the damage of every other
+    /// permanent and leaves this one's; read from the permanent's abilities as the turn ends.
+    KeepsDamage,
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
     /// only what pays without mana (convoke, delve) pays its cost; no `from`.
     CantSpendMana,

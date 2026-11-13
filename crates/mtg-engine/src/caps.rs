@@ -839,6 +839,9 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Proliferates",
     "ReplaceWhen.Scries",
     "ReplaceWhen.Surveils",
+    "ReplaceWhen.CopiesSpell",
+    "ReplaceWhen.Learns",
+    "ReplaceBy.MayInstead",
     "ReplaceBy.Multiply",
     "ReplaceBy.LossTimes",
     "ReplaceBy.Add",
@@ -1030,6 +1033,7 @@ const RUNS: &[&str] = &[
     "Rule.UpToInDeck",
     "Rule.Draft",
     "Rule.CantBeCopied",
+    "Rule.KeepsDamage",
     "Rule.CountsAsNamed",
     "Rule.CantSpendMana",
     "Rule.SpendOnlyFrom",
@@ -1209,6 +1213,9 @@ mod tests {
     #[case::r5507_preventing_all_but_of_the_next("ReplaceBy.PreventAllButNext", true)]
     #[case::r4708_replacing_a_scry("ReplaceWhen.Scries", true)]
     #[case::r4708_replacing_a_surveil("ReplaceWhen.Surveils", true)]
+    #[case::r5516_replacing_a_copy_of_a_spell("ReplaceWhen.CopiesSpell", true)]
+    #[case::r5516_replacing_a_learn("ReplaceWhen.Learns", true)]
+    #[case::r5516_steps_its_controller_may_choose("ReplaceBy.MayInstead", true)]
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
@@ -1398,6 +1405,7 @@ mod tests {
     #[case::modes_with_an_extra_cost("Effect.Modal.ExtraModeCost", true)]
     #[case::r302_modes_counted_in_pawprints("Effect.Modal.Pawprints", true)]
     #[case::r302_a_spell_that_cant_be_copied("Rule.CantBeCopied", true)]
+    #[case::r5516_damage_kept_through_cleanup("Rule.KeepsDamage", true)]
     #[case::r400_a_spell_cast_without_mana("Rule.CantSpendMana", true)]
     #[case::every_mode_under_a_condition("Effect.Modal.AllIf", true)]
     #[case::voting("Effect.Vote", true)]

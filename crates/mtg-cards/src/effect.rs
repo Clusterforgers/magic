@@ -1931,6 +1931,10 @@ pub enum Effect {
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
+        /// An intervening "if" ("When you do, if you control a red permanent other than ~, ..."; CR 603.4): the trigger
+        /// triggers only when it holds after the step, and does nothing when it no longer holds as it resolves.
+        #[serde(default, rename = "if", skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
     },
     /// Does `then` if the condition holds, `otherwise` if not.
     If {

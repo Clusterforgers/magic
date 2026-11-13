@@ -162,6 +162,7 @@ mod r371_token_loyalty;
 mod r400_attack_follow;
 mod r400_no_mana;
 mod r4705_spend_from;
+mod r5516_damage;
 mod redeal;
 pub mod replace;
 pub mod resolve;

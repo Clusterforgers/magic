@@ -508,17 +508,12 @@ fn cleanup(state: &GameState) -> Progress {
     Progress::Events(end_turn(state))
 }
 
-/// Ends the turn: damage wears off, "until end of turn" effects end, and the next player's turn begins.
+/// Ends the turn: damage wears off (but on a permanent that keeps it, `r5516_damage`), "until end of turn" effects end,
+/// and the next player's turn begins.
 ///
 /// The next turn goes to the next player in turn order after the active player, who may have left the game.
 pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
-    let mut events = Vec::new();
-    let damaged = state
-        .objects()
-        .any(|o| o.permanent().is_some_and(|p| p.damage() > 0));
-    if damaged {
-        events.push(Event::DamageCleared);
-    }
+    let mut events = crate::r5516_damage::r5516_cleared(state);
     events.extend(
         state
             .effects()

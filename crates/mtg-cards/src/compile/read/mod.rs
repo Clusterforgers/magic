@@ -254,6 +254,8 @@ mod r5507_prevent;
 mod r5510_fortified;
 mod r5510_own_cost;
 mod r5510_wholes;
+mod r5516_actions;
+mod r5516_reflexive;
 mod r5517_wholes;
 mod r5519_wholes;
 mod r5a_order;
@@ -721,6 +723,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r5507_dice::r5507_read(text, kind, |twin, kind| {
         clause_with(twin, kind, x_free, own)
     }) {
+        return Some(found);
+    }
+    if let Some(found) = r5516_actions::r5516_read(text) {
         return Some(found);
     }
     if kind == ClauseKind::Static
