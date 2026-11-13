@@ -6,7 +6,7 @@ use std::sync::Arc;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
-use mtg_engine::choose::YesNoChoice;
+use mtg_engine::choose::{OptionChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice, MulliganOptions, PayChoice};
 use mtg_engine::events::Event;
 use mtg_engine::format::Commander;
@@ -84,6 +84,24 @@ fn every_seat_starts_with_40_life_and_the_commander_in_its_command_zone(
     assert_eq!((state.commander_casts(id), state.commander_tax(id)), (0, 0));
 }
 
+/// Answers each pregame commander color question with the first color; returns how many were asked.
+fn choose_commander_colors(driver: &mut Driver) -> usize {
+    let mut asked = 0;
+    while let DecisionKind::ChooseOption(options) = &driver.decision().unwrap().kind {
+        let player = driver.decision().unwrap().player;
+        assert!(
+            driver.state().zone(Zone::Hand(player)).is_empty(),
+            "the color is chosen before any hand"
+        );
+        assert!(driver.state().is_commander(options.source));
+        driver
+            .answer(Answer::ChooseOption(OptionChoice(0)))
+            .unwrap();
+        asked += 1;
+    }
+    asked
+}
+
 fn mulligan_options(driver: &Driver) -> MulliganOptions {
     match &driver.decision().unwrap().kind {
         DecisionKind::Mulligan(options) => options.clone(),
@@ -95,6 +113,9 @@ fn mulligan_options(driver: &Driver) -> MulliganOptions {
 fn the_first_mulligan_is_free_and_the_second_costs_a_card(#[values(2, 4)] seats: usize) {
     let mut driver =
         Driver::new(Engine::new(commander_fuzz_setup(seats, 3).unwrap()).unwrap()).unwrap();
+    // Seat 1's commander at seed 3 chooses a color before the game begins, ahead of the hands.
+    let asked = choose_commander_colors(&mut driver);
+    assert_eq!(asked, 1, "only the commander whose text says so asks");
     let first = mulligan_options(&driver);
     assert_eq!(first.hand.len(), 7);
     assert_eq!(
