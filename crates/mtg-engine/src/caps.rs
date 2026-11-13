@@ -513,6 +513,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Untap",
     "Rule.Cant.Crew",
     "Rule.Cant.BecomeSuspected",
+    "Rule.Cant.BecomeMonarch",
     "Rule.Cant.PhaseIn",
     "Rule.Cant.EnterBattlefield",
     "Rule.Cant.SkipStep",
