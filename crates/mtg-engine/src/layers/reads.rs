@@ -429,6 +429,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
 }
 
 /// What an amount reads when it is worked out.
+#[allow(clippy::too_many_lines)]
 pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
     match amount {
         Amount::Fixed(_)

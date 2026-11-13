@@ -1142,16 +1142,16 @@ impl Pass<'_> {
                         Some(on) => self.includes(&scope, on, *put)?,
                     }
             }
-            (ReplaceWhen::LifeGain { who }, Unit::Life { player })
-            | (ReplaceWhen::LifeLoss { who }, Unit::LifeLoss { player })
-            | (
+            (
                 ReplaceWhen::LifeLoss { who },
-                Unit::Damage {
+                Unit::LifeLoss { player }
+                | Unit::Damage {
                     target: DamageTarget::Player(player),
                     loses_life: true,
                     ..
                 },
-            )
+            ) => scope.players(who)?.contains(player),
+            (ReplaceWhen::LifeGain { who }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
