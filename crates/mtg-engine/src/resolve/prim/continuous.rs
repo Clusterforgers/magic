@@ -103,7 +103,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let state = cx.state();
     // A card in a graveyard gains a keyword while it stays there ("gains flashback until end of turn").
-    let keywords_only = mods.iter().all(|wanted| matches!(wanted, Wanted::AddKeyword(_)));
+    let keywords_only = mods
+        .iter()
+        .all(|wanted| matches!(wanted, Wanted::AddKeyword(_)));
     let named: Vec<ObjectRef> = cx
         .scope
         .live_objects(affected)?

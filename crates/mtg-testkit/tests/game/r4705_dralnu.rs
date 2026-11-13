@@ -45,7 +45,10 @@ fn tonic() -> Arc<CardDefinition> {
     )
 }
 
-fn settle(driver: &mut Driver, pick: &mut dyn FnMut(&Driver, &[mtg_core::ids::ObjectId]) -> Vec<mtg_core::ids::ObjectId>) {
+fn settle(
+    driver: &mut Driver,
+    pick: &mut dyn FnMut(&Driver, &[mtg_core::ids::ObjectId]) -> Vec<mtg_core::ids::ObjectId>,
+) {
     for _ in 0..30 {
         if driver.state().stack().is_empty() && driver.state().pending_triggers().is_empty() {
             break;
@@ -63,7 +66,11 @@ fn settle(driver: &mut Driver, pick: &mut dyn FnMut(&Driver, &[mtg_core::ids::Ob
 
 fn on_battlefield(driver: &Driver, name: &str) -> usize {
     let state = driver.state();
-    state.zone(Zone::Battlefield).iter().filter(|id| name_of(state, **id) == name).count()
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| name_of(state, **id) == name)
+        .count()
 }
 
 #[rstest]
@@ -73,7 +80,9 @@ fn damage_to_dralnu_is_that_many_sacrifices(
 ) {
     let mut own = vec![ready(corpus::card(DRALNU).unwrap()), ready(pinger(damage))];
     own.extend((0..3).map(|_| ready(island())));
-    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(0, own);
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, own);
     let scenario = (0..seats).fold(scenario, |scenario, seat| {
         scenario.library(seat, (0..10).map(|_| island()))
     });
@@ -94,7 +103,13 @@ fn damage_to_dralnu_is_that_many_sacrifices(
     assert_eq!(on_battlefield(&driver, "Island"), 3 - sacrificed.min(3));
     if damage < 4 {
         let id = driver.id_of(DRALNU).unwrap();
-        let damaged = driver.state().object(id).unwrap().permanent().unwrap().damage();
+        let damaged = driver
+            .state()
+            .object(id)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .damage();
         assert_eq!(damaged, 0, "no damage is dealt to Dralnu");
     } else {
         assert!(driver.id_of(DRALNU).is_err(), "Dralnu was sacrificed");
@@ -113,7 +128,10 @@ fn dralnu_gives_an_instant_flashback_for_its_mana_cost(#[values(2, 3, 4)] seats:
         scenario.library(seat, (0..10).map(|_| island()))
     });
     let mut driver = Driver::from_scenario(scenario).unwrap();
-    assert!(driver.begin_cast("Tonic").is_err(), "no flashback before the ability");
+    assert!(
+        driver.begin_cast("Tonic").is_err(),
+        "no flashback before the ability"
+    );
     driver.begin_activation(DRALNU).unwrap();
     let state = driver.state();
     let card = state
@@ -132,7 +150,10 @@ fn dralnu_gives_an_instant_flashback_for_its_mana_cost(#[values(2, 3, 4)] seats:
     settle(&mut driver, &mut |_, from| from.to_vec());
     assert_eq!(driver.state().player(PlayerId(0)).unwrap().life(), life + 2);
     let state = driver.state();
-    let exiled = state.zone(Zone::Exile).iter().any(|id| name_of(state, *id) == "Tonic");
+    let exiled = state
+        .zone(Zone::Exile)
+        .iter()
+        .any(|id| name_of(state, *id) == "Tonic");
     assert!(exiled, "a card cast with flashback is exiled");
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());

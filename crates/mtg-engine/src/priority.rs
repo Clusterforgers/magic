@@ -315,7 +315,8 @@ pub(crate) fn activation(
         return if some_x_has_targets(state, player, object.id(), rules, |x| {
             x == 0
                 || (*cost == LoyaltyCost::MinusX
-                    && x <= counters.saturating_add(crate::rules::loyalty_costs_more(state, player)))
+                    && x <= counters
+                        .saturating_add(crate::rules::loyalty_costs_more(state, player)))
         }) {
             Ready
         } else {

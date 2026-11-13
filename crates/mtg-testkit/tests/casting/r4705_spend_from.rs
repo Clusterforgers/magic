@@ -9,11 +9,11 @@ use std::sync::Arc;
 use mtg_cards::{AbilityDef, CardDefinition, ManaAbility};
 use mtg_core::card::CardType;
 use mtg_core::mana::ManaType;
+use mtg_engine::PresetPermanent;
 use mtg_engine::decision::{Answer, PayChoice};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{forest, island};
-use mtg_engine::PresetPermanent;
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
 

@@ -1602,7 +1602,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
         GameRule::LoyaltyAnyTime(who) => Rule::LoyaltyAnyTime(scope.players(who)?),
         GameRule::LoyaltyCostsMore { who, plus } => Rule::LoyaltyCostsMore(
-            scope.players(who)?.into_iter().map(|player| (player, *plus)).collect(),
+            scope
+                .players(who)?
+                .into_iter()
+                .map(|player| (player, *plus))
+                .collect(),
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
@@ -2300,7 +2304,12 @@ pub fn loyalty_any_time(state: &GameState, player: PlayerId) -> bool {
 
 /// The loyalty counters the loyalty abilities `player` activates cost in addition (Carth the Lion), 0 under no such rule.
 pub fn loyalty_costs_more(state: &GameState, player: PlayerId) -> u32 {
-    state.rules().loyalty_more.get(&player).copied().unwrap_or(0)
+    state
+        .rules()
+        .loyalty_more
+        .get(&player)
+        .copied()
+        .unwrap_or(0)
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

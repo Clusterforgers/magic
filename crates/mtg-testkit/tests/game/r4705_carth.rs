@@ -52,7 +52,9 @@ fn carth_adds_one_loyalty_counter_to_each_cost(
     if carth {
         own.push(ready(corpus::card("Carth the Lion").unwrap()));
     }
-    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(0, own);
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, own);
     let scenario = (0..seats).fold(scenario, |scenario, seat| {
         scenario.library(seat, (0..10).map(|_| island()))
     });

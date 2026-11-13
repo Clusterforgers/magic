@@ -30,8 +30,7 @@ pub(crate) fn r4705_pool(state: &GameState, id: ObjectId, pool: &ManaPool) -> Op
 /// Keeps only the mana abilities of sources the rule of the card `id` names, if it has one.
 pub(crate) fn r4705_sources(state: &GameState, id: ObjectId, sources: &mut Vec<ManaOption>) {
     if let Some(filter) = r4705_spend_from(state, id) {
-        sources.retain(|option| {
-            filter.holds(&crate::spend::source_kind(state, option.source.object))
-        });
+        sources
+            .retain(|option| filter.holds(&crate::spend::source_kind(state, option.source.object)));
     }
 }

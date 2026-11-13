@@ -66,7 +66,10 @@ fn the_serpent_society_ward_gives_poison_or_counters(
     }
     assert!(asked, "ward asks for its cost");
     let state = driver.state();
-    let poison = state.player(pid(1)).unwrap().counters_of(&CounterKind::Poison);
+    let poison = state
+        .player(pid(1))
+        .unwrap()
+        .counters_of(&CounterKind::Poison);
     let expected = if pays { poisoned + 5 } else { poisoned };
     assert_eq!(poison, expected);
     let society = state
@@ -79,6 +82,9 @@ fn the_serpent_society_ward_gives_poison_or_counters(
     let lost = !state.is_alive(pid(1));
     assert_eq!(lost, expected >= 10, "ten poison counters lose the game");
     if !lost {
-        assert_eq!(tapped, pays, "the ability resolves only when the cost is paid");
+        assert_eq!(
+            tapped, pays,
+            "the ability resolves only when the cost is paid"
+        );
     }
 }

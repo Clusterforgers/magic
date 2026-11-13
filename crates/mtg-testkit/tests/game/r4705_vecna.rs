@@ -31,9 +31,17 @@ fn equipping_costs_a_life_for_each_card_in_hand(
     #[values(0, 1, 4)] cards: usize,
 ) {
     let mut driver = Driver::from_scenario(table(seats, cards)).unwrap();
-    let start = driver.state().player(mtg_core::ids::PlayerId(0)).unwrap().life();
+    let start = driver
+        .state()
+        .player(mtg_core::ids::PlayerId(0))
+        .unwrap()
+        .life();
     let offered = driver.offered_abilities(HAND).unwrap();
-    assert_eq!(offered.len(), 1, "only the equip ability paid with life, with no mana");
+    assert_eq!(
+        offered.len(),
+        1,
+        "only the equip ability paid with life, with no mana"
+    );
     driver.begin_ability(HAND, offered[0]).unwrap();
     let bear = driver.target_named("Bear").unwrap();
     driver.choose_targets(&[bear]).unwrap();
@@ -44,10 +52,20 @@ fn equipping_costs_a_life_for_each_card_in_hand(
         let decision = driver.decision().unwrap().clone();
         driver.answer(Driver::passive_answer(&decision)).unwrap();
     }
-    let life = driver.state().player(mtg_core::ids::PlayerId(0)).unwrap().life();
+    let life = driver
+        .state()
+        .player(mtg_core::ids::PlayerId(0))
+        .unwrap()
+        .life();
     assert_eq!(start - life, i32::try_from(cards).unwrap());
     let hand = driver.id_of(HAND).unwrap();
-    let attached = driver.state().object(hand).unwrap().permanent().unwrap().attached_to();
+    let attached = driver
+        .state()
+        .object(hand)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .attached_to();
     assert_eq!(attached.map(|on| on.id), driver.id_of("Bear").ok());
     let replayed = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.state().state_hash());

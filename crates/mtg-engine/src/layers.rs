@@ -1012,8 +1012,10 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
         if let Selector::Objects(named) = &effect.selector {
             for reference in named {
                 if let Some(object) = state.object(reference.id).filter(|object| {
-                    matches!(object.zone(), Zone::Stack | Zone::Exile | Zone::Graveyard(_))
-                        && object.kind() != ObjectKind::Ability
+                    matches!(
+                        object.zone(),
+                        Zone::Stack | Zone::Exile | Zone::Graveyard(_)
+                    ) && object.kind() != ObjectKind::Ability
                         && object.reference() == *reference
                 }) {
                     held.entry(reference.id)

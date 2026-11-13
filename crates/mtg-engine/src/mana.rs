@@ -216,7 +216,12 @@ impl ManaPool {
     pub(crate) fn only_from(&self, keep: impl Fn(&SpendTraits) -> bool) -> ManaPool {
         let mut pool = ManaPool::default();
         for unit in self.sources().iter().filter(|unit| keep(&unit.from)) {
-            pool.add_from(unit.mana, Vec::new(), ManaLasts::default(), Some(unit.from.clone()));
+            pool.add_from(
+                unit.mana,
+                Vec::new(),
+                ManaLasts::default(),
+                Some(unit.from.clone()),
+            );
         }
         pool
     }

@@ -38,15 +38,13 @@ fn the_emblem_opens_loyalty_abilities_on_other_turns(
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] emblem: bool,
 ) {
-    let scenario = Scenario::new(seats)
-        .at(1, 0, Step::Main1)
-        .battlefield(
-            0,
-            [
-                with_counters(ready(walker()), CounterKind::Loyalty, 13),
-                attached_to(ready(corpus::card(TALENT).unwrap()), 0, 0),
-            ],
-        );
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            with_counters(ready(walker()), CounterKind::Loyalty, 13),
+            attached_to(ready(corpus::card(TALENT).unwrap()), 0, 0),
+        ],
+    );
     let scenario = (0..seats).fold(scenario, |scenario, seat| {
         scenario.library(seat, (0..10).map(|_| island()))
     });
