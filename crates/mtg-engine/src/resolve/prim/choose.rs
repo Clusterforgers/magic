@@ -140,7 +140,7 @@ fn selections(
 
 /// What `from` names for each chooser, read with `Ref::Chooser` naming them, and all of it together in the order first
 /// named; with no chooser, what it names with nobody choosing. Without `Ref::Chooser` every chooser has the same set.
-fn candidates_of(
+pub(super) fn candidates_of(
     cx: &Cx<'_>,
     from: &mtg_cards::refs::Ref,
     choosers: &[PlayerId],

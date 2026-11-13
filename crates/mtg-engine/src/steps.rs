@@ -114,6 +114,7 @@ fn untap_step(state: &GameState) -> Progress {
                     "Choose the permanents to keep tapped.".to_owned()
                 },
                 can_cancel: false,
+                total: None,
             }),
         }),
         _ => Progress::Events(events),
@@ -256,13 +257,20 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
     // "Can't draw more than one card each turn": the draws past the limit don't happen.
     let count = crate::rules::ep24_draws_left(state, player).map_or(count, |left| count.min(left));
     let library = state.zone(Zone::Library(player));
+    let bottom = crate::rules::draws_from_bottom(state, player);
     (0..count)
-        .map(|i| match library.iter().rev().nth(i) {
-            Some(object) => Event::CardDrawn {
-                player,
-                object: *object,
-            },
-            None => Event::DrewFromEmptyLibrary { player },
+        .map(|i| {
+            match if bottom {
+                library.get(i)
+            } else {
+                library.iter().rev().nth(i)
+            } {
+                Some(object) => Event::CardDrawn {
+                    player,
+                    object: *object,
+                },
+                None => Event::DrewFromEmptyLibrary { player },
+            }
         })
         .collect()
 }

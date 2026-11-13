@@ -114,6 +114,7 @@ pub(super) const fn c11e_result_text(which: DieResult) -> &'static str {
         DieResult::Only => "the result",
         DieResult::Chosen => "that result",
         DieResult::Other => "the other result",
+        DieResult::Total => "the total of those results",
     }
 }
 

@@ -1,0 +1,234 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "ActivatedLoyalty",
+      "who": "You"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": "Triggering",
+      "op": "Ge",
+      "right": 2
+     }
+    },
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Whenever you activate a loyalty ability, if you removed two or more loyalty counters to activate it, draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Nth": {
+      "event": {
+       "DiceRolled": {
+        "who": "You",
+        "each": true
+       }
+      },
+      "nth": 3
+     }
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you roll your third die each turn, put a +1/+1 counter on this creature."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "mods": [
+     {
+      "AddKeyword": "Trample"
+     }
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Tallied": {
+        "who": "You",
+        "what": "DiceRolled"
+       }
+      },
+      "op": "Ge",
+      "right": 3
+     }
+    }
+   }
+  },
+  "~ has trample as long as you've rolled three or more dice this turn."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "ChooseWithin": {
+       "who": "EachPlayer",
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Chooser"
+         }
+        ]
+       },
+       "within": {
+        "TotalPowerAtMost": 4
+       },
+       "as": "kept"
+      }
+     },
+     {
+      "Sacrifice": {
+       "who": "EachPlayer",
+       "filter": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": {
+          "Is": {
+           "Bound": "kept"
+          }
+         }
+        }
+       ],
+       "count": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "Not": {
+           "Is": {
+            "Bound": "kept"
+           }
+          }
+         }
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "RollDice": {
+       "sides": 6,
+       "dice": 2,
+       "results": []
+      }
+     },
+     {
+      "ChooseWithin": {
+       "from": {
+        "Each": [
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       },
+       "within": {
+        "TotalManaValueAtMost": {
+         "DieResult": "Total"
+        }
+       },
+       "as": "picked"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "picked"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "Exile": {
+       "what": "This"
+      }
+     }
+    ]
+   }
+  },
+  "Roll two six-sided dice. Return any number of cards with total mana value X or less from your graveyard to your hand, where X is the total of those results. Exile ~."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Did": {
+        "action": "Scried",
+        "who": "Opponents"
+       }
+      },
+      {
+       "Did": {
+        "action": "Surveilled",
+        "who": "Opponents"
+       }
+      },
+      {
+       "Did": {
+        "action": "SearchedOwnLibrary",
+        "who": "Opponents"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "DealDamage": {
+       "to": "Triggering",
+       "amount": {
+        "Stat": {
+         "of": "This",
+         "stat": "Power"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever an opponent scries, surveils, or searches their library, put a +1/+1 counter on ~. Then ~ deals damage to that player equal to its power."
+ ]
+]

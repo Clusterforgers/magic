@@ -773,6 +773,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             highest,
             results,
             natural,
+            each,
         } => {
             let (name, s) = who(by);
             let what = if !results.is_empty() {
@@ -781,6 +782,8 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 format!("a {natural}{}", numbers.join(" or "))
             } else if *highest {
                 "a die's highest natural result".to_owned()
+            } else if *each {
+                "a die".to_owned()
             } else {
                 "one or more dice".to_owned()
             };

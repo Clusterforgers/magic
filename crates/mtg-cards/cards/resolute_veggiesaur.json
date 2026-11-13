@@ -1,15 +1,37 @@
 {
   "oracle_id": "9b0607d6-1f24-441f-b310-aa2c148726a7",
   "name": "Resolute Veggiesaur",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Resolute Veggiesaur",
       "oracle_fingerprint": "998b2fb70af611df7845306052a0b29d",
       "abilities": [
-        { "Keyword": "Trample" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 8, "end": 89 } }
+          "Keyword": "Trample"
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "DiceRolled": {
+                    "who": "You",
+                    "each": true
+                  }
+                },
+                "nth": 3
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
         }
       ]
     }

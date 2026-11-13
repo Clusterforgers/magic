@@ -67,6 +67,7 @@ pub(super) fn r4708_reveals(
                                     max: 1,
                                     text: crate::wording::R4708_REVEAL_FIRST_DRAW.to_owned(),
                                     can_cancel: false,
+                                    total: None,
                                 }),
                             },
                             proposed,

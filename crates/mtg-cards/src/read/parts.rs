@@ -347,6 +347,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
+        GameRule::DrawFromBottom(who) => format!(
+            "{} draws cards from the bottom of their library rather than the top",
+            phrase::who(ctx, who)
+        ),
         GameRule::CantSearch(who) => format!("{} can't search libraries", phrase::who(ctx, who)),
         GameRule::NoMaxHandSize(who) => {
             format!("{} has no maximum hand size", phrase::who(ctx, who))

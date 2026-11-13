@@ -14,6 +14,7 @@ import {
   pressedCard,
 } from '../cardsText'
 import { CardChoices } from '../CardChoices'
+import { cardsTotalWords, fitsCardsTotal, overTotal } from '../cardsTotal'
 import { askerWords } from '../choiceText'
 import { uniqueNames } from '../combatText'
 import { awayOf, inLibrary } from '../lookText'
@@ -64,9 +65,11 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   useLayoutEffect(() => {
     latest.current = chosen
   })
-  // "With different names": a card whose name a chosen card has is closed until that card is put back.
+  // "With different names": a card whose name a chosen card has is closed until that card is put back; with a total,
+  // a card that would take the chosen ones over it is closed.
+  const cardsTotal = options.total
   const sameName = useMemo(() => {
-    const shut = new Set<ObjectId>()
+    const shut = overTotal(from, cardsTotal, chosen)
     if (options.one_per_name !== true) return shut
     const taken = new Set(chosen.map((id) => byId.get(id)?.name).filter((name) => name !== undefined))
     for (const id of from) {
@@ -74,7 +77,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
       if (!chosen.includes(id) && name !== undefined && taken.has(name)) shut.add(id)
     }
     return shut
-  }, [options.one_per_name, chosen, from, byId])
+  }, [options.one_per_name, chosen, from, byId, cardsTotal])
   const press = (id: ObjectId): void => {
     if (!fromSet.has(id) || sameName.has(id)) return
     const next = pressedCard(latest.current, id, hi)
@@ -94,7 +97,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   const first = useRef<HTMLButtonElement>(null)
   useDefaultFocus(first)
 
-  const legal = countFits(chosen.length, bounds)
+  const legal = countFits(chosen.length, bounds) && fitsCardsTotal(from, cardsTotal, chosen)
   const asker = askerWords(source?.name)
   const words = options.text ?? ''
   const text =
@@ -109,7 +112,8 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     ) : (
       cardsProgress(asker, chosen.length, bounds)
     )
-  const progress = total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : ''
+  const totalWords = cardsTotalWords(from, cardsTotal, chosen)
+  const progress = (total > 0 && hi > 0 ? ` · ${chosen.length} chosen` : '') + (totalWords === '' ? '' : ` · ${totalWords}`)
 
   return (
     <PromptLayout text={text}>

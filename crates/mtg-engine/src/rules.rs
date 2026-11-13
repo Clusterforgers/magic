@@ -151,6 +151,8 @@ pub enum Rule {
     },
     /// The players can't draw cards.
     CantDraw(Vec<PlayerId>),
+    /// The players draw from the bottom of their libraries.
+    DrawFromBottom(Vec<PlayerId>),
     /// The players can't search libraries.
     CantSearch(Vec<PlayerId>),
     /// The players may vote an additional time (CR 701.38d).
@@ -684,6 +686,7 @@ pub(crate) struct RulesInForce {
     no_life_change: BTreeSet<PlayerId>,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
+    draw_bottom: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
@@ -1107,6 +1110,7 @@ impl RulesInForce {
                 .player_keywords
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
             Rule::CantDraw(players) => self.no_draw.extend(players),
+            Rule::DrawFromBottom(players) => self.draw_bottom.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::ManaProduced { what, who, change } => {
                 if let Some(source) = source {
@@ -1484,6 +1488,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             keyword: keyword.clone(),
         },
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
+        GameRule::DrawFromBottom(who) => Rule::DrawFromBottom(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::ManaProduced { what, who, change } => Rule::ManaProduced {
             what: what.clone(),
@@ -1718,6 +1723,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CantDraw(players)
+        | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
         | Rule::VoteAgain(players)
         | Rule::ExtraVote(players)
@@ -1899,6 +1905,7 @@ static NONE: RulesInForce = RulesInForce {
     no_life_change: BTreeSet::new(),
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
+    draw_bottom: BTreeSet::new(),
     no_search: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
@@ -2309,6 +2316,11 @@ pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
 pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
+}
+
+/// Whether `player` draws from the bottom of their library: the one place a draw reads this rule.
+pub(crate) fn draws_from_bottom(state: &GameState, player: PlayerId) -> bool {
+    state.rules().draw_bottom.contains(&player)
 }
 
 /// Whether `player` skips their draw step: the one place the turn's steps read this rule.

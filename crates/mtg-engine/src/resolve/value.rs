@@ -548,6 +548,7 @@ impl<'a> Scope<'a> {
             | TurnTally::NonlandPermanentsLeft
             | TurnTally::CreaturesLeftUnder
             | TurnTally::SpellsWarped
+            | TurnTally::DiceRolled
             | TurnTally::CardsExiled
             | TurnTally::PermanentsToHand
             | TurnTally::CardsGravedNotFromBattlefield
@@ -565,6 +566,7 @@ impl<'a> Scope<'a> {
                     TurnTally::NonlandPermanentsLeft => Tally::NonlandLeft,
                     TurnTally::CreaturesLeftUnder => Tally::CreaturesLeftUnder,
                     TurnTally::SpellsWarped => Tally::Warped,
+                    TurnTally::DiceRolled => Tally::R5508DiceRolled,
                     TurnTally::PermanentsLeftUnder => Tally::PermanentsLeftUnder,
                     TurnTally::CardsLeftGraveyard => Tally::W21aLeftGraveyard,
                     TurnTally::LifeGainedTotal => Tally::GainedTotal,
@@ -2734,13 +2736,17 @@ impl<'a> Scope<'a> {
     }
 
     /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
-    /// logs last) or the one before it (the other result); zero outside a resolution or before a roll.
+    /// logs last) or the one before it (the other result), or every die of the resolution added up (the total); zero
+    /// outside a resolution or before a roll.
     fn c11e_die_result(&self, which: DieResult) -> i64 {
         let rolled = self
             .state
             .resolving
             .as_ref()
             .map_or(&[][..], |resolving| &resolving.rolled[..]);
+        if which == DieResult::Total {
+            return rolled.iter().map(|result| i64::from(*result)).sum();
+        }
         let back = usize::from(which == DieResult::Other);
         rolled
             .len()

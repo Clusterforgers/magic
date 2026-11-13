@@ -770,6 +770,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PayLifeOrTapped(_)
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
+        | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -2282,7 +2283,10 @@ impl Pass<'_> {
                 self.amplify(at, candidate, (object, controller), *per, applied)
             }
             ReplaceBy::RevealOrTapped(of) => {
-                self.reveal_or_tapped(at, candidate, of, (object, controller), applied)
+                self.reveal_or_tapped(at, candidate, (of, false), (object, controller), applied)
+            }
+            ReplaceBy::BeholdOrTapped(of) => {
+                self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
@@ -3073,6 +3077,7 @@ impl Pass<'_> {
                             min: 0,
                             text: "Choose permanents to sacrifice.".into(),
                             can_cancel: false,
+                            total: None,
                         }),
                     }));
                 }
@@ -3220,6 +3225,7 @@ impl Pass<'_> {
                         max: 1,
                         text: "Choose a permanent to copy.".into(),
                         can_cancel: false,
+                        total: None,
                     }),
                 }));
             }

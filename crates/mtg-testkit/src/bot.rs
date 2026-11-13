@@ -171,7 +171,7 @@ pub fn apply_answer(
         };
         let smaller = match (&decision.kind, &answer) {
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
-                if cards.len() < options.from.len() =>
+                if cards.len() < options.from.len() && options.total.is_none() =>
             {
                 Some(Answer::ChooseCards(CardsChoice(options.from.clone())))
             }
@@ -1114,7 +1114,8 @@ impl RandomBot {
         }
         let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
         let wanted = options.min as usize + self.rng.index(spread);
-        Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
+        let picked = self.subset(&options.from, wanted);
+        Answer::ChooseCards(CardsChoice(options.within_total(picked)))
     }
 
     /// Any number of the modes offered between the bounds, in no particular order, a mode more than once only where it

@@ -608,6 +608,9 @@ pub enum TriggerPattern {
         /// The results are worded as natural results ("a natural 20"); no effect modifies a roll, so it only words them.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         natural: bool,
+        /// Once for each die rolled ("whenever you roll a die"), not once for each roll.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        each: bool,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {
@@ -794,8 +797,8 @@ pub enum TriggerPattern {
     Batch(Box<TriggerPattern>),
     /// The nth time in a turn that an event happens to a player ("whenever you draw your second card each turn",
     /// "when you cast your first spell each turn"): the turn's count of that kind of event by that player, which
-    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`
-    /// or `Surveilled` of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
+    /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`,
+    /// `Surveilled` or `DiceRolled` (any result) of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
     /// from no zone) and, of an object, `Attacks`, `BecomesCrewed`, `BecomesSaddled`, `BecomesTarget`, `DealsDamage`
     /// into it and `CountersPut` on it.
     Nth {
@@ -1189,6 +1192,9 @@ pub enum ReplaceBy {
     },
     /// As the permanent enters, its controller may reveal a card from their hand that the selector names; if they don't (or can't) it enters tapped.
     RevealOrTapped(Selector),
+    /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
+    /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
+    BeholdOrTapped(Selector),
     /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
     /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
     /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").

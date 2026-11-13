@@ -518,6 +518,25 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         rest_as: Option<String>,
     },
+    /// The player chooses any number of the objects `from` names whose powers or mana values add up to at most the total
+    /// `within` names ("chooses any number of creatures they control with total power 4 or less"; a negative power
+    /// subtracts) and binds the choice, and the rest to `rest_as`. Several players choose in turn order, each from their
+    /// own when `from` names `Ref::Chooser`, and what they chose is bound together.
+    ChooseWithin {
+        /// Who chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects chosen from.
+        from: Ref,
+        /// The total: `TotalPowerAtMost` or `TotalManaValueAtMost`.
+        within: crate::refs::TargetSet,
+        /// The name the chosen objects are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the objects not chosen are bound to.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        rest_as: Option<String>,
+    },
     /// A player chooses a value that is not an object or a player and the resolution remembers it under the name:
     /// `Pred::ChosenAs` and `Amount::ChosenAs` read it. A player with one option (or none) is not asked.
     ChooseValue {
@@ -1179,6 +1198,13 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// The controller empowers Jace (Reality Fracture): with no Jace planeswalker token they control, a blue 0-loyalty
+    /// Jace planeswalker token with "[-1]: Surveil 1" and "[-3]: Draw a card" is created first; then that many loyalty
+    /// counters go on a Jace planeswalker token they control ("Empower Jace 2").
+    Empower {
+        /// How many loyalty counters.
+        count: Amount,
+    },
     /// Each player named incubates (CR 701.53): they create an Incubator token with that many +1/+1 counters on it.
     Incubate {
         /// Who incubates.
@@ -1558,7 +1584,7 @@ pub enum Effect {
         who: Ref,
         /// How many faces the die has.
         sides: u32,
-        /// How many dice are rolled ("roll two d4"); more than one only with `choose`.
+        /// How many dice are rolled ("roll two d4"); several without `choose` add up to one total ("the total of those results").
         #[serde(default = "c11e_one_die", skip_serializing_if = "c11e_is_one_die")]
         dice: u32,
         /// The roller chooses one result ("and choose one result"): `DieResult::Chosen` reads it and `DieResult::Other`

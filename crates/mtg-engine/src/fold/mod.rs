@@ -509,9 +509,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
         | Event::Sought { .. }
-        | Event::DieRolled { .. }
         | Event::CoinFlipped { .. } => {
             c11e_draw_random(state, event);
+        }
+        Event::DieRolled { player, .. } => {
+            c11e_draw_random(state, event);
+            state.tally(*player, Tally::R5508DiceRolled);
         }
         Event::Cycled { player, .. } => state.tally(*player, Tally::Cycled),
         Event::PriorityGranted { player } => {

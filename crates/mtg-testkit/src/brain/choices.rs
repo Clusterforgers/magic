@@ -172,9 +172,9 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
             Answer::Discard(least_useful(&seen, &options.hand, options.count))
         }
         DecisionKind::Scry(options) => Answer::Scry(scry(&seen, options)),
-        DecisionKind::ChooseCards(options) if !options.one_per_name => {
-            Answer::ChooseCards(CardsChoice(pick_cards(&seen, options)))
-        }
+        DecisionKind::ChooseCards(options) if !options.one_per_name => Answer::ChooseCards(
+            CardsChoice(options.within_total(pick_cards(&seen, options))),
+        ),
         DecisionKind::YesNo(options) => Answer::YesNo(YesNoChoice(!options.only_no)),
         DecisionKind::PayMana(options) if options.auto_available => {
             Answer::PayMana(PayChoice::Auto)

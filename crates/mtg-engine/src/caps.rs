@@ -328,6 +328,8 @@ const RUNS: &[&str] = &[
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
+    "Effect.Empower",
+    "Effect.ChooseWithin",
     "Effect.Incubate",
     "Effect.Conjure",
     "Effect.Seek",
@@ -446,6 +448,7 @@ const RUNS: &[&str] = &[
     "Rule.LifeTotalCantChange",
     "Rule.PlayersHave",
     "Rule.CantDraw",
+    "Rule.DrawFromBottom",
     "Rule.CantSearch",
     "Rule.VoteAgain",
     "Rule.ExtraVote",
@@ -844,6 +847,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.TappedForCounters",
     "ReplaceBy.RevealOrTapped",
+    "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
@@ -1416,6 +1420,8 @@ mod tests {
     #[case::r379_hurt_since_your_last_turn("Condition.CombatDamagedSinceLastTurn", true)]
     #[case::adventure_cards("Pred.HasAdventure", true)]
     #[case::amassing("Effect.Amass", true)]
+    #[case::r5508_empowering("Effect.Empower", true)]
+    #[case::r5508_choosing_within("Effect.ChooseWithin", true)]
     #[case::monstrosity("Effect.Monstrosity", true)]
     #[case::becoming_a_level("Effect.BecomeLevel", true)]
     #[case::adapting("Effect.Adapt", true)]

@@ -278,6 +278,7 @@ mod tests {
                     max: 1,
                     text: "Discard a card.".into(),
                     can_cancel: false,
+                    total: None,
                 }),
             }
         );

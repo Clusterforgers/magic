@@ -833,6 +833,9 @@ pub enum GameRule {
     },
     /// The players can't draw cards.
     CantDraw(Ref),
+    /// The players draw cards from the bottom of their libraries rather than the top ("You draw cards from the bottom of
+    /// your library rather than the top").
+    DrawFromBottom(Ref),
     /// The players can't search libraries.
     CantSearch(Ref),
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."

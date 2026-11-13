@@ -270,6 +270,7 @@ enum Happened {
         first: bool,
         highest: bool,
         result: u32,
+        nth: u32,
     },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
@@ -391,6 +392,7 @@ impl Happened {
             | Happened::LifeLost { nth, .. }
             | Happened::Cycled { nth, .. }
             | Happened::Surveilled { nth, .. }
+            | Happened::DiceRolled { nth, .. }
             | Happened::Tapped { nth, .. }
             | Happened::Created { nth, .. }
             | Happened::Counters { nth, .. } => Some(*nth),
@@ -795,6 +797,7 @@ fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> 
         | (Tally::Cast, Event::SpellCast { player: who, .. })
         | (Tally::Gained, Event::LifeGained { player: who, .. })
         | (Tally::Cycled, Event::Cycled { player: who, .. })
+        | (Tally::R5508DiceRolled, Event::DieRolled { player: who, .. })
         | (Tally::Surveilled, Event::Surveilled(Surveilled { player: who, .. }))
         | (Tally::L31aInvestigated, Event::Investigated { player: who })
         | (
@@ -1324,6 +1327,7 @@ fn about_players_and_permanents(
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
             result: *result,
+            nth: ordinal(look.post, look.later, *player, Tally::R5508DiceRolled),
         }),
         Event::Clashed {
             player, won: true, ..
@@ -1746,15 +1750,22 @@ fn matching_player_action(
         ) if !results.is_empty() => (by(who, player) && results.contains(result))
             .then(|| counted(state, vec![Target::Player(*player)], *result)),
         (
-            TriggerPattern::DiceRolled { who, highest, .. },
+            TriggerPattern::DiceRolled {
+                who, highest, each, ..
+            },
             Happened::DiceRolled {
                 player,
                 first,
                 highest: rolled_highest,
                 ..
             },
-        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
-            .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        ) => (by(who, player)
+            && if *highest {
+                *rolled_highest
+            } else {
+                *first || *each
+            })
+        .then(|| counted(state, vec![Target::Player(*player)], 0)),
         // A visit ability triggers for the Attraction its controller's roll lit up (CR 702.159a).
         (TriggerPattern::Visit {}, Happened::RolledToVisit { player, result }) => {
             (crate::characteristics::controller_of(state, scope.source.id) == Some(*player)

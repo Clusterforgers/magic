@@ -389,6 +389,9 @@ pub enum TurnTally {
     NonlandPermanentsLeft,
     /// The spells the player cast with warp this turn (void). Added up over the players.
     SpellsWarped,
+    /// The dice the player rolled this turn, each die once, a die rolled again counted again ("if you've rolled three or
+    /// more dice this turn"). Added up over the players.
+    DiceRolled,
     /// The creatures that left the battlefield for any zone while the players read controlled them ("for each creature that
     /// left the battlefield under your control this turn"). Added up over the players.
     CreaturesLeftUnder,
@@ -470,6 +473,8 @@ pub enum DieResult {
     Chosen,
     /// The result they did not choose ("the other result").
     Other,
+    /// Every result rolled while the spell or ability resolves, added up ("the total of those results").
+    Total,
 }
 
 /// A number, fixed or worked out when the effect runs.
