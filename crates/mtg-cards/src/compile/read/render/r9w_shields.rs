@@ -56,6 +56,19 @@ pub(super) fn chosen_source(from: &Ref) -> Option<String> {
     Some(format!("{} {source} of your choice", article(&source)))
 }
 
+/// "an unblocked creature of your choice": the creature chosen among the unblocked attacking creatures.
+fn r5507_chosen_creature(from: &Ref) -> Option<String> {
+    let Ref::Each(Selector(preds)) = from else {
+        return None;
+    };
+    (preds.as_slice()
+        == [
+            Pred::Unblocked,
+            Pred::Type(mtg_core::card::CardType::Creature),
+        ])
+    .then(|| "an unblocked creature of your choice".to_owned())
+}
+
 impl Writer<'_> {
     /// A shield of the next damage this turn, with the choice of its source before it, as one sentence, and the number of
     /// effects it covers.
@@ -76,21 +89,38 @@ impl Writer<'_> {
                         ReplaceWhen::Damage {
                             to,
                             source,
-                            combat: None,
+                            combat: combat @ (None | Some(true)),
                         },
-                    by: ReplaceBy::PreventNext,
+                    by:
+                        by @ (ReplaceBy::PreventNext
+                        | ReplaceBy::PreventHalfNext
+                        | ReplaceBy::PreventAllButNext(_)),
                     duration: Duration::UntilEndOfTurn,
                 },
                 ..,
             ] if count.is_one() && source.0 == [Pred::Is(Ref::Bound(bind.clone()))] => {
-                let chosen = chosen_source(from)?;
+                let chosen = chosen_source(from).or_else(|| r5507_chosen_creature(from))?;
                 let to = match to {
                     None => String::new(),
                     Some(to) => format!(" to {}", self.recipient(to)?),
                 };
+                let kind = if combat.is_some() {
+                    "combat damage"
+                } else {
+                    "damage"
+                };
+                let prevent = match by {
+                    ReplaceBy::PreventHalfNext => {
+                        "prevent half that damage, rounded down".to_owned()
+                    }
+                    ReplaceBy::PreventAllButNext(kept) => {
+                        format!("prevent all but {kept} of that damage")
+                    }
+                    _ => "prevent that damage".to_owned(),
+                };
                 Some((
                     vec![format!(
-                        "the next time {chosen} would deal damage{to} this turn, prevent that damage"
+                        "the next time {chosen} would deal {kind}{to} this turn, {prevent}"
                     )],
                     2,
                 ))

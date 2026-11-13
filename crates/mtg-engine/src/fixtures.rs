@@ -46,6 +46,8 @@ pub(crate) fn setup(
             emblems: Vec::new(),
             spirit: None,
             phases: Vec::new(),
+            schemes: Vec::new(),
+            leader: None,
         })
         .collect();
     GameSetup {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "84391c32-5bb7-4c36-be50-bbb5f8732156",
   "name": "Rukarumel, Biologist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Rukarumel, Biologist",
@@ -14,9 +14,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 45, "end": 270 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                },
+                { "AnyOf": [{ "Type": "Creature" }, { "In": "Battlefield" }] },
+                { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+                { "AnyOf": [{ "Subtype": "Sliver" }, { "Not": "Token" }] }
+              ]
+            },
+            "mods": ["AddChosenSubtype"]
           }
         },
         {

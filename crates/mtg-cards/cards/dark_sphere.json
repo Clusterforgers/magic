@@ -1,0 +1,37 @@
+{
+  "oracle_id": "397f53f7-f801-4442-a778-2f26ac246b62",
+  "name": "Dark Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Sphere",
+      "oracle_fingerprint": "8ccc988d2e4b95078ce0994b97137356",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventHalfNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

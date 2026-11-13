@@ -119,6 +119,9 @@ pub enum Action {
     /// A creature exploited a creature that was not a token (CR 702.110b), judged as the battlefield was before the
     /// sacrifice; `what` is the creature that exploited.
     ExploitedNontoken,
+    /// A creature exploited a creature that was not a Human (CR 702.110b), judged as the battlefield was before the
+    /// sacrifice; `what` is the creature that exploited and the amount the exploited creature's power then (none below 0).
+    ExploitedNonHuman,
     /// An opponent of a player gained control of a permanent that player controlled (CR 613.1b); the player is the one
     /// who lost control, `what` the permanent.
     ControlTakenByOpponent,
@@ -264,6 +267,10 @@ impl Action {
                 "exploit a nontoken creature",
                 "exploits a nontoken creature",
             ),
+            Action::ExploitedNonHuman => (
+                "exploit a non-Human creature",
+                "exploits a non-Human creature",
+            ),
             Action::ExploredLand => ("explore a land card", "explores a land card"),
             Action::ExploredNonland => ("explore a nonland card", "explores a nonland card"),
             Action::SolvedCase => ("solve a Case", "solves a Case"),
@@ -319,6 +326,7 @@ impl Action {
                 | Action::Sacrificed
                 | Action::Exploited
                 | Action::ExploitedNontoken
+                | Action::ExploitedNonHuman
                 | Action::LostGame
         )
     }

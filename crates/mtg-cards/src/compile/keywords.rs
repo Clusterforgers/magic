@@ -63,6 +63,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("companion", Params::Dash),
     ("ward", Params::Cost),
     ("equip", Params::Cost),
+    ("fortify", Params::Cost),
     ("reconfigure", Params::Cost),
     ("cycling", Params::Cost),
     ("basic landcycling", Params::Cost),
@@ -369,6 +370,16 @@ pub fn is_keyword_line(line: &str) -> bool {
 /// protection for each, or "Kicker {W} and/or {2}{B}" as the two kickers; `None` leaves the item to the table.
 pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
     let found = find(item)?;
+    // "Crew 1. Activate only once each turn."
+    if found.name == "crew"
+        && let Some(power) = found
+            .rest
+            .trim_end_matches('.')
+            .strip_suffix(". Activate only once each turn")
+    {
+        let power: u32 = power.parse().ok().filter(|power| *power > 0)?;
+        return Some(vec![Keyword::CrewOnce(power)]);
+    }
     if found.name == "kicker"
         && let Some((first, second)) = found.rest.split_once(" and/or ")
     {
@@ -424,6 +435,7 @@ pub fn read(item: &str) -> Option<Keyword> {
     match found.name {
         "ward" => spell_cost(rest).map(Keyword::Ward),
         "equip" => equip(rest),
+        "fortify" => cost(rest).map(Keyword::Fortify),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => kicker(rest),
@@ -1578,6 +1590,7 @@ mod tests {
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
     #[case::reconfigure("Reconfigure {2}", Keyword::Reconfigure(mana("{2}")))]
+    #[case::fortify("Fortify {3}", Keyword::Fortify(mana("{3}")))]
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
@@ -2026,8 +2039,9 @@ mod tests {
     /// The keywords a sentence names, read by the static templates and not by the keyword table ("You may exert ~ as it
     /// attacks."), and the keywords whose lines only hand-written rules hold (More Than Meets the Eye, a cumulative upkeep
     /// whose cost is an action, compleated).
-    const W9D_SENTENCES: [&str; 9] = [
+    const W9D_SENTENCES: [&str; 10] = [
         "More Than Meets the Eye",
+        "Crew once",
         "Compleated",
         "Cumulative upkeep action",
         "Exert",
@@ -2216,6 +2230,7 @@ mod tests {
             "Bands with other Dinosaurs",
             "Splice onto Arcane {1}{R}",
             "Cleave {1}{R}",
+            "Fortify {3}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

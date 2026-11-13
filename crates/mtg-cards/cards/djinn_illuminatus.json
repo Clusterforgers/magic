@@ -1,7 +1,7 @@
 {
   "oracle_id": "d7dcf1be-2779-419d-8c90-03800f9e7ea2",
   "name": "Djinn Illuminatus",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Djinn Illuminatus",
@@ -9,9 +9,16 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 51, "end": 265 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Replicate": ["OwnManaCost"] } }]
           }
         }
       ]

@@ -22,6 +22,8 @@ pub enum CardKind {
     Phase,
     /// The emblem a hero gets on becoming a Spirit.
     Haunt,
+    /// A scheme of a boss's scheme deck, set in motion as one of its turns begins.
+    Scheme,
 }
 
 /// A card that is not on Scryfall: its printed side and the abilities it has as an emblem.
@@ -128,6 +130,24 @@ pub struct Boss {
     pub line: String,
 }
 
+/// A boss's minion: a lieutenant seat on the boss's side for a big party, with another boss's deck; it falls with the
+/// boss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Minion {
+    /// Its id in the content.
+    pub id: String,
+    /// Its name.
+    pub name: String,
+    /// The boss whose deck it plays; a fight against that boss does not field it.
+    pub deck_of: String,
+    /// Its life at Heat 0.
+    pub life: i32,
+    /// Custom cards it starts with in its command zone.
+    #[serde(default)]
+    pub rules: Vec<String>,
+}
+
 /// What an event option does to the hero who takes it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Outcome {
@@ -190,6 +210,12 @@ pub struct Theme {
     pub events: Vec<EventSpec>,
     /// The cards rewards offer: a name and its colours as WUBRG letters (empty for colourless).
     pub pool: Vec<(String, String)>,
+    /// The bosses' scheme deck, shuffled for each fight.
+    #[serde(default)]
+    pub schemes: Vec<String>,
+    /// The minions a boss fields for a big party, in the order they join.
+    #[serde(default)]
+    pub minions: Vec<Minion>,
 }
 
 impl Theme {

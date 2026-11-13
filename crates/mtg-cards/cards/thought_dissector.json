@@ -1,0 +1,52 @@
+{
+  "oracle_id": "6702fcdb-0b06-4b17-966a-3c5e033c3341",
+  "name": "Thought Dissector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Dissector",
+      "oracle_fingerprint": "73ea33335fc9735a2cf18b73cea5005a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Artifact" }],
+                  "most": "X",
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    },
+                    { "Sacrifice": { "filter": ["This"] } }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "76243b38-cab1-465f-aa7d-5bc617541753",
   "name": "Herigast, Erupting Nullkite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Herigast, Erupting Nullkite",
@@ -9,16 +9,33 @@
       "abilities": [
         { "Keyword": { "Emerge": "{6}{R}{R}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 135, "end": 214 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+                    { "Draw": { "count": 3 } }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 222, "end": 305 }
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Emerge": ["OwnManaCost"] } }]
           }
         }
       ]

@@ -1,0 +1,290 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Search": {
+       "also": [
+        "Graveyard",
+        "Outside"
+       ],
+       "filter": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ],
+       "reveal": true,
+       "as": "card"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "card"
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Searched": {
+         "zone": "Library"
+        }
+       },
+       "then": [
+        {
+         "Shuffle": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, search your library, graveyard, and/or outside the game for an instant or sorcery card you own, reveal it, and put it into your hand. If you search your library this way, shuffle."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       "This"
+      ],
+      "by": "You"
+     }
+    },
+    "from": "Stack",
+    "effects": [
+     {
+      "RevealUntil": {
+       "filter": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "count": "X",
+       "as": "found",
+       "revealed_as": "revealed"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "found"
+       },
+       "to": "Graveyard"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "revealed"
+       },
+       "to": {
+        "Library": {
+         "place": "Bottom",
+         "order": "Random"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "When you cast this spell, reveal cards from the top of your library until you reveal X creature cards. Put all creature cards revealed this way into your graveyard, then put the rest on the bottom of your library in a random order."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{X}"
+     },
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "RevealUntil": {
+       "who": {
+        "Target": 0
+       },
+       "filter": [
+        {
+         "Type": "Artifact"
+        }
+       ],
+       "most": "X",
+       "as": "found",
+       "revealed_as": "revealed"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "CountOf": {
+         "subject": {
+          "Bound": "found"
+         },
+         "selector": [
+          {
+           "Type": "Artifact"
+          }
+         ],
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "Move": {
+          "what": {
+           "Bound": "found"
+          },
+          "to": {
+           "Battlefield": {
+            "under": "You"
+           }
+          }
+         }
+        },
+        {
+         "Sacrifice": {
+          "filter": [
+           "This"
+          ]
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "revealed"
+       },
+       "to": "Graveyard"
+      }
+     }
+    ]
+   }
+  },
+  "{X}, {T}: Target opponent reveals cards from the top of their library until an artifact card or X cards are revealed, whichever comes first. If an artifact card is revealed this way, put it onto the battlefield under your control and sacrifice ~. Put the rest of the revealed cards into that player's graveyard."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "LifeGain": {
+      "who": "EachPlayer",
+      "caused_own": true
+     }
+    },
+    "by": {
+     "Instead": [
+      {
+       "LoseLife": {
+        "who": "Triggering",
+        "amount": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  },
+  "If a spell or ability would cause its controller to gain life, that player loses that much life instead."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "TokenCreation": {
+         "controller": "Opponents"
+        }
+       },
+       "by": "UnderYourControl",
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, each token that would be created under an opponent's control this turn is created under your control instead."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Shield": {
+       "when": {
+        "Enters": {
+         "what": [
+          {
+           "Type": "Creature"
+          }
+         ]
+        }
+       },
+       "by": "UnderYourControl",
+       "duration": "UntilEndOfTurn"
+      }
+     },
+     {
+      "Shield": {
+       "when": {
+        "TokenCreation": {
+         "controller": "Opponents",
+         "what": [
+          {
+           "Type": "Creature"
+          }
+         ]
+        }
+       },
+       "by": "UnderYourControl",
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "If a creature would enter the battlefield under an opponent's control this turn, it enters under your control instead."
+ ]
+]

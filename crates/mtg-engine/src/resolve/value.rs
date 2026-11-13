@@ -2820,6 +2820,12 @@ impl<'a> Scope<'a> {
     /// A result of the latest roll of the resolution: the last die logged (a single die, or the one chosen, which a choice
     /// logs last) or the one before it (the other result); zero outside a resolution or before a roll.
     fn c11e_die_result(&self, which: DieResult) -> i64 {
+        if matches!(
+            which,
+            DieResult::Odd | DieResult::Even | DieResult::Total | DieResult::Times(_)
+        ) {
+            return self.kept_number(&super::prim::roll_dice::r5507_kept(which));
+        }
         let rolled = self
             .state
             .resolving
