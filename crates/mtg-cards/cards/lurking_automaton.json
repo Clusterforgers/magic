@@ -1,7 +1,7 @@
 {
   "oracle_id": "412fbf73-a471-42ad-83fe-14f19e4e9595",
   "name": "Lurking Automaton",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lurking Automaton",
@@ -9,9 +9,11 @@
       "abilities": [
         { "Rule": { "rule": { "Draft": "NoteDraftedCount" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 111, "end": 235 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "Drafted": "HighestNumber" } }
+            }
           }
         }
       ]

@@ -820,6 +820,7 @@ impl<'a> Walker<'a> {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
+            Pred::Drafted(_) => self.uses("Pred", "Drafted"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::ProtectedBy(r)
@@ -1240,6 +1241,7 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
+            Amount::Drafted(_) => self.uses("Amount", "Drafted"),
             Amount::AdditionalPaid => self.paid_amount(amount),
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
@@ -1585,6 +1587,7 @@ impl<'a> Walker<'a> {
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::FirstStep => self.uses("Condition", "FirstStep"),
+            Condition::Drafted(_) => self.uses("Condition", "Drafted"),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
@@ -6175,6 +6178,9 @@ impl Walker<'_> {
             }
             ReplaceBy::UmbraArmor if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
                 self.problem("`UmbraArmor` replaces a `Destroyed`");
+            }
+            ReplaceBy::Regenerate if !matches!(when, ReplaceWhen::Destroyed { .. }) => {
+                self.problem("`Regenerate` replaces a `Destroyed`");
             }
             ReplaceBy::AsCopy {
                 of,

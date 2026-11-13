@@ -207,6 +207,12 @@ fn draft_texts(ability: &Ability) -> Vec<String> {
         DraftRule::NoteCreatureTypes => "As you draft a creature card, you may reveal it, note its creature types, then \
                                          turn ~ face down."
             .to_owned(),
+        DraftRule::NoteCreatureName => {
+            "As you draft a creature card, you may reveal it, note its name, then turn ~ face down.".to_owned()
+        }
+        DraftRule::ChooseColorsAround => "Reveal ~ as you draft it. The player to your right chooses a color, you \
+                                          choose another color, then the player to your left chooses a third color."
+            .to_owned(),
     };
     // The newer printings say "this card" where the older ones name the card.
     let this_card = text.replace('~', "this card");

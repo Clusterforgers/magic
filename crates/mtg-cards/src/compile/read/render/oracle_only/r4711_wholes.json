@@ -1,0 +1,157 @@
+[
+ [
+  {
+   "Static": {
+    "affected": {
+     "Each": [
+      {
+       "Type": "Creature"
+      },
+      {
+       "ControlledBy": "You"
+      },
+      {
+       "AnyOf": [
+        "This",
+        {
+         "Drafted": "NotedName"
+        }
+       ]
+      }
+     ]
+    },
+    "mods": [
+     {
+      "ModifyPT": {
+       "power": 1,
+       "toughness": 1
+      }
+     },
+     {
+      "AddKeyword": "Lifelink"
+     }
+    ],
+    "condition": {
+     "Compare": {
+      "left": {
+       "Count": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        },
+        {
+         "Drafted": "NotedName"
+        }
+       ]
+      },
+      "op": "Ge",
+      "right": 1
+     }
+    }
+   }
+  },
+  "As long as you control one or more creatures with a name you noted for cards named ~, ~ and those creatures get +1/+1 and have lifelink."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MustAttackPlayers": {
+      "who": "This",
+      "players": {
+       "PlayersWhere": {
+        "who": "EachPlayer",
+        "test": {
+         "Drafted": "NotedPlayer"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "~ attacks a player you noted for cards named ~ each combat if able."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{20}",
+    "effects": [
+     {
+      "Search": {
+       "zone": "Outside",
+       "filter": [
+        {
+         "Subtype": "Eldrazi"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ],
+       "count": {
+        "min": 0,
+        "max": null
+       },
+       "as": "found"
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "found"
+       },
+       "as": "card",
+       "effects": [
+        {
+         "CastFromZone": {
+          "what": {
+           "Bound": "card"
+          },
+          "free": true
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{20}: Cast any number of Eldrazi spells from among cards you own outside the game without paying their mana costs."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Destroyed": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "by": "Regenerate"
+   }
+  },
+  "If ~ would be destroyed, regenerate it."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{1}",
+    "by": "Opponents",
+    "effects": [
+     {
+      "Rule": {
+       "rule": {
+        "CantBeRegenerated": "This"
+       },
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "{1}: ~ can't be regenerated this turn. Only your opponents may activate this ability."
+ ]
+]

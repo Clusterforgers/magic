@@ -472,11 +472,23 @@ fn texts_are_written(
     }))
 }
 
-/// Whether an opening-hand reveal of the face writes the line, which is then no line of the face's spell (Providence).
+/// Whether the ability is a rule of the booster draft, a spell line on an instant or sorcery (Garbage Fire).
+fn is_draft_rule(ability: &Ability) -> bool {
+    matches!(
+        ability,
+        Ability::Rule {
+            rule: mtg_cards::modify::GameRule::Draft(_),
+            ..
+        }
+    )
+}
+
+/// Whether an opening-hand reveal of the face writes the line, which is then no line of the face's spell (Providence) or a
+/// rule of the draft does (Garbage Fire).
 fn revealed_line(listed: &[(usize, &Ability)], face: usize, line: &str) -> bool {
     listed.iter().any(|&(other, ability)| {
         other == face
-            && matches!(ability, Ability::OpeningReveal { .. })
+            && (matches!(ability, Ability::OpeningReveal { .. }) || is_draft_rule(ability))
             && written_variants(ability)
                 .iter()
                 .any(|text| same_written_text(text, line))
@@ -565,6 +577,8 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
             Ability::Triggered { .. } => &[ClauseKind::Triggered],
             Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
+            // On an instant or sorcery a rule of the draft is a spell line (Garbage Fire).
+            _ if is_draft_rule(ability) => &[ClauseKind::Static, ClauseKind::Spell],
             Ability::Replacement { .. }
             | Ability::Rule { .. }
             | Ability::Static { .. }

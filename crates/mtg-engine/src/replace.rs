@@ -718,7 +718,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::PreventCountedAnd { most, .. } => {
             matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
         }
-        ReplaceBy::UmbraArmor => matches!(
+        ReplaceBy::UmbraArmor | ReplaceBy::Regenerate => matches!(
             unit,
             Unit::Move {
                 destroyed: true,
@@ -1222,7 +1222,12 @@ impl Pass<'_> {
             if slot.applied.contains(&origin)
                 || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
-                || (regeneration.is_some() && !matches!(by, ReplaceBy::UmbraArmor))
+                || (regeneration.is_some()
+                    && !matches!(by, ReplaceBy::UmbraArmor | ReplaceBy::Regenerate))
+                || (matches!(by, ReplaceBy::Regenerate)
+                    && destroyed(&slot.item).is_some_and(|object| {
+                        crate::rules::cant_be_regenerated(step.state, object)
+                    }))
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
@@ -2143,6 +2148,17 @@ impl Pass<'_> {
         let by = match &candidate.action {
             Action::Regenerate => {
                 self.regenerate(at, candidate);
+                return Ok(Applied::Done);
+            }
+            // A printed regeneration is not used up as a shield is.
+            Action::Replace(ReplaceBy::Regenerate) => {
+                if let Some(object) = destroyed(&self.slots[at].item) {
+                    self.slots[at] = Slot {
+                        item: Item::One(Event::Regenerated { object }),
+                        applied: vec![candidate.origin],
+                        frozen: true,
+                    };
+                }
                 return Ok(Applied::Done);
             }
             Action::Replace(by) => by,

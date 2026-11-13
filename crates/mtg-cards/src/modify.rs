@@ -1179,6 +1179,10 @@ pub enum DraftRule {
     NoteName,
     /// Reveal a drafted creature card and note its creature types, then turn this card face down.
     NoteCreatureTypes,
+    /// Reveal a drafted creature card and note its name, then turn this card face down.
+    NoteCreatureName,
+    /// Reveal it as drafted; the drafter's right neighbour, the drafter and the left neighbour each choose a color.
+    ChooseColorsAround,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

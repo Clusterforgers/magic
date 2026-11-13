@@ -231,6 +231,7 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4711_drafted;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -581,6 +582,14 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    if let Some(found) =
+        r4711_drafted::r4711_read(text, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, text))
+    {
+        return Some(found);
     }
     if let Some(found) =
         r403_hooks::r403_read(text, kind, |twin| clause_with(twin, kind, x_free, own))

@@ -1180,6 +1180,9 @@ pub enum ReplaceBy {
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,
+    /// The permanent regenerates instead of being destroyed (CR 701.19): "If ~ would be destroyed, regenerate it." Not when
+    /// it can't be regenerated; unlike a shield, it is not used up.
+    Regenerate,
     /// As the permanent enters, its controller may have it enter as a copy of a permanent on the battlefield or a card
     /// in a graveyard that matches the selector (CR 707.9, 614.1c), with these exceptions in its copiable values
     /// ("except it's an Illusion in addition to its other types").

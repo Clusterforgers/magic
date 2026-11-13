@@ -104,6 +104,13 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
     match ability {
         Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
         Ability::Triggered { .. } => &[ClauseKind::Triggered],
+        // On an instant or sorcery the reveal (Providence) and a rule of the draft (Garbage Fire) are sentences of the
+        // spell's text.
+        Ability::OpeningReveal { .. }
+        | Ability::Rule {
+            rule: crate::modify::GameRule::Draft(_),
+            ..
+        } => &[ClauseKind::Static, ClauseKind::Spell],
         Ability::Replacement { .. }
         | Ability::Rule { .. }
         | Ability::Static { .. }
@@ -118,8 +125,6 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
-        // On an instant or sorcery the reveal is a sentence of the spell's text (Providence).
-        Ability::OpeningReveal { .. } => &[ClauseKind::Static, ClauseKind::Spell],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.

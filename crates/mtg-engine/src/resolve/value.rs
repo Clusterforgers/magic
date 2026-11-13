@@ -1860,6 +1860,8 @@ impl<'a> Scope<'a> {
     ) -> Result<bool, ResolveError> {
         let state = self.state;
         Ok(match pred {
+            // A game without a draft noted nothing (the rulings of the Conspiracy cards).
+            Pred::Drafted(_) => false,
             Pred::This => reference.id == self.source.id,
             Pred::Other => reference.id != self.source.id,
             Pred::Is(named) => self.objects(named)?.contains(&reference),
@@ -2195,6 +2197,8 @@ impl<'a> Scope<'a> {
     ) -> Result<i64, ResolveError> {
         Ok(match amount {
             Amount::Fixed(n) => i64::from(*n),
+            // A noted number is 0 without a draft (Lurking Automaton, Garbage Fire rulings).
+            Amount::Drafted(_) => 0,
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
@@ -3167,6 +3171,7 @@ impl<'a> Scope<'a> {
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
+            Condition::Drafted(_) => false,
             Condition::All(all) => all.iter().try_fold(true, |held, inner| {
                 Ok::<_, ResolveError>(held && self.holds(inner)?)
             })?,

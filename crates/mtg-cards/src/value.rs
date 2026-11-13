@@ -858,6 +858,8 @@ pub enum Amount {
     /// The inner amount for the caster as the spell was cast ("for each creature you controlled as you cast this spell"); a
     /// copy that was not cast reads it now.
     CountedAsCast(Box<Amount>),
+    /// A number a booster draft noted for cards of this name; 0 in a game without a draft.
+    Drafted(crate::r4711_noted::DraftNote),
 }
 
 impl Amount {
@@ -1076,6 +1078,7 @@ enum Tagged {
     Difference(Box<Amount>, Box<Amount>),
     R374AtMost(Box<Amount>, u32),
     CountedAsCast(Box<Amount>),
+    Drafted(crate::r4711_noted::DraftNote),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -1263,6 +1266,7 @@ enum TaggedRef<'a> {
     Difference(&'a Amount, &'a Amount),
     R374AtMost(&'a Amount, u32),
     CountedAsCast(&'a Amount),
+    Drafted(crate::r4711_noted::DraftNote),
 }
 
 impl From<Tagged> for Amount {
@@ -1375,6 +1379,7 @@ impl From<Tagged> for Amount {
             Tagged::Difference(left, right) => Amount::Difference(left, right),
             Tagged::R374AtMost(inner, most) => Amount::R374AtMost(inner, most),
             Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
+            Tagged::Drafted(note) => Amount::Drafted(note),
         }
     }
 }
@@ -1563,6 +1568,7 @@ impl Serialize for Amount {
                 TaggedRef::R374AtMost(inner, *most).serialize(serializer)
             }
             Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
+            Amount::Drafted(note) => TaggedRef::Drafted(*note).serialize(serializer),
         }
     }
 }
@@ -1775,6 +1781,8 @@ pub enum Condition {
         /// The level compared to.
         level: u32,
     },
+    /// A booster draft made the note ("if you guessed correctly for a card named ~"); never true without a draft.
+    Drafted(crate::r4711_noted::DraftNote),
 }
 
 #[cfg(test)]
