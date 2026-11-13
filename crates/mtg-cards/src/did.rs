@@ -136,6 +136,9 @@ pub enum Action {
     PutArtSticker,
     /// An ability without {T} in its activation cost was activated, a mana ability included; `what` is its source.
     ActivatedWithoutTap,
+    /// The players finished a vote (CR 701.38); the amount is the number of the vote in the game, which
+    /// `Condition::VotedAs` reads.
+    FinishedVoting,
 }
 
 impl Action {
@@ -273,6 +276,7 @@ impl Action {
                 "activate an ability without {T} in its activation cost",
                 "activates an ability without {T} in its activation cost",
             ),
+            Action::FinishedVoting => ("finish voting", "finish voting"),
         }
     }
 
