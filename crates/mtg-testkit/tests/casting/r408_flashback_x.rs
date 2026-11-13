@@ -4,7 +4,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{names, pid};
-use mtg_core::Color;
+use mtg_core::color::Color;
 use mtg_engine::choose::{CardsChoice, NumberChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::zones::Zone;

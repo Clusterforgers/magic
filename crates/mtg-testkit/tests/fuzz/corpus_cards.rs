@@ -31,8 +31,6 @@ use Support::{Partial, Verified};
 /// carries none (the table resolves it).
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
-    ("Firecat Blitz", Partial, 1),
-    ("Flash of Insight", Partial, 1),
     ("Soulblast", Partial, 1),
 ];
 

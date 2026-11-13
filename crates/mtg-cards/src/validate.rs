@@ -2119,7 +2119,13 @@ impl<'a> Walker<'a> {
                     self.at("payable", |w| w.condition(payable));
                 }
             }
-            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) | Keyword::Recover(cost) => {
+            // Recover's trigger pays its cost through `Effect::Pay` by the card's owner, so a counted amount ("half
+            // your life, rounded up") is counted as that payment resolves.
+            Keyword::Recover(cost) => {
+                self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::You));
+                self.payment_of_the_source(cost);
+            }
+            Keyword::Echo(cost) | Keyword::CumulativeUpkeep(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 // Ward, echo, cumulative upkeep and recover ask the player for their cost through a payment.
                 self.payment_of_the_source(cost);
