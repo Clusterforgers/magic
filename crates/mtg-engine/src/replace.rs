@@ -3485,29 +3485,7 @@ impl Pass<'_> {
             [_] => Some(0),
             _ => match self.answer() {
                 None => {
-                    let text = match kind {
-                        EntersChoice::Color => "Choose a color.".to_owned(),
-                        EntersChoice::ColorOtherThan(other) => {
-                            format!(
-                                "Choose a color other than {}.",
-                                format!("{other:?}").to_lowercase()
-                            )
-                        }
-                        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
-                        EntersChoice::LandType => "Choose a land type.".to_owned(),
-                        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
-                        EntersChoice::Player => "Choose a player.".to_owned(),
-                        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
-                        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
-                        EntersChoice::CardName
-                        | EntersChoice::NonlandCardName
-                        | EntersChoice::NoncreatureNonlandCardName
-                        | EntersChoice::NonbasicLandCardName
-                        | EntersChoice::RevealedNonlandName
-                        | EntersChoice::CardType
-                        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
-                        EntersChoice::Number { .. } => String::new(),
-                    };
+                    let text = entering_question(kind);
                     return Ok(Asked::Ask(Decision {
                         player: controller,
                         kind: DecisionKind::ChooseOption(OptionOptions {
@@ -3619,6 +3597,33 @@ impl Pass<'_> {
                 .map(ChoiceOption::Player)
                 .collect(),
         }
+    }
+}
+
+/// The question of a choice made as a permanent enters, in words.
+fn entering_question(kind: EntersChoice) -> String {
+    match kind {
+        EntersChoice::Color => "Choose a color.".to_owned(),
+        EntersChoice::ColorOtherThan(other) => {
+            format!(
+                "Choose a color other than {}.",
+                format!("{other:?}").to_lowercase()
+            )
+        }
+        EntersChoice::CreatureType => "Choose a creature type.".to_owned(),
+        EntersChoice::LandType => "Choose a land type.".to_owned(),
+        EntersChoice::BasicLandType => "Choose a basic land type.".to_owned(),
+        EntersChoice::Player => "Choose a player.".to_owned(),
+        EntersChoice::Opponent => "Choose an opponent.".to_owned(),
+        EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
+        EntersChoice::CardName
+        | EntersChoice::NonlandCardName
+        | EntersChoice::NoncreatureNonlandCardName
+        | EntersChoice::NonbasicLandCardName
+        | EntersChoice::RevealedNonlandName
+        | EntersChoice::CardType
+        | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
+        EntersChoice::Number { .. } => String::new(),
     }
 }
 

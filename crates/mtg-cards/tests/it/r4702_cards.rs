@@ -39,9 +39,7 @@ fn r4702_printed(name: &str) -> PrintedCard {
 }
 
 fn r4702_file(name: &str) -> String {
-    let path = std::env::var("R4702_RULES")
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| common::cards_dir());
+    let path = std::env::var("R4702_RULES").map_or_else(|_| common::cards_dir(), PathBuf::from);
     std::fs::read_to_string(path.join(format!("{}.json", slug(name)))).unwrap()
 }
 

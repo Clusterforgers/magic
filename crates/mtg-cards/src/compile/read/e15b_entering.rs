@@ -172,7 +172,10 @@ mod tests {
         "Spells of the chosen type your opponents cast",
         Some("Spells your opponents cast of the chosen type")
     )]
-    #[case::named("Spells with the chosen name you cast", Some("Spells you cast with the chosen name"))]
+    #[case::named(
+        "Spells with the chosen name you cast",
+        Some("Spells you cast with the chosen name")
+    )]
     #[case::not_cast("Spells with the chosen name", None)]
     fn cast_before(#[case] subject: &str, #[case] moved: Option<&str>) {
         assert_eq!(cast_before_chosen(subject).as_deref(), moved);
