@@ -248,7 +248,12 @@ impl BotBrain {
     /// [`BotBrain::answer`] on a blocking thread in one of `thinkers`' slots, so a search never holds up the runtime
     /// and the server's searches stay capped. A brain that panics or is not done within the deadline (the wait for a
     /// slot included) is replaced and the decision gets [`safe_answer`].
-    pub async fn think(&mut self, decision: Decision, table: Option<Box<Engine>>, thinkers: &Thinkers) -> Answer {
+    pub async fn think(
+        &mut self,
+        decision: Decision,
+        table: Option<Box<Engine>>,
+        thinkers: &Thinkers,
+    ) -> Answer {
         let Some(brain) = self.brain.take() else {
             self.restart();
             return safe_answer(&decision);
@@ -278,7 +283,10 @@ impl BotBrain {
                 answer
             }
             Ok(None) => {
-                tracing::warn!(seat = self.seat.index(), "bot brain failed; it plays the safe answer");
+                tracing::warn!(
+                    seat = self.seat.index(),
+                    "bot brain failed; it plays the safe answer"
+                );
                 self.restart();
                 safe_answer(&decision)
             }
@@ -549,7 +557,7 @@ fn far_future() -> Instant {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), and the thinking slots cap the bots searching at once and shrink their budgets while others wait.
+    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once and shrink their budgets while others wait, and every level's clock ends well before the think deadline.
     #![allow(clippy::unwrap_used)]
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::PriorityOptions;
@@ -641,6 +649,22 @@ mod tests {
                 level
             }
         );
+    }
+
+    #[rstest]
+    fn every_level_is_done_well_before_the_think_deadline(
+        #[values(
+            mtg_testkit::brain::Settings::NORMAL,
+            mtg_testkit::brain::Settings::HARD,
+            mtg_testkit::brain::Settings::VERY_HARD
+        )]
+        settings: mtg_testkit::brain::Settings,
+    ) {
+        let search = settings.time.unwrap();
+        let deep = settings
+            .deep
+            .map_or(Duration::ZERO, |deep| deep.time.unwrap());
+        assert!(search + deep <= THINK_DEADLINE.mul_f64(0.75));
     }
 
     #[rstest]

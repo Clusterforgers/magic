@@ -48,6 +48,8 @@ impl Engine {
             if pool.len() < 2 {
                 continue;
             }
+            // The deal starts from the cards in id order, so the world never follows where they really lie.
+            pool.sort_unstable();
             rng.shuffle(&mut pool);
             let mut hand_ids = state.zone(hand).to_vec();
             let mut library_ids = state.zone(library).to_vec();
@@ -67,14 +69,15 @@ impl Engine {
             state.zones.set(hand, hand_ids);
             state.zones.set(library, library_ids);
         }
-        state.seed ^= GameRng::substream(seed, 0x0005_EED5).next_u64();
+        // Replaced, never mixed, so the world's random stream says nothing of the game's.
+        state.seed = GameRng::substream(seed, 0x0005_EED5).next_u64();
     }
 }
 
 #[cfg(test)]
 mod tests {
     //! Goal: a redeal keeps every zone's size and the viewer's own hand, moves only hidden cards between a player's own
-    //! hand and library, and differs with the seed.
+    //! hand and library, differs with the seed and never depends on where the hidden cards really lie.
     use std::collections::BTreeSet;
 
     use rstest::rstest;
@@ -142,5 +145,44 @@ mod tests {
             cards(&world, Zone::Library(opponent)),
             cards(&other, Zone::Library(opponent))
         );
+    }
+
+    #[rstest]
+    fn a_redeal_ignores_where_hidden_cards_really_lie(#[values(1, 2, 3, 99)] seed: u64) {
+        let engine = game();
+        let viewer = PlayerId(0);
+        let opponent = PlayerId(1);
+        let mut moved = engine.clone();
+        {
+            let state = moved.state_mut();
+            let mut hidden: Vec<ObjectId> = state
+                .zone(Zone::Hand(opponent))
+                .iter()
+                .chain(state.zone(Zone::Library(opponent)))
+                .copied()
+                .collect();
+            hidden.rotate_left(2);
+            let in_hand = state.zone(Zone::Hand(opponent)).len();
+            let library = hidden.split_off(in_hand);
+            for (zone, ids) in [
+                (Zone::Hand(opponent), &hidden),
+                (Zone::Library(opponent), &library),
+            ] {
+                for id in ids.iter() {
+                    if let Some(object) = state.objects.get_mut(id) {
+                        object.zone = zone;
+                    }
+                }
+            }
+            state.zones.set(Zone::Hand(opponent), hidden);
+            state.zones.set(Zone::Library(opponent), library);
+        }
+        let mut world = engine.clone();
+        world.redeal(viewer, seed);
+        moved.redeal(viewer, seed);
+        for zone in [Zone::Hand(opponent), Zone::Library(opponent)] {
+            assert_eq!(cards(&world, zone), cards(&moved, zone));
+        }
+        assert_eq!(world.state().seed, moved.state().seed);
     }
 }
