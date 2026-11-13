@@ -4377,7 +4377,12 @@ impl Walker<'_> {
                     w.problem("a factor below two multiplies the counters by nothing");
                 }
             }
-            Effect::PutCountersOf { on, of, each, .. } => {
+            Effect::PutCountersOf {
+                on, of, each, put, ..
+            } => {
+                if *put && *of != Ref::Triggering {
+                    w.problem("the counters a triggering event put are read from `Triggering`");
+                }
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("of", |w| w.reference(of, Kind::Either));
                 if let Some(each) = each {

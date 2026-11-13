@@ -2548,10 +2548,22 @@ impl Writer<'_> {
             }
             Effect::PutCountersOf {
                 on,
+                of: Ref::Triggering,
+                each: None,
+                one_kind: false,
+                per_kind: None,
+                put: true,
+            } => format!(
+                "put the same number and kind of counters on {}",
+                self.counter_place(on, false)?
+            ),
+            Effect::PutCountersOf {
+                on,
                 of,
                 each,
                 one_kind,
                 per_kind,
+                put: false,
             } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
             Effect::MoveCounters {
                 from,

@@ -231,6 +231,7 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4706_counters;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

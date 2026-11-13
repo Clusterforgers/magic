@@ -1425,6 +1425,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         amount,
         source: None,
         against: None,
+        counters: Vec::new(),
     }
 }
 
@@ -2132,8 +2133,13 @@ fn matching_permanents(
         ) => {
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
             let on = object(*on)?;
-            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
-                .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
+            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?).then(|| {
+                let mut found = counted(state, vec![Target::Object(on)], happened.amount());
+                if putting {
+                    found.counters = vec![(kind.clone(), delta.unsigned_abs())];
+                }
+                found
+            })
         }
         // A chapter ability triggers when lore counters take the Saga from below its number to its number or more
         // (CR 714.2b), so several chapters trigger on one change that passes them.
@@ -2562,6 +2568,12 @@ fn batch_causes<'a>(
             }
         }
         group.amount = group.amount.saturating_add(weight);
+        for (kind, count) in found.counters {
+            match group.counters.iter_mut().find(|(had, _)| *had == kind) {
+                Some((_, sum)) => *sum = sum.saturating_add(count),
+                None => group.counters.push((kind, count)),
+            }
+        }
     }
     groups.into_iter().map(|(_, cause)| cause).collect()
 }

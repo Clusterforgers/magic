@@ -3895,6 +3895,7 @@ mod tests {
             amount: 0,
             source: None,
             against: None,
+            counters: Vec::new(),
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

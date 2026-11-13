@@ -892,6 +892,10 @@ pub enum Effect {
         /// What the controller chooses for each kind in turn instead of putting it as read.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         per_kind: Option<PerKind>,
+        /// The kinds and numbers read are those the triggering event put, not those `of` holds ("put the same number and
+        /// kind of counters on ~"); `of` is then `Triggering`.
+        #[serde(default, skip_serializing_if = "is_false")]
+        put: bool,
     },
     /// Taps permanents.
     Tap {

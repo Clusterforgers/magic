@@ -265,6 +265,7 @@ Caller of the Pack
 Canoptek Tomb Sentinel
 Caprichrome
 Capsize
+Captain Marvel, Apex Avenger
 Captivating Crew
 Capture of Jingzhou
 Caravan Escort
@@ -274,6 +275,7 @@ Carnival Carnivore
 Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
+Casey Jones, Back Alley Brute
 Cast Out
 Casualties of War
 Cathars' Crusade
@@ -642,6 +644,7 @@ Evolutionary Leap
 Exalted Angel
 Excavation Technique
 Excise the Imperfect
+Exemplar of Light
 Exhumer Thrull
 Exiled Doomsayer
 Exocrine
@@ -876,6 +879,7 @@ Hama Pashar, Ruin Seeker
 Hammer Dropper
 Hangar Scrounger
 Hangarback Walker
+Hapatra, Vizier of Poisons
 Harabaz Druid
 Harmonic Sliver
 Harmonious Archon
@@ -1952,6 +1956,7 @@ Tendrils of Agony
 Tergrid's Shadow
 Termagant Swarm
 Terminus
+Terrasymbiosis
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle

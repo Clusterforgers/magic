@@ -65,6 +65,14 @@ impl Pass<'_> {
             amount,
             source,
             against: None,
+            counters: match &self.slots[at].item {
+                Item::One(Event::CountersChanged(CountersChanged { counter, delta, .. }))
+                    if *delta > 0 =>
+                {
+                    vec![(counter.clone(), delta.unsigned_abs())]
+                }
+                _ => Vec::new(),
+            },
         }
     }
 

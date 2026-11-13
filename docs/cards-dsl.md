@@ -303,6 +303,7 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
 | Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
 | Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
+| Counters a player puts | "Whenever you put one or more counters on another creature" is `Caused { by: You }` over a `Batch` of `CountersPut` with `each`, "an opponent puts" `by: Opponents`; the cause keeps the kinds and numbers put (`Cause.counters`), read by `PutCountersOf` with `put` ("put the same number and kind of counters on ~", `r4706_same_counters.rs`). |
 
 ## Validation
 
