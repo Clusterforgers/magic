@@ -4748,6 +4748,7 @@ impl Walker<'_> {
                 }
                 if matches!(rule, GameRule::KeepsDamage) {
                     w.problem("a permanent keeps its damage by a static ability of its own, not by an effect");
+                }
                 if matches!(rule, GameRule::CountsAsNamed(_)) {
                     w.problem("a card counts as another name by a static ability of its own, not by an effect");
                 }
