@@ -7,24 +7,11 @@
       "name": "Shah of Naar Isle",
       "oracle_fingerprint": "f4bd39948183e4c74d812ad13970f7df",
       "abilities": [
-        {
-          "Keyword": "Trample"
-        },
-        {
-          "Keyword": {
-            "Echo": "{0}"
-          }
-        },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Echo": "{0}" } },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "PaidEcho",
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Did": { "action": "PaidEcho", "what": ["This"] } },
             "effects": [
               {
                 "RepeatEach": {
@@ -33,28 +20,12 @@
                   "effects": [
                     {
                       "ChooseValue": {
-                        "who": {
-                          "Bound": "opponent"
-                        },
-                        "kind": {
-                          "Number": [
-                            0,
-                            3
-                          ]
-                        },
+                        "who": { "Bound": "opponent" },
+                        "kind": { "Number": [0, 3] },
                         "as": "drawn"
                       }
                     },
-                    {
-                      "Draw": {
-                        "who": {
-                          "Bound": "opponent"
-                        },
-                        "count": {
-                          "ChosenAs": "drawn"
-                        }
-                      }
-                    }
+                    { "Draw": { "who": { "Bound": "opponent" }, "count": { "ChosenAs": "drawn" } } }
                   ]
                 }
               }

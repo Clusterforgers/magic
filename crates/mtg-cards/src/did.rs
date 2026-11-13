@@ -187,6 +187,7 @@ impl Action {
 
     /// The verb phrase of the action for the subject "you" (first) and for a third person (second).
     #[must_use]
+    #[allow(clippy::too_many_lines)] // one arm for each action
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
             // `Activated` leaves out the mana abilities (CR 605.3b), so the words say so; `ActivatedAny` counts them.

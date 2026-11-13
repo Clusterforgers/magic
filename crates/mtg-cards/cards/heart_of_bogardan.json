@@ -7,36 +7,12 @@
       "name": "Heart of Bogardan",
       "oracle_fingerprint": "74a9837fcc226510144f7745e2172c50",
       "abilities": [
-        {
-          "Keyword": {
-            "CumulativeUpkeep": "{2}"
-          }
-        },
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
         {
           "Triggered": {
-            "when": {
-              "Did": {
-                "action": "DeclinedCumulativeUpkeep",
-                "what": [
-                  "This"
-                ]
-              }
-            },
+            "when": { "Did": { "action": "DeclinedCumulativeUpkeep", "what": ["This"] } },
             "targets": [
-              {
-                "what": {
-                  "Either": [
-                    "Player",
-                    {
-                      "Object": [
-                        {
-                          "Type": "Planeswalker"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              }
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
             ],
             "effects": [
               {
@@ -44,21 +20,14 @@
                   "effects": [
                     {
                       "DealDamage": {
-                        "to": {
-                          "Target": 0
-                        },
+                        "to": { "Target": 0 },
                         "amount": {
                           "Sum": [
                             {
                               "Times": {
                                 "by": 2,
                                 "of": {
-                                  "Counters": {
-                                    "on": "This",
-                                    "counter": {
-                                      "Other": "age"
-                                    }
-                                  }
+                                  "Counters": { "on": "This", "counter": { "Other": "age" } }
                                 }
                               }
                             },
@@ -71,23 +40,11 @@
                       "DealDamage": {
                         "to": {
                           "Each": [
-                            {
-                              "Type": "Creature"
-                            },
+                            { "Type": "Creature" },
                             {
                               "AnyOf": [
-                                {
-                                  "ControlledBy": {
-                                    "Target": 0
-                                  }
-                                },
-                                {
-                                  "ControlledBy": {
-                                    "ControllerOf": {
-                                      "Target": 0
-                                    }
-                                  }
-                                }
+                                { "ControlledBy": { "Target": 0 } },
+                                { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
                               ]
                             }
                           ]
@@ -98,12 +55,7 @@
                               "Times": {
                                 "by": 2,
                                 "of": {
-                                  "Counters": {
-                                    "on": "This",
-                                    "counter": {
-                                      "Other": "age"
-                                    }
-                                  }
+                                  "Counters": { "on": "This", "counter": { "Other": "age" } }
                                 }
                               }
                             },
