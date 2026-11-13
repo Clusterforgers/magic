@@ -13,7 +13,40 @@ use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, ScriptError, ready};
 use rstest::rstest;
 
-use crate::fight::{MINE, THEIRS, creature, replays, settle, table};
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_testkit::Scenario;
+use mtg_testkit::cards::{forest, mountain, plains};
+
+use crate::common::casting::lands;
+use crate::fight::{MINE, THEIRS, creature, replays, settle};
+
+/// Seat 0 holds `hand` and has `mine`, `with` and the lands of a fight table; the seat `foe` has `theirs`; every other
+/// seat has a Bear; every seat has a library.
+fn table(
+    seats: usize,
+    foe: usize,
+    hand: Vec<Arc<CardDefinition>>,
+    mine: Arc<CardDefinition>,
+    theirs: Arc<CardDefinition>,
+    with: &str,
+) -> Scenario {
+    let mut lots = lands(4, mountain);
+    lots.extend(lands(2, forest));
+    lots.extend(lands(1, plains));
+    lots.push(ready(mine));
+    lots.push(ready(card(with).unwrap()));
+    let mut scenario = Scenario::new(seats).hand(0, hand).battlefield(0, lots);
+    for seat in 0..seats {
+        scenario = scenario.library(seat, (0..8).map(|_| mtg_testkit::cards::bear()));
+    }
+    scenario = scenario.battlefield(foe, [ready(theirs)]);
+    for seat in (1..seats).filter(|seat| *seat != foe) {
+        scenario = scenario.battlefield(seat, [ready(mtg_testkit::cards::bear())]);
+    }
+    scenario
+}
 
 /// The +1/+1 counters on the permanent.
 fn r5513_counters(driver: &Driver, id: ObjectId) -> u32 {
@@ -44,8 +77,8 @@ fn r5513_a_creature_you_control_that_fights_gets_two_counters_at_the_next_end_st
             vec![card("Prey Upon").unwrap()],
             creature(MINE, power, 6, &[]),
             creature(THEIRS, 1, toughness, &[]),
+            "Foe-Razer Regent",
         )
-        .battlefield(0, [ready(card("Foe-Razer Regent").unwrap())])
     };
     let setup = game().setup().unwrap();
     let mut driver = Driver::from_scenario(game())?;
@@ -68,7 +101,7 @@ fn r5513_a_creature_you_control_that_fights_gets_two_counters_at_the_next_end_st
         0,
         "nothing before the end step"
     );
-    driver.pass_until(Step::End)?;
+    driver.idle_until(1, Step::End)?;
     settle(&mut driver)?;
     assert_eq!(r5513_counters(&driver, mine), 2);
     assert_eq!(r5513_counters(&driver, theirs), 0, "theirs is not yours");
@@ -99,8 +132,8 @@ fn r5513_neyith_draws_once_when_creatures_you_control_fight(
             vec![card("Prey Upon").unwrap()],
             creature(MINE, 2, 6, &[]),
             creature(THEIRS, 1, 6, &[]),
+            "Neyith of the Dire Hunt",
         )
-        .battlefield(0, [ready(card("Neyith of the Dire Hunt").unwrap())])
     };
     let setup = game().setup().unwrap();
     let mut driver = Driver::from_scenario(game())?;
@@ -133,13 +166,13 @@ fn r5513_neyith_draws_when_a_creature_you_control_becomes_blocked(
             Vec::new(),
             creature(MINE, 2, 6, &[]),
             creature(THEIRS, 1, 6, &[]),
+            "Neyith of the Dire Hunt",
         )
-        .battlefield(0, [ready(card("Neyith of the Dire Hunt").unwrap())])
     };
     let setup = game().setup().unwrap();
     let mut driver = Driver::from_scenario(game())?;
     let before = r5513_hand(&driver);
-    driver.pass_until(Step::DeclareAttackers)?;
+    driver.idle_until(1, Step::DeclareAttackers)?;
     driver.attack(&[(MINE, foe)])?;
     for _ in 0..40 {
         let decision = driver.decision()?.clone();

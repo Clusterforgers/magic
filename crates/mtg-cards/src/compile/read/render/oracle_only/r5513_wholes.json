@@ -4,13 +4,98 @@
    "Triggered": {
     "when": {
      "AnyOf": [
-      { "Batch": { "Did": { "action": "Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } } },
-      { "Batch": { "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } } }
+      {
+       "Batch": {
+        "Did": {
+         "action": "Fought",
+         "what": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       }
+      },
+      {
+       "Batch": {
+        "BecomesBlocked": {
+         "what": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "ControlledBy": "You"
+          }
+         ]
+        }
+       }
+      }
      ]
     },
-    "effects": [{ "Draw": {} }]
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
    }
   },
   "Whenever one or more creatures you control fight or become blocked, draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Did": {
+      "action": "Fought",
+      "what": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "Each": [
+         {
+          "Is": "Triggering"
+         }
+        ]
+       },
+       "as": "fighter"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End"
+        }
+       },
+       "effects": [
+        {
+         "PutCounters": {
+          "on": {
+           "Bound": "fighter"
+          },
+          "counter": "+1/+1",
+          "count": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a creature you control fights, put two +1/+1 counters on it at the beginning of the next end step."
  ]
 ]

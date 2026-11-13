@@ -13,10 +13,19 @@
               "AnyOf": [
                 {
                   "Batch": {
-                    "Did": { "action": "Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    "Did": {
+                      "action": "Fought",
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
                   }
                 },
-                { "Batch": { "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } } }
+                {
+                  "Batch": {
+                    "BecomesBlocked": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                }
               ]
             },
             "effects": [{ "Draw": {} }]

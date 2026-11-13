@@ -141,6 +141,11 @@ fn r5513_reads_back_whole(#[case] name: &str) {
     r#"[{ "Type": "Creature" }]"#
 )]
 #[case::regent_one_counter("Foe-Razer Regent", r#""count": 2"#, r#""count": 1"#)]
+#[case::regent_this_turn(
+    "Foe-Razer Regent",
+    r#""step": "End" }"#,
+    r#""step": "End", "whose": "You" }"#
+)]
 #[case::neyith_opponents_creatures(
     "Neyith of the Dire Hunt",
     r#""Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]"#,

@@ -24,13 +24,25 @@
         {
           "Triggered": {
             "when": {
-              "Did": { "action": "Fought", "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              "Did": {
+                "action": "Fought",
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
             },
             "effects": [
+              { "Bind": { "what": { "Each": [{ "Is": "Triggering" }] }, "as": "fighter" } },
               {
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "End" } },
-                  "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 2 } }]
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "fighter" },
+                        "counter": "+1/+1",
+                        "count": 2
+                      }
+                    }
+                  ]
                 }
               }
             ]

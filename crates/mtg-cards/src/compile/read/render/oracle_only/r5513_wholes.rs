@@ -1,4 +1,4 @@
-//! Whole abilities of the r55-13 pack whose events no renderer joins ("fight or become blocked"): the ability is matched
+//! Whole abilities of the r55-13 pack whose events no renderer joins ("fight or become blocked", a creature bound for a delayed trigger): the ability is matched
 //! whole as data and worded as the card prints it.
 
 use crate::ability::Ability;
