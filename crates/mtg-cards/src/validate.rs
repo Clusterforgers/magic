@@ -1790,6 +1790,7 @@ impl<'a> Walker<'a> {
                     | CostItem::CollectEvidence(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
@@ -2369,7 +2370,9 @@ impl<'a> Walker<'a> {
             | Keyword::Ninjutsu(cost)
             | Keyword::LevelUp(cost)
             | Keyword::Outlast(cost) => {
+                let held = std::mem::replace(&mut self.activated_cost, true);
                 self.at("cost", |w| w.cost(cost));
+                self.activated_cost = held;
             }
             // "Kicker {X}. X can't be 0.": the X is announced once the spell is kicked, and the least X with it.
             Keyword::Kicker(cost) if cost.has_x() => {
@@ -2471,7 +2474,7 @@ impl<'a> Walker<'a> {
             Keyword::Ripple(0) => self.problem("ripple needs a number of at least 1"),
             Keyword::Devour { counters, of } => {
                 if *counters == 0 {
-                    self.problem("devour needs a number of at least 1");
+                    self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
             }
@@ -4737,7 +4740,7 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
-                if matches!(rule, GameRule::CantSpendMana) {
+                if matches!(rule, GameRule::CantSpendMana | GameRule::SpendOnlyFrom(_)) {
                     w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::CantBeCopied) {
@@ -5608,6 +5611,10 @@ impl Walker<'_> {
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
             | GameRule::BoastTwice(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::LoyaltyAnyTime(who)
+            | GameRule::LoyaltyCostsMore { who, .. } => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5643,6 +5650,7 @@ impl Walker<'_> {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
                 }
             }
+            | GameRule::SpendOnlyFrom(_) => {}
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -5879,6 +5887,7 @@ impl Walker<'_> {
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
                     | GameRule::CantSpendMana
+                    | GameRule::SpendOnlyFrom(_)
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
@@ -6316,7 +6325,7 @@ impl Walker<'_> {
                     self.problem("only an `Enters` event devours");
                 }
                 if *counters == 0 {
-                    self.problem("devouring for no counters does nothing");
+                    self.uses("Keyword", "Devour.X");
                 }
                 self.at("of", |w| w.selector(of));
             }

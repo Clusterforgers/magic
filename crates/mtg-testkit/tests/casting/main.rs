@@ -199,6 +199,8 @@ mod r4701_cast_rules;
 mod r4702_names;
 mod r4703_spell_cost_per;
 mod r4709_apart_costs;
+mod r4705_spend_from;
+mod r4705_ward_poison;
 mod r4f_stack_move;
 mod r4i_may_flash;
 mod r6q1_face_down_cost;

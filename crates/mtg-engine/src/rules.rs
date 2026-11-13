@@ -232,6 +232,10 @@ pub enum Rule {
     },
     /// Creatures the players control can boast twice during each of their turns (CR 702.142c).
     BoastTwice(Vec<PlayerId>),
+    /// The players may activate loyalty abilities of planeswalkers they control whenever they could cast an instant.
+    LoyaltyAnyTime(Vec<PlayerId>),
+    /// Each player's loyalty abilities cost this many more loyalty counters to activate.
+    LoyaltyCostsMore(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -742,6 +746,10 @@ pub(crate) struct RulesInForce {
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
     /// The players whose creatures can boast twice during each of their turns.
     pub(crate) boast_twice: BTreeSet<PlayerId>,
+    /// The players who may activate loyalty abilities whenever they could cast an instant.
+    loyalty_any_time: BTreeSet<PlayerId>,
+    /// The loyalty counters each player's loyalty abilities cost in addition.
+    loyalty_more: BTreeMap<PlayerId, u32>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1194,6 +1202,13 @@ impl RulesInForce {
                     .push((controller, source, *may, *your_turns));
             }
             Rule::BoastTwice(players) => self.boast_twice.extend(players),
+            Rule::LoyaltyAnyTime(players) => self.loyalty_any_time.extend(players),
+            Rule::LoyaltyCostsMore(more) => {
+                for (player, plus) in more {
+                    let held = self.loyalty_more.entry(*player).or_insert(0);
+                    *held = held.saturating_add(*plus);
+                }
+            }
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
@@ -1634,6 +1649,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             your_turns: *your_turns,
         },
         GameRule::BoastTwice(who) => Rule::BoastTwice(scope.players(who)?),
+        GameRule::LoyaltyAnyTime(who) => Rule::LoyaltyAnyTime(scope.players(who)?),
+        GameRule::LoyaltyCostsMore { who, plus } => Rule::LoyaltyCostsMore(
+            scope
+                .players(who)?
+                .into_iter()
+                .map(|player| (player, *plus))
+                .collect(),
+        ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1668,6 +1691,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
         GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
+        GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -1775,9 +1799,11 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
         | Rule::BoastTwice(players)
+        | Rule::LoyaltyAnyTime(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
+        Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
@@ -1960,6 +1986,8 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_twice: BTreeSet::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
+    loyalty_any_time: BTreeSet::new(),
+    loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2342,6 +2370,21 @@ pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
     } else {
         1
     }
+}
+
+/// Whether `player` may activate loyalty abilities whenever they could cast an instant (Teferi's Talent's emblem).
+pub fn loyalty_any_time(state: &GameState, player: PlayerId) -> bool {
+    state.rules().loyalty_any_time.contains(&player)
+}
+
+/// The loyalty counters the loyalty abilities `player` activates cost in addition (Carth the Lion), 0 under no such rule.
+pub fn loyalty_costs_more(state: &GameState, player: PlayerId) -> u32 {
+    state
+        .rules()
+        .loyalty_more
+        .get(&player)
+        .copied()
+        .unwrap_or(0)
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.

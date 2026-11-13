@@ -1,0 +1,12 @@
+{
+  "oracle_id": "43dac6fa-4cdf-49ec-9e11-2e5e8f9f928b",
+  "name": "Myr Superion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Superion",
+      "oracle_fingerprint": "dfd9fa5379ad18b9eb0159591f336641",
+      "abilities": [{ "Rule": { "rule": { "SpendOnlyFrom": { "types": ["Creature"] } } } }]
+    }
+  ]
+}
