@@ -308,14 +308,18 @@ fn a_minion_loses_when_its_leader_concedes() -> Result<(), ScriptError> {
     Ok(())
 }
 
-/// Seat 0 fallen with a living teammate (seat 1) against seat 2; seats 1 and 2 hold a Bolt and a Mountain.
+/// Seat 0 fallen with a living teammate (seat 1) against seat 2; seats 1 and 2 hold a Bolt and a Mountain, and each
+/// seat has a library to draw from.
 fn haunted() -> Result<Driver, ScriptError> {
     let scenario = table(&[0, 20, 20], Some(vec![0, 0, 1]))
         .spirit(0, haunt())
         .battlefield(1, [ready(mountain())])
-        .battlefield(2, [ready(mountain())])
+        .battlefield(2, [ready(mountain()), ready(free_creature("Brute", 3, 3))])
         .hand(1, [burn("Bolt", 3)])
-        .hand(2, [burn("Bolt", 3)]);
+        .hand(2, [burn("Bolt", 3)])
+        .library(0, (0..10).map(|_| mountain()))
+        .library(1, (0..10).map(|_| mountain()))
+        .library(2, (0..10).map(|_| mountain()));
     let mut driver = Driver::from_scenario(scenario)?;
     driver.pass()?;
     assert!(driver.state().player(pid(0)).unwrap().is_spirit());
@@ -325,7 +329,13 @@ fn haunted() -> Result<Driver, ScriptError> {
 #[test]
 fn no_attack_option_names_a_spirit() -> Result<(), ScriptError> {
     let mut driver = haunted()?;
-    driver.idle_until(3, Step::DeclareAttackers)?;
+    for _ in 0..200 {
+        let decision = driver.decision()?;
+        if decision.player == pid(2) && matches!(decision.kind, DecisionKind::DeclareAttackers(_)) {
+            break;
+        }
+        driver.answer_passively()?;
+    }
     let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
         panic!("seat 2 attacks");
     };
