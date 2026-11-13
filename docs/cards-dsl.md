@@ -118,6 +118,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "This creature can attack players who attacked you during their last turn as though it didn't have defender." is `CombatQuirk::AttackLastTurnAttackersDespiteDefender`: a creature with defender is offered those players only.
 - "if ~ dealt damage to another creature this turn" is `Pred::DealtDamageThisTurn(selector)`, judged on each damaged object as it was when the damage was dealt, so a creature the damage destroyed counts.
 - "for each unspent green mana you have" is `Amount::ManaInPoolOf { who, mana }`, read from the pool whenever the value is needed; "becomes a legendary 8/12 Spirit creature" adds `AddSupertype(Legendary)` to the animation, and "It's still an enchantment." closes it like "It's still a land.".
+- "each of that player's opponents" is `Ref::OpponentsOf(inner)`; "X can't be greater than the number of players in the game" on a spell is a required `AdditionalCost` holding `XAtMost`, which caps the X its caster may announce.
+- "Until end of turn, if you would put one or more +1/+1 counters on a creature you control, put that many plus one ... instead" is a `Shield` over `CountersPut` with `by: You`, judged for each put of the turn.
 - "If ~ would be destroyed, regenerate it." is a replacement `Destroyed` by `ReplaceBy::Regenerate`: never used up, and not while the permanent can't be regenerated. Each regeneration is logged as `TallyEvent::Regenerated` ("for each time it regenerated this turn").
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 

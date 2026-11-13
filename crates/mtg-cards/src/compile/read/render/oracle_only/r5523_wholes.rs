@@ -6,7 +6,7 @@ use std::sync::LazyLock;
 use crate::ability::Ability;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`).
-const R5523_WHOLES: [(&str, &str); 4] = [
+const R5523_WHOLES: [(&str, &str); 7] = [
     // weathered_sentinels
     (
         r#"{"Rule":{"rule":{"Combat":{"who":"This","quirk":"AttackLastTurnAttackersDespiteDefender"}}}}"#,
@@ -21,6 +21,21 @@ const R5523_WHOLES: [(&str, &str); 4] = [
     (
         r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","riders":[{"EntersWithCounter":{"Other":"finality"}}]}},"from":"Graveyard"}}"#,
         r"You may cast this card from your graveyard. If you do, it enters with a finality counter on it.",
+    ),
+    // heartwood_storyteller
+    (
+        r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Not":{"Type":"Creature"}}]}},"effects":[{"RepeatEach":{"over":{"OpponentsOf":"TriggeringPlayer"},"as":"drawer","effects":[{"May":{"who":{"Bound":"drawer"},"effects":[{"Draw":{"who":{"Bound":"drawer"}}}]}}]}}]}}"#,
+        r"Whenever a player casts a noncreature spell, each of that player's opponents may draw a card.",
+    ),
+    // prairie_dog
+    (
+        r#"{"Activated":{"cost":"{4}{W}","effects":[{"Shield":{"when":{"CountersPut":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1","by":"You"}},"by":{"Add":1},"duration":"UntilEndOfTurn"}}]}}"#,
+        r"{4}{W}: Until end of turn, if you would put one or more +1/+1 counters on a creature you control, put that many plus one +1/+1 counters on it instead.",
+    ),
+    // open_the_way
+    (
+        r#"{"AdditionalCost":{"cost":[{"XAtMost":{"Players":"EachPlayer"}}],"required":true}}"#,
+        r"X can't be greater than the number of players in the game.",
     ),
     // yuna_grand_summoner
     (

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "e07297c7-83bc-4162-bbb1-362bc737efe0",
+  "name": "Open the Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Open the Way",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "XAtMost": {
+                  "Players": "EachPlayer"
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "Type": "Land"
+                    }
+                  ],
+                  "count": "X",
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Bound": "found"
+                  },
+                  "to": {
+                    "Battlefield": {
+                      "tapped": true
+                    }
+                  }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Bound": "revealed"
+                  },
+                  "to": {
+                    "Library": {
+                      "place": "Bottom",
+                      "order": "Random"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

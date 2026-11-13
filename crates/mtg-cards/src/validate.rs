@@ -700,6 +700,10 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Object));
             }
+            Ref::OpponentsOf(inner) => {
+                self.expect(Kind::Player, want);
+                self.at("of", |w| w.reference(inner, Kind::Player));
+            }
             Ref::OrController(inner) => {
                 self.expect(Kind::Player, want);
                 self.at("of", |w| w.reference(inner, Kind::Either));
@@ -3310,6 +3314,7 @@ impl Walker<'_> {
             | Ref::Defending
             | Ref::TriggeringPlayer
             | Ref::ControllerOf(_)
+            | Ref::OpponentsOf(_)
             | Ref::OrController(_)
             | Ref::OwnerOf(_)
             | Ref::PlayersWhere { .. }

@@ -70,6 +70,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Candidate => "the object being judged".to_owned(),
         Ref::Remembered { on, slot } => format!("what {} remembers as {slot}", who(ctx, on)),
         Ref::ControllerOf(inner) => format!("the controller of {}", who(ctx, inner)),
+        Ref::OpponentsOf(inner) => format!("the opponents of {}", who(ctx, inner)),
         Ref::OwnerOf(inner) => format!("the owner of {}", who(ctx, inner)),
         Ref::PlayersWhere { who: players, test } => format!(
             "{} for whom \u{201c}{}\u{201d} holds",

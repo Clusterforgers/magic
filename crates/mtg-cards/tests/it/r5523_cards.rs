@@ -159,6 +159,9 @@ fn r5523_probe_outside() {
 #[case("Omnath, Locus of Mana")]
 #[case("Hundred-Battle Veteran")]
 #[case("Yuna, Grand Summoner")]
+#[case("Open the Way")]
+#[case("Heartwood Storyteller")]
+#[case("Prairie Dog")]
 fn r5523_reads_back_whole(#[case] name: &str) {
     let report = r5523_report(name, &r5523_file(name));
     assert_eq!(
@@ -201,6 +204,20 @@ fn r5523_reads_back_whole(#[case] name: &str) {
     r#""op": "Ge", "right": 1"#,
     r#""op": "Ge", "right": 2"#
 )]
+#[case::open_the_way_opponents("Open the Way", r#""EachPlayer""#, r#""Opponents""#)]
+#[case::open_the_way_uncapped("Open the Way", r#""XAtMost""#, r#""XAtLeast""#)]
+#[case::heartwood_each_opponent(
+    "Heartwood Storyteller",
+    r#"{ "OpponentsOf": "TriggeringPlayer" }"#,
+    r#""Opponents""#
+)]
+#[case::heartwood_creature_spells(
+    "Heartwood Storyteller",
+    r#"{ "Not": { "Type": "Creature" } }"#,
+    r#"{ "Type": "Creature" }"#
+)]
+#[case::prairie_dog_anyone_puts("Prairie Dog", r#", "by": "You""#, "")]
+#[case::prairie_dog_doubles("Prairie Dog", r#""Add": 1"#, r#""Multiply": 2"#)]
 fn r5523_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5523_file(name);
     assert!(file.contains(from), "{name} has {from}");

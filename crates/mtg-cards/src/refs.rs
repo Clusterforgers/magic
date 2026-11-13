@@ -143,6 +143,8 @@ pub enum Ref {
     },
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
+    /// The opponents of the players the inner reference names ("each of that player's opponents"), in turn order.
+    OpponentsOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
     /// The player the reference names, or the controller of the object it names ("target player or planeswalker" read as
