@@ -3,4 +3,4 @@
 /**
  * What a damage source's keywords make of the damage it deals.
  */
-export type DamageForm = "Normal" | "Wither" | "Infect" | "NoLifeLoss";
+export type DamageForm = "Normal" | "Wither" | "Infect" | "NoLifeLoss" | { "LossTimes": number };

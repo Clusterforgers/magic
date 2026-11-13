@@ -1,7 +1,7 @@
 {
   "oracle_id": "36c2fc4c-7d8b-47c2-91c3-e356df60b219",
   "name": "Angel of Jubilation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Angel of Jubilation",
@@ -22,9 +22,13 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 55, "end": 138 }
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "PayCosts": { "life": true, "sacrifice": [{ "Type": "Creature" }] } }
+              }
+            }
           }
         }
       ]

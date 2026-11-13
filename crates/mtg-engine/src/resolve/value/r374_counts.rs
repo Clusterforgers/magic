@@ -44,6 +44,7 @@ pub(super) const fn is_r374(stat: StatKind) -> bool {
             | StatKind::R374CreatureTypes
             | StatKind::R374Bushido
             | StatKind::R374Toxic
+            | StatKind::R4700ChosenColors
     )
 }
 
@@ -127,6 +128,22 @@ impl Scope<'_> {
                             .sum()
                     }),
                 }
+            }
+            StatKind::R4700ChosenColors => {
+                let chosen: &[mtg_core::color::Color] = match self.entered_choice() {
+                    Some(
+                        crate::object::Chosen::Color(color)
+                        | crate::object::Chosen::ColorAndType(color, _),
+                    ) => std::slice::from_ref(color),
+                    Some(crate::object::Chosen::Colors(colors)) => colors,
+                    _ => &[],
+                };
+                count(
+                    chosen
+                        .iter()
+                        .filter(|color| seen.chars.colors.contains(**color))
+                        .count(),
+                )
             }
             _ => 0,
         })

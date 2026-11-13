@@ -1,7 +1,7 @@
 {
   "oracle_id": "8294539d-7982-4ec9-8392-99eed78542f5",
   "name": "Battle for Bretagard",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Battle for Bretagard",
@@ -50,9 +50,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 194, "end": 347 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      "Token",
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "chosen",
+                  "differ": "DifferentNames"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "chosen" } } } } }
+            ]
           }
         }
       ]

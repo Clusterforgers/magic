@@ -361,6 +361,10 @@ export function createSession(deps: SessionDeps): Session {
       case 'TakeBackRefused':
         setState({ takeBackNotice: { refused: message.reason } })
         return
+      case 'EndedByAdmin':
+        // The socket stops itself and the page says why; nothing is left to answer.
+        setState({ pending: null, deciding: [], preview: null, yielding: null, castWhenAsked: null })
+        return
       case 'Bank':
         // A spent extension has no event to carry it; an earned one arrives in the table of the batch.
         setState((state) =>

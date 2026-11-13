@@ -1,7 +1,7 @@
 {
   "oracle_id": "4884ad6c-2290-44fc-ab9e-6e6b75b2d69a",
   "name": "Sanwell, Avenger Ace",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sanwell, Avenger Ace",
@@ -28,9 +28,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 109, "end": 316 }
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Artifact" },
+                      { "AnyOf": [{ "Subtype": "Vehicle" }, { "Type": "Creature" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "kept" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
           }
         }
       ]

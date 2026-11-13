@@ -335,6 +335,7 @@ fn split_put(r: &mut Reader<'_>, found: &Ref) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: KEPT.to_owned(),
             rest_as: Some(REST.to_owned()),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
@@ -496,6 +497,7 @@ pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: KEPT.to_owned(),
             rest_as: Some(REST.to_owned()),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
@@ -895,6 +897,7 @@ fn split_put_text(rest: &[Effect], bind: &str, who: &Ref) -> Option<String> {
             count: chosen,
             bind: kept,
             rest_as: Some(left),
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(first),
@@ -937,6 +940,7 @@ fn look_sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 count: chosen,
                 bind: kept,
                 rest_as: Some(rest),
+                differ: None,
             },
             Effect::Move {
                 what: Ref::Bound(moved),

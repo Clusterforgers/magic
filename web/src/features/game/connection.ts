@@ -12,7 +12,7 @@ export type Connection =
   | { kind: 'unreachable'; attempt: number }
   | { kind: 'replaced'; reason: string | null }
   | { kind: 'stopped'; reason: string | null }
-  | { kind: 'closed' }
+  | { kind: 'closed'; reason: string | null }
 
 /** Reads the connection out of the store: the socket's status and failed attempts, and why it stopped, if it did. */
 export function connectionOf(state: Pick<PlayState, 'status' | 'attempt' | 'notice'>): Connection {
@@ -31,6 +31,6 @@ export function connectionOf(state: Pick<PlayState, 'status' | 'attempt' | 'noti
     case 'stopped':
       return { kind: 'stopped', reason: state.notice }
     case 'closed':
-      return { kind: 'closed' }
+      return { kind: 'closed', reason: state.notice }
   }
 }
