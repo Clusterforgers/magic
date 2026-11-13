@@ -249,6 +249,13 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// The controller of the ability revealed the first card they drew this turn through the `RevealFirstDraw` rule
+    /// of the same permanent ("Whenever you reveal a creature card this way"); `Triggering` is the card.
+    FirstDrawRevealed {
+        /// The card revealed; any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player draws a card.
     Drew {
         /// Who draws.

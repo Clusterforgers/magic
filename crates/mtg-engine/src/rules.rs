@@ -217,6 +217,14 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The controller reveals the first card they draw each turn (only on their turns with `your_turns`, only when
+    /// they choose to with `may`).
+    RevealFirstDraw {
+        /// Whether the reveal is optional.
+        may: bool,
+        /// Whether it works only on the controller's turns.
+        your_turns: bool,
+    },
     /// The players' maximum hand size is this many cards (CR 402.2).
     MaxHandSize(Vec<(PlayerId, u32)>),
     /// The players' maximum hand size changes by this many cards, after any size that is set (CR 402.2).
@@ -714,6 +722,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
+    reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
     extra_lands: BTreeMap<PlayerId, u32>,
@@ -1157,6 +1167,10 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::RevealFirstDraw { may, your_turns } => {
+                self.reveal_first_draw
+                    .push((controller, source, *may, *your_turns));
+            }
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
@@ -1585,6 +1599,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::RevealFirstDraw { may, your_turns } => Rule::RevealFirstDraw {
+            may: *may,
+            your_turns: *your_turns,
+        },
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::AdditionalLandPlays { who, count } => {
             let count = u32::try_from(scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
@@ -1677,6 +1695,7 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
+        Rule::RevealFirstDraw { .. } => false,
         Rule::AttackTax(tax) => {
             tax.players.is_empty() || (tax.mana.symbols().is_empty() && tax.life == 0)
         }
@@ -1902,6 +1921,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    reveal_first_draw: Vec::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
     extra_lands: BTreeMap::new(),
@@ -2003,6 +2023,23 @@ impl GameState {
             .iter()
             .filter(|(searched, by, _)| *searched == player && *by != player && self.is_alive(*by))
             .map(|(_, by, source)| (*by, *source))
+            .collect()
+    }
+
+    /// Whether any rule reveals first draws.
+    pub(crate) fn r4708_any_first_draw_reveals(&self) -> bool {
+        !self.rules().reveal_first_draw.is_empty()
+    }
+
+    /// The sources whose rules reveal the first card `player` draws this turn, each with whether its reveal is optional,
+    /// in the order the rules were gathered.
+    pub(crate) fn r4708_first_draw_reveals(&self, player: PlayerId) -> Vec<(ObjectId, bool)> {
+        let active = self.active_player() == Some(player);
+        self.rules()
+            .reveal_first_draw
+            .iter()
+            .filter(|(by, _, _, your_turns)| *by == player && (active || !*your_turns))
+            .filter_map(|(_, source, may, _)| source.map(|source| (source.id, *may)))
             .collect()
     }
 

@@ -1,24 +1,97 @@
 {
   "oracle_id": "db07a3f9-c6d1-4cae-a899-12b3e8d94018",
   "name": "Inquisitor Eisenhorn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Inquisitor Eisenhorn",
       "oracle_fingerprint": "bafae34ab884c0d53a041051322d1162",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 195 }
+          "Rule": {
+            "rule": {
+              "RevealFirstDraw": {
+                "may": true
+              }
+            }
           }
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "when": {
+              "FirstDrawRevealed": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Type": "Instant"
+                      },
+                      {
+                        "Type": "Sorcery"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
             "effects": [
-              { "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } },
-              { "Performed": { "action": "Investigated", "times": "Triggering" } }
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cherubael",
+                      "colors": [
+                        "Black"
+                      ],
+                      "supertypes": [
+                        "Legendary"
+                      ],
+                      "types": [
+                        "Creature"
+                      ],
+                      "subtypes": [
+                        "Demon"
+                      ],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        {
+                          "Keyword": "Flying"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  "This"
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Named": "clue"
+                  },
+                  "count": "Triggering"
+                }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "times": "Triggering"
+                }
+              }
             ]
           }
         }

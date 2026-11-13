@@ -51,6 +51,7 @@ const RUNS: &[&str] = &[
     "Trigger.DamagePrevented",
     "Trigger.LifeLost",
     "Trigger.Drew",
+    "Trigger.FirstDrawRevealed",
     "Trigger.Discarded",
     "Trigger.Tapped",
     "Trigger.TappedNotAttacking",
@@ -467,6 +468,7 @@ const RUNS: &[&str] = &[
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.LoyaltyTwice",
+    "Rule.RevealFirstDraw",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
     "Rule.NoLegendRule",
@@ -1496,6 +1498,8 @@ mod tests {
     #[case::life_gain_triggers("Trigger.LifeGained", true)]
     #[case::life_loss_triggers("Trigger.LifeLost", true)]
     #[case::draw_triggers("Trigger.Drew", true)]
+    #[case::r4708_first_draws_revealed("Trigger.FirstDrawRevealed", true)]
+    #[case::r4708_reveals_of_first_draws("Rule.RevealFirstDraw", true)]
     #[case::discard_triggers("Trigger.Discarded", true)]
     #[case::tap_triggers("Trigger.Tapped", true)]
     #[case::untap_triggers("Trigger.Untapped", true)]

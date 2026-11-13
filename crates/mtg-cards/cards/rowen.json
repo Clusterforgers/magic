@@ -1,0 +1,41 @@
+{
+  "oracle_id": "eb44f5eb-1c6a-49f0-9751-23d167bf8288",
+  "name": "Rowen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowen",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "RevealFirstDraw": {}
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "FirstDrawRevealed": {
+                "what": [
+                  {
+                    "Supertype": "Basic"
+                  },
+                  {
+                    "Type": "Land"
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Draw": {}
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

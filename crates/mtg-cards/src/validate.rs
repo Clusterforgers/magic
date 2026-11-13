@@ -2688,6 +2688,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::ZoneChange { what, .. }
             | TriggerPattern::ZoneChangeExcept { what, .. }
             | TriggerPattern::ResolvedToGraveyard { what }
+            | TriggerPattern::FirstDrawRevealed { what }
             | TriggerPattern::Attacks { what }
             | TriggerPattern::AttacksAlone { what } => {
                 self.at("what", |w| w.selector(what));
@@ -5367,6 +5368,7 @@ impl Walker<'_> {
         let tag = tag_of(rule);
         self.uses("Rule", &tag);
         match rule {
+            GameRule::RevealFirstDraw { .. } => {}
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }

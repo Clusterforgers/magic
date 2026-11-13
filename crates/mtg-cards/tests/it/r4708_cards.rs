@@ -46,6 +46,10 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[rstest]
 #[case("Eligeth, Crossroads Augur")]
 #[case("Enhanced Surveillance")]
+#[case("Primitive Etchings")]
+#[case("Rowen")]
+#[case("Keranos, God of Storms")]
+#[case("Inquisitor Eisenhorn")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &file(name));
     assert_eq!(
@@ -71,6 +75,25 @@ fn reads_back_whole(#[case] name: &str) {
     "Enhanced Surveillance",
     r#"{"Surveils":{}}"#,
     r#"{"Surveils":{"who":"Opponents"}}"#
+)]
+#[case::reveal_optional(
+    "Primitive Etchings",
+    r#"{"RevealFirstDraw":{}}"#,
+    r#"{"RevealFirstDraw":{"may":true}}"#
+)]
+#[case::reveal_your_turns(
+    "Primitive Etchings",
+    r#"{"RevealFirstDraw":{}}"#,
+    r#"{"RevealFirstDraw":{"your_turns":true}}"#
+)]
+#[case::reveal_a_land("Primitive Etchings", r#"{"Type":"Creature"}"#, r#"{"Type":"Land"}"#)]
+#[case::any_land("Rowen", r#"{"Supertype":"Basic"},"#, "")]
+#[case::reveal_every_turn("Keranos, God of Storms", r#"{"your_turns":true}"#, "{}")]
+#[case::reveal_always("Inquisitor Eisenhorn", r#"{"may":true}"#, "{}")]
+#[case::revealed_creature(
+    "Inquisitor Eisenhorn",
+    r#"{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}"#,
+    r#"{"Type":"Creature"}"#
 )]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
