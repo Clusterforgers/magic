@@ -19,7 +19,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
     ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
-    LobbyGame, LobbyList, TeamsBody, VisibilityBody,
+    LobbyGame, LobbyList, SeatTeamBody, TeamsBody, VisibilityBody,
 };
 use sha2::{Digest, Sha256};
 
@@ -534,6 +534,33 @@ pub(crate) async fn set_teams(
         .set_teams(game, by, body.teams.clone())
         .await?;
     Ok(Json(body))
+}
+
+/// `PUT /api/games/{id}/seats/{n}/team`: puts seat `n` on a team before the start, the host for any seat and a player
+/// for their own. Answers the teams now in force; every Ready is taken back.
+pub(crate) async fn set_seat_team(
+    State(app): State<AppState>,
+    path: Result<Path<(String, String)>, PathRejection>,
+    request: Request,
+) -> Result<Json<TeamsBody>, ApiError> {
+    let Path((game, seat)) = path.map_err(|_| ApiError::not_found())?;
+    let game: GameId = game.parse().map_err(|_| ApiError::not_found())?;
+    let seat = seat_number(&seat).ok_or_else(ApiError::not_found)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let headers = request.headers().clone();
+    let body = read_json::<SeatTeamBody>(request).await?;
+    let by = if holder(&app, &headers, game).await? == seat {
+        seat
+    } else {
+        as_host(&app, &headers, game).await?
+    };
+    let teams = app
+        .registry()
+        .set_seat_team(game, by, seat, body.team)
+        .await?;
+    Ok(Json(TeamsBody { teams: Some(teams) }))
 }
 
 /// `DELETE /api/games/{id}`: the host closes a game that is still in its lobby. Its sockets are

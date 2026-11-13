@@ -49,6 +49,9 @@ pub(super) fn w14c_alt_cost_texts(ability: &Ability) -> Vec<String> {
             condition: Some(held),
             cost: None,
         } => {
+            if let Some(first) = super::r379_atoms::r379_first_spell_text(held) {
+                return vec![first];
+            }
             return super::wf27_writers::wf27_if_texts(held, control_texts(held))
                 .into_iter()
                 .map(|held| format!("if {held}, you may cast ~ without paying its mana cost"))

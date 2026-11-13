@@ -15,19 +15,22 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine};
 
-use super::combat::{assign_lethal, quick_attack, quick_blocks};
+use super::combat::{assign_lethal, quick_attack, quick_blocks, safe_attack};
+use super::deep::Deep;
 use super::eval::{Weights, evaluate_with};
 use super::seen::Seen;
 use super::targets::{rank_targets, target_answer};
 use crate::bot::{RandomBot, apply_answer};
 
 /// The most answers one simulation gives before it is scored where it stands.
-const SIM_STEPS: usize = 400;
+pub(crate) const SIM_STEPS: usize = 400;
 
 /// Combat forecasts for each block declaration inside a simulation: fixed, so every candidate meets the same blocks.
 const QUICK_FORECASTS: u32 = 30;
 
 /// How much a brain may search for one decision, and how far ahead.
+// Independent switches of one search.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Settings {
     /// Simulations per decision.
@@ -43,8 +46,22 @@ pub struct Settings {
     pub combat_search: bool,
     /// Whether attacks and main-phase plays are played on through the next turn's combat.
     pub lookahead: bool,
+    /// Whether the seat and the seats it simulates play carefully: attacks keep enough creatures home to survive the
+    /// next attacks ([`super::combat::safe_attack`]), and instants wait for combat, a response or a target worth them
+    /// ([`super::priority::plan_priority`]).
+    pub careful: bool,
+    /// Whether a main-phase play is judged with the best play that can follow it.
+    pub sequences: bool,
+    /// Whether each decision is searched in a world whose hidden cards are redealt ([`Engine::redeal`]), where every
+    /// seat plays its lands and spells in simulations as the seat itself does.
+    pub fair: bool,
     /// How the evaluation weighs the coming turn's attacks.
     pub weights: Weights,
+    /// The information-set Monte Carlo search the decisions that matter go to, if any ([`Deep`]).
+    pub deep: Option<Deep>,
+    /// Worlds each decision that matters is searched in, one redeal of the hidden cards each, the answer most of them
+    /// give winning; 1 searches the table as it is.
+    pub votes: u32,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
 }
@@ -59,12 +76,23 @@ impl Settings {
         depth: 1,
         combat_search: false,
         lookahead: false,
+        careful: true,
+        sequences: false,
+        fair: false,
         weights: Weights::NORMAL,
+        deep: None,
+        votes: 1,
         time: Some(Duration::from_millis(300)),
     };
 
-    /// Hard: simulated attacks and blocks, more candidates, searched targets inside simulations and play on through the
-    /// next combat, about 1 s at most.
+    /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
+    pub const BASELINE: Settings = Settings {
+        careful: false,
+        ..Settings::NORMAL
+    };
+
+    /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
+    /// cards are redealt, more candidates and searched targets inside simulations, about 1 s at most.
     pub const HARD: Settings = Settings {
         sims: 160,
         forecasts: 500,
@@ -72,14 +100,30 @@ impl Settings {
         depth: 2,
         combat_search: true,
         lookahead: true,
+        careful: true,
+        sequences: true,
+        fair: true,
         weights: Weights::NORMAL,
+        deep: None,
+        votes: 1,
         time: Some(Duration::from_millis(1000)),
+    };
+
+    /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
+    /// a tree search over that answer and its alternatives in worlds redealt from what the seat has seen
+    /// ([`Deep::FULL`]), about 2.5 s at most.
+    pub const VERY_HARD: Settings = Settings {
+        deep: Some(Deep::FULL),
+        ..Settings::HARD
     };
 
     /// These settings without a clock: the answers depend on the seed alone.
     #[must_use]
     pub const fn untimed(mut self) -> Settings {
         self.time = None;
+        if let Some(deep) = &mut self.deep {
+            deep.time = None;
+        }
         self
     }
 }
@@ -93,13 +137,17 @@ pub enum Horizon {
     EndOfCombat,
     /// Until the combat of the next turn is over.
     NextTurn,
+    /// Until the combat of the turn this many turns on is over (`Turns(1)` is [`Horizon::NextTurn`]).
+    Turns(u32),
 }
 
 /// Where a simulation started.
 #[derive(Debug, Clone, Copy)]
-struct Start {
-    turn: u32,
-    stack: usize,
+pub(crate) struct Start {
+    /// The turn number.
+    pub(crate) turn: u32,
+    /// The objects on the stack.
+    pub(crate) stack: usize,
 }
 
 /// One simulated outcome: its score and a fingerprint of what lasts beyond the turn.
@@ -122,8 +170,10 @@ pub struct Search {
     forecasts_left: u32,
     deadline: Option<Instant>,
     others: RandomBot,
-    /// Lands and spells the seat may still play by itself in the current simulation ([`ROLLOUT_PLAYS`]).
-    plays_left: u32,
+    /// Lands and spells each seat may still play by itself in the current simulation ([`ROLLOUT_PLAYS`]), by seat.
+    plays_left: Vec<u32>,
+    /// The turn `plays_left` was filled for: a new turn fills it again.
+    plays_turn: u32,
 }
 
 /// Lands and permanent spells the seat plays by itself in one look-ahead simulation, its most expensive castable first.
@@ -147,7 +197,8 @@ impl Search {
             forecasts_left: settings.forecasts,
             deadline: settings.time.map(|time| Instant::now() + time),
             others: RandomBot::new(seed, 0x005E_A4C4),
-            plays_left: 0,
+            plays_left: Vec::new(),
+            plays_turn: 0,
         }
     }
 
@@ -192,20 +243,43 @@ impl Search {
         if !self.can_simulate() {
             return None;
         }
-        self.sims_left -= 1;
-        let decision = engine.decision()?.clone();
+        self.play_out(engine.clone(), answer, horizon)
+    }
+
+    /// [`Search::played`] on a game the search may use up, taking one simulation from the budget without checking it.
+    pub fn play_out(
+        &mut self,
+        mut sim: Engine,
+        answer: Answer,
+        horizon: Horizon,
+    ) -> Option<(Outcome, Engine)> {
+        self.sims_left = self.sims_left.saturating_sub(1);
+        let decision = sim.decision()?.clone();
         let start = Start {
-            turn: engine.state().turn().number(),
-            stack: engine.state().stack().len(),
+            turn: sim.state().turn().number(),
+            stack: sim.state().stack().len(),
         };
-        let mut sim = engine.clone();
         apply_answer(&mut sim, &decision, answer).ok()?;
-        self.plays_left = if self.settings.lookahead {
-            ROLLOUT_PLAYS
-        } else {
-            0
-        };
+        self.prime(&sim);
         self.settle(sim, start, horizon, 0)
+    }
+
+    /// Starts a simulation of `engine`: every seat that plays by itself may make its [`ROLLOUT_PLAYS`] again.
+    pub fn prime(&mut self, engine: &Engine) {
+        self.plays_turn = engine.state().turn().number();
+        self.plays_left = engine
+            .state()
+            .players()
+            .iter()
+            .map(|player| {
+                let own = player.id() == self.seat;
+                if (own && self.settings.lookahead) || (!own && self.settings.fair) {
+                    ROLLOUT_PLAYS
+                } else {
+                    0
+                }
+            })
+            .collect();
     }
 
     /// The outcome of `answer` as [`Search::outcome`] gives it.
@@ -330,11 +404,25 @@ impl Search {
     pub fn quick(&mut self, engine: &Engine, decision: &Decision) -> Answer {
         let player = decision.player;
         let own = player == self.seat;
+        let turn = engine.state().turn().number();
+        if turn != self.plays_turn {
+            self.plays_turn = turn;
+            for (at, left) in self.plays_left.iter_mut().enumerate() {
+                let own = at == self.seat.index();
+                if (own && self.settings.lookahead) || (!own && self.settings.fair) {
+                    *left = ROLLOUT_PLAYS;
+                }
+            }
+        }
         match &decision.kind {
-            DecisionKind::Priority(options) if own && self.plays_left > 0 => {
+            DecisionKind::Priority(options)
+                if self.plays_left.get(player.index()).is_some_and(|n| *n > 0) =>
+            {
                 let play = rollout_play(engine, options);
-                if play != PriorityAction::Pass {
-                    self.plays_left -= 1;
+                if play != PriorityAction::Pass
+                    && let Some(left) = self.plays_left.get_mut(player.index())
+                {
+                    *left -= 1;
                 }
                 Answer::Priority(play)
             }
@@ -344,49 +432,64 @@ impl Search {
                 Answer::PayMana(PayChoice::Auto)
             }
             DecisionKind::DeclareAttackers(options) => {
-                Answer::DeclareAttackers(quick_attack(&Seen::new(engine.state(), player), options))
+                let seen = Seen::new(engine.state(), player);
+                Answer::DeclareAttackers(if self.settings.careful || self.settings.fair {
+                    safe_attack(&seen, options)
+                } else {
+                    quick_attack(&seen, options)
+                })
             }
             DecisionKind::DeclareBlockers(options) => {
                 Answer::DeclareBlockers(quick_blocks(engine, player, options, QUICK_FORECASTS))
             }
             DecisionKind::AssignDamage(options) => Answer::AssignDamage(assign_lethal(options)),
-            DecisionKind::ChooseTargets(options) if own => {
+            DecisionKind::ChooseTargets(options) if own || self.settings.fair => {
                 let seen = Seen::new(engine.state(), player);
                 let ranked = rank_targets(&seen, options);
                 let wanted = options.min.max(1) as usize;
                 target_answer(options, ranked.into_iter().take(wanted).collect())
             }
-            _ if own => super::choices::quick_choice(engine, decision, &mut self.others),
+            _ if own || self.settings.fair => {
+                super::choices::quick_choice(engine, decision, &mut self.others)
+            }
             _ => self.others.choose_in(decision, engine.state()),
         }
     }
 }
 
-/// The seat's own play in a look-ahead simulation: in its main phase on an empty stack, a land, else its most expensive
-/// castable permanent spell; else a pass.
+/// A seat's own play in a look-ahead simulation on an empty stack: in its main phase a land, else its most expensive
+/// castable permanent or sorcery spell; at an opponent's end step its most expensive castable instant (removal, burn);
+/// else a pass.
 fn rollout_play(
     engine: &Engine,
     options: &mtg_engine::decision::PriorityOptions,
 ) -> PriorityAction {
     let state = engine.state();
-    let main = matches!(state.turn().step(), Step::Main1 | Step::Main2);
     let Some(seat) = engine.decision().map(|d| d.player) else {
         return PriorityAction::Pass;
     };
-    if !main || !state.stack().is_empty() || engine.announcing() || !state.is_active(seat) {
+    if !state.stack().is_empty() || engine.announcing() {
         return PriorityAction::Pass;
     }
-    if let Some(land) = options.playable_lands.first() {
+    let seen = Seen::new(state, seat);
+    let main = matches!(state.turn().step(), Step::Main1 | Step::Main2) && state.is_active(seat);
+    let their_end = state.turn().step() == Step::End
+        && seen
+            .alive()
+            .into_iter()
+            .any(|player| seen.is_active(player) && !seen.is_teammate(player));
+    if !main && !their_end {
+        return PriorityAction::Pass;
+    }
+    if main && let Some(land) = options.playable_lands.first() {
         return PriorityAction::PlayLand(*land);
     }
-    let seen = Seen::new(state, seat);
     options
         .castable
         .iter()
         .filter(|id| {
             seen.chars(**id).is_some_and(|chars| {
-                !chars.types.contains(mtg_core::card::CardType::Instant)
-                    && !chars.types.contains(mtg_core::card::CardType::Sorcery)
+                chars.types.contains(mtg_core::card::CardType::Instant) == their_end
             })
         })
         .max_by_key(|id| (seen.mana_value(**id), std::cmp::Reverse(**id)))
@@ -394,7 +497,7 @@ fn rollout_play(
 }
 
 /// Whether a simulation that started at `start` and has given `steps` answers has reached `horizon` at `decision`.
-fn reached(
+pub(crate) fn reached(
     engine: &Engine,
     decision: &Decision,
     start: Start,
@@ -413,16 +516,20 @@ fn reached(
         Horizon::EndOfCombat => {
             turn != start.turn || (stack == 0 && after_combat(state.turn().step()))
         }
-        Horizon::NextTurn => {
-            turn > start.turn + 1
-                || (turn == start.turn + 1 && stack == 0 && after_combat(state.turn().step()))
-        }
+        Horizon::NextTurn => reached_turn(state, start.turn + 1, stack),
+        Horizon::Turns(turns) => reached_turn(state, start.turn + turns, stack),
     }
+}
+
+/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`.
+fn reached_turn(state: &mtg_engine::state::GameState, end: u32, stack: usize) -> bool {
+    let turn = state.turn().number();
+    turn > end || (turn == end && stack == 0 && after_combat(state.turn().step()))
 }
 
 /// The answer that decides least, when a quick answer was refused: a pass, the fewest targets, a keep; `None` for a
 /// question with no such answer.
-fn minimal(decision: &Decision) -> Option<Answer> {
+pub(crate) fn minimal(decision: &Decision) -> Option<Answer> {
     Some(match &decision.kind {
         DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
         DecisionKind::Mulligan(_) => Answer::Mulligan(MulliganChoice::Keep),

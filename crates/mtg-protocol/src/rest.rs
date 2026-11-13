@@ -48,7 +48,7 @@ pub use fix_marks::{
 };
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
-    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, TeamsBody, Visibility,
+    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, SeatTeamBody, TeamsBody, Visibility,
     VisibilityBody,
 };
 pub use precons::{

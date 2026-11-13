@@ -144,6 +144,9 @@ fn damage_player(
     };
     if amount > 0 {
         state.tally_by(id, Tally::Hurt, amount);
+        if in_combat {
+            state.r379_combat_hurt(id);
+        }
         let kind = if in_combat {
             Tally::E16aCombatHurt
         } else {

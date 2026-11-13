@@ -1049,6 +1049,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
       `${who} calls ${call.toLowerCase()}, the coin comes up ${side.toLowerCase()}: ${who} ${won ? 'wins' : 'loses'} the flip`,
     )
   }
+  if ('VotesFinished' in event) {
+    return line('The players finish voting')
+  }
   if ('Clashed' in event) {
     const { player, opponent, won } = event.Clashed
     return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a clash with ${n.seat(opponent)}`)

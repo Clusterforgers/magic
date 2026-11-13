@@ -1,0 +1,51 @@
+{
+  "oracle_id": "932a86e5-9640-4ef5-8264-2ce97bde33e2",
+  "name": "Haktos the Unscarred",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haktos the Unscarred",
+      "oracle_fingerprint": "3ff32855f36f67b3a3754d807767b7c5",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsEnters": [
+                {
+                  "RememberValue": {
+                    "value": { "Random": { "min": 2, "max": 4 } },
+                    "slot": "chosen number"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Protection": [
+                    {
+                      "Not": {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Eq",
+                          "to": { "Remembered": { "on": "This", "slot": "chosen number" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1192,6 +1192,12 @@ pub enum Event {
         /// The clashing player won.
         won: bool,
     },
+    /// The players finished a vote (CR 701.38): each ballot is a voter and the choice they voted for, by its place among
+    /// the options, in the order the votes were cast.
+    VotesFinished {
+        /// The voter and the place of their choice, for each vote cast.
+        ballots: Vec<(PlayerId, u32)>,
+    },
     /// A creature was exerted as it was declared an attacker (CR 701.43): it won't untap during the next untap step of
     /// `player`, who exerted it.
     Exerted {
@@ -1433,6 +1439,7 @@ impl Event {
             | Event::DieRolled { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
+            | Event::VotesFinished { .. }
             | Event::Proliferated { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }

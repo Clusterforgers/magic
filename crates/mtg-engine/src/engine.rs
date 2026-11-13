@@ -107,6 +107,11 @@ impl Engine {
         &self.state
     }
 
+    /// The state to change outside the log, for a search's copy of the game ([`Engine::redeal`]).
+    pub(crate) fn state_mut(&mut self) -> &mut GameState {
+        &mut self.state
+    }
+
     /// Fingerprint of the current state.
     pub fn state_hash(&self) -> u64 {
         self.state.state_hash()

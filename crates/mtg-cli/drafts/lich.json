@@ -1,0 +1,54 @@
+{
+  "oracle_id": "5b7515f2-7a5a-4e2a-9784-6cbacd768172",
+  "name": "Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lich",
+      "oracle_fingerprint": "ccfaac00c066726ac5916fbb6a186911",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsEnters": [{ "LoseLife": { "amount": { "Life": "You" } } }] }
+          }
+        },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Replacement": {
+            "when": { "LifeGain": {} },
+            "by": { "Instead": [{ "Draw": { "count": "Triggering" } }] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Not": "Token" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": "Triggering"
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "filter": [{ "Not": "Token" }], "count": "Triggering" } }
+                  ],
+                  "otherwise": [{ "LoseGame": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "LoseGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

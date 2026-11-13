@@ -1,8 +1,8 @@
-// Goal: the ladder draws the ten steps that give priority in turn order (first-strike damage only while it is current or holds a stop), reads how a stop is held from the server's list, asks for the right SetStop for every state and kind of press, and says every step, side and state in words, starting with "Your upkeep stop: off. Press to stop here this turn".
+// Goal: the ladder draws the ten steps that give priority in turn order (first-strike damage only while it is current or holds a stop), reads how a stop is held from the server's list, asks for the right SetStop for every state and kind of press, and says every step, side and state in words, starting with "Your upkeep stop: off. Press to stop here this turn". In Two-Headed Giant the team's shared turn is the own side.
 import { describe, expect, it } from 'vitest'
 import { STOP_STEPS } from '@/play/stops'
 import type { StopStep } from '@/play/stops'
-import type { Step, Stop, StopSide } from '@/protocol/generated'
+import type { Step, Stop, StopSide, TeamMode } from '@/protocol/generated'
 import {
   ladderSteps,
   pressRequest,
@@ -104,6 +104,18 @@ describe('how a stop is held', () => {
     'calls the turn of seat %i, seen from seat %i, %s',
     (active, seat, side) => {
       expect(turnSide(active, seat)).toBe(side)
+    },
+  )
+
+  it.each([
+    ['two_headed_giant', 1, 'Own'],
+    ['two_headed_giant', 2, 'Opponent'],
+    ['teams', 2, 'Opponent'],
+  ] satisfies [TeamMode, number, StopSide][])(
+    'in %s calls the turn of seat 0, seen from seat %i, %s',
+    (mode, seat, side) => {
+      const seats = mode === 'two_headed_giant' ? [0, 0, 1, 1] : [0, 1, 0, 1]
+      expect(turnSide(0, seat, { mode, seats })).toBe(side)
     },
   )
 })
