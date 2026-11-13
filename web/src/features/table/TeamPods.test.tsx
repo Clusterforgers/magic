@@ -60,10 +60,10 @@ describe('the words of a seat with a team', () => {
   const name = (seat: number): string => ['Ann', 'Bo', 'Cy', 'Di'][seat] ?? '?'
 
   it.each<[Teams | null, number, ReturnType<typeof seatTeam>]>([
-    [GIANT, 0, { team: 0, life: 'team', mates: ['Bo'] }],
-    [GIANT, 1, { team: 0, life: 'teammate', mates: ['Ann'] }],
-    [GIANT, 3, { team: 1, life: 'teammate', mates: ['Cy'] }],
-    [ALTERNATE, 1, { team: 1, life: 'own', mates: ['Di', '?'] }],
+    [GIANT, 0, { team: 0, life: 'team', mates: ['Bo'], badge: true }],
+    [GIANT, 1, { team: 0, life: 'teammate', mates: ['Ann'], badge: true }],
+    [GIANT, 3, { team: 1, life: 'teammate', mates: ['Cy'], badge: true }],
+    [ALTERNATE, 1, { team: 1, life: 'own', mates: ['Di', '?'], badge: true }],
     [null, 1, null],
   ])('reads %j for seat %i', (teams, seat, expected) => {
     expect(seatTeam(teams, seat, name)).toEqual(expected)

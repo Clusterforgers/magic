@@ -85,15 +85,62 @@ describe('the ladder and the fight', () => {
     expect(screen.getByRole('listitem', { name: /^Final boss: Grimgut, Locked/ })).toBeInTheDocument()
   })
 
-  it('links the fight’s table and shows the boss card with its phases', async () => {
-    await show(delveView({ boss: 'skrix_nest' }, { status: { Fight: { game: 'g42' } }, at: 0 }))
-    const link = await screen.findByRole('link', { name: 'Go to the fight' })
+  const fight = {
+    boss: 'Skrix, the Rat Queen',
+    life: 120,
+    rules: ['skrix'],
+    phases: [['nest', 80]] as Array<[string, number]>,
+    minions: [],
+  }
+
+  it('opens with the boss intro: the way in, the party with its decks and life, the abilities and phases', async () => {
+    await show(delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g42' } }, at: 0 }))
+    const link = await screen.findByRole('link', { name: 'Enter the fight' })
     expect(link).toHaveAttribute('href', '/game/g42')
-    expect(screen.getByRole('figure', { name: 'Skrix, the Rat Queen' })).toBeInTheDocument()
-    expect(screen.getByText(/At 66% of its life/)).toBeInTheDocument()
+    const abilities = within(screen.getByRole('list', { name: 'Boss abilities' }))
+    expect(abilities.getByText('Phase II — The Nest Stirs')).toBeInTheDocument()
+    expect(abilities.getByText(/At 80 life \(67%\)/)).toBeInTheDocument()
+    expect(abilities.getByText('More rats.')).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /Skrix, the Rat Queen, You are here/ })).toHaveTextContent(
       'Fighting',
     )
+    expect(screen.queryByRole('button', { name: /Choose a deck/ })).toBeNull()
+  })
+
+  it('holds a fight whose hero deck no longer plays, and offers that hero a new deck', async () => {
+    const client = await show(
+      delveView(
+        { boss: 'skrix_nest', fight, deck_problems: [{ hero: 0, reason: 'the deck is gone' }] },
+        { status: { Fight: { game: null } }, at: 0, heroes: [hero()] },
+      ),
+    )
+    expect(await screen.findByText(/Deck problem: the deck is gone/)).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Enter the fight' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Choose another deck' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Choose a deck for Ana' })
+    fireEvent.click(await within(dialog).findByRole('button', { name: /Goblin Swarm/ }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Take Goblin Swarm for Ana' }))
+    await waitFor(() => expect(client.actions[0]).toMatchObject({ kind: 'choose_deck', hero: 0 }))
+  })
+
+  it('says a lost fight cost a heart, and a won one leads to the loot', async () => {
+    await show(
+      delveView(
+        { boss: 'skrix_nest', fight },
+        {
+          status: { Fight: { game: 'g43' } },
+          at: 0,
+          hearts: 2,
+          log: ['The party was beaten back and regroups (2 hearts left).'],
+        },
+      ),
+    )
+    expect(await screen.findByText(/lost a heart \(2 left\)/)).toBeInTheDocument()
+  })
+
+  it('greets the camp after a boss with its fall', async () => {
+    await show(delveView({ boss: 'skrix_nest' }, { status: 'Room', at: 0, cleared: [0] }))
+    expect(await screen.findByText(/Skrix, the Rat Queen falls!/)).toBeInTheDocument()
   })
 })
 
@@ -139,4 +186,18 @@ it('names the end of a won run and its seed code', async () => {
   expect(await screen.findByRole('heading', { name: 'Victory!' })).toBeInTheDocument()
   expect(screen.getByText('SEED', { selector: 'strong' })).toBeInTheDocument()
   expect(screen.getAllByRole('button', { name: /Copy seed code/ }).length).toBeGreaterThan(0)
+})
+
+describe('ending the run', () => {
+  it('asks before the host ends it, and only then sends it', async () => {
+    const client = await show(delveView({}, { status: 'Map', at: 0, cleared: [0] }))
+    fireEvent.click(await screen.findByRole('button', { name: 'End the run' }))
+    const dialog = await screen.findByRole('alertdialog', { name: 'End the run?' })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Keep going' }))
+    expect(client.actions).toEqual([])
+    fireEvent.click(screen.getByRole('button', { name: 'End the run' }))
+    const again = await screen.findByRole('alertdialog', { name: 'End the run?' })
+    fireEvent.click(within(again).getByRole('button', { name: 'End the run' }))
+    await waitFor(() => expect(client.actions).toEqual([{ kind: 'abandon' }]))
+  })
 })

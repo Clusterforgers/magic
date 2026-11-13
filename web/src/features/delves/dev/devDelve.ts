@@ -162,8 +162,18 @@ export function devView(state: DevState): DelveView {
           : state === 'defeat'
             ? ('Defeat' as const)
             : ('Room' as const)
+  const fight =
+    state === 'fight'
+      ? {
+          boss: 'The Hollow Choir',
+          life: 140,
+          rules: ['grim', 'skrix', 'skrix'],
+          phases: [['nest', 93]] as Array<[string, number]>,
+          minions: [['Brood of Skrix', 25]] as Array<[string, number]>,
+        }
+      : undefined
   return delveView(
-    { seed: 'EMBER-7Q2K', boss: 'hollow' },
+    { seed: 'EMBER-7Q2K', boss: 'hollow', ...(fight === undefined ? {} : { fight }) },
     {
       map,
       heat: 1,

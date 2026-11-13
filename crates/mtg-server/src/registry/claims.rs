@@ -110,6 +110,9 @@ pub enum TableError {
     /// The teams do not fit the table.
     #[error("house_rules.{0}")]
     Teams(HouseRuleError),
+    /// A Delves fight plays the decks its run chose.
+    #[error("a Delves fight plays the decks its run chose")]
+    Fixed,
 }
 
 /// What a change to one game's table works with, taken from its entry so no lock is held across
@@ -298,6 +301,9 @@ impl Registry {
         let table = self.table(game, |_| true).ok_or(TableError::NotFound)?;
         if by != seat {
             return Err(TableError::NotAllowed);
+        }
+        if self.delve_of(game).is_some() {
+            return Err(TableError::Fixed);
         }
         let (deck, _) = deck.for_table(table.format, &table.house_rules);
         match table.handle.choose_deck(seat, deck).await {

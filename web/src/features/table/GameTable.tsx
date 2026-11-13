@@ -20,13 +20,22 @@ import { TableMoments } from './moment/TableMoments'
 import { useTableMoments } from './moment/useTableMoments'
 import { LexiconDialog } from './lexicon/LexiconDialog'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import { handGrowMost, openingGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
+import {
+  alliesBandPx,
+  handGrowMost,
+  openingGrowMost,
+  planTable,
+  POD_COLUMN_PX,
+  sidePanelRows,
+  ZONE_GAP_PX,
+} from './layout'
 import type { TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
 import { promptInStrip } from './prompt/ownDecision'
 import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
-import { defaultFocusOf, handSeat, seatCountOf, turnLeft } from './selectors'
+import { BossSide, PartySide } from './BossLayout'
+import { bossSidesKey, defaultFocusOf, handSeat, parseBossSides, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
 import { StopControlsProvider } from './stops/stopControls'
@@ -83,9 +92,12 @@ const Table = memo(function Table() {
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
+  // A fight against a boss opens in boss mode: the boss's side on top, the party together at the bottom.
+  const sidesKey = usePlay(bossSidesKey)
+  const sides = useMemo(() => parseBossSides(sidesKey), [sidesKey])
   const table = useMemo(
-    () => planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active }),
-    [viewport, seatCount, viewer, mode, chosen, followed, active],
+    () => planTable({ viewport, seatCount, viewer, mode, focus: chosen ?? followed, active, sides }),
+    [viewport, seatCount, viewer, mode, chosen, followed, active, sides],
   )
   const { seats: plan } = table
   // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
@@ -128,6 +140,7 @@ const Table = memo(function Table() {
                             <TopBar
                               mode={plan.mode}
                               onMode={setMode}
+                              bossFight={sides !== null}
                               pinnedFocus={chosen !== null}
                               onFollow={() => setChosen(null)}
                               stopsInMenu={false}
@@ -135,12 +148,21 @@ const Table = memo(function Table() {
                             />
                           }
                           opponents={
-                            <Opponents
-                              plan={plan}
-                              size={size}
-                              pod={table.opponentPod}
-                              onFocusSeat={setChosen}
-                            />
+                            plan.shape === 'boss' ? (
+                              <BossSide
+                                plan={plan}
+                                size={size}
+                                pod={table.opponentPod}
+                                onFocusSeat={setChosen}
+                              />
+                            ) : (
+                              <Opponents
+                                plan={plan}
+                                size={size}
+                                pod={table.opponentPod}
+                                onFocusSeat={setChosen}
+                              />
+                            )
                           }
                           shared={
                             <SharedStrip
@@ -149,7 +171,19 @@ const Table = memo(function Table() {
                               inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                             />
                           }
-                          own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
+                          own={
+                            plan.shape === 'boss' ? (
+                              <PartySide
+                                plan={plan}
+                                size={size}
+                                pod={table.pod}
+                                band={alliesBandPx(regions, plan.allies.length)}
+                                phone={regions.phone}
+                              />
+                            ) : (
+                              <SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />
+                            )
+                          }
                           hand={
                             <HandDock
                               seat={handFrom}

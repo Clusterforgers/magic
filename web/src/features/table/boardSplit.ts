@@ -2,7 +2,15 @@
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
 import { POD_CRAMPED_PX } from './cornerFit'
-import { OWN_SHARE, POD_COLUMN_PX, ZONE_GAP_PX, sheetMost } from './layout'
+import {
+  BOSS_ABILITIES_PX,
+  BOSS_SPAN,
+  OWN_SHARE,
+  POD_COLUMN_PX,
+  ZONE_GAP_PX,
+  alliesBandPx,
+  sheetMost,
+} from './layout'
 import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
@@ -224,8 +232,41 @@ export function boardFrames(regions: Regions, seats: SeatPlan): { own: BoardFram
     const chrome = pads + LINE_POD_PX + ZONE_GAP_PX
     return { own, theirs: { width: column - 2 * ZONE_PAD_PX, chrome, rows } }
   }
+  if (seats.shape === 'boss') return bossFrames(regions, seats, own, { aside, full, pads })
   const strip = seats.shape === 'focus' ? TILE_STRIP_PX + ZONE_GAP_PX : 0
   return { own, theirs: { width: regions.phone ? full : aside, chrome: pads + strip } }
+}
+
+/**
+ * The frames of boss mode: your row also holds the party's band over your board (`alliesBandPx`); the boss's board
+ * is the wide column of its side (`BOSS_SPAN` shares beside one per minion), or the one board under the side's tiles
+ * on a phone.
+ */
+function bossFrames(
+  regions: Regions,
+  seats: SeatPlan,
+  own: BoardFrame,
+  widths: { aside: number; full: number; pads: number },
+): { own: BoardFrame; theirs: BoardFrame } {
+  const band = alliesBandPx(regions, seats.allies.length)
+  const party = { ...own, chrome: own.chrome + (band > 0 ? band + ZONE_GAP_PX : 0) }
+  const minions = regions.phone ? 0 : Math.max(0, seats.boards.length - 1)
+  const strip = (seats.tiles.length > 0 ? TILE_STRIP_PX + ZONE_GAP_PX : 0) + BOSS_ABILITIES_PX + ZONE_GAP_PX
+  if (minions === 0) {
+    return {
+      own: party,
+      theirs: { width: regions.phone ? widths.full : widths.aside, chrome: widths.pads + strip },
+    }
+  }
+  const room = regions.main.width - 2 * ZONE_GAP_PX - minions * ZONE_GAP_PX
+  const column = (room * BOSS_SPAN) / (BOSS_SPAN + minions)
+  return {
+    own: party,
+    theirs: {
+      width: column - POD_COLUMN_PX - ZONE_GAP_PX - 2 * ZONE_PAD_PX,
+      chrome: widths.pads + BOSS_ABILITIES_PX + ZONE_GAP_PX,
+    },
+  }
 }
 
 /**

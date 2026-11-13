@@ -7,6 +7,9 @@ use uuid::Uuid;
 use crate::records::RecordError;
 use crate::user_id::UserId;
 
+/// A run unchanged for this many days, with no live fight, is abandoned when its party's list is read.
+pub(crate) const STALE_DAYS: i32 = 7;
+
 /// The Postgres store of the runs.
 #[derive(Debug, Clone)]
 pub(crate) struct DelveStore {
@@ -145,22 +148,25 @@ impl DelveStore {
         Ok(())
     }
 
-    /// The runs `user` hosts or plays in, newest first, at most `limit`.
+    /// The runs `user` hosts or plays in that were not abandoned, newest first, at most `limit`; each with whether it
+    /// saw no change for `STALE_DAYS`. An abandoned run stays stored for its history.
     pub(crate) async fn list_for(
         &self,
         user: UserId,
         limit: i64,
-    ) -> Result<Vec<Uuid>, RecordError> {
-        let ids = sqlx::query_scalar!(
-            "SELECT d.id FROM delves d
-             WHERE d.host = $1 OR EXISTS (SELECT 1 FROM delve_members m WHERE m.delve_id = d.id AND m.user_id = $1)
+    ) -> Result<Vec<(Uuid, bool)>, RecordError> {
+        let rows = sqlx::query!(
+            r#"SELECT d.id, d.updated_at < now() - make_interval(days => $3) AS "stale!" FROM delves d
+             WHERE d.status <> 'abandoned'
+               AND (d.host = $1 OR EXISTS (SELECT 1 FROM delve_members m WHERE m.delve_id = d.id AND m.user_id = $1))
              ORDER BY d.updated_at DESC
-             LIMIT $2",
+             LIMIT $2"#,
             user.uuid(),
             limit,
+            STALE_DAYS,
         )
         .fetch_all(&self.pool)
         .await?;
-        Ok(ids)
+        Ok(rows.into_iter().map(|row| (row.id, row.stale)).collect())
     }
 }

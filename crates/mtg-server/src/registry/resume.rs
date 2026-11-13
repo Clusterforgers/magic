@@ -104,6 +104,11 @@ impl Registry {
     async fn revive(&self, records: &GameRecords, record: GameRecord) -> Outcome {
         let id = record.id;
         let decoded = decode(&record);
+        let delve = decoded
+            .as_ref()
+            .ok()
+            .and_then(|recipe| recipe.campaign.as_ref())
+            .and_then(|plan| plan.run.clone());
         let reads = decoded
             .as_ref()
             .map(|recipe| recipe.reads.clone())
@@ -188,6 +193,7 @@ impl Registry {
             code: record.code_digest.map(TokenDigest::from_bytes),
             recorded: true,
             seats,
+            delve,
         };
         self.games()
             .insert(id, Entry::new(handle.clone(), parts, created));

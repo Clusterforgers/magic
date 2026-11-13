@@ -9,6 +9,7 @@ import { useSeatNamer } from './names'
 import { knownDoorFaces, usePrintedVersion } from './printed'
 import { doorNameOf } from './rooms'
 import { SeatDot } from './PodParts'
+import { bossOwner } from './campaign/bossAbilities'
 
 /** The card types of a permanent card: what a spell of another type is not. */
 const PERMANENT_TYPES = ['Artifact', 'Battle', 'Creature', 'Enchantment', 'Land', 'Planeswalker']
@@ -77,6 +78,7 @@ export function LogPanel() {
             return doorNameOf(room, at, room === undefined ? undefined : knownDoorFaces(room))
           },
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
+          boss: (id) => bossOwner(objects[id], players, seat),
         },
         { seats, players },
       ),

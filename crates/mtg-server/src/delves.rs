@@ -20,8 +20,8 @@ use mtg_engine::state::GameResult;
 use mtg_import::resolve::Lookup;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
-    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveEventView,
-    DelveList, DelveSummary, DelveView,
+    CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent, DelveDeckProblem,
+    DelveEventView, DelveFightView, DelveList, DelveSummary, DelveView,
 };
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -353,10 +353,73 @@ async fn boss_side_deck(
     })
 }
 
-/// Makes the boss fight's game when the party is in a fight that has none.
-async fn make_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError> {
+/// Why a hero's deck does not play now, in words for the run page; a server failure is an error.
+fn deck_problem(refusal: Refused) -> Result<String, ApiError> {
+    match refusal {
+        Refused::Unknown => {
+            Ok("the deck is gone: it was deleted or is no longer shared".to_owned())
+        }
+        Refused::Blocked(_) => Ok("the deck has no cards the game can play".to_owned()),
+        Refused::Failed(error) => Err(error),
+    }
+}
+
+/// The account a hero's deck is read as: their own, or the host's for a bot ally.
+fn deck_owner(loaded: &Loaded, at: usize) -> Uuid {
+    loaded
+        .run
+        .heroes
+        .get(at)
+        .and_then(|hero| hero.user.as_deref())
+        .and_then(|user| Uuid::parse_str(user).ok())
+        .unwrap_or(loaded.header.host)
+}
+
+/// Each hero's chosen deck with their run cards, or the heroes whose decks no longer play.
+async fn hero_decks(
+    app: &AppState,
+    loaded: &Loaded,
+) -> Result<Result<Vec<ChosenDeck>, Vec<DelveDeckProblem>>, ApiError> {
+    let mut decks = Vec::new();
+    let mut problems = Vec::new();
+    for (at, hero) in loaded.run.heroes.iter().enumerate() {
+        let hero_at = u8::try_from(at).unwrap_or(u8::MAX);
+        let Some(deck) = hero.deck.as_ref() else {
+            problems.push(DelveDeckProblem {
+                hero: hero_at,
+                reason: "no deck was chosen".to_owned(),
+            });
+            continue;
+        };
+        match resolve_as(app, deck_owner(loaded, at), &deck.id).await {
+            Ok(chosen) => {
+                let added = cards_named(app, &hero.cards).await?;
+                decks.push(chosen.with_run_cards(&added).map_err(|error| {
+                    tracing::error!(%error, "a hero's deck could not be fingerprinted");
+                    ApiError::internal()
+                })?);
+            }
+            Err(refusal) => problems.push(DelveDeckProblem {
+                hero: hero_at,
+                reason: deck_problem(refusal)?,
+            }),
+        }
+    }
+    Ok(if problems.is_empty() {
+        Ok(decks)
+    } else {
+        Err(problems)
+    })
+}
+
+/// Makes the boss fight's game, from the decks the heroes chose, when the party is in a fight that has none. The
+/// heroes whose decks no longer play come back instead, and the fight waits for them.
+async fn make_fight(
+    app: &AppState,
+    loaded: &mut Loaded,
+) -> Result<Vec<DelveDeckProblem>, ApiError> {
     if loaded.run.status != (Status::Fight { game: None }) {
-        return Ok(());
+        return Ok(Vec::new());
     }
     let content = campaign()?;
     let Some(plan) = loaded
@@ -364,32 +427,20 @@ async fn make_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError>
         .fight_plan(content)
         .map_err(|error| refused(error.to_string()))?
     else {
-        return Ok(());
+        return Ok(Vec::new());
     };
-    let host = loaded.header.host;
-    let mut decks = Vec::new();
+    let plan = FightPlan {
+        run: Some(loaded.header.id.to_string()),
+        ..plan
+    };
+    let mut decks: Vec<Option<ChosenDeck>> = match hero_decks(app, loaded).await? {
+        Ok(decks) => decks.into_iter().map(Some).collect(),
+        Err(problems) => return Ok(problems),
+    };
     let mut names = Vec::new();
     let mut accounts = Vec::new();
     let mut bots = Vec::new();
     for (at, hero) in loaded.run.heroes.iter().enumerate() {
-        let deck = hero
-            .deck
-            .as_ref()
-            .ok_or_else(|| refused(format!("{} has no deck", hero.name)))?;
-        let owner = hero
-            .user
-            .as_deref()
-            .and_then(|user| Uuid::parse_str(user).ok())
-            .unwrap_or(host);
-        let chosen = resolve_as(app, owner, &deck.id)
-            .await
-            .map_err(deck_refused)?;
-        let added = cards_named(app, &hero.cards).await?;
-        let chosen = chosen.with_run_cards(&added).map_err(|error| {
-            tracing::error!(%error, "a hero's deck could not be fingerprinted");
-            ApiError::internal()
-        })?;
-        decks.push(Some(chosen));
         names.push(hero.name.clone());
         accounts.push(
             hero.user
@@ -438,20 +489,44 @@ async fn make_fight(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError>
         RunEvent::FightCreated {
             game: created.id.to_string(),
         },
-    )
+    )?;
+    Ok(Vec::new())
 }
 
-/// Brings a loaded run up to date: a finished fight read back, the bots' answers, the next fight made.
-async fn advance(app: &AppState, loaded: &mut Loaded) -> Result<(), ApiError> {
+/// Brings a loaded run up to date: a finished fight read back, the bots' answers, the next fight made. Answers the
+/// heroes whose decks keep the fight from being made.
+async fn advance(app: &AppState, loaded: &mut Loaded) -> Result<Vec<DelveDeckProblem>, ApiError> {
     sync_fight(app, loaded).await?;
     settle_bots(loaded)?;
-    if let Err(error) = make_fight(app, loaded).await {
-        tracing::warn!(?error, delve = %loaded.header.id, "the boss fight waits");
+    match make_fight(app, loaded).await {
+        Ok(problems) => Ok(problems),
+        Err(error) => {
+            tracing::warn!(?error, delve = %loaded.header.id, "the boss fight waits");
+            Ok(Vec::new())
+        }
     }
-    Ok(())
 }
 
-fn view(loaded: &Loaded, user: UserId) -> DelveView {
+/// The fight the party is in, as the plan its game is made from.
+fn fight_view(run: &Run) -> Option<DelveFightView> {
+    if !matches!(run.status, Status::Fight { .. }) {
+        return None;
+    }
+    let plan = run.fight_plan(campaign().ok()?).ok()??;
+    Some(DelveFightView {
+        boss: plan.boss.name.clone(),
+        life: plan.boss.life,
+        rules: plan.boss.rules.clone(),
+        phases: plan.boss.phases.clone(),
+        minions: plan
+            .minions
+            .iter()
+            .map(|minion| (minion.name.clone(), minion.life))
+            .collect(),
+    })
+}
+
+fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> DelveView {
     let me = loaded
         .run
         .heroes
@@ -480,6 +555,8 @@ fn view(loaded: &Loaded, user: UserId) -> DelveView {
         me,
         run: loaded.run.clone(),
         boss,
+        deck_problems,
+        fight: fight_view(&loaded.run),
     }
 }
 
@@ -530,7 +607,30 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
     }))
 }
 
-/// `GET /api/delves`: the caller's runs.
+/// Abandons a run that saw no change for `STALE_DAYS` and has no live fight; whether it did.
+async fn abandon_stale(
+    app: &AppState,
+    delves: &Delves,
+    loaded: &mut Loaded,
+) -> Result<bool, ApiError> {
+    if loaded.run.is_over() {
+        return Ok(false);
+    }
+    if let Status::Fight { game: Some(game) } = &loaded.run.status
+        && game
+            .parse::<GameId>()
+            .is_ok_and(|game| app.registry().handle(game).is_some())
+    {
+        return Ok(false);
+    }
+    let _turn = delves.turn.lock().await;
+    let from = loaded.events.len();
+    push(loaded, RunEvent::Abandoned)?;
+    // A write that raced a member's action is refused by the log's key; the run then shows as it is.
+    Ok(save(delves, loaded, from).await.is_ok())
+}
+
+/// `GET /api/delves`: the caller's runs, abandoned ones left out.
 pub(crate) async fn list(
     State(app): State<AppState>,
     headers: HeaderMap,
@@ -544,10 +644,13 @@ pub(crate) async fn list(
         .map_err(|e| unavailable(&e))?;
     let content = campaign()?;
     let mut out = Vec::new();
-    for id in ids {
-        let Ok(loaded) = load(delves, id).await else {
+    for (id, stale) in ids {
+        let Ok(mut loaded) = load(delves, id).await else {
             continue;
         };
+        if stale && abandon_stale(&app, delves, &mut loaded).await? {
+            continue;
+        }
         let run = &loaded.run;
         let is_boss = |id: &u8| run.map.node(*id).is_some_and(|n| n.boss.is_some());
         out.push(DelveSummary {
@@ -622,7 +725,10 @@ pub(crate) async fn create(
         },
     )?;
     save(delves, &loaded, 0).await?;
-    Ok((StatusCode::CREATED, Json(view(&loaded, user.id))))
+    Ok((
+        StatusCode::CREATED,
+        Json(view(&loaded, user.id, Vec::new())),
+    ))
 }
 
 /// `POST /api/delves/join/{code}`: the caller joins the run's party in its lobby.
@@ -660,7 +766,7 @@ pub(crate) async fn join(
         )?;
     }
     save(delves, &loaded, from).await?;
-    Ok(Json(view(&loaded, user.id)))
+    Ok(Json(view(&loaded, user.id, Vec::new())))
 }
 
 /// `GET /api/delves/{id}`: the run as the caller sees it, brought up to date.
@@ -675,9 +781,9 @@ pub(crate) async fn get_one(
     let _turn = delves.turn.lock().await;
     let mut loaded = load(delves, id).await?;
     let from = loaded.events.len();
-    advance(&app, &mut loaded).await?;
+    let problems = advance(&app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    Ok(Json(view(&loaded, user.id)))
+    Ok(Json(view(&loaded, user.id, problems)))
 }
 
 /// The event a member's action makes, checked against who they are.
@@ -744,6 +850,23 @@ async fn event_of(
                     "a player chooses their own deck",
                 ));
             }
+            if loaded.run.status != Status::Lobby {
+                let current = target
+                    .deck
+                    .as_ref()
+                    .map(|d| d.id.clone())
+                    .unwrap_or_default();
+                let plays = resolve_as(app, deck_owner(loaded, usize::from(hero)), &current).await;
+                match plays {
+                    Ok(_) => {
+                        return Err(refused(
+                            "decks change only through rewards once the run has started",
+                        ));
+                    }
+                    Err(Refused::Failed(error)) => return Err(error),
+                    Err(_) => {}
+                }
+            }
             let chosen = resolve(app, headers, &deck).await.map_err(deck_refused)?;
             let colors = letters(
                 chosen
@@ -784,9 +907,9 @@ pub(crate) async fn act(
     advance(&app, &mut loaded).await?;
     let event = event_of(&app, &headers, &loaded, user.id, action).await?;
     push(&mut loaded, event)?;
-    advance(&app, &mut loaded).await?;
+    let problems = advance(&app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    Ok(Json(view(&loaded, user.id)))
+    Ok(Json(view(&loaded, user.id, problems)))
 }
 
 #[cfg(test)]

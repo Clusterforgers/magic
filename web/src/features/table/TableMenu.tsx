@@ -49,7 +49,11 @@ interface TableMenuProps {
   onOpenChange: (open: boolean) => void
   /** The top bar is low (a phone on its side): a smaller button. */
   compact?: boolean
+  /** A fight against a boss: boss mode is offered beside grid and focus. */
+  bossFight?: boolean
 }
+
+const MODE_WORDS: Record<TableMode, string> = { boss: 'Boss', grid: 'Grid', focus: 'Focus' }
 
 /**
  * The table menu at the right of the top bar: the layout (grid or focus, and following the turn), the theme, the card
@@ -65,7 +69,9 @@ export function TableMenu({
   open,
   onOpenChange,
   compact = false,
+  bossFight = false,
 }: TableMenuProps) {
+  const modes: TableMode[] = bossFight ? ['boss', 'grid', 'focus'] : ['grid', 'focus']
   const { choice, setChoice } = useTheme()
   const concede = usePlay(canConcede)
   const images = useImageChoice()
@@ -81,7 +87,7 @@ export function TableMenu({
         <Section title="Layout">
           <div role="toolbar" aria-label="Table layout" className="flex flex-wrap items-center gap-2">
             <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
-              {(['grid', 'focus'] as const).map((value) => (
+              {modes.map((value) => (
                 <Button
                   key={value}
                   size="sm"
@@ -89,7 +95,7 @@ export function TableMenu({
                   aria-pressed={mode === value}
                   onClick={() => onMode(value)}
                 >
-                  {value === 'grid' ? 'Grid' : 'Focus'}
+                  {MODE_WORDS[value]}
                 </Button>
               ))}
             </div>

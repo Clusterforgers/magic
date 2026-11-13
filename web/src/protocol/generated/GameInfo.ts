@@ -45,4 +45,8 @@ manual_play: boolean,
 /**
  * What the creator set in place of the format's values; left out when nothing is set, so an invite-only lobby can name them.
  */
-house_rules?: HouseRules, };
+house_rules?: HouseRules, 
+/**
+ * The Delves run the game is a boss fight of (`/delves/{id}`); left out for any other game.
+ */
+delve?: string, };

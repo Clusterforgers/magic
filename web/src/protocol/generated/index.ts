@@ -133,6 +133,8 @@ export type { DelveBossView } from "./DelveBossView";
 export type { DelveContent } from "./DelveContent";
 export type { DelveEventView } from "./DelveEventView";
 export type { DelveList } from "./DelveList";
+export type { DelveDeckProblem } from "./DelveDeckProblem";
+export type { DelveFightView } from "./DelveFightView";
 export type { DelveSummary } from "./DelveSummary";
 export type { DelveView } from "./DelveView";
 export type { DiscardOptions } from "./DiscardOptions";
