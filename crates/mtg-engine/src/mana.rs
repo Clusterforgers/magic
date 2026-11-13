@@ -211,6 +211,21 @@ impl ManaPool {
         }
     }
 
+    /// The part of the pool a spell that spends only mana of some sources may use: the mana without a restriction whose
+    /// source is known and `keep` holds for ("Spend only mana produced by basic lands to cast this spell.").
+    pub(crate) fn only_from(&self, keep: impl Fn(&SpendTraits) -> bool) -> ManaPool {
+        let mut pool = ManaPool::default();
+        for unit in self.sources().iter().filter(|unit| keep(&unit.from)) {
+            pool.add_from(
+                unit.mana,
+                Vec::new(),
+                ManaLasts::default(),
+                Some(unit.from.clone()),
+            );
+        }
+        pool
+    }
+
     /// The pool without the restricted units at these places.
     pub(crate) fn without_restricted(&self, places: &[usize]) -> ManaPool {
         let mut pool = self.clone();

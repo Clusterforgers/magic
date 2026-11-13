@@ -524,6 +524,14 @@ pub enum ServerMessage {
         /// How it ended.
         result: GameResult,
     },
+    /// An admin ended the game: it has no result and nothing more is played. Sent to every seat and spectator just
+    /// before the server closes their sockets with 4003.
+    EndedByAdmin {
+        /// What the admin wrote, if anything.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        reason: Option<String>,
+    },
     /// What this seat may ask the table to take back now (see [`ClientMessage::TakeBack`]); `None` when nothing.
     ///
     /// Sent when it changes, after the events of the step that changed it.

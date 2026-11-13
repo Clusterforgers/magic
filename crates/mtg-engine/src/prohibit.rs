@@ -68,6 +68,8 @@ pub(crate) enum Doing {
     Crew { object: ObjectId },
     /// `object` becomes suspected.
     BecomeSuspected { object: ObjectId },
+    /// A player becomes the monarch.
+    BecomeMonarch { player: PlayerId },
     /// `target` becomes the target of a spell or ability of `by`, controlled by `controller`.
     BeTargeted { target: Target, by: ObjectRef },
     /// `object` becomes the target of a spell or ability that can target only Walls.
@@ -109,6 +111,17 @@ pub(crate) enum Doing {
         player: PlayerId,
         object: ObjectId,
         defender: PlayerId,
+    },
+    /// `player` pays life for the cost of a spell or an ability, a mana ability when `mana_ability`.
+    PayLifeForCost {
+        player: PlayerId,
+        mana_ability: bool,
+    },
+    /// `player` sacrifices `object` for the cost of a spell or an ability, a mana ability when `mana_ability`.
+    SacrificeForCost {
+        player: PlayerId,
+        object: ObjectId,
+        mana_ability: bool,
     },
 }
 
@@ -244,6 +257,9 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         (Prohibited::SkipStep(skipped), Doing::SkipStep { player, step }) => {
             step_matches(*skipped, step) && covers(who, Some(player), None)
         }
+        (Prohibited::BecomeMonarch, Doing::BecomeMonarch { player }) => {
+            covers(who, Some(player), None)
+        }
         (Prohibited::SkipCombat, Doing::SkipStep { player, step }) => {
             step.phase() == crate::turn::Phase::Combat && covers(who, Some(player), None)
         }
@@ -278,6 +294,35 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                         .holds(unless)
                         .unwrap_or(false)
                 })
+        }
+        (
+            Prohibited::PayCosts {
+                life,
+                but_mana_abilities,
+                ..
+            },
+            Doing::PayLifeForCost {
+                player,
+                mana_ability,
+            },
+        ) => *life && !(mana_ability && *but_mana_abilities) && covers(who, Some(player), None),
+        (
+            Prohibited::PayCosts {
+                sacrifice: Some(filter),
+                but_mana_abilities,
+                ..
+            },
+            Doing::SacrificeForCost {
+                player,
+                object,
+                mana_ability,
+            },
+        ) => {
+            !(mana_ability && *but_mana_abilities)
+                && covers(who, Some(player), None)
+                && state
+                    .object(object)
+                    .is_some_and(|o| picks(state, ban, filter, o.reference()))
         }
         _ => false,
     }
@@ -502,6 +547,7 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
         } => found.push(Doing::PhaseOut { object: *object }),
         Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
         Event::Suspected { object } => found.push(Doing::BecomeSuspected { object: *object }),
+        Event::MonarchChanged { player } => found.push(Doing::BecomeMonarch { player: *player }),
         _ => {}
     }
     found

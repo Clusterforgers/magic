@@ -1,0 +1,47 @@
+/*
+ * The campaign cues at the table (docs/web.md, Delves): the phase banner and the Spirit look of a fallen hero's pod
+ * and tile. The banner fades with the turn banner's times (`turn.css`, `timing.ts`) and never takes a pointer. Outside
+ * the no-preference block only opacity changes; every movement and keyframe sits inside it.
+ */
+[data-slot='phase-banner'] {
+  --phase-banner-in: 250ms;
+  --phase-banner-out: 150ms;
+  pointer-events: none;
+  opacity: 0;
+}
+
+[data-slot='phase-banner'][data-phase='in'],
+[data-slot='phase-banner'][data-phase='hold'] {
+  opacity: 1;
+  transition: opacity var(--phase-banner-in) cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-slot='phase-banner'][data-phase='out'] {
+  opacity: 0;
+  transition: opacity var(--phase-banner-out) cubic-bezier(0.3, 0, 1, 1);
+}
+
+/* A Spirit's pod and tile: faded and drained of colour, so the fallen hero reads at a glance. */
+[data-spirit] {
+  filter: saturate(0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='phase-banner'] {
+    --phase-banner-in: 100ms;
+    --phase-banner-out: 100ms;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='phase-banner'][data-phase='in'] {
+    animation: phase-banner-in var(--phase-banner-in) cubic-bezier(0.2, 0, 0, 1) both;
+  }
+
+  @keyframes phase-banner-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem) scale(0.96);
+    }
+  }
+}

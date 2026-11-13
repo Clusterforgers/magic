@@ -230,6 +230,7 @@ mod tests {
                     max: 2,
                     text: wording::PROLIFERATE.into(),
                     can_cancel: false,
+                    groups: Vec::new(),
                 })
             }
         );

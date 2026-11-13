@@ -62,6 +62,7 @@ fn revealed_for_mana(ability: &Ability) -> Option<(Vec<String>, Ability)> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Reveal {
             what: Ref::Bound(shown),

@@ -1,6 +1,6 @@
 //! Goal: a run folds its events as the design says: the lobby takes up to four heroes and starts only with a player
 //! and every deck chosen; the first boss needs no vote; a lost fight costs a heart and is retried until the hearts
-//! run out; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
+//! run out; a fight whose game ended unplayed waits for a new game at no cost; a won fight carries each hero's life, brings Spirits back and offers loot; votes go to the most votes or
 //! the torch bearer; bots answer every offer; and replaying the events gives the same run.
 use mtg_campaign::run::{HEAL_AFTER_BOSS, HEARTS, LIFE, SPIRIT_RETURN};
 use mtg_campaign::{Brain, Content, HeroDeck, Offer, Pick, Run, RunEvent, Status, content};
@@ -307,4 +307,27 @@ proptest! {
         let replayed = Run::replay(content, "warrens", seed, 0, &events).unwrap();
         prop_assert_eq!(replayed, run);
     }
+}
+
+#[rstest]
+#[case(1)]
+#[case(3)]
+fn a_voided_fight_waits_for_a_new_game_at_no_cost(#[case] voids: usize) {
+    let content = content().unwrap();
+    let (mut run, mut events) = lobby(content, 5, 1);
+    apply(&mut run, &mut events, RunEvent::Started);
+    assert!(
+        run.apply(content, &RunEvent::FightVoided).is_err(),
+        "no game to void yet"
+    );
+    let before = run.clone();
+    for n in 0..voids {
+        let game = format!("g{n}");
+        apply(&mut run, &mut events, RunEvent::FightCreated { game });
+        apply(&mut run, &mut events, RunEvent::FightVoided);
+    }
+    assert_eq!(run, before, "nothing but the game changed");
+    assert_eq!(run.status, Status::Fight { game: None });
+    let replayed = Run::replay(content, "warrens", 5, 0, &events).unwrap();
+    assert_eq!(replayed, run);
 }

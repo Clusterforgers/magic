@@ -29,7 +29,15 @@ pub(super) fn r303c_all(payer: &Payer<'_>, filter: &Selector) -> Option<Vec<Obje
     let found = sacrifice::candidates(payer, filter);
     found
         .iter()
-        .all(|id| crate::prohibit::may_sacrifice(payer.state, payer.player, *id))
+        .all(|id| {
+            crate::prohibit::may_sacrifice(payer.state, payer.player, *id)
+                && !crate::r4707_pay_costs::r4707_sacrifice_barred(
+                    payer.state,
+                    payer.player,
+                    *id,
+                    payer.pays,
+                )
+        })
         .then_some(found)
 }
 
@@ -53,5 +61,6 @@ pub(super) const fn r303c_payer(
         source,
         barred: &[],
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Cost,
     }
 }

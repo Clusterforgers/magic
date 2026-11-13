@@ -14,6 +14,9 @@ use crate::refs::{Ref, ZoneKind};
 
 /// The two statics of the sentence, when the card gets a bonus and a group gets a bonus or a keyword.
 pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
+    if let Some(found) = r.attempt(super::r4701_pairs::r4701_graveyard_only) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::r371_owner::r371_attacks_unsacrificed) {
         return Some(found);
     }
@@ -45,9 +48,26 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// abilities.
 #[allow(clippy::too_many_lines)]
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let graveyard_only = super::r4701_pairs::r4701_pair_texts(first, second);
+    if !graveyard_only.is_empty() {
+        return graveyard_only;
+    }
+    let whole_pair = super::r4705_reads::r4705_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let r406 = super::r406_actions::r406_pair_texts(first, second);
     if !r406.is_empty() {
         return r406;
+    }
+    let printed = super::r4707_printed::r4707_pair_texts(first, second);
+    if !printed.is_empty() {
+        return printed;
+    }
+    let chosen_then_paid =
+        super::r4700_writers::r4700_pair_texts(first, second, super::written_variants);
+    if !chosen_then_paid.is_empty() {
+        return chosen_then_paid;
     }
     let r408 = super::r408_lands::r408_pair_texts(first, second);
     if !r408.is_empty() {

@@ -183,6 +183,8 @@ pub enum CostItem {
     DamageToYou(Amount),
     /// Each other player gains this much life ("you may have each other player gain 6 life").
     OthersGainLife(u32),
+    /// The payer gets this many poison counters ("Ward—Get five poison counters.").
+    GetPoison(u32),
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
     /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,

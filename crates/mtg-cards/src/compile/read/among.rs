@@ -130,6 +130,7 @@ pub fn among(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         count: bounds,
         bind: KEPT.to_owned(),
         rest_as: None,
+        differ: None,
     });
     if reveal {
         effects.push(Effect::Reveal {
@@ -227,6 +228,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 count: bounds,
                 bind,
                 rest_as: None,
+                differ: None,
             },
             kept @ ..,
         ] if bind == KEPT => {
