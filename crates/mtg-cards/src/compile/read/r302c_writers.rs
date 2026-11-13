@@ -213,6 +213,13 @@ pub(super) fn r302c_pair_texts(first: &Ability, second: &Ability) -> Vec<String>
     if condition != again || source.0 != [Pred::This] {
         return Vec::new();
     }
+    // Hellbent: "If you have no cards in hand, this spell can't be countered and the damage can't be prevented."
+    if r408_no_cards_in_hand(condition) {
+        return vec![
+            "If you have no cards in hand, this spell can't be countered and the damage can't be prevented."
+                .to_owned(),
+        ];
+    }
     let Condition::Compare {
         left: Amount::X,
         op: Cmp::Ge,
@@ -256,4 +263,16 @@ fn kicked_split_second(value: &Value) -> Option<String> {
         "from": "Stack"
     } });
     (value == &shape).then(|| "If this spell was kicked, it has split second.".to_owned())
+}
+
+/// Whether the condition is that the controller has no cards in hand (hellbent).
+fn r408_no_cards_in_hand(condition: &Condition) -> bool {
+    matches!(
+        condition,
+        Condition::Compare {
+            left: Amount::Count(cards),
+            op: Cmp::Eq,
+            right: Amount::Fixed(0),
+        } if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]
+    )
 }

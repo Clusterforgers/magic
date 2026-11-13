@@ -55,6 +55,7 @@ mod owner_left_abilities;
 mod prevent_half;
 mod prevention;
 mod prohibitions;
+mod r408_rules;
 mod protection;
 mod r300_random_discard;
 mod r300c_activations;

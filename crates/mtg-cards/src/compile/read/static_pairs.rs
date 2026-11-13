@@ -43,6 +43,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !r408.is_empty() {
         return r408;
     }
+    let r408 = super::r408_lands::r408_hand_and_life_texts(first, second);
+    if !r408.is_empty() {
+        return r408;
+    }
     let escapes = super::r304b_writers::r304b_escapes_instead(first, second);
     if !escapes.is_empty() {
         return escapes;

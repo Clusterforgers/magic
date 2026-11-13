@@ -1178,6 +1178,10 @@ impl<'a> Walker<'a> {
                 self.player_amount("Largest", who);
                 self.at("of", |w| w.selector(of));
             }
+            Amount::Smallest { who, of } => {
+                self.player_amount("Smallest", who);
+                self.at("of", |w| w.selector(of));
+            }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::TurnsTaken(who) => self.player_amount("TurnsTaken", who),

@@ -3368,6 +3368,7 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::EndTurn => "end the turn".to_owned(),
+            Effect::LoseGame { who: Ref::You } => "you lose the game".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".
             Effect::GainSuspend {
@@ -3715,6 +3716,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::PlayersWhere { .. } => super::r9w_players::r408_fewest_players(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
                 "that permanent's controller".to_owned()
             }

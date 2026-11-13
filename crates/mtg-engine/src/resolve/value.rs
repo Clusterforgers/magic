@@ -617,6 +617,21 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The fewest objects `of` counts for any one of the players `who` names, each taken as "you"; zero for nobody.
+    fn smallest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
+        let counted = Amount::Count(of.clone());
+        let mut least: Option<i64> = None;
+        for player in self.players(who)? {
+            let each = Scope {
+                controller: player,
+                ..self.clone()
+            };
+            let count = each.amount(&counted)?;
+            least = Some(least.map_or(count, |least| least.min(count)));
+        }
+        Ok(least.unwrap_or(0))
+    }
+
     fn largest(&self, who: &Ref, of: &Selector) -> Result<i64, ResolveError> {
         let counted = Amount::Count(of.clone());
         let mut most = 0;
@@ -2116,6 +2131,7 @@ impl<'a> Scope<'a> {
             Amount::Tallied { who, what } => self.tallied(who, *what, false)?,
             Amount::TalliedLastTurn { who, what } => self.tallied(who, *what, true)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
+            Amount::Smallest { who, of } => self.smallest(who, of)?,
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,

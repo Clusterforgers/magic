@@ -86,6 +86,12 @@ fn r408_probe() {
 #[case("Flash of Insight")]
 #[case("Experimental Frenzy")]
 #[case("Cornered Market")]
+#[case("Discontinuity")]
+#[case("Intervention Pact")]
+#[case("Demonfire")]
+#[case("Marina Vendrell's Grimoire")]
+#[case("Garza's Assassin")]
+#[case("Gor Muldrak, Amphinologist")]
 fn r408_reads_back_whole(#[case] name: &str) {
     let report = r408_report(name, &r408_file(name));
     assert_eq!(
@@ -101,8 +107,16 @@ fn r408_reads_back_whole(#[case] name: &str) {
 #[case::opponents_play("Experimental Frenzy", r#""who": "You", "action": { "PlayLands""#, r#""who": "Opponents", "action": { "PlayLands""#)]
 #[case::spells_from_the_library("Experimental Frenzy", r#""filter": [{ "In": "Hand" }]"#, r#""filter": [{ "In": "Library" }]"#)]
 #[case::basic_lands("Cornered Market", r#"{ "Not": { "Supertype": "Basic" } }"#, r#"{ "Supertype": "Basic" }"#)]
-#[case::token_names("Cornered Market", r#""PlayLands": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }, { "SharesName": { "Each": [{ "Not": "Token" }] } }]"#, r#""PlayLands": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }, { "SharesName": { "Each": ["Token"] } }]"#)]
+#[case::token_names("Cornered Market", r#"{ "SharesName": { "Each": [{ "Not": "Token" }] } }"#, r#"{ "SharesName": { "Each": ["Token"] } }"#)]
 #[case::sacrifices_lands("Firecat Blitz", r#"{ "Subtype": "Mountain" }"#, r#"{ "Subtype": "Forest" }"#)]
+#[case::other_turns("Discontinuity", r#""condition": "YourTurn""#, r#""condition": { "Not": "YourTurn" }"#)]
+#[case::less_reduction("Discontinuity", "{2}{U}{U}", "{1}{U}{U}")]
+#[case::pact_price("Intervention Pact", "{1}{W}{W}", "{2}{W}{W}")]
+#[case::loses_life("Intervention Pact", "GainLife", "LoseLife")]
+#[case::one_card_in_hand("Demonfire", r#""right": 0"#, r#""right": 1"#)]
+#[case::draws_on_loss("Marina Vendrell's Grimoire", "Discard", "Draw")]
+#[case::rounded_down("Garza's Assassin", r#""up": true"#, r#""up": false"#)]
+#[case::most_creatures("Gor Muldrak, Amphinologist", r#""op": "Le""#, r#""op": "Ge""#)]
 #[case::red_cards("Flash of Insight", r#""Blue""#, r#""Red""#)]
 fn r408_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r408_file(name);

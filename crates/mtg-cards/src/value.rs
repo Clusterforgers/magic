@@ -624,6 +624,15 @@ pub enum Amount {
         /// The objects counted for each, written for "you".
         of: Selector,
     },
+    /// The smallest count of the objects the selector names among the players the reference names, each player taken as
+    /// "you": "each player who controls the fewest creatures" compares their own count with it; zero when no player is
+    /// named.
+    Smallest {
+        /// The players compared.
+        who: Ref,
+        /// The objects counted for each, written for "you".
+        of: Selector,
+    },
     /// The most counters of the kind that any one of the players the reference names holds ("the most poison counters
     /// among your opponents"); never the sum, and zero when no player is named.
     HighestCounters {
@@ -886,6 +895,10 @@ enum Tagged {
         who: Ref,
         of: Selector,
     },
+    Smallest {
+        who: Ref,
+        of: Selector,
+    },
     HighestCounters {
         who: Ref,
         counter: CounterKind,
@@ -1043,6 +1056,10 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         of: &'a Selector,
     },
+    Smallest {
+        who: &'a Ref,
+        of: &'a Selector,
+    },
     HighestCounters {
         who: &'a Ref,
         counter: &'a CounterKind,
@@ -1167,6 +1184,7 @@ impl From<Tagged> for Amount {
             Tagged::PermanentsGraved => Amount::PermanentsGraved,
             Tagged::Tallied { who, what } => Amount::Tallied { who, what },
             Tagged::Largest { who, of } => Amount::Largest { who, of },
+            Tagged::Smallest { who, of } => Amount::Smallest { who, of },
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::TurnsTaken(who) => Amount::TurnsTaken(who),
@@ -1279,6 +1297,7 @@ impl Serialize for Amount {
                 TaggedRef::Tallied { who, what: *what }.serialize(serializer)
             }
             Amount::Largest { who, of } => TaggedRef::Largest { who, of }.serialize(serializer),
+            Amount::Smallest { who, of } => TaggedRef::Smallest { who, of }.serialize(serializer),
             Amount::HighestCounters { who, counter } => {
                 TaggedRef::HighestCounters { who, counter }.serialize(serializer)
             }
