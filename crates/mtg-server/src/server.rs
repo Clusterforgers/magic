@@ -32,13 +32,8 @@ use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::tournaments::Tournaments;
 use crate::{
-<<<<<<< HEAD
-    api, bulk_reads, deck_groups, decks, favourites, fix_marks, lobbies, my_games, precon_api,
-    prefs, printings, reads, tournaments, tutorial, ws,
-=======
-    api, bulk_reads, decks, delves, favourites, fix_marks, lobbies, my_games, precon_api, prefs,
-    printings, reads, tournaments, tutorial, ws,
->>>>>>> origin/main
+    api, bulk_reads, deck_groups, decks, delves, favourites, fix_marks, lobbies, my_games,
+    precon_api, prefs, printings, reads, tournaments, tutorial, ws,
 };
 
 struct Inner {
