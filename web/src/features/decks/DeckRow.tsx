@@ -8,6 +8,9 @@ import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
+import { DECK_DRAG_TYPE } from './groups/drag'
+import { MoveToGroup } from './groups/GroupMenus'
+import type { GroupChoice } from './groups/GroupMenus'
 import { LegalityPill } from './LegalityPill'
 import { notLegalText } from './legality'
 import { cardsText, checkNote, formatLabel, hasUnvalidated, unvalidatedLink } from './format'
@@ -19,6 +22,12 @@ interface DeckRowProps {
   /** The time the ages are counted to, in milliseconds since the epoch. */
   now: number
   onDelete: (deck: DeckListItem) => void
+  /** The account's groups; absent while they are unknown, and then the row offers no move. */
+  groups?: readonly GroupChoice[]
+  /** The group the deck sits in, or null. */
+  groupId?: string | null
+  /** Moves the deck to a group, or to none. */
+  onFile?: (deck: DeckListItem, group: string | null) => void
 }
 
 /**
@@ -26,13 +35,31 @@ interface DeckRowProps {
  * the last check"), format, card count and age, a line that says what the state means for this deck, and the actions
  * Edit, Export and Delete. Memoised: a dialog opening over the list draws no row again.
  */
-export const DeckRow = memo(function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
+export const DeckRow = memo(function DeckRow({
+  deck,
+  api,
+  now,
+  onDelete,
+  groups,
+  groupId = null,
+  onFile,
+}: DeckRowProps) {
+  const movable = groups !== undefined && onFile !== undefined
   const note = checkNote(deck)
   const link = unvalidatedLink(deck.summary.counts)
   return (
     <li
       data-deck={deck.id}
       data-state={deck.state}
+      draggable={movable}
+      onDragStart={
+        movable
+          ? (event) => {
+              event.dataTransfer.setData(DECK_DRAG_TYPE, deck.id)
+              event.dataTransfer.effectAllowed = 'move'
+            }
+          : undefined
+      }
       // A row out of view is neither laid out nor painted until it scrolls near; it keeps the height it last had.
       className="surface grid gap-3 p-4 [contain-intrinsic-size:auto_14rem] [content-visibility:auto] sm:grid-cols-[1fr_auto] sm:items-center"
     >
@@ -105,7 +132,7 @@ export const DeckRow = memo(function DeckRow({ deck, api, now, onDelete }: DeckR
           </Link>
         ) : null}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Link
           to="/decks/$deckId"
           params={{ deckId: deck.id }}
@@ -116,6 +143,14 @@ export const DeckRow = memo(function DeckRow({ deck, api, now, onDelete }: DeckR
           Edit
         </Link>
         <ExportMenu deck={deck} api={api} />
+        {groups !== undefined && onFile !== undefined ? (
+          <MoveToGroup
+            deckName={deck.name}
+            groups={groups}
+            current={groupId}
+            onMove={(group) => onFile(deck, group)}
+          />
+        ) : null}
         <Button
           type="button"
           variant="outline"

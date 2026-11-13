@@ -12,6 +12,7 @@
 //! A game is also made [`Visibility::Public`] or [`Visibility::Invite`], and each of its seats is
 //! held from the start (its token is in the create response) or open ([`SeatState`]).
 
+mod admin;
 mod cause;
 mod claims;
 mod departure;
@@ -59,6 +60,7 @@ use crate::user_id::UserId;
 /// Most games `Registry::games_of` returns: the newest ones.
 pub const MAX_LISTED_GAMES: usize = 100;
 
+pub use admin::AdminEnd;
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
@@ -182,6 +184,8 @@ pub enum Removal {
     Dropped,
     /// The host closed the game while it was in its lobby.
     ClosedByHost,
+    /// An admin ended the game, in its lobby or running.
+    EndedByAdmin,
 }
 
 /// What a valid token opens: one seat of one game.

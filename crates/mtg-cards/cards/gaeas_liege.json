@@ -1,16 +1,46 @@
 {
   "oracle_id": "8d134a60-e1e5-4163-8bdc-36af91567185",
   "name": "Gaea's Liege",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gaea's Liege",
       "oracle_fingerprint": "667dea9f724251b4c7ffbb80354abbec",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 246 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "condition": {
+              "Not": {
+                "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "Defending" }] },
+                  "toughness": {
+                    "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "Defending" }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": { "left": { "Count": ["This", "Attacking"] }, "op": "Ge", "right": 1 }
+            }
           }
         },
         {

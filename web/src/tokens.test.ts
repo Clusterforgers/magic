@@ -97,6 +97,16 @@ text('chosen mark', 'on-selected', ['selected'])
 for (const name of MANA) text(`${name} mana symbol`, `on-mana-${name}`, [`mana-${name}`])
 for (const name of SUPPORT) text(`${name} support mark`, `support-${name}`, SURFACES)
 for (const team of TEAMS) text(`team ${team} label`, `team-${team}`, FILLS)
+// Delves: the ember and the relic gold mark text on panels and on the stone ground of the dungeon scenes.
+text('delve accent', 'delve', [...SURFACES, 'delve-stone'])
+text('delve action', 'on-delve', ['delve'])
+text('relic', 'relic', [...SURFACES, 'delve-stone'])
+text('dungeon scene', 'foreground', ['delve-stone'])
+text('dungeon scene secondary', 'muted-foreground', ['delve-stone'])
+text('dungeon scene state', 'destructive', ['delve-stone'])
+text('boss chip', 'on-boss', ['boss'])
+text('boss phase name', 'boss', FILLS)
+text('spirit mark', 'spirit', FILLS)
 
 edge('field and control', 'border-strong', SURFACES)
 edge('field', 'input', SURFACES)
@@ -111,6 +121,10 @@ edge('state', 'destructive', SURFACES)
 edge('chosen card', 'selected', [...FILLS, 'lane'])
 for (const name of SUPPORT) edge(`${name} support mark`, `support-${name}`, FILLS)
 for (const team of TEAMS) edge(`team ${team} mark`, `team-${team}`, FILLS)
+edge('delve accent', 'delve', [...SURFACES, 'delve-stone'])
+edge('relic', 'relic', [...SURFACES, 'delve-stone'])
+edge('boss seat', 'boss', FILLS)
+edge('spirit mark', 'spirit', FILLS)
 
 describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName) => {
   it.each(pairs)('$use: $fg on $bg is at least $min:1', ({ fg, bg, min }) => {

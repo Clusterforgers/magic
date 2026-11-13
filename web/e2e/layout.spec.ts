@@ -232,6 +232,24 @@ const STOPS: readonly Stop[] = [
   tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
   tableStop('The table (dev), the Commands panel after a look at the top', 'panel=top', 'pass'),
   tableStop('The table (dev), the Commands panel with a card picked', 'panel=card', 'pass'),
+  ...(
+    [
+      ['lobby', 'Descend'],
+      ['map', 'Vote for Shop'],
+      ['relics', 'Take Ember Idol'],
+      ['shop', 'Leave the shop'],
+      ['campfire', 'Rest'],
+      ['event', 'Turn back'],
+    ] as const
+  ).map(([state, button]) => ({
+    name: `A delve (dev) in the ${state} state`,
+    fitsFrom: Infinity,
+    actions: { [button]: `text:${button}` },
+    async open(page: Page) {
+      await page.goto(`${DEV_WEB_URL}/dev/delve?state=${state}`)
+      await expect(page.getByRole('button', { name: button, exact: true }).first()).toBeVisible()
+    },
+  })),
   {
     name: 'A lobby (dev) of six seats',
     fitsFrom: Infinity,

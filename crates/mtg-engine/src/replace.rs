@@ -3151,9 +3151,10 @@ impl Pass<'_> {
         if let Some(slot) = self.slots.get_mut(entering) {
             slot.applied.clone_from(&applied);
         }
+        let each = devoured_each(*counters, made);
         let gained = u32::try_from(made)
             .ok()
-            .and_then(|made| made.checked_mul(*counters))
+            .and_then(|made| made.checked_mul(each))
             .and_then(|total| i32::try_from(total).ok())
             .filter(|total| *total > 0);
         if let Some(slot) = w7e_devoured_slot(object, made) {
@@ -3786,6 +3787,16 @@ mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;
 mod w9c_prevent;
+
+/// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is
+/// `counters` 0, the number devoured.
+fn devoured_each(counters: u32, made: usize) -> u32 {
+    if counters == 0 {
+        u32::try_from(made).unwrap_or(u32::MAX)
+    } else {
+        counters
+    }
+}
 
 #[cfg(test)]
 mod tests {

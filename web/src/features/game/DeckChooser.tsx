@@ -8,6 +8,9 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import type { GameFormat } from '@/lib/houseRules'
 import type { DecksApi } from '@/net/decks'
+import { useDeckGroups } from '@/features/decks/groups/useDeckGroups'
+import { deckGroupsApi as sharedGroups } from '@/net/deckGroups'
+import type { DeckGroupsApi } from '@/net/deckGroups'
 import { favouritesApi as sharedFavourites } from '@/net/favourites'
 import type { FavouritesApi } from '@/net/favourites'
 import type { PreconsApi } from '@/net/precons'
@@ -56,6 +59,8 @@ export interface DeckChooserProps {
   onPreview?(previewing: { name: string } | null): void
   /** The account's favourite precons come from here. */
   favouritesApi?: FavouritesApi
+  /** The account's deck groups come from here. */
+  deckGroupsApi?: DeckGroupsApi
 }
 
 type Kind = 'builtin' | 'own' | 'precons'
@@ -90,6 +95,7 @@ export function DeckChooser({
   choice,
   onPreview,
   favouritesApi = sharedFavourites,
+  deckGroupsApi = sharedGroups,
 }: DeckChooserProps) {
   const { problem } = choice
   const kinds = deckKinds(format, signedIn)
@@ -100,6 +106,7 @@ export function DeckChooser({
   const shown = kinds.some((entry) => entry.kind === tab) ? tab : first
   const [sort, setSort] = useDeckSort()
   const favourites = useFavourites(favouritesApi, signedIn)
+  const deckGroups = useDeckGroups(deckGroupsApi, signedIn)
   // The precons are read once for the Precons tab and for the stars of the account's own list.
   const preconState = usePreconChoices(precons, opened.has('precons') || favourites.codes.size > 0)
   const [selected, setSelected] = useState<DeckEntry | null>(null)
@@ -250,6 +257,7 @@ export function DeckChooser({
                     decks={decks}
                     precons={preconState}
                     favourites={favourites.codes}
+                    groups={deckGroups.groups}
                     active={shown === entry.kind}
                     {...source}
                   />

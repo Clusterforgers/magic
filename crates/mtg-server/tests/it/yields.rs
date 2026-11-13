@@ -189,7 +189,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Snapshot { .. } => "snapshot".into(),
         ServerMessage::Chat { .. } => "chat".into(),
         ServerMessage::Error { code, .. } => format!("error {code:?}"),
-        ServerMessage::GameOver { .. } => "game over".into(),
+        ServerMessage::GameOver { .. } | ServerMessage::EndedByAdmin { .. } => "game over".into(),
         ServerMessage::Forecast { .. } => "forecast".into(),
         ServerMessage::Yielding { until: Some(until) } => format!("yield {until:?}"),
         ServerMessage::Yielding { until: None } => "yield none".into(),

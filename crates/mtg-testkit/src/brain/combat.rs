@@ -19,9 +19,6 @@ pub type Attack = Vec<(ObjectId, AttackTarget)>;
 /// A declaration of blockers.
 pub type Blocks = Vec<(ObjectId, ObjectId)>;
 
-/// What a forecast lethal hit on the seat's team costs a block.
-const LETHAL_HIT: f64 = 500.0;
-
 /// Combat damage divided as the rules ask for least: each blocker in order gets lethal damage while the power lasts;
 /// what is left goes past them with trample, else to the first blocker.
 pub fn assign_lethal(options: &DamageOptions) -> Vec<(ObjectId, u32)> {
@@ -59,11 +56,8 @@ fn punishes(blocker: &Body, attacker: &Body) -> bool {
     // trades far up.
     blocker_first
         || !kills(attacker, blocker)
-        || creature_value(blocker) < TRADE_UP * creature_value(attacker)
+        || creature_value(blocker) < super::knobs::knobs().trade_up * creature_value(attacker)
 }
-
-/// The share of an attacker's value below which a blocker that dies killing it still makes the attack a loss.
-const TRADE_UP: f64 = 0.6;
 
 /// Every permanent `seen` reads, by id.
 fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
@@ -72,9 +66,6 @@ fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
         .map(|body| (body.id, body))
         .collect()
 }
-
-/// What each untapped creature that would punish the seat's attackers takes off a player's appeal as a target.
-const WALL: f64 = 8.0;
 
 /// The opponent the seat's attacks go at among `offered`: one its creatures can kill this turn, else the one who
 /// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that punishes the seat's attackers. Teammates choose the same way, so they focus on one opponent.
@@ -111,7 +102,7 @@ pub fn focus(
             1_000.0 - f64::from(life)
         } else {
             board + 0.5 * f64::from(40 - life.min(40))
-                - WALL * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
+                - super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
         };
         if best.is_none_or(|(held, _)| score > held) {
             best = Some((score, player));
@@ -315,7 +306,7 @@ fn forecast_score(
         let change = life_value(player.life_after) - life_value(player.life);
         if seen.is_teammate(player.player) {
             if player.lethal || player.life_after <= 0 {
-                score -= LETHAL_HIT;
+                score -= super::knobs::knobs().lethal_hit;
             } else {
                 score += change;
             }

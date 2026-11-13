@@ -74,6 +74,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::DiscardRandom(_) => "Cost.DiscardRandom",
         CostItem::DamageToYou(_) => "Cost.DamageToYou",
         CostItem::OthersGainLife(_) => "Cost.OthersGainLife",
+        CostItem::GetPoison(_) => "Cost.GetPoison",
         CostItem::Unattach => "Cost.Unattach",
         CostItem::ExileTop(_) => "Cost.ExileTop",
         CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
