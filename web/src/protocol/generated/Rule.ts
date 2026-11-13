@@ -233,7 +233,11 @@ any_cast?: boolean,
 /**
  * What a spell cast through it gets ("If you cast a spell this way, that artifact enters tapped").
  */
-riders?: unknown, } } | { "MayCastRather": { 
+riders?: unknown, 
+/**
+ * At most this many of the `only` objects may be cast or played through it within the turn.
+ */
+limit?: number, } } | { "MayCastRather": { 
 /**
  * The owner of each card and the card, as it was named when the rule began.
  */

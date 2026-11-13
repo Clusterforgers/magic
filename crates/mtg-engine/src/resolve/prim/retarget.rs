@@ -110,14 +110,10 @@ pub(super) fn ask(
             original.choices.x,
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
-        if way == Way::Random {
-            if !legal.is_empty() {
-                changeable.push((at, String::new(), legal));
+        if matches!(way, Way::Another | Way::Random) {
+            if way == Way::Another {
+                legal.retain(|target| !kept.contains(target));
             }
-            continue;
-        }
-        if way == Way::Another {
-            legal.retain(|target| !kept.contains(target));
             if !legal.is_empty() {
                 changeable.push((at, wording::spec(spec), legal));
             }
@@ -133,14 +129,9 @@ pub(super) fn ask(
         return Ok(Retargeted::Done(copy));
     }
     if way == Way::Random {
-        let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index);
-        for (at, _, legal) in changeable {
-            if let Some(picked) = legal.get(rng.index(legal.len())) {
-                copy.targets[at] = vec![*picked];
-            }
-        }
-        copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
-        return Ok(Retargeted::Done(copy));
+        return Ok(Retargeted::Done(r5503_random(
+            cx, original, copy, changeable,
+        )));
     }
     if way != Way::Another {
         match answers.next() {
@@ -197,6 +188,24 @@ pub(super) fn ask(
     }
     copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
     Ok(Retargeted::Done(copy))
+}
+
+/// The choices with each changeable target replaced by one of its legal targets picked with the game's generator.
+fn r5503_random(
+    cx: &Cx<'_>,
+    original: Original<'_>,
+    mut copy: Choices,
+    changeable: Vec<(usize, String, Vec<Target>)>,
+) -> Choices {
+    let state = cx.state();
+    let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index);
+    for (at, _, legal) in changeable {
+        if let Some(picked) = legal.get(rng.index(legal.len())) {
+            copy.targets[at] = vec![*picked];
+        }
+    }
+    copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
+    copy
 }
 
 /// Whether `targets` are `count` distinct targets among the legal ones.

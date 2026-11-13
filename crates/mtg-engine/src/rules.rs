@@ -2637,7 +2637,8 @@ pub(crate) fn r5503_limit_use(
 
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses
 /// up: a cast for the mana cost from a zone other than a hand or the command zone that no other permission for that zone
-/// covers, through the first such permission that covers it. None for any other cast.
+/// covers, through the first such permission that covers it; a free cast as `r5503_free_once_source` finds it. None for any
+/// other cast.
 pub(crate) fn c11b_once_source(
     state: &GameState,
     player: PlayerId,
@@ -2648,6 +2649,9 @@ pub(crate) fn c11b_once_source(
     if way == Some(mtg_cards::value::CastWay::Alternative) {
         return r400_rather_once_source(state, player, card);
     }
+    if way == Some(mtg_cards::value::CastWay::Free) {
+        return r5503_free_once_source(state, player, card);
+    }
     if way.is_some() || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -2656,6 +2660,24 @@ pub(crate) fn c11b_once_source(
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
         .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| !cast.once) {
+        return None;
+    }
+    covering.first().map(|cast| cast.source)
+}
+
+/// The source of the permission that works once each turn which a free cast of `card` by `player` uses up: the first free
+/// permission that covers the card, when every free one that does works once each turn; none otherwise.
+fn r5503_free_once_source(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+) -> Option<ObjectRef> {
+    let card = state.object(card)?;
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| cast.free && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;

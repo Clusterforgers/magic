@@ -258,5 +258,42 @@
    }
   },
   "Whenever a spell or ability is put onto the stack, if it has a single target, reselect its target at random."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MayCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "In": "Hand"
+         },
+         "TopOfLibrary"
+        ]
+       }
+      ],
+      "free": true,
+      "once": true,
+      "any_cast": true
+     }
+    }
+   }
+  },
+  "Once during each of your turns, you may cast a spell from your hand or the top of your library without paying its mana cost."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "MayCast": {
+      "from": "Library",
+      "play": true
+     }
+    }
+   }
+  },
+  "You may play lands and cast spells from the top of your library."
  ]
 ]

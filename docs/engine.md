@@ -348,6 +348,9 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `NewTargets::One` with `onto` changes one target to that object where legal; the effect's controller picks which (CR 115.7c).
 - `ReplaceWhen::CountersPut.by` names who puts the counters (`cause_of`) and `effect` asks for a resolving spell or ability; `ReplaceBy::Half` halves them rounded down.
 - `GameRule::MayCastRather` (airbend) gives each exiled card's owner a cast for another mana cost (`CastWay::Alternative`) and no other cost.
+- `NewTargets::Random` reselects the only target of a spell or ability from all its legal targets, the old one included (CR 115.7d), with the game's generator; the pick is logged as `ChosenAtRandom` or `PlayersChosenAtRandom`. `TriggerPattern::PutOnStack` sees every spell or ability put onto the stack: cast, activated, triggered or copied.
+- A `MayCast` with `limit` serves at most that many of its `only` objects in a turn: a cast or land play through it, when no permission without a limit covers the card, is counted on its source (`Tally::R5503LimitUsed`, keyed by its first object).
+- `Pred::ArrivedThisTurn` holds for an object that went into its zone this turn from anywhere (any `Tally::ArrivedFrom`).
 - `Ref::Granter` is the permanent whose static ability gave the running ability ("this Equipment"): `AbilitySource::granter`, carried by `Scope` and `Price`, found by a cost pick; nobody for an own ability or a departed granter.
 - `Ref::OrController(r)` is the player `r` names or the controller of the permanent it names.
 - `Pred::CanEnchantSource` holds for an Aura or Equipment card `attach::legal_host_entering` lets attach to the source.

@@ -108,6 +108,7 @@ fn r5503_probe() {
 #[case("Reenact the Crime")]
 #[case("Nashi, Moon Sage's Scion")]
 #[case("Grip of Chaos")]
+#[case("One with the Multiverse")]
 fn r5503_reads_back_whole(#[case] name: &str) {
     let report = r5503_report(name, &r5503_file(name));
     assert_eq!(
@@ -148,6 +149,8 @@ fn r5503_reads_back_whole(#[case] name: &str) {
 #[case::nashi_paying_mana("Nashi, Moon Sage's Scion", r#""PayLife""#, r#""PayEnergy""#)]
 #[case::grip_another_target("Grip of Chaos", r#""Random""#, r#""Another""#)]
 #[case::grip_spells_only("Grip of Chaos", r#""PutOnStack": {}"#, r#""SpellCast": {}"#)]
+#[case::multiverse_every_time("One with the Multiverse", r#""once": true"#, r#""once": false"#)]
+#[case::multiverse_any_zone("One with the Multiverse", r#"{ "In": "Hand" }, "#, "")]
 fn r5503_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5503_file(name);
     assert!(file.contains(from), "{name} has {from}");
