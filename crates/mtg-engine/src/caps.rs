@@ -592,6 +592,7 @@ const RUNS: &[&str] = &[
     "Effect.StillResolves",
     "Effect.Reattack",
     "Effect.Pay.Counted",
+    "Effect.Pay.Took",
     "Effect.Pay.X",
     "Effect.Pay.X.Energy",
     "Effect.Pay.X.Life",

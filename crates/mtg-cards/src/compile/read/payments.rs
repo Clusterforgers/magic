@@ -148,6 +148,14 @@ pub fn unless(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<(Ref, Cost)> {
 /// The cost after "pay": `{2}`, `3 life`, `{E}{E}`.
 fn after_pay(r: &mut Reader<'_>) -> Option<Cost> {
     if let Some(mana) = r.attempt(mana_cost) {
+        // "{1}{R} and discard a card": the two are paid together.
+        let mut mana = mana;
+        if let [CostItem::Mana(paid)] = mana.0.as_slice()
+            && !paid.has_x()
+            && let Some(discard) = r.attempt(costs::r5520_and_discard)
+        {
+            mana.0.push(discard);
+        }
         return Some(mana);
     }
     if let Some(energy) = r.attempt(|r| {

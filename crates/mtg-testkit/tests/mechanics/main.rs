@@ -147,6 +147,7 @@ mod r4_audit;
 mod r4a_amplify;
 mod r4b_skip;
 mod r5520_foretold_named;
+mod r5520_paid_discard;
 mod r5g;
 mod r6f;
 mod repeat_each;

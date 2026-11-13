@@ -138,6 +138,18 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
 }
 
 /// "Discard a card", "Discard two cards", "Discard a land card", "Discard X creature cards".
+/// "and discard a card" after the mana of a payment ("you may pay {1}{R} and discard a card"): any cards, as
+/// `l290_pay_phrase` writes it back.
+pub(super) fn r5520_and_discard(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.need("and discard")?;
+    let count = cards(r)?;
+    matches!(count, Amount::Fixed(1..)).then_some(())?;
+    Some(CostItem::Discard {
+        count,
+        filter: None,
+    })
+}
+
 fn discard(r: &mut Reader<'_>) -> Option<CostItem> {
     if let Some(count) = r.attempt(cards) {
         return Some(CostItem::Discard {
