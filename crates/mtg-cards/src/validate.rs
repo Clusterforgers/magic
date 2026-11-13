@@ -5927,14 +5927,22 @@ fn enters_itself(when: &TriggerPattern) -> bool {
     )
 }
 
-/// Whether the trigger is on a spell being cast: it reads the X of that spell.
-const fn casts_a_spell(when: &TriggerPattern) -> bool {
-    matches!(when, TriggerPattern::SpellCast { .. })
+/// Whether the trigger is on a spell being cast, also as the nth such spell of the turn: it reads the X of that spell.
+fn casts_a_spell(when: &TriggerPattern) -> bool {
+    match when {
+        TriggerPattern::SpellCast { .. } => true,
+        TriggerPattern::Nth { event, .. } => matches!(**event, TriggerPattern::SpellCast { .. }),
+        _ => false,
+    }
 }
 
 /// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
 fn casts_another_spell(when: &TriggerPattern) -> bool {
-    matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+    match when {
+        TriggerPattern::SpellCast { what, .. } => !what.0.contains(&Pred::This),
+        TriggerPattern::Nth { event, .. } => casts_another_spell(event),
+        _ => false,
+    }
 }
 
 /// Whether a static ability affects spells being cast: its selector holds the spell predicate.

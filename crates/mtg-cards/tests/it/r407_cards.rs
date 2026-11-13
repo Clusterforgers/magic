@@ -102,6 +102,7 @@ fn written() {
 #[case("Void Mirror")]
 #[case("Rumbling Aftershocks")]
 #[case("Rage Extractor")]
+#[case("Nev, the Practical Dean")]
 fn reads_back_whole(#[case] name: &str) {
     let report = report(name);
     assert_eq!(
@@ -145,6 +146,13 @@ fn altered(name: &str, from: &str, to: &str) -> String {
 #[case::x_in_cost("Rage Extractor", r#""PhyrexianInCost""#, r#""XInCost""#)]
 #[case::its_power("Rage Extractor", r#""stat":"ManaValue""#, r#""stat":"Power""#)]
 #[case::opponents_cast("Rage Extractor", r#""by":"You""#, r#""by":"Opponents""#)]
+#[case::second_x_spell("Nev, the Practical Dean", r#""nth":1"#, r#""nth":2"#)]
+#[case::every_x_spell(
+    "Nev, the Practical Dean",
+    r#"{"Nth":{"event":{"SpellCast":{"by":"You","what":["XInCost"]}},"nth":1}}"#,
+    r#"{"SpellCast":{"by":"You","what":["XInCost"]}}"#
+)]
+#[case::one_counter("Nev, the Practical Dean", r#""count":"X","#, "")]
 fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let report = report_of(name, &altered(name, from, to));
     assert_ne!(

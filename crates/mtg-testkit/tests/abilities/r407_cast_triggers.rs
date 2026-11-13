@@ -3,12 +3,14 @@
 //! mana resolve; Magmablood Archaic gives its controller's creatures +1/+0 for each color spent on an instant; Rumbling
 //! Aftershocks deals as much damage as its controller's spell was kicked and does not trigger on an unkicked one; Rage
 //! Extractor deals damage equal to the mana value of its controller's spell with a Phyrexian symbol and ignores one
-//! without; and the log replays to the state it was played to.
+//! without; Nev, the Practical Dean grows by the X of its controller's first spell with {X} each turn and not by the
+//! second; and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
 use common::pid;
+use mtg_cards::value::CounterKind;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::choose::{NumberChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
@@ -177,6 +179,40 @@ fn r407_rage_extractor_burns_for_spells_with_a_phyrexian_symbol(
     r407_settle(&mut driver)?;
     let life = driver.state().player(pid(1)).unwrap().life();
     assert_eq!(life, if phyrexian { 18 } else { 20 });
+    r407_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+fn r407_nev_counts_the_x_of_the_first_x_spell_each_turn(
+    #[values(2, 3, 4)] seats: usize,
+    #[values((2, 1), (1, 3))] xs: (u32, u32),
+) -> Result<(), ScriptError> {
+    let mut permanents = vec![ready(card("Nev, the Practical Dean").unwrap())];
+    permanents.extend((0..4).map(|_| ready(forest())));
+    let scenario = r407_table(seats).battlefield(0, permanents).hand(
+        0,
+        [
+            card("Stonecoil Serpent").unwrap(),
+            card("Stonecoil Serpent").unwrap(),
+        ],
+    );
+    let mut driver = Driver::from_scenario(scenario)?;
+    for x in [xs.0, xs.1] {
+        driver.begin_cast("Stonecoil Serpent")?;
+        driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;
+        driver.answer(Answer::PayMana(PayChoice::Auto))?;
+        r407_settle(&mut driver)?;
+    }
+    let nev = driver.id_of("Nev, the Practical Dean")?;
+    let counters = driver
+        .state()
+        .object(nev)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::PlusOnePlusOne);
+    assert_eq!(counters, xs.0);
     r407_replays(&driver);
     Ok(())
 }
