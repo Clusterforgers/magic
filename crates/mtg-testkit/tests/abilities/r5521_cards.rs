@@ -251,8 +251,8 @@ fn r5521_frogs_exile_one_permanent_of_each_opponent_who_then_draws(
     let exiled = common::names(driver.state(), Zone::Exile);
     assert_eq!(exiled.len(), seats - 1, "{exiled:?}");
     assert!(exiled.iter().all(|name| name == "Rock"));
-    for seat in 1..seats {
-        assert_eq!(r5521_hand(&driver, seat), hands[seat] + 1, "seat {seat}");
+    for (seat, before) in hands.iter().enumerate().skip(1) {
+        assert_eq!(r5521_hand(&driver, seat), before + 1, "seat {seat}");
     }
     r5521_replays(&driver);
     Ok(())
