@@ -176,6 +176,11 @@ pub enum Event {
     PhasesAdded {
         /// The first step of each added phase.
         steps: Vec<Step>,
+        /// Each entry is a step on its own, not a phase: it is followed by what comes after it, not by the rest of its
+        /// phase ("additional upkeep steps after this phase").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        lone: bool,
     },
     /// A step was added right after the current one, before any step added earlier (`Effect::AddStep`).
     StepAdded {
@@ -746,6 +751,14 @@ pub enum Event {
         /// The permanent it is attached to.
         to: ObjectId,
     },
+    /// An attachment chose a value as it became attached ("As this Equipment becomes attached to a creature, choose a
+    /// color."): it replaces any value it chose before.
+    ChosenAsAttached {
+        /// The attachment.
+        object: ObjectId,
+        /// What it chose.
+        chosen: Chosen,
+    },
     /// An Aura became attached to a player (CR 303.4); it takes a new timestamp (CR 613.7a).
     AttachedToPlayer {
         /// The Aura.
@@ -1103,6 +1116,13 @@ pub enum Event {
         enlisted: ObjectId,
         /// The controller of the enlisting creature.
         player: PlayerId,
+    },
+    /// A creature fought another (CR 701.14): one event for each creature of a fight, after the damage of the fight.
+    Fought {
+        /// The creature that fought.
+        object: ObjectId,
+        /// The creature it fought.
+        other: ObjectId,
     },
     /// A creature exploited a creature (CR 702.110b): its exploit ability resolved and the sacrifice is the event
     /// before it.
@@ -1592,6 +1612,7 @@ impl Event {
             | Event::JoinedAttack { object, .. }
             | Event::AttackRedirected { object, .. }
             | Event::AttachedToPlayer { object, .. }
+            | Event::ChosenAsAttached { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }
             | Event::Prepared { object }
@@ -1620,6 +1641,7 @@ impl Event {
             | Event::Devoured { object, .. }
             | Event::Renowned { object, .. }
             | Event::Exploited { object, .. }
+            | Event::Fought { object, .. }
             | Event::Enlisted { object, .. }
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }

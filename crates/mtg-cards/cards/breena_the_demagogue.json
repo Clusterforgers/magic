@@ -1,7 +1,7 @@
 {
   "oracle_id": "d11e627b-8a48-411d-a261-2c9a02a758ba",
   "name": "Breena, the Demagogue",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Breena, the Demagogue",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 211 }
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Life": "Against" },
+                "op": "Gt",
+                "right": { "LowestLife": "Opponents" }
+              }
+            },
+            "effects": [
+              { "Draw": { "who": "Triggering" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "pick"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "pick" }, "counter": "+1/+1", "count": 2 } }
+            ]
           }
         }
       ]

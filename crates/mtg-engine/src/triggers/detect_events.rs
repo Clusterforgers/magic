@@ -446,6 +446,43 @@ fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
     }
 }
 
+/// A flip of `player`, won or lost, as `CoinFlipped` logs it.
+fn r5513_flip(player: PlayerId, won: bool) -> Event {
+    Event::CoinFlipped {
+        player,
+        won,
+        call: CoinSide::Heads,
+        side: if won {
+            CoinSide::Heads
+        } else {
+            CoinSide::Tails
+        },
+        coins: Vec::new(),
+    }
+}
+
+#[rstest]
+#[case::i_lose(r#"{"Did":{"action":"LostCoinFlip","who":"You"}}"#, ME, false, 1)]
+#[case::i_win(r#"{"Did":{"action":"LostCoinFlip","who":"You"}}"#, ME, true, 0)]
+#[case::they_lose_not_me(r#"{"Did":{"action":"LostCoinFlip","who":"You"}}"#, FOE, false, 0)]
+#[case::an_opponent_loses(
+    r#"{"Did":{"action":"LostCoinFlip","who":"Opponents"}}"#,
+    FOE,
+    false,
+    1
+)]
+#[case::anyone_loses(r#"{"Did":{"action":"LostCoinFlip"}}"#, FOE, false, 1)]
+#[case::a_win_is_no_loss(r#"{"Did":{"action":"LostCoinFlip"}}"#, ME, true, 0)]
+fn r5513_a_lost_flip_triggers_for_the_flipper_the_pattern_names(
+    #[case] when: &str,
+    #[case] player: PlayerId,
+    #[case] won: bool,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    assert_eq!(fires(&pre, &[r5513_flip(player, won)]).len(), expected);
+}
+
 #[rstest]
 #[case::i_win(r#"{"W15cClashWon":{"who":"You"}}"#, ME, FOE, true, 1)]
 #[case::i_lose(r#"{"W15cClashWon":{"who":"You"}}"#, ME, FOE, false, 0)]

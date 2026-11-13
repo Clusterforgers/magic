@@ -1,0 +1,710 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This",
+       {
+        "WasCast": {
+         "by": "You"
+        }
+       }
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "PerPlayer": {
+        "players": "Opponents",
+        "what": [
+         {
+          "Compare": {
+           "stat": "ManaValue",
+           "op": "Ge",
+           "to": 3
+          }
+         }
+        ]
+       }
+      },
+      "bounds": {
+       "min": 0,
+       "max": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Exile": {
+       "what": {
+        "Target": 0
+       },
+       "as": "exiled"
+      }
+     },
+     {
+      "RepeatEach": {
+       "over": {
+        "Bound": "exiled"
+       },
+       "as": "each2",
+       "effects": [
+        {
+         "Draw": {
+          "who": {
+           "ControllerOf": {
+            "Departed": {
+             "Bound": "each2"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When ~ enters, if you cast it, for each opponent, exile up to one target permanent that player controls with mana value 3 or greater. For each permanent exiled this way, its controller draws a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "if": {
+     "Not": {
+      "CompletedNamedDungeon": {
+       "who": "You",
+       "dungeon": "Tomb of Annihilation"
+      }
+     }
+    },
+    "effects": [
+     {
+      "Move": {
+       "what": "This",
+       "to": "Hand"
+      }
+     },
+     {
+      "Venture": {}
+     }
+    ]
+   }
+  },
+  "When ~ enters, if you haven't completed Tomb of Annihilation, return ~ to its owner's hand and venture into the dungeon."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "over": "Opponents",
+       "as": "foe",
+       "effects": [
+        {
+         "Pay": {
+          "who": {
+           "Bound": "foe"
+          },
+          "cost": [
+           {
+            "Sacrifice": {
+             "filter": [
+              {
+               "Type": "Creature"
+              }
+             ]
+            }
+           }
+          ],
+          "unpaid": [
+           {
+            "CreateToken": {
+             "token": {
+              "Custom": {
+               "name": "Zombie",
+               "colors": [
+                "Black"
+               ],
+               "types": [
+                "Creature"
+               ],
+               "subtypes": [
+                "Zombie"
+               ],
+               "power": 2,
+               "toughness": 2
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ attacks, for each opponent, you create a 2/2 black Zombie creature token unless that player sacrifices a creature of their choice."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Tallied": {
+        "who": "You",
+        "what": "LifeGainedTotal"
+       }
+      },
+      "op": "Ge",
+      "right": 3
+     }
+    },
+    "effects": [
+     {
+      "RingTempts": {}
+     },
+     {
+      "If": {
+       "condition": {
+        "All": [
+         {
+          "Matches": {
+           "subject": "This",
+           "selector": [
+            "RingBearer"
+           ]
+          }
+         },
+         {
+          "RingTempted": {
+           "who": "You",
+           "times": 2
+          }
+         }
+        ]
+       },
+       "then": [
+        {
+         "Draw": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ attacks, if you gained 3 or more life this turn, the Ring tempts you. Then if ~ is your Ring-bearer and the Ring has tempted you two or more times this game, draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Batch": {
+      "Discarded": {
+       "what": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        }
+       ],
+       "by": "You"
+      }
+     }
+    },
+    "effects": [
+     {
+      "May": {
+       "effects": [
+        {
+         "Choose": {
+          "from": {
+           "Each": [
+            {
+             "In": "Graveyard"
+            },
+            {
+             "Is": "Triggering"
+            }
+           ]
+          },
+          "as": "chosen"
+         }
+        },
+        {
+         "Exile": {
+          "what": {
+           "Bound": "chosen"
+          },
+          "as": "exiled"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "If": {
+       "condition": "Performed",
+       "then": [
+        {
+         "Rule": {
+          "rule": {
+           "MayCast": {
+            "from": "Exile",
+            "only": {
+             "Bound": "exiled"
+            }
+           }
+          },
+          "duration": "UntilEndOfTurn"
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you discard one or more nonland cards, you may exile one of them from your graveyard. If you do, you may cast it this turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "ZoneChange": {
+      "what": [
+       "This"
+      ],
+      "to": "Battlefield"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "Subtype": "Vehicle"
+          }
+         ]
+        },
+        {
+         "ControlledBy": "Opponents"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       },
+       "as": "foe"
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Target": 0
+       },
+       "to": "Hand"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "FastestPlayer": {
+         "Bound": "foe"
+        }
+       },
+       "then": [
+        {
+         "ReduceSpeed": {
+          "who": {
+           "Bound": "foe"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "When this creature enters, return target creature or Vehicle an opponent controls to its owner's hand. If that opponent's speed is greater than each other player's speed, reduce that opponent's speed by 1. This effect can't reduce their speed below 1."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "PlayerAttacks": {
+      "at": "Opponents"
+     }
+    },
+    "if": {
+     "Compare": {
+      "left": {
+       "Life": "Against"
+      },
+      "op": "Gt",
+      "right": {
+       "LowestLife": "Opponents"
+      }
+     }
+    },
+    "effects": [
+     {
+      "Draw": {
+       "who": "Triggering"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "as": "pick"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "pick"
+       },
+       "counter": "+1/+1",
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "Whenever a player attacks one of your opponents, if that opponent has more life than another of your opponents, that attacking player draws a card and you put two +1/+1 counters on a creature you control."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "StepBegins": {
+      "step": "Upkeep",
+      "whose": "You"
+     }
+    },
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Dragon"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Color": "White"
+         }
+        ]
+       },
+       "as": "w"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "w"
+       },
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Dragon"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Color": "Blue"
+         }
+        ]
+       },
+       "as": "u"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "u"
+       },
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Dragon"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Color": "Black"
+         }
+        ]
+       },
+       "as": "b"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "b"
+       },
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Dragon"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Color": "Red"
+         }
+        ]
+       },
+       "as": "r"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "r"
+       },
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Dragon"
+         },
+         {
+          "ControlledBy": "You"
+         },
+         {
+          "Color": "Green"
+         }
+        ]
+       },
+       "as": "g"
+      }
+     },
+     {
+      "PutCounters": {
+       "on": {
+        "Bound": "g"
+       },
+       "counter": "+1/+1"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "AnyOf": [
+             {
+              "Is": {
+               "Bound": "w"
+              }
+             },
+             {
+              "Is": {
+               "Bound": "u"
+              }
+             },
+             {
+              "Is": {
+               "Bound": "b"
+              }
+             },
+             {
+              "Is": {
+               "Bound": "r"
+              }
+             },
+             {
+              "Is": {
+               "Bound": "g"
+              }
+             }
+            ]
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 5
+        }
+       },
+       "then": [
+        {
+         "WinGame": {}
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "At the beginning of your upkeep, for each color, put a +1/+1 counter on a Dragon you control of that color. If you put +1/+1 counters on five Dragons this way, you win the game."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "AnyOf": [
+      {
+       "Sacrificed": {
+        "what": [
+         {
+          "Subtype": "Desert"
+         }
+        ],
+        "by": "You"
+       }
+      },
+      {
+       "ZoneChange": {
+        "what": [
+         {
+          "Subtype": "Desert"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ],
+        "from": "Hand",
+        "to": "Graveyard"
+       }
+      },
+      {
+       "ZoneChange": {
+        "what": [
+         {
+          "Subtype": "Desert"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ],
+        "from": "Library",
+        "to": "Graveyard"
+       }
+      }
+     ]
+    },
+    "effects": [
+     {
+      "Bind": {
+       "what": {
+        "Arrived": {
+         "of": "Triggering",
+         "zone": "Graveyard"
+        }
+       },
+       "as": "card"
+      }
+     },
+     {
+      "DelayedTrigger": {
+       "when": {
+        "StepBegins": {
+         "step": "End",
+         "whose": "You"
+        }
+       },
+       "effects": [
+        {
+         "Move": {
+          "what": {
+           "Bound": "card"
+          },
+          "to": {
+           "Battlefield": {
+            "under": "You"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you sacrifice a Desert and whenever a Desert card is put into your graveyard from your hand or library, put that card onto the battlefield under your control at the beginning of your next end step."
+ ]
+]

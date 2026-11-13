@@ -286,12 +286,17 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddChosenSubtype
             | mtg_cards::modify::Modification::SetChosenColor
             | mtg_cards::modify::Modification::AddChosenColor
+            | mtg_cards::modify::Modification::SetLandTypesNthChosen(_)
             | mtg_cards::modify::Modification::SetCommanderColor
             | mtg_cards::modify::Modification::RemoveKeyword(_)
             | mtg_cards::modify::Modification::RemoveKeywordKind(_)
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            // These read other objects (the last creature card exiled, the keywords of linked cards), which the table's
+            // totem has none of.
+            | mtg_cards::modify::Modification::SetCreatureTypesOf(_)
+            | mtg_cards::modify::Modification::KeywordsOf { .. }
             // Only the resolution of an activated ability knows which ability it is, so it is not a row of the table.
             | mtg_cards::modify::Modification::LoseThisAbility
             // Like `LoseThisAbility`, it finds its ability only as a resolution begins.

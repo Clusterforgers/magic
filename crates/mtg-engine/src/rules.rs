@@ -48,6 +48,27 @@ pub enum Rule {
     MustAttack(Vec<ObjectRef>),
     /// Each creature attacks the player paired with it each combat of its duration if able (Encore, CR 702.141).
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
+    /// Creatures attack the planeswalker each combat if able (CR 508.1d): the creatures named and every creature the
+    /// players control as attackers are declared.
+    MustAttackAt {
+        /// The creatures named.
+        creatures: Vec<ObjectRef>,
+        /// The players whose creatures attack it.
+        players: Vec<PlayerId>,
+        /// The planeswalker they attack.
+        at: ObjectRef,
+        /// The players whose next turn the rule lasts through: the named players, or the controllers of the named
+        /// creatures as it began.
+        turn_of: Vec<PlayerId>,
+    },
+    /// Each of the players attacks with at least one creature each combat if able (CR 508.1d); with defenders named,
+    /// one attacking one of them.
+    MustAttackWithOne {
+        /// The players who must attack.
+        players: Vec<PlayerId>,
+        /// The players and planeswalkers the creature attacks; any defender when empty.
+        at: Vec<AttackTarget>,
+    },
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
     /// The creatures block the attacker if able (Provoke, CR 509.1c).
@@ -210,6 +231,9 @@ pub enum Rule {
         /// The spells it is for; everything when absent.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         spells: Option<Selector>,
+        /// With `spells`, the permanents whose abilities it is also for.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        abilities: Option<Selector>,
     },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
@@ -224,6 +248,14 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The players may pay the cost rather than the echo cost of each permanent they control (CR 702.30).
+    EchoRather {
+        /// The players it covers.
+        players: Vec<PlayerId>,
+        /// The cost they may pay instead.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: mtg_cards::cost::Cost,
+    },
     /// The controller reveals the first card they draw each turn (only on their turns with `your_turns`, only when
     /// they choose to with `may`).
     RevealFirstDraw {
@@ -316,6 +348,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         once: bool,
+        /// With `once`, once each turn on every player's turn.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        any_turn: bool,
         /// What the caster pays in addition to the other costs of a cast through it.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
@@ -340,6 +376,10 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(optional, type = "unknown"))]
         riders: Vec<CastRider>,
+        /// At most this many of the `only` objects may be cast or played through it within the turn.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        limit: Option<u32>,
     },
     /// Each owner may cast the exiled card paired with them for `cost` rather than its mana cost (CR 118.9, 601.2f), while it
     /// stays exiled.
@@ -596,7 +636,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"UntilItsControllersNextCombatEnds\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -620,6 +660,23 @@ impl RuleEffect {
             self.controller,
             self.source,
         ) && !self.spent(state)
+            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state))
+    }
+
+    /// Whether every object a prohibition names is still tapped on the battlefield (`Duration::WhileTapped`); a rule
+    /// of any other kind names no object to follow.
+    fn r5509_stays_tapped(&self, state: &GameState) -> bool {
+        let Rule::Cant { who, .. } = &self.rule else {
+            return false;
+        };
+        let named: Vec<ObjectRef> = who
+            .iter()
+            .filter_map(|subject| match subject {
+                Target::Object(named) => Some(*named),
+                Target::Player(_) => None,
+            })
+            .collect();
+        crate::effects::r5509_stays_tapped(state, &named)
     }
 
     /// Whether every object the rule names has become a new object or is gone: it can never apply to anything again.
@@ -643,6 +700,12 @@ impl RuleEffect {
                 gone(named) && !cast_now
             }),
             Rule::MustAttackPlayers(pairs) => pairs.iter().all(|(named, _)| gone(named)),
+            Rule::MustAttackAt {
+                creatures,
+                players,
+                at,
+                ..
+            } => gone(at) || (players.is_empty() && creatures.iter().all(gone)),
             Rule::MustBlockAttacker { blockers, attacker } => {
                 gone(attacker) || blockers.iter().all(gone)
             }
@@ -657,6 +720,15 @@ impl RuleEffect {
             _ => false,
         }
     }
+}
+
+/// What a requirement to attack a planeswalker binds: one creature, or every creature of a player.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub(crate) enum AttackerOf {
+    /// The creature named.
+    Creature(ObjectRef),
+    /// Each creature the player controls.
+    Player(PlayerId),
 }
 
 /// A trigger that triggers an additional time: whose permanents, and the event that causes it.
@@ -693,7 +765,11 @@ pub(crate) struct RulesInForce {
     /// The combat permissions and requirements of `combat_quirks`.
     pub(crate) quirks: crate::combat_quirks::QuirkRules,
     must_attack: BTreeSet<ObjectId>,
+    /// The players who must attack with at least one creature, each with the defenders it attacks (any when empty).
+    pub(crate) attack_with_one: Vec<(Vec<PlayerId>, Vec<AttackTarget>)>,
     attack_players: Vec<(ObjectId, PlayerId)>,
+    /// The planeswalkers creatures attack if able: by creature, and by the player whose creatures do.
+    attack_at: Vec<(AttackerOf, ObjectRef)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
     unregenerable: BTreeSet<ObjectId>,
@@ -735,7 +811,12 @@ pub(crate) struct RulesInForce {
     /// The players whose opponents' spells and abilities can't make them discard.
     spared_discard: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
-    spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
+    spend_mana_as: Vec<(
+        PlayerId,
+        mtg_cards::modify::SpendAs,
+        Option<Selector>,
+        Option<Selector>,
+    )>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
     /// Who controls each player while they search their library, the latest rule last.
@@ -745,6 +826,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The costs each player may pay rather than the echo cost of a permanent they control, in the order the rules began.
+    echo_rather: Vec<(PlayerId, mtg_cards::cost::Cost)>,
     /// The reveals of first draws in force: the controller, the source, whether optional, whether on their turns only.
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
     /// The players whose creatures can boast twice during each of their turns.
@@ -841,6 +924,8 @@ pub(crate) struct Cast {
     pub(crate) play: bool,
     /// Only once during each of the controller's turns, and only on their turns.
     pub(crate) once: bool,
+    /// With `once`, once each turn on every player's turn.
+    pub(crate) any_turn: bool,
     /// What the caster pays in addition to the other costs of a cast through it.
     pub(crate) additional: Option<Cost>,
     /// How the mana of a cast through it may be spent.
@@ -855,6 +940,8 @@ pub(crate) struct Cast {
     pub(crate) opens_no_zone: bool,
     /// What a spell cast through it gets.
     pub(crate) riders: Vec<CastRider>,
+    /// At most this many of the `only` objects may be cast or played through it within the turn.
+    pub(crate) limit: Option<u32>,
 }
 
 impl Cast {
@@ -868,6 +955,7 @@ impl Cast {
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
             && self.c11b_open(state)
+            && self.r5503_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
             && self
@@ -892,12 +980,28 @@ impl Cast {
         })
     }
 
-    /// Whether a permission that works once each turn is open: it is its controller's turn and no spell was cast through
-    /// it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
+    /// Whether a permission that works once each turn is open: it is its controller's turn (any turn with `any_turn`) and
+    /// no spell was cast through it this turn (`Tally::C11bOnceUsed` of its source). Any other permission is always open.
     fn c11b_open(&self, state: &GameState) -> bool {
         !self.once
-            || (state.is_active(self.controller)
+            || ((self.any_turn || state.is_active(self.controller))
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
+    }
+
+    /// Whether a permission with a limit has room for another card this turn (`Tally::R5503LimitUsed` of its source,
+    /// keyed by the first object it names). Any other permission always has.
+    fn r5503_open(&self, state: &GameState) -> bool {
+        self.limit.is_none_or(|limit| {
+            state.object_tallied(self.source, None, Tally::R5503LimitUsed(self.r5503_key())) < limit
+        })
+    }
+
+    /// The object that keys the uses of a limited permission: the first object it names, else its source.
+    fn r5503_key(&self) -> ObjectRef {
+        self.only
+            .as_ref()
+            .and_then(|only| only.first().copied())
+            .unwrap_or(self.source)
     }
 
     /// Whether the permission lets `player` play the land `card` from the zone it is in.
@@ -1052,6 +1156,7 @@ impl RulesInForce {
                         only: None,
                         play: false,
                         once: false,
+                        any_turn: false,
                         additional: None,
                         spend_as: SpendAs::Normal,
                         when: None,
@@ -1059,6 +1164,7 @@ impl RulesInForce {
                         instead: Some(cost.clone()),
                         opens_no_zone: false,
                         riders: Vec::new(),
+                        limit: None,
                     });
                 }
                 return;
@@ -1079,6 +1185,7 @@ impl RulesInForce {
                 only: None,
                 play: false,
                 once: false,
+                any_turn: false,
                 additional: None,
                 spend_as: SpendAs::Normal,
                 when: None,
@@ -1086,6 +1193,7 @@ impl RulesInForce {
                 instead: None,
                 opens_no_zone: false,
                 riders: Vec::new(),
+                limit: None,
             });
         }
     }
@@ -1096,9 +1204,29 @@ impl RulesInForce {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
             Rule::MustAttack(named) => self.must_attack.extend(ids(named)),
+            Rule::MustAttackWithOne { players, at } => {
+                self.attack_with_one.push((players.clone(), at.clone()));
+            }
             Rule::MustAttackPlayers(pairs) => self
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
+            Rule::MustAttackAt {
+                creatures,
+                players,
+                at,
+                ..
+            } => {
+                self.attack_at.extend(
+                    creatures
+                        .iter()
+                        .map(|named| (AttackerOf::Creature(*named), *at))
+                        .chain(
+                            players
+                                .iter()
+                                .map(|player| (AttackerOf::Player(*player), *at)),
+                        ),
+                );
+            }
             Rule::MustBlock(named) => self.must_block.extend(ids(named)),
             Rule::MustBlockAttacker { .. } | Rule::Combat { .. } | Rule::IgnoreHexproof { .. } => {
                 self.quirks.put(rule);
@@ -1163,9 +1291,13 @@ impl RulesInForce {
                 players,
                 spend_as,
                 spells,
+                abilities,
             } => {
-                self.spend_mana_as
-                    .extend(players.iter().map(|p| (*p, *spend_as, spells.clone())));
+                self.spend_mana_as.extend(
+                    players
+                        .iter()
+                        .map(|p| (*p, *spend_as, spells.clone(), abilities.clone())),
+                );
             }
             Rule::DrawLimit(players, most) => {
                 self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
@@ -1201,6 +1333,9 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::EchoRather { players, cost } => self
+                .echo_rather
+                .extend(players.iter().map(|player| (*player, cost.clone()))),
             Rule::RevealFirstDraw { may, your_turns } => {
                 self.reveal_first_draw
                     .push((controller, source, *may, *your_turns));
@@ -1285,15 +1420,18 @@ impl RulesInForce {
                 only,
                 play,
                 once,
+                any_turn,
                 additional,
                 rather,
                 spend_as,
                 when,
                 any_cast,
                 riders,
+                limit,
             } => {
                 if let Some(source) = source {
                     self.casts.push(Cast {
+                        limit: *limit,
                         riders: riders.clone(),
                         opens_no_zone: *any_cast,
                         controller,
@@ -1306,6 +1444,7 @@ impl RulesInForce {
                         only: only.clone(),
                         play: *play,
                         once: *once,
+                        any_turn: *any_turn,
                         additional: additional.as_deref().cloned(),
                         spend_as: *spend_as,
                         when: when.as_deref().cloned(),
@@ -1328,6 +1467,7 @@ impl RulesInForce {
                             only: Some(vec![*card]),
                             play: false,
                             once: false,
+                            any_turn: false,
                             additional: None,
                             spend_as: SpendAs::Normal,
                             when: None,
@@ -1335,6 +1475,7 @@ impl RulesInForce {
                             instead: None,
                             opens_no_zone: false,
                             riders: Vec::new(),
+                            limit: None,
                         });
                     }
                 }
@@ -1484,6 +1625,47 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .zip(scope.players(players)?)
                 .collect(),
         ),
+        GameRule::MustAttackAt { who, of, at } => {
+            let creatures = match who {
+                Some(who) => objects(who, Zone::Battlefield)?,
+                None => Vec::new(),
+            };
+            let players = match of {
+                Some(of) => scope.players(of)?,
+                None => Vec::new(),
+            };
+            let mut turn_of = players.clone();
+            for creature in &creatures {
+                if let Some(controller) =
+                    crate::characteristics::controller_of(scope.state, creature.id)
+                    && !turn_of.contains(&controller)
+                {
+                    turn_of.push(controller);
+                }
+            }
+            match objects(at, Zone::Battlefield)?.first() {
+                Some(at) => Rule::MustAttackAt {
+                    creatures,
+                    players,
+                    at: *at,
+                    turn_of,
+                },
+                None => Rule::MustAttackAt {
+                    creatures: Vec::new(),
+                    players: Vec::new(),
+                    at: scope.source,
+                    turn_of,
+                },
+            }
+        }
+        GameRule::MustAttackWithOne { who, at } => Rule::MustAttackWithOne {
+            players: scope.players(who)?,
+            at: at
+                .as_ref()
+                .map(|at| w10a_defenders(scope, at))
+                .transpose()?
+                .unwrap_or_default(),
+        },
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
         GameRule::MustBlockAttacker { .. }
         | GameRule::Combat { .. }
@@ -1559,10 +1741,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             who,
             spend_as,
             spells,
+            abilities,
         } => Rule::SpendManaAs {
             players: scope.players(who)?,
             spend_as: *spend_as,
             spells: spells.clone(),
+            abilities: abilities.clone(),
         },
         GameRule::DrawLimit { who, most } => Rule::DrawLimit(scope.players(who)?, *most),
         GameRule::PayLifeForMana { who, color } => {
@@ -1599,12 +1783,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .transpose()?,
             play: permission.play,
             once: permission.once,
+            any_turn: permission.any_turn,
             additional: permission.additional.clone().map(Box::new),
             rather: permission.rather.clone().map(Box::new),
             spend_as: permission.spend_as,
             when: permission.when.clone().map(Box::new),
             any_cast: permission.any_cast,
             riders: permission.riders.clone(),
+            limit: permission.limit,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::SpellCost {
@@ -1649,6 +1835,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::EchoRather(cost) => Rule::EchoRather {
+            players: scope.players(&Ref::You)?,
+            cost: cost.clone(),
+        },
         GameRule::RevealFirstDraw { may, your_turns } => Rule::RevealFirstDraw {
             may: *may,
             your_turns: *your_turns,
@@ -1693,9 +1883,15 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // The cleanup step reads it from the permanent (`r5516_damage`); it is no rule of the game.
+        GameRule::KeepsDamage => return Err(ResolveError::Unsupported("Rule.KeepsDamage")),
+        // The announcement reads it from the permanents as targets are chosen (`announce::r5509_flagbearer`).
+        GameRule::Flagbearers => return Err(ResolveError::Unsupported("Rule.Flagbearers")),
         // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
         GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
+        // The cost of the cast reads it from the card (`r5500_tax_life`); it is no rule of the game.
+        GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
@@ -1755,6 +1951,7 @@ pub(crate) fn repeated(cost: &ManaCost, times: usize) -> ManaCost {
 }
 
 /// Whether a rule names no player and no object, so putting it in force changes nothing.
+#[allow(clippy::too_many_lines)] // one arm for every rule
 pub(crate) fn names_nothing(rule: &Rule) -> bool {
     match rule {
         Rule::AttackTax(tax) => {
@@ -1769,12 +1966,16 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             counters, keyword, ..
         } => *counters == 0 && keyword.is_none(),
         Rule::MustAttackPlayers(pairs) => pairs.is_empty(),
+        Rule::MustAttackAt {
+            creatures, players, ..
+        } => creatures.is_empty() && players.is_empty(),
         Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
         Rule::Combat { creatures, .. } => creatures.is_empty(),
         Rule::IgnoreHexproof {
             by, what, players, ..
         } => by.is_empty() || (what.is_empty() && players.is_empty()),
         Rule::LifeFloor { players, .. }
+        | Rule::MustAttackWithOne { players, .. }
         | Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
@@ -1804,6 +2005,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
         | Rule::LoyaltyTwice(players)
+        | Rule::EchoRather { players, .. }
         | Rule::BoastTwice(players)
         | Rule::LoyaltyAnyTime(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
@@ -1956,7 +2158,9 @@ fn gather(state: &GameState) -> RulesInForce {
 static NONE: RulesInForce = RulesInForce {
     quirks: crate::combat_quirks::QuirkRules::NONE,
     must_attack: BTreeSet::new(),
+    attack_with_one: Vec::new(),
     attack_players: Vec::new(),
+    attack_at: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),
     unregenerable: BTreeSet::new(),
@@ -1991,6 +2195,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
     loyalty_any_time: BTreeSet::new(),
@@ -2304,6 +2509,28 @@ pub fn must_attack_players(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
         .collect()
 }
 
+/// The planeswalkers the creature `id` attacks this combat if able, in the order the rules named them: those a rule names
+/// it for, and those a rule names its controller for.
+pub fn must_attack_at(state: &GameState, id: ObjectId) -> Vec<ObjectId> {
+    let controller = crate::characteristics::controller_of(state, id);
+    let counter = state.object(id).map(crate::object::GameObject::counter);
+    state
+        .rules()
+        .attack_at
+        .iter()
+        .filter(|(by, _)| match by {
+            AttackerOf::Creature(named) => named.id == id && Some(named.counter) == counter,
+            AttackerOf::Player(player) => Some(*player) == controller,
+        })
+        .filter(|(_, at)| {
+            state
+                .object(at.id)
+                .is_some_and(|o| o.counter() == at.counter)
+        })
+        .map(|(_, at)| at.id)
+        .collect()
+}
+
 /// Whether the creature `id` blocks each combat if able: the one place the block declaration reads this requirement.
 pub fn must_block(state: &GameState, id: ObjectId) -> bool {
     state.rules().must_block.contains(&id)
@@ -2377,6 +2604,18 @@ pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
     } else {
         1
     }
+}
+
+/// The costs `player` may pay rather than the echo cost of a permanent they control (Thick-Skinned Goblin), in the
+/// order the rules began, each once.
+pub(crate) fn echo_rather(state: &GameState, player: PlayerId) -> Vec<mtg_cards::cost::Cost> {
+    let mut costs: Vec<mtg_cards::cost::Cost> = Vec::new();
+    for (whose, cost) in &state.rules().echo_rather {
+        if *whose == player && !costs.contains(cost) {
+            costs.push(cost.clone());
+        }
+    }
+    costs
 }
 
 /// Whether `player` may activate loyalty abilities whenever they could cast an instant (Teferi's Talent's emblem).
@@ -2499,27 +2738,34 @@ pub(crate) fn r4702_spared_discard(state: &GameState, player: PlayerId, by: Play
     state.is_opponent(by, player) && state.rules().spared_discard.contains(&player)
 }
 
-/// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any
-/// color over the normal rule.
+/// How `player` may spend mana on the spell `spell`, or on an ability of `source` when `spell` is `None`, under the rules
+/// in force: any type over any color over the normal rule.
 pub(crate) fn ep24_spend_as(
     state: &GameState,
     player: PlayerId,
     spell: Option<ObjectId>,
+    source: Option<ObjectId>,
 ) -> SpendAs {
+    let selects = |selector: &Selector, id: ObjectId| {
+        state.object(id).is_some_and(|object| {
+            let reference = object.reference();
+            Scope::announcing(state, player, reference)
+                .selects(selector, reference)
+                .unwrap_or(false)
+        })
+    };
     let mut found = SpendAs::Normal;
-    for (who, spend_as, spells) in &state.rules().spend_mana_as {
+    for (who, spend_as, spells, abilities) in &state.rules().spend_mana_as {
         if *who != player {
             continue;
         }
-        let applies = match (spells, spell.and_then(|id| state.object(id))) {
+        let applies = match (spells, spell) {
             (None, _) => true,
-            (Some(spells), Some(object)) => {
-                let reference = object.reference();
-                Scope::announcing(state, player, reference)
-                    .selects(spells, reference)
-                    .unwrap_or(false)
-            }
-            (Some(_), None) => false,
+            (Some(spells), Some(spell)) => selects(spells, spell),
+            (Some(_), None) => abilities
+                .as_ref()
+                .zip(source)
+                .is_some_and(|(abilities, source)| selects(abilities, source)),
         };
         if applies {
             match spend_as {
@@ -2680,9 +2926,36 @@ pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
 }
 
+/// The source and the tally a cast or land play of `card` by `player` from `from` uses up: that of the first permission with
+/// a limit that covers it, when no permission without one for that zone does. None for a card from a hand or the command
+/// zone.
+pub(crate) fn r5503_limit_use(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    from: Zone,
+) -> Option<(ObjectRef, Tally)> {
+    if matches!(from, Zone::Hand(_) | Zone::Command(_)) {
+        return None;
+    }
+    let card = state.object(card)?;
+    let zone = crate::resolve::zone_kind(from);
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| cast.from == Some(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| cast.limit.is_none()) {
+        return None;
+    }
+    covering
+        .first()
+        .map(|cast| (cast.source, Tally::R5503LimitUsed(cast.r5503_key())))
+}
+
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses
 /// up: a cast for the mana cost from a zone other than a hand or the command zone that no other permission for that zone
-/// covers, through the first such permission that covers it. None for any other cast.
+/// covers, through the first such permission that covers it; a free cast as `r5503_free_once_source` finds it. None for any
+/// other cast.
 pub(crate) fn c11b_once_source(
     state: &GameState,
     player: PlayerId,
@@ -2693,6 +2966,9 @@ pub(crate) fn c11b_once_source(
     if way == Some(mtg_cards::value::CastWay::Alternative) {
         return r400_rather_once_source(state, player, card);
     }
+    if way == Some(mtg_cards::value::CastWay::Free) {
+        return r5503_free_once_source(state, player, card);
+    }
     if way.is_some() || matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -2701,6 +2977,24 @@ pub(crate) fn c11b_once_source(
     let covering: Vec<&Cast> = cast_permissions(state)
         .iter()
         .filter(|cast| cast.adds_to_printed(zone) && cast.covers(state, player, card))
+        .collect();
+    if covering.iter().any(|cast| !cast.once) {
+        return None;
+    }
+    covering.first().map(|cast| cast.source)
+}
+
+/// The source of the permission that works once each turn which a free cast of `card` by `player` uses up: the first free
+/// permission that covers the card, when every free one that does works once each turn; none otherwise.
+fn r5503_free_once_source(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+) -> Option<ObjectRef> {
+    let card = state.object(card)?;
+    let covering: Vec<&Cast> = cast_permissions(state)
+        .iter()
+        .filter(|cast| cast.free && cast.covers(state, player, card))
         .collect();
     if covering.iter().any(|cast| !cast.once) {
         return None;
@@ -3178,11 +3472,13 @@ mod tests {
             only,
             play,
             once: false,
+            any_turn: false,
             additional: None,
             spend_as: SpendAs::Normal,
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         }
     }
 

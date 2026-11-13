@@ -1,7 +1,7 @@
 {
   "oracle_id": "58ee8c10-7be8-4889-944d-13cae0a4166d",
   "name": "Frodo, Adventurous Hobbit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Frodo, Adventurous Hobbit",
@@ -10,9 +10,29 @@
         { "Keyword": { "PartnerWith": "Sam, Loyal Attendant" } },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 44, "end": 233 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "RingTempts": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      { "Matches": { "subject": "This", "selector": ["RingBearer"] } },
+                      { "RingTempted": { "who": "You", "times": 2 } }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
           }
         }
       ]

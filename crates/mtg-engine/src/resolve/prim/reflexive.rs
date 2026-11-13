@@ -13,14 +13,34 @@ use crate::triggers::{DelayedCreated, DelayedId, Triggered};
 
 /// When the step before it was carried out (a step that reports nothing counts as done), the trigger is set up and
 /// triggers at once; it goes on the stack, with its targets chosen then, the next time a player would receive priority,
-/// and is removed when a target it needs has no legal choice (CR 603.3d). It sees the names this resolution bound.
+/// and is removed when a target it needs has no legal choice (CR 603.3d). It sees the names this resolution bound. With
+/// an intervening "if" it triggers only while the condition holds, and does nothing if it no longer holds as it resolves.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Reflexive { targets, effects } = effect else {
+    let Effect::Reflexive {
+        targets,
+        effects,
+        condition,
+    } = effect
+    else {
         return Err(wrong_effect("Reflexive"));
     };
     if !before_was_done(cx) {
         return Ok(Run::events(Vec::new()));
     }
+    // An intervening "if" is read now, and again as the trigger resolves (CR 603.4).
+    if let Some(condition) = condition
+        && !cx.scope.holds(condition)?
+    {
+        return Ok(Run::events(Vec::new()));
+    }
+    let effects = match condition {
+        Some(condition) => vec![Effect::If {
+            condition: condition.clone(),
+            then: effects.clone(),
+            otherwise: Vec::new(),
+        }],
+        None => effects.clone(),
+    };
     let Origin {
         source,
         snapshot,
@@ -39,7 +59,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         once: true,
         this_turn: true,
         until: None,
-        effects: effects.clone(),
+        effects,
         targets: targets.clone(),
         bindings,
         kept: None,

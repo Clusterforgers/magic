@@ -1,7 +1,7 @@
 {
   "oracle_id": "0de4171e-5908-408e-9852-25f148d0fb47",
   "name": "Spectral Adversary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spectral Adversary",
@@ -10,9 +10,36 @@
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 255 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PayAnyTimes": { "cost": "{1}{U}" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" }
+                            ]
+                          },
+                          "Other"
+                        ]
+                      },
+                      "bounds": { "min": 0, "max": "Triggering" }
+                    }
+                  ],
+                  "effects": [
+                    { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } },
+                    { "PhaseOut": { "what": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

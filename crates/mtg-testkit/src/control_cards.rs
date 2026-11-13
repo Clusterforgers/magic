@@ -23,6 +23,7 @@ pub fn mindslave(name: &str, extra_turn: bool) -> Arc<CardDefinition> {
                 targets: vec![one_target(Targetable::Player)],
                 effects: vec![Effect::ControlPlayer {
                     who: Ref::Target(0),
+                    by: Ref::You,
                     extra_turn,
                 }],
             }),

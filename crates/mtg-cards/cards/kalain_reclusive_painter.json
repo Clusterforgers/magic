@@ -1,7 +1,7 @@
 {
   "oracle_id": "4fca09ac-8134-43d9-a84b-686db5e2bf69",
   "name": "Kalain, Reclusive Painter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kalain, Reclusive Painter",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 125, "end": 249 }
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Stat": { "of": "Affected", "stat": "TreasureManaSpent" } }
+              }
+            }
           }
         }
       ]

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1edee40f-d153-4d67-aee7-ef08e11e4a79",
+  "name": "Cyclopean Tomb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cyclopean Tomb",
+      "oracle_fingerprint": "76ade6ae61620644eb1f7e6d77f6203c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Subtype": "Swamp" } }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "mire" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Swamp"] }],
+                  "duration": { "WhileHasCounter": { "Other": "mire" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 154, "end": 444 }
+          }
+        }
+      ]
+    }
+  ]
+}

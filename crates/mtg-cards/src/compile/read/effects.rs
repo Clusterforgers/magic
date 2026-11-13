@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 126] = [
+const TEMPLATES: [Template; 127] = [
     super::keyword_actions::keyword_action,
     super::r4706_counters::r4706_same_counters,
     super::r404_look::r404_look_face_down,
@@ -167,6 +167,7 @@ const TEMPLATES: [Template; 126] = [
     super::w14a_limits::w14a_block_limit_each,
     super::g10d_spell_costs::g10d_spell_cost,
     super::w14a_wanderer::w14a_keep_one,
+    super::r5502_next_combat::r5502_attacks_next_combat,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
@@ -283,6 +284,11 @@ fn sentence_shapes(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| regeneration(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| super::r5514_pieces::r5514_sentence(r, effects))
+        .is_some()
+    {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
@@ -1762,6 +1768,8 @@ fn produced(r: &mut Reader<'_>, counted: &mut Option<Amount>) -> Option<Produce>
             combination
         } else if r.words("two mana of different colors") {
             Produce::two_different_colors()
+        } else if r.words("two mana of any one color and two mana of any other color") {
+            Produce::two_pairs_of_colors()
         } else if let Some(count) = r.attempt(several_of_one_color) {
             Produce::AnyColor(count)
         } else if r.words("one mana of the chosen color") {

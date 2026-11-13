@@ -70,6 +70,7 @@ const OZAI: &str = "If you would lose unspent mana, that mana becomes red instea
 const ORRERY: &str = "You may spend mana as though it were mana of any color.";
 const OATH: &str =
     "You may spend mana as though it were mana of any color to cast planeswalker spells.";
+const NATHAN: &str = "You may spend mana as though it were mana of any color to cast spells you don't own or to activate abilities of permanents you control but don't own.";
 const VIZIER: &str = "You can spend mana of any type to cast creature spells.";
 const NARSET: &str = "Each opponent can't draw more than one card each turn.";
 const SIGARDA: &str =
@@ -125,6 +126,26 @@ const ELIXIR: &str =
 #[case::vizier_of_any_color(
     r#"{"SpendManaAs":{"who":"You","spend_as":"AnyColor","spells":[{"Type":"Creature"}]}}"#,
     VIZIER,
+    false
+)]
+#[case::nathan(
+    r#"{"SpendManaAs":{"who":"You","spend_as":"AnyColor","spells":[{"Not":{"OwnedBy":"You"}}],"abilities":[{"ControlledBy":"You"},{"Not":{"OwnedBy":"You"}}]}}"#,
+    NATHAN,
+    true
+)]
+#[case::nathan_without_abilities(
+    r#"{"SpendManaAs":{"who":"You","spend_as":"AnyColor","spells":[{"Not":{"OwnedBy":"You"}}]}}"#,
+    NATHAN,
+    false
+)]
+#[case::nathan_of_owned_permanents(
+    r#"{"SpendManaAs":{"who":"You","spend_as":"AnyColor","spells":[{"Not":{"OwnedBy":"You"}}],"abilities":[{"ControlledBy":"You"}]}}"#,
+    NATHAN,
+    false
+)]
+#[case::nathan_of_any_type(
+    r#"{"SpendManaAs":{"who":"You","spend_as":"AnyType","spells":[{"Not":{"OwnedBy":"You"}}],"abilities":[{"ControlledBy":"You"},{"Not":{"OwnedBy":"You"}}]}}"#,
+    NATHAN,
     false
 )]
 #[case::narset(r#"{"DrawLimit":{"who":"Opponents","most":1}}"#, NARSET, true)]

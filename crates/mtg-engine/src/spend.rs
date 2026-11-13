@@ -41,6 +41,8 @@ pub enum SpendKind {
     Ability,
     /// Taking a special action of the kind (CR 116.2).
     Special(SpecialAction),
+    /// Paying a cumulative upkeep cost (CR 702.24a), a cost that is neither a spell's nor an ability's.
+    CumulativeUpkeep,
 }
 
 /// What a payment is for: the thing restricted mana is checked against.
@@ -66,6 +68,14 @@ impl Spend {
     /// A payment for neither a spell nor an ability: only mana without a restriction pays it.
     pub fn other() -> Self {
         Spend::default()
+    }
+
+    /// A payment of a cumulative upkeep cost: mana restricted to it or to other costs pays it.
+    pub fn cumulative_upkeep() -> Self {
+        Spend {
+            kind: SpendKind::CumulativeUpkeep,
+            ..Spend::default()
+        }
     }
 
     /// A payment for the special action `action`: mana restricted to it or to other costs pays it.
@@ -192,9 +202,11 @@ impl Spend {
                 }
                 SpendOn::CostWithX => self.kind != SpendKind::Other && self.has_x,
                 // A special action is paid as a cost that is neither a spell's nor an ability's.
-                SpendOn::OtherCosts => {
-                    matches!(self.kind, SpendKind::Other | SpendKind::Special(_))
-                }
+                SpendOn::OtherCosts => matches!(
+                    self.kind,
+                    SpendKind::Other | SpendKind::Special(_) | SpendKind::CumulativeUpkeep
+                ),
+                SpendOn::CumulativeUpkeep => self.kind == SpendKind::CumulativeUpkeep,
                 SpendOn::Special(action) => self.kind == SpendKind::Special(*action),
                 // A rider limits nothing, so it neither allows nor refuses a payment.
                 SpendOn::When(_)
@@ -217,6 +229,11 @@ pub(crate) fn source_kind(state: &GameState, id: ObjectId) -> SpendTraits {
         types: full.types,
         supertypes: full.supertypes,
         subtypes: full.subtypes,
+        // Only a permanent is remembered ("mana produced by ~"); a card making mana from a hand stays hidden.
+        made_by: state
+            .object(id)
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .map(|object| (id, object.reference().counter)),
         ..SpendTraits::default()
     }
 }

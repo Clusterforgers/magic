@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9381b4a5-a8e0-412d-bc7f-ae15afa0f135",
+  "name": "Teferi's Reproach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Reproach",
+      "oracle_fingerprint": "1233d7a9128778511c460e66793432c8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": { "who": { "Target": 0 }, "keyword": { "Protection": [] } }
+                  },
+                  "duration": "UntilTheirNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "LifeTotalCantChange": { "Target": 0 } },
+                  "duration": "UntilTheirNextTurn"
+                }
+              },
+              {
+                "PhaseOut": {
+                  "what": {
+                    "Each": [{ "ControlledBy": { "Target": 0 } }, { "Not": { "Type": "Land" } }]
+                  }
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

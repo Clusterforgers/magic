@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d407abd0-69a9-405d-ab69-75b379a45780",
+  "name": "Soul Sculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Sculptor",
+      "oracle_fingerprint": "8daacd604841eb09bd6f3cb7be31cc0d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetTypes": ["Enchantment"] }, "LoseAbilities"],
+                  "duration": "UntilCreatureSpellCast"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

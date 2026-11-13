@@ -9,7 +9,7 @@ use super::tokens::Reader;
 use super::triggers::{subject, subject_text};
 use crate::ability::Ability;
 use crate::effect::Effect;
-use crate::refs::{Ref, Selector, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen};
 use crate::value::{Amount, CounterKind, StatKind};
 
@@ -58,9 +58,24 @@ fn w5d_life(r: &mut Reader<'_>) -> Option<Ability> {
     ))
 }
 
-/// "All damage that would be dealt to you is dealt to enchanted creature instead." (also "to ~").
+/// "You and other permanents you control": you, and every permanent you control but the source.
+fn w5d_you_and_yours() -> Ref {
+    Ref::Union(vec![
+        Ref::You,
+        Ref::Each(Selector(vec![Pred::ControlledBy(Ref::You), Pred::Other])),
+    ])
+}
+
+/// "All damage that would be dealt to you is dealt to enchanted creature instead." (also "to ~", and "to you and other
+/// permanents you control").
 fn w5d_redirect(r: &mut Reader<'_>) -> Option<Ability> {
-    r.need("all damage that would be dealt to you is dealt to")?;
+    r.need("all damage that would be dealt to you")?;
+    let hit = if r.words("and other permanents you control") {
+        w5d_you_and_yours()
+    } else {
+        Ref::You
+    };
+    r.need("is dealt to")?;
     let to = if r.source() {
         Ref::This
     } else if r.words("equipped creature") {
@@ -72,7 +87,7 @@ fn w5d_redirect(r: &mut Reader<'_>) -> Option<Ability> {
     r.word("instead").then_some(())?;
     Some(w5d_ability(
         ReplaceWhen::Damage {
-            to: Some(Ref::You),
+            to: Some(hit),
             source: Selector::default(),
             combat: None,
         },
@@ -294,7 +309,7 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
         }
         (
             ReplaceWhen::Damage {
-                to: Some(Ref::You),
+                to: Some(hit),
                 source,
                 combat: None,
             },
@@ -304,14 +319,19 @@ fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
                 amount: Amount::Triggering,
                 unpreventable: false,
              .. }],
-        ) if source.is_empty() => {
+        ) if source.is_empty() && (*hit == Ref::You || *hit == w5d_you_and_yours()) => {
+            let hit = if *hit == Ref::You {
+                "you"
+            } else {
+                "you and other permanents you control"
+            };
             let to: &[&str] = match to {
-                Ref::This => &["~"],
+                Ref::This => &["~", "this creature"],
                 Ref::Attached => &["enchanted creature", "equipped creature"],
                 _ => return None,
             };
             to.iter()
-                .map(|to| format!("all damage that would be dealt to you is dealt to {to} instead"))
+                .map(|to| format!("all damage that would be dealt to {hit} is dealt to {to} instead"))
                 .collect()
         }
         (

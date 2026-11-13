@@ -32,7 +32,6 @@ use Support::{Partial, Verified};
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
     ("Light Up the Night", Partial, 1),
-    ("Soulblast", Partial, 1),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

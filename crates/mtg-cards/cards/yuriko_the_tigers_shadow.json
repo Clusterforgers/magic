@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a7043fbd-1dfd-42cf-be4b-cc343d0949e5",
+  "name": "Yuriko, the Tiger's Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuriko, the Tiger's Shadow",
+      "oracle_fingerprint": "5e6118aa98c69b086596be0ba663f3d7",
+      "abilities": [
+        { "Keyword": { "CommanderNinjutsu": "{U}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Ninja" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Let": {
+                  "as": "mv",
+                  "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "LoseLife": { "who": "Opponents", "amount": { "Bound": "mv" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

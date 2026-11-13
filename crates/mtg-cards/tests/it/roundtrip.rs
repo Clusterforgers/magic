@@ -589,11 +589,13 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
                     only,
                     play,
                     once: false,
+                    any_turn: false,
                     additional: None,
                     spend_as: mtg_cards::modify::SpendAs::Normal,
                     when: None,
                     any_cast: false,
                     riders: Vec::new(),
+                    limit: None,
                 })
             }),
         (trigger_pattern(), proptest::option::of(selector())).prop_map(|(cause, source)| {

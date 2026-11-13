@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 54] = [
+const TEMPLATES: [Template; 55] = [
     super::r4701_flash::r4701_flash,
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
@@ -68,6 +68,7 @@ const TEMPLATES: [Template; 54] = [
     no_life_loss,
     copies::enters_as_copy,
     as_entering,
+    super::r5501_attached::r5501_as_attached,
     super::day_night::starts_the_day,
     super::prepare::enters_prepared,
     super::ep28_under::enters_under_opponent,
@@ -348,6 +349,18 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     if r.words("choose a player") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
+    if r.words("an opponent chooses a creature type") {
+        return Some(replacement(
+            ReplaceBy::OpponentChooses(EntersChoice::CreatureType),
+            None,
+        ));
+    }
+    if r.words("an opponent chooses a color") {
+        return Some(replacement(
+            ReplaceBy::OpponentChooses(EntersChoice::Color),
+            None,
+        ));
+    }
     if r.words("choose an opponent") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Opponent), None));
     }
@@ -603,9 +616,17 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         rule
     } else if let Some(rule) = r.attempt(super::w17b_statics::w17b_read) {
         rule
+    } else if let Some(rule) = r.attempt(super::r5501_echo::r5501_echo_rather) {
+        rule
+    } else if let Some(rule) = r.attempt(super::r5509_rules::r5509_rule_read) {
+        rule
     } else if let Some(rule) = r.attempt(player_rule) {
         rule
     } else if let Some(rule) = r.attempt(super::w8a_declaration_limits::w8a_limit) {
+        rule
+    } else if let Some(rule) = r.attempt(super::r5502_attack_with_one::r5502_read) {
+        rule
+    } else if let Some(rule) = r.attempt(super::r5502_blocked_by_one::r5502_read) {
         rule
     } else if r.source() {
         if r.words("can be your commander") {
@@ -1443,6 +1464,7 @@ fn group_enters(ability: &Ability) -> Option<String> {
 
 /// Every wording of a static ability, a replacement of the entering or a rule the readers produce;
 /// empty for any other ability.
+#[allow(clippy::too_many_lines)] // one arm for every kind of ability
 pub fn texts(ability: &Ability) -> Vec<String> {
     let mut group =
         super::w5d_replaced::w5d_or_sentences(super::c11h_prevent::c11h_texts(ability), ability);
@@ -1511,6 +1533,8 @@ pub fn texts(ability: &Ability) -> Vec<String> {
                 mods,
                 condition.as_ref(),
             ));
+            let last = super::r5501_attached::r5501_last_chosen(&written);
+            written.extend(last);
             written
         }
         Ability::CostModifier { .. } => cost_change_texts(ability),
@@ -1530,6 +1554,12 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition: None,
             from: ZoneKind::Battlefield,
         } if crate::r406_actions::r406_is_action(when) => super::r406_actions::r406_texts(when, by),
+        Ability::Replacement {
+            when: ReplaceWhen::BecomesAttached { what },
+            by,
+            condition: None,
+            from: ZoneKind::Battlefield,
+        } => super::r5501_attached::r5501_as_attached_texts(what, by),
         Ability::Static { defining: true, .. } => defining::sentences(ability),
         _ => Vec::new(),
     };
@@ -1620,6 +1650,12 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         }
         (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
             vec!["As ~ enters, choose an opponent".to_owned()]
+        }
+        (ReplaceBy::OpponentChooses(EntersChoice::CreatureType), None) => {
+            vec!["As ~ enters, an opponent chooses a creature type".to_owned()]
+        }
+        (ReplaceBy::OpponentChooses(EntersChoice::Color), None) => {
+            vec!["As ~ enters, an opponent chooses a color".to_owned()]
         }
         (
             ReplaceBy::Choose(
@@ -1929,6 +1965,12 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
     {
         return texts;
     }
+    if from == ZoneKind::Battlefield
+        && condition.is_none()
+        && let Some(text) = super::r5501_echo::r5501_echo_rather_text(rule)
+    {
+        return vec![text];
+    }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
@@ -1997,11 +2039,21 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::CountersRemain,
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
+        (GameRule::Flagbearers, ZoneKind::Battlefield) => {
+            super::r5509_rules::r5509_rule_texts(rule)
+        }
         (
-            GameRule::DamageAsWither | GameRule::ManaBurn | GameRule::AttackAsThoughHasteAt(_),
+            GameRule::DamageAsWither
+            | GameRule::ManaBurn
+            | GameRule::KeepsDamage
+            | GameRule::AttackAsThoughHasteAt(_),
             ZoneKind::Battlefield,
         ) => super::r303b_statics::r303b_rule_texts(rule),
-        (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
+        (GameRule::Combat { .. }, ZoneKind::Battlefield) => {
+            let mut written = super::r7d_statics::combat_texts(rule);
+            written.extend(super::r5502_blocked_by_one::r5502_texts(rule));
+            written
+        }
         (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
             super::rmt4_untap_limit::untap_rule_texts(rule)
         }
@@ -2016,6 +2068,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             .into_iter()
             .collect(),
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
+        (GameRule::MustAttackWithOne { .. }, ZoneKind::Battlefield) => {
+            super::r5502_attack_with_one::r5502_texts(rule)
+        }
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
         (GameRule::DamageCantBePrevented { source, combat }, ZoneKind::Battlefield) => {
             prevention::static_texts(source, *combat)

@@ -53,8 +53,10 @@ impl GameState {
 
 /// Folds a player's new speed; a rise that was due is given.
 pub(crate) fn set(state: &mut GameState, player: PlayerId, speed: u8) {
+    let rises = speed > state.speed(player);
     state.speeds.levels.insert(player, speed.min(MAX_SPEED));
-    if state.speeds.due == Some(player) {
+    // A reduction (`Effect::ReduceSpeed`) leaves a rise that is due for later.
+    if rises && state.speeds.due == Some(player) {
         state.speeds.due = None;
     }
 }

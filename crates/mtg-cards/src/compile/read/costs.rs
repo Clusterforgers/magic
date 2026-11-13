@@ -282,6 +282,9 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
         r.from_graveyard = r.words("from your graveyard");
         return Some(CostItem::ExileSelf);
     }
+    if let Some(types) = r.attempt(r5511_card_types) {
+        return Some(CostItem::ExileCardTypes(types));
+    }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
     // "Exile a creature you control": a permanent of the battlefield.
@@ -306,6 +309,15 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
             count,
         }
     })
+}
+
+/// "any number of other cards from your graveyard with four or more card types among them" (Nethergoyf's escape).
+fn r5511_card_types(r: &mut Reader<'_>) -> Option<u32> {
+    r.words("any number of other cards from your graveyard with")
+        .then_some(())?;
+    let types = number_word(r.peek_word()?)?;
+    r.word(r.peek_word()?).then_some(())?;
+    r.words("or more card types among them").then_some(types)
 }
 
 /// "Reveal a creature card from your hand", "Reveal a Giant card from your hand", the morph cost "Reveal a white card in
@@ -497,6 +509,9 @@ fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
             count: Amount::one(),
         });
     }
+    if let Some(half) = r.attempt(r5506_half_sacrifice) {
+        return Some(half);
+    }
     let (filter, count) = if r.word("a") || r.word("an") || r.peek_word() == Some("another") {
         (phrase(r, Form::Subject)?, Amount::one())
     } else {
@@ -506,6 +521,53 @@ fn sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
     // The payer sacrifices what they control: a cost says nothing of who controls it or where it is.
     filter.0.iter().all(is_cost_filter).then_some(())?;
     Some(CostItem::Sacrifice { filter, count })
+}
+
+/// "half the lands you control, rounded up": that share of the payer's permanents of the kind, counted as the cost is
+/// announced.
+fn r5506_half_sacrifice(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.words("half the").then_some(())?;
+    let counted = phrase(r, Form::Targets)?;
+    r.punct(',').then_some(())?;
+    r.word("rounded").then_some(())?;
+    let up = if r.word("up") {
+        true
+    } else if r.word("down") {
+        false
+    } else {
+        return None;
+    };
+    let you = Pred::ControlledBy(Ref::You);
+    let (yours, filter): (Vec<&Pred>, Vec<&Pred>) =
+        counted.0.iter().partition(|pred| **pred == you);
+    (yours.len() == 1).then_some(())?;
+    let filter = Selector(filter.into_iter().cloned().collect());
+    (!filter.0.is_empty() && filter.0.iter().all(is_cost_filter)).then_some(())?;
+    Some(CostItem::Sacrifice {
+        filter,
+        count: Amount::Half {
+            of: Box::new(Amount::Count(counted)),
+            up,
+        },
+    })
+}
+
+/// The words of [`r5506_half_sacrifice`]: "Sacrifice half the lands you control, rounded up".
+fn r5506_half_sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
+    let Amount::Half { of, up } = count else {
+        return None;
+    };
+    let Amount::Count(counted) = &**of else {
+        return None;
+    };
+    let mut yours = filter.0.clone();
+    yours.push(Pred::ControlledBy(Ref::You));
+    (counted.0 == yours).then_some(())?;
+    let way = if *up { "up" } else { "down" };
+    Some(format!(
+        "Sacrifice half the {}, rounded {way}",
+        phrase_text(counted, Form::Targets)?
+    ))
 }
 
 /// "another Vampire or Zombie", "a Vampire or Zombie": one permanent of either of two subtypes.
@@ -596,6 +658,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),
         CostItem::CollectEvidence(total) => format!("Collect evidence {total}"),
+        CostItem::ExileCardTypes(types) => format!(
+            "Exile any number of other cards from your graveyard with {} or more card types among them",
+            count_word(*types)?
+        ),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }
@@ -752,6 +818,9 @@ fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
 fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
     if filter.0.is_empty() || !filter.0.iter().all(is_cost_filter) {
         return None;
+    }
+    if let Some(text) = r5506_half_sacrifice_text(filter, count) {
+        return Some(text);
     }
     if *count == Amount::X {
         return Some(format!(

@@ -203,7 +203,8 @@ fn r289_a_card_reads_back_and_a_near_miss_does_not(
 }
 
 #[rstest]
-#[case::cacophony_legendary_god("Cacophony Unleashed", 1)]
+#[case::adipose_emerge_sacrifice("Adipose Offspring", 1)]
+#[case::aboleth_spawn_copies("Aboleth Spawn", 1)]
 #[case::campsite_sacrifice_foods("Campsite Cuisine", 1)]
 fn r289_a_partial_card_leaves_only_its_listed_clauses(#[case] name: &str, #[case] manual: usize) {
     let rules = compact(name);

@@ -37,6 +37,12 @@ pub enum StatKind {
     ManaSpent,
     /// How many colors there are among the mana spent to cast it (CR 105.4): none when no colored mana was spent.
     ColorsSpent,
+    /// How much mana from Treasures was spent to cast it ("for each mana from a Treasure spent to cast them").
+    TreasureManaSpent,
+    /// How much mana from artifact sources was spent to cast it ("for each mana from an artifact source spent to cast it").
+    ArtifactManaSpent,
+    /// How many colored mana symbols its mana cost has (a hybrid symbol is one); none without a mana cost.
+    ColoredManaSymbols,
     /// How many times its kicker costs were paid, while it is a spell or the permanent it became (CR 702.33).
     Kicks,
     /// Its name: no number, so only `Amount::Distinct` reads it (the different names among the objects).
@@ -406,6 +412,24 @@ pub enum TurnTally {
     /// The cards the player played from exile this turn: spells cast and lands played from exile ("if you didn't play a
     /// card from exile this turn"). Added up over the players.
     PlayedFromExile,
+    /// The lands the player played and the spells they cast this turn from anywhere other than their hand ("if you've
+    /// played a land or cast a spell this turn from anywhere other than your hand"). Added up over the players.
+    PlayedNotFromHand,
+    /// The energy counters the player paid or lost this turn, by the number ("if you've paid or lost four or more {E}
+    /// this turn"). Added up over the players.
+    EnergyPaidOrLost,
+    /// The oil counters removed this turn from permanents the players controlled, by the number ("if an oil counter was
+    /// removed from a permanent you controlled this turn"). Added up over the players.
+    OilCountersRemovedUnder,
+    /// The permanents that entered the battlefield face down under the players' control this turn ("if a permanent
+    /// entered the battlefield face down under your control this turn"). Added up over the players.
+    EnteredFaceDownUnder,
+    /// The permanents the players turned face up this turn ("you turned a permanent face up this turn"). Added up over
+    /// the players.
+    TurnedFaceUp,
+    /// The untapped lands the player controlled as the turn began, before its untap step ("the number of untapped lands
+    /// they controlled at the beginning of this turn"). Added up over the players.
+    UntappedLandsAsTurnBegan,
     /// The cards the players drew this turn ("for each card your opponents have drawn this turn"). Added up over the
     /// players.
     CardsDrawnTotal,
@@ -727,6 +751,10 @@ pub enum Amount {
     /// dealt, the life gained or lost, the counters put or removed; for a batch ("one or more") how many of its events
     /// the pattern found, and for a batch of damage the damage dealt in all.
     Triggering,
+    /// The different sources that dealt damage this turn while one of the players the reference names controlled them,
+    /// each object once ("three or more sources you controlled dealt damage this turn"); a source that left and came back
+    /// is another.
+    SourcesDealtDamage(Ref),
     /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
     /// ("the second creature token you created this turn").
     Tally {
@@ -770,6 +798,9 @@ pub enum Amount {
     /// The spells the players named have cast this game with the same name as the object with the ability, that object
     /// included when it was cast ("if ... you've cast another spell named ~ this game": 2 or more).
     CastSameNameThisGame(Ref),
+    /// The times the players named have cycled a card with the same name as the object with the ability this game, that
+    /// object included ("if you've cycled a card named ~ four or more times this game").
+    CycledSameNameThisGame(Ref),
     /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
     /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
     TallyLastTurn {
@@ -853,6 +884,14 @@ pub enum Amount {
     },
     /// How much mana the players the reference names hold in their pools, restricted mana included.
     ManaInPool(Ref),
+    /// How much mana of one type the players the reference names hold in their pools ("for each unspent green mana you
+    /// have"), restricted mana included.
+    ManaInPoolOf {
+        /// Whose pools.
+        who: Ref,
+        /// The type of mana counted.
+        mana: ManaType,
+    },
     /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
     Doors(Selector),
     /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
@@ -1030,6 +1069,7 @@ enum Tagged {
     },
     Party(Ref),
     Triggering,
+    SourcesDealtDamage(Ref),
     Tally {
         event: TallyEvent,
         who: Ref,
@@ -1054,6 +1094,7 @@ enum Tagged {
     },
     StickerVowels,
     CastSameNameThisGame(Ref),
+    CycledSameNameThisGame(Ref),
     TallyLastTurn {
         event: TallyEvent,
         who: Ref,
@@ -1095,6 +1136,10 @@ enum Tagged {
         max: i32,
     },
     ManaInPool(Ref),
+    ManaInPoolOf {
+        who: Ref,
+        mana: ManaType,
+    },
     Doors(Selector),
     Chosen,
     ChosenAs(String),
@@ -1223,6 +1268,7 @@ enum TaggedRef<'a> {
         directly: bool,
     },
     Triggering,
+    SourcesDealtDamage(&'a Ref),
     Tally {
         event: TallyEvent,
         who: &'a Ref,
@@ -1247,6 +1293,7 @@ enum TaggedRef<'a> {
     },
     StickerVowels,
     CastSameNameThisGame(&'a Ref),
+    CycledSameNameThisGame(&'a Ref),
     TallyLastTurn {
         event: TallyEvent,
         who: &'a Ref,
@@ -1288,6 +1335,10 @@ enum TaggedRef<'a> {
         max: i32,
     },
     ManaInPool(&'a Ref),
+    ManaInPoolOf {
+        who: &'a Ref,
+        mana: &'a ManaType,
+    },
     Doors(&'a Selector),
     Chosen,
     ChosenAs(&'a String),
@@ -1372,10 +1423,12 @@ impl From<Tagged> for Amount {
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
             Tagged::DamageDealtByTo { by, to } => Amount::DamageDealtByTo { by, to },
             Tagged::CommanderColors(who) => Amount::CommanderColors(who),
+            Tagged::SourcesDealtDamage(who) => Amount::SourcesDealtDamage(who),
             Tagged::TurnNumber => Amount::TurnNumber,
             Tagged::Stickers { on, kind } => Amount::Stickers { on, kind },
             Tagged::StickerVowels => Amount::StickerVowels,
             Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
+            Tagged::CycledSameNameThisGame(who) => Amount::CycledSameNameThisGame(who),
             Tagged::TallyLastTurn { event, who, filter } => {
                 Amount::TallyLastTurn { event, who, filter }
             }
@@ -1409,6 +1462,7 @@ impl From<Tagged> for Amount {
             Tagged::MostCommon { of, stat } => Amount::MostCommon { of, stat },
             Tagged::Random { min, max } => Amount::Random { min, max },
             Tagged::ManaInPool(who) => Amount::ManaInPool(who),
+            Tagged::ManaInPoolOf { who, mana } => Amount::ManaInPoolOf { who, mana },
             Tagged::Doors(of) => Amount::Doors(of),
             Tagged::Chosen => Amount::Chosen,
             Tagged::ChosenAs(name) => Amount::ChosenAs(name),
@@ -1533,6 +1587,9 @@ impl Serialize for Amount {
                 TaggedRef::DamageDealtByTo { by, to }.serialize(serializer)
             }
             Amount::CommanderColors(who) => TaggedRef::CommanderColors(who).serialize(serializer),
+            Amount::SourcesDealtDamage(who) => {
+                TaggedRef::SourcesDealtDamage(who).serialize(serializer)
+            }
             Amount::TurnNumber => TaggedRef::TurnNumber.serialize(serializer),
             Amount::Stickers { on, kind } => {
                 TaggedRef::Stickers { on, kind: *kind }.serialize(serializer)
@@ -1540,6 +1597,9 @@ impl Serialize for Amount {
             Amount::StickerVowels => TaggedRef::StickerVowels.serialize(serializer),
             Amount::CastSameNameThisGame(who) => {
                 TaggedRef::CastSameNameThisGame(who).serialize(serializer)
+            }
+            Amount::CycledSameNameThisGame(who) => {
+                TaggedRef::CycledSameNameThisGame(who).serialize(serializer)
             }
             Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
                 event: *event,
@@ -1596,6 +1656,9 @@ impl Serialize for Amount {
             }
             .serialize(serializer),
             Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
+            Amount::ManaInPoolOf { who, mana } => {
+                TaggedRef::ManaInPoolOf { who, mana }.serialize(serializer)
+            }
             Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
             Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
             Amount::ChosenAs(name) => TaggedRef::ChosenAs(name).serialize(serializer),
@@ -1679,6 +1742,16 @@ pub enum Condition {
         subject: Ref,
         /// The predicates it must satisfy.
         selector: Selector,
+    },
+    /// "You" (the player tested, in a `PlayersWhere`) were dealt damage this game by a source the selector matches as it
+    /// was when it dealt it ("each opponent dealt combat damage this game by a creature named ~", "target opponent
+    /// previously dealt damage by it": an object that left and came back is another); only combat damage with `combat`.
+    DamagedThisGameBy {
+        /// The sources, as they were when they dealt the damage.
+        by: Selector,
+        /// Only combat damage.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        combat: bool,
     },
     /// The inner condition is checked as the ability triggers and not again as it resolves (an "if" that is no intervening
     /// "if", Forge's `NoResolvingCheck`).
@@ -1828,6 +1901,41 @@ pub enum Condition {
     },
     /// A booster draft made the note ("if you guessed correctly for a card named ~"); never true without a draft.
     Drafted(crate::r4711_noted::DraftNote),
+    /// The creature `by` names exploited the creature `what` names this turn ("if it exploited that creature",
+    /// CR 702.110b).
+    Exploited {
+        /// The creature that exploited.
+        by: Ref,
+        /// The creature sacrificed, named as it was or as it is now.
+        what: Ref,
+    },
+    /// A player `player` names was attacked this turn by a creature `by` selects as it was when declared as an attacker
+    /// ("if they were attacked this turn by an Assassin you controlled"); attacking their planeswalker doesn't count.
+    AttackedThisTurnBy {
+        /// The player attacked.
+        player: Ref,
+        /// The attackers that count, as they were when declared.
+        by: Selector,
+    },
+    /// The Ring has tempted a player the reference names `times` or more times this game (CR 701.54), 1 to 4: "if the
+    /// Ring has tempted you two or more times this game".
+    RingTempted {
+        /// The players read.
+        who: Ref,
+        /// The fewest temptations, at most 4 (the Ring's level).
+        times: u32,
+    },
+    /// Every player the reference names has a speed greater than each other player's speed (CR 702.179): "if that
+    /// opponent's speed is greater than each other player's speed"; false when it names nobody.
+    FastestPlayer(Ref),
+    /// A player the reference names has completed the dungeon of this name this game (CR 309.7): "if you haven't
+    /// completed Tomb of Annihilation" is its negation.
+    CompletedNamedDungeon {
+        /// The players read.
+        who: Ref,
+        /// The dungeon's name.
+        dungeon: String,
+    },
 }
 
 #[cfg(test)]
@@ -1930,6 +2038,10 @@ mod tests {
     #[case::remembered(Amount::Remembered { on: Ref::This, slot: "n".to_owned(), per: None }, r#"{"Remembered":{"on":"This","slot":"n"}}"#)]
     #[case::damage_dealt_by_to(Amount::DamageDealtByTo { by: Ref::This, to: Ref::TriggeringPlayer }, r#"{"DamageDealtByTo":{"by":"This","to":"TriggeringPlayer"}}"#)]
     #[case::commander_colors(Amount::CommanderColors(Ref::You), r#"{"CommanderColors":"You"}"#)]
+    #[case::r5502_sources_dealt_damage(
+        Amount::SourcesDealtDamage(Ref::You),
+        r#"{"SourcesDealtDamage":"You"}"#
+    )]
     #[case::turn_number(Amount::TurnNumber, r#""TurnNumber""#)]
     #[case::triggering_targets(Amount::TriggeringTargets, r#""TriggeringTargets""#)]
     #[case::when(
@@ -1940,6 +2052,10 @@ mod tests {
     #[case::all_mana_spent(Amount::ManaSpent { of: None, from: None }, r#"{"ManaSpent":{"of":null}}"#)]
     #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
     #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
+    #[case::mana_in_pool_of(
+        Amount::ManaInPoolOf { who: Ref::You, mana: ManaType::Green },
+        r#"{"ManaInPoolOf":{"who":"You","mana":"Green"}}"#
+    )]
     #[case::most_common(Amount::MostCommon { of: Selector(vec![Pred::Type(CardType::Creature)]), stat: StatKind::Colors }, r#"{"MostCommon":{"of":[{"Type":"Creature"}],"stat":"Colors"}}"#)]
     #[case::random(Amount::Random { min: 1, max: 6 }, r#"{"Random":{"min":1,"max":6}}"#)]
     #[case::doors(Amount::Doors(Selector(vec![Pred::Type(CardType::Enchantment)])), r#"{"Doors":[{"Type":"Enchantment"}]}"#)]

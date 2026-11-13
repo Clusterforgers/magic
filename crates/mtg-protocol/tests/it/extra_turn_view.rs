@@ -39,6 +39,7 @@ fn the_turn_view_names_the_extra_turns_to_every_seat(#[values(2, 3, 4)] seats: u
         },
         Event::PhasesAdded {
             steps: vec![Step::BeginCombat, Step::Main2],
+            lone: false,
         },
     ];
     for event in &added {

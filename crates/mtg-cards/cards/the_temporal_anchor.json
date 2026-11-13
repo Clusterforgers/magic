@@ -20,9 +20,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 186, "end": 255 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "play": true,
+                "when": "YourTurn"
+              }
+            }
           }
         }
       ]

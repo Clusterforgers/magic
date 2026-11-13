@@ -39,6 +39,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExileHidden { .. }
         | Effect::Manifest { .. }
         | Effect::Cloak { .. }
+        | Effect::FaceDownPile { .. }
+        | Effect::BecomeForetold { .. }
         | Effect::Sacrifice { .. }
         | Effect::SacrificeUpTo { .. }
         | Effect::Counter { .. }
@@ -57,6 +59,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
         | Effect::PhaseOut { .. }
+        | Effect::Rephase
         | Effect::Attach { .. }
         | Effect::Unattach { .. }
         | Effect::JoinAttack { .. }
@@ -77,6 +80,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::ReduceSpeed { .. }
         | Effect::ControlPlayer { .. }
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }

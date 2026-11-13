@@ -1,19 +1,14 @@
 {
   "oracle_id": "47af21d3-b43f-4101-81cf-ca44db1a2706",
   "name": "Seeker of Slaanesh",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Seeker of Slaanesh",
       "oracle_fingerprint": "a7de03f5f07b5119e3b70ca00e79ca78",
       "abilities": [
         { "Keyword": "Haste" },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 100 }
-          }
-        }
+        { "Rule": { "rule": { "MustAttackWithOne": { "who": "Opponents" } } } }
       ]
     }
   ]

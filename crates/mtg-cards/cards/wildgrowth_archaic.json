@@ -1,7 +1,7 @@
 {
   "oracle_id": "4469ff35-54ec-4ff5-bc19-3808ae0f711b",
   "name": "Wildgrowth Archaic",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wildgrowth Archaic",
@@ -16,9 +16,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 115, "end": 269 }
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "SpellEntersWith": {
+                  "spell": "Triggering",
+                  "count": { "Stat": { "of": "Triggering", "stat": "ColorsSpent" } }
+                }
+              }
+            ]
           }
         }
       ]

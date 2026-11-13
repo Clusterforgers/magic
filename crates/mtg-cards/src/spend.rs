@@ -154,6 +154,11 @@ pub struct SpentFrom {
 pub struct SpendTraits {
     /// Its card types.
     pub types: CardTypes,
+    /// The permanent that made the mana and how many times it had changed zones, for a mana source ("mana produced by
+    /// ~"); none for a spell or the source of an ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub made_by: Option<(ObjectId, u32)>,
     /// Its supertypes.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
@@ -354,6 +359,8 @@ pub enum SpendOn {
     OtherCosts,
     /// Paying a cost that has {X} in it, of a spell or of an ability.
     CostWithX,
+    /// Paying a cumulative upkeep cost (CR 702.24a): "Spend this mana only to pay cumulative upkeep costs".
+    CumulativeUpkeep,
     /// Not a restriction: the mana may be spent on anything, and spending it on a spell of the kind sets off the effects
     /// ("When that mana is spent to cast a creature spell, scry 1").
     When(Box<WhenSpent>),
@@ -475,6 +482,7 @@ impl SpendOn {
             SpendOn::Ability(filter) => SpendOn::Ability(filter.resolved(chosen)?),
             SpendOn::CostWithX => SpendOn::CostWithX,
             SpendOn::OtherCosts => SpendOn::OtherCosts,
+            SpendOn::CumulativeUpkeep => SpendOn::CumulativeUpkeep,
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,

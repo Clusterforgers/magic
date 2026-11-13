@@ -11,9 +11,11 @@ Abzan Falconer
 Abzan Skycaptain
 Academy Elite
 Accomplished Automaton
+Acererak the Archlich
 Act of Aggression
 Act of Treason
 Adaptive Snapjaw
+Adarkar Unicorn
 Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
@@ -91,6 +93,7 @@ Artful Maneuver
 Artificial Evolution
 Artistic Refusal
 Arvad the Cursed
+As Foretold
 Ash Barrens
 Ashes of the Abhorrent
 Assassin's Trophy
@@ -161,6 +164,7 @@ Beast Walkers
 Beast Within
 Beastmaster Ascension
 Befriending the Moths // Imperial Moth
+Behemoth of Vault 0
 Behold the Multiverse
 Belfry Spirit
 Belisarius Cawl
@@ -236,6 +240,7 @@ Branchblight Stalker
 Brave the Sands
 Break the Ice
 Breath of Life
+Breena, the Demagogue
 Breezekeeper
 Briarblade Adept
 Bribe Taker
@@ -265,6 +270,7 @@ Calciderm
 Calciform Pools
 Caldaia Strongarm
 Caldera Hellion
+Call the Spirit Dragons
 Caller of the Pack
 Canoptek Tomb Sentinel
 Caprichrome
@@ -317,6 +323,7 @@ Chittering Witch
 Chomping Kavu
 Chromanticore
 Chromatic Lantern
+Churning Reservoir
 Cinderhaze Wretch
 Circle of Dreams Druid
 Circuitous Route
@@ -506,6 +513,7 @@ Dirgur Focusmage // Braingeyser
 Disallow
 Disciple of Griselbrand
 Discourtesy Clerk
+Diseased Vermin
 Disembowel
 Dismantling Blow
 Dismantling Wave
@@ -687,6 +695,8 @@ Fanatic of Rhonas
 Far Wanderings
 Faramir, Steward of Gondor
 Farewell
+Fast Forward
+Fatal Lore
 Favorable Winds
 Fear of Failed Tests
 Fearless Skald
@@ -745,6 +755,7 @@ Franklin Richards, Ascendant
 Frenzied Saddlebrute
 Freya Crescent
 Freyalise, Llanowar's Fury
+Frodo, Adventurous Hobbit
 Frogtosser Banneret
 Frost Titan
 Fruit of Tizerus
@@ -826,6 +837,7 @@ Glowstone Recluse
 Gluttonous Cyclops
 Gluttonous Slime
 Gluttonous Troll
+Glyph of Delusion
 Gnarled Professor
 Gnarlwood Dryad
 Goblin Archaeologist
@@ -843,6 +855,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Gollum, Obsessed Stalker
 Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
@@ -908,6 +921,7 @@ Haughty Djinn
 Headless Skaab
 Hearthhull, the Worldseed
 Heartless Act
+Heartwood Storyteller
 Hei Bai, Spirit of Balance
 Heidar, Rimewind Master
 Heliod, God of the Sun
@@ -1021,6 +1035,7 @@ It's Clobberin' Time!
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+Izzet Generatorium
 J. Jonah Jameson
 Jace Beleren
 Jace's Archivist
@@ -1057,6 +1072,7 @@ Karametra, God of Harvests
 Karn Liberated
 Karn's Bastion
 Karn's Sylex
+Karn, Legacy Reforged
 Kathari Screecher
 Kaya's Wrath
 Kazandu Tuskcaller
@@ -1074,6 +1090,7 @@ Kill! Maim! Burn!
 Kimoyo Beads
 Kindred Boon
 Kindred Discovery
+King Solomon's Frogs
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
@@ -1137,6 +1154,7 @@ Leyline Binding
 Lhurgoyf
 Lich Lord of Unx
 Licia, Sanguine Tribune
+Liesa, Shroud of Dusk
 Life of Toshiro Umezawa // Memory of Toshiro
 Life's Legacy
 Lifted by Clouds
@@ -1200,6 +1218,7 @@ Makeshift Mauler
 Malakir Blood-Priest
 Malleable Impostor
 Mana Bloom
+Mana Maze
 Manabarbs
 Manaweft Sliver
 Manor Gate
@@ -1237,6 +1256,7 @@ Mawloc
 Mayhem Patrol
 Megaton's Fate
 Megrim
+Memory Crystal
 Memory Guardian
 Memory Plunder
 Menacing Ogre
@@ -1332,6 +1352,7 @@ Necroskitter
 Nessian Asp
 Nest of Scarabs
 Netherese Puzzle-Ward
+Nethergoyf
 Nettlecyst
 Neverwinter Dryad
 Neverwinter Hydra
@@ -1368,6 +1389,7 @@ Oath of Jace
 Oathsworn Vampire
 Ob Nixilis Reignited
 Ob Nixilis, the Ascended
+Oblivious Bookworm
 Obscura Storefront
 Obscuring Haze
 Observed Stasis
@@ -1383,6 +1405,8 @@ On Thin Ice
 Onakke Oathkeeper
 Ondu Spiritdancer
 Oona's Blackguard
+Open the Omenpaths
+Open the Way
 Opposition Agent
 Opt
 Oran-Rief, the Vastwood
@@ -1485,6 +1509,7 @@ Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
 Power Conduit
+Power Surge
 Pramikon, Sky Rampart
 Prava of the Steel Legion
 Predator Dragon
@@ -1703,6 +1728,7 @@ Scytheclaw
 Sea Gate
 Sea Gate Wreckage
 Search the Premises
+Season of the Witch
 Seasoned Hallowblade
 Secluded Courtyard
 Secluded Glen
@@ -1713,6 +1739,7 @@ Secure Detention
 Seedglaive Mentor
 Seeds of Renewal
 Seedship Agrarian
+Seeker of Slaanesh
 Seekers' Squire
 Seize the Day
 Seraph of the Sword
@@ -1840,6 +1867,7 @@ Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
 Spider-Man, New Champion
+Spikeshell Harrier
 Spikewheel Acrobat
 Spinerock Knoll
 Spinnerette, Arachnobat
@@ -1897,6 +1925,7 @@ Storm-Kiln Artist
 Stormchaser's Talent
 Stormscape Battlemage
 Stormsurge Kraken
+Storrev, Devkarin Lich
 Storvald, Frost Giant Jarl
 Strangleroot Geist
 Stratus Dancer
@@ -1976,9 +2005,11 @@ Teacher's Pest
 Team Pennant
 Teapot Slinger
 Tectonic Reformation
+Tectonic Split
 Teferi's Ageless Insight
 Teferi's Imp
 Teferi's Protection
+Teferi's Reproach
 Tegwyll's Scouring
 Tekuthal, Inquiry Dominus
 Telepathy
@@ -2012,6 +2043,7 @@ The Gaffer
 The Great Henge
 The Locust God
 The Mechanist, Aerial Artisan
+The Mightstone and Weakstone
 The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
@@ -2030,6 +2062,7 @@ The War Doctor
 The Warring Triad
 The Wise Mothman
 Thelonite Hermit
+Thick-Skinned Goblin
 Thieving Magpie
 Thieving Varmint
 Thinking Cap
@@ -2073,6 +2106,7 @@ Time Sieve
 Time Stretch
 Time Walk
 Time Warp
+Time and Tide
 Time to Reflect
 Timeless Lotus
 Timeless Witness
@@ -2112,10 +2146,12 @@ Traverse the Outlands
 Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
+Trench Behemoth
 Triarch Praetorian
 Tribal Flames
 Trostani Discordant
 Trove Tracker
+Trove of Temptation
 Troyan, Gutsy Explorer
 True Identity
 True-Name Nemesis
@@ -2127,6 +2163,7 @@ Tuskguard Captain
 Twilight Mire
 Twincast
 Twinflame
+Twinning Staff
 Two-Headed Giant of Foriys
 Tyranid Prime
 Tyrant Guard
@@ -2244,6 +2281,7 @@ Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear
 Wear Away
+Weathered Sentinels
 Wedgelight Rammer
 Wei Scout
 Weigh Down
@@ -2299,6 +2337,7 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yasharn, Implacable Earth
+Yidaro, Wandering Monster
 Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf

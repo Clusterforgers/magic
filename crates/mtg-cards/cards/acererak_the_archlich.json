@@ -1,0 +1,61 @@
+{
+  "oracle_id": "31b4e85d-89fc-4712-8f05-7ec097b1d3b6",
+  "name": "Acererak the Archlich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acererak the Archlich",
+      "oracle_fingerprint": "f4baaff07f9b06a6045eb684d6bf5cfe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Not": {
+                "CompletedNamedDungeon": { "who": "You", "dungeon": "Tomb of Annihilation" }
+              }
+            },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }, { "Venture": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "foe",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "foe" },
+                        "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                        "unpaid": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Zombie",
+                                  "colors": ["Black"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Zombie"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

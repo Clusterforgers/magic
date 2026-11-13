@@ -113,6 +113,11 @@ pub(super) fn move_object(
     } else {
         Vec::new()
     };
+    let delved = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.delved().to_vec()
+    } else {
+        Vec::new()
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -129,6 +134,7 @@ pub(super) fn move_object(
         let mut permanent =
             PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
         permanent.convoked = convoked;
+        permanent.delved = delved;
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
     } else if to != Zone::Stack {
@@ -189,10 +195,20 @@ fn w21a_tally_graveyards(
         let controller = state.object(card.id).map(GameObject::controller);
         if let Some(controller) = controller {
             state.log_event(TallyEvent::Entered, controller, card.id);
+            if state
+                .object(card.id)
+                .is_some_and(|object| object.face_down().is_some())
+            {
+                state.tally(controller, Tally::R5522EnteredFaceDown);
+            }
         }
     }
     if from == Zone::Battlefield && matches!(to, Zone::Graveyard(_)) {
         state.tally_object(card, None, Tally::W21aGraved);
+    }
+    if matches!(to, Zone::Graveyard(_)) && state.turn().step().phase() == crate::turn::Phase::Combat
+    {
+        state.tallies.r5522.combat_graved.push(card);
     }
     let permanent_card = state.object(card.id).is_some_and(|object| {
         object.kind() != ObjectKind::Token
@@ -350,6 +366,12 @@ fn land_played(
     if from == Zone::Exile {
         state.tally(player, Tally::R287PlayedFromExile);
     }
+    if from != Zone::Hand(player) {
+        state.tally(player, Tally::R5522PlayedNotFromHand);
+    }
+    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
+        state.tally_object(source, None, used);
+    }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
     if let Some(permanent) = state
@@ -416,6 +438,22 @@ fn note_aftermath(state: &mut GameState, spell: ObjectId, from: Zone) {
     }
 }
 
+/// Tallies the use of a permission that works once each turn, or a limited number of times, that the cast relies on.
+fn note_permission_used(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+    from: Zone,
+    way: Option<CastWay>,
+) {
+    if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, way) {
+        state.tally_object(source, None, Tally::C11bOnceUsed);
+    }
+    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
+        state.tally_object(source, None, used);
+    }
+}
+
 /// A card is cast: it moves to the stack as the spell, with what was announced for it, and lies face down when it is cast that way.
 fn spell_cast(
     state: &mut GameState,
@@ -432,6 +470,7 @@ fn spell_cast(
     {
         state.tally(player, Tally::R287PlayedFromExile);
     }
+    crate::r5522_history::r5522_note_played(state, player, object);
     if choices.way == Some(CastWay::Warp) {
         state.tally(player, Tally::Warped);
     }
@@ -456,9 +495,7 @@ fn spell_cast(
     let uncounterable = crate::rules::spend_next_spells(state, player, object);
     // Read before the tally below closes a permission that works once each turn.
     let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
-    if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
-        state.tally_object(source, None, Tally::C11bOnceUsed);
-    }
+    note_permission_used(state, player, object, from, choices.way);
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
@@ -507,6 +544,7 @@ fn spell_cast(
     note_rebound(state, object, from);
     note_aftermath(state, object, from);
     state.log_event(TallyEvent::SpellCast, player, object);
+    crate::r5512_until_cast::r5512_note_cast(state, object);
     if let Some(name) = state
         .objects
         .get(&object)
@@ -617,10 +655,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             {
                 card.adventure = before;
             }
-            if let Some(how) = cause.face_down(state.turn.number())
-                && let Some(object) = state.objects.get_mut(object)
-            {
-                object.face_down = Some(how);
+            if let Some(how) = cause.face_down(state.turn.number()) {
+                crate::r5522_history::r5522_put_face_down(state, *object, how, *to);
             }
             if let ZoneCause::ExiledUntil { by } = cause {
                 exiled_until(state, *object, *by, *from);
@@ -675,6 +711,11 @@ fn card_drawn(
     state.tally(player, Tally::Drawn);
     if let Some(reference) = state.object(object).map(GameObject::reference) {
         state.tally_object(reference, None, Tally::Dk26Drawn);
+        let nth = state.tallied(player, Tally::Drawn);
+        state
+            .tallies
+            .objects
+            .insert((reference, None, Tally::R5500DrawnNth), nth);
     }
     if state.turn.step == crate::turn::Step::Draw
         && state.is_alive(player)

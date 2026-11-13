@@ -15,14 +15,18 @@ pub const fn r4708_is_action(when: &ReplaceWhen) -> bool {
 }
 
 /// The problems of a replacement of a scry or a surveil: a scry is replaced only by drawing that many cards instead
-/// (the number of cards as `Triggering`); a surveil only by more cards the controller may look at, and only those
+/// (the number of cards as `Triggering`) or by scrying a fixed number more ("scry that many cards plus one instead"); a
+/// surveil only by more cards the controller may look at, and only those
 /// two take more cards.
 pub fn r4708_check(when: &ReplaceWhen, by: &ReplaceBy, mut report: impl FnMut(&'static str)) {
     match (when, by) {
         (ReplaceWhen::Scries { .. }, ReplaceBy::Instead(effects))
             if r4708_draws_that_many(effects) => {}
+        (ReplaceWhen::Scries { .. }, ReplaceBy::Add(n)) if *n > 0 => {}
         (ReplaceWhen::Scries { .. }, _) => {
-            report("a scry is replaced only by drawing that many cards instead");
+            report(
+                "a scry is replaced only by drawing that many cards instead or by scrying more cards",
+            );
         }
         (ReplaceWhen::Surveils { .. }, ReplaceBy::MayAddAmount(Amount::Fixed(n))) if *n > 0 => {}
         (ReplaceWhen::Surveils { .. }, _) => {

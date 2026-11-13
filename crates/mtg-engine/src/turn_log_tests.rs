@@ -1,4 +1,4 @@
-//! Goal: the turn's log records damage, attacks, blocks, activations and counters in event order, `Pred::DidThisTurn` and `Amount::Tally` read it by player, target and combat, a spell's counters count for its controller and an unattributed one for nobody, a new turn clears it, and an object that is not public leaves a record that counts but that no filter on its characteristics selects.
+//! Goal: the turn's log records damage, attacks, blocks, activations and counters in event order, `Pred::DidThisTurn` and `Amount::Tally` read it by player, target and combat, `Amount::SourcesDealtDamage` counts each source once, a spell's counters count for its controller and an unattributed one for nobody, a new turn clears it, and an object that is not public leaves a record that counts but that no filter on its characteristics selects.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -319,4 +319,37 @@ fn a_hidden_object_counts_but_no_filter_on_it_selects_and_nothing_names_it() {
         "Card",
         pred(TallyEvent::CountersPut, None, None, false)
     ));
+}
+
+/// Seat 0's Bear and Wolf and seat 1's Ogre deal the damage `hits` names in order: the sources seat 0 controlled are
+/// counted once each, however often they dealt damage.
+#[rstest]
+#[case::none(&[], 0, 0)]
+#[case::one_source_twice(&[("Bear", 2), ("Bear", 1)], 1, 0)]
+#[case::two_of_mine(&[("Bear", 2), ("Wolf", 1)], 2, 0)]
+#[case::theirs_apart(&[("Bear", 2), ("Ogre", 3), ("Ogre", 1)], 1, 1)]
+fn r5502_sources_that_dealt_damage_are_counted_once_each(
+    #[case] hits: &[(&str, u32)],
+    #[case] mine: i64,
+    #[case] theirs: i64,
+) {
+    let mut game = state(
+        vec![Vec::new(), Vec::new()],
+        vec![
+            vec![creature("Bear", 2, 2), creature("Wolf", 1, 1)],
+            vec![creature("Ogre", 3, 4)],
+        ],
+    );
+    for (source, amount) in hits {
+        let to = if *source == "Ogre" { ME } else { FOE };
+        let event = hit(&game, source, DamageTarget::Player(to), *amount);
+        fold(&mut game, &[event]);
+    }
+    let count = |who: Ref| {
+        Scope::announcing(&game, ME, named(&game, "Bear"))
+            .amount(&Amount::SourcesDealtDamage(who))
+            .unwrap()
+    };
+    assert_eq!(count(Ref::You), mine);
+    assert_eq!(count(Ref::Opponents), theirs);
 }

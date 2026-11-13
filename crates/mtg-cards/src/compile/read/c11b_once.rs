@@ -44,11 +44,13 @@ fn c11b_permission(what: Selector) -> CastPermission {
         only: None,
         play: false,
         once: true,
+        any_turn: false,
         additional: None,
         spend_as: crate::modify::SpendAs::Normal,
         when: None,
         any_cast: false,
         riders: Vec::new(),
+        limit: None,
     }
 }
 

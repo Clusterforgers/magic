@@ -171,7 +171,12 @@ kept: Array<ObjectId>, } } | { "PhasesAdded": {
 /**
  * The first step of each added phase.
  */
-steps: Array<Step>, } } | { "StepAdded": { 
+steps: Array<Step>, 
+/**
+ * Each entry is a step on its own, not a phase: it is followed by what comes after it, not by the rest of its
+ * phase ("additional upkeep steps after this phase").
+ */
+lone?: boolean, } } | { "StepAdded": { 
 /**
  * The step added.
  */
@@ -734,7 +739,15 @@ object: ObjectId,
 /**
  * The permanent it is attached to.
  */
-to: ObjectId, } } | { "AttachedToPlayer": { 
+to: ObjectId, } } | { "ChosenAsAttached": { 
+/**
+ * The attachment.
+ */
+object: ObjectId, 
+/**
+ * What it chose.
+ */
+chosen: Chosen, } } | { "AttachedToPlayer": { 
 /**
  * The Aura.
  */
@@ -1091,7 +1104,15 @@ enlisted: ObjectId,
 /**
  * The controller of the enlisting creature.
  */
-player: PlayerId, } } | { "Exploited": { 
+player: PlayerId, } } | { "Fought": { 
+/**
+ * The creature that fought.
+ */
+object: ObjectId, 
+/**
+ * The creature it fought.
+ */
+other: ObjectId, } } | { "Exploited": { 
 /**
  * The creature whose exploit ability resolved.
  */

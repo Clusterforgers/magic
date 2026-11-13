@@ -215,6 +215,8 @@ pub enum Keyword {
     MoreThanMeetsTheEye(Cost),
     /// Ninjutsu with its cost: from the hand during combat after blockers are declared, an unblocked attacker returns to its owner's hand and the card enters tapped and attacking (CR 702.49).
     Ninjutsu(Cost),
+    /// Commander ninjutsu with its cost (CR 702.49d): ninjutsu that also works from the command zone.
+    CommanderNinjutsu(Cost),
     /// Echo with its cost (CR 702.30): at the beginning of its controller's upkeep, if it came under their control since their last turn began, it is sacrificed unless they pay the cost.
     Echo(Cost),
     /// Cumulative upkeep with its cost (CR 702.24): at the beginning of its controller's upkeep an age counter is put on it, then it is sacrificed unless they pay the cost once for each age counter.
@@ -578,6 +580,7 @@ impl Keyword {
         "Disturb",
         "More Than Meets the Eye",
         "Ninjutsu",
+        "Commander ninjutsu",
         "Echo",
         "Cumulative upkeep",
         "Cumulative upkeep action",
@@ -766,6 +769,7 @@ impl Keyword {
             Keyword::Aftermath => "Aftermath",
             Keyword::Bestow(_) => "Bestow",
             Keyword::Ninjutsu(_) => "Ninjutsu",
+            Keyword::CommanderNinjutsu(_) => "Commander ninjutsu",
             Keyword::Echo(_) => "Echo",
             Keyword::CumulativeUpkeep(_) => "Cumulative upkeep",
             Keyword::CumulativeUpkeepActs { .. } => "Cumulative upkeep action",
@@ -1077,7 +1081,8 @@ mod tests {
             Keyword::Mayhem(cost.clone()),
             Keyword::Disturb(cost.clone()),
             Keyword::MoreThanMeetsTheEye(cost.clone()),
-            Keyword::Ninjutsu(cost),
+            Keyword::Ninjutsu(cost.clone()),
+            Keyword::CommanderNinjutsu(cost),
             Keyword::Echo(Cost::default()),
             Keyword::CumulativeUpkeep(Cost::default()),
             Keyword::CumulativeUpkeepActs {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ea86abfa-6cab-4ef0-8463-34136fc25b59",
   "name": "Duplicant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Duplicant",
@@ -15,9 +15,54 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 77, "end": 268 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Stat": {
+                      "of": {
+                        "LastExiledWith": {
+                          "on": "This",
+                          "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
+                        }
+                      },
+                      "stat": "Power"
+                    }
+                  },
+                  "toughness": {
+                    "Stat": {
+                      "of": {
+                        "LastExiledWith": {
+                          "on": "This",
+                          "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
+                        }
+                      },
+                      "stat": "Toughness"
+                    }
+                  }
+                }
+              },
+              {
+                "SetCreatureTypesOf": {
+                  "LastExiledWith": {
+                    "on": "This",
+                    "filter": [{ "In": "Exile" }, { "Type": "Creature" }]
+                  }
+                }
+              },
+              { "AddSubtype": "Shapeshifter" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "Type": "Creature" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         }
       ]

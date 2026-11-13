@@ -76,6 +76,40 @@ pub(super) enum Way {
     Another,
     /// As `Another`, and the new target must be a player ("The new target must be a player.").
     AnotherPlayer,
+    /// The only target becomes a legal target picked at random, the current one included (CR 115.7d).
+    Random,
+}
+
+/// The question whether to choose new targets: `Some` ends the change (the question, or the copy kept as it is), `None`
+/// goes on to the new targets.
+fn ask_to_change(
+    player: PlayerId,
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    original: Original<'_>,
+    copy: &Choices,
+    way: Way,
+) -> Result<Option<Retargeted>, ResolveError> {
+    match answers.next() {
+        None => {
+            let of = if way == Way::ChooseCopy {
+                "the copy of "
+            } else {
+                ""
+            };
+            Ok(Some(Retargeted::Ask(Decision {
+                player,
+                kind: DecisionKind::YesNo(YesNoOptions::new(
+                    original.id,
+                    format!("Choose new targets for {of}{}?", original.name),
+                )),
+            })))
+        }
+        Some((who, Choice::YesNo(false))) if *who == player => {
+            Ok(Some(Retargeted::Done(copy.clone())))
+        }
+        Some((who, Choice::YesNo(true))) if *who == player => Ok(None),
+        Some(other) => Err(unexpected(other)),
+    }
 }
 
 /// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
@@ -98,7 +132,7 @@ pub(super) fn ask(
             continue;
         };
         let another = matches!(way, Way::Another | Way::AnotherPlayer);
-        if way == Way::Keep || (another && !single) {
+        if way == Way::Keep || ((another || way == Way::Random) && !single) {
             break;
         }
         let mut legal = legal_from(
@@ -109,13 +143,16 @@ pub(super) fn ask(
             judged,
             original.cause,
             original.choices.x,
+            original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
-        if another {
-            legal.retain(|target| {
-                !kept.contains(target)
-                    && (way == Way::Another || matches!(target, Target::Player(_)))
-            });
+        if another || way == Way::Random {
+            if another {
+                legal.retain(|target| {
+                    !kept.contains(target)
+                        && (way == Way::Another || matches!(target, Target::Player(_)))
+                });
+            }
             if !legal.is_empty() {
                 changeable.push((at, wording::spec(spec), legal));
             }
@@ -130,28 +167,15 @@ pub(super) fn ask(
     if changeable.is_empty() {
         return Ok(Retargeted::Done(copy));
     }
-    if !matches!(way, Way::Another | Way::AnotherPlayer) {
-        match answers.next() {
-            None => {
-                let of = if way == Way::ChooseCopy {
-                    "the copy of "
-                } else {
-                    ""
-                };
-                return Ok(Retargeted::Ask(Decision {
-                    player,
-                    kind: DecisionKind::YesNo(YesNoOptions::new(
-                        original.id,
-                        format!("Choose new targets for {of}{}?", original.name),
-                    )),
-                }));
-            }
-            Some((who, Choice::YesNo(false))) if *who == player => {
-                return Ok(Retargeted::Done(copy));
-            }
-            Some((who, Choice::YesNo(true))) if *who == player => {}
-            Some(other) => return Err(unexpected(other)),
-        }
+    if way == Way::Random {
+        return Ok(Retargeted::Done(r5503_random(
+            cx, original, copy, changeable,
+        )));
+    }
+    if !matches!(way, Way::Another | Way::AnotherPlayer)
+        && let Some(done) = ask_to_change(player, answers, original, &copy, way)?
+    {
+        return Ok(done);
     }
     for (at, wording, legal) in changeable {
         let count = original.choices.targets[at].len();
@@ -185,6 +209,24 @@ pub(super) fn ask(
     }
     copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
     Ok(Retargeted::Done(copy))
+}
+
+/// The choices with each changeable target replaced by one of its legal targets picked with the game's generator.
+fn r5503_random(
+    cx: &Cx<'_>,
+    original: Original<'_>,
+    mut copy: Choices,
+    changeable: Vec<(usize, String, Vec<Target>)>,
+) -> Choices {
+    let state = cx.state();
+    let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index);
+    for (at, _, legal) in changeable {
+        if let Some(picked) = legal.get(rng.index(legal.len())) {
+            copy.targets[at] = vec![*picked];
+        }
+    }
+    copy.division = divided_again(&original.choices.division, &original.choices.targets, &copy);
+    copy
 }
 
 /// Whether `targets` are `count` distinct targets among the legal ones.
@@ -245,6 +287,7 @@ pub(super) fn one_to(
             judged,
             original.cause,
             original.choices.x,
+            original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
         if legal.contains(&onto) {

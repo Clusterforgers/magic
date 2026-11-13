@@ -390,6 +390,17 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           combat.
         </p>
       ))}
+      {(options.at_least_one ?? []).map((group) => (
+        <p
+          key={JSON.stringify(group)}
+          data-slot="attack-at-least-one"
+          className="basis-full text-xs text-muted-foreground"
+        >
+          You must attack{' '}
+          {group.length === 0 ? '' : `${group.map((target) => names.short(target)).join(' or ')} `}
+          with at least one creature this combat.
+        </p>
+      ))}
       {several && aim !== undefined ? (
         <NativeSelect
           size="sm"
@@ -482,8 +493,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         disabled={declared.length === 0 || brokenJoins(options.joins, declaredIds).length > 0}
         onClick={confirm}
       />
-      {/* A rule that requires an attacker leaves no empty attack to choose. */}
-      {required.length > 0 ? null : (
+      {/* A rule that requires an attacker, or one attacker at some defenders, leaves no empty attack to choose. */}
+      {required.length > 0 || (options.at_least_one ?? []).length > 0 ? null : (
         <BarButton
           variant="outline"
           icon={X}

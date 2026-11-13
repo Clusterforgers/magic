@@ -52,8 +52,24 @@ fn milled(state: &GameState, _: PlayerId, object: ObjectId) -> Vec<Event> {
     vec![moved(ZoneCause::Milled)(state, object)]
 }
 
-fn foretold(state: &GameState, _: PlayerId, object: ObjectId) -> Vec<Event> {
-    vec![moved(ZoneCause::Foretold)(state, object)]
+/// Foretelling: the special action exiles the card from its owner's hand (CR 702.143a).
+fn foretold(_: &GameState, player: PlayerId, object: ObjectId) -> Vec<Event> {
+    vec![Event::ZoneChanged {
+        object,
+        from: Zone::Hand(player),
+        to: Zone::Exile,
+        cause: ZoneCause::Foretold,
+    }]
+}
+
+/// An effect makes a permanent foretold ("exile it face down. It becomes foretold."): no one foretold it.
+fn r5509_became_foretold(_: &GameState, _: PlayerId, object: ObjectId) -> Vec<Event> {
+    vec![Event::ZoneChanged {
+        object,
+        from: Zone::Battlefield,
+        to: Zone::Exile,
+        cause: ZoneCause::Foretold,
+    }]
 }
 
 fn moved_plainly(state: &GameState, _: PlayerId, object: ObjectId) -> Vec<Event> {
@@ -274,6 +290,13 @@ fn count(pre: &GameState, events: &[Event]) -> Vec<crate::triggers::Triggered> {
 #[case::countered(r#"{"action":"Countered"}"#, countered, ME, "Bear", 1)]
 #[case::milled(r#"{"action":"Milled"}"#, milled, ME, "Bear", 1)]
 #[case::foretold(r#"{"action":"Foretold","who":"You"}"#, foretold, ME, "Bear", 1)]
+#[case::r5509_became_foretold_is_not_foretelling(
+    r#"{"action":"Foretold","who":"You"}"#,
+    r5509_became_foretold,
+    ME,
+    "Bear",
+    0
+)]
 #[case::a_plain_move_is_no_action(r#"{"action":"Destroyed"}"#, moved_plainly, ME, "Bear", 0)]
 #[case::explored(
     r#"{"action":"Explored","what":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#,

@@ -34,9 +34,22 @@
       "oracle_fingerprint": "929cfa74d11b302c85b6cfa0e7378a9d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 0, "end": 108 }
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustAttackAt": { "who": { "Target": 0 }, "at": "This" } },
+                  "duration": "DuringItsControllersNextTurn"
+                }
+              }
+            ]
           }
         },
         {

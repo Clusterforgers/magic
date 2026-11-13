@@ -800,6 +800,7 @@ fn suffix_text_main(pred: &Pred, form: Form) -> Option<String> {
         Pred::SummoningSick => "that has summoning sickness".to_owned(),
         Pred::MilledThisTurn => "that was milled this turn".to_owned(),
         Pred::DrawnThisTurn => "drawn this turn".to_owned(),
+        Pred::LastDrawnThisTurn => "drawn last this turn".to_owned(),
         Pred::HasAdventure => "that has an Adventure".to_owned(),
         Pred::AttackedThisTurn => "that attacked this turn".to_owned(),
         Pred::AttackedLastTurn => "that attacked during their controller's last turn".to_owned(),
@@ -2035,6 +2036,18 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                     divide: None,
                 };
                 format!("{} chosen at random", spec_text(&one)?)
+            }
+            // "Any target of an opponent's choice": the first opponent in turn order chooses (CR 601.2c).
+            Targetable::ChosenBy {
+                who: Ref::Opponents,
+                what,
+            } => {
+                let one = TargetSpec {
+                    what: (**what).clone(),
+                    bounds: spec.bounds.clone(),
+                    divide: None,
+                };
+                format!("{} of an opponent's choice", spec_text(&one)?)
             }
             Targetable::Together { .. }
             | Targetable::PerPlayer { .. }

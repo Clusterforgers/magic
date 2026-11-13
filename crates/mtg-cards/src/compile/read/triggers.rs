@@ -993,6 +993,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
+    } else if let Some(fought) = super::r5513_events::r5513_fights(r, what) {
+        return Some(fought);
     } else if r.word("mutates") {
         return Some(TriggerPattern::Mutates { what: what.clone() });
     } else if r.word("adapts") {
@@ -1124,6 +1126,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(attacked) = r.attempt(super::r5513_events::r5513_condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype(r) {
         return Some(kind);
     }
@@ -1284,6 +1289,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(Condition::CompletedDungeon(Ref::You))
     } else if r.words("you have the initiative") {
         Some(Condition::Initiative(Ref::You))
+    } else if let Some(found) = super::r5521_conditions::r5521_condition(r) {
+        Some(found)
     } else {
         super::day_night::condition(r)
     }
@@ -1311,12 +1318,18 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
-        _ => return super::day_night::condition_text(condition),
+        _ => {
+            return super::r5521_conditions::r5521_condition_text(condition)
+                .or_else(|| super::day_night::condition_text(condition));
+        }
     })
 }
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(attacked) = super::r5513_events::r5513_condition_text(condition) {
+        return Some(attacked);
+    }
     if let Some(kind) = super::r4706_counters::r4706_not_subtype_text(condition) {
         return Some(kind);
     }

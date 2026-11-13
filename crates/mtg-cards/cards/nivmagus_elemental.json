@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d2f9a8a0-509b-4c24-a8cc-f27f77c9eefd",
+  "name": "Nivmagus Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nivmagus Elemental",
+      "oracle_fingerprint": "c96d89dfb37275ca9c89527c6466260e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "ExileSpell": {
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

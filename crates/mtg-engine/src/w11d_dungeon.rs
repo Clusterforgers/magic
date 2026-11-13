@@ -1,7 +1,7 @@
 //! Dungeons (CR 309): the dungeon object in its owner's command zone, the player's venture marker, the `Ventured` and
 //! `DungeonCompleted` events and the state-based action that completes a dungeon.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -37,6 +37,8 @@ pub struct W11dMarker {
 pub struct W11dDungeons {
     pub(crate) at: BTreeMap<PlayerId, W11dMarker>,
     pub(crate) completed: BTreeMap<PlayerId, u32>,
+    /// The dungeons each player has completed, as indexes into `w11d_dungeons()`.
+    pub(crate) completed_named: BTreeMap<PlayerId, BTreeSet<u8>>,
 }
 
 impl W11dDungeons {
@@ -81,6 +83,14 @@ impl GameState {
     /// How many dungeons the player has completed.
     pub fn w11d_completed(&self, player: PlayerId) -> u32 {
         self.w11d.completed.get(&player).copied().unwrap_or(0)
+    }
+
+    /// Whether the player has completed the dungeon of this name this game.
+    pub fn r5521_completed_named(&self, player: PlayerId, dungeon: &str) -> bool {
+        self.w11d.completed_named.get(&player).is_some_and(|done| {
+            done.iter()
+                .any(|index| w11d_dungeon_at(*index).is_some_and(|known| known.name == dungeon))
+        })
     }
 }
 
@@ -169,10 +179,16 @@ pub(crate) fn w11d_fold_completed(
     player: PlayerId,
     object: ObjectId,
 ) -> Result<(), EngineError> {
-    if state.w11d_marker(player).map(|m| m.object) != Some(object) {
+    let Some(marker) = state.w11d_marker(player).filter(|m| m.object == object) else {
         return Err(invalid(format!("{player:?} is not in {object:?}")));
-    }
+    };
     state.w11d.at.remove(&player);
+    state
+        .w11d
+        .completed_named
+        .entry(player)
+        .or_default()
+        .insert(marker.dungeon);
     *state.w11d.completed.entry(player).or_insert(0) += 1;
     state.zones.remove(Zone::Command(player), object);
     state.objects.remove(&object);

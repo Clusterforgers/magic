@@ -46,13 +46,14 @@ const COST_WORDS: [&str; 17] = [
 ];
 
 /// Lines of a spell that are rules about the spell itself rather than what it does.
-const SPELL_RULES: [&str; 7] = [
+const SPELL_RULES: [&str; 8] = [
     "This spell ",
     "~ costs ",
     "~ can't be countered",
     "As an additional cost",
     "Cast this spell only ",
     "Spend only ",
+    "X can't be greater than ",
     "If ~ would be put into a graveyard from anywhere, ",
 ];
 
@@ -120,6 +121,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
         || head.starts_with("Dash costs you pay ")
         || head.starts_with("Flashback costs you pay ")
         || head.starts_with("Flashback costs your opponents pay ")
+        || head.starts_with("Buyback costs cost ")
     {
         return ClauseKind::Static;
     }
@@ -189,10 +191,10 @@ fn w20b_ability_letters(word: &str) -> bool {
 }
 
 /// Whether the text is a flavour name that holds a comma or a question mark ("In You, All Things Are Possible", "Do
-/// You Like Squirrels?"): up to five words that each begin with a capital letter or the card's name, so a clause
+/// You Like Squirrels?"): up to six words that each begin with a capital letter or the card's name, so a clause
 /// ("At the beginning of your end step, draw a card") is never taken for one.
 fn t16a_flavour_name(word: &str) -> bool {
-    word.split(' ').count() <= 5
+    word.split(' ').count() <= 6
         && word.split(' ').all(|part| {
             part.chars()
                 .next()
@@ -375,6 +377,8 @@ mod tests {
     #[case::equip_costs_you_pay("Equip costs you pay cost {1} less.", false, Static)]
     #[case::r301_dash_costs("Dash costs you pay cost {2} less.", false, Static)]
     #[case::r408_flashback_costs("Flashback costs you pay cost {2} less.", false, Static)]
+    #[case::r5506_buyback_costs("Buyback costs cost {2} less.", false, Static)]
+    #[case::r5506_buyback_keyword("Buyback {3}", false, Keyword)]
     #[case::r408_flashback_costs_of_opponents(
         "Flashback costs your opponents pay cost {2} more.",
         false,

@@ -86,7 +86,7 @@ pub enum Ref {
     /// combat damage to a player, put a +1/+1 counter on it"); nobody for an event with no such object.
     Dealer,
     /// What the subject of the trigger event went against: the player, planeswalker or battle an attacker attacks, the
-    /// attacker a creature blocks; nobody for an event with no such thing.
+    /// player a player attacks, the attacker a creature blocks; nobody for an event with no such thing.
     Against,
     /// What the source is attached to ("enchanted creature", "equipped creature").
     Attached,
@@ -111,6 +111,9 @@ pub enum Ref {
     /// The opponents of the controller that their creatures attacked this combat, directly or through a planeswalker
     /// ("each opponent you attacked this combat"); a creature that left combat still counts.
     Attacked,
+    /// The opponents of the controller that their creatures attacked this turn, directly or through a planeswalker
+    /// ("each opponent you attacked this turn"); an attack of an earlier combat of the turn still counts.
+    AttackedThisTurn,
     /// The player with the most life, or each of the players tied for it.
     MostLife,
     /// The controller's teammates still in the game, in turn order (CR 810.2): nobody at a table without teams.
@@ -123,6 +126,9 @@ pub enum Ref {
     /// Inside the test of a `PlayersWhere`, the player whose ability asks it, while "you" is the player tested ("an
     /// opponent who controls more lands than you"); the controller everywhere else.
     Asker,
+    /// The player who chose the modes of the modal spell or ability ("An opponent chooses one — ... that player
+    /// controls"); the controller when no one else chose them, and nobody once that player has left the game.
+    ModesChooser,
     /// The result an earlier step bound with `as`.
     Bound(String),
     /// The objects picked for the cost of the ability ("the creature tapped to pay it"): their characteristics are those they
@@ -143,8 +149,20 @@ pub enum Ref {
         /// The name of the memory.
         slot: String,
     },
+    /// The card the object `on` names exiled last among those that match `filter`, while it is still in exile ("the last
+    /// creature card exiled with it", Duplicant).
+    LastExiledWith {
+        /// The object whose exiled cards are read.
+        on: Box<Ref>,
+        /// Which of them count.
+        filter: Box<Selector>,
+    },
+    /// The cards exiled with the delve of the spell the source is or came from (CR 702.66), while they are still in exile.
+    Delved,
     /// The controller of the referenced object.
     ControllerOf(Box<Ref>),
+    /// The opponents of the players the inner reference names ("each of that player's opponents"), in turn order.
+    OpponentsOf(Box<Ref>),
     /// The owner of the referenced object.
     OwnerOf(Box<Ref>),
     /// The player the reference names, or the controller of the object it names ("target player or planeswalker" read as
@@ -286,6 +304,9 @@ pub enum Pred {
     },
     /// Is an Aura card that could enchant the source ("an Aura card in your hand that could enchant this creature", CR 303.4).
     CanEnchantSource,
+    /// Is a permanent that one of the Auras the reference names could be attached to now ("another permanent it can
+    /// enchant", CR 303.4, 701.3b).
+    EnchantableBy(Ref),
     /// Has {X} in its mana cost ("a spell with {X} in its mana cost", CR 107.3).
     XInCost,
     /// Has a Phyrexian symbol in its mana cost ("a spell with {H} in its mana cost", CR 107.4f).
@@ -321,6 +342,8 @@ pub enum Pred {
     MilledThisTurn,
     /// Is a card its owner drew this turn, still in the hand ("cards in your hand drawn this turn").
     DrawnThisTurn,
+    /// Is the last card its owner drew this turn, still in the hand it was drawn into ("the last card you drew this turn").
+    LastDrawnThisTurn,
     /// Is a card with an Adventure (CR 715): a card of the Adventure layout, in any zone and on the stack as either half.
     HasAdventure,
     /// Has the card type.
@@ -455,6 +478,9 @@ pub enum Pred {
     ChosenColor,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
+    /// Has the land type at this place among the basic land types the controller of the source chose as it entered
+    /// ("lands of the first chosen type", Illusionary Terrain).
+    NthChosenLandType(u8),
     /// Has the card name the controller of the source chose as the source entered the battlefield.
     ChosenName,
     /// Matches the value the resolution remembered under the name (`Effect::ChooseValue`): has the colour, the creature,
@@ -524,6 +550,9 @@ pub enum Pred {
     /// Blocked or was blocked this turn by a creature the selector matches as it was when the block was declared ("that
     /// blocked or was blocked by a Zombie this turn"); by any creature when the selector is empty.
     BlockedThisTurn(Selector),
+    /// Dealt damage this turn to an object the selector matches as it was when the damage was dealt ("that dealt damage
+    /// to another creature this turn"); a creature the damage destroyed still counts.
+    DealtDamageThisTurn(Selector),
     /// Is the card one of the objects the reference names is, in whatever zone it is now: a card that went to a graveyard is a
     /// new object there (CR 400.7), and this finds it again by its card.
     SameCard(Ref),
@@ -543,12 +572,27 @@ pub enum Pred {
         /// The fewest mana from such sources.
         least: u32,
     },
+    /// A spell on the stack cast using mana made by one of the permanents the reference names, as that object ("using mana
+    /// produced by ~"); mana a permanent made before it last changed zones is another object's.
+    ManaFrom(Ref),
     /// Is a card in a graveyard that was put there from the battlefield this turn ("creature cards in your graveyard that were
     /// put there from the battlefield this turn").
     GravedThisTurn,
+    /// Is a card in a graveyard that was put there, from anywhere, during the combat phase now going on or the latest one
+    /// this turn ("that wasn't put there this combat" is its negation).
+    GravedThisCombat,
+    /// Shares a color with the spell most recently cast this turn, by any player, as it was cast ("spells that share a
+    /// color with the spell most recently cast this turn"); nothing does before a spell is cast this turn.
+    SharesColorWithLastCast,
+    /// Could have been declared as an attacker in a declare attackers step this turn, as the same object: one of the
+    /// creatures the attacking player could choose among then ("except for creatures that couldn't attack").
+    CouldAttackThisTurn,
     /// Went into the zone it is in now this turn from a zone of the kind ("creature cards put into your graveyard from your
     /// library this turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
     ArrivedFrom(ZoneKind),
+    /// Went into the zone it is in now this turn from anywhere ("a card in a graveyard that was put there from anywhere this
+    /// turn"); an object that moved again counts only for its latest move, and a token made there came from nowhere.
+    ArrivedThisTurn,
     /// Is a spell cast, or a permanent that entered as a spell cast, by one of the players `by` names (anyone when absent)
     /// from the kind of zone `from` (anywhere when absent); a copy or a token was never cast.
     WasCast {

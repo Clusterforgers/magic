@@ -1,14 +1,19 @@
 {
   "oracle_id": "48296cc0-0141-47c6-9ec8-ada6171fee6f",
   "name": "Boom Scholar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Boom Scholar",
       "oracle_fingerprint": "d6fabc5e087e98a9db4bacb7a5058be2",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 76 } }
+          "CostModifier": {
+            "applies_to": ["Other", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Exhaust"
+          }
         },
         {
           "Activated": {

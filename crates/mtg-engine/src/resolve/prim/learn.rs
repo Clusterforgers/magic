@@ -4,14 +4,17 @@ use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
 use crate::choose::{Questions, Stop};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
+use crate::replace::r5516_learns::r5516_learn_candidates;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::steps::draw;
 use crate::zones::Zone;
 
 /// Each player the effect names who is still in the game learns in turn: one `Learned`, then the player may discard a
 /// card (asked with `ChooseCards` over the hand, none or one, and not at all with an empty hand) and draws a card if
-/// they do. A Lesson card from outside the game is not an option: a Commander game has no sideboard.
+/// they do. A Lesson card from outside the game is not an option: a Commander game has no sideboard. A replacement that
+/// returns a card to the battlefield instead (`ReplaceWhen::Learns`) is offered first, and the learn does not happen
+/// when it is taken.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Learn { who } = effect else {
         return Err(wrong_effect("Learn"));
@@ -25,6 +28,9 @@ fn learn(cx: &Cx<'_>, who: &mtg_cards::refs::Ref) -> Result<Run, Stop> {
     let mut events = Vec::new();
     for player in cx.scope.players(who)? {
         if !state.is_alive(player) {
+            continue;
+        }
+        if r5516_returned_instead(cx, &mut questions, player, &mut events)? {
             continue;
         }
         events.push(Event::Learned { player });
@@ -43,6 +49,39 @@ fn learn(cx: &Cx<'_>, who: &mtg_cards::refs::Ref) -> Result<Run, Stop> {
     }
     questions.end()?;
     Ok(Run::events(events))
+}
+
+/// Whether a replacement of the learn (`ReplaceWhen::Learns`) stands in for it: each one's controller is asked in turn
+/// until one returns its card from the graveyard to the battlefield instead, and the learn does not happen.
+fn r5516_returned_instead(
+    cx: &Cx<'_>,
+    questions: &mut Questions<'_>,
+    player: mtg_core::ids::PlayerId,
+    events: &mut Vec<Event>,
+) -> Result<bool, Stop> {
+    let state = cx.state();
+    for (card, controller) in r5516_learn_candidates(state, player)? {
+        let Some(object) = state
+            .object(card.id)
+            .filter(|o| o.counter() == card.counter)
+        else {
+            continue;
+        };
+        let text = format!(
+            "Return {} to the battlefield instead of learning?",
+            object.card().name
+        );
+        if questions.yes_no(controller, text)? {
+            events.push(Event::ZoneChanged {
+                object: card.id,
+                from: object.zone(),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            });
+            return Ok(true);
+        }
+    }
+    Ok(false)
 }
 
 #[cfg(test)]

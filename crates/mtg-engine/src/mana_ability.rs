@@ -323,7 +323,8 @@ fn rule_mana(
                     .flat_map(|count| COLORS.iter().map(move |c| vec![*c; count]))
                     .collect()
             }
-            ManaProduced::Instead { .. } => Vec::new(),
+            // No color was chosen without a draft: no way to add mana.
+            ManaProduced::Instead { .. } | ManaProduced::DraftedColors => Vec::new(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {
@@ -529,6 +530,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         if can_tap && !chars.abilities.is_empty() {
             let tax =
                 crate::activation_kind::mana_modified(state, id, mtg_core::mana::ManaCost::ZERO);
+            let life = crate::activation_kind::r5514_mana_life(state, id);
             for (ability, def) in chars.abilities.iter().enumerate() {
                 let AbilityDef::Mana(mana) = def;
                 let mut option = ManaOption::new(
@@ -540,6 +542,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
                 );
                 option.only.extend(crate::spend::snow_rider(state, id));
                 option.cost = tax.clone();
+                option.life = option.life.saturating_add(life);
                 found.push(option);
             }
         }
@@ -673,6 +676,14 @@ pub(crate) fn activation(
         for (part, objects) in picks.zip(taken) {
             events.extend(part.at(x).events(state, player, id, objects));
         }
+    }
+    // The life cost modifiers add to every mana ability of the source ("cost an additional 1 life to activate").
+    let added = crate::activation_kind::r5514_mana_life(state, id);
+    if added > 0 {
+        events.push(Event::LifePaid {
+            player,
+            amount: added,
+        });
     }
     if shape.as_ref().is_none_or(|shape| shape.tap) {
         events.push(Event::PermanentTapped { object: id });

@@ -26,6 +26,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         NewTargets::Another => Way::Another,
         NewTargets::AnotherPlayer => Way::AnotherPlayer,
         NewTargets::Choose | NewTargets::One => Way::Choose,
+        NewTargets::Random => Way::Random,
     };
     // "To ~" with nothing left to name changes nothing.
     let onto = match (to, onto) {
@@ -80,6 +81,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
             Retargeted::Done(choices) => choices,
         };
+        if way == Way::Random {
+            // The pick spends a substream of the generator whether or not the target changes.
+            events.push(r5503_random_pick(&choices));
+        }
         if choices.targets != object.choices().targets {
             let before: Vec<_> = object.choices().targets.iter().flatten().collect();
             let added = choices
@@ -108,4 +113,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// The public log of a target picked at random: the object or the player picked.
+fn r5503_random_pick(choices: &crate::choose::Choices) -> Event {
+    let picked: Vec<Target> = choices.targets.iter().flatten().copied().collect();
+    let players: Vec<_> = picked.iter().filter_map(|target| target.player()).collect();
+    if players.is_empty() {
+        Event::ChosenAtRandom {
+            cards: picked
+                .iter()
+                .filter_map(|target| target.object().map(|object| object.id))
+                .collect(),
+        }
+    } else {
+        Event::PlayersChosenAtRandom { players }
+    }
 }

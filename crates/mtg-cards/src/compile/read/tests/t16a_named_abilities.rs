@@ -37,6 +37,11 @@ const DASH: &str = "\u{2014}";
     "When this creature enters, exile target player's graveyard.",
     ClauseKind::Triggered
 )]
+#[case::triggered_with_a_comma_and_six_words(
+    "In You, All Things Are Possible",
+    "When this creature enters, exile target player's graveyard.",
+    ClauseKind::Triggered
+)]
 #[case::triggered_with_a_question_mark(
     "Do You Like Squirrels?",
     "Whenever ~ attacks, mill three cards.",

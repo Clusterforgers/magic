@@ -1,7 +1,7 @@
 {
   "oracle_id": "d04b6c2c-50fc-464d-9991-230efec70d2b",
   "name": "Nashi, Moon Sage's Scion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nashi, Moon Sage's Scion",
@@ -9,9 +9,25 @@
       "abilities": [
         { "Keyword": { "Ninjutsu": "{3}{B}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 148, "end": 389 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true,
+                      "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }],
+                      "limit": 1
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

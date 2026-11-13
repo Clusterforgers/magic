@@ -28,6 +28,7 @@ fn orrery(spend_as: SpendAs, spells: Option<Selector>) -> Arc<CardDefinition> {
                     who: Ref::You,
                     spend_as,
                     spells,
+                    abilities: None,
                 },
                 condition: None,
                 from: ZoneKind::Battlefield,

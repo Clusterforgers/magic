@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5b6f9d55-eae8-48fd-a1d1-d56939adaf3a",
+  "name": "Mana Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Maze",
+      "oracle_fingerprint": "5fc8d9e0b2c6f94f036d9cb3e6dc205e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "Cast": { "filter": ["SharesColorWithLastCast"] } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

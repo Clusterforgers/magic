@@ -151,6 +151,12 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Exile a spell on the stack the payer controls that matches ("Exile an instant or sorcery spell you control"); the
+    /// spell leaves the stack and does not resolve.
+    ExileSpell {
+        /// Which spells may be chosen; the stack is implied.
+        filter: Selector,
+    },
     /// Exile cards from the payer's hand that match ("Exile a red card from your hand").
     ExileFromHand {
         /// Which cards may be chosen.
@@ -181,6 +187,12 @@ pub enum CostItem {
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
     CollectEvidence(u32),
+    /// Generic mana equal to the amount, counted as the cost is paid during a resolution ("echo {X}, where X is your life
+    /// total").
+    GenericOf(Amount),
+    /// Exile any number of other cards from the payer's graveyard with at least this many card types among them
+    /// (Nethergoyf's escape cost).
+    ExileCardTypes(u32),
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),
     /// Behold (Lorwyn Eclipsed): choose a permanent the payer controls or reveal a card from their hand that matches.
@@ -228,7 +240,8 @@ pub enum CostItem {
     /// color the source chose, after the cost modifiers apply; pays nothing itself.
     ChosenColorOnly,
     /// The X announced for the cost is at most this amount, read as the payment is asked ("X can't be greater than the
-    /// amount of life you gained this turn"); pays nothing itself. Only a payment an effect asks for (`Effect::Pay`) reads it.
+    /// amount of life you gained this turn"); pays nothing itself. A payment an effect asks for (`Effect::Pay`) reads it,
+    /// and so does the announcement of a spell that holds it as a required `AdditionalCost` (Open the Way).
     XAtMost(crate::value::Amount),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,

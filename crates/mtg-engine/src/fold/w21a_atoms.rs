@@ -129,6 +129,7 @@ fn modified_table(seats: usize) -> GameState {
 #[case::nothing(Pred::Modified, "Guest 0", false)]
 #[case::face_up(Pred::FaceDown, "Bear", false)]
 #[case::graved_on_the_battlefield(Pred::GravedThisTurn, "Bear", false)]
+#[case::arrived_before_the_turn(Pred::ArrivedThisTurn, "Bear", false)]
 fn an_atom_holds_for_the_objects_the_facts_make_it_true_of(
     #[values(2, 3, 4)] seats: usize,
     #[case] pred: Pred,
@@ -161,6 +162,9 @@ fn a_card_put_into_a_graveyard_from_the_battlefield_is_graved_and_a_discarded_on
     fold(&mut game, &events);
     assert!(holds(&game, Pred::GravedThisTurn, "Bear"));
     assert!(!holds(&game, Pred::GravedThisTurn, "Rat"));
+    // Put there from anywhere this turn: both cards.
+    assert!(holds(&game, Pred::ArrivedThisTurn, "Bear"));
+    assert!(holds(&game, Pred::ArrivedThisTurn, "Rat"));
     assert_eq!(game.tallied(ME, Tally::W21aLeftGraveyard), 0);
     let back = Event::ZoneChanged {
         object: id(&game, "Rat"),

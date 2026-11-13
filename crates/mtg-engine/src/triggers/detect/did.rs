@@ -116,6 +116,7 @@ pub(super) fn did_happened(
             ability,
             origin,
         } => found.extend(activated(pre, post, *player, source.id, *ability, *origin)),
+        Event::Fought { object, .. } => found.push(of(Action::Fought, *object)),
         Event::Enlisted { object, player, .. } => {
             found.push(did(Action::Enlisted, Some(*player), Some(*object)));
         }
@@ -225,6 +226,10 @@ pub(super) fn did_happened(
             found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
         }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
+        // The flipper loses a flip whose call missed (CR 705.2); a won flip is `CoinFlipWon`.
+        Event::CoinFlipped {
+            player, won: false, ..
+        } => found.push(did(Action::LostCoinFlip, Some(*player), None)),
         Event::Solved { object } => found.push(did(
             Action::SolvedCase,
             controller_of(post, *object),
@@ -284,10 +289,15 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
         match happened {
             Happened::Moved {
                 object,
+                from,
                 cause: Some(cause),
                 ..
             } => {
-                if let Some(action) = moved_action(*cause) {
+                // Only the special action exiles a card from a hand as it is foretold (CR 702.143b); a card an effect
+                // makes foretold was not foretold by anyone.
+                let foretelling =
+                    !matches!(cause, ZoneCause::Foretold) || matches!(from, Zone::Hand(_));
+                if let Some(action) = moved_action(*cause).filter(|_| foretelling) {
                     found.push(of(action, *object));
                 }
             }

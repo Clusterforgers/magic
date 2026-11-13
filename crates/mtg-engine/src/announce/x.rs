@@ -426,6 +426,8 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
         ),
         XCost::Mana { .. } => {
             let payable = largest_payable(ctx, choices)?;
+            let payable =
+                super::r5523_x_cap::r5523_spell_cap(ctx).map_or(payable, |cap| cap.min(payable));
             Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
         }
         XCost::Parts => parts::most(ctx, choices),

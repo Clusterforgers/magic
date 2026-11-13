@@ -1,7 +1,7 @@
 {
   "oracle_id": "7d05ffe2-e52b-42af-87ca-6aae488b9f41",
   "name": "Behemoth of Vault 0",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Behemoth of Vault 0",
@@ -17,9 +17,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 80, "end": 218 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "paid_for" } },
+              {
+                "Pay": {
+                  "cost": [
+                    { "PayEnergy": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [{ "Destroy": { "what": { "Bound": "paid_for" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

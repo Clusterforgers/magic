@@ -401,6 +401,41 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         }
         Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
+        // The creature types the other object has now (Duplicant reads the last creature card it exiled).
+        Wanted::SetCreatureTypesOf(from) => {
+            let donor = scope.objects(from)?.into_iter().next().ok_or_else(|| {
+                ResolveError::Invalid("no object to take the creature types of".into())
+            })?;
+            let chars = crate::characteristics::characteristics(scope.state, donor.id)
+                .ok_or_else(|| ResolveError::Invalid("the object is gone".into()))?;
+            if chars.all_creature_types {
+                return Ok(Modification::AddAllCreatureTypes);
+            }
+            let printed = scope
+                .state
+                .object(donor.id)
+                .map(|object| object.card().subtypes.clone())
+                .unwrap_or_default();
+            let mut types: Vec<mtg_core::card::Subtype> = Vec::new();
+            let held = if chars.creature_types_set {
+                chars.subtypes.clone()
+            } else {
+                printed.into_iter().chain(chars.subtypes.clone()).collect()
+            };
+            for subtype in held {
+                if subtype.is_creature_type() && !types.contains(&subtype) {
+                    types.push(subtype);
+                }
+            }
+            Modification::SetCreatureTypes(types)
+        }
+        Wanted::SetLandTypesNthChosen(at) => match scope.entered_choice() {
+            Some(Chosen::LandTypes(types)) => match types.get(usize::from(*at)) {
+                Some(land) => Modification::SetLandTypes(vec![land.clone()]),
+                None => return Err(ResolveError::Invalid("no such land type was chosen".into())),
+            },
+            _ => return Err(ResolveError::Invalid("no land types were chosen".into())),
+        },
         Wanted::SetLandTypes(types) => Modification::SetLandTypes(types.clone()),
         Wanted::AddAllCreatureTypes => Modification::AddAllCreatureTypes,
         Wanted::SetColorsChosen(name) => match scope.chosen_value(name) {
@@ -445,6 +480,19 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
+        // Each listed keyword one of the objects has, with its variant ("hexproof from white" for hexproof).
+        Wanted::KeywordsOf { from, keywords } => {
+            let mut given: Vec<Keyword> = Vec::new();
+            for donor in scope.objects(from)? {
+                for held in crate::keywords::keywords_of(scope.state, donor.id) {
+                    let listed = keywords.iter().any(|wanted| r5511_variant_of(held, wanted));
+                    if listed && !given.contains(held) {
+                        given.push(held.clone());
+                    }
+                }
+            }
+            Modification::AddKeywords(given)
+        }
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {
@@ -526,6 +574,21 @@ fn this_ability(cx: &Cx<'_>) -> Option<crate::abilities::AbilityRef> {
         ability: ability.index(),
         source: ability.origin(),
     })
+}
+
+/// Whether `held` is the keyword `wanted` or one of its variants: "hexproof from white" is a hexproof, a protection or a
+/// landwalk of any quality is one of its kind (Soulflayer's rulings).
+fn r5511_variant_of(held: &Keyword, wanted: &Keyword) -> bool {
+    held == wanted
+        || matches!(
+            (wanted, held),
+            (Keyword::Hexproof, Keyword::HexproofFrom(_))
+                | (
+                    Keyword::Protection(_),
+                    Keyword::Protection(_) | Keyword::ProtectionSparing { .. }
+                )
+                | (Keyword::Landwalk(_), Keyword::Landwalk(_))
+        )
 }
 
 #[cfg(test)]

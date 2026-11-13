@@ -130,6 +130,9 @@ pub enum Modification {
     AddColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Adds these keyword abilities, one at a time in the order listed (layer 6): the keywords other objects have, as a
+    /// static ability that copies them found them.
+    AddKeywords(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Vec<Keyword>),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection, ward or
@@ -274,6 +277,7 @@ impl Modification {
             | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) | Modification::AddColors(_) => Layer::Color,
             Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
@@ -387,6 +391,7 @@ impl Modification {
             // The controller is walked with the characteristics (`characteristics::walk`).
             Modification::SetController(_)
             | Modification::AddKeyword(_)
+            | Modification::AddKeywords(_)
             | Modification::RemoveKeyword(_)
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)
@@ -438,11 +443,15 @@ pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
 
 /// The turn number an effect of `duration` that `controller` controls records as it begins now: the current turn, but for
 /// "until your next end step" begun before the end step of the controller's own turn the one before, so that the end step of
-/// this turn is the one it lasts until.
+/// this turn is the one it lasts until, and for "until its controller's next combat phase ends" begun before attackers are
+/// declared in that player's own turn the one before, so that this turn's combat is the one.
 pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: PlayerId) -> u32 {
     let turn = state.turn();
     let before_end = state.is_active(controller) && turn.step() < Step::End;
-    if *duration == Duration::UntilYourNextEndStep && before_end {
+    let before_attacks = state.is_active(controller) && turn.step() < Step::DeclareAttackers;
+    if (*duration == Duration::UntilYourNextEndStep && before_end)
+        || (*duration == Duration::UntilItsControllersNextCombatEnds && before_attacks)
+    {
         turn.number().saturating_sub(1)
     } else {
         turn.number()
@@ -475,7 +484,11 @@ pub(crate) fn lasts(
         | Duration::UntilSkippedThisTurn
         // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
         // later turn on (`r377_waits`).
-        | Duration::TheirNextTurn => true,
+        | Duration::TheirNextTurn
+        // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
+        | Duration::WhileTapped
+        // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
+        | Duration::UntilCreatureSpellCast => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -488,14 +501,19 @@ pub(crate) fn lasts(
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
-        Duration::UntilEndOfCombatOnYourNextTurn => {
+        // `UntilItsControllersNextCombatEnds` is begun for the player who controls the creature (`prim/rule.rs`), and the
+        // turn before when begun before their attackers are declared (`began_turn`).
+        Duration::UntilEndOfCombatOnYourNextTurn | Duration::UntilItsControllersNextCombatEnds => {
             state.is_alive(controller)
                 && !(turn.number() > began
                     && turn.active() == controller
                     && turn.step() > Step::EndCombat)
         }
         // Begun for the player who controls the permanent (`continuous.rs`): their next untap step opens their next turn.
-        Duration::UntilYourNextTurn | Duration::UntilItsControllersNextUntapStep => {
+        // A rule that lasts until that player's next turn is begun for that player (`resolve/prim/rule.rs`).
+        Duration::UntilYourNextTurn
+        | Duration::UntilItsControllersNextUntapStep
+        | Duration::UntilTheirNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && state.is_active(controller))
         }
         // It lasts through the untap step of that turn and ends as its upkeep begins.
@@ -504,6 +522,13 @@ pub(crate) fn lasts(
                 && !(turn.number() != began
                     && state.is_active(controller)
                     && turn.step() >= Step::Upkeep)
+        }
+        // It lasts through the upkeep of that turn and ends as the next step begins.
+        Duration::UntilEndOfYourNextUpkeep => {
+            state.is_alive(controller)
+                && !(turn.number() != began
+                    && state.is_active(controller)
+                    && turn.step() > Step::Upkeep)
         }
         Duration::WhileSourceOnBattlefield => source.is_some_and(|source| {
             state
@@ -713,7 +738,14 @@ impl ContinuousEffect {
         match duration {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
             Duration::WhileEnchanted => self.stays_enchanted(state),
+            Duration::WhileTapped => match &self.selector {
+                Selector::Objects(named) => r5509_stays_tapped(state, named),
+                Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+            },
             Duration::WhileMonarch(_) => self.anchor.is_some() && state.monarch == self.anchor,
+            Duration::UntilCreatureSpellCast => {
+                !crate::r5512_until_cast::r5512_creature_cast_since(state, self.timestamp)
+            }
             other => lasts(state, other, self.turn, self.controller, self.source),
         }
     }
@@ -785,6 +817,19 @@ pub(crate) fn follow_spell(effects: &mut [ContinuousEffect], entered: ObjectRef,
             }
         }
     }
+}
+
+/// Whether every object named is still the object it named, on the battlefield and tapped ("for as long as it remains
+/// tapped").
+pub(crate) fn r5509_stays_tapped(state: &GameState, named: &[ObjectRef]) -> bool {
+    !named.is_empty()
+        && named.iter().all(|r| {
+            state.object(r.id).is_some_and(|o| {
+                o.counter() == r.counter
+                    && o.zone() == Zone::Battlefield
+                    && o.permanent().is_some_and(|p| p.tapped)
+            })
+        })
 }
 
 #[cfg(test)]
@@ -870,6 +915,10 @@ mod tests {
     #[case::your_upkeep_through_your_untap_step(Duration::UntilYourNextUpkeep, (5, ME, Step::Untap), true)]
     #[case::your_upkeep_when_it_begins(Duration::UntilYourNextUpkeep, (5, ME, Step::Upkeep), false)]
     #[case::your_upkeep_after_it(Duration::UntilYourNextUpkeep, (5, ME, Step::Main1), false)]
+    #[case::r5501_end_of_upkeep_in_the_turn_it_began(Duration::UntilEndOfYourNextUpkeep, (3, ME, Step::End), true)]
+    #[case::r5501_end_of_upkeep_in_another_seats_upkeep(Duration::UntilEndOfYourNextUpkeep, (4, FOE, Step::Draw), true)]
+    #[case::r5501_end_of_upkeep_through_your_next_upkeep(Duration::UntilEndOfYourNextUpkeep, (5, ME, Step::Upkeep), true)]
+    #[case::r5501_end_of_upkeep_after_it(Duration::UntilEndOfYourNextUpkeep, (5, ME, Step::Draw), false)]
     #[case::source_stays(Duration::WhileSourceOnBattlefield, (3, ME, Step::Main1), true)]
     #[case::the_end_of_your_next_turn_in_the_turn_it_began(Duration::UntilEndOfYourNextTurn, (3, ME, Step::End), true)]
     #[case::the_end_of_your_next_turn_in_another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE, Step::Main1), true)]
@@ -914,6 +963,28 @@ mod tests {
         let effect = effect(&game, Duration::UntilYourNextEndStep, ME).begun(ME, turn);
         at(&mut game, now.0, now.1, now.2);
         assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
+    #[case::r5502_begun_on_another_turn_through_their_combat((4, FOE, Step::Main1), (5, ME, Step::EndCombat), true)]
+    #[case::r5502_begun_on_another_turn_after_their_combat((4, FOE, Step::Main1), (5, ME, Step::Main2), false)]
+    #[case::r5502_another_seats_combat((4, FOE, Step::Main1), (4, FOE, Step::Main2), true)]
+    #[case::r5502_begun_before_their_attacks_this_combat((3, ME, Step::BeginCombat), (3, ME, Step::CombatDamage), true)]
+    #[case::r5502_begun_before_their_attacks_after_it((3, ME, Step::Main1), (3, ME, Step::Main2), false)]
+    #[case::r5502_begun_after_their_attacks_waits((3, ME, Step::CombatDamage), (3, ME, Step::End), true)]
+    #[case::r5502_begun_after_their_attacks_through_the_next((3, ME, Step::Main2), (5, ME, Step::DeclareAttackers), true)]
+    #[case::r5502_begun_after_their_attacks_ends_after_the_next((3, ME, Step::Main2), (5, ME, Step::Main2), false)]
+    fn r5502_until_its_controllers_next_combat_ends(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let duration = Duration::UntilItsControllersNextCombatEnds;
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(lasts(&game, &duration, turn, ME, None), active);
     }
 
     #[rstest]

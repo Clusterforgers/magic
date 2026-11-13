@@ -1,7 +1,7 @@
 {
   "oracle_id": "e4b3e0af-5caa-47c1-b5be-c56a875cbb15",
   "name": "As Foretold",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "As Foretold",
@@ -14,9 +14,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 73, "end": 242 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+                    }
+                  }
+                ],
+                "once": true,
+                "any_turn": true,
+                "rather": "{0}",
+                "any_cast": true
+              }
+            }
           }
         }
       ]

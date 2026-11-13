@@ -65,6 +65,21 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Gives each of the listed keywords that one of the objects the reference names has, with the variant it has
+    /// ("hexproof from white" for hexproof) (layer 6): "If a creature card with flying was exiled with this creature's
+    /// delve ability, this creature has flying. The same is true for ..." (Soulflayer).
+    KeywordsOf {
+        /// The objects whose keywords are read.
+        from: Box<Ref>,
+        /// The keywords given.
+        keywords: Vec<Keyword>,
+    },
+    /// Replaces the creature types with those of the object the reference names (layer 4): "has the creature types of the
+    /// last creature card exiled with it" (Duplicant).
+    SetCreatureTypesOf(Ref),
+    /// Makes the land type at this place among the basic land types the source chose as it entered the land types (layer
+    /// 4): "are the second chosen type" (Illusionary Terrain).
+    SetLandTypesNthChosen(u8),
     /// Makes these the land types, the old ones and the abilities of the land gone, and gives it the mana ability of each
     /// basic land type among them (layer 4): "Nonbasic lands are Mountains" (CR 305.7).
     SetLandTypes(Vec<Subtype>),
@@ -212,6 +227,8 @@ impl Modification {
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::SetCreatureTypesOf(_)
+            | Modification::SetLandTypesNthChosen(_)
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
@@ -226,6 +243,7 @@ impl Modification {
             | Modification::AddChosenColor
             | Modification::SetCommanderColor => Some("5"),
             Modification::AddKeyword(_)
+            | Modification::KeywordsOf { .. }
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
@@ -277,12 +295,19 @@ pub enum Duration {
     /// Until the controller's next upkeep begins: the one of a later turn, so one begun in their upkeep lasts until the
     /// upkeep of their next turn.
     UntilYourNextUpkeep,
+    /// Until the end of the controller's next upkeep: the one of a later turn, so one begun in their upkeep lasts
+    /// through the upkeep of their next turn and ends as its draw step begins.
+    UntilEndOfYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// Only during the next turn of the player who controls the permanent it applies to as it begins ("that creature can't
     /// attack during its controller's next turn"): it changes nothing before that turn and ends with it. Only a continuous
     /// effect lasts this way.
     DuringItsControllersNextTurn,
+    /// Until the end of the next combat phase of the player who controls the creature the rule names as it begins
+    /// ("target creature attacks during its controller's next combat phase if able"): this turn's when that player is
+    /// active and has not declared attackers yet. Only a rule lasts this way.
+    UntilItsControllersNextCombatEnds,
     /// Until the end of combat on the controller's next turn: it ends as that turn's postcombat main phase begins
     /// ("Until end of combat on your next turn, you may play that card").
     UntilEndOfCombatOnYourNextTurn,
@@ -313,6 +338,10 @@ pub enum Duration {
     /// target creature for as long as that creature is enchanted", CR 611.2b): it ends when one of them is no longer
     /// enchanted or leaves. Only a continuous effect that names its objects lasts this way.
     WhileEnchanted,
+    /// For as long as every object the effect names is still on the battlefield and tapped ("for as long as it remains
+    /// tapped"): it ends when one of them untaps or leaves. A continuous effect or a rule that names its objects lasts
+    /// this way.
+    WhileTapped,
     /// For as long as the player the reference names as the effect begins is the monarch ("for as long as they're the
     /// monarch", CR 724): it ends when that player stops being the monarch, and at once when they are not the monarch
     /// as it begins. Only a continuous effect lasts this way.
@@ -333,9 +362,15 @@ pub enum Duration {
     /// with it ("skips all combat phases of their next turn", CR 614.10); only the rule that a player skips steps or combat
     /// lasts this way.
     TheirNextTurn,
+    /// Until the next turn of the one player the rule names ("Until that player's next turn, they gain protection from
+    /// everything"): it lasts as `UntilYourNextTurn` does for that player; only a rule lasts this way.
+    UntilTheirNextTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
+    /// Until any player casts a creature spell after the effect began ("until a player casts a creature spell"). Only a
+    /// continuous effect lasts this way.
+    UntilCreatureSpellCast,
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
@@ -375,6 +410,10 @@ pub struct CastPermission {
     /// turn ("Once during each of your turns, you may cast a creature spell from your graveyard").
     #[serde(default, skip_serializing_if = "crate::effect::is_false")]
     pub once: bool,
+    /// With `once`, the permission works once each turn on every player's turn, not only on the controller's ("Once each
+    /// turn, you may pay {0} rather than pay the mana cost for a spell you cast ...").
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub any_turn: bool,
     /// What the caster pays in addition to the other costs of a cast through it (CR 601.2b): "by paying 3 life and
     /// discarding a card in addition to paying its other costs".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -397,6 +436,10 @@ pub struct CastPermission {
     /// What a spell cast through it gets: "If you cast a spell this way, that artifact enters tapped."
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub riders: Vec<CastRider>,
+    /// At most this many of the objects `only` names may be cast or played through it, all told, within the turn ("Until
+    /// end of turn, you may play one of those cards"); any number when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u32>,
 }
 
 impl Default for CastPermission {
@@ -411,12 +454,14 @@ impl Default for CastPermission {
             only: None,
             play: false,
             once: false,
+            any_turn: false,
             additional: None,
             rather: None,
             spend_as: SpendAs::Normal,
             when: None,
             any_cast: false,
             riders: Vec::new(),
+            limit: None,
         }
     }
 }
@@ -529,6 +574,9 @@ pub enum CombatQuirk {
     AttackIfAnyAttacks(Selector),
     /// They can attack as though they did not have defender.
     AttackDespiteDefender,
+    /// They can attack the players who attacked their controller during those players' last turn as though they did not
+    /// have defender (Weathered Sentinels); planeswalkers and battles stay out of reach.
+    AttackLastTurnAttackersDespiteDefender,
     /// They can attack as though they had haste (CR 302.6): "Enchanted creature can attack as though it had haste."
     AttackAsThoughHaste,
     /// They can block as though they were untapped.
@@ -549,6 +597,9 @@ pub enum CombatQuirk {
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
     /// "All Walls able to block ~ do so."
     MustBeBlockedBy(Selector),
+    /// They must be blocked by at least one creature the selector picks if able (CR 509.1c), judged for their controller:
+    /// "must be blocked by an Eldrazi if able"; a block by another creature does not meet it.
+    MustBeBlockedByOne(Selector),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.
@@ -731,6 +782,29 @@ pub enum GameRule {
         who: Ref,
         /// The players, in the order they are paired.
         players: Ref,
+    },
+    /// Creatures attack the planeswalker `at` names each combat if able (CR 508.1d): the creatures `who` names, and
+    /// every creature the players `of` names control as attackers are declared, whenever it came under their control
+    /// ("creatures that player controls attack ~ if able"). A creature that can't attack it may attack as it could
+    /// otherwise.
+    MustAttackAt {
+        /// The creatures that attack it; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        who: Option<Ref>,
+        /// The players whose creatures attack it; none when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        of: Option<Ref>,
+        /// The planeswalker they attack.
+        at: Ref,
+    },
+    /// Each player `who` names attacks with at least one creature each combat if able (CR 508.1d): a requirement on the
+    /// whole declaration, met by any creature; with `at`, by one attacking a player or planeswalker `at` names.
+    MustAttackWithOne {
+        /// The players who must attack.
+        who: Ref,
+        /// The players and planeswalkers the creature attacks; any defender when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        at: Option<Box<Ref>>,
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
@@ -922,6 +996,9 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The controller may pay this cost rather than the echo cost of each permanent they control (CR 702.30, CR 118.9):
+    /// "You may pay {0} rather than pay the echo cost for permanents you control." Paying it counts as paying echo.
+    EchoRather(Cost),
     /// The controller reveals the first card they draw each turn as they draw it ("Reveal the first card you draw each
     /// turn."): only on their own turns with `your_turns`, and only when they choose to with `may` ("You may reveal
     /// the first card you draw each turn as you draw it."). `TriggerPattern::FirstDrawRevealed` triggers on the reveal.
@@ -1016,9 +1093,16 @@ pub enum GameRule {
     CountsAsNamed(String),
     /// "This spell can't be copied." (CR 707.10): an effect that would copy the spell makes no copy of it; no `from`.
     CantBeCopied,
+    /// "Damage isn't removed from ~ during cleanup steps." (CR 514.2): the cleanup step removes the damage of every other
+    /// permanent and leaves this one's; read from the permanent's abilities as the turn ends.
+    KeepsDamage,
     /// "You can't spend mana to cast this spell.": the cast of the card offers no mana of the pool and no mana ability, so
     /// only what pays without mana (convoke, delve) pays its cost; no `from`.
     CantSpendMana,
+    /// "Rather than pay {2} for each previous time you've cast this spell from the command zone this game, pay 2 life that
+    /// many times.": the commander tax of the card is paid as this much life for each previous cast from the command zone
+    /// in place of its generic mana (CR 903.8); no `from`.
+    TaxAsLife(u32),
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
@@ -1059,6 +1143,9 @@ pub enum GameRule {
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
+    /// While an opponent chooses targets as they cast a spell or activate an ability, they must choose at least one
+    /// Flagbearer on the battlefield if able.
+    Flagbearers,
     /// All damage is dealt as though its source had wither (CR 702.80): damage to a creature is dealt as -1/-1
     /// counters.
     DamageAsWither,
@@ -1192,6 +1279,10 @@ pub enum GameRule {
         /// Only to cast the spells this selects, judged as they are cast; every spell and ability when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
+        /// With `spells`, also to activate the abilities of the permanents this selects ("or to activate abilities of
+        /// permanents you control but don't own").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        abilities: Option<Selector>,
     },
     /// Unspent mana the players would lose as a step or phase ends becomes mana of `into` instead and stays: "If you would
     /// lose unspent mana, that mana becomes colorless instead."
@@ -1270,6 +1361,11 @@ pub enum ManaChange {
     One(ManaType),
     /// As many times as much mana.
     Times(u32),
+    /// Every mana is of one color the tapping player chooses instead of any other type, in the same amount ("it produces
+    /// mana of a color of your choice instead of any other type").
+    OnlyChosenColor,
+    /// One mana of a color the tapping player chooses instead of any other type and amount.
+    OneChosenColor,
     /// Mana of the first type is of the second instead.
     Convert {
         /// The type that changes.
@@ -1397,6 +1493,14 @@ mod tests {
         GameRule::MustAttackPlayers { who: Ref::Bound("tokens".to_owned()), players: Ref::Opponents },
         r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
     )]
+    #[case(
+        GameRule::MustAttackWithOne { who: Ref::Opponents, at: None },
+        r#"{"MustAttackWithOne":{"who":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::MustAttackWithOne { who: Ref::Opponents, at: Some(Box::new(Ref::You)) },
+        r#"{"MustAttackWithOne":{"who":"Opponents","at":"You"}}"#
+    )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(
         GameRule::MustBlockAttacker { who: Ref::Target(0), attacker: Ref::This },
@@ -1450,6 +1554,14 @@ mod tests {
         GameRule::AdditionalLandPlays { who: Ref::EachPlayer, count: Amount::Fixed(2) },
         r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
     )]
+    #[case(
+        GameRule::EchoRather(serde_json::from_str(r#""{0}""#).unwrap()),
+        r#"{"EchoRather":"{0}"}"#
+    )]
+    #[case(
+        GameRule::MustAttackAt { who: None, of: Some(Ref::Target(0)), at: Ref::This },
+        r#"{"MustAttackAt":{"of":{"Target":0},"at":"This"}}"#
+    )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
     #[case(GameRule::AnyNumberInDeck, r#""AnyNumberInDeck""#)]
     #[case(GameRule::UpToInDeck(9), r#"{"UpToInDeck":9}"#)]
@@ -1457,6 +1569,7 @@ mod tests {
         GameRule::GraveyardCardsUntargetable,
         r#""GraveyardCardsUntargetable""#
     )]
+    #[case(GameRule::Flagbearers, r#""Flagbearers""#)]
     #[case(
         GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true, life_only: false },
         r#"{"CantLoseGame":{"who":"You","opponents_cant_win":true}}"#

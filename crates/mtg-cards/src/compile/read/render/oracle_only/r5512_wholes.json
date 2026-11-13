@@ -1,0 +1,640 @@
+[
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Aura"
+        },
+        {
+         "AttachedTo": {
+          "Each": []
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetController": "You"
+        }
+       ],
+       "duration": "Forever"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "HasAttached": [
+            {
+             "Is": {
+              "Target": 0
+             }
+            }
+           ]
+          }
+         },
+         {
+          "EnchantableBy": {
+           "Target": 0
+          }
+         }
+        ]
+       },
+       "as": "host"
+      }
+     },
+     {
+      "Attach": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Bound": "host"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Gain control of target Aura that's attached to a permanent. Attach it to another permanent it can enchant."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Aura"
+        },
+        {
+         "AttachedTo": {
+          "Each": [
+           {
+            "AnyOf": [
+             {
+              "Type": "Creature"
+             },
+             {
+              "Type": "Land"
+             }
+            ]
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Not": {
+           "HasAttached": [
+            {
+             "Is": {
+              "Target": 0
+             }
+            }
+           ]
+          }
+         },
+         {
+          "SharesTypeOf": {
+           "with": {
+            "Each": [
+             {
+              "HasAttached": [
+               {
+                "Is": {
+                 "Target": 0
+                }
+               }
+              ]
+             }
+            ]
+           },
+           "types": [
+            "Creature",
+            "Land"
+           ]
+          }
+         },
+         {
+          "EnchantableBy": {
+           "Target": 0
+          }
+         }
+        ]
+       },
+       "as": "host"
+      }
+     },
+     {
+      "Attach": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Bound": "host"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Attach target Aura attached to a creature or land to another permanent of that type."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{1}{W}"
+     },
+     "Tap"
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "mods": [
+        {
+         "SetTypes": [
+          "Enchantment"
+         ]
+        },
+        "LoseAbilities"
+       ],
+       "duration": "UntilCreatureSpellCast"
+      }
+     }
+    ]
+   }
+  },
+  "{1}{W}, {T}: Target creature becomes an enchantment and loses all abilities until a player casts a creature spell."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "ExileSpell": {
+       "filter": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "PutCounters": {
+       "on": "This",
+       "counter": "+1/+1",
+       "count": 2
+      }
+     }
+    ]
+   }
+  },
+  "Exile an instant or sorcery spell you control: Put two +1/+1 counters on this creature."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "GroupAttacks": {
+      "what": [
+       {
+        "Type": "Artifact"
+       },
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     }
+    },
+    "effects": [
+     {
+      "ExileUntil": {
+       "filter": [
+        {
+         "Not": {
+          "Type": "Land"
+         }
+        },
+        {
+         "Compare": {
+          "stat": "ManaValue",
+          "op": "Le",
+          "to": {
+           "Greatest": {
+            "of": [
+             {
+              "Is": "Triggering"
+             }
+            ],
+            "stat": "Power"
+           }
+          }
+         }
+        }
+       ],
+       "as": "found",
+       "exiled_as": "exiled"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "found"
+       },
+       "free": true,
+       "otherwise": [
+        {
+         "Move": {
+          "what": {
+           "Bound": "found"
+          },
+          "to": "Hand"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Move": {
+       "what": {
+        "Bound": "exiled"
+       },
+       "to": {
+        "Library": {
+         "place": "Bottom",
+         "order": "Random"
+        }
+       }
+      }
+     },
+     {
+      "Performed": {
+       "action": "Discovered",
+       "card": {
+        "Bound": "found"
+       },
+       "value": {
+        "Greatest": {
+         "of": [
+          {
+           "Is": "Triggering"
+          }
+         ],
+         "stat": "Power"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever one or more artifact creatures you control attack, discover X, where X is the greatest power among them."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Artifact"
+         },
+         {
+          "Type": "Creature"
+         }
+        ]
+       },
+       {
+        "ManaFrom": "This"
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Custom": {
+         "name": "Gnome Soldier",
+         "colors": [
+          "White"
+         ],
+         "types": [
+          "Artifact",
+          "Creature"
+         ],
+         "subtypes": [
+          "Gnome",
+          "Soldier"
+         ],
+         "power": 0,
+         "toughness": 0,
+         "abilities": [
+          {
+           "Static": {
+            "affected": "This",
+            "mods": [
+             {
+              "SetPT": {
+               "power": {
+                "Count": [
+                 {
+                  "AnyOf": [
+                   {
+                    "Type": "Artifact"
+                   },
+                   {
+                    "Type": "Creature"
+                   }
+                  ]
+                 },
+                 {
+                  "ControlledBy": "You"
+                 }
+                ]
+               },
+               "toughness": {
+                "Count": [
+                 {
+                  "AnyOf": [
+                   {
+                    "Type": "Artifact"
+                   },
+                   {
+                    "Type": "Creature"
+                   }
+                  ]
+                 },
+                 {
+                  "ControlledBy": "You"
+                 }
+                ]
+               }
+              }
+             }
+            ],
+            "defining": true
+           }
+          }
+         ]
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast an artifact or creature spell using mana produced by ~, create a white Gnome Soldier artifact creature token with \"This token's power and toughness are each equal to the number of artifacts and/or creatures you control.\""
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "SpellCast": {
+      "what": [
+       {
+        "AnyOf": [
+         {
+          "Type": "Artifact"
+         },
+         {
+          "Type": "Battle"
+         },
+         {
+          "Type": "Creature"
+         },
+         {
+          "Type": "Enchantment"
+         },
+         {
+          "Type": "Land"
+         },
+         {
+          "Type": "Planeswalker"
+         }
+        ]
+       },
+       {
+        "ManaFrom": "This"
+       }
+      ],
+      "by": "You"
+     }
+    },
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "ControlledBy": "You"
+        },
+        "Other"
+       ]
+      },
+      "bounds": {
+       "min": 0,
+       "max": 1
+      }
+     }
+    ],
+    "effects": [
+     {
+      "BecomeCopy": {
+       "what": {
+        "Target": 0
+       },
+       "of": "Triggering",
+       "duration": "UntilEndOfTurn"
+      }
+     }
+    ]
+   }
+  },
+  "Whenever you cast a permanent spell using mana produced by ~, up to one other target permanent you control becomes a copy of that spell until end of turn."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "Attacks": {
+      "what": [
+       "This"
+      ]
+     }
+    },
+    "effects": [
+     {
+      "ExileTop": {
+       "who": "EachPlayer",
+       "as": "exiled"
+      }
+     },
+     {
+      "Choose": {
+       "from": {
+        "Each": [
+         {
+          "Is": {
+           "Bound": "exiled"
+          }
+         },
+         {
+          "In": "Exile"
+         },
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         }
+        ]
+       },
+       "count": {
+        "min": 0,
+        "max": 1
+       },
+       "as": "card"
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "card"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ attacks, exile the top card of each player's library. You may cast a spell from among those cards."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{1}{U/P}"
+     },
+     "Tap",
+     {
+      "ExileSpell": {
+       "filter": []
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ],
+    "effects": [
+     {
+      "RevealUntil": {
+       "who": {
+        "Target": 0
+       },
+       "filter": [
+        {
+         "Compare": {
+          "stat": "ManaValue",
+          "op": "Eq",
+          "to": {
+           "Sum": [
+            1,
+            {
+             "Stat": {
+              "of": "Paid",
+              "stat": "ManaValue"
+             }
+            }
+           ]
+          }
+         }
+        }
+       ],
+       "as": "found",
+       "revealed_as": "revealed"
+      }
+     },
+     {
+      "Exile": {
+       "what": {
+        "Bound": "found"
+       }
+      }
+     },
+     {
+      "Shuffle": {
+       "who": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "CastFromZone": {
+       "what": {
+        "Bound": "found"
+       },
+       "free": true
+      }
+     }
+    ]
+   }
+  },
+  "{1}{U/P}, {T}, Exile a spell you control: Target opponent reveals cards from the top of their library until they reveal a card with mana value equal to 1 plus the exiled spell's mana value. Exile that card, then that player shuffles. You may cast that exiled card without paying its mana cost."
+ ]
+]

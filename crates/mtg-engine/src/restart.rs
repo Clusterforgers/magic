@@ -11,7 +11,7 @@ use crate::events::{Event, ZoneCause};
 use crate::object::{GameObject, ObjectKind};
 use crate::player::MulliganStatus;
 use crate::state::{GameState, Stage, Tallies};
-use crate::turn::{Step, TurnState};
+use crate::turn::TurnState;
 use crate::zones::{Placement, Zone, Zones};
 
 /// A restart under way: who restarted the game and the cards that enter the battlefield after the opening.
@@ -79,21 +79,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
         player.counters.clear();
     }
     state.stage = Stage::PreGame;
-    state.turn = TurnState {
-        number: 0,
-        active: by,
-        step: Step::Untap,
-        lands_played: 0,
-        round: 0,
-        regular: by,
-        extra: false,
-        combats: 0,
-        ahead: Vec::new(),
-        r306_steps: Vec::new(),
-        r306_seen: 0,
-        r306_again: 0,
-        ending: false,
-    };
+    state.turn = TurnState::pregame(by);
     state.extra_turns.clear();
     state.player_controls.clear();
     state.priority = None;

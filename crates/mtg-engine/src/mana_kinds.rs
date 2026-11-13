@@ -233,6 +233,8 @@ fn types_of(
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(colors_among(&scope, among));
             }
+            // No color was chosen without a draft.
+            ManaProduced::DraftedColors => {}
             ManaProduced::Devotion => {
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(

@@ -67,6 +67,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     {
         return super::r281_pay_one_of::run(cx, who, alternatives);
     }
+    if times == 1
+        && let Some(alternatives) = super::r5501_echo_rather::r5501_alternatives(cx, effect)
+    {
+        return super::r281_pay_one_of::run(cx, who, &alternatives);
+    }
     // A cost paid no times is paid, and nobody is asked.
     if times == 0 {
         return Ok(Run::Done {
@@ -139,7 +144,30 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
-/// The cost with the life of a counted amount ("pay that much life", "pay X life, where X is ..."), the cards of a counted
+/// What the payment is for: a cumulative upkeep cost when the resolving ability is the trigger of cumulative upkeep (its
+/// payment is logged as `PaidCumulativeUpkeep`, CR 702.24a), else a cost that is neither a spell's nor an ability's.
+fn r5512_spend(cx: &Cx<'_>) -> Spend {
+    let cumulative = cx
+        .state()
+        .object(cx.resolving.object())
+        .and_then(|object| object.ability())
+        .is_some_and(|ability| {
+            ability.shared_rules().effects().iter().any(|effect| {
+                matches!(effect, Effect::Pay { paid, .. } if paid.iter().any(|step| matches!(
+                    step,
+                    Effect::Performed { action: mtg_cards::did::Action::PaidCumulativeUpkeep, .. }
+                )))
+            })
+        });
+    if cumulative {
+        Spend::cumulative_upkeep()
+    } else {
+        Spend::other()
+    }
+}
+
+/// The cost with the life or energy of a counted amount ("pay that much life", "pay X life, where X is ...", "pay an
+/// amount of {E} equal to ..."), the cards of a counted
 /// draw ("you may draw cards equal to its power") and the cards of a counted
 /// discard ("discard your hand") or exile from a graveyard ("exiles all cards from their graveyard") counted as the
 /// effect resolves (CR 119.4, CR 608.2h), as is the damage of "unless they have ~ deal that much damage to them"; a negative
@@ -147,6 +175,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
+        // "{X}, where X is your life total": generic mana of the number counted now.
+        if let CostItem::GenericOf(amount) = item {
+            let count = cx.scope.amount(amount)?.clamp(0, i64::from(u32::MAX));
+            let generic =
+                mtg_core::mana::ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(
+                    u32::try_from(count).unwrap_or(u32::MAX),
+                )]);
+            *item = CostItem::Mana(mtg_cards::mana::ManaCostX::new(0, generic));
+            continue;
+        }
         if let CostItem::Discard { count: amount, .. }
         | CostItem::ExileFromGraveyard { count: amount, .. } = item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)
@@ -155,8 +193,10 @@ pub(super) fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveErr
             *amount = Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
             continue;
         }
-        if let CostItem::PayLife(amount) | CostItem::Draw(amount) | CostItem::DamageToYou(amount) =
-            item
+        if let CostItem::PayLife(amount)
+        | CostItem::PayEnergy(amount)
+        | CostItem::Draw(amount)
+        | CostItem::DamageToYou(amount) = item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)
         {
             let count = cx.scope.amount(amount)?.clamp(0, i64::from(i32::MAX));
@@ -356,7 +396,7 @@ pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
             let life = seat
                 .life()
                 .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-            can_afford(mana, seat.mana(), &sources, life, &Spend::other())
+            can_afford(mana, seat.mana(), &sources, life, &r5512_spend(cx))
         })
     })
 }
@@ -518,7 +558,7 @@ fn payment(
         mana,
         sources,
         Offered::default(),
-        Spend::other(),
+        r5512_spend(cx),
         false,
         price.life(),
     )

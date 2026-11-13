@@ -72,6 +72,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Forest enters tapped under Bo's control",
   ],
   Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
+  ChosenAsAttached: [
+    { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
+    'Forest becomes attached, choosing red',
+  ],
   AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   Paired: [{ Paired: { object: 3, with: 1 } }, 'Forest is paired with Grizzly Bears'],
@@ -185,6 +189,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Renowned: [{ Renowned: { object: 3, player: 1 } }, 'Forest becomes renowned'],
   Enlisted: [{ Enlisted: { object: 3, enlisted: 1, player: 1 } }, 'Forest enlists Grizzly Bears'],
   Exploited: [{ Exploited: { object: 3, sacrificed: 1, player: 1 } }, 'Forest exploits Grizzly Bears'],
+  Fought: [{ Fought: { object: 3, other: 1 } }, 'Forest fights Grizzly Bears'],
   Crewed: [
     { Crewed: { object: 3, player: 1, creatures: [1, 2] } },
     'Forest is crewed by Grizzly Bears and Hill Giant',
@@ -762,6 +767,12 @@ describe('describeEvent', () => {
     for (const line of lines) expect(describeEvent(line, names).text.length).toBeGreaterThan(3)
   })
 
+  it('says steps added on their own after a phase are steps, not phases', () => {
+    expect(say({ PhasesAdded: { steps: ['Upkeep', 'Upkeep'], lone: true } })).toBe(
+      '2 additional upkeep step(s) follow this phase',
+    )
+  })
+
   it('names an object it does not know "a card" rather than print an id', () => {
     expect(say({ SpellCast: { player: 0, object: 99 } })).toBe('Ana casts a card')
     expect(say({ DamageDealt: { source: 99, target: { Object: 98 }, amount: 1 } })).toBe(
@@ -948,6 +959,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2), { AddKeywords: ['Flying', 'Trample'] }, 'Forever'),
+      'Hill Giant gains flying and trample',
+    ],
+    [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
     ],
@@ -1087,6 +1102,14 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller until Jace Beleren is cast from exile',
     ],
     [
+      effect(objects(2), { SetController: 1 }, 'UntilCreatureSpellCast', { id: 6, counter: 0 }),
+      'Hill Giant changes controller until a player casts a creature spell',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, 'WhileTapped', { id: 6, counter: 0 }),
+      'Hill Giant changes controller while it stays tapped',
+    ],
+    [
       effect(
         objects(2),
         { CantAttackYou: { you: 0, attacked: 'Both' } },
@@ -1134,6 +1157,13 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ MustAttackPlayers: [[{ id: 1, counter: 0 }, 0]] }, 'UntilEndOfTurn'),
       'Grizzly Bears must attack Ana if able until end of turn',
+    ],
+    [
+      ruleEffect(
+        { MustAttackAt: { creatures: [], players: [1], at: { id: 2, counter: 0 }, turn_of: [1] } },
+        'UntilEndOfTurn',
+      ),
+      'Creatures Bo controls must attack Hill Giant if able until end of turn',
     ],
     [
       ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),
@@ -1385,6 +1415,12 @@ describe('the choice a permanent enters with', () => {
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { LandType: 'Swamp' } } },
       "Forest enters under Ana's control, choosing Swamp",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { LandTypes: ['Plains', 'Island'] } },
+      },
+      "Forest enters under Ana's control, choosing Plains, then Island",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { CardType: 'Creature' } } },

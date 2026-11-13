@@ -17,7 +17,9 @@ use crate::wording;
 /// that stay on top and those for the bottom (any number, none or all) and orders both piles. Each player is asked,
 /// always, since seeing the cards is the point. A scry of nothing, or of an empty library, does not happen
 /// (CR 701.22b). All the scries are decided before the library of anyone changes; each is one `Scried`. A player who
-/// would scry while a replacement draws that many cards instead (`ReplaceWhen::Scries`) draws them and is not asked.
+/// would scry while a replacement draws that many cards instead (`ReplaceWhen::Scries`) draws them and is not asked; one
+/// that adds cards ("scry that many cards plus one instead") scries that many more, and with both the player chooses
+/// whether the cards are added before the draw.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Scry { who, count } = effect else {
         return Err(wrong_effect("Scry"));
@@ -38,14 +40,29 @@ fn scries(cx: &Cx<'_>, players: &[PlayerId], wanted: usize) -> Result<Vec<Event>
     let mut questions = Questions::new(cx);
     let mut events = Vec::new();
     for player in players {
-        let looked = top_cards(cx.state(), *player, wanted);
-        if looked.is_empty() {
+        if wanted == 0 || top_cards(cx.state(), *player, wanted).is_empty() {
             continue;
         }
-        if !r4708_candidates(cx.state(), *player, false)?.is_empty() {
-            events.extend(draw(cx.state(), *player, wanted));
+        let candidates = r4708_candidates(cx.state(), *player, false)?;
+        let added: usize = candidates
+            .iter()
+            .filter(|candidate| !candidate.draws)
+            .map(|candidate| candidate.more)
+            .sum();
+        if candidates.iter().any(|candidate| candidate.draws) {
+            // The player orders the replacements (CR 616.1): the cards added first are drawn too, or the draw comes first
+            // and the scry they would add to never happens.
+            let count = if added > 0
+                && questions.yes_no(*player, wording::r5500_scry_more_first(wanted, added))?
+            {
+                wanted.saturating_add(added)
+            } else {
+                wanted
+            };
+            events.extend(draw(cx.state(), *player, count));
             continue;
         }
+        let looked = top_cards(cx.state(), *player, wanted.saturating_add(added));
         let chosen = questions.scry(*player, looked, wording::SCRY.to_owned())?;
         events.push(Event::Scried(Scried {
             player: *player,

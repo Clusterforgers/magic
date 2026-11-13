@@ -26,11 +26,13 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         only,
         play,
         once,
+        any_turn,
         additional,
         spend_as,
         when,
         any_cast,
         riders,
+        limit: _,
     } = permission;
     if *who != Ref::You
         || *any_cast
@@ -42,6 +44,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         || only.is_some()
         || *play
         || *once
+        || *any_turn
         || additional.is_some()
         || when.is_some()
         || rather.is_some()

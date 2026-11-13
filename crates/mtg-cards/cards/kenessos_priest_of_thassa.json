@@ -1,0 +1,84 @@
+{
+  "oracle_id": "45b3a028-5705-4dc8-bfab-04bb5e01eea6",
+  "name": "Kenessos, Priest of Thassa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kenessos, Priest of Thassa",
+      "oracle_fingerprint": "c9b87eea123405785c7c3da9e62586e0",
+      "abilities": [
+        { "Replacement": { "when": { "Scries": {} }, "by": { "Add": 1 } } },
+        {
+          "Activated": {
+            "cost": "{3}{G/U}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        { "Type": "Creature" },
+                        {
+                          "AnyOf": [
+                            { "Subtype": "Kraken" },
+                            { "Subtype": "Leviathan" },
+                            { "Subtype": "Octopus" },
+                            { "Subtype": "Serpent" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "top" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": { "Not": "Performed" },
+                        "then": [
+                          {
+                            "May": {
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "top" },
+                                    "to": { "Library": { "place": "Bottom" } }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Library": { "place": "Bottom" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

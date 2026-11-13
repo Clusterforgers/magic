@@ -1,4 +1,4 @@
-/** Goal: restricted mana may pay for exactly what its uses list, read against what the payment is for as the engine reads it (kind, types, subtypes, colours, value, facts, X), a rider alone limits nothing, and a payment keeps each restricted mana of the pool and each source to one use and sends the restricted mana it spends. */
+/** Goal: restricted mana may pay for exactly what its uses list, read against what the payment is for as the engine reads it (kind, types, subtypes, colours, value, facts, X), a rider alone limits nothing, mana for cumulative upkeep pays only that cost (also an other cost), and a payment keeps each restricted mana of the pool and each source to one use and sends the restricted mana it spends. */
 import { describe, expect, it } from 'vitest'
 import type {
   ManaOption,
@@ -24,6 +24,7 @@ const spell = (traits: Partial<PaySpend['traits']> = {}, has_x = false): PaySpen
 const ability: PaySpend = { kind: 'Ability', traits: { types: CREATURE, colors: 0 } }
 const onSpell = (filter: SpendFilter): SpendOn => ({ Spell: filter })
 const TURN_UP: PaySpend = { kind: { Special: 'TurnFaceUp' }, traits: { types: 0, colors: 0 } }
+const UPKEEP: PaySpend = { kind: 'CumulativeUpkeep', traits: { types: 0, colors: 0 } }
 const RIDER = { When: {} } as unknown as SpendOn
 const ENTERS: SpendOn = { Enters: { spell: { types: ['Creature'] }, keyword: 'Haste', this_turn: true } }
 
@@ -100,6 +101,10 @@ describe('spendAllows', () => {
     ['unlocking does not pay turning face up', TURN_UP, [{ Special: 'Unlock' }], false],
     ['turning face up does not pay a spell', spell(), [{ Special: 'TurnFaceUp' }], false],
     ['turning face up does not pay other costs', undefined, [{ Special: 'TurnFaceUp' }], false],
+    ['cumulative upkeep pays cumulative upkeep', UPKEEP, ['CumulativeUpkeep'], true],
+    ['other costs pay cumulative upkeep', UPKEEP, ['OtherCosts'], true],
+    ['cumulative upkeep does not pay other costs', undefined, ['CumulativeUpkeep'], false],
+    ['cumulative upkeep does not pay a spell', spell(), ['CumulativeUpkeep'], false],
   ])('%s', (_name, spend, only, expected) => {
     expect(spendAllows(spend, only)).toBe(expected)
   })
@@ -109,6 +114,7 @@ describe('spendAllows', () => {
     [[{ Ability: {} }], 'abilities'],
     [['CostWithX'], 'costs with {X}'],
     [['OtherCosts'], 'other costs'],
+    [['CumulativeUpkeep'], 'cumulative upkeep costs'],
     [[{ Special: 'TurnFaceUp' }], 'turning face up'],
     [[onSpell({ subtypes: ['Elf'] }), { Ability: {} }], 'elf spells or abilities'],
     [[RIDER], 'anything'],

@@ -1,7 +1,7 @@
 {
   "oracle_id": "02a45719-ee4a-49c4-96ec-a140cd6e1547",
   "name": "The Foretold Soldier",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Foretold Soldier",
@@ -14,9 +14,9 @@
         },
         { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 97, "end": 174 }
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "effects": [{ "BecomeForetold": { "what": "This" } }]
           }
         },
         { "Keyword": { "Foretell": "{1}{G}" } }

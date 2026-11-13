@@ -47,6 +47,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         if modal.at_random {
             return pick(ctx, work, &modal, &options);
         }
+        let decider = decider(ctx, &modal);
+        work.choices.modes_by = (decider != ctx.player)
+            .then(|| u8::try_from(decider.index()).ok())
+            .flatten();
         // Nothing to choose between when no mode may be chosen.
         if options.max > 0 {
             return Some(ask(ctx, &modal, options));

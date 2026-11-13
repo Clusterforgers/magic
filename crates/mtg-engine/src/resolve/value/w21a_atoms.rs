@@ -1,7 +1,7 @@
 //! The predicate atoms of the open selector language that read an object's own state or history: modified, face down,
 //! a player target, and a card put into a graveyard from the battlefield this turn.
 
-use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_cards::value::CastWay;
 use mtg_core::card::Subtype;
 
@@ -63,6 +63,24 @@ impl Scope<'_> {
                         .object_tallied(reference, None, Tally::W21aGraved)
                         > 0
             }
+            Pred::SharesColorWithLastCast => self
+                .state
+                .tallies
+                .logged
+                .iter()
+                .rev()
+                .find(|(event, _, _)| *event == mtg_cards::value::TallyEvent::SpellCast)
+                .is_some_and(|(_, _, last)| {
+                    seen.chars
+                        .colors
+                        .iter()
+                        .any(|color| last.characteristics.colors.contains(color))
+                }),
+            Pred::CouldAttackThisTurn => self.state.tallies.r5522.could_attack.contains(&reference),
+            Pred::GravedThisCombat => {
+                matches!(seen.zone, Zone::Graveyard(_))
+                    && self.state.tallies.r5522.combat_graved.contains(&reference)
+            }
             Pred::SpentFrom { from, least } => {
                 seen.zone == Zone::Stack
                     && seen.card.is_some_and(|card| {
@@ -75,6 +93,22 @@ impl Scope<'_> {
                         spent >= *least
                     })
             }
+            Pred::ArrivedThisTurn => [
+                ZoneKind::Battlefield,
+                ZoneKind::Hand,
+                ZoneKind::Library,
+                ZoneKind::Graveyard,
+                ZoneKind::Stack,
+                ZoneKind::Exile,
+                ZoneKind::Command,
+                ZoneKind::Outside,
+            ]
+            .into_iter()
+            .any(|origin| {
+                self.state
+                    .object_tallied(reference, None, Tally::ArrivedFrom(origin))
+                    > 0
+            }),
             Pred::ArrivedFrom(origin) => {
                 self.state
                     .object_tallied(reference, None, Tally::ArrivedFrom(*origin))

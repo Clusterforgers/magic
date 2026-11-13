@@ -1,0 +1,214 @@
+[
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "AddStep": {
+       "step": "Upkeep",
+       "count": "Triggering",
+       "after_phase": true
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player, you get that many additional upkeep steps after this phase."
+ ],
+ [
+  {
+   "Replacement": {
+    "when": {
+     "Scries": {}
+    },
+    "by": {
+     "Add": 1
+    }
+   }
+  },
+  "If you would scry a number of cards, scry that many cards plus one instead."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": "{3}{G/U}",
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "top"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "subject": {
+          "Bound": "top"
+         },
+         "selector": [
+          {
+           "Type": "Creature"
+          },
+          {
+           "AnyOf": [
+            {
+             "Subtype": "Kraken"
+            },
+            {
+             "Subtype": "Leviathan"
+            },
+            {
+             "Subtype": "Octopus"
+            },
+            {
+             "Subtype": "Serpent"
+            }
+           ]
+          }
+         ]
+        }
+       },
+       "then": [
+        {
+         "May": {
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "top"
+             },
+             "to": {
+              "Battlefield": {}
+             }
+            }
+           }
+          ]
+         }
+        },
+        {
+         "If": {
+          "condition": {
+           "Not": "Performed"
+          },
+          "then": [
+           {
+            "May": {
+             "effects": [
+              {
+               "Move": {
+                "what": {
+                 "Bound": "top"
+                },
+                "to": {
+                 "Library": {
+                  "place": "Bottom"
+                 }
+                }
+               }
+              }
+             ]
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "otherwise": [
+        {
+         "May": {
+          "effects": [
+           {
+            "Move": {
+             "what": {
+              "Bound": "top"
+             },
+             "to": {
+              "Library": {
+               "place": "Bottom"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "{3}{G/U}: Look at the top card of your library. If it's a Kraken, Leviathan, Octopus, or Serpent creature card, you may put it onto the battlefield. If you don't put the card onto the battlefield, you may put it on the bottom of your library."
+ ],
+ [
+  {
+   "Activated": {
+    "cost": [
+     {
+      "Mana": "{2}"
+     },
+     "Tap",
+     {
+      "Discard": {
+       "filter": [
+        "LastDrawnThisTurn"
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "{2}, {T}, Discard the last card you drew this turn: Draw a card."
+ ],
+ [
+  {
+   "Triggered": {
+    "when": {
+     "DealsDamage": {
+      "source": [
+       "This"
+      ],
+      "to": "EachPlayer",
+      "combat": true
+     }
+    },
+    "effects": [
+     {
+      "Transform": {
+       "what": "This"
+      }
+     },
+     {
+      "If": {
+       "condition": "Performed",
+       "then": [
+        {
+         "AddPhase": {
+          "phases": [
+           "Beginning"
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Whenever ~ deals combat damage to a player, convert it. If you do, there is an additional beginning phase after this phase."
+ ]
+]

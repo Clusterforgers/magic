@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7747804f-ca49-4a68-b508-b94b27c52b0f",
+  "name": "Cruel Entertainment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Entertainment",
+      "oracle_fingerprint": "2d0b09b29411d7649fa74fa1cfa7767a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              { "ControlPlayer": { "who": { "Target": 1 }, "by": { "Target": 0 } } },
+              { "ControlPlayer": { "who": { "Target": 0 }, "by": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6f82b01d-8975-42a1-87e2-99782272bbea",
+  "name": "Harvest Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harvest Mage",
+      "oracle_fingerprint": "2f9399ca9a2a17a98cc529122018d03d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [{ "Type": "Land" }],
+                      "who": "You",
+                      "change": "OneChosenColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

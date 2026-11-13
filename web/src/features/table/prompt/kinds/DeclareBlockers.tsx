@@ -113,7 +113,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     const alone = new Set(options.cant_alone ?? [])
     const free = [...offered.keys()].filter((blocker) => !pairs.has(blocker))
     const partnered = pairs.size > 0 || free.length > 1
-    return (options.must_be_blocked ?? []).filter(
+    const plain = (options.must_be_blocked ?? []).filter(
       (attacker) =>
         attackers.includes(attacker) &&
         !blockerLists.has(attacker) &&
@@ -122,7 +122,26 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
             can.includes(attacker) && !pairs.has(blocker) && (partnered || !alone.has(blocker)),
         ),
     )
-  }, [options.must_be_blocked, options.cant_alone, attackers, blockerLists, offered, pairs])
+    // An attacker that must be blocked by a creature of a kind waits for one of those creatures, whoever else blocks it.
+    const byKind = (options.must_be_blocked_by ?? [])
+      .filter(
+        ([attacker, able]) =>
+          attackers.includes(attacker) &&
+          !plain.includes(attacker) &&
+          !(blockerLists.get(attacker) ?? []).some((blocker) => able.includes(blocker)) &&
+          able.some((blocker) => offered.has(blocker) && !pairs.has(blocker)),
+      )
+      .map(([attacker]) => attacker)
+    return [...plain, ...byKind]
+  }, [
+    options.must_be_blocked,
+    options.must_be_blocked_by,
+    options.cant_alone,
+    attackers,
+    blockerLists,
+    offered,
+    pairs,
+  ])
   // The engine is asked what the blocks would do each time they change; its forecast comes back through the seam.
   const blocksMade = useMemo(() => blocksAnswer(pairs), [pairs])
   const previewStatus = usePreviewRequest(id, blocksMade)

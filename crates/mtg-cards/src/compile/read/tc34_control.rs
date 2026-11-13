@@ -74,6 +74,7 @@ pub(super) fn tc34_control_player(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }
     Some(vec![Effect::ControlPlayer {
         who,
+        by: Ref::You,
         extra_turn: gain,
     }])
 }

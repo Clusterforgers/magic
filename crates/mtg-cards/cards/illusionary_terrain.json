@@ -1,7 +1,7 @@
 {
   "oracle_id": "17ae63fa-fd63-45e6-81c1-bf30851bf77c",
   "name": "Illusionary Terrain",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Illusionary Terrain",
@@ -9,15 +9,17 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{2}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 228 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "TwoBasicLandTypes" }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 229, "end": 293 }
+          "Static": {
+            "affected": {
+              "Each": [{ "Supertype": "Basic" }, { "Type": "Land" }, { "NthChosenLandType": 0 }]
+            },
+            "mods": [{ "SetLandTypesNthChosen": 1 }]
           }
         }
       ]

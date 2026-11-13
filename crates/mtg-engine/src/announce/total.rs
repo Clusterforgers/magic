@@ -13,6 +13,7 @@ use super::{Ctx, Next, What, Work, alternative, c9_emerge_reduce, modifiers, opt
 use crate::choose::Choices;
 use crate::help::{self, Offered};
 use crate::mana::{ManaOption, can_afford_with, reserve_energy};
+use crate::parts::Part;
 use crate::price::Price;
 use crate::priority::mana_options;
 use crate::spend::Spend;
@@ -99,7 +100,11 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         What::Spell(spell) => Some(*spell),
         _ => None,
     };
-    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell) {
+    let source = match ctx.what {
+        What::Ability(address) => Some(address.object),
+        _ => None,
+    };
+    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell, source) {
         SpendAs::AnyType => mana.map(|mana| mana.paid_by_any_mana()),
         SpendAs::AnyColor => mana.map(|mana| mana.paid_by_any_color()),
         SpendAs::Normal => mana,
@@ -184,13 +189,33 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
             if price.parts.is_empty() {
                 return Some(Printed::new(cost, sources, 0));
             }
-            let taken: Vec<ObjectId> = if choices.cost_picks().is_empty() {
+            let (taken, sacrificed) = if choices.cost_picks().is_empty() {
                 let helpers = help::offered(ctx.state, ctx.player, *spell, &[]).objects();
-                price.claimed_leaving(ctx.state, ctx.player, *spell, &helpers)?
+                let parts = price.r5506_claimed_parts(ctx.state, ctx.player, *spell, &helpers)?;
+                let sacrificed = r5506_sacrificed(price.parts.iter(), &parts);
+                (parts.into_iter().flatten().collect(), sacrificed)
             } else {
-                choices.cost_picks().iter().flatten().copied().collect()
+                let picks = price
+                    .parts
+                    .iter()
+                    .filter(|part| matches!(part, Part::Pick(_)));
+                let sacrificed = r5506_sacrificed(picks, choices.cost_picks());
+                let taken: Vec<ObjectId> = choices.cost_picks().iter().flatten().copied().collect();
+                (taken, sacrificed)
             };
-            crate::mana_takes::leave(&mut sources, &taken);
+            // A permanent the cost sacrifices may still be tapped for mana first (CR 601.2g, 601.2h), unless its mana
+            // ability itself takes it away.
+            let lost: Vec<ObjectId> = taken
+                .iter()
+                .copied()
+                .filter(|id| {
+                    !sacrificed.contains(id)
+                        || sources.iter().any(|option| {
+                            option.source.object == *id && (option.sacrifice || option.exile)
+                        })
+                })
+                .collect();
+            crate::mana_takes::leave(&mut sources, &lost);
             reserve_energy(&mut sources, price.energy());
             Some(Printed {
                 taken,
@@ -286,4 +311,18 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
                 _ => false,
             }
     })
+}
+
+/// The objects the sacrifice parts among `parts` take, `taken` holding what each of them takes in turn.
+fn r5506_sacrificed<'a>(
+    parts: impl Iterator<Item = &'a Part>,
+    taken: &[Vec<ObjectId>],
+) -> Vec<ObjectId> {
+    parts
+        .zip(taken)
+        .filter(|(part, _)| {
+            matches!(part, Part::Pick(pick) if pick.kind == crate::parts::Kind::Sacrifice)
+        })
+        .flat_map(|(_, objects)| objects.iter().copied())
+        .collect()
 }

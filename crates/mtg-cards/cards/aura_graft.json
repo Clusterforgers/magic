@@ -1,0 +1,41 @@
+{
+  "oracle_id": "00317e4f-0228-469a-9789-fb6c39976860",
+  "name": "Aura Graft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Graft",
+      "oracle_fingerprint": "7b38b3ee603952bb4b3fa62c98db10a7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Aura" }, { "AttachedTo": { "Each": [] } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "HasAttached": [{ "Is": { "Target": 0 } }] } },
+                      { "EnchantableBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "host"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Bound": "host" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
