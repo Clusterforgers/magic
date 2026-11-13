@@ -55,7 +55,7 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
-  it('adds Decks, My games, Tournaments and Review cards, between Precons and Create, for an account', async () => {
+  it('adds Decks, My games, Tournaments, Delves and Review cards, between Precons and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual([
@@ -64,6 +64,7 @@ describe('the main navigation', () => {
       'Decks',
       'My games',
       'Tournaments',
+      'Delves',
       'Review cards',
       'Create',
     ])
@@ -73,6 +74,7 @@ describe('the main navigation', () => {
       '/decks',
       '/games',
       '/tournaments',
+      '/delves',
       '/review?mine=true',
       '/new',
     ])
