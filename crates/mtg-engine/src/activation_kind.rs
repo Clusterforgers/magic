@@ -60,6 +60,11 @@ fn of_keyword(rules: &Ability, keyword: Option<Keyword>) -> Option<ActivationKin
 
 /// Whether an ability whose specific kind is `own` is of the kind `wanted`.
 pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bool {
+    // Unlocking and turning face up are no abilities: only a change of their own costs applies to them.
+    let special = |kind: ActivationKind| matches!(kind, ActivationKind::Unlock | ActivationKind::Morph);
+    if own.is_some_and(special) || special(wanted) {
+        return own == Some(wanted);
+    }
     match wanted {
         ActivationKind::Every => true,
         ActivationKind::Any => own != Some(ActivationKind::Mana),
@@ -121,6 +126,18 @@ fn targets_one(
 /// applied (CR 601.2f, 605.3a): "Enchanted creature's activated abilities cost {3} more to activate".
 pub(crate) fn mana_modified(state: &GameState, source: ObjectId, mana: ManaCost) -> ManaCost {
     modified_as(state, source, Some(ActivationKind::Mana), mana, Some(&[]))
+}
+
+/// The mana of unlocking a door of the Room `room` with the changes of unlock costs in play applied ("Unlock costs you
+/// pay cost {1} less").
+pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: ManaCost) -> ManaCost {
+    modified_as(state, room, Some(ActivationKind::Unlock), mana, Some(&[]))
+}
+
+/// The mana of turning the face-down permanent `id` face up for its morph or megamorph cost with the changes of morph
+/// costs in play applied ("All morph costs cost {2} more").
+pub(crate) fn r402_morph_modified(state: &GameState, id: ObjectId, mana: ManaCost) -> ManaCost {
+    modified_as(state, id, Some(ActivationKind::Morph), mana, Some(&[]))
 }
 
 /// The mana of an activation of an ability of the specific kind `own` with the cost modifiers in play applied.

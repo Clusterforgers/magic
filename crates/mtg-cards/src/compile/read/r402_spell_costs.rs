@@ -109,6 +109,43 @@ pub(super) fn r402_spells_twin(text: &str) -> Option<String> {
     ))
 }
 
+/// "Unlock costs you pay cost {1} less." (the doors of the player's Rooms) and "All morph costs cost {2} more." (every
+/// face-down permanent turned up for its morph or megamorph cost): changes of the cost of a special action.
+pub(super) fn r402_special_cost_read(text: &str) -> Option<crate::ability::Ability> {
+    use crate::ability::{Ability, ActivationKind, CostChange};
+    let tokens = tokenize(text);
+    let mut r = Reader::new(&tokens, false);
+    let (kind, applies_to) = if r.words("unlock costs you pay cost") {
+        (ActivationKind::Unlock, Selector(vec![Pred::ControlledBy(Ref::You)]))
+    } else if r.words("all morph costs cost") {
+        (ActivationKind::Morph, Selector::default())
+    } else {
+        return None;
+    };
+    let (mana, x) = super::statics::cost_mana(&mut r)?;
+    (!x).then_some(())?;
+    let change = if r.word("more") {
+        CostChange::Increase
+    } else if r.word("less") {
+        CostChange::Reduce
+    } else {
+        return None;
+    };
+    r.punct('.');
+    r.end().then_some(())?;
+    Some(Ability::CostModifier {
+        targeting: None,
+        applies_to,
+        change,
+        mana,
+        per: Amount::one(),
+        condition: None,
+        activating: Some(kind),
+        least: 0,
+        life: 0,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: the subject of one spell and the counts of the spell being cast read into the shapes a cost modifier holds
@@ -117,6 +154,7 @@ mod tests {
     use rstest::rstest;
 
     use super::*;
+    use crate::ability::{Ability, CostChange};
 
     #[rstest]
     #[case::artifact(
@@ -139,6 +177,30 @@ mod tests {
         assert_eq!(found.as_deref(), twin);
         if let Some(twin) = found {
             assert_eq!(r402_each_spell(&twin).as_deref(), Some(text));
+        }
+    }
+
+    #[rstest]
+    #[case::less("Unlock costs you pay cost {1} less.", Some(CostChange::Reduce))]
+    #[case::more("Unlock costs you pay cost {2} more.", Some(CostChange::Increase))]
+    #[case::morph("All morph costs cost {2} more.", Some(CostChange::Increase))]
+    #[case::equip("Equip costs you pay cost {1} less.", None)]
+    #[case::disguise("All disguise costs cost {2} more.", None)]
+    #[case::x("Unlock costs you pay cost {X} less.", None)]
+    fn r402_special_action_costs_read_back(#[case] text: &str, #[case] change: Option<CostChange>) {
+        let found = r402_special_cost_read(text);
+        let read = found.as_ref().map(|ability| match ability {
+            Ability::CostModifier { change, .. } => *change,
+            _ => panic!("{ability:?}"),
+        });
+        assert_eq!(read, change);
+        if let Some(ability) = found {
+            assert!(
+                super::super::written_variants(&ability)
+                    .iter()
+                    .any(|written| written == text),
+                "{text}"
+            );
         }
     }
 

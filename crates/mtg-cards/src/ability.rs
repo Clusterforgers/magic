@@ -137,6 +137,12 @@ pub enum ActivationKind {
     Every,
     /// An activated ability with {T} in its cost, a mana ability included ("activated abilities with {T} in their costs").
     TapCost,
+    /// Unlocking a door of a Room (CR 709.5e): a special action, not an ability, whose cost only a modifier of this kind
+    /// changes ("Unlock costs you pay cost {1} less").
+    Unlock,
+    /// Turning a face-down permanent face up for its morph or megamorph cost (CR 702.37e): a special action, not an
+    /// ability, whose cost only a modifier of this kind changes ("All morph costs cost {2} more").
+    Morph,
 }
 
 /// Whether a count is zero, so serialization can leave it out.

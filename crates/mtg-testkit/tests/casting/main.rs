@@ -176,6 +176,7 @@ mod r307c_exile;
 mod r372_suspend;
 mod r3f_mana;
 mod r402_copy_riders;
+mod r402_special_costs;
 mod r402_spell_costs;
 mod r4f_stack_move;
 mod r4i_may_flash;
