@@ -121,11 +121,32 @@ fn attacked(at: &Ref) -> Option<&'static str> {
     })
 }
 
+/// The wording of `GroupAttacksAt` that counts the attackers of a player's planeswalkers with theirs: "Whenever one or
+/// more creatures attack one of your opponents or a planeswalker they control".
+fn r5502_walkers_text(what: &Selector, at: &Ref, at_least: u32) -> Option<String> {
+    let player = match at {
+        Ref::Opponents => "one of your opponents or a planeswalker they control",
+        Ref::You => "you or a planeswalker you control",
+        _ => return None,
+    };
+    let group = super::triggers::group_attacks_text(what, at_least)?;
+    Some(format!("{group} {player}"))
+}
+
 /// The wording of `GroupAttacksAt`; `None` for a shape it does not say.
 pub(super) fn e16c_group_at_text(pattern: &TriggerPattern) -> Option<String> {
-    let TriggerPattern::GroupAttacksAt { what, at, at_least } = pattern else {
+    let TriggerPattern::GroupAttacksAt {
+        what,
+        at,
+        at_least,
+        walkers,
+    } = pattern
+    else {
         return None;
     };
+    if *walkers {
+        return r5502_walkers_text(what, at, *at_least);
+    }
     let at_least = *at_least;
     // The creatures you control attack only your opponents: "attack a player" (CR 508.1b).
     let yours = what.0.contains(&Pred::ControlledBy(Ref::You));

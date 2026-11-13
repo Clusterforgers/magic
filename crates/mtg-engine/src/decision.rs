@@ -515,6 +515,9 @@ impl AttackerOption {
     }
 }
 
+/// Attackers that must be blocked by a creature of a kind, each with the creatures of that kind that could block it.
+pub type BlockersOfKind = Vec<(ObjectId, Vec<ObjectId>)>;
+
 /// Legal attackers.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -559,6 +562,12 @@ pub struct AttackOptions {
         ts(as = "Option<Vec<crate::r286_joins::JoinRule>>", optional)
     )]
     pub joins: Vec<crate::r286_joins::JoinRule>,
+    /// Groups of defenders the player must attack with at least one creature each (CR 508.1d: "each opponent must
+    /// attack with at least one creature"); an empty group is any defender. Only a group some creature can attack for
+    /// nothing is listed; a declaration with no attacker at one is refused. Left out while there are none (boxed, so the decision stays small).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<AttackTarget>>>", optional))]
+    pub at_least_one: Option<Box<Vec<Vec<AttackTarget>>>>,
 }
 
 impl AttackOptions {
@@ -571,7 +580,7 @@ impl AttackOptions {
             .filter(|option| self.required.contains(&option.object))
             .filter_map(|option| option.free_defender().map(|first| (option.object, first)))
             .collect();
-        self.w8a_capped(&first)
+        self.w8a_capped(&self.r5502_with_one(first))
     }
 
     /// What the declaration costs, each attacker for the defender it attacks (CR 508.1h).
@@ -642,6 +651,15 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub must_be_blocked: Vec<ObjectId>,
+    /// The attackers a rule requires a creature of a kind to block (CR 509.1c: "must be blocked by an Eldrazi if able"),
+    /// each with the creatures offered that are of that kind and could block it; the declaration has one of them block it
+    /// unless none could. Left out while there are none (boxed, so the decision stays small).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<(ObjectId, Vec<ObjectId>)>>", optional)
+    )]
+    pub must_be_blocked_by: Option<Box<BlockersOfKind>>,
     /// The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
     /// out while no rule limits the declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -705,6 +723,7 @@ impl BlockOptions {
             }
         }
         self.serve_must_be_blocked(&mut blocks);
+        self.r5502_serve(&mut blocks);
         let mut attackers: Vec<ObjectId> = Vec::new();
         for (_, attacker) in &blocks {
             if !attackers.contains(attacker) {
@@ -988,6 +1007,7 @@ mod tests {
                 })
                 .collect(),
             must_be_blocked: Vec::new(),
+            must_be_blocked_by: None,
             cant_alone: Vec::new(),
             joins: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
@@ -1104,6 +1124,7 @@ mod tests {
             most_at: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
+            at_least_one: None,
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -1122,6 +1143,7 @@ mod tests {
             most_at: Vec::new(),
             cant_alone: Vec::new(),
             joins: Vec::new(),
+            at_least_one: None,
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,

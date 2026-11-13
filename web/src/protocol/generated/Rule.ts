@@ -13,7 +13,15 @@ import type { Target } from "./Target";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustAttackPlayers": Array<[ObjectRef, PlayerId]> } | { "MustAttackWithOne": { 
+/**
+ * The players who must attack.
+ */
+players: Array<PlayerId>, 
+/**
+ * The players and planeswalkers the creature attacks; any defender when empty.
+ */
+at: Array<AttackTarget>, } } | { "MustBlock": Array<ObjectRef> } | { "MustBlockAttacker": { 
 /**
  * The creatures that must block it.
  */

@@ -1071,12 +1071,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 false,
             )
         }
-        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+        TriggerPattern::GroupAttacksAt {
+            what,
+            at,
+            at_least,
+            walkers,
+        } => {
             let (head, tail) = phrase(what);
             let (whom, _) = who(at);
+            let walkers = if *walkers {
+                " or a planeswalker that player controls"
+            } else {
+                ""
+            };
             (
                 format!(
-                    "{} attack {whom}",
+                    "{} attack {whom}{walkers}",
                     join(&format!("{at_least} or more {}", plural(&head)), &tail)
                 ),
                 false,

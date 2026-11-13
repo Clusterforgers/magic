@@ -166,6 +166,28 @@ impl Scope<'_> {
             })
     }
 
+    /// The different sources that dealt damage this turn while one of the players controlled them, each object once; a
+    /// record of a source no one could see counts on its own.
+    pub(crate) fn r5502_sources_dealt_damage(&self, players: &[PlayerId]) -> i64 {
+        let mut seen: Vec<ObjectRef> = Vec::new();
+        let mut hidden = 0i64;
+        for record in &self.state.tallies.records {
+            if record.event != TallyEvent::Damaged
+                || !record
+                    .player
+                    .is_some_and(|player| players.contains(&player))
+            {
+                continue;
+            }
+            match record.subject {
+                Some(subject) if !seen.contains(&subject) => seen.push(subject),
+                Some(_) => {}
+                None => hidden += 1,
+            }
+        }
+        i64::try_from(seen.len()).unwrap_or(i64::MAX) + hidden
+    }
+
     /// The damage dealt this turn to the players and objects named, as the objects were when it was dealt.
     pub(crate) fn g10c_damage_to(&self, to: &[Target]) -> i64 {
         self.state

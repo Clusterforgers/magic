@@ -1,9 +1,10 @@
 //! `Effect::Rule`: a rule of the game changes for a while (CR 611).
 
 use mtg_cards::effect::Effect;
-use mtg_cards::modify::GameRule;
+use mtg_cards::modify::{Duration, GameRule};
 use mtg_cards::refs::Pred;
 use mtg_core::ids::EffectId;
+use mtg_core::ids::PlayerId;
 use serde_json::Value;
 
 use super::wrong_effect;
@@ -23,16 +24,31 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if names_nothing(&rule) {
         return Ok(Run::events(Vec::new()));
     }
+    let controller = r5502_held_by(cx, &rule, duration);
     Ok(Run::events(vec![Event::RuleCreated {
         effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),
             rule,
             duration: duration.clone(),
             source: Some(cx.scope.source),
-            controller: cx.controller(),
-            turn: crate::effects::began_turn(state, duration, cx.controller()),
+            controller,
+            turn: crate::effects::began_turn(state, duration, controller),
         }),
     }]))
+}
+
+/// The player the rule is begun for: the controller of the resolving spell or ability, or for
+/// `UntilItsControllersNextCombatEnds` the controller of the creature that must attack, whose combat it waits for.
+fn r5502_held_by(cx: &Cx<'_>, rule: &crate::rules::Rule, duration: &Duration) -> PlayerId {
+    match (rule, duration) {
+        (crate::rules::Rule::MustAttack(named), Duration::UntilItsControllersNextCombatEnds) => {
+            named
+                .first()
+                .and_then(|first| crate::characteristics::controller_of(cx.state(), first.id))
+                .unwrap_or_else(|| cx.controller())
+        }
+        _ => cx.controller(),
+    }
 }
 
 /// The rule with each value the resolution chose (`Pred::ChosenAs`) written in as what was chosen: "spells with the chosen

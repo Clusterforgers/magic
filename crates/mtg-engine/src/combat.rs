@@ -474,6 +474,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             .collect(),
         cant_alone: Vec::new(),
         joins: Vec::new(),
+        at_least_one: None,
     };
     attack_tax::describe(state, player, &mut options);
     options.cant_alone = options
@@ -514,6 +515,8 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
         .extend(crate::r400_attack_follow::r400_follow_joins(
             state, &offered, &free,
         ));
+    let groups = crate::r5502_attack_with_one::r5502_groups(state, player, &options);
+    options.at_least_one = (!groups.is_empty()).then(|| Box::new(groups));
     options
 }
 
@@ -624,12 +627,15 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
                 || (must_block(state, *object) && !cant_block_alone(state, *object))
         })
         .collect();
+    let by_kind = crate::r5502_blocked_by_one::r5502_blocked_by_one(state, &blockers);
+    let must_be_blocked_by = (!by_kind.is_empty()).then(|| Box::new(by_kind));
     BlockOptions {
         blockers,
         min_blockers,
         max_blockers,
         required,
         must_be_blocked,
+        must_be_blocked_by,
         most,
         cant_alone,
         joins,
@@ -769,6 +775,9 @@ pub(crate) fn check_attackers(
     {
         return Err(IllegalAnswer::Required("attacker"));
     }
+    if !excused && options.r5502_unmet(answer) {
+        return Err(IllegalAnswer::Required("attacker"));
+    }
     Ok(())
 }
 
@@ -803,7 +812,7 @@ pub(crate) fn check_blockers(
     {
         return Err(IllegalAnswer::Required("blocker"));
     }
-    if options.unmet_must_be_blocked(answer) {
+    if options.unmet_must_be_blocked(answer) || options.r5502_unmet(answer) {
         return Err(IllegalAnswer::Required("blocked attacker"));
     }
     Ok(())

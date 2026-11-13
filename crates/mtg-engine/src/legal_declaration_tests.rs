@@ -59,6 +59,7 @@ fn block_offer(
     };
     BlockOptions {
         must_be_blocked: named(owed),
+        must_be_blocked_by: None,
         min_blockers: named(menace)
             .into_iter()
             .filter(|a| {
@@ -131,6 +132,7 @@ proptest! {
             most_at: Vec::new(),
             cant_alone,
             joins: Vec::new(),
+            at_least_one: None,
         };
         let attack = options.legal_attack();
         prop_assert_eq!(check_attackers(&options, &attack), Ok(()), "{:?} {:?}", options, attack);
@@ -150,6 +152,7 @@ fn an_attacker_that_must_be_blocked_brings_a_second_blocker_to_one_that_cant_blo
         max_blockers: Vec::new(),
         required: Vec::new(),
         must_be_blocked: vec![id(100)],
+        must_be_blocked_by: None,
         most: None,
         cant_alone: vec![id(1)],
         joins: Vec::new(),

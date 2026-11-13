@@ -59,6 +59,9 @@ const C7_UNTAP_ONLY: &str =
 
 /// Only a continuous effect waits for the next turn of the controller of what it changes.
 const L294_TURN_ONLY: &str = "only a continuous effect applies during its controller's next turn";
+/// `UntilItsControllersNextCombatEnds` lasts only for a requirement that a creature attacks.
+const R5502_COMBAT_ONLY: &str =
+    "only a rule that a creature attacks lasts until its controller's next combat phase ends";
 
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
@@ -1245,6 +1248,7 @@ impl<'a> Walker<'a> {
             Amount::AdditionalPaid => self.paid_amount(amount),
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -2845,7 +2849,15 @@ impl<'a> Walker<'a> {
     /// The patterns that count: the attackers of a `GroupAttacks` and the number of a `Chapter`.
     fn w2e_counted(&mut self, pattern: &TriggerPattern) {
         match pattern {
-            TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+            TriggerPattern::GroupAttacksAt {
+                what,
+                at,
+                at_least,
+                walkers,
+            } => {
+                if *walkers {
+                    self.uses("Trigger", "GroupAttacksAt.Walkers");
+                }
                 self.at("at", |w| w.reference(at, Kind::Player));
                 self.at("what", |w| w.selector(what));
                 if *at_least == 0 {
@@ -4519,6 +4531,9 @@ impl Walker<'_> {
                 if *duration == Duration::DuringItsControllersNextTurn {
                     w.uses("Duration", "DuringItsControllersNextTurn");
                 }
+                if *duration == Duration::UntilItsControllersNextCombatEnds {
+                    w.problem(R5502_COMBAT_ONLY);
+                }
             }
             Effect::ExchangeControl { what, duration } => {
                 if matches!(
@@ -4599,6 +4614,12 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::DuringItsControllersNextTurn {
                     w.problem(L294_TURN_ONLY);
+                }
+                if *duration == Duration::UntilItsControllersNextCombatEnds {
+                    w.uses("Rule", "Duration.UntilItsControllersNextCombatEnds");
+                    if !matches!(rule, GameRule::MustAttack(_)) {
+                        w.problem(R5502_COMBAT_ONLY);
+                    }
                 }
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
@@ -5387,6 +5408,14 @@ impl Walker<'_> {
                     self.uses("Rule", "Combat.AttackIfAnyAttacks");
                     self.at(tag.clone(), |w| w.at("among", |w| w.selector(among)));
                 }
+                if let GameRule::Combat {
+                    quirk: crate::modify::CombatQuirk::MustBeBlockedByOne(blockers),
+                    ..
+                } = rule
+                {
+                    self.uses("Rule", "Combat.MustBeBlockedByOne");
+                    self.at(tag.clone(), |w| w.at("blockers", |w| w.selector(blockers)));
+                }
                 self.at(tag, |w| w.reference(who, Kind::Object));
             }
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {
@@ -5395,6 +5424,21 @@ impl Walker<'_> {
             GameRule::MustAttackPlayers { who, players } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Object));
                 w.at("players", |w| w.reference(players, Kind::Player));
+            }),
+            GameRule::MustAttackWithOne { who, at } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(at) = at {
+                    w.at("at", |w| match at.as_ref() {
+                        Ref::Union(parts) => {
+                            for part in parts {
+                                if !matches!(part, Ref::Each(_)) {
+                                    w.reference(part, Kind::Player);
+                                }
+                            }
+                        }
+                        other => w.reference(other, Kind::Player),
+                    });
+                }
             }),
             GameRule::AttackTax {
                 who,

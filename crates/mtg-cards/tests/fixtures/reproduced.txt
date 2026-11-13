@@ -1679,6 +1679,7 @@ Secure Detention
 Seedglaive Mentor
 Seeds of Renewal
 Seedship Agrarian
+Seeker of Slaanesh
 Seekers' Squire
 Seize the Day
 Seraph of the Sword
@@ -2068,10 +2069,12 @@ Traverse the Outlands
 Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
+Trench Behemoth
 Triarch Praetorian
 Tribal Flames
 Trostani Discordant
 Trove Tracker
+Trove of Temptation
 Troyan, Gutsy Explorer
 True Identity
 True-Name Nemesis

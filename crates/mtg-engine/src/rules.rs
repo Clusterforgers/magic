@@ -48,6 +48,14 @@ pub enum Rule {
     MustAttack(Vec<ObjectRef>),
     /// Each creature attacks the player paired with it each combat of its duration if able (Encore, CR 702.141).
     MustAttackPlayers(Vec<(ObjectRef, PlayerId)>),
+    /// Each of the players attacks with at least one creature each combat if able (CR 508.1d); with defenders named,
+    /// one attacking one of them.
+    MustAttackWithOne {
+        /// The players who must attack.
+        players: Vec<PlayerId>,
+        /// The players and planeswalkers the creature attacks; any defender when empty.
+        at: Vec<AttackTarget>,
+    },
     /// The creatures block each combat if able (CR 509.1c).
     MustBlock(Vec<ObjectRef>),
     /// The creatures block the attacker if able (Provoke, CR 509.1c).
@@ -576,7 +584,7 @@ pub struct RuleEffect {
     #[cfg_attr(
         feature = "ts",
         ts(
-            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"UntilYourNextEndStep\" | \"UntilEndOfYourNextTurn\" | \"UntilEndOfCombatOnYourNextTurn\" | \"UntilItsControllersNextCombatEnds\" | \"WhileSourceOnBattlefield\" | \"Forever\""
         )
     )]
     pub duration: Duration,
@@ -673,6 +681,8 @@ pub(crate) struct RulesInForce {
     /// The combat permissions and requirements of `combat_quirks`.
     pub(crate) quirks: crate::combat_quirks::QuirkRules,
     must_attack: BTreeSet<ObjectId>,
+    /// The players who must attack with at least one creature, each with the defenders it attacks (any when empty).
+    pub(crate) attack_with_one: Vec<(Vec<PlayerId>, Vec<AttackTarget>)>,
     attack_players: Vec<(ObjectId, PlayerId)>,
     must_block: BTreeSet<ObjectId>,
     uncounterable: BTreeSet<ObjectId>,
@@ -1067,6 +1077,9 @@ impl RulesInForce {
         let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
         match rule {
             Rule::MustAttack(named) => self.must_attack.extend(ids(named)),
+            Rule::MustAttackWithOne { players, at } => {
+                self.attack_with_one.push((players.clone(), at.clone()));
+            }
             Rule::MustAttackPlayers(pairs) => self
                 .attack_players
                 .extend(pairs.iter().map(|(named, player)| (named.id, *player))),
@@ -1441,6 +1454,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
                 .zip(scope.players(players)?)
                 .collect(),
         ),
+        GameRule::MustAttackWithOne { who, at } => Rule::MustAttackWithOne {
+            players: scope.players(who)?,
+            at: at
+                .as_ref()
+                .map(|at| w10a_defenders(scope, at))
+                .transpose()?
+                .unwrap_or_default(),
+        },
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
         GameRule::MustBlockAttacker { .. }
         | GameRule::Combat { .. }
@@ -1713,6 +1734,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             by, what, players, ..
         } => by.is_empty() || (what.is_empty() && players.is_empty()),
         Rule::LifeFloor { players, .. }
+        | Rule::MustAttackWithOne { players, .. }
         | Rule::CantGainLife(players)
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
@@ -1888,6 +1910,7 @@ fn gather(state: &GameState) -> RulesInForce {
 static NONE: RulesInForce = RulesInForce {
     quirks: crate::combat_quirks::QuirkRules::NONE,
     must_attack: BTreeSet::new(),
+    attack_with_one: Vec::new(),
     attack_players: Vec::new(),
     must_block: BTreeSet::new(),
     uncounterable: BTreeSet::new(),

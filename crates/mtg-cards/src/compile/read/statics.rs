@@ -603,6 +603,10 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         rule
     } else if let Some(rule) = r.attempt(super::w8a_declaration_limits::w8a_limit) {
         rule
+    } else if let Some(rule) = r.attempt(super::r5502_attack_with_one::r5502_read) {
+        rule
+    } else if let Some(rule) = r.attempt(super::r5502_blocked_by_one::r5502_read) {
+        rule
     } else if r.source() {
         if r.words("can be your commander") {
             GameRule::CanBeCommander
@@ -1938,7 +1942,11 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             GameRule::DamageAsWither | GameRule::ManaBurn | GameRule::AttackAsThoughHasteAt(_),
             ZoneKind::Battlefield,
         ) => super::r303b_statics::r303b_rule_texts(rule),
-        (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
+        (GameRule::Combat { .. }, ZoneKind::Battlefield) => {
+            let mut written = super::r7d_statics::combat_texts(rule);
+            written.extend(super::r5502_blocked_by_one::r5502_texts(rule));
+            written
+        }
         (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
             super::rmt4_untap_limit::untap_rule_texts(rule)
         }
@@ -1953,6 +1961,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             .into_iter()
             .collect(),
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
+        (GameRule::MustAttackWithOne { .. }, ZoneKind::Battlefield) => {
+            super::r5502_attack_with_one::r5502_texts(rule)
+        }
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
         (GameRule::DamageCantBePrevented { source, combat }, ZoneKind::Battlefield) => {
             prevention::static_texts(source, *combat)

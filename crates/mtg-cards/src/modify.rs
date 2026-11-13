@@ -279,6 +279,10 @@ pub enum Duration {
     /// attack during its controller's next turn"): it changes nothing before that turn and ends with it. Only a continuous
     /// effect lasts this way.
     DuringItsControllersNextTurn,
+    /// Until the end of the next combat phase of the player who controls the creature the rule names as it begins
+    /// ("target creature attacks during its controller's next combat phase if able"): this turn's when that player is
+    /// active and has not declared attackers yet. Only a rule lasts this way.
+    UntilItsControllersNextCombatEnds,
     /// Until the end of combat on the controller's next turn: it ends as that turn's postcombat main phase begins
     /// ("Until end of combat on your next turn, you may play that card").
     UntilEndOfCombatOnYourNextTurn,
@@ -545,6 +549,9 @@ pub enum CombatQuirk {
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
     /// "All Walls able to block ~ do so."
     MustBeBlockedBy(Selector),
+    /// They must be blocked by at least one creature the selector picks if able (CR 509.1c), judged for their controller:
+    /// "must be blocked by an Eldrazi if able"; a block by another creature does not meet it.
+    MustBeBlockedByOne(Selector),
     /// They can be blocked as though they did not have the landwalk ability the selector names (CR 702.14).
     IgnoreLandwalk(Selector),
     /// They can be blocked as though they did not have any landwalk ability.
@@ -710,6 +717,15 @@ pub enum GameRule {
         who: Ref,
         /// The players, in the order they are paired.
         players: Ref,
+    },
+    /// Each player `who` names attacks with at least one creature each combat if able (CR 508.1d): a requirement on the
+    /// whole declaration, met by any creature; with `at`, by one attacking a player or planeswalker `at` names.
+    MustAttackWithOne {
+        /// The players who must attack.
+        who: Ref,
+        /// The players and planeswalkers the creature attacks; any defender when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        at: Option<Box<Ref>>,
     },
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
     MustBlock(Ref),
@@ -1336,6 +1352,14 @@ mod tests {
     #[case(
         GameRule::MustAttackPlayers { who: Ref::Bound("tokens".to_owned()), players: Ref::Opponents },
         r#"{"MustAttackPlayers":{"who":{"Bound":"tokens"},"players":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::MustAttackWithOne { who: Ref::Opponents, at: None },
+        r#"{"MustAttackWithOne":{"who":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::MustAttackWithOne { who: Ref::Opponents, at: Some(Box::new(Ref::You)) },
+        r#"{"MustAttackWithOne":{"who":"Opponents","at":"You"}}"#
     )]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(

@@ -197,6 +197,11 @@ enum Happened {
         attackers: Vec<ObjectId>,
         at: PlayerId,
     },
+    /// Attackers were declared together at one player or a planeswalker that player controls, once for each player.
+    R5502AttackedAtOrWalkers {
+        attackers: Vec<ObjectId>,
+        at: PlayerId,
+    },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
     /// An Aura, Equipment or Fortification stopped being attached to the permanent `from`; `left` when it left the
@@ -663,6 +668,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         at,
                     });
                 }
+                found.extend(r5502_at_or_walkers(post, attackers));
             }
             Event::SpellCast {
                 player,
@@ -2299,8 +2305,25 @@ fn matching_permanents(
             })
         }
         (
-            TriggerPattern::GroupAttacksAt { what, at, at_least },
+            TriggerPattern::GroupAttacksAt {
+                what,
+                at,
+                at_least,
+                walkers: false,
+            },
             Happened::AttackedTogetherAt {
+                attackers,
+                at: attacked,
+            },
+        )
+        | (
+            TriggerPattern::GroupAttacksAt {
+                what,
+                at,
+                at_least,
+                walkers: true,
+            },
+            Happened::R5502AttackedAtOrWalkers {
                 attackers,
                 at: attacked,
             },
@@ -2987,6 +3010,30 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     // A player who lost with the same events triggers nothing, though the state looked back at has them alive (CR 800.4a).
     found.retain(|triggered| post.is_alive(triggered.controller));
     found
+}
+
+/// The attackers of each player and of the planeswalkers that player controls, grouped by that player in the order they
+/// are first attacked (CR 508.1b): what "attack one of your opponents or a planeswalker they control" reads.
+fn r5502_at_or_walkers(post: &GameState, attackers: &[(ObjectId, AttackTarget)]) -> Vec<Happened> {
+    let mut groups: Vec<(PlayerId, Vec<ObjectId>)> = Vec::new();
+    for (attacker, to) in attackers {
+        if let AttackTarget::Planeswalker(id) = to
+            && crate::battle::is_battle(post, *id)
+        {
+            continue;
+        }
+        let Some(player) = crate::combat::defending_player(post, *to) else {
+            continue;
+        };
+        match groups.iter_mut().find(|(held, _)| *held == player) {
+            Some((_, group)) => group.push(*attacker),
+            None => groups.push((player, vec![*attacker])),
+        }
+    }
+    groups
+        .into_iter()
+        .map(|(at, attackers)| Happened::R5502AttackedAtOrWalkers { attackers, at })
+        .collect()
 }
 
 #[cfg(test)]
