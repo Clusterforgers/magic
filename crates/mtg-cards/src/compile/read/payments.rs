@@ -72,7 +72,11 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let from = r.targets.len();
     // "the discarded card's mana value" after "if you do" names what the payment took, unless the ability's own cost
     // took something (then it names that).
-    let took = !r.paid && costs::takes_objects(&cost);
+    // Only a payment that pays mana and takes objects ("pay {1}{R} and discard a card"); a sacrifice alone binds its own
+    // name ("the sacrificed creature").
+    let took = !r.paid
+        && costs::takes_objects(&cost)
+        && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_)));
     r.paid |= took;
     let paid = one_sentence(r);
     r.paid &= !took;
