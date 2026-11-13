@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4ab6f615-1f04-4ed2-88b2-49faa8356dd0",
+  "name": "Evelyn, the Covetous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evelyn, the Covetous",
+      "oracle_fingerprint": "2896e8dee37527bcaf0735d8076df963",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "AnyOf": ["This", { "Subtype": "Vampire" }] }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "collection" } }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "HasCounter": { "Other": "collection" } }],
+                "from": "Exile",
+                "play": true,
+                "once": true,
+                "spend_as": "AnyColor"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -389,6 +389,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::ExertEnded { .. }
         | Event::DayNightChanged { .. }
         | Event::CommanderStayed { .. }
+        | Event::DamagePrevented { .. }
+        | Event::VotesFinished { .. }
         | Event::CompanionBrought { .. } => None,
     }
 }

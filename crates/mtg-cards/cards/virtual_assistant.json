@@ -1,7 +1,7 @@
 {
   "oracle_id": "69db9cb8-9152-4d1b-9ac9-16aac42c0908",
   "name": "Virtual Assistant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Virtual Assistant",
@@ -9,9 +9,29 @@
       "abilities": [
         { "Keyword": "Defender" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 9, "end": 121 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "HasKeywordNamed": "Teamwork" }, "AdditionalCostPaid"],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot Hero",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Hero"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

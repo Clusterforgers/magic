@@ -1,7 +1,7 @@
 {
   "oracle_id": "46570366-5e58-40b7-b725-833321a3b7b1",
   "name": "Niv-Mizzet, Guildpact",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Niv-Mizzet, Guildpact",
@@ -12,9 +12,52 @@
           "Keyword": { "HexproofFrom": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }] }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 35, "end": 275 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [{ "what": "AnyTarget" }, { "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Distinct": {
+                      "of": [
+                        { "ControlledBy": "You" },
+                        { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                      ],
+                      "stat": "R374ColorSet"
+                    }
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "who": { "Target": 1 },
+                  "count": {
+                    "Distinct": {
+                      "of": [
+                        { "ControlledBy": "You" },
+                        { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                      ],
+                      "stat": "R374ColorSet"
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Distinct": {
+                      "of": [
+                        { "ControlledBy": "You" },
+                        { "Compare": { "stat": "Colors", "op": "Eq", "to": 2 } }
+                      ],
+                      "stat": "R374ColorSet"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

@@ -10,18 +10,19 @@ use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use mtg_cards::support::Reason;
 use mtg_core::color::{Color, ColorSet};
-use mtg_db::codec::{legality_keyword, rarity_keyword, ruling_source_keyword};
+use mtg_db::codec::{legality_keyword, ruling_source_keyword};
 use mtg_db::{Card, CardSearch, ColorFilter, ColorMatch, Page, PrintingImages, SortKey};
 use mtg_import::ids::OracleId;
 use mtg_import::scryfall::ImageUris;
 use mtg_protocol::rest::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
-    ImageLinks, MAX_PAGE, MAX_PER_PAGE, PrintingView, RulingView,
+    ImageLinks, MAX_PAGE, MAX_PER_PAGE, RulingView,
 };
 use sqlx::types::uuid::Uuid;
 
 use crate::api::ApiError;
 use crate::cards::{CardSource, CatalogError, Rules};
+use crate::printings::printing_view;
 use crate::reads::card_draft;
 use crate::server::AppState;
 
@@ -362,20 +363,7 @@ pub(crate) async fn detail(
             .iter()
             .map(|(format, legality)| (format.clone(), legality_keyword(*legality).to_owned()))
             .collect(),
-        printings: found
-            .printings
-            .iter()
-            .map(|printing| PrintingView {
-                printing_id: printing.printing_id.to_string(),
-                set: printing.set.clone(),
-                collector_number: printing.collector_number.clone(),
-                rarity: printing.rarity.map(|r| rarity_keyword(r).to_owned()),
-                released_at: printing.released_at.map(|date| date.to_string()),
-                lang: printing.lang.clone(),
-                digital: printing.digital,
-                images: card_images(&printing.images),
-            })
-            .collect(),
+        printings: found.printings.iter().map(printing_view).collect(),
         rulings: found
             .rulings
             .iter()

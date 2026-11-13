@@ -1,0 +1,32 @@
+{
+  "oracle_id": "85442273-9596-47bf-9b40-6d48fd7183a6",
+  "name": "Selective Snare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selective Snare",
+      "oracle_fingerprint": "cff7918dbeaff1eb2d526598cd414889",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "type" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Target": 0 } }, { "ChosenAs": "type" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

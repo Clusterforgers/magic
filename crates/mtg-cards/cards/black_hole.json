@@ -1,0 +1,37 @@
+{
+  "oracle_id": "25783439-9b22-4882-a7c2-e0b1fc2f7ec6",
+  "name": "Black Hole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Hole",
+      "oracle_fingerprint": "b00d0bafefb729f122973f2904c0f7f9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Tallied": { "who": "You", "what": "AttractionsVisited" } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

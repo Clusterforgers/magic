@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0e69e6c2-fdc5-4c1a-bd96-c4283b82743a",
+  "name": "Blood of the Martyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood of the Martyr",
+      "oracle_fingerprint": "9930ca8daf1f9a0b8668c5276061dccb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "Type": "Creature" }] } } },
+                  "by": { "Redirect": { "to": "You" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

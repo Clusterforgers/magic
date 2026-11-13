@@ -12,12 +12,15 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::{HeaderMap, StatusCode};
+use mtg_core::house::HouseRules;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::state::GameResult;
+use mtg_protocol::ClientMessage;
 use mtg_protocol::rest::{
     CreateTournament, EntrantView, JoinTournament, MAX_ENTRANTS, MAX_SWISS_ROUNDS,
     MAX_TOURNAMENT_NAME_CHARS, MatchOutcome, MatchView, RoundView, SetMatchOutcome, StandingView,
-    TournamentCreated, TournamentErrorCode, TournamentInvite, TournamentList, TournamentStatus,
-    TournamentStructure, TournamentSummary, TournamentView,
+    TournamentCreated, TournamentErrorCode, TournamentFormat, TournamentInvite, TournamentList,
+    TournamentStatus, TournamentStructure, TournamentSummary, TournamentView,
 };
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -36,9 +39,9 @@ use pairing::{Pairing, Played, Shuffler};
 pub(crate) use store::TournamentStore;
 use store::{Entrant, MatchRow, NewTournament, Signup, Tournament};
 
-/// Whether this server makes team games (Team Commander) for 2v2 matches. Until it does, a 2v2
+/// Whether this server makes team games (Team Commander) for 2v2 matches. Without them, a 2v2
 /// tournament signs teams up but cannot start.
-pub(crate) const TEAM_GAMES: bool = false;
+pub(crate) const TEAM_GAMES: bool = true;
 /// Most tournaments a player's list shows.
 const MAX_LISTED: i64 = 100;
 
@@ -193,9 +196,10 @@ fn seated(tournament: &Tournament, played: &MatchRow) -> Option<Vec<(String, Use
 }
 
 /// Fills the results of matches whose games have ended from the game records, and forgets a game that was dropped
-/// without a result (expired, closed, failed or gone), so the organiser's retry makes the match a new one.
-async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(), ApiError> {
+/// without a result (expired, closed, failed or gone), so the match gets a new one. True when it forgot one.
+async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<bool, ApiError> {
     let tournaments = service(app)?;
+    let mut forgot = false;
     for played in &mut tournament.matches {
         let (Some(game), None) = (played.game, played.outcome) else {
             continue;
@@ -217,6 +221,7 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
                     .await
                     .map_err(|e| unavailable(&e))?;
                 played.game = None;
+                forgot = true;
                 continue;
             }
         };
@@ -228,14 +233,18 @@ async fn sync_results(app: &AppState, tournament: &mut Tournament) -> Result<(),
             .map_err(|e| unavailable(&e))?;
         played.outcome = Some(outcome);
     }
-    Ok(())
+    Ok(forgot)
 }
 
-/// The house rules of a tournament game: the format's own, without take-backs.
-pub(crate) fn tournament_rules() -> mtg_core::house::HouseRules {
-    mtg_core::house::HouseRules {
+/// The rules of a match game: a team format seats the entrants' players alternately as two teams of separate
+/// turns (CR 808), the first entrant team 0, which [`outcome_of`] reads back.
+fn match_rules(format: TournamentFormat) -> HouseRules {
+    let size = format.team_size();
+    HouseRules {
+        teams: (size > 1)
+            .then(|| Teams::even(TeamMode::Teams, 2, u32::try_from(size).unwrap_or(u32::MAX))),
         take_backs: Some(false),
-        ..mtg_core::house::HouseRules::default()
+        ..HouseRules::default()
     }
 }
 
@@ -260,7 +269,7 @@ async fn make_games(app: &AppState, tournament: &mut Tournament) -> Result<(), A
             format: FormatKind::Commander,
             visibility: Visibility::Invite,
             accounts: users.into_iter().map(Some).collect(),
-            house_rules: tournament_rules(),
+            house_rules: match_rules(tournament.format),
             ..GameOptions::default()
         };
         let decks = vec![None; names.len()];
@@ -546,7 +555,8 @@ pub(crate) async fn join(
 }
 
 /// `GET /api/tournaments/{id}`: the tournament with its rounds and standings, for its organiser and
-/// players; anybody else gets 404. Results of ended games are filled in first.
+/// players; anybody else gets 404. Results of ended games are filled in first, and a game that ended without one
+/// (expired) is made again.
 pub(crate) async fn get_one(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,
@@ -555,11 +565,15 @@ pub(crate) async fn get_one(
     let tournaments = service(&app)?;
     let user = app.auth().require_user(&headers).await?;
     let id = id_of(path)?;
+    let _turn = tournaments.turn.lock().await;
     let mut tournament = load(tournaments, id).await?;
     if tournament.organiser != user.id && !plays(&tournament, user.id) {
         return Err(not_found());
     }
-    sync_results(&app, &mut tournament).await?;
+    if sync_results(&app, &mut tournament).await? && tournament.status == TournamentStatus::Running
+    {
+        make_games(&app, &mut tournament).await?;
+    }
     Ok(Json(view(&tournament, user.id)))
 }
 
@@ -610,8 +624,33 @@ pub(crate) async fn leave(
     Ok(StatusCode::NO_CONTENT)
 }
 
+/// Concedes the seats of `players` in the running `game` through the normal concession, so the game ends as their
+/// loss. False when the game does not run (a lobby, or gone), which leaves the result to the organiser's ruling.
+async fn concede_game(app: &AppState, game: GameId, players: &[UserId]) -> Result<bool, ApiError> {
+    let running = matches!(
+        app.registry()
+            .record_result(game)
+            .await
+            .map_err(|e| unavailable(&e))?,
+        Some((RecordStatus::Running, _))
+    );
+    if !running {
+        return Ok(false);
+    }
+    for &user in players {
+        if let Some(access) = app.registry().authenticate_user(game, user) {
+            // A game that closed meanwhile has ended on its own; the drop still decides the match.
+            let _ = access
+                .handle
+                .send(access.seat, ClientMessage::Concede)
+                .await;
+        }
+    }
+    Ok(true)
+}
+
 /// Drops `entrant` from a running tournament: it is not paired again, and an undecided match of
-/// the current round goes to its opponent.
+/// the current round goes to its opponent; a running game of that match ends as the entrant's concession.
 async fn drop_entrant(
     app: &AppState,
     tournament: &mut Tournament,
@@ -633,6 +672,12 @@ async fn drop_entrant(
     if !dropped {
         return Err(not_found());
     }
+    let players: Vec<UserId> = tournament
+        .entrants
+        .iter()
+        .filter(|e| e.number == entrant)
+        .flat_map(|e| e.players.iter().map(|p| p.user))
+        .collect();
     let round = tournament.round;
     for played in &mut tournament.matches {
         let Some(b) = played.b else { continue };
@@ -647,13 +692,17 @@ async fn drop_entrant(
         } else {
             MatchOutcome::A
         };
+        let conceded = match played.game {
+            Some(game) => concede_game(app, game, &players).await?,
+            None => false,
+        };
         tournaments
             .store
-            .set_outcome(tournament.id, round, played.table, outcome, true)
+            .set_outcome(tournament.id, round, played.table, outcome, !conceded)
             .await
             .map_err(|e| unavailable(&e))?;
         played.outcome = Some(outcome);
-        played.corrected = true;
+        played.corrected = !conceded;
     }
     if let Some(e) = tournament.entrants.iter_mut().find(|e| e.number == entrant) {
         e.dropped = true;
@@ -1007,6 +1056,17 @@ mod tests {
             names.map(|n| n.into_iter().map(String::from).collect())
         );
         assert_eq!(seated(&t, &row(0, None)), None);
+    }
+
+    #[test]
+    fn a_team_match_seats_two_teams_that_alternate_and_a_duel_none() {
+        let teams = match_rules(TournamentFormat::Commander2v2).teams.unwrap();
+        assert_eq!(teams.mode, TeamMode::Teams);
+        assert_eq!(teams.seats, [0, 1, 0, 1]);
+        assert_eq!(
+            match_rules(TournamentFormat::Commander1v1),
+            HouseRules::default()
+        );
     }
 
     #[rstest]

@@ -9,7 +9,12 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 69 } }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } }
+            ]
+          }
         },
         {
           "Manual": {

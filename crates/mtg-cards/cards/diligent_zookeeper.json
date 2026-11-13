@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6a84a8a4-c8b0-45ce-af6f-605fcffc395b",
+  "name": "Diligent Zookeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diligent Zookeeper",
+      "oracle_fingerprint": "12b5a4530064af9f4c858911cad92794",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Subtype": "Human" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "R374AtMost": [
+                      { "Stat": { "of": "Affected", "stat": "R374CreatureTypes" } },
+                      10
+                    ]
+                  },
+                  "toughness": {
+                    "R374AtMost": [
+                      { "Stat": { "of": "Affected", "stat": "R374CreatureTypes" } },
+                      10
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

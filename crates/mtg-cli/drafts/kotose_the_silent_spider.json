@@ -1,0 +1,86 @@
+{
+  "oracle_id": "bfef4daa-b950-46ce-8c08-11f9983741cf",
+  "name": "Kotose, the Silent Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kotose, the Silent Spider",
+      "oracle_fingerprint": "6a496d9a1beb6a81e876c4fe94c93f3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" },
+                    {
+                      "AnyOf": [{ "Not": { "Supertype": "Basic" } }, { "Not": { "Type": "Land" } }]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "named" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "OwnerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "grave"
+                }
+              },
+              { "Exile": { "what": { "Bound": "grave" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesName": { "Bound": "named" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "OwnerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "hand"
+                }
+              },
+              { "Exile": { "what": { "Bound": "hand" } } },
+              {
+                "Search": {
+                  "of": { "OwnerOf": { "Target": 0 } },
+                  "filter": [{ "SharesName": { "Bound": "named" } }],
+                  "count": { "min": 0, "max": null },
+                  "as": "library"
+                }
+              },
+              { "Exile": { "what": { "Bound": "library" } } },
+              { "Shuffle": { "who": { "OwnerOf": { "Target": 0 } } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "ExiledWith": "This" }],
+                      "from": "Exile",
+                      "play": true,
+                      "once": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

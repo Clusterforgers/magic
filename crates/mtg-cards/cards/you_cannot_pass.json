@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8e94ccdb-5978-440b-b7cd-11c7ca6b2c98",
+  "name": "You Cannot Pass!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "You Cannot Pass!",
+      "oracle_fingerprint": "d1c0e9552d67245e02c3c3e53f63337f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "BlockedThisTurn": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

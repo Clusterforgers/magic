@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "3826e2af-c134-4dc1-98b5-574b1bda9a98",
+  "oracle_id": "0dd4bc7b-2ddf-4ca4-912c-59685c41c3b5",
+  "multiverse_ids": [
+    642687
+  ],
+  "mtgo_id": 117438,
+  "tcgplayer_id": 524277,
+  "cardmarket_id": 740987,
+  "name": "Indoraptor, the Perfect Hybrid",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/3826e2af-c134-4dc1-98b5-574b1bda9a98",
+  "scryfall_uri": "https://scryfall.com/card/rex/15/indoraptor-the-perfect-hybrid?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:33:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634",
+    "normal": "https://cards.scryfall.io/normal/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634",
+    "large": "https://cards.scryfall.io/large/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634",
+    "png": "https://cards.scryfall.io/png/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.png?1783913634",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.webp?1783913634",
+    "grid": "https://cards.scryfall.io/grid/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.webp?1783913634",
+    "display": "https://cards.scryfall.io/display/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.webp?1783913634",
+    "art": "https://cards.scryfall.io/art/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.webp?1783913634",
+    "crop": "https://cards.scryfall.io/crop/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.webp?1783913634",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/8/3826e2af-c134-4dc1-98b5-574b1bda9a98.jpg?1783913634"
+  },
+  "mana_cost": "{1}{B/G}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Dinosaur Mutant",
+  "oracle_text": "Bloodthirst X (This creature enters with X +1/+1 counters on it, where X is the damage dealt to your opponents this turn.)\nMenace\nEnrage — Whenever Indoraptor is dealt damage, choose an opponent at random. Indoraptor deals damage equal to its power to that player unless they sacrifice a nontoken creature of their choice.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Enrage",
+    "Bloodthirst",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set": "rex",
+  "set_name": "Jurassic World Collection",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arex&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rex?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3826e2af-c134-4dc1-98b5-574b1bda9a98/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0dd4bc7b-2ddf-4ca4-912c-59685c41c3b5&unique=prints",
+  "collector_number": "15",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daren Bader",
+  "artist_ids": [
+    "7da1a585-c875-45e4-b322-5da9e8e1f651"
+  ],
+  "illustration_id": "96ff5ba2-9b93-49ab-b034-c7b41f2f6231",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 8923,
+  "prices": {
+    "usd": "22.27",
+    "usd_foil": "44.21",
+    "usd_etched": null,
+    "eur": "15.01",
+    "eur_foil": "33.80",
+    "tix": "4.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642687&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIndoraptor%252C%2Bthe%2BPerfect%2BHybrid",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIndoraptor%252C%2Bthe%2BPerfect%2BHybrid",
+    "edhrec": "https://edhrec.com/route/?cc=Indoraptor%2C+the+Perfect+Hybrid"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524277%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=740987&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117438?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

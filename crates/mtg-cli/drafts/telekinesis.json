@@ -1,0 +1,51 @@
+{
+  "oracle_id": "1b9dd2b6-d14d-4c1e-9885-00ab2c0bf8da",
+  "name": "Telekinesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telekinesis",
+      "oracle_fingerprint": "007f2ec8912305bfcb2c5754111fc5bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": { "Target": 0 } } }
+                  },
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

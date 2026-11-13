@@ -122,6 +122,14 @@ describe('badgeText', () => {
     expect(words[viewer]).toBe('Your turn · 5 · Precombat main')
   })
 
+  it.each<[number, string]>([
+    [0, 'Your turn · 5 · Precombat main'],
+    [1, 'Your turn · 5 · Precombat main'],
+    [2, "Alice and Bo's turn · 5 · Precombat main"],
+  ])('gives a Two-Headed Giant turn to both players of the team, seen from seat %i', (viewer, text) => {
+    expect(badgeText({ ...turn(0, 'Main1'), teammate: 1 }, viewer, name)).toBe(text)
+  })
+
   it.each<[number, number, string]>([
     [0, 1, "Bo's turn · you control them · 5 · Precombat main"],
     [1, 1, 'Your turn · Alice controls you · 5 · Precombat main'],

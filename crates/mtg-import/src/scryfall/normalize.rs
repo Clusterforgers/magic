@@ -167,6 +167,10 @@ impl TryFrom<RawCard> for CardRecord {
             lang,
             layout,
             set,
+            set_name,
+            frame,
+            finishes,
+            full_art,
             collector_number,
             rarity,
             released_at,
@@ -253,6 +257,10 @@ impl TryFrom<RawCard> for CardRecord {
             legalities: legalities_from(legalities.unwrap_or_default()),
             images: image_uris,
             set: set.unwrap_or_default(),
+            set_name: non_empty(set_name),
+            frame: non_empty(frame),
+            finishes: finishes.unwrap_or_default(),
+            full_art: full_art.unwrap_or(false),
             collector_number: collector_number.unwrap_or_default(),
             rarity: rarity.as_deref().and_then(Rarity::parse),
             released_at,
@@ -435,6 +443,30 @@ mod tests {
         let card = convert(base(extra)).unwrap();
         assert_eq!(card.flavor_name.as_deref(), flavor);
         assert_eq!(card.printed_name.as_deref(), printed);
+    }
+
+    #[rstest]
+    #[case::absent(json!({}), None, None, &[], false)]
+    #[case::empty_text_is_none(json!({"set_name": "", "frame": ""}), None, None, &[], false)]
+    #[case::all(
+        json!({"set_name": "Dominaria United", "frame": "2015", "finishes": ["nonfoil", "foil"], "full_art": true}),
+        Some("Dominaria United"),
+        Some("2015"),
+        &["nonfoil", "foil"],
+        true
+    )]
+    fn what_a_printing_looks_like(
+        #[case] extra: Value,
+        #[case] set_name: Option<&str>,
+        #[case] frame: Option<&str>,
+        #[case] finishes: &[&str],
+        #[case] full_art: bool,
+    ) {
+        let card = convert(base(extra)).unwrap();
+        assert_eq!(card.set_name.as_deref(), set_name);
+        assert_eq!(card.frame.as_deref(), frame);
+        assert_eq!(card.finishes, finishes);
+        assert_eq!(card.full_art, full_art);
     }
 
     #[rstest]

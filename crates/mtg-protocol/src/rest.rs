@@ -32,14 +32,15 @@ pub use bulk_reads::{
 };
 pub use cards::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
-    ImageLinks, MAX_PAGE, MAX_PER_PAGE, PrintingView, RulingView,
+    ImageLinks, MAX_PAGE, MAX_PER_PAGE, PreferredPrintingBody, PreferredPrintings, PrintingList,
+    PrintingView, RulingView,
 };
 pub use decks::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,
     DeckListItem, DeckPicture, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource,
-    ListProblem, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS,
-    MAX_DECK_PICTURES, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS, MAX_IMPORT_LINES, TableRules,
-    UnresolvedLine, UnresolvedReason,
+    LinePrintingBody, ListProblem, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
+    MAX_DECK_NOTES_CHARS, MAX_DECK_PICTURES, MAX_DECKS_PER_USER, MAX_IMPORT_CHARS,
+    MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{
@@ -47,7 +48,7 @@ pub use fix_marks::{
 };
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
-    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, TeamsBody, Visibility,
+    JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, SeatTeamBody, TeamsBody, Visibility,
     VisibilityBody,
 };
 pub use precons::{

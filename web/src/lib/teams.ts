@@ -92,13 +92,15 @@ export function seatsProblem(mode: GameMode, count: number): string | null {
   return null
 }
 
-/** Why the server would refuse `teams` (`docs/server.md`): too few teams, a skipped team, or uneven Two-Headed Giant. */
-export function teamsProblem(teams: Teams): string | null {
+/**
+ * Why the game cannot start with `teams` (`docs/server.md`): fewer than two teams, or a Two-Headed Giant that is not two
+ * teams of two. The lobby keeps any grouping while players choose; the server checks it at the start, after numbering
+ * the teams without gaps, as this does.
+ */
+export function teamsProblem(chosen: Teams): string | null {
+  const teams = { ...chosen, seats: compact(chosen.seats) }
   const count = teamCount(teams)
   if (count < 2) return 'A team game needs at least two teams.'
-  for (let team = 0; team < count; team += 1) {
-    if (!teams.seats.includes(team)) return `${teamLabel(team)} has nobody in it.`
-  }
   if (teams.mode === 'two_headed_giant') {
     const even = teams.seats.length === GIANT_SEATS && count === 2 && teamMembers(teams, 0).length === 2
     if (!even) return 'Two-Headed Giant needs two teams of two.'
@@ -112,30 +114,23 @@ function compact(seats: readonly number[]): number[] {
   return seats.map((team) => used.indexOf(team))
 }
 
-/**
- * The teams with `seat` moved to team `team`. In Two-Headed Giant the seat changes places with the first member of
- * that team, so both teams keep two players; otherwise the seat moves and the teams are counted again from 0.
- */
+/** The teams with `seat` on team `team` and every other seat where it was: the lobby keeps exactly what is chosen. */
 export function withSeatTeam(teams: Teams, seat: number, team: number): Teams {
   const from = teams.seats[seat]
   if (from === undefined || from === team) return teams
   const seats = [...teams.seats]
-  if (teams.mode === 'two_headed_giant') {
-    const partner = seats.findIndex((each, other) => each === team && other !== seat)
-    if (partner < 0) return teams
-    seats[partner] = from
-    seats[seat] = team
-    return { ...teams, seats }
-  }
   seats[seat] = team
-  return { ...teams, seats: compact(seats) }
+  return { ...teams, seats }
 }
 
-/** The teams a seat may move to in the lobby: every team there is, and in Teams one new team while seats allow. */
+/**
+ * The teams of the lobby's columns, each one a seat may choose: two in Two-Headed Giant, and in Teams one for every two
+ * seats (at least two), and any team a seat already holds.
+ */
 export function teamChoices(teams: Teams): number[] {
-  const count = teamCount(teams)
-  const more = teams.mode === 'teams' && count < teams.seats.length ? 1 : 0
-  return Array.from({ length: count + more }, (_, team) => team)
+  const columns = teams.mode === 'two_headed_giant' ? 2 : Math.max(2, Math.floor(teams.seats.length / 2))
+  const count = Math.max(columns, teamCount(teams))
+  return Array.from({ length: count }, (_, team) => team)
 }
 
 /** The seats that won `result`: the winner, the members of the winning team, or none for a draw. */
@@ -159,4 +154,15 @@ export function teamName(
 ): string {
   const members = teamMembers(teams, team)
   return members.length === 0 ? teamLabel(team) : `${teamLabel(team)} (${memberNames(members.map(name))})`
+}
+
+/**
+ * Whether it is `seat`'s turn while `active` is the active player: the active player's own, and in Two-Headed Giant
+ * their teammate's as well, since a team shares its turn (CR 805.3). In Teams each player takes their own turn.
+ */
+export function sharesTurn(teams: Teams | null | undefined, seat: number, active: number): boolean {
+  if (seat === active) return true
+  if (teams?.mode !== 'two_headed_giant') return false
+  const team = teamOf(teams, seat)
+  return team !== null && team === teamOf(teams, active)
 }

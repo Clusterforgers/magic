@@ -6,7 +6,7 @@ import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { createImageQueue } from '@/features/cards/imageQueue'
 import type { ImageQueue, Ticket } from '@/features/cards/imageQueue'
-import { cardImageUrl } from '@/features/cards/images'
+import { cardImageUrl, identityOf } from '@/features/cards/images'
 import { cn } from '@/lib/utils'
 import type { DeckEntry } from './deckEntries'
 
@@ -64,7 +64,8 @@ function LazyPicture({
   visible: boolean
   queue: ImageQueue
 }) {
-  const src = cardImageUrl({ kind: 'card', identity: { oracle_id: card.oracleId } }, 0, 'small')
+  const printingId = card.printingId ?? null
+  const src = cardImageUrl({ kind: 'card', identity: identityOf(card.oracleId, printingId) }, 0, 'small')
   const settled = knownStatus(src) !== 'loading'
   const [granted, setGranted] = useState(false)
   const ticket = useRef<Ticket | null>(null)
@@ -90,9 +91,10 @@ function LazyPicture({
   }
   // Hover only: the option around the picture takes the click to choose the deck.
   return (
-    <HoverPicture oracleId={card.oracleId} name={card.name} className="shrink-0">
+    <HoverPicture oracleId={card.oracleId} printingId={printingId} name={card.name} className="shrink-0">
       <CardPicture
         oracleId={card.oracleId}
+        printingId={printingId}
         name={card.name}
         size="small"
         alt=""

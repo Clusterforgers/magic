@@ -116,8 +116,10 @@ fn using_the_guide_exiles_it_from_the_hand_and_adds_its_mana() {
     };
     let option = options(&game, ME).into_iter().find(|o| o.exile).unwrap();
     let events = activation(&game, ME, &option, &[]).unwrap();
+    // An activation without {T} is logged first, for the abilities that wait for one.
+    assert!(matches!(events[0], Event::AbilityActivated { source, .. } if source.id == id));
     assert_eq!(
-        events,
+        events[1..],
         [
             Event::ZoneChanged {
                 object: id,

@@ -22,6 +22,9 @@ pub const BOT_DELAY: Duration = Duration::from_millis(800);
 /// How many answers a bot gives in one turn before it only passes: a loop of free plays cannot hold a turn.
 pub const TURN_ANSWERS: u32 = 120;
 
+/// How long a bot thinks about one decision at most before it plays the safe answer ([`safe_answer`]).
+pub const THINK_DEADLINE: Duration = Duration::from_secs(5);
+
 /// How long a bot waits before it joins its seat again after its connection was dropped.
 const REJOIN_AFTER: Duration = Duration::from_secs(1);
 
@@ -80,11 +83,17 @@ impl<'de> Deserialize<'de> for BotSeat {
 }
 
 /// What the bot of one seat decides with: the [`SeatBrain`] of its level, and a pass once it has answered
-/// [`TURN_ANSWERS`] times in a turn.
+/// [`TURN_ANSWERS`] times in a turn. A brain that panics or thinks past its deadline is replaced by a fresh one and the
+/// decision gets the table's safe answer ([`safe_answer`]), so a bot always answers.
 pub struct BotBrain {
     /// The brain; out of its place only while it thinks on a blocking thread.
     brain: Option<Box<dyn SeatBrain>>,
     level: BotLevel,
+    seed: u64,
+    seat: PlayerId,
+    deadline: Duration,
+    /// How many brains were replaced, which varies the seed of the next.
+    restarts: u64,
     turn: Option<u32>,
     answers: u32,
 }
@@ -93,6 +102,8 @@ impl std::fmt::Debug for BotBrain {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("BotBrain")
             .field("level", &self.level)
+            .field("seat", &self.seat)
+            .field("restarts", &self.restarts)
             .field("turn", &self.turn)
             .field("answers", &self.answers)
             .finish_non_exhaustive()
@@ -106,9 +117,27 @@ impl BotBrain {
         BotBrain {
             brain: Some(brain::brain(level.brain(), seed, seat, true)),
             level,
+            seed,
+            seat,
+            deadline: THINK_DEADLINE,
+            restarts: 0,
             turn: None,
             answers: 0,
         }
+    }
+
+    /// The same bot deciding with `brain` until it fails, as a test plugs in a brain that hangs or panics.
+    #[must_use]
+    pub fn with_brain(mut self, brain: Box<dyn SeatBrain>) -> BotBrain {
+        self.brain = Some(brain);
+        self
+    }
+
+    /// The same bot with `deadline` for each decision instead of [`THINK_DEADLINE`].
+    #[must_use]
+    pub fn with_deadline(mut self, deadline: Duration) -> BotBrain {
+        self.deadline = deadline;
+        self
     }
 
     /// Whether the brain searches the table, so the bot fetches a copy of the engine before it answers.
@@ -133,28 +162,60 @@ impl BotBrain {
         }
         match self.brain.as_mut() {
             Some(brain) => brain.choose(decision, table),
-            None => fallback(decision).unwrap_or(Answer::Priority(PriorityAction::Pass)),
+            None => safe_answer(decision),
         }
     }
 
-    /// [`BotBrain::answer`] on a blocking thread, so a search never holds up the runtime; `None` if that thread failed.
-    async fn think(&mut self, decision: Decision, table: Option<Box<Engine>>) -> Option<Answer> {
-        let brain = self.brain.take()?;
+    /// [`BotBrain::answer`] on a blocking thread, so a search never holds up the runtime. A brain that panics or is not
+    /// done within the deadline is replaced and the decision gets [`safe_answer`].
+    pub async fn think(&mut self, decision: Decision, table: Option<Box<Engine>>) -> Answer {
+        let Some(brain) = self.brain.take() else {
+            self.restart();
+            return safe_answer(&decision);
+        };
         let mut alone = BotBrain {
             brain: Some(brain),
             level: self.level,
+            seed: self.seed,
+            seat: self.seat,
+            deadline: self.deadline,
+            restarts: self.restarts,
             turn: self.turn,
             answers: self.answers,
         };
-        let (alone, answer) = tokio::task::spawn_blocking(move || {
-            let answer = alone.answer(&decision, table.as_deref());
+        let asked = decision.clone();
+        let thinking = tokio::task::spawn_blocking(move || {
+            let answer = alone.answer(&asked, table.as_deref());
             (alone, answer)
-        })
-        .await
-        .ok()?;
-        self.brain = alone.brain;
-        self.answers = alone.answers;
-        Some(answer)
+        });
+        match tokio::time::timeout(self.deadline, thinking).await {
+            Ok(Ok((alone, answer))) => {
+                self.brain = alone.brain;
+                self.answers = alone.answers;
+                answer
+            }
+            Ok(Err(failed)) => {
+                tracing::warn!(seat = self.seat.index(), error = %failed, "bot brain failed; it plays the safe answer");
+                self.restart();
+                safe_answer(&decision)
+            }
+            Err(_) => {
+                tracing::warn!(
+                    seat = self.seat.index(),
+                    deadline_ms = self.deadline.as_millis(),
+                    "bot brain ran past its deadline; it plays the safe answer"
+                );
+                self.restart();
+                safe_answer(&decision)
+            }
+        }
+    }
+
+    /// A fresh brain of the level in place of one that failed (a thread past its deadline is left to finish alone).
+    fn restart(&mut self) {
+        self.restarts += 1;
+        let seed = self.seed ^ self.restarts.wrapping_mul(0x9E37_79B9_7F4A_7C15);
+        self.brain = Some(brain::brain(self.level.brain(), seed, self.seat, true));
     }
 }
 
@@ -163,53 +224,101 @@ pub fn fallback(decision: &Decision) -> Option<Answer> {
     crate::pace::fallback(decision)
 }
 
+/// What a bot plays when its brain fails: the table's fallback, else a pass.
+pub fn safe_answer(decision: &Decision) -> Answer {
+    fallback(decision).unwrap_or(Answer::Priority(PriorityAction::Pass))
+}
+
 /// A decision the bot holds and when it answers it.
 struct Waiting {
     id: DecisionId,
     decision: Decision,
     due: Instant,
-    /// Whether the answer sent for it was refused once already.
-    refused: bool,
+    /// What the bot sent for it so far.
+    tried: Tried,
+}
+
+/// How far a bot got answering a decision the table keeps refusing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Tried {
+    /// Nothing sent yet.
+    Nothing,
+    /// The brain's answer.
+    Brain,
+    /// The table's fallback after the brain's answer was refused.
+    Fallback,
+    /// A concession after the fallback was refused too: the table's clock moves the seat on from here.
+    Conceded,
 }
 
 /// Plays the seat of `bot` in `handle` at its level until the game ends or leaves the registry (`removed` changes or
 /// closes): joins the seat (again whenever its connection is dropped), says it is ready (again whenever the lobby shows it is
-/// not), and answers each decision after
-/// `delay` with [`BotBrain`]. A refused answer is followed by the table's fallback answer, and when that is refused too, or there is
-/// none, the bot concedes, so a bot never stalls a game, and never keeps alive a game the registry let go.
+/// not), and answers each decision after `delay` with [`BotBrain`]. A refused answer (illegal, or one the engine fails
+/// on) is followed by the table's fallback answer, and when that is refused too, or there is none, the bot concedes, so
+/// a bot never stalls a game, and never keeps alive a game the registry let go. A bot whose task dies starts again
+/// with a fresh brain and joins its seat anew.
 pub fn spawn_bot_seat(
     handle: GameHandle,
     bot: BotSeat,
     seed: u64,
     delay: Duration,
+    removed: watch::Receiver<Removal>,
+) -> JoinHandle<()> {
+    let brain = BotBrain::new(seed, bot.seat, bot.level);
+    spawn_bot_seat_with(handle, bot, seed, brain, delay, removed)
+}
+
+/// [`spawn_bot_seat`] whose first brain is `brain`; a brain made after a restart is the level's own.
+pub fn spawn_bot_seat_with(
+    handle: GameHandle,
+    bot: BotSeat,
+    seed: u64,
+    brain: BotBrain,
+    delay: Duration,
     mut removed: watch::Receiver<Removal>,
 ) -> JoinHandle<()> {
     tokio::spawn(async move {
         tokio::select! {
-            () = run_seat(handle, bot, seed, delay) => {}
+            () = supervise(handle, bot, seed, brain, delay) => {}
             // A change or a dropped sender both mean the game left the registry.
             _ = removed.changed() => {}
         }
     })
 }
 
+/// Runs [`run_seat`] and starts it again, with a fresh brain, whenever its task dies.
+async fn supervise(handle: GameHandle, bot: BotSeat, seed: u64, brain: BotBrain, delay: Duration) {
+    let mut brain = Some(brain);
+    let mut restarts: u64 = 0;
+    loop {
+        let first = brain
+            .take()
+            .unwrap_or_else(|| BotBrain::new(seed ^ restarts, bot.seat, bot.level));
+        let run = tokio::spawn(run_seat(handle.clone(), bot.seat, first, delay));
+        match run.await {
+            Ok(()) => return,
+            Err(died) => {
+                restarts += 1;
+                tracing::warn!(seat = bot.seat.index(), error = %died, restarts, "bot seat died; it joins again");
+                sleep(REJOIN_AFTER).await;
+            }
+        }
+    }
+}
+
 /// The body of [`spawn_bot_seat`]: joins and plays until the game ends or closes.
-async fn run_seat(handle: GameHandle, bot: BotSeat, seed: u64, delay: Duration) {
-    let seat = bot.seat;
-    {
-        let mut brain = BotBrain::new(seed, seat, bot.level);
-        loop {
-            let Ok(mut inbox) = handle.join(seat).await else {
-                return;
-            };
-            // In a lobby this readies the seat; in a running game the table refuses it, which changes nothing.
-            if handle.send(seat, ClientMessage::Ready).await.is_err() {
-                return;
-            }
-            match play(&handle, seat, &mut brain, &mut inbox, delay).await {
-                Ended::Over => return,
-                Ended::Dropped => sleep(REJOIN_AFTER).await,
-            }
+async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, delay: Duration) {
+    loop {
+        let Ok(mut inbox) = handle.join(seat).await else {
+            return;
+        };
+        // In a lobby this readies the seat; in a running game the table refuses it, which changes nothing.
+        if handle.send(seat, ClientMessage::Ready).await.is_err() {
+            return;
+        }
+        match play(&handle, seat, &mut brain, &mut inbox, delay).await {
+            Ended::Over => return,
+            Ended::Dropped => sleep(REJOIN_AFTER).await,
         }
     }
 }
@@ -257,13 +366,11 @@ async fn play(
                         } else {
                             None
                         };
-                        let Some(answer) = brain.think(held.decision.clone(), table).await else {
-                            return Ended::Over;
-                        };
+                        let answer = brain.think(held.decision.clone(), table).await;
                         if send_answer(handle, seat, held.id, answer).await.is_err() {
                             return Ended::Over;
                         }
-                        waiting = Some(Waiting { due: far_future(), ..held });
+                        waiting = Some(Waiting { due: far_future(), tried: Tried::Brain, ..held });
                         continue;
                     }
                 }
@@ -279,7 +386,7 @@ async fn play(
                     id,
                     decision,
                     due: Instant::now() + delay,
-                    refused: false,
+                    tried: Tried::Nothing,
                 });
             }
             ServerMessage::Events(batch) => brain.turn_is(batch.table.turn.number),
@@ -299,29 +406,37 @@ async fn play(
                     return Ended::Over;
                 }
             }
+            // An answer refused as illegal, or one the engine failed on: the next safer answer.
             ServerMessage::Error {
-                code: ErrorCode::IllegalAnswer,
+                code: ErrorCode::IllegalAnswer | ErrorCode::Internal,
                 ..
             } => {
                 let Some(held) = waiting.take() else { continue };
-                let fallback = fallback(&held.decision).filter(|_| !held.refused);
-                let Some(answer) = fallback else {
-                    let _ = handle.send(seat, ClientMessage::Concede).await;
-                    return Ended::Over;
-                };
-                if send_answer(handle, seat, held.id, answer).await.is_err() {
-                    return Ended::Over;
+                match next_try(handle, seat, &held).await {
+                    Some(tried) => waiting = Some(Waiting { tried, ..held }),
+                    None => return Ended::Over,
                 }
-                waiting = Some(Waiting {
-                    refused: true,
-                    due: far_future(),
-                    ..held
-                });
             }
             ServerMessage::GameOver { .. } => return Ended::Over,
             _ => {}
         }
     }
+}
+
+/// Sends what follows a refused answer to `held`: the table's fallback after the brain's answer, else a concession.
+/// `None` when the game is gone.
+async fn next_try(handle: &GameHandle, seat: PlayerId, held: &Waiting) -> Option<Tried> {
+    let fallback = fallback(&held.decision).filter(|_| held.tried == Tried::Brain);
+    if let Some(answer) = fallback {
+        send_answer(handle, seat, held.id, answer).await.ok()?;
+        return Some(Tried::Fallback);
+    }
+    if held.tried == Tried::Conceded {
+        return Some(Tried::Conceded);
+    }
+    tracing::warn!(seat = seat.index(), "bot answers were refused; it concedes");
+    handle.send(seat, ClientMessage::Concede).await.ok()?;
+    Some(Tried::Conceded)
 }
 
 /// Sends `answer` to decision `id` for `seat`.

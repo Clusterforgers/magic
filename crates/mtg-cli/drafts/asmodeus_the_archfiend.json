@@ -1,0 +1,40 @@
+{
+  "oracle_id": "1e4032f6-9741-4845-9325-781c9e489172",
+  "name": "Asmodeus the Archfiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Asmodeus the Archfiend",
+      "oracle_fingerprint": "ac06d918cd10f0879985e6abe8c8ac5d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "ExileTop": { "as": "contract", "sealed": true } }] }
+          }
+        },
+        { "Activated": { "cost": "{B}{B}{B}", "effects": [{ "Draw": { "count": 7 } }] } },
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Let": {
+                  "as": "returned",
+                  "amount": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              },
+              { "LoseLife": { "amount": { "Bound": "returned" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

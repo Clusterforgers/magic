@@ -77,6 +77,11 @@ impl Database {
         DeckRepo::new(self.pool.clone())
     }
 
+    /// The art accounts prefer for cards.
+    pub fn preferred_printings(&self) -> crate::PreferredPrintingRepo {
+        crate::PreferredPrintingRepo::new(self.pool.clone())
+    }
+
     /// Precons accounts starred.
     pub fn favourite_precons(&self) -> FavouritePreconRepo {
         FavouritePreconRepo::new(self.pool.clone())
