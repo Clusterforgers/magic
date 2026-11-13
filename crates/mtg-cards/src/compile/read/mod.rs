@@ -238,6 +238,7 @@ pub(crate) mod r4703_reads;
 mod r4707_costs;
 mod r4707_printed;
 mod r4700_writers;
+mod r4706_counters;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;

@@ -90,6 +90,7 @@ mod r4711_cards;
 mod r4703_cards;
 mod r4707_cards;
 mod r4700_cards;
+mod r4706_cards;
 mod r6e;
 mod read_sheet;
 mod read_tier;

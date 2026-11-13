@@ -40,8 +40,9 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 125] = [
+const TEMPLATES: [Template; 126] = [
     super::keyword_actions::keyword_action,
+    super::r4706_counters::r4706_same_counters,
     super::r404_look::r404_look_face_down,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -170,6 +171,7 @@ const TEMPLATES: [Template; 125] = [
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
 pub(super) const IMPERATIVES: [Template; 19] = [
+    super::r4706_counters::r4706_same_counters,
     super::actions::goad,
     super::actions::suspect,
     super::manifest::manifest,
