@@ -216,7 +216,7 @@ fn r5523_reads_back_whole(#[case] name: &str) {
     r#"{ "Not": { "Type": "Creature" } }"#,
     r#"{ "Type": "Creature" }"#
 )]
-#[case::prairie_dog_anyone_puts("Prairie Dog", r#", "by": "You""#, "")]
+#[case::prairie_dog_anyone_puts("Prairie Dog", r#""by": "You""#, r#""by": "Opponents""#)]
 #[case::prairie_dog_doubles("Prairie Dog", r#""Add": 1"#, r#""Multiply": 2"#)]
 fn r5523_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let file = r5523_file(name);

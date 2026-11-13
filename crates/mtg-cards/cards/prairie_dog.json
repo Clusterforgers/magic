@@ -27,7 +27,26 @@
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
-        {"Activated":{"cost":"{4}{W}","effects":[{"Shield":{"when":{"CountersPut":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1","by":"You"}},"by":{"Add":1},"duration":"UntilEndOfTurn"}}]}}
+        {
+          "Activated": {
+            "cost": "{4}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "CountersPut": {
+                      "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "counter": "+1/+1",
+                      "by": "You"
+                    }
+                  },
+                  "by": { "Add": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]

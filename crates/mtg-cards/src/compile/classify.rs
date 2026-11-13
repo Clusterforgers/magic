@@ -53,6 +53,7 @@ const SPELL_RULES: [&str; 7] = [
     "As an additional cost",
     "Cast this spell only ",
     "Spend only ",
+    "X can't be greater than ",
     "If ~ would be put into a graveyard from anywhere, ",
 ];
 

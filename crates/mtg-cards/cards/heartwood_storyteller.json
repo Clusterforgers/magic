@@ -5,43 +5,21 @@
   "faces": [
     {
       "name": "Heartwood Storyteller",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "f68fb103d12979963b4729d5469a9cf8",
       "abilities": [
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {
-                "what": [
-                  {
-                    "Not": {
-                      "Type": "Creature"
-                    }
-                  }
-                ]
-              }
-            },
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
             "effects": [
               {
                 "RepeatEach": {
-                  "over": {
-                    "OpponentsOf": "TriggeringPlayer"
-                  },
+                  "over": { "OpponentsOf": "TriggeringPlayer" },
                   "as": "drawer",
                   "effects": [
                     {
                       "May": {
-                        "who": {
-                          "Bound": "drawer"
-                        },
-                        "effects": [
-                          {
-                            "Draw": {
-                              "who": {
-                                "Bound": "drawer"
-                              }
-                            }
-                          }
-                        ]
+                        "who": { "Bound": "drawer" },
+                        "effects": [{ "Draw": { "who": { "Bound": "drawer" } } }]
                       }
                     }
                   ]

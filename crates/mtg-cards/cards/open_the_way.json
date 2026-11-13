@@ -5,17 +5,11 @@
   "faces": [
     {
       "name": "Open the Way",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "f7a824a7b5e0ec90298438a108228cca",
       "abilities": [
         {
           "AdditionalCost": {
-            "cost": [
-              {
-                "XAtMost": {
-                  "Players": "EachPlayer"
-                }
-              }
-            ],
+            "cost": [{ "XAtMost": { "Players": "EachPlayer" } }],
             "required": true
           }
         },
@@ -24,11 +18,7 @@
             "effects": [
               {
                 "RevealUntil": {
-                  "filter": [
-                    {
-                      "Type": "Land"
-                    }
-                  ],
+                  "filter": [{ "Type": "Land" }],
                   "count": "X",
                   "as": "found",
                   "revealed_as": "revealed"
@@ -36,27 +26,14 @@
               },
               {
                 "Move": {
-                  "what": {
-                    "Bound": "found"
-                  },
-                  "to": {
-                    "Battlefield": {
-                      "tapped": true
-                    }
-                  }
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
                 }
               },
               {
                 "Move": {
-                  "what": {
-                    "Bound": "revealed"
-                  },
-                  "to": {
-                    "Library": {
-                      "place": "Bottom",
-                      "order": "Random"
-                    }
-                  }
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               }
             ]
