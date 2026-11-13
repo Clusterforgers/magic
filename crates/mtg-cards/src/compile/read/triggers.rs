@@ -991,12 +991,8 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         });
     } else if r.words("is turned face up") {
         return Some(TriggerPattern::TurnedFaceUp { what: what.clone() });
-    } else if r.word("fights") {
-        return Some(TriggerPattern::Did {
-            action: crate::did::Action::Fought,
-            who: Ref::EachPlayer,
-            what: what.clone(),
-        });
+    } else if let Some(fought) = super::r5513_events::r5513_fights(r, what) {
+        return Some(fought);
     } else if r.word("mutates") {
         return Some(TriggerPattern::Mutates { what: what.clone() });
     } else if r.word("adapts") {

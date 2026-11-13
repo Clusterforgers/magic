@@ -1,8 +1,10 @@
-//! Events and conditions of the r55-13 pack: "they were attacked this turn by an Assassin you controlled", "it
+//! Events and conditions of the r55-13 pack: "whenever a creature you control fights", "they were attacked this turn by an Assassin you controlled", "it
 //! exploited that creature".
 
 use super::tokens::Reader;
+use crate::did::Action;
 use crate::refs::{Pred, Ref, Selector};
+use crate::trigger::TriggerPattern;
 use crate::value::Condition;
 use mtg_core::card::{CardType, Subtype};
 
@@ -45,6 +47,15 @@ fn attacker(article: &str, noun: Option<String>, yours: bool) -> Option<Selector
         by.push(Pred::ControlledBy(Ref::You));
     }
     Some(Selector(by))
+}
+
+/// After the subject of a trigger: "fights" (CR 701.14), the creatures the subject names that fight.
+pub(super) fn r5513_fights(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
+    r.word("fights").then(|| TriggerPattern::Did {
+        action: Action::Fought,
+        who: Ref::EachPlayer,
+        what: what.clone(),
+    })
 }
 
 /// Whether the word takes "an".
