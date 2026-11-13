@@ -30,7 +30,7 @@ use super::where_x;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Order, Place, PlanarAct, Produce};
 use crate::mana::ManaCostX;
-use crate::modify::{Duration, Modification};
+use crate::modify::{Duration, GameRule, Modification, Prohibited};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::spend::ManaLasts;
 use crate::trigger::{Step, TriggerPattern};
@@ -40,8 +40,9 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 123] = [
+const TEMPLATES: [Template; 126] = [
     super::keyword_actions::keyword_action,
+    super::r4706_counters::r4706_same_counters,
     super::r404_look::r404_look_face_down,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -72,6 +73,7 @@ const TEMPLATES: [Template; 123] = [
     super::w9b_clash::w9b_clash,
     super::r376_seats::r376_roll_treasures,
     super::chance::roll,
+    super::chance::r4703_each_result,
     super::vote::named,
     super::dk27_numbers::dk27_numbers,
     super::r376_secret::r376_secret,
@@ -130,6 +132,7 @@ const TEMPLATES: [Template; 123] = [
     super::kicked_copies::kicked_copies,
     copies::token_copy,
     copies::populate,
+    super::r4703_reads::r4703_copy_all,
     copy_spells::copy,
     super::w2g_next_cast::w2g_next_cast,
     super::group_copies::group_becomes_copy,
@@ -167,7 +170,8 @@ const TEMPLATES: [Template; 123] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 18] = [
+pub(super) const IMPERATIVES: [Template; 20] = [
+    super::r4706_counters::r4706_same_counters,
     super::actions::goad,
     super::actions::suspect,
     super::manifest::manifest,
@@ -177,6 +181,7 @@ pub(super) const IMPERATIVES: [Template; 18] = [
     return_card,
     return_chosen,
     copies::token_copy,
+    super::r4703_reads::r4703_copy_all,
     copy_spells::copy,
     create::tokens,
     counters::put,
@@ -501,6 +506,7 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count,
             bind: BACK.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(BACK.to_owned()),
@@ -542,6 +548,9 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
         "open" => super::un33_attractions::un33_open(r, who)?,
+        "roll" if r.words("the planar die") => Effect::Planechase {
+            act: PlanarAct::RollPlanarDie,
+        },
         "roll" if r.word_at(0) == Some("to") => super::un33_attractions::un33_roll(r, who)?,
         "claim" if r.words("the prize") => Effect::ClaimPrize { who },
         "unlock" => super::dk1c5_rooms::dk1c5_unlock(r, who)?,
@@ -800,6 +809,7 @@ fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: EXILED_CARD.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Exile {
             what: Ref::Bound(EXILED_CARD.to_owned()),
@@ -872,10 +882,7 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             r.need("the game")?;
             Effect::WinGame { who }
         }
-        "become" | "becomes" => {
-            r.need("the monarch")?;
-            Effect::BecomeMonarch { who }
-        }
+        word @ ("become" | "becomes" | "can't") => r4710_monarch(r, word, who)?,
         "venture" | "ventures" => w11d_venture(r, who)?,
         "open" | "opens" => super::un33_attractions::un33_open(r, who)?,
         "claim" | "claims" if r.words("the prize") => Effect::ClaimPrize { who },
@@ -918,6 +925,22 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
 }
 
 /// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
+/// "become the monarch", or "can't become the monarch this turn", after the player and the verb `word`.
+fn r4710_monarch(r: &mut Reader<'_>, word: &str, who: Ref) -> Option<Effect> {
+    if word != "can't" {
+        r.need("the monarch")?;
+        return Some(Effect::BecomeMonarch { who });
+    }
+    r.need("become the monarch this turn")?;
+    Some(Effect::Rule {
+        rule: GameRule::Cant {
+            who,
+            action: Prohibited::BecomeMonarch,
+        },
+        duration: Duration::UntilEndOfTurn,
+    })
+}
+
 fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     let (count, form) = if r.word("a") || r.word("an") {
         (Amount::one(), Form::Subject)
@@ -1050,6 +1073,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: LATER.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::DelayedTrigger {
             until: None,
@@ -1106,6 +1130,7 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::default(),
             bind: RETURNED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),
@@ -1138,6 +1163,7 @@ fn return_any_number(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             count: Bounds::up_to(None),
             bind: RETURNED.to_owned(),
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(RETURNED.to_owned()),

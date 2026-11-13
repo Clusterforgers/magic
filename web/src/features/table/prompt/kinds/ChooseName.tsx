@@ -14,9 +14,22 @@ import { useDefaultFocus } from '../usePromptKeys'
 /** How long typing pauses before the catalog is searched. */
 const SEARCH_DELAY_MS = 250
 
-/** The hits that may be named: a land is out when the card says "nonland". */
-export function nameable(hits: CardHit[], nonland: boolean): CardHit[] {
-  return nonland ? hits.filter((hit) => !/\bLand\b/.test(hit.type_line)) : hits
+/** What the card lets be named: no land ("nonland"), no creature ("noncreature"), only a land that is not basic. */
+export interface NameKinds {
+  nonland?: boolean
+  noncreature?: boolean
+  nonbasic_land?: boolean
+}
+
+/** The hits that may be named under the kinds the card says. */
+export function nameable(hits: CardHit[], kinds: NameKinds): CardHit[] {
+  return hits.filter((hit) => {
+    const land = /\bLand\b/.test(hit.type_line)
+    if (kinds.nonland === true && land) return false
+    if (kinds.noncreature === true && /\bCreature\b/.test(hit.type_line)) return false
+    if (kinds.nonbasic_land === true && (!land || /\bBasic\b/.test(hit.type_line))) return false
+    return true
+  })
 }
 
 /**
@@ -35,6 +48,8 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
   useDefaultFocus(field)
   const fieldId = useId()
   const nonland = options.nonland === true
+  const noncreature = options.noncreature === true
+  const nonbasicLand = options.nonbasic_land === true
 
   useEffect(() => {
     const text = typed.trim()
@@ -47,7 +62,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
       api.search({ text, perPage: 24 }, controller.signal).then(
         (page) => {
           setFailed(false)
-          setHits(nameable(page.cards, nonland).slice(0, 8))
+          setHits(nameable(page.cards, { nonland, noncreature, nonbasic_land: nonbasicLand }).slice(0, 8))
         },
         () => {
           if (!controller.signal.aborted) setFailed(true)
@@ -58,7 +73,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
       clearTimeout(timer)
       controller.abort()
     }
-  }, [api, typed, nonland])
+  }, [api, typed, nonland, noncreature, nonbasicLand])
 
   const name = (card: string): void => void answer({ ChooseName: card })
   const submit = (event: FormEvent): void => {

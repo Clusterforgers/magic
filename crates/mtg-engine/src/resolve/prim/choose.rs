@@ -24,6 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         bind,
         rest_as,
+        differ,
     } = effect
     else {
         return Err(wrong_effect("Choose"));
@@ -71,7 +72,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     } else if players.is_empty() {
         let text = wording::choose_objects(from, min, most);
-        let selections = selections(&choosers, &own, (min, most), &text);
+        let mut selections = selections(&choosers, &own, (min, most), &text);
+        if let Some(rule) = differ {
+            for selection in &mut selections {
+                selection.groups = groups(cx, rule, &selection.from, &objects);
+            }
+        }
         match pick_selections(cx, &selections)? {
             Picked::Ask(decision) => return Ok(Run::Ask(decision)),
             Picked::Done(taken) => taken
@@ -109,6 +115,34 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
+/// The group of each object by what `rule` keeps apart: equal keys share a group, numbered in order of first sight.
+fn groups(
+    cx: &Cx<'_>,
+    rule: &mtg_cards::refs::TargetSet,
+    from: &[ObjectId],
+    objects: &[crate::object::ObjectRef],
+) -> Vec<u32> {
+    let mut keys: Vec<u64> = Vec::new();
+    from.iter()
+        .map(|id| {
+            let key = objects
+                .iter()
+                .find(|object| object.id == *id)
+                .map_or(u64::MAX, |object| {
+                    crate::choose::together_key(cx.state(), rule, &Target::Object(*object))
+                });
+            let at = keys
+                .iter()
+                .position(|seen| *seen == key)
+                .unwrap_or_else(|| {
+                    keys.push(key);
+                    keys.len() - 1
+                });
+            u32::try_from(at).unwrap_or(u32::MAX)
+        })
+        .collect()
+}
+
 /// The choice of objects each chooser makes among their own candidates, as many as they have when they have fewer.
 fn selections(
     choosers: &[PlayerId],
@@ -133,6 +167,7 @@ fn selections(
                 min: low,
                 from: ids,
                 text: text.to_owned(),
+                groups: Vec::new(),
             }
         })
         .collect()
@@ -177,7 +212,7 @@ fn at_most(cx: &Cx<'_>, amount: &Amount, total: usize) -> Result<usize, ResolveE
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a choice binds what the player chose and, when asked, the rest: players are chosen from a choice of options and objects from a choice of cards, both in the words of the card; the player asked is the one named, anyone with nothing to choose between is not asked, bounds are kept and clamped to what there is, and a choice that mixes players with objects or takes more than one player is refused.
+    //! Goal: a choice binds what the player chose and, when asked, the rest: players are chosen from a choice of options and objects from a choice of cards, both in the words of the card; the player asked is the one named, anyone with nothing to choose between is not asked, bounds are kept and clamped to what there is, a choice that mixes players with objects or takes more than one player is refused, and objects chosen apart ("with different powers") take no two of one power.
     use rstest::rstest;
 
     use super::*;
@@ -239,6 +274,59 @@ mod tests {
         list.iter()
             .map(|seat| Target::Player(PlayerId::from_index(*seat)))
             .collect()
+    }
+
+    /// Seat 0's battlefield holds the Source (power 1) and creatures of power 2, 2 and 3; the other seats hold one
+    /// creature of power 3 each.
+    fn r4709_game(seats: usize) -> GameState {
+        let mut battlefield = vec![vec![
+            creature("Source", 1, 1),
+            creature("Twin", 2, 2),
+            creature("Twin", 2, 2),
+            creature("Big", 3, 3),
+        ]];
+        battlefield.extend((1..seats).map(|_| vec![creature("Foe", 3, 3)]));
+        state(vec![Vec::new(); seats], battlefield)
+    }
+
+    const APART: &str = r#"{"Choose":{"from":{"Each":[{"Type":"Creature"}]},"count":{"min":0,"max":null},"as":"chosen","differ":"DifferentPowers"}}"#;
+
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::three_seats(3)]
+    #[case::four_seats(4)]
+    fn creatures_chosen_apart_take_one_of_each_power(#[case] seats: usize) {
+        let game = r4709_game(seats);
+        let Run::Ask(decision) = run_with(&game, vec![], &effect(APART)).unwrap() else {
+            panic!("the controller is asked which creatures");
+        };
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("a choice of cards was expected");
+        };
+        // Powers 1, 2 and 3: at most three, the twins share a group, every power-3 creature shares one.
+        assert_eq!(options.max, 3);
+        assert_eq!(options.groups.len(), options.from.len());
+        let group =
+            |id: ObjectId| options.groups[options.from.iter().position(|o| *o == id).unwrap()];
+        let field = game.zone(Zone::Battlefield);
+        assert_eq!(group(field[1]), group(field[2]));
+        assert_ne!(group(field[1]), group(field[3]));
+        for foe in &field[4..] {
+            assert_eq!(group(*foe), group(field[3]));
+        }
+        // One twin and the big one are bound.
+        let journal = vec![(ME, Choice::Cards(vec![field[1], field[3]]))];
+        let done = bound(run_with(&game, journal, &effect(APART)).unwrap());
+        let ids: Vec<ObjectId> = done[0]
+            .1
+            .iter()
+            .filter_map(|t| t.object())
+            .map(|o| o.id)
+            .collect();
+        assert_eq!(ids, [field[1], field[3]]);
+        // The same pair of twins as an answer is no answer.
+        let journal = vec![(ME, Choice::Cards(vec![field[1], field[2]]))];
+        assert!(run_with(&game, journal, &effect(APART)).is_err());
     }
 
     const DEFENDER: &str = r#"{"Choose":{"from":"Opponents","as":"defender"}}"#;

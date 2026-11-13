@@ -1,6 +1,10 @@
 //! Seeded tournaments between bot levels on the duel decks: `cargo run --release -p mtg-testkit --example
 //! bot_tournament -- <strong> <weak> [games] [mode] [first seed] [threads]`, a level being `easy`, `normal`, `hard` or
-//! `veryhard`, a mode `1v1`, `2v2`, `3ffa` or `4ffa`. Games are untimed, so each result replays with its seed.
+//! `veryhard` (`old-<level>` for main's frozen brains), a mode `1v1`, `2v2`, `3ffa` or `4ffa`. Games are untimed, so
+//! each result replays with its seed (`TIMED=1` times them). `DECKS` picks the decks: `2` (default, the creature
+//! mirrors), `3` (with Izzet), `interaction` (every pairing with an interaction deck) or `all`. Each deal is played once
+//! with the strong side in each seat. `SPRT=elo0,elo1` stops once a sequential probability ratio test (5% errors either
+//! way) accepts either hypothesis; the summary gives the Elo difference with a 95% interval and the longest answer.
 #![allow(
     clippy::unwrap_used,
     clippy::expect_used,
@@ -21,6 +25,7 @@ use mtg_engine::{Decision, Engine, GameResult};
 use mtg_testkit::brain::{HeuristicBot, Level, SeatBrain, Settings, brain};
 use mtg_testkit::brain_decks::{Duel, duel_setup};
 use mtg_testkit::harness::{PlayOptions, play_brains};
+use mtg_testkit::match_stats::{Sprt, elo, elo_interval};
 
 #[allow(dead_code, clippy::all, clippy::pedantic)]
 #[path = "legacy_brain/mod.rs"]
@@ -185,9 +190,18 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
                 deep.turns = number("EXP_TURNS", deep.turns);
                 deep.scale = number("EXP_SCALE", deep.scale);
                 deep.explore = number("EXP_EXPLORE", deep.explore);
+                deep.trust = number("EXP_TRUST", deep.trust);
                 settings.deep = Some(deep);
             }
             settings.votes = number("EXP_VOTES", base.votes);
+            if std::env::var("EXP_LEVEL").is_ok_and(|v| v == "veryhard")
+                && std::env::var("EXP_DEEP").is_err()
+            {
+                settings.deep = Settings::VERY_HARD.untimed().deep;
+                if let Some(deep) = &mut settings.deep {
+                    deep.trust = number("EXP_TRUST", deep.trust);
+                }
+            }
             settings.fair = flag("EXP_FAIR", base.fair);
             settings.careful = flag("EXP_CAREFUL", base.careful);
             settings.lookahead = flag("EXP_LOOKAHEAD", base.lookahead);
@@ -197,8 +211,78 @@ fn make(who: Who, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> 
             settings.weights.card = number("EXP_CARD", base.weights.card);
             settings.weights.life = number("EXP_LIFE", base.weights.life);
             settings.weights.board = number("EXP_BOARD", base.weights.board);
-            Box::new(HeuristicBot::new(seed, seat, settings))
+            if let Ok(list) = std::env::var("EXP_W") {
+                let w = &mut settings.weights;
+                for pair in list.split(',') {
+                    let (name, value) = pair.split_once(':').unwrap();
+                    let value: f64 = value.parse().unwrap();
+                    match name {
+                        "defend" => w.defend = value,
+                        "press" => w.press = value,
+                        "card" => w.card = value,
+                        "life" => w.life = value,
+                        "board" => w.board = value,
+                        "early_source" => w.early_source = value,
+                        "late_source" => w.late_source = value,
+                        "held" => w.held = value,
+                        "strongest" => w.strongest = value,
+                        "lethal_against" => w.lethal_against = value,
+                        "lethal_for" => w.lethal_for = value,
+                        "power" => w.power = value,
+                        "evasion" => w.evasion = value,
+                        other => panic!("unknown weight {other}"),
+                    }
+                }
+            }
+            let mut knobs = mtg_testkit::brain::knobs::Knobs::TUNED;
+            if let Ok(list) = std::env::var("EXP_K") {
+                for pair in list.split(',') {
+                    let (name, value) = pair.split_once(':').unwrap();
+                    let value: f64 = value.parse().unwrap();
+                    let k = &mut knobs;
+                    match name {
+                        "margin" => k.margin = value,
+                        "ramp" => k.ramp = value,
+                        "ramp_until" => k.ramp_until = value,
+                        "instant_wait" => k.instant_wait = value,
+                        "flash_wait" => k.flash_wait = value,
+                        "tap_out" => k.tap_out = value,
+                        "reactive" => k.reactive = value,
+                        "hold_base" => k.hold_base = value,
+                        "hold_per_card" => k.hold_per_card = value,
+                        "hold_decay" => k.hold_decay = value,
+                        "wipe" => k.wipe = value,
+                        "counter" => k.counter = value,
+                        "removal" => k.removal = value,
+                        "fog" => k.fog = value,
+                        "burn" => k.burn = value,
+                        "trick" => k.trick = value,
+                        "trade_up" => k.trade_up = value,
+                        "wall" => k.wall = value,
+                        "lethal_hit" => k.lethal_hit = value,
+                        "lands_wanted" => k.lands_wanted = value,
+                        other => panic!("unknown knob {other}"),
+                    }
+                }
+            }
+            Box::new(Knobbed {
+                inner: HeuristicBot::new(seed, seat, settings),
+                knobs,
+            })
         }
+    }
+}
+
+/// A brain that plays with its own policy constants.
+struct Knobbed {
+    inner: HeuristicBot,
+    knobs: mtg_testkit::brain::knobs::Knobs,
+}
+
+impl SeatBrain for Knobbed {
+    fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
+        let inner = &mut self.inner;
+        mtg_testkit::brain::knobs::with_knobs(self.knobs, || inner.choose(decision, table))
     }
 }
 
@@ -221,29 +305,69 @@ fn main() {
     let next = AtomicU64::new(0);
     let wins = AtomicU64::new(0);
     let draws = AtomicU64::new(0);
+    let played = AtomicU64::new(0);
+    let stop = std::sync::atomic::AtomicBool::new(false);
+    let sprt: Option<Sprt> = std::env::var("SPRT").ok().map(|bounds| {
+        let (low, high) = bounds.split_once(',').unwrap();
+        Sprt::new(low.parse().unwrap(), high.parse().unwrap(), 0.05, 0.05)
+    });
+    let pairings: Vec<(Duel, Duel)> = match std::env::var("DECKS").as_deref() {
+        Ok("3") => [Duel::Gruul, Duel::Orzhov, Duel::Izzet]
+            .iter()
+            .map(|d| (*d, *d))
+            .collect(),
+        Ok("interaction") => {
+            let mut pairs = Vec::new();
+            for a in Duel::INTERACTION {
+                for b in Duel::ALL {
+                    if !pairs.contains(&(b, a)) {
+                        pairs.push((a, b));
+                    }
+                }
+            }
+            pairs
+        }
+        Ok("all") => {
+            let mut pairs = Vec::new();
+            for a in Duel::ALL {
+                for b in Duel::ALL {
+                    if !pairs.contains(&(b, a)) {
+                        pairs.push((a, b));
+                    }
+                }
+            }
+            pairs
+        }
+        _ => [Duel::Gruul, Duel::Orzhov]
+            .iter()
+            .map(|d| (*d, *d))
+            .collect(),
+    };
     let stats = Arc::new(Mutex::new((Duration::ZERO, Duration::ZERO, 0u64)));
     let started = Instant::now();
     std::thread::scope(|scope| {
         for _ in 0..threads {
             scope.spawn(|| {
                 loop {
+                    if stop.load(Ordering::SeqCst) {
+                        break;
+                    }
                     let game = next.fetch_add(1, Ordering::SeqCst);
                     if game >= games {
                         break;
                     }
                     // Each deal is played once with the strong side in each place, so both sides get the same luck.
                     let seed = first + game / seats as u64;
-                    let rotation: &[Duel] = if std::env::var("DECKS").is_ok_and(|d| d == "3") {
-                        &[Duel::Gruul, Duel::Orzhov, Duel::Izzet]
-                    } else {
-                        &[Duel::Gruul, Duel::Orzhov]
-                    };
-                    let duel = rotation[usize::try_from(seed / 2).unwrap() % rotation.len()];
+                    let pairing = pairings[usize::try_from(seed).unwrap() % pairings.len()];
+                    let decks: Vec<Duel> = (0..seats)
+                        .map(|seat| if seat % 2 == 0 { pairing.0 } else { pairing.1 })
+                        .collect();
+                    let duel = pairing;
                     let house = HouseRules {
                         teams: teams.clone(),
                         ..HouseRules::default()
                     };
-                    let setup = duel_setup(&vec![duel; seats], seed, house).unwrap();
+                    let setup = duel_setup(&decks, seed, house).unwrap();
                     // The strong side moves round the table: a seat in free-for-all, a team in 2v2.
                     let at = usize::try_from(game).unwrap() % seats;
                     let strong_seat = |seat: usize| match &teams {
@@ -310,19 +434,37 @@ fn main() {
                         }
                         _ => {}
                     }
-                    println!("seed {seed} {duel:?}: {verdict}");
+                    let done = played.fetch_add(1, Ordering::SeqCst) + 1;
+                    println!("seed {seed} {duel:?} seat {at}: {verdict}");
+                    if let Some(sprt) = &sprt {
+                        let w = wins.load(Ordering::SeqCst);
+                        let d = draws.load(Ordering::SeqCst);
+                        if let Some(accepted) = sprt.decide(w, d, done - w - d) {
+                            println!(
+                                "SPRT accepts {} after {done} games",
+                                if accepted { "H1" } else { "H0" }
+                            );
+                            stop.store(true, Ordering::SeqCst);
+                        }
+                    }
                 }
             });
         }
     });
     let wins = wins.load(Ordering::SeqCst);
     let draws = draws.load(Ordering::SeqCst);
+    let games = played.load(Ordering::SeqCst);
+    let losses = games - wins - draws;
     let (total, max, count) = *stats.lock().unwrap();
     let mean = total.as_secs_f64() * 1000.0 / count.max(1) as f64;
+    let score = (wins as f64 + 0.5 * draws as f64) / games.max(1) as f64;
+    let (low, high) = elo_interval(wins, draws, losses);
     println!(
-        "{strong:?} vs {weak:?} {mode}: {wins}/{games} won ({:.0}%), {draws} drawn/failed; strong thinks {mean:.1} ms \
-         mean, {} ms max over {count} answers; {:.0} s",
-        100.0 * wins as f64 / games as f64,
+        "{strong:?} vs {weak:?} {mode}: {wins}/{games} won ({:.0}%), {draws} drawn/failed, score {:.1}%, Elo {:+.0} \
+         [{low:+.0}, {high:+.0}]; strong thinks {mean:.1} ms mean, {} ms max over {count} answers; {:.0} s",
+        100.0 * wins as f64 / games.max(1) as f64,
+        100.0 * score,
+        elo(score),
         max.as_millis(),
         started.elapsed().as_secs_f64()
     );

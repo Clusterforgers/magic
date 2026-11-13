@@ -546,7 +546,15 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Monstrous { object, .. } => set_monstrous(state, *object)?,
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
-        Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::TurnedFaceUp { object, player, .. } => {
+            turn_face_up(state, *object)?;
+            state.record(
+                mtg_cards::value::TallyEvent::TurnedFaceUp,
+                Some(*player),
+                (*object, None),
+                1,
+            );
+        }
         Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::CommanderColorChosen { object, color, .. } => {
             state.commander_colors.retain(|(card, _)| card != object);

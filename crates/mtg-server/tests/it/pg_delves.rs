@@ -1,6 +1,7 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
-//! start leads the party to the first boss, whose fight is a game made at once; the content the web draws lists the
+//! start leads the party to the first boss, whose fight is a game made at once, and made again at no cost when an admin
+//! ends it unplayed; the content the web draws lists the
 //! bosses and custom cards; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -151,6 +152,28 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     .json();
     assert_eq!(again["run"]["status"]["Fight"]["game"], game.as_str());
     assert_eq!(again["me"], 1);
+
+    // An admin ends the fight: it was not played, so the next read makes a new one and the run loses nothing.
+    let ended = server
+        .registry
+        .end_by_admin(game.parse().unwrap(), None)
+        .await
+        .unwrap();
+    assert_eq!(ended, mtg_server::registry::AdminEnd::Ended);
+    let retried = call(
+        &server,
+        "GET",
+        &format!("/api/delves/{id}"),
+        Some(&host),
+        None,
+    )
+    .await
+    .json();
+    let fresh = retried["run"]["status"]["Fight"]["game"].as_str().unwrap();
+    assert_ne!(fresh, game);
+    assert!(server.registry.handle(fresh.parse().unwrap()).is_some());
+    assert_eq!(retried["run"]["hearts"], again["run"]["hearts"]);
+    assert_eq!(retried["run"]["heroes"], again["run"]["heroes"]);
 
     let missing = call(
         &server,

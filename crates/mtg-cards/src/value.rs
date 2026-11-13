@@ -58,6 +58,8 @@ pub enum StatKind {
     /// Its colors as one value: no number, so only `Amount::Distinct` reads it ("different color pairs" among objects of two
     /// colors); a colorless object has none.
     R374ColorSet,
+    /// How many of the colors its source chose as the source entered it is ("for each of the chosen colors it is").
+    R4700ChosenColors,
     /// Its subtypes: no number, so only `Amount::Distinct` reads it (each subtype once among the objects: "the number of
     /// planeswalker types among planeswalkers you control").
     Subtypes,
@@ -462,6 +464,9 @@ pub enum TallyEvent {
     /// A permanent regenerated (CR 701.19), as it was then, for its controller: "if this creature regenerated this turn",
     /// "for each time it regenerated this turn".
     Regenerated,
+    /// A permanent was turned face up (the permanent, for its controller): "a creature you control that was turned face
+    /// up this turn".
+    TurnedFaceUp,
 }
 
 /// Which result of the latest die roll an amount reads.
@@ -475,6 +480,8 @@ pub enum DieResult {
     Other,
     /// Every result rolled while the spell or ability resolves, added up ("the total of those results").
     Total,
+    /// How many different numbers the dice of the resolution rolled ("for each different result").
+    Distinct,
 }
 
 /// A number, fixed or worked out when the effect runs.
@@ -782,6 +789,16 @@ pub enum Amount {
         /// The stat added up.
         stat: StatKind,
     },
+    /// How many card types there are among the objects of the turn's log of the kind, as they were then ("for each card
+    /// type among permanents you've sacrificed this turn").
+    TallyTypes {
+        /// The kind of event.
+        event: TallyEvent,
+        /// The players whose events are counted.
+        who: Ref,
+        /// The objects the events were about, as they were then; empty selects every one.
+        filter: Selector,
+    },
     /// The number of unique vowels on the name sticker the resolving spell or ability put on last ("where X is the
     /// number of unique vowels on that sticker"); 0 when it put none.
     StickerVowels,
@@ -1045,6 +1062,11 @@ enum Tagged {
         filter: Selector,
         stat: StatKind,
     },
+    TallyTypes {
+        event: TallyEvent,
+        who: Ref,
+        filter: Selector,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1233,6 +1255,11 @@ enum TaggedRef<'a> {
         filter: &'a Selector,
         stat: StatKind,
     },
+    TallyTypes {
+        event: TallyEvent,
+        who: &'a Ref,
+        filter: &'a Selector,
+    },
     TriggeringTargets,
     PlayersLost,
     CastTargets,
@@ -1360,6 +1387,7 @@ impl From<Tagged> for Amount {
                 filter,
                 stat,
             },
+            Tagged::TallyTypes { event, who, filter } => Amount::TallyTypes { event, who, filter },
             Tagged::TriggeringTargets => Amount::TriggeringTargets,
             Tagged::PlayersLost => Amount::PlayersLost,
             Tagged::CastTargets => Amount::CastTargets,
@@ -1526,6 +1554,12 @@ impl Serialize for Amount {
                 who,
                 filter,
                 stat: *stat,
+            }
+            .serialize(serializer),
+            Amount::TallyTypes { event, who, filter } => TaggedRef::TallyTypes {
+                event: *event,
+                who,
+                filter,
             }
             .serialize(serializer),
             Amount::TriggeringTargets => TaggedRef::TriggeringTargets.serialize(serializer),

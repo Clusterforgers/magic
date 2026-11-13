@@ -17,6 +17,7 @@ pub(super) fn put_onto_text(choose: &Effect, moved: &Effect) -> Option<String> {
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),
@@ -72,6 +73,7 @@ pub(super) fn returned_to_battlefield_text(choose: &Effect, moved: &Effect) -> O
             count,
             bind,
             rest_as: None,
+            differ: None,
         },
         Effect::Move {
             what: Ref::Bound(name),

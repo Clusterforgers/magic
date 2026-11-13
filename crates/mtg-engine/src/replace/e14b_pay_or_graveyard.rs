@@ -48,6 +48,7 @@ impl Pass<'_> {
             source: object,
             barred: &barred,
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::Effect,
         });
         let possible = !pick.short(self.state, &options);
         let pays = if optional {
@@ -128,6 +129,7 @@ impl Pass<'_> {
                     text: pick.text(),
                     can_cancel: false,
                     total: None,
+                    groups: Vec::new(),
                 }),
             })),
             Some((who, Choice::Cards(cards)))

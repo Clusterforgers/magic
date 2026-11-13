@@ -77,6 +77,11 @@ impl Database {
         DeckRepo::new(self.pool.clone())
     }
 
+    /// The groups accounts sort their decks into.
+    pub fn deck_groups(&self) -> crate::DeckGroupRepo {
+        crate::DeckGroupRepo::new(self.pool.clone())
+    }
+
     /// The art accounts prefer for cards.
     pub fn preferred_printings(&self) -> crate::PreferredPrintingRepo {
         crate::PreferredPrintingRepo::new(self.pool.clone())

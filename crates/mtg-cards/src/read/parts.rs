@@ -586,6 +586,7 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
             format!("{} would be countered", phrase::selector(ctx, what))
         }
         ReplaceWhen::LifeGain { who } => format!("{} would gain life", phrase::who(ctx, who)),
+        ReplaceWhen::LifeLoss { who } => format!("{} would lose life", phrase::who(ctx, who)),
         ReplaceWhen::Mill { who } => {
             format!("{} would mill one or more cards", phrase::who(ctx, who))
         }
@@ -624,6 +625,10 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, format!("{factor} times as many")));
         }
         ReplaceBy::Add(extra) => out.push(Step::new(depth, format!("{extra} more are added"))),
+        ReplaceBy::LossTimes(factor) => out.push(Step::new(
+            depth,
+            format!("they lose {factor} times that much life instead"),
+        )),
         ReplaceBy::MoveTo(zone) => out.push(Step::new(
             depth,
             format!("it goes to {} instead", phrase::zone_text(*zone)),

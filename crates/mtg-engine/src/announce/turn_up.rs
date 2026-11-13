@@ -69,6 +69,7 @@ pub(super) fn next(
             source: card,
             barred: &barred,
             granter: None,
+            pays: crate::r4707_pay_costs::PaysFor::Effect,
         });
         if pick.short(state, &candidates) {
             return Next::Drop;
@@ -91,6 +92,7 @@ pub(super) fn next(
                 text: pick.text(),
                 can_cancel: true,
                 total: None,
+                groups: Vec::new(),
             }),
         });
     }
@@ -116,6 +118,7 @@ fn payable(state: &GameState, player: PlayerId, card: ObjectId, up: &TurnUp) -> 
         source: card,
         barred: &barred,
         granter: None,
+        pays: crate::r4707_pay_costs::PaysFor::Effect,
     };
     up.parts
         .iter()

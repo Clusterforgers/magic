@@ -68,6 +68,7 @@ pub(super) fn r4708_reveals(
                                     text: crate::wording::R4708_REVEAL_FIRST_DRAW.to_owned(),
                                     can_cancel: false,
                                     total: None,
+                                    groups: Vec::new(),
                                 }),
                             },
                             proposed,

@@ -62,6 +62,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }));
         selections.push(Selection {
             one_per_name: false,
+            groups: Vec::new(),
             player: *player,
             max: ids.len(),
             min: 0,
