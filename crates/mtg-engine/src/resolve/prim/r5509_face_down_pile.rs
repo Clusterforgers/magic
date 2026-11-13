@@ -2,14 +2,15 @@
 //! is shuffled, and its cards are manifested, cloaked or put back on top of the library.
 
 use mtg_cards::effect::{Effect, PileFate};
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::events::{Event, ZoneCause};
 use crate::library::top_cards;
 use crate::mulligan::shuffled;
-use crate::object::ObjectKind;
+use crate::object::{GameObject, ObjectKind};
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::state::GameState;
 use crate::zones::Zone;
 
 /// The named objects still where they were named, or one zone change on for a card the triggering event moved (an ability, the resolving spell and a card already in exile are left
@@ -42,7 +43,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 object.zone() == Zone::Stack && object.id() == cx.resolving.object();
             object.kind() != ObjectKind::Ability && !resolving_spell && object.zone() != Zone::Exile
         })
-        .map(|object| object.id())
+        .map(GameObject::id)
         .collect();
     let wanted = usize::try_from(cx.scope.amount(top)?.max(0)).unwrap_or(usize::MAX);
     let from_library = if state.is_alive(player) {
@@ -87,7 +88,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     events.push(Event::ChosenAtRandom {
         cards: order.clone(),
     });
-    for id in order {
+    events.extend(r5509_place(state, &order, *then, player));
+    done(events)
+}
+
+/// The moves that place the shuffled pile: onto the battlefield face down under `player`'s control (an `Entered` after a
+/// card that enters tapped or under another player's control) or on top of each card's owner's library.
+fn r5509_place(
+    state: &GameState,
+    order: &[ObjectId],
+    then: PileFate,
+    player: PlayerId,
+) -> Vec<Event> {
+    let mut events = Vec::new();
+    for id in order.iter().copied() {
         let Some(object) = state.object(id) else {
             continue;
         };
@@ -122,7 +136,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
         }
     }
-    done(events)
+    events
 }
 
 #[cfg(test)]

@@ -475,7 +475,9 @@ pub(crate) fn lasts(
         | Duration::UntilSkippedThisTurn
         // `TheirNextTurn` ends with the first later turn of the player it names (`r377_skips`), and applies only from a
         // later turn on (`r377_waits`).
-        | Duration::TheirNextTurn => true,
+        | Duration::TheirNextTurn
+        // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
+        | Duration::WhileTapped => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -558,8 +560,6 @@ pub(crate) fn lasts(
         | Duration::WhileEnchanted
         | Duration::WhileMonarch(_)
         | Duration::WhileSourceAttached => false,
-        // An effect or rule that follows its objects' tapped state reads its own record (`r5509_stays_tapped`).
-        Duration::WhileTapped => true,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
 }
