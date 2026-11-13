@@ -1,0 +1,35 @@
+{
+  "oracle_id": "bac0fcee-9c1a-46b7-86c8-ffbfcc1e96de",
+  "name": "Become Anonymous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Become Anonymous",
+      "oracle_fingerprint": "a609d38b6b0b584e93959d7c2a04e087",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "ExileHidden": { "what": { "Target": 0 }, "sealed": true, "as": "pile" } },
+              { "ExileTop": { "count": 2, "as": "pile_top", "sealed": true } },
+              {
+                "ManifestCards": {
+                  "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] },
+                  "cloak": true,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -230,6 +230,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Transformed",
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
+    "Effect.Move.Random.Top",
     "Effect.ExileUntil",
     "ExileUntil.Total",
     "Effect.RevealUntil",
@@ -242,6 +243,8 @@ const RUNS: &[&str] = &[
     "Effect.CopyCard",
     "Effect.Manifest",
     "Effect.Cloak",
+    "Effect.ManifestCards",
+    "Effect.KeepTotalPower",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
     "Effect.Destroy",
@@ -654,6 +657,7 @@ const RUNS: &[&str] = &[
     "Keyword.Enchant.Graveyard",
     "Keyword.EnchantPlayer",
     "Keyword.Equip",
+    "Keyword.Fortify",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",
     "Keyword.Kicker",
@@ -1087,7 +1091,7 @@ mod tests {
     #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
     #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
     #[case::moving_to_the_battlefield_face_down("Effect.Move.FaceDown", true)]
-    #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
+    #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", true)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
     #[case::searching_another_library("Search.Of", true)]
@@ -1110,6 +1114,7 @@ mod tests {
     #[case::sorcery_timing("Ability.Sorcery", true)]
     #[case::activation_conditions("Ability.Condition", true)]
     #[case::equip("Keyword.Equip", true)]
+    #[case::fortify("Keyword.Fortify", true)]
     #[case::reconfigure("Keyword.Reconfigure", true)]
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]

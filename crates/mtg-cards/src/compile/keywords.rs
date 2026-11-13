@@ -425,6 +425,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "ward" => spell_cost(rest).map(Keyword::Ward),
         "equip" => equip(rest),
         "reconfigure" => cost(rest).map(Keyword::Reconfigure),
+        "fortify" => cost(rest).map(Keyword::Fortify),
         "cycling" => cost(rest).map(Keyword::Cycling),
         "kicker" => kicker(rest),
         "multikicker" => cost(rest).map(Keyword::Multikicker),

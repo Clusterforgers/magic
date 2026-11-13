@@ -231,6 +231,7 @@ mod r406_actions;
 mod r407_wordings;
 mod r408_lands;
 mod r408_pact;
+mod r4704_hooks;
 mod r5a_order;
 mod r5a_wordings;
 mod r5b_performed;
@@ -581,6 +582,21 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
             .then_some(ability);
+    }
+    // An ability word is flavor to the pack's readers as to the templates below.
+    let bare = match kind {
+        ClauseKind::Triggered | ClauseKind::Static => text
+            .get(classify::ability_word_len(text.lines().next().unwrap_or_default()).unwrap_or(0)..)
+            .unwrap_or(text),
+        _ => text,
+    };
+    if let Some(found) =
+        r4704_hooks::r4704_read(bare, kind, |twin| clause_with(twin, kind, x_free, own))
+        && written_variants(&found)
+            .iter()
+            .any(|written| same_text(written, bare))
+    {
+        return Some(found);
     }
     if let Some(found) =
         r403_hooks::r403_read(text, kind, |twin| clause_with(twin, kind, x_free, own))

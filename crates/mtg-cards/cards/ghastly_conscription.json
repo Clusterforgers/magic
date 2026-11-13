@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3bf20e68-0e19-4242-bfba-a8a1bb244685",
+  "name": "Ghastly Conscription",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghastly Conscription",
+      "oracle_fingerprint": "630e1b74d45ae0d7e276fa29de73fe92",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "sealed": true,
+                  "as": "pile"
+                }
+              },
+              { "ManifestCards": { "what": { "Bound": "pile" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

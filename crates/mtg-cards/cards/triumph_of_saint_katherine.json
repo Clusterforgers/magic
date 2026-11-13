@@ -1,7 +1,7 @@
 {
   "oracle_id": "6f8a4998-35c7-4e30-a9e7-7d4ec933238a",
   "name": "Triumph of Saint Katherine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Triumph of Saint Katherine",
@@ -9,9 +9,55 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 9, "end": 237 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                          "selector": [{ "In": "Graveyard" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 6
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "ExileHidden": {
+                        "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                        "sealed": true,
+                        "as": "pile"
+                      }
+                    },
+                    { "ExileTop": { "count": 6, "as": "pile_top", "sealed": true } },
+                    {
+                      "Move": {
+                        "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] },
+                        "to": { "Library": { "place": "Top", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Miracle": "{1}{W}" } }

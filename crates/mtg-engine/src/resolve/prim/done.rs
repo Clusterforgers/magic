@@ -39,6 +39,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExileHidden { .. }
         | Effect::Manifest { .. }
         | Effect::Cloak { .. }
+        | Effect::ManifestCards { .. }
         | Effect::Sacrifice { .. }
         | Effect::SacrificeUpTo { .. }
         | Effect::Counter { .. }
@@ -140,6 +141,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::ExchangeLifeWithToughness { .. }
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }
+        | Effect::KeepTotalPower { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,

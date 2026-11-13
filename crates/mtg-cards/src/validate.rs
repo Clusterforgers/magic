@@ -711,15 +711,24 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Object, want);
                 self.selector(selector);
             }
-            // Only a damage recipient reads it: a player and objects together.
+            // A damage recipient reads it (a player and objects together), and an effect on objects reads one of the
+            // objects several earlier steps bound ("exile it and the top card of your library ..., then manifest those
+            // cards").
             Ref::Union(parts) => {
-                if want != Kind::Either || parts.len() < 2 {
+                let bound_objects =
+                    want == Kind::Object && parts.iter().all(|part| matches!(part, Ref::Bound(_)));
+                if (want != Kind::Either && !bound_objects) || parts.len() < 2 {
                     self.problem(
                         "a union of references is read only as a damage recipient".to_owned(),
                     );
                 }
+                let kind = if bound_objects {
+                    Kind::Object
+                } else {
+                    Kind::Either
+                };
                 for (i, part) in parts.iter().enumerate() {
-                    self.at(format!("[{i}]"), |w| w.reference(part, Kind::Either));
+                    self.at(format!("[{i}]"), |w| w.reference(part, kind));
                 }
             }
         }
@@ -2312,6 +2321,7 @@ impl<'a> Walker<'a> {
             // The cost of these is paid as the cost of an activated ability the keyword adds.
             Keyword::Equip(cost)
             | Keyword::Reconfigure(cost)
+            | Keyword::Fortify(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
@@ -3796,6 +3806,15 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::ManifestCards {
+                who, what, bind, ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
+            }
             Effect::PhaseOut {
                 what, duration, held, ..
             } => {
@@ -4153,6 +4172,10 @@ impl Walker<'_> {
                 if let crate::effect::Balanced::Permanents(filter) = what {
                     w.at("what", |w| w.selector(filter));
                 }
+            }
+            Effect::KeepTotalPower { what, most } => {
+                w.at("what", |w| w.selector(what));
+                w.at("most", |w| w.amount(most));
             }
             Effect::DealDamage { source, to, amount, excess, unpreventable } => {
                 if *unpreventable {
@@ -8064,6 +8087,10 @@ mod tests {
     )]
     #[case::ep30_a_union_of_players_to_draw(
         r#"{"Spell":{"effects":[{"Draw":{"who":{"Union":["You","Opponents"]}}}]}}"#,
+        "a union of references is read only as a damage recipient"
+    )]
+    #[case::r4704_a_union_of_objects_not_bound(
+        r#"{"Spell":{"effects":[{"Exile":{"what":{"Union":["This",{"Each":[{"Type":"Land"}]}]}}}]}}"#,
         "a union of references is read only as a damage recipient"
     )]
     #[case::modal_not_alone(

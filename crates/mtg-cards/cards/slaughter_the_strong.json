@@ -1,0 +1,18 @@
+{
+  "oracle_id": "7a3569a0-a55f-40c9-9588-92db35e26567",
+  "name": "Slaughter the Strong",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaughter the Strong",
+      "oracle_fingerprint": "40a1274287ab9dad3f9669fbad6a9846",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "KeepTotalPower": { "what": [{ "Type": "Creature" }], "most": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

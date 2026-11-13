@@ -1,7 +1,7 @@
 {
   "oracle_id": "39b359c1-48b8-43a7-b972-54764eadd2c7",
   "name": "Jeskai Infiltrator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jeskai Infiltrator",
@@ -21,9 +21,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 74, "end": 381 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileHidden": { "what": "This", "sealed": true, "as": "pile" } },
+              { "ExileTop": { "as": "pile_top", "sealed": true } },
+              {
+                "ManifestCards": {
+                  "what": { "Union": [{ "Bound": "pile" }, { "Bound": "pile_top" }] }
+                }
+              }
+            ]
           }
         }
       ]

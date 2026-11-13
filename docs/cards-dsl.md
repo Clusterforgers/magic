@@ -112,6 +112,7 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - "You can't play lands from your hand" is `Prohibited::PlayLands(filter)`, judged on the card where it would be played; "the next time ... prevent that damage. You gain life equal to the damage prevented this way" is a shield `ReplaceBy::PreventNextAnd`; "each player who controls the fewest creatures" compares a count with `Amount::Smallest`.
 - "The player to your right" is `Ref::Seated`: the left is the next seat still in the game, as turns pass; `GameRule::ReverseTurnOrder` (in force an odd number of times) runs the turn order the other way and leaves the seats. `GameRule::AttackOnlyNearest` keeps only the nearest opponent on a side, and their planeswalkers, among each player's defenders; several such rules all apply.
 - A vote on players or objects binds `tally` to every vote cast ("for each vote they received" counts it); `VoteFor::AnotherPlayer` leaves the voter out, and a vote on players may be secret (`ChoiceOption::SecretPlayer`). `ChooseWords` is a choice of words that is no vote ("each opponent secretly chooses silence or snitch").
+- `Ref::Union` names a player and objects together as a damage recipient, or the objects several earlier steps bound (each part a `Bound` name) for an effect on objects.
 - A new primitive adds its name to `Caps` (below) only when the engine runs it.
 
 ## Support records
@@ -303,6 +304,9 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Turn-up X | A morph, megamorph or disguise cost with `{X}` asks X as the permanent is turned face up; `TurnedFaceUp.x` carries it to "when this creature is turned face up" (`Keyword.TurnUp.X`, `r409_turn_up_x.rs`). |
 | Tokens with a mana cost | `TokenSpec.mana_cost` gives a token a mana cost of its own, its colours read from it (the predefined Spellgorger Weird). |
 | Loyalty twice | `GameRule::LoyaltyTwice(who)` lets the players activate each planeswalker's loyalty abilities twice each turn (Oath of Teferi; for the turn as an `Effect::Rule`, Urza Assembles the Titans; `r409_loyalty_twice.rs`). |
+| Face-down piles | `ExileHidden` with `sealed` and `ExileTop` with `sealed` make the pile; `Effect::ManifestCards { what, cloak, tapped }` puts the named cards onto the battlefield face down in an order drawn at random ("shuffle that pile, then manifest those cards"); a pile put back goes on top of the library through `Move` with `Library { Top, Random }` (`r4704_manifest_cards.rs`). |
+| Kept within a total power | `Effect::KeepTotalPower { what, most }` ("Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control"): each player in turn order is asked for one permanent at a time among those that keep the total reachable, a negative power subtracting, and may stop once within it; the rest go together (`r4704_keep_power.rs`). |
+| Fortify | `Keyword::Fortify(cost)` (CR 702.67) adds "[Cost]: Attach this Fortification to target land you control. Activate only as a sorcery."; "fortified land" is `Ref::Attached`, read and written through its twin "enchanted land". |
 
 ## Validation
 
